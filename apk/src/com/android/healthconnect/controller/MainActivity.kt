@@ -21,6 +21,7 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
+import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,14 +36,21 @@ class MainActivity : Hilt_MainActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setTitle(R.string.app_label)
+
+        if (maybeRedirectIntoTwoPaneSettings(this)) {
+            return
+        }
+
         /** Displaying onboarding screen if user is opening Health Connect app for the first time */
         val sharedPreference = getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
         val previouslyOpened =
             sharedPreference.getBoolean(getString(R.string.previously_opened), false)
         if (!previouslyOpened) {
-            val intent = Intent(this, OnboardingActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            val onboardingIntent = Intent(this, OnboardingActivity::class.java)
+            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val intentAfterOnboarding = Intent(this, MainActivity::class.java)
+            onboardingIntent.putExtra(Intent.EXTRA_INTENT, intentAfterOnboarding)
+            startActivity(onboardingIntent)
             finish()
         }
     }
