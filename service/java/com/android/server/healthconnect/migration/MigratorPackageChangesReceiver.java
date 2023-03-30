@@ -21,16 +21,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.health.connect.Constants;
 import android.net.Uri;
 import android.os.UserHandle;
-import android.os.UserManager;
 import android.util.Log;
-import android.util.Slog;
 
 import com.android.modules.utils.BackgroundThread;
-
-import java.util.Objects;
 
 /**
  * A listener for package changes that routes the action to Migration State manager on app install,
@@ -39,7 +34,7 @@ import java.util.Objects;
  * @hide
  */
 public class MigratorPackageChangesReceiver extends BroadcastReceiver {
-    private static final String TAG = "MigratorPackageChangesReceiver";
+    private static final String TAG = "DataMigratorPackageMonitor";
     private static final IntentFilter sPackageFilter = buildPackageChangeFilter();
     private final MigrationStateManager mMigrationStateManager;
 
@@ -53,16 +48,6 @@ public class MigratorPackageChangesReceiver extends BroadcastReceiver {
         UserHandle userHandle = getUserHandle(intent);
         if (packageName == null || userHandle == null) {
             Log.w(TAG, "Can't extract info from the input intent");
-            return;
-        }
-
-        Context userContext = context.createContextAsUser(userHandle, 0);
-        UserManager userManager =
-                Objects.requireNonNull(userContext.getSystemService(UserManager.class));
-        if (!userManager.isUserForeground()) {
-            if (Constants.DEBUG) {
-                Slog.d(TAG, "User " + userHandle + " is not a foreground user.");
-            }
             return;
         }
 

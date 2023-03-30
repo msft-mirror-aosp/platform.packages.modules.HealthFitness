@@ -44,9 +44,6 @@
     },
     {
       "name": "HealthConnectBackupRestoreUnitTests"
-    },
-    {
-      "name": "CtsHealthConnectHostTestCases"
     }
   ]
 }

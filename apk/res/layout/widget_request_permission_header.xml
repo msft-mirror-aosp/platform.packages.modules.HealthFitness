@@ -35,32 +35,32 @@
         android:gravity="center_horizontal"
         android:layout_marginHorizontal="@dimen/spacing_large"
         android:paddingVertical="@dimen/spacing_large"
-        style="?attr/textAppearanceHeadline4" />
+        style="?attr/textAppearanceTitle" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="?attr/chooseDataIcon"
+        android:drawableStart="@drawable/quantum_gm_ic_tune_vd_theme_24"
         android:paddingBottom="@dimen/spacing_small"
         android:text="@string/request_permissions_header_desc"
-        style="?attr/textAppearanceSummaryLarge"/>
+        style="?attr/textAppearanceSummary"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="?attr/accessHistoryIcon"
+        android:drawableStart="@drawable/quantum_gm_ic_history_vd_theme_24"
         android:paddingBottom="@dimen/spacing_small"
         android:text="@string/request_permissions_header_time_frame_desc"
-        style="?attr/textAppearanceSummaryLarge" />
+        style="?attr/textAppearanceSummary" />
 
     <TextView
         android:id="@+id/privacy_policy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/spacing_normal"
-        android:drawableStart="?attr/privacyPolicyIcon"
+        android:drawableStart="@drawable/quantum_gm_ic_privacy_tip_vd_theme_24"
         android:paddingBottom="@dimen/spacing_small"
-        style="?attr/textAppearanceSummaryLarge"/>
+        style="?attr/textAppearanceSummary"/>
 </LinearLayout>

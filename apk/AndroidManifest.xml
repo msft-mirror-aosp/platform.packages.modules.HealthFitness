@@ -24,11 +24,10 @@
     <uses-permission android:name="android.permission.START_VIEW_PERMISSION_USAGE" />
     <uses-permission android:name="android.permission.health.READ_EXERCISE_ROUTE" />
     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
-    <uses-permission android:name="android.permission.LAUNCH_MULTI_PANE_SETTINGS_DEEP_LINK" />
 
     <application
         android:name=".HealthConnectApplication"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/health_connect_logo"
         android:label="@string/app_label"
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthConnect">
@@ -86,7 +85,6 @@
         <activity
             android:name=".route.RouteRequestActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/Theme.HealthConnect"
             android:exported="true">
             <intent-filter android:priority="1">
                 <action android:name="android.health.connect.action.REQUEST_EXERCISE_ROUTE" />

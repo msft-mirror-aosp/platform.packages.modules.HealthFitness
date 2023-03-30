@@ -16,13 +16,6 @@
 
 package com.android.server.healthconnect.migration;
 
-import static com.android.server.healthconnect.migration.MigrationTestUtils.MOCK_CONFIGURED_PACKAGE;
-import static com.android.server.healthconnect.migration.MigrationTestUtils.MOCK_QUERIED_BROADCAST_RECEIVER_ONE;
-import static com.android.server.healthconnect.migration.MigrationTestUtils.MOCK_QUERIED_BROADCAST_RECEIVER_TWO;
-import static com.android.server.healthconnect.migration.MigrationTestUtils.MOCK_UNCONFIGURED_PACKAGE_ONE;
-import static com.android.server.healthconnect.migration.MigrationTestUtils.MOCK_UNCONFIGURED_PACKAGE_TWO;
-import static com.android.server.healthconnect.migration.MigrationTestUtils.PERMISSIONS_TO_CHECK;
-
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -32,7 +25,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -56,6 +51,14 @@ import java.util.List;
 /** Unit tests for broadcast sending logic in {@link MigrationBroadcast} */
 @RunWith(AndroidJUnit4.class)
 public class MigrationBroadcastSendingTest {
+    private static final String[] PERMISSIONS_TO_CHECK =
+            new String[] {Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA};
+    private static final String MOCK_CONFIGURED_PACKAGE = "com.configured.app";
+    private static final String MOCK_UNCONFIGURED_PACKAGE_ONE = "com.unconfigured.app";
+    private static final String MOCK_UNCONFIGURED_PACKAGE_TWO = "com.unconfigured.apptwo";
+    private static final String MOCK_QUERIED_BROADCAST_RECEIVER_ONE = ".SampleReceiverOne";
+    private static final String MOCK_QUERIED_BROADCAST_RECEIVER_TWO = ".SampleReceiverTwo";
+
     @Mock private Context mContext;
     @Mock private Context mUserContext;
     @Mock private PackageManager mPackageManager;
@@ -103,7 +106,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(null, mPackageManager);
+        setResolveActivityResult(null);
 
         mMigrationBroadcast.sendInvocationBroadcast();
 
@@ -123,13 +126,13 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
         when(mUserManager.isUserForeground()).thenReturn(true);
         List<ResolveInfo> resolveInfoList =
-                MigrationTestUtils.createResolveInfoList(
+                createResolveInfoList(
                         false, MOCK_CONFIGURED_PACKAGE, MOCK_QUERIED_BROADCAST_RECEIVER_ONE);
         setQueryBroadcastReceiversAsUserResult(resolveInfoList);
 
@@ -151,13 +154,13 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
         when(mUserManager.isUserForeground()).thenReturn(true);
         List<ResolveInfo> resolveInfoList =
-                MigrationTestUtils.createResolveInfoList(
+                createResolveInfoList(
                         true, MOCK_CONFIGURED_PACKAGE, MOCK_QUERIED_BROADCAST_RECEIVER_ONE);
         setQueryBroadcastReceiversAsUserResult(resolveInfoList);
 
@@ -179,7 +182,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
@@ -206,13 +209,13 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
         when(mUserManager.isUserForeground()).thenReturn(true);
         List<ResolveInfo> resolveInfoList =
-                MigrationTestUtils.createResolveInfoList(
+                createResolveInfoList(
                         true,
                         MOCK_CONFIGURED_PACKAGE,
                         MOCK_QUERIED_BROADCAST_RECEIVER_ONE,
@@ -236,7 +239,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
@@ -259,7 +262,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenThrow(PackageManager.NameNotFoundException.class);
@@ -278,7 +281,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
 
         try {
             mMigrationBroadcast.sendInvocationBroadcast();
@@ -301,13 +304,13 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
         when(mUserManager.isUserForeground()).thenReturn(true);
         List<ResolveInfo> resolveInfoList =
-                MigrationTestUtils.createResolveInfoList(
+                createResolveInfoList(
                         false, MOCK_CONFIGURED_PACKAGE, MOCK_QUERIED_BROADCAST_RECEIVER_ONE);
         setQueryBroadcastReceiversAsUserResult(resolveInfoList);
 
@@ -331,13 +334,13 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
         when(mUserManager.isUserForeground()).thenReturn(true);
         List<ResolveInfo> resolveInfoList =
-                MigrationTestUtils.createResolveInfoList(
+                createResolveInfoList(
                         true, MOCK_CONFIGURED_PACKAGE, MOCK_QUERIED_BROADCAST_RECEIVER_ONE);
         setQueryBroadcastReceiversAsUserResult(resolveInfoList);
 
@@ -361,7 +364,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
@@ -390,13 +393,13 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
         when(mUserManager.isUserForeground()).thenReturn(true);
         List<ResolveInfo> resolveInfoList =
-                MigrationTestUtils.createResolveInfoList(
+                createResolveInfoList(
                         true,
                         MOCK_CONFIGURED_PACKAGE,
                         MOCK_QUERIED_BROADCAST_RECEIVER_ONE,
@@ -421,7 +424,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(new PackageInfo());
@@ -445,7 +448,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
         when(mUserContextPackageManager.getPackageInfo(
                         anyString(), argThat(flag -> (flag.getValue() == 0))))
                 .thenThrow(PackageManager.NameNotFoundException.class);
@@ -469,7 +472,7 @@ public class MigrationBroadcastSendingTest {
         when(mPackageManager.getPackagesHoldingPermissions(
                         eq(PERMISSIONS_TO_CHECK), argThat(flag -> (flag.getValue() == 0))))
                 .thenReturn(packageInfoArray);
-        MigrationTestUtils.setResolveActivityResult(new ResolveInfo(), mPackageManager);
+        setResolveActivityResult(new ResolveInfo());
 
         try {
             mMigrationBroadcast.sendInvocationBroadcast();
@@ -487,6 +490,31 @@ public class MigrationBroadcastSendingTest {
             packageInfoArray.add(packageInfo);
         }
         return packageInfoArray;
+    }
+
+    private List<ResolveInfo> createResolveInfoList(
+            boolean nullActivityInfo, String packageName, String... broadcastReceivers) {
+        List<ResolveInfo> resolveInfoArray = new ArrayList<ResolveInfo>();
+        for (String broadcastReceiver : broadcastReceivers) {
+            ResolveInfo resolveInfo = new ResolveInfo();
+            if (!nullActivityInfo) {
+                resolveInfo.activityInfo = new ActivityInfo();
+                resolveInfo.activityInfo.packageName = packageName;
+                resolveInfo.activityInfo.name = packageName + broadcastReceiver;
+            }
+            resolveInfoArray.add(resolveInfo);
+        }
+        return resolveInfoArray;
+    }
+
+    private void setResolveActivityResult(ResolveInfo result) {
+        when(mPackageManager.resolveActivity(
+                        argThat(
+                                intent ->
+                                        (HealthConnectManager.ACTION_SHOW_MIGRATION_INFO.equals(
+                                                intent.getAction()))),
+                        argThat(flag -> (flag.getValue() == PackageManager.MATCH_ALL))))
+                .thenReturn(result);
     }
 
     private void setQueryBroadcastReceiversAsUserResult(List<ResolveInfo> result) {

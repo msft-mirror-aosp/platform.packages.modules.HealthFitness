@@ -288,12 +288,7 @@ public final class ExerciseSessionTypesValidation {
             if (location.getTime().isAfter(sessionEndTime)
                     || location.getTime().isBefore(sessionStartTime)) {
                 throw new IllegalArgumentException(
-                        "Exercise route timestamp must be within session interval, got start time: "
-                                + sessionStartTime
-                                + ", session end time: "
-                                + sessionEndTime
-                                + ", route location time: "
-                                + location.getTime());
+                        "Exercise route timestamp must be within session interval");
             }
         }
     }

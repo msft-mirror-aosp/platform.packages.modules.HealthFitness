@@ -22,7 +22,6 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,9 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class DataManagementActivity : Hilt_DataManagementActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
-            return
-        }
         setContentView(R.layout.activity_data_management)
     }
 

@@ -15,7 +15,7 @@
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,8 +49,7 @@
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary"/>
+                style="@android:style/TextAppearance.Material.Subhead" />
 
             <RadioButton
                 android:id="@+id/radio_button_one_week"
@@ -60,8 +59,7 @@
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary"/>
+                style="@android:style/TextAppearance.Material.Subhead" />
 
             <RadioButton
                 android:id="@+id/radio_button_one_month"
@@ -71,8 +69,7 @@
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary"/>
+                style="@android:style/TextAppearance.Material.Subhead" />
 
             <RadioButton
                 android:id="@+id/radio_button_all"
@@ -82,8 +79,7 @@
                 android:minHeight="?android:attr/listPreferredItemHeight"
                 android:paddingStart="?android:attr/listPreferredItemPaddingStart"
                 android:paddingEnd="0dp"
-                android:textAppearance="?attr/textAppearanceSummary"
-                android:textColor="?android:attr/textColorPrimary"/>
+                style="@android:style/TextAppearance.Material.Subhead" />
         </RadioGroup>
     </LinearLayout>
 </ScrollView>

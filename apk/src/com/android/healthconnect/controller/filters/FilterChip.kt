@@ -93,6 +93,7 @@ constructor(
         this.layoutParams = params
 
         if (unSelectedIcon == null) {
+
             // Padding needs to be changed programmatically when no button icon is used
             setChipPadding(this.isChecked)
         }

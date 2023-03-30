@@ -187,7 +187,6 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
 
     override fun onResume() {
         super.onResume()
-        setTitle(fromPermissionType(permissionType).uppercaseLabel)
         entriesViewModel.loadData(permissionType, dateNavigationView.getDate())
 
         logger.setPageId(pageName)
