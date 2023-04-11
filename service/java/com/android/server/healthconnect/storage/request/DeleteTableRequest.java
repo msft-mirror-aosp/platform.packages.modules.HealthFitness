@@ -25,6 +25,7 @@ import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.Slog;
 
+import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.Collections;
@@ -54,6 +55,8 @@ public class DeleteTableRequest {
     private List<String> mIds;
     private boolean mEnforcePackageCheck;
     private int mNumberOfUuidsToDelete;
+    private WhereClauses mCustomWhereClauses;
+    private long mLessThanOrEqualValue;
 
     public DeleteTableRequest(
             @NonNull String tableName, @RecordTypeIdentifier.RecordType int recordType) {
@@ -90,7 +93,7 @@ public class DeleteTableRequest {
         Objects.requireNonNull(ids);
         Objects.requireNonNull(idColumnName);
 
-        mIds = ids;
+        mIds = ids.stream().map(StorageUtils::getNormalisedString).toList();
         mIdColumnName = idColumnName;
         return this;
     }
@@ -99,7 +102,7 @@ public class DeleteTableRequest {
         Objects.requireNonNull(id);
         Objects.requireNonNull(idColumnName);
 
-        mIds = Collections.singletonList(id);
+        mIds = Collections.singletonList(StorageUtils.getNormalisedString(id));
         mIdColumnName = idColumnName;
         return this;
     }
@@ -113,13 +116,6 @@ public class DeleteTableRequest {
 
         mRequiresUuId = true;
         mIdColumnName = idColumnName;
-
-        return this;
-    }
-
-    public DeleteTableRequest unsetRequiresUuId() {
-        mRequiresUuId = false;
-        mIdColumnName = null;
 
         return this;
     }
@@ -153,21 +149,21 @@ public class DeleteTableRequest {
     }
 
     public String getReadCommand() {
-        StringBuilder builder =
-                new StringBuilder("SELECT ")
-                        .append(mIdColumnName)
-                        .append(", ")
-                        .append(mPackageColumnName);
-
-        builder.append(" FROM ").append(mTableName).append(getWhereCommand());
-        return builder.toString();
+        return "SELECT "
+                + mIdColumnName
+                + ", "
+                + mPackageColumnName
+                + " FROM "
+                + mTableName
+                + getWhereCommand();
     }
 
     public String getWhereCommand() {
-        WhereClauses whereClauses = new WhereClauses();
+        WhereClauses whereClauses =
+                Objects.isNull(mCustomWhereClauses) ? new WhereClauses() : mCustomWhereClauses;
         whereClauses.addWhereInLongsClause(mPackageColumnName, mPackageFilters);
         whereClauses.addWhereBetweenTimeClause(mTimeColumnName, mStartTime, mEndTime);
-        whereClauses.addWhereInClause(mIdColumnName, mIds);
+        whereClauses.addWhereInClauseWithoutQuotes(mIdColumnName, mIds);
 
         if (Constants.DEBUG) {
             Slog.d(
@@ -187,7 +183,7 @@ public class DeleteTableRequest {
         Objects.requireNonNull(timeColumnName);
 
         // Return if the params will result in no impact on the query
-        if (endTime < 0 || startTime < 0 || endTime < startTime) {
+        if (startTime < 0 || endTime < startTime) {
             return this;
         }
 

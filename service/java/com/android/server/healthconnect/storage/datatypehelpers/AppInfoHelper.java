@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.Constants.DEBUG;
 import static android.health.connect.Constants.DEFAULT_LONG;
 
+import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
@@ -53,7 +54,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -82,14 +82,15 @@ import java.util.stream.Collectors;
  * @hide
  */
 public final class AppInfoHelper {
+    public static final String TABLE_NAME = "application_info_table";
+    public static final String APPLICATION_COLUMN_NAME = "app_name";
+    public static final String PACKAGE_COLUMN_NAME = "package_name";
+    public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
+            Collections.singletonList(new Pair<>(PACKAGE_COLUMN_NAME, TYPE_STRING));
+    public static final String APP_ICON_COLUMN_NAME = "app_icon";
     private static final String TAG = "HealthConnectAppInfoHelper";
-    private static final String TABLE_NAME = "application_info_table";
-    private static final String APPLICATION_COLUMN_NAME = "app_name";
-    private static final String PACKAGE_COLUMN_NAME = "package_name";
-    private static final String APP_ICON_COLUMN_NAME = "app_icon";
     private static final String RECORD_TYPES_USED_COLUMN_NAME = "record_types_used";
     private static final int COMPRESS_FACTOR = 100;
-    private static final int DB_VERSION_WITH_RECORD_TYPES_USED_COLUMN = 7;
     private static volatile AppInfoHelper sAppInfoHelper;
 
     /**
@@ -107,46 +108,6 @@ public final class AppInfoHelper {
     private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
     private AppInfoHelper() {}
-
-    public static synchronized AppInfoHelper getInstance() {
-        if (sAppInfoHelper == null) {
-            sAppInfoHelper = new AppInfoHelper();
-        }
-
-        return sAppInfoHelper;
-    }
-
-    @Nullable
-    private static byte[] encodeBitmap(@Nullable Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
-
-        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_FACTOR, stream);
-            return stream.toByteArray();
-        } catch (IOException exception) {
-            throw new IllegalArgumentException(exception);
-        }
-    }
-
-    @Nullable
-    private static Bitmap decodeBitmap(@Nullable byte[] bytes) {
-        return bytes != null ? BitmapFactory.decodeByteArray(bytes, 0, bytes.length) : null;
-    }
-
-    @NonNull
-    private static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
-        final Bitmap bmp =
-                Bitmap.createBitmap(
-                        drawable.getIntrinsicWidth(),
-                        drawable.getIntrinsicHeight(),
-                        Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(bmp);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bmp;
-    }
 
     /** Deletes all entries from the database and clears the cache. */
     public synchronized void clearData(TransactionManager transactionManager) {
@@ -166,10 +127,6 @@ public final class AppInfoHelper {
     @NonNull
     public CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
-    }
-
-    public String getTableName() {
-        return TABLE_NAME;
     }
 
     /** Populates record with appInfoId */
@@ -198,24 +155,33 @@ public final class AppInfoHelper {
     }
 
     /**
-     * Updates the application info of the specified {@code packageName} with the specified {@code
-     * name} and {@code icon}, only if the corresponding application is not currently installed.
+     * Inserts or replaces (based on the passed param onlyUpdate) the application info of the
+     * specified {@code packageName} with the specified {@code name} and {@code icon}, only if the
+     * corresponding application is not currently installed.
+     *
+     * <p>If onlyUpdate is true then only replace the exiting AppInfo; no new insertion. If
+     * onlyUpdate is false then only insert a new AppInfo entry; no replacement.
      */
-    public void updateAppInfoIfNotInstalled(
+    public void addOrUpdateAppInfoIfNotInstalled(
             @NonNull Context context,
             @NonNull String packageName,
             @Nullable String name,
-            @Nullable byte[] icon) {
-        if (!isAppInstalled(context, packageName) && containsAppInfo(packageName)) {
+            @Nullable byte[] icon,
+            boolean onlyUpdate) {
+        if (!isAppInstalled(context, packageName)) {
             // using pre-existing value of recordTypesUsed.
-            updateIfPresent(
-                    packageName,
+            var recordTypesUsed =
+                    containsAppInfo(packageName)
+                            ? mAppInfoMap.get(packageName).getRecordTypesUsed()
+                            : null;
+            AppInfoInternal appInfoInternal =
                     new AppInfoInternal(
-                            DEFAULT_LONG,
-                            packageName,
-                            name,
-                            decodeBitmap(icon),
-                            mAppInfoMap.get(packageName).getRecordTypesUsed()));
+                            DEFAULT_LONG, packageName, name, decodeBitmap(icon), recordTypesUsed);
+            if (onlyUpdate) {
+                updateIfPresent(packageName, appInfoInternal);
+            } else {
+                insertIfNotPresent(packageName, appInfoInternal);
+            }
         }
     }
 
@@ -233,8 +199,14 @@ public final class AppInfoHelper {
      *
      * @param appInfoId rowId from {@code application_info_table }
      * @param record The record to be populated with package name
+     * @param idPackageNameMap the map from which to get the package name
      */
-    public void populateRecordWithValue(long appInfoId, @NonNull RecordInternal<?> record) {
+    public void populateRecordWithValue(
+            long appInfoId, @NonNull RecordInternal<?> record, Map<Long, String> idPackageNameMap) {
+        if (idPackageNameMap != null) {
+            record.setPackageName(idPackageNameMap.get(appInfoId));
+            return;
+        }
         record.setPackageName(getIdPackageNameMap().get(appInfoId));
     }
 
@@ -242,23 +214,7 @@ public final class AppInfoHelper {
      * Called when a db update happens to make any required changes in appInfoHelper respecting
      * version upgrade.
      */
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion) {
-        if (oldVersion < DB_VERSION_WITH_RECORD_TYPES_USED_COLUMN) {
-            addRecordTypesUsedColumnName(db);
-        }
-    }
-
-    private void addRecordTypesUsedColumnName(@NonNull SQLiteDatabase db) {
-        try {
-            db.execSQL(
-                    new AlterTableRequest(
-                                    TABLE_NAME,
-                                    List.of(new Pair<>(RECORD_TYPES_USED_COLUMN_NAME, TEXT_NULL)))
-                            .getAlterTableAddColumnsCommand());
-        } catch (Exception e) {
-            // do nothing as
-        }
-    }
+    public void onUpgrade(int oldVersion, int newVersion, @NonNull SQLiteDatabase db) {}
 
     /**
      * @return id of {@code packageName} or {@link Constants#DEFAULT_LONG} if the id is not found
@@ -552,8 +508,8 @@ public final class AppInfoHelper {
         whereClauseForAppInfoTableUpdate.addWhereEqualsClause(
                 PACKAGE_COLUMN_NAME, appInfo.getPackageName());
         UpsertTableRequest upsertRequestForAppInfoUpdate =
-                new UpsertTableRequest(TABLE_NAME, getContentValues(packageName, appInfo));
-        upsertRequestForAppInfoUpdate.setWhereClauses(whereClauseForAppInfoTableUpdate);
+                new UpsertTableRequest(
+                        TABLE_NAME, getContentValues(packageName, appInfo), UNIQUE_COLUMN_INFO);
         TransactionManager.getInitialisedInstance().update(upsertRequestForAppInfoUpdate);
 
         // update locally stored maps to keep data in sync.
@@ -633,7 +589,9 @@ public final class AppInfoHelper {
                 TransactionManager.getInitialisedInstance()
                         .insert(
                                 new UpsertTableRequest(
-                                        TABLE_NAME, getContentValues(packageName, appInfo)));
+                                        TABLE_NAME,
+                                        getContentValues(packageName, appInfo),
+                                        UNIQUE_COLUMN_INFO));
         appInfo.setId(rowId);
         getAppInfoMap().put(packageName, appInfo);
         getIdPackageNameMap().put(appInfo.getId(), packageName);
@@ -645,9 +603,10 @@ public final class AppInfoHelper {
         }
 
         UpsertTableRequest upsertTableRequest =
-                new UpsertTableRequest(TABLE_NAME, getContentValues(packageName, appInfoInternal));
-        upsertTableRequest.setWhereClauses(
-                new WhereClauses().addWhereEqualsClause(PACKAGE_COLUMN_NAME, packageName));
+                new UpsertTableRequest(
+                        TABLE_NAME,
+                        getContentValues(packageName, appInfoInternal),
+                        UNIQUE_COLUMN_INFO);
 
         TransactionManager.getInitialisedInstance().updateTable(upsertTableRequest);
         getAppInfoMap().put(packageName, appInfoInternal);
@@ -691,5 +650,45 @@ public final class AppInfoHelper {
         columnInfo.add(new Pair<>(RECORD_TYPES_USED_COLUMN_NAME, TEXT_NULL));
 
         return columnInfo;
+    }
+
+    public static synchronized AppInfoHelper getInstance() {
+        if (sAppInfoHelper == null) {
+            sAppInfoHelper = new AppInfoHelper();
+        }
+
+        return sAppInfoHelper;
+    }
+
+    @Nullable
+    private static byte[] encodeBitmap(@Nullable Bitmap bitmap) {
+        if (bitmap == null) {
+            return null;
+        }
+
+        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_FACTOR, stream);
+            return stream.toByteArray();
+        } catch (IOException exception) {
+            throw new IllegalArgumentException(exception);
+        }
+    }
+
+    @Nullable
+    private static Bitmap decodeBitmap(@Nullable byte[] bytes) {
+        return bytes != null ? BitmapFactory.decodeByteArray(bytes, 0, bytes.length) : null;
+    }
+
+    @NonNull
+    private static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
+        final Bitmap bmp =
+                Bitmap.createBitmap(
+                        drawable.getIntrinsicWidth(),
+                        drawable.getIntrinsicHeight(),
+                        Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bmp);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bmp;
     }
 }

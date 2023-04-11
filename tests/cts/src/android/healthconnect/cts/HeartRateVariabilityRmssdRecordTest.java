@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -90,7 +91,7 @@ public class HeartRateVariabilityRmssdRecordTest {
     public void testReadHeartRateVariabilityRmssdRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<HeartRateVariabilityRmssdRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeartRateVariabilityRmssdRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<HeartRateVariabilityRmssdRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -320,7 +321,7 @@ public class HeartRateVariabilityRmssdRecordTest {
         final ZoneOffset zoneOffset = ZoneOffset.UTC;
         HeartRateVariabilityRmssdRecord.Builder builder =
                 new HeartRateVariabilityRmssdRecord.Builder(
-                        new Metadata.Builder().build(), Instant.now(), 0.3);
+                        new Metadata.Builder().build(), Instant.now(), 1.3);
 
         assertThat(builder.setZoneOffset(zoneOffset).build().getZoneOffset()).isEqualTo(zoneOffset);
         assertThat(builder.clearZoneOffset().build().getZoneOffset()).isEqualTo(defaultZoneOffset);
@@ -329,7 +330,7 @@ public class HeartRateVariabilityRmssdRecordTest {
     @Test
     public void testHeartRateVariabilityRmssd_buildSession_buildCorrectObject() {
         HeartRateVariabilityRmssdRecord record =
-                new HeartRateVariabilityRmssdRecord.Builder(TestUtils.generateMetadata(), TIME, 0.3)
+                new HeartRateVariabilityRmssdRecord.Builder(TestUtils.generateMetadata(), TIME, 1.3)
                         .build();
         assertThat(record.getTime()).isEqualTo(TIME);
     }
@@ -338,20 +339,20 @@ public class HeartRateVariabilityRmssdRecordTest {
     public void testHeartRateVariabilityRmssd_buildEqualSessions_equalsReturnsTrue() {
         Metadata metadata = TestUtils.generateMetadata();
         HeartRateVariabilityRmssdRecord record =
-                new HeartRateVariabilityRmssdRecord.Builder(metadata, TIME, 0.3).build();
+                new HeartRateVariabilityRmssdRecord.Builder(metadata, TIME, 1.3).build();
         HeartRateVariabilityRmssdRecord record2 =
-                new HeartRateVariabilityRmssdRecord.Builder(metadata, TIME, 0.3).build();
+                new HeartRateVariabilityRmssdRecord.Builder(metadata, TIME, 1.3).build();
         assertThat(record).isEqualTo(record2);
     }
 
     @Test
     public void testHeartRateVariabilityRmssd_buildSessionWithAllFields_buildCorrectObject() {
         HeartRateVariabilityRmssdRecord record =
-                new HeartRateVariabilityRmssdRecord.Builder(TestUtils.generateMetadata(), TIME, 0.3)
+                new HeartRateVariabilityRmssdRecord.Builder(TestUtils.generateMetadata(), TIME, 1.3)
                         .setZoneOffset(ZoneOffset.MAX)
                         .build();
         assertThat(record.getZoneOffset()).isEqualTo(ZoneOffset.MAX);
-        assertThat(record.getHeartRateVariabilityMillis()).isEqualTo(0.3);
+        assertThat(record.getHeartRateVariabilityMillis()).isEqualTo(1.3);
     }
 
     @Test
@@ -417,10 +418,10 @@ public class HeartRateVariabilityRmssdRecordTest {
                             updateRecords.get(itr),
                             itr % 2 == 0
                                     ? insertedRecords.get(itr).getMetadata().getId()
-                                    : String.valueOf(Math.random()),
+                                    : UUID.randomUUID().toString(),
                             itr % 2 == 0
                                     ? insertedRecords.get(itr).getMetadata().getId()
-                                    : String.valueOf(Math.random())));
+                                    : UUID.randomUUID().toString()));
         }
 
         try {
@@ -433,6 +434,13 @@ public class HeartRateVariabilityRmssdRecordTest {
 
         // assert the inserted data has not been modified by reading the data.
         readHeartRateVariabilityRmssdRecordUsingIds(insertedRecords);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateHeartRateVariabilityRecord_invalidValue() {
+        new HeartRateVariabilityRmssdRecord.Builder(
+                        new Metadata.Builder().build(), Instant.now(), 0.39)
+                .build();
     }
 
     @Test
@@ -552,15 +560,32 @@ public class HeartRateVariabilityRmssdRecordTest {
         assertThat(result).containsExactlyElementsIn(recordList);
     }
 
+    HeartRateVariabilityRmssdRecord getHeartRateVariabilityRmssdRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new HeartRateVariabilityRmssdRecord.Builder(metadataWithId, Instant.now(), 1.99)
+                .setZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
+    }
+
     static HeartRateVariabilityRmssdRecord getBaseHeartRateVariabilityRmssdRecord() {
         return new HeartRateVariabilityRmssdRecord.Builder(
-                        new Metadata.Builder().build(), Instant.now(), 0.99)
+                        new Metadata.Builder().build(), Instant.now(), 1.99)
                 .build();
     }
 
     static HeartRateVariabilityRmssdRecord getHeartRateVariabilityRmssdRecord(double power) {
         return new HeartRateVariabilityRmssdRecord.Builder(
-                        new Metadata.Builder().build(), Instant.now(), 0.39)
+                        new Metadata.Builder().build(), Instant.now(), 1.39)
                 .build();
     }
 
@@ -579,24 +604,7 @@ public class HeartRateVariabilityRmssdRecordTest {
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         return new HeartRateVariabilityRmssdRecord.Builder(
-                        testMetadataBuilder.build(), Instant.now(), 0.3)
-                .build();
-    }
-
-    HeartRateVariabilityRmssdRecord getHeartRateVariabilityRmssdRecord_update(
-            Record record, String id, String clientRecordId) {
-        Metadata metadata = record.getMetadata();
-        Metadata metadataWithId =
-                new Metadata.Builder()
-                        .setId(id)
-                        .setClientRecordId(clientRecordId)
-                        .setClientRecordVersion(metadata.getClientRecordVersion())
-                        .setDataOrigin(metadata.getDataOrigin())
-                        .setDevice(metadata.getDevice())
-                        .setLastModifiedTime(metadata.getLastModifiedTime())
-                        .build();
-        return new HeartRateVariabilityRmssdRecord.Builder(metadataWithId, Instant.now(), 0.5)
-                .setZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                        testMetadataBuilder.build(), Instant.now(), 1.3)
                 .build();
     }
 }

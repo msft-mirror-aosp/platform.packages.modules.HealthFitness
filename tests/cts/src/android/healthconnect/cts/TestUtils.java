@@ -130,6 +130,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -204,7 +205,6 @@ public class TestUtils {
 
                     @Override
                     public void onError(HealthConnectException exception) {
-                        Log.e(TAG, exception.getMessage());
                         exceptionAtomicReference.set(exception);
                         latch.countDown();
                     }
@@ -306,7 +306,10 @@ public class TestUtils {
     public static ExerciseRoute.Location buildLocationTimePoint() {
         return new ExerciseRoute.Location.Builder(
                         Instant.ofEpochMilli(
-                                (long) (SESSION_START_TIME.toEpochMilli() + Math.random() * 50)),
+                                (long)
+                                        (SESSION_START_TIME.toEpochMilli()
+                                                + 10
+                                                + Math.random() * 50)),
                         Math.random() * 50,
                         Math.random() * 50)
                 .build();
@@ -331,6 +334,24 @@ public class TestUtils {
                                 .setDevice(device)
                                 .setDataOrigin(dataOrigin)
                                 .setClientRecordId("SR" + Math.random())
+                                .build(),
+                        Instant.now(),
+                        Instant.now().plusMillis(1000),
+                        10)
+                .build();
+    }
+
+    public static StepsRecord getStepsRecord(String id) {
+        Context context = ApplicationProvider.getApplicationContext();
+        Device device =
+                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
+        DataOrigin dataOrigin =
+                new DataOrigin.Builder().setPackageName(context.getPackageName()).build();
+        return new StepsRecord.Builder(
+                        new Metadata.Builder()
+                                .setDevice(device)
+                                .setId(id)
+                                .setDataOrigin(dataOrigin)
                                 .build(),
                         Instant.now(),
                         Instant.now().plusMillis(1000),
@@ -943,6 +964,8 @@ public class TestUtils {
         CountDownLatch latch = new CountDownLatch(1);
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
+        AtomicReference<MigrationException> migrationExceptionAtomicReference =
+                new AtomicReference<>();
         service.insertMinDataMigrationSdkExtensionVersion(
                 version,
                 Executors.newSingleThreadExecutor(),
@@ -955,10 +978,15 @@ public class TestUtils {
 
                     @Override
                     public void onError(MigrationException exception) {
+                        migrationExceptionAtomicReference.set(exception);
                         Log.e(TAG, exception.getMessage());
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (migrationExceptionAtomicReference.get() != null) {
+            throw migrationExceptionAtomicReference.get();
+        }
     }
 
     public static void deleteAllStagedRemoteData() {
@@ -1046,7 +1074,7 @@ public class TestUtils {
         Context context = ApplicationProvider.getApplicationContext();
         return new Metadata.Builder()
                 .setDevice(buildDevice())
-                .setId("recordId" + Math.random())
+                .setId(UUID.randomUUID().toString())
                 .setClientRecordId("clientRecordId" + Math.random())
                 .setDataOrigin(
                         new DataOrigin.Builder().setPackageName(context.getPackageName()).build())
@@ -1092,24 +1120,6 @@ public class TestUtils {
                 .setNotes(notes)
                 .setTitle(title)
                 .build();
-    }
-
-    static final class RecordAndIdentifier {
-        private final int id;
-        private final Record recordClass;
-
-        public RecordAndIdentifier(int id, Record recordClass) {
-            this.id = id;
-            this.recordClass = recordClass;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public Record getRecordClass() {
-            return recordClass;
-        }
     }
 
     static void populateAndResetExpectedResponseMap(
@@ -1282,6 +1292,24 @@ public class TestUtils {
                 BasalMetabolicRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+    }
+
+    static final class RecordAndIdentifier {
+        private final int id;
+        private final Record recordClass;
+
+        public RecordAndIdentifier(int id, Record recordClass) {
+            this.id = id;
+            this.recordClass = recordClass;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Record getRecordClass() {
+            return recordClass;
+        }
     }
 
     static class RecordTypeInfoTestResponse {

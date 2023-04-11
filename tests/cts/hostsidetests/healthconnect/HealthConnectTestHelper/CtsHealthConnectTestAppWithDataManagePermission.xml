@@ -16,7 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="aandroid.healthconnect.cts.testapp.dataManagePerms"
+          package="android.healthconnect.cts.testapp.data.manage.permissions"
           android:versionCode="1"
           android:versionName="1.0">
 
@@ -24,7 +24,7 @@
 
 
     <application android:label="CtsHealthConnectTestAppWithDataManagePermission">
-        <activity android:name="android.healthconnect.cts.HealthConnectTestHelper"
+        <activity android:name="android.healthconnect.cts.testhelper.HealthConnectTestHelper"
                   android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

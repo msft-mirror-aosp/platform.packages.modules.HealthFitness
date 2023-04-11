@@ -48,15 +48,19 @@ import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_A
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
+import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Fragment to show granted/revoked health permissions for and app. It is used as an entry point
@@ -70,11 +74,15 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         private const val READ_CATEGORY = "read_permission_category"
         private const val WRITE_CATEGORY = "write_permission_category"
         private const val PERMISSION_HEADER = "manage_app_permission_header"
+        private const val FOOTER = "manage_app_permission_footer"
+        private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
 
     init {
         this.setPageName(PageName.MANAGE_PERMISSIONS_PAGE)
     }
+
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     private lateinit var packageName: String
     private lateinit var appName: String
@@ -95,6 +103,12 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private val header: AppHeaderPreference? by lazy {
         preferenceScreen.findPreference(PERMISSION_HEADER)
+    }
+
+    private val mFooter: FooterPreference? by lazy { preferenceScreen.findPreference(FOOTER) }
+
+    private val dateFormatter: LocalDateTimeFormatter by lazy {
+        LocalDateTimeFormatter(requireContext())
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -139,6 +153,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         }
         setupAllowAllPreference()
         setupHeader()
+        setupFooter()
     }
 
     private fun setupHeader() {
@@ -149,6 +164,12 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 setIcon(appMetadata.icon)
                 setTitle(appMetadata.appName)
             }
+        }
+    }
+
+    private fun setupFooter() {
+        viewModel.atLeastOnePermissionGranted.observe(viewLifecycleOwner) { isAtLeastOneGranted ->
+            updateFooter(isAtLeastOneGranted)
         }
     }
 
@@ -197,9 +218,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         permissions
             .sortedBy {
                 requireContext()
-                    .getString(
-                        fromPermissionType(it.healthPermissionType)
-                            .uppercaseLabel)
+                    .getString(fromPermissionType(it.healthPermissionType).uppercaseLabel)
             }
             .forEach { permission ->
                 val category =
@@ -212,11 +231,9 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                     HealthSwitchPreference(requireContext()).also {
                         val healthCategory =
                             fromHealthPermissionType(permission.healthPermissionType)
-                        it.setIcon(healthCategory.icon())
+                        it.icon = healthCategory.icon(requireContext())
                         it.setTitle(
-                            fromPermissionType(
-                                    permission.healthPermissionType)
-                                .uppercaseLabel)
+                            fromPermissionType(permission.healthPermissionType).uppercaseLabel)
                         it.logNameActive = PermissionsElement.PERMISSION_SWITCH
                         it.logNameInactive = PermissionsElement.PERMISSION_SWITCH
                         it.setOnPreferenceChangeListener { _, newValue ->
@@ -236,5 +253,30 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 permissionMap[permission] = switchPreference
                 category?.addPreference(switchPreference)
             }
+    }
+
+    private fun updateFooter(isAtLeastOneGranted: Boolean) {
+        var title = getString(R.string.manage_permissions_rationale, appName)
+
+        if (isAtLeastOneGranted) {
+            val dataAccessDate = viewModel.loadAccessDate(packageName)
+            dataAccessDate?.let {
+                val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
+                title =
+                    getString(R.string.manage_permissions_time_frame, appName, formattedDate) +
+                        PARAGRAPH_SEPARATOR +
+                        title
+            }
+        }
+
+        mFooter?.title = title
+        if (healthPermissionReader.isRationalIntentDeclared(packageName)) {
+            mFooter?.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
+            mFooter?.setLearnMoreAction {
+                val startRationaleIntent =
+                    healthPermissionReader.getApplicationRationaleIntent(packageName)
+                startActivity(startRationaleIntent)
+            }
+        }
     }
 }

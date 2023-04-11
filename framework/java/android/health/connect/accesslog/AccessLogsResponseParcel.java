@@ -44,11 +44,7 @@ public final class AccessLogsResponseParcel implements Parcelable {
     private final List<AccessLog> mAccessLogsList;
 
     private AccessLogsResponseParcel(@NonNull Parcel in) {
-        int parcelType = in.readInt();
-        if (parcelType == ParcelUtils.USING_SHARED_MEMORY) {
-            in = ParcelUtils.getParcelForSharedMemory(in);
-        }
-
+        in = ParcelUtils.getParcelForSharedMemoryIfRequired(in);
         mAccessLogsList = new ArrayList<>();
         in.readParcelableList(mAccessLogsList, AccessLog.class.getClassLoader(), AccessLog.class);
     }

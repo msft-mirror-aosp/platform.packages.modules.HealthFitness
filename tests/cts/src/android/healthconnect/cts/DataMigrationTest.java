@@ -109,6 +109,9 @@ public class DataMigrationTest {
     private static final String APP_NAME = "Test App";
     private static final String APP_NAME_NEW = "Test App 2";
 
+    // DEFAULT_PAGE_SIZE should hold the same value as Constants#DEFAULT_PAGE_SIZE
+    private static final int DEFAULT_PAGE_SIZE = 1000;
+
     @Rule public final Expect mExpect = Expect.create();
 
     private final Executor mOutcomeExecutor = Executors.newSingleThreadExecutor();
@@ -149,7 +152,7 @@ public class DataMigrationTest {
     }
 
     private static Metadata getMetadata() {
-        return getMetadata(/*clientRecordId=*/ null);
+        return getMetadata(/* clientRecordId= */ null);
     }
 
     private static byte[] getBitmapBytes(Bitmap bitmap) {
@@ -183,7 +186,7 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateHeight_heightSaved() {
+    public void migrateHeightUsingParcel_heightSaved() {
         final String entityId = "height";
 
         migrate(new HeightRecord.Builder(getMetadata(entityId), mEndTime, fromMeters(3D)).build());
@@ -193,6 +196,39 @@ public class DataMigrationTest {
         mExpect.that(record).isNotNull();
         mExpect.that(record.getHeight().getInMeters()).isEqualTo(3D);
         mExpect.that(record.getTime()).isEqualTo(mEndTime);
+    }
+
+    @Test
+    public void migrateHeightUsingSharedMemory_heightSaved() {
+        final String entityId = "height";
+        int recordsToAdd = DEFAULT_PAGE_SIZE;
+
+        List<MigrationEntity> inputMigrationEntityList = new ArrayList<>();
+        for (int i = 0; i < recordsToAdd; i++) {
+            String recordEntityId = entityId + i;
+            HeightRecord heightRecord =
+                    new HeightRecord.Builder(getMetadata(recordEntityId), mEndTime, fromMeters(3D))
+                            .build();
+            MigrationEntity heightMigrationEntity = getRecordEntity(heightRecord, recordEntityId);
+            inputMigrationEntityList.add(heightMigrationEntity);
+        }
+
+        migrate(inputMigrationEntityList.toArray(MigrationEntity[]::new));
+        finishMigration();
+
+        final List<HeightRecord> outputRecords = getRecords(HeightRecord.class);
+
+        mExpect.that(recordsToAdd).isEqualTo(outputRecords.size());
+
+        for (int i = 0; i < recordsToAdd; i++) {
+            RecordMigrationPayload inputRecordMigrationPayload =
+                    (RecordMigrationPayload) inputMigrationEntityList.get(i).getPayload();
+            HeightRecord inputHeightRecord = (HeightRecord) inputRecordMigrationPayload.getRecord();
+
+            HeightRecord outputHeightRecord = outputRecords.get(i);
+
+            mExpect.that(inputHeightRecord.getHeight()).isEqualTo(outputHeightRecord.getHeight());
+        }
     }
 
     @Test
@@ -241,20 +277,20 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateRecord_sameEntityId_ignored() {
+    public void migrateRecord_sameEntityId_notIgnored() {
         final String entityId = "height";
 
         final Length height1 = fromMeters(3D);
         migrate(new HeightRecord.Builder(getMetadata(), mEndTime, height1).build(), entityId);
 
         final Length height2 = fromMeters(1D);
-        migrate(new HeightRecord.Builder(getMetadata(), mEndTime, height2).build(), entityId);
+        migrate(new HeightRecord.Builder(getMetadata(), mStartTime, height2).build(), entityId);
 
         finishMigration();
 
         final List<HeightRecord> records = getRecords(HeightRecord.class);
         mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
-                .containsExactly(height1);
+                .containsExactly(height1, height2);
     }
 
     @Test
@@ -539,6 +575,9 @@ public class DataMigrationTest {
                     TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
                     assertThat(TestUtils.getHealthConnectDataMigrationState())
                             .isEqualTo(MIGRATION_STATE_ALLOWED);
+                    TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(MIGRATION_STATE_ALLOWED);
                     TestUtils.startMigration();
                     assertThat(TestUtils.getHealthConnectDataMigrationState())
                             .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
@@ -654,7 +693,7 @@ public class DataMigrationTest {
     }
 
     private void migrate(Record record) {
-        migrate(record, /*entityId=*/ record.getMetadata().getClientRecordId());
+        migrate(record, /* entityId= */ record.getMetadata().getClientRecordId());
     }
 
     private void migrate(Record record, String entityId) {

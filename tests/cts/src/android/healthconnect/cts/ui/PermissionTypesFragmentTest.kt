@@ -16,15 +16,16 @@
 package android.healthconnect.cts.ui
 
 import android.health.connect.TimeInstantRangeFilter
+import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.TestUtils.insertRecords
 import android.healthconnect.cts.TestUtils.verifyDeleteRecords
-import android.healthconnect.cts.ui.testing.ActivityLauncher.launchDataActivity
-import android.healthconnect.cts.ui.testing.UiTestUtils.clickOnText
-import android.healthconnect.cts.ui.testing.UiTestUtils.distanceRecordFromTestApp
-import android.healthconnect.cts.ui.testing.UiTestUtils.stepsRecordFromTestApp
-import android.healthconnect.cts.ui.testing.UiTestUtils.stepsRecordFromTestApp2
-import android.healthconnect.cts.ui.testing.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
+import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.distanceRecordFromTestApp
+import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp
+import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp2
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import androidx.test.uiautomator.By
 import java.time.Instant
 import org.junit.AfterClass
@@ -50,6 +51,12 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
         fun teardown() {
             verifyDeleteRecords(
                 StepsRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+            verifyDeleteRecords(
+                DistanceRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
