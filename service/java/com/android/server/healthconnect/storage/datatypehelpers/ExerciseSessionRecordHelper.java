@@ -16,8 +16,10 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.EXERCISE_SESSION_DURATION_TOTAL;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.ExerciseRouteRecordHelper.EXERCISE_ROUTE_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.SeriesRecordHelper.PARENT_KEY_COLUMN_NAME;
@@ -27,12 +29,15 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getIntegerAndConvertToBoolean;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.health.connect.HealthConnectException;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ExerciseLapInternal;
 import android.health.connect.internal.datatypes.ExerciseSegmentInternal;
@@ -42,10 +47,14 @@ import android.util.ArraySet;
 import android.util.Pair;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.logging.ExerciseRoutesLogger;
+import com.android.server.healthconnect.logging.ExerciseRoutesLogger.Operations;
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
+import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.ArrayList;
@@ -54,13 +63,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Helper class for ExerciseSessionRecord.
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION)
 public final class ExerciseSessionRecordHelper
         extends IntervalRecordHelper<ExerciseSessionRecordInternal> {
     private static final String TAG = "ExerciseSessionRecordHelper";
@@ -74,6 +84,10 @@ public final class ExerciseSessionRecordHelper
     private static final String TITLE_COLUMN_NAME = "title";
     private static final String HAS_ROUTE_COLUMN_NAME = "has_route";
 
+    public ExerciseSessionRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION);
+    }
+
     /** Returns the table name to be created corresponding to this helper */
     @Override
     String getMainTableName() {
@@ -83,7 +97,7 @@ public final class ExerciseSessionRecordHelper
     @Override
     void populateSpecificRecordValue(
             @NonNull Cursor cursor, @NonNull ExerciseSessionRecordInternal exerciseSessionRecord) {
-        String uuid = getCursorString(cursor, UUID_COLUMN_NAME);
+        UUID uuid = getCursorUUID(cursor, UUID_COLUMN_NAME);
         exerciseSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         exerciseSessionRecord.setExerciseType(getCursorInt(cursor, EXERCISE_TYPE_COLUMN_NAME));
         exerciseSessionRecord.setTitle(getCursorString(cursor, TITLE_COLUMN_NAME));
@@ -97,8 +111,8 @@ public final class ExerciseSessionRecordHelper
         do {
             // Populate lap and segments from each row.
             ExerciseLapRecordHelper.populateLapIfRecorded(cursor, lapsSet);
-            ExerciseSegmentRecordHelper.populateSegmentIfRecorded(cursor, segmentsSet);
-        } while (cursor.moveToNext() && uuid.equals(getCursorString(cursor, UUID_COLUMN_NAME)));
+            ExerciseSegmentRecordHelper.updateSetWithRecordedSegment(cursor, segmentsSet);
+        } while (cursor.moveToNext() && uuid.equals(getCursorUUID(cursor, UUID_COLUMN_NAME)));
         // In case we hit another record, move the cursor back to read next record in outer
         // RecordHelper#getInternalRecords loop.
         cursor.moveToPrevious();
@@ -110,6 +124,27 @@ public final class ExerciseSessionRecordHelper
         if (!segmentsSet.isEmpty()) {
             exerciseSessionRecord.setExerciseSegments(segmentsSet.stream().toList());
         }
+    }
+
+    @Override
+    AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
+        List<String> sessionColumns = new ArrayList<>(super.getPriorityAggregationColumnNames());
+        sessionColumns.add(ExerciseSegmentRecordHelper.getStartTimeColumnName());
+        sessionColumns.add(ExerciseSegmentRecordHelper.getEndTimeColumnName());
+        if (aggregateRequest.getAggregationTypeIdentifier() == EXERCISE_SESSION_DURATION_TOTAL) {
+            return new AggregateParams(
+                            EXERCISE_SESSION_RECORD_TABLE_NAME,
+                            sessionColumns,
+                            START_TIME_COLUMN_NAME)
+                    .setJoin(
+                            ExerciseSegmentRecordHelper.getJoinForDurationAggregation(
+                                    getMainTableName()))
+                    .setPriorityAggregationExtraParams(
+                            new AggregateParams.PriorityAggregationExtraParams(
+                                    ExerciseSegmentRecordHelper.getStartTimeColumnName(),
+                                    ExerciseSegmentRecordHelper.getEndTimeColumnName()));
+        }
+        return null;
     }
 
     @Override
@@ -191,13 +226,25 @@ public final class ExerciseSessionRecordHelper
         return List.of(getRouteReadRequest(whereClause));
     }
 
+    @Override
+    public boolean isRecordOperationsEnabled() {
+        return HealthConnectDeviceConfigManager.getInitialisedInstance()
+                .isSessionDatatypeFeatureEnabled();
+    }
+
     /** Returns extra permissions required to write given record. */
     @Override
-    public List<String> getExtraWritePermissionsToCheck(RecordInternal<?> recordInternal) {
+    public List<String> checkFlagsAndGetExtraWritePermissions(RecordInternal<?> recordInternal) {
         ExerciseSessionRecordInternal session = (ExerciseSessionRecordInternal) recordInternal;
+        if (!isRecordOperationsEnabled()) {
+            throw new HealthConnectException(
+                    ERROR_UNSUPPORTED_OPERATION, "Writing exercise sessions is not supported.");
+        }
+
         if (session.getRoute() != null) {
             if (!isExerciseRouteFeatureEnabled()) {
-                throw new UnsupportedOperationException("Writing exercise route is not supported.");
+                throw new HealthConnectException(
+                        ERROR_UNSUPPORTED_OPERATION, "Writing exercise route is not supported.");
             }
             return Collections.singletonList(WRITE_EXERCISE_ROUTE);
         }
@@ -211,12 +258,15 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    List<ReadTableRequest> getExtraDataReadRequests(List<String> uuids, long startDateAccess) {
+    List<ReadTableRequest> getExtraDataReadRequests(List<UUID> uuids, long startDateAccess) {
         if (!isExerciseRouteFeatureEnabled()) {
             return Collections.emptyList();
         }
 
-        WhereClauses whereClause = new WhereClauses().addWhereInClause(UUID_COLUMN_NAME, uuids);
+        WhereClauses whereClause =
+                new WhereClauses()
+                        .addWhereInClauseWithoutQuotes(
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids));
         whereClause.addWhereLaterThanTimeClause(getStartTimeColumnName(), startDateAccess);
         return List.of(getRouteReadRequest(whereClause));
     }
@@ -241,8 +291,47 @@ public final class ExerciseSessionRecordHelper
     }
 
     private boolean isExerciseRouteFeatureEnabled() {
-        return HealthConnectDeviceConfigManager.getInitialisedInstance()
-                .isExerciseRouteFeatureEnabled();
+        return isRecordOperationsEnabled()
+                && HealthConnectDeviceConfigManager.getInitialisedInstance()
+                        .isExerciseRouteFeatureEnabled();
+    }
+
+    @Override
+    public void logUpsertMetrics(
+            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+        Objects.requireNonNull(recordInternals);
+
+        ExerciseRoutesLogger.log(
+                Operations.UPSERT,
+                packageName,
+                getNumberOfRecordsWithExerciseRoutes(recordInternals));
+    }
+
+    @Override
+    public void logReadMetrics(
+            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+        Objects.requireNonNull(recordInternals);
+
+        ExerciseRoutesLogger.log(
+                Operations.READ,
+                packageName,
+                getNumberOfRecordsWithExerciseRoutes(recordInternals));
+    }
+
+    private int getNumberOfRecordsWithExerciseRoutes(
+            @NonNull List<RecordInternal<?>> recordInternals) {
+
+        int numberOfRecordsWithExerciseRoutes = 0;
+        for (RecordInternal<?> recordInternal : recordInternals) {
+            try {
+                if (((ExerciseSessionRecordInternal) recordInternal).hasRoute()) {
+                    numberOfRecordsWithExerciseRoutes++;
+                }
+            } catch (ClassCastException ignored) {
+                // List might contain record types other than ExerciseSession which can be ignored.
+            }
+        }
+        return numberOfRecordsWithExerciseRoutes;
     }
 
     private ReadTableRequest getRouteReadRequest(WhereClauses clauseToFilterSessionIds) {

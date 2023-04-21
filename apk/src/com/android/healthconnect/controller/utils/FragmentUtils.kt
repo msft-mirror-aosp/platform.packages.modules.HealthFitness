@@ -28,8 +28,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.dialog.ProgressDialogFragment
-import com.android.healthconnect.controller.utils.ExternalActivityLauncher.openHCGetStartedLink
-import com.android.healthconnect.controller.utils.ExternalActivityLauncher.openSendFeedbackActivity
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
+import dagger.hilt.android.EntryPointAccessors
+
+private lateinit var deviceInfoUtils: DeviceInfoUtils
 
 /** Sets fragment title on the collapsing layout, delegating to host if needed. */
 fun Fragment.setTitle(@StringRes title: Int) {
@@ -39,40 +42,54 @@ fun Fragment.setTitle(@StringRes title: Int) {
 fun Fragment.setupMenu(
     @MenuRes menuRes: Int,
     viewLifecycleOwner: LifecycleOwner,
-    onMenuItemSelected: (MenuItem) -> Boolean
+    logger: HealthConnectLogger? = null,
+    onMenuItemSelected: (MenuItem) -> Boolean,
 ) {
+
+    val hiltEntryPoint =
+        EntryPointAccessors.fromApplication(
+            requireContext().applicationContext, DeviceInfoUtilsEntryPoint::class.java)
+
+    deviceInfoUtils = hiltEntryPoint.deviceInfoUtils()
 
     val menuProvider =
         object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menu.clear()
                 menuInflater.inflate(menuRes, menu)
+                menu.findItem(R.id.menu_send_feedback).isVisible =
+                    deviceInfoUtils.isSendFeedbackAvailable(requireContext())
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.menu_send_feedback -> {
-                        openSendFeedbackActivity(requireActivity())
+                        deviceInfoUtils.openSendFeedbackActivity(requireActivity())
                         true
                     }
                     R.id.menu_help -> {
-                        openHCGetStartedLink(requireActivity())
+                        // TODO (b/270864219) might be able to move impression out of this method
+                        logger?.logImpression(ToolbarElement.TOOLBAR_HELP_BUTTON)
+                        logger?.logInteraction(ToolbarElement.TOOLBAR_HELP_BUTTON)
+                        deviceInfoUtils.openHCGetStartedLink(requireActivity())
                         true
                     }
                     else -> onMenuItemSelected.invoke(menuItem)
                 }
             }
         }
+
     (requireActivity() as MenuHost).addMenuProvider(
         menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 }
 
 fun Fragment.setupSharedMenu(
     viewLifecycleOwner: LifecycleOwner,
+    logger: HealthConnectLogger? = null,
     @MenuRes menuRes: Int = R.menu.send_feedback_and_help,
     onMenuItemSelected: (MenuItem) -> Boolean = { false }
 ) {
-    setupMenu(menuRes, viewLifecycleOwner, onMenuItemSelected)
+    setupMenu(menuRes, viewLifecycleOwner, logger, onMenuItemSelected)
 }
 
 fun Fragment.showLoadingDialog() {

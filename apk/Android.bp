@@ -28,7 +28,6 @@ filegroup {
     ]
 }
 
-//TODO(b/250880188) Split permission ui to different lib.
 filegroup {
     name: "healthconnectController-permissions-apis",
     srcs: [
@@ -54,6 +53,38 @@ java_library {
     apex_available: ["com.android.healthfitness"],
 }
 
+// To generate HealthFitnessUiStatsLog for logging.
+// DO NOT CHANGE
+genrule {
+    name: "statslog-healthfitness-ui-java-gen",
+    tools: ["stats-log-api-gen"],
+    cmd: "$(location stats-log-api-gen) --java $(out) --module healthfitness" +
+         " --javaPackage com.android.healthconnect.controller" +
+         " --javaClass HealthFitnessUiStatsLog --minApiLevel 34",
+    out: ["com/android/healthconnect/controller/HealthFitnessUiStatsLog.java"],
+}
+
+// To disable NewApi checks on the generated HealthFitnessUiStatsLog.
+// DO NOT CHANGE
+java_library {
+    name: "healthfitness-ui-statsd",
+    sdk_version: "module_current",
+    min_sdk_version: "UpsideDownCake",
+    srcs: [
+        ":statslog-healthfitness-ui-java-gen",
+    ],
+    libs: [
+        // needed for restricted atoms
+        "androidx.annotation_annotation",
+        // To add StatsLog as a dependency of the generated file.
+        "framework-statsd.stubs.module_lib",
+    ],
+        apex_available: [
+            "com.android.healthfitness",
+        ],
+}
+
+
 android_app_certificate {
     name: "com.android.healthconnect.controller.certificate",
     certificate: "com.android.healthconnect.controller",
@@ -62,7 +93,7 @@ android_app_certificate {
 android_library {
     name: "HealthConnectLibrary",
     srcs: [":healthConnectController-sources"],
-    sdk_version: "module_current",
+    sdk_version: "system_current",
     min_sdk_version: "UpsideDownCake",
     libs: [
         "kotlin-annotations",
@@ -88,9 +119,11 @@ android_library {
         "SettingsLibTopIntroPreference",
         "SettingsLibMainSwitchPreference",
         "SettingsLibAppPreference",
+        "SettingsLibActivityEmbedding",
         "androidx.core_core",
         "guava",
-        "hilt_android"
+        "hilt_android",
+        "healthfitness-ui-statsd",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     apex_available: ["com.android.healthfitness"],
@@ -101,6 +134,7 @@ android_app {
     srcs: ["src/**/HealthConnectApplication.kt"],
     sdk_version: "module_current",
     min_sdk_version: "UpsideDownCake",
+    privileged: true,
     rename_resources_package: false,
     updatable: true,
     additional_manifests: [

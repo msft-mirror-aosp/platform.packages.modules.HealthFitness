@@ -29,6 +29,7 @@ import android.os.Parcelable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
  */
 public class DeleteUsingFiltersRequestParcel implements Parcelable {
     public static final Creator<DeleteUsingFiltersRequestParcel> CREATOR =
-            new Creator<DeleteUsingFiltersRequestParcel>() {
+            new Creator<>() {
                 @Override
                 public DeleteUsingFiltersRequestParcel createFromParcel(Parcel in) {
                     return new DeleteUsingFiltersRequestParcel(in);
@@ -48,10 +49,10 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
                     return new DeleteUsingFiltersRequestParcel[size];
                 }
             };
-    private final List<String> mPackageNameFilters;
-    private final int[] mRecordTypeFilters;
-    private final long mStartTime;
-    private final long mEndTime;
+    private List<String> mPackageNameFilters;
+    private int[] mRecordTypeFilters;
+    private long mStartTime;
+    private long mEndTime;
     private final RecordIdFiltersParcel mRecordIdFiltersParcel;
 
     protected DeleteUsingFiltersRequestParcel(Parcel in) {
@@ -104,7 +105,25 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
         return mPackageNameFilters;
     }
 
+    public void setPackageNameFilters(@NonNull List<String> packages) {
+        Objects.requireNonNull(packages);
+        mPackageNameFilters = packages;
+    }
+
     public List<Integer> getRecordTypeFilters() {
+        if (mRecordIdFiltersParcel != null
+                && !mRecordIdFiltersParcel.getRecordIdFilters().isEmpty()) {
+            return mRecordIdFiltersParcel.getRecordIdFilters().stream()
+                    .map(
+                            (recordIdFilter) ->
+                                    RecordMapper.getInstance()
+                                            .getRecordType(recordIdFilter.getRecordType()))
+                    .toList()
+                    .stream()
+                    .distinct()
+                    .toList();
+        }
+
         return Arrays.stream(mRecordTypeFilters).boxed().toList();
     }
 
@@ -114,6 +133,11 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
 
     public long getEndTime() {
         return mEndTime;
+    }
+
+    public boolean usesIdFilters() {
+        return mRecordIdFiltersParcel.getRecordIdFilters() != null
+                && !mRecordIdFiltersParcel.getRecordIdFilters().isEmpty();
     }
 
     @Override
@@ -128,5 +152,18 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
         dest.writeLong(mStartTime);
         dest.writeLong(mEndTime);
         dest.writeParcelable(mRecordIdFiltersParcel, 0);
+    }
+
+    public void resetNonIdFields() {
+        // Not required with ids
+        mRecordTypeFilters = new int[0];
+        mStartTime = DEFAULT_LONG;
+        mEndTime = DEFAULT_LONG;
+    }
+
+    public boolean usesNonIdFilters() {
+        return mRecordTypeFilters.length != 0
+                || mStartTime != DEFAULT_LONG
+                || mEndTime != DEFAULT_LONG;
     }
 }

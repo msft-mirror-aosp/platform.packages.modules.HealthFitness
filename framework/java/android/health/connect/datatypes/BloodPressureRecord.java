@@ -15,9 +15,12 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.health.connect.datatypes.units.Pressure;
+import android.health.connect.datatypes.validation.ValidationUtils;
 import android.health.connect.internal.datatypes.BloodPressureRecordInternal;
 
 import java.lang.annotation.Retention;
@@ -25,6 +28,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Captures the blood pressure of a user. Each record represents a single instantaneous blood
@@ -45,6 +49,7 @@ public final class BloodPressureRecord extends InstantRecord {
      * @param systolic Systolic of this activity
      * @param diastolic Diastolic of this activity
      * @param bodyPosition BodyPosition of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private BloodPressureRecord(
             @NonNull Metadata metadata,
@@ -54,17 +59,26 @@ public final class BloodPressureRecord extends InstantRecord {
                     int measurementLocation,
             @NonNull Pressure systolic,
             @NonNull Pressure diastolic,
-            @BodyPosition.BodyPositionType int bodyPosition) {
-        super(metadata, time, zoneOffset);
+            @BodyPosition.BodyPositionType int bodyPosition,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
         Objects.requireNonNull(systolic);
         Objects.requireNonNull(diastolic);
-        ValidationUtils.requireInRange(
-                systolic.getInMillimetersOfMercury(), 20.0, 200.0, "systolic");
-        ValidationUtils.requireInRange(
-                diastolic.getInMillimetersOfMercury(), 10.0, 180.0, "diastolic");
+        validateIntDefValue(
+                measurementLocation,
+                BloodPressureMeasurementLocation.VALID_TYPES,
+                BloodPressureMeasurementLocation.class.getSimpleName());
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(
+                    systolic.getInMillimetersOfMercury(), 20.0, 200.0, "systolic");
+            ValidationUtils.requireInRange(
+                    diastolic.getInMillimetersOfMercury(), 10.0, 180.0, "diastolic");
+        }
+        validateIntDefValue(
+                bodyPosition, BodyPosition.VALID_TYPES, BodyPosition.class.getSimpleName());
         mMeasurementLocation = measurementLocation;
         mSystolic = systolic;
         mDiastolic = diastolic;
@@ -116,6 +130,20 @@ public final class BloodPressureRecord extends InstantRecord {
         /** Blood pressure measurement location constant for the right upper arm. */
         public static final int BLOOD_PRESSURE_MEASUREMENT_LOCATION_RIGHT_UPPER_ARM = 4;
 
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(
+                        BLOOD_PRESSURE_MEASUREMENT_LOCATION_UNKNOWN,
+                        BLOOD_PRESSURE_MEASUREMENT_LOCATION_LEFT_WRIST,
+                        BLOOD_PRESSURE_MEASUREMENT_LOCATION_RIGHT_WRIST,
+                        BLOOD_PRESSURE_MEASUREMENT_LOCATION_LEFT_UPPER_ARM,
+                        BLOOD_PRESSURE_MEASUREMENT_LOCATION_RIGHT_UPPER_ARM);
+
         private BloodPressureMeasurementLocation() {}
 
         /** @hide */
@@ -143,6 +171,20 @@ public final class BloodPressureRecord extends InstantRecord {
         public static final int BODY_POSITION_LYING_DOWN = 3;
         /** Body position constant representing semi-recumbent (partially reclining) pose. */
         public static final int BODY_POSITION_RECLINING = 4;
+
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(
+                        BODY_POSITION_UNKNOWN,
+                        BODY_POSITION_STANDING_UP,
+                        BODY_POSITION_SITTING_DOWN,
+                        BODY_POSITION_LYING_DOWN,
+                        BODY_POSITION_RECLINING);
 
         private BodyPosition() {}
 
@@ -220,6 +262,10 @@ public final class BloodPressureRecord extends InstantRecord {
             Objects.requireNonNull(time);
             Objects.requireNonNull(systolic);
             Objects.requireNonNull(diastolic);
+            validateIntDefValue(
+                    measurementLocation,
+                    BloodPressureMeasurementLocation.VALID_TYPES,
+                    BloodPressureMeasurementLocation.class.getSimpleName());
             mMetadata = metadata;
             mTime = time;
             mMeasurementLocation = measurementLocation;
@@ -245,6 +291,23 @@ public final class BloodPressureRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link BloodPressureRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public BloodPressureRecord buildWithoutValidation() {
+            return new BloodPressureRecord(
+                    mMetadata,
+                    mTime,
+                    mZoneOffset,
+                    mMeasurementLocation,
+                    mSystolic,
+                    mDiastolic,
+                    mBodyPosition,
+                    true);
+        }
+
+        /**
          * @return Object of {@link BloodPressureRecord}
          */
         @NonNull
@@ -256,7 +319,8 @@ public final class BloodPressureRecord extends InstantRecord {
                     mMeasurementLocation,
                     mSystolic,
                     mDiastolic,
-                    mBodyPosition);
+                    mBodyPosition,
+                    false);
         }
     }
 
@@ -274,7 +338,8 @@ public final class BloodPressureRecord extends InstantRecord {
                                 .setClientRecordVersion(getMetadata().getClientRecordVersion())
                                 .setManufacturer(getMetadata().getDevice().getManufacturer())
                                 .setModel(getMetadata().getDevice().getModel())
-                                .setDeviceType(getMetadata().getDevice().getType());
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
         recordInternal.setTime(getTime().toEpochMilli());
         recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
         recordInternal.setMeasurementLocation(mMeasurementLocation);

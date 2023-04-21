@@ -16,24 +16,28 @@
 package com.android.healthconnect.controller.route
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
-import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.health.connect.HealthConnectManager.EXTRA_EXERCISE_ROUTE
 import android.health.connect.HealthConnectManager.EXTRA_SESSION_ID
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter
+import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
 import com.android.healthconnect.controller.route.ExerciseRouteViewModel.SessionWithAttribution
 import com.android.healthconnect.controller.shared.app.AppInfoReader
+import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.map.MapView
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
@@ -47,28 +51,37 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
     }
 
     @Inject lateinit var appInfoReader: AppInfoReader
+    @Inject lateinit var featureUtils: FeatureUtils
 
     @VisibleForTesting lateinit var dialog: AlertDialog
+    @VisibleForTesting lateinit var infoDialog: AlertDialog
 
     private val viewModel: ExerciseRouteViewModel by viewModels()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (!featureUtils.isExerciseRouteEnabled()) {
+            Log.e(TAG, "Exercise routes not available, finishing.")
+            setResult(Activity.RESULT_CANCELED, Intent())
+            finish()
+            return
+        }
+
         if (!intent.hasExtra(EXTRA_SESSION_ID) ||
             intent.getStringExtra(EXTRA_SESSION_ID) == null ||
-            !intent.hasExtra(EXTRA_PACKAGE_NAME) ||
-            intent.getStringExtra(EXTRA_PACKAGE_NAME) == null) {
+            callingPackage == null) {
             Log.e(TAG, "Invalid Intent Extras, finishing.")
             setResult(Activity.RESULT_CANCELED, Intent())
             finish()
             return
         }
+
         viewModel.getExerciseWithRoute(intent.getStringExtra(EXTRA_SESSION_ID)!!)
-        viewModel.exerciseSession.observe(this) { session -> setupDialog(session) }
+        viewModel.exerciseSession.observe(this) { session -> setupRequestDialog(session) }
     }
 
-    private fun setupDialog(data: SessionWithAttribution?) {
+    private fun setupRequestDialog(data: SessionWithAttribution?) {
         if ((data == null) ||
             (data.session?.route == null) ||
             data.session?.route!!.routeLocations.isEmpty()) {
@@ -82,27 +95,35 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
         val session = data.session!!
         val sessionId = intent.getStringExtra(EXTRA_SESSION_ID)
-        // TODO(pakoch): Add a reference to the intent sender.
-
         val sessionDetails =
             applicationContext.getString(
                 R.string.date_owner_format,
                 LocalDateTimeFormatter(applicationContext).formatLongDate(session.startTime),
                 data.appInfo.appName)
+        val sessionTitle =
+            if (session.title.isNullOrBlank())
+                ExerciseSessionFormatter.Companion.getExerciseType(
+                    applicationContext, session.exerciseType)
+            else session.title
         val view = layoutInflater.inflate(R.layout.route_request_dialog, null)
+
+        val title: String
+
         runBlocking {
-            val requester =
-                appInfoReader.getAppMetadata(intent.getStringExtra(EXTRA_PACKAGE_NAME)!!)
-            val title =
+            val requester = appInfoReader.getAppMetadata(callingPackage!!)
+            title =
                 applicationContext.getString(R.string.request_route_header_title, requester.appName)
-            view.findViewById<TextView>(R.id.dialog_title).text = title
         }
-        view
-            .findViewById<ImageView>(R.id.dialog_icon)
-            .setImageDrawable(getDrawable(R.drawable.health_connect_icon))
+
         view.findViewById<MapView>(R.id.map_view).setRoute(session.route!!)
-        view.findViewById<TextView>(R.id.session_title).text = session.title
+        view.findViewById<TextView>(R.id.session_title).text = sessionTitle
         view.findViewById<TextView>(R.id.date_app).text = sessionDetails
+
+        view.findViewById<LinearLayout>(R.id.more_info).setOnClickListener {
+            dialog.hide()
+            setupInfoDialog()
+            infoDialog.show()
+        }
 
         view.findViewById<Button>(R.id.route_dont_allow_button).setOnClickListener {
             val result = Intent()
@@ -118,7 +139,32 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
             setResult(Activity.RESULT_OK, result)
             finish()
         }
-        dialog = AlertDialog.Builder(this).setView(view).create()
+        dialog =
+            AlertDialogBuilder(this)
+                .setIcon(R.attr.healthConnectIcon)
+                .setTitle(title)
+                .setView(view)
+                .setCancelable(false)
+                .create()
         dialog.show()
+    }
+
+    private fun setupInfoDialog() {
+        val view = layoutInflater.inflate(R.layout.route_sharing_info_dialog, null)
+        infoDialog =
+            AlertDialogBuilder(this)
+                .setIcon(R.attr.privacyPolicyIcon)
+                .setTitle(getString(R.string.request_route_info_header_title))
+                .setNegativeButton(R.string.back_button, ErrorPageElement.UNKNOWN_ELEMENT) { _, _ ->
+                    dialog.show()
+                }
+                .setView(view)
+                .setCancelable(false)
+                .create()
+    }
+
+    override fun onPause() {
+        dialog.dismiss()
+        super.onPause()
     }
 }

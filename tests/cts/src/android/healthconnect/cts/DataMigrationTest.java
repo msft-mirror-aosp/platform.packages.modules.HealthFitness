@@ -18,6 +18,9 @@ package android.healthconnect.cts;
 
 import static android.content.pm.PackageManager.GET_PERMISSIONS;
 import static android.content.pm.PackageManager.PackageInfoFlags;
+import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_ALLOWED;
+import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IDLE;
+import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_MODULE_UPGRADE_REQUIRED;
 import static android.health.connect.HealthPermissions.READ_HEIGHT;
 import static android.health.connect.HealthPermissions.WRITE_HEIGHT;
 import static android.health.connect.datatypes.units.Length.fromMeters;
@@ -27,7 +30,6 @@ import static com.android.compatibility.common.util.SystemUtil.runWithShellPermi
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import android.Manifest;
@@ -37,9 +39,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsResponse;
@@ -48,20 +52,27 @@ import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.HeightRecord;
+import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.PowerRecord.PowerRecordSample;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Mass;
+import android.health.connect.datatypes.units.Volume;
 import android.health.connect.migration.AppInfoMigrationPayload;
+import android.health.connect.migration.MetadataMigrationPayload;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationException;
 import android.health.connect.migration.PermissionMigrationPayload;
+import android.health.connect.migration.PriorityMigrationPayload;
 import android.health.connect.migration.RecordMigrationPayload;
 import android.os.Build;
 import android.os.OutcomeReceiver;
 import android.os.UserHandle;
+import android.os.ext.SdkExtensions;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
@@ -86,14 +97,22 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @RunWith(AndroidJUnit4.class)
 public class DataMigrationTest {
 
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts.app";
+    private static final String APP_PACKAGE_NAME_2 = "android.healthconnect.cts.app2";
     private static final String PACKAGE_NAME_NOT_INSTALLED = "not.installed.package";
+    private static final String INVALID_PERMISSION_1 = "invalid.permission.1";
+    private static final String INVALID_PERMISSION_2 = "invalid.permission.2";
+    private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
     private static final String APP_NAME = "Test App";
     private static final String APP_NAME_NEW = "Test App 2";
+
+    // DEFAULT_PAGE_SIZE should hold the same value as Constants#DEFAULT_PAGE_SIZE
+    private static final int DEFAULT_PAGE_SIZE = 1000;
 
     @Rule public final Expect mExpect = Expect.create();
 
@@ -134,6 +153,10 @@ public class DataMigrationTest {
         return getMetadata(clientRecordId, APP_PACKAGE_NAME);
     }
 
+    private static Metadata getMetadata() {
+        return getMetadata(/* clientRecordId= */ null);
+    }
+
     private static byte[] getBitmapBytes(Bitmap bitmap) {
         if (bitmap == null) {
             return null;
@@ -165,15 +188,49 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateHeight_heightSaved() {
+    public void migrateHeightUsingParcel_heightSaved() {
         final String entityId = "height";
 
         migrate(new HeightRecord.Builder(getMetadata(entityId), mEndTime, fromMeters(3D)).build());
 
+        finishMigration();
         final HeightRecord record = getRecord(HeightRecord.class, entityId);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getHeight().getInMeters()).isEqualTo(3D);
         mExpect.that(record.getTime()).isEqualTo(mEndTime);
+    }
+
+    @Test
+    public void migrateHeightUsingSharedMemory_heightSaved() {
+        final String entityId = "height";
+        int recordsToAdd = DEFAULT_PAGE_SIZE;
+
+        List<MigrationEntity> inputMigrationEntityList = new ArrayList<>();
+        for (int i = 0; i < recordsToAdd; i++) {
+            String recordEntityId = entityId + i;
+            HeightRecord heightRecord =
+                    new HeightRecord.Builder(getMetadata(recordEntityId), mEndTime, fromMeters(3D))
+                            .build();
+            MigrationEntity heightMigrationEntity = getRecordEntity(heightRecord, recordEntityId);
+            inputMigrationEntityList.add(heightMigrationEntity);
+        }
+
+        migrate(inputMigrationEntityList.toArray(MigrationEntity[]::new));
+        finishMigration();
+
+        final List<HeightRecord> outputRecords = getRecords(HeightRecord.class);
+
+        mExpect.that(recordsToAdd).isEqualTo(outputRecords.size());
+
+        for (int i = 0; i < recordsToAdd; i++) {
+            RecordMigrationPayload inputRecordMigrationPayload =
+                    (RecordMigrationPayload) inputMigrationEntityList.get(i).getPayload();
+            HeightRecord inputHeightRecord = (HeightRecord) inputRecordMigrationPayload.getRecord();
+
+            HeightRecord outputHeightRecord = outputRecords.get(i);
+
+            mExpect.that(inputHeightRecord.getHeight()).isEqualTo(outputHeightRecord.getHeight());
+        }
     }
 
     @Test
@@ -182,6 +239,7 @@ public class DataMigrationTest {
 
         migrate(new StepsRecord.Builder(getMetadata(entityId), mStartTime, mEndTime, 10).build());
 
+        finishMigration();
         final StepsRecord record = getRecord(StepsRecord.class, entityId);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getCount()).isEqualTo(10);
@@ -204,6 +262,7 @@ public class DataMigrationTest {
                                         new PowerRecordSample(fromWatts(30D), mEndTime)))
                         .build());
 
+        finishMigration();
         final PowerRecord record = getRecord(PowerRecord.class, entityId);
 
         mExpect.that(record).isNotNull();
@@ -220,22 +279,154 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateRecord_sameEntity_notSaved() {
+    public void migrateRecord_sameEntityId_notIgnored() {
         final String entityId = "height";
-        final Length originalHeight = fromMeters(3D);
-        migrate(new HeightRecord.Builder(getMetadata(entityId), mEndTime, originalHeight).build());
 
-        final Length secondHeight = fromMeters(1D);
-        migrate(new HeightRecord.Builder(getMetadata(entityId), mEndTime, secondHeight).build());
+        final Length height1 = fromMeters(3D);
+        migrate(new HeightRecord.Builder(getMetadata(), mEndTime, height1).build(), entityId);
 
-        final HeightRecord record = getRecord(HeightRecord.class, entityId);
-        mExpect.that(record).isNotNull();
-        mExpect.that(record.getHeight()).isEqualTo(originalHeight);
+        final Length height2 = fromMeters(1D);
+        migrate(new HeightRecord.Builder(getMetadata(), mStartTime, height2).build(), entityId);
+
+        finishMigration();
+
+        final List<HeightRecord> records = getRecords(HeightRecord.class);
+        mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
+                .containsExactly(height1, height2);
     }
 
     @Test
-    public void migratePermissions_permissionsGranted() {
-        revokeAppPermissions(READ_HEIGHT, WRITE_HEIGHT);
+    public void migrateInstantRecord_noClientIdsAndSameTime_ignored() {
+        final String entityId1 = "steps1";
+        final long steps1 = 1000L;
+        migrate(
+                new StepsRecord.Builder(getMetadata(), mStartTime, mEndTime, steps1).build(),
+                entityId1);
+
+        final String entityId2 = "steps2";
+        final long steps2 = 2000L;
+        migrate(
+                new StepsRecord.Builder(getMetadata(), mStartTime, mEndTime, steps2).build(),
+                entityId2);
+
+        finishMigration();
+
+        final List<StepsRecord> records = getRecords(StepsRecord.class);
+        mExpect.that(records.stream().map(StepsRecord::getCount).toList()).containsExactly(steps1);
+    }
+
+    @Test
+    public void migrateInstantRecord_differentClientIdsAndSameTime_notIgnored() {
+        final String entityId1 = "steps1";
+        final long steps1 = 1000L;
+        migrate(
+                new StepsRecord.Builder(getMetadata(entityId1), mStartTime, mEndTime, steps1)
+                        .build(),
+                entityId1);
+
+        final String entityId2 = "steps2";
+        final long steps2 = 2000L;
+        migrate(
+                new StepsRecord.Builder(getMetadata(entityId2), mStartTime, mEndTime, steps2)
+                        .build(),
+                entityId2);
+
+        finishMigration();
+
+        final List<StepsRecord> records = getRecords(StepsRecord.class);
+        mExpect.that(records.stream().map(StepsRecord::getCount).toList())
+                .containsExactly(steps1, steps2);
+    }
+
+    @Test
+    public void migrateIntervalRecord_noClientIdsAndSameTime_ignored() {
+        final String entityId1 = "height1";
+        final Length height1 = fromMeters(1.0);
+        migrate(new HeightRecord.Builder(getMetadata(), mEndTime, height1).build(), entityId1);
+
+        final String entityId2 = "height2";
+        final Length height2 = fromMeters(2.0);
+        migrate(new HeightRecord.Builder(getMetadata(), mEndTime, height2).build(), entityId2);
+
+        finishMigration();
+
+        final List<HeightRecord> records = getRecords(HeightRecord.class);
+        mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
+                .containsExactly(height1);
+    }
+
+    @Test
+    public void migrateIntervalRecord_differentClientIdsAndSameTime_notIgnored() {
+        final String entityId1 = "height1";
+        final Length height1 = fromMeters(1.0);
+        migrate(
+                new HeightRecord.Builder(getMetadata(entityId1), mEndTime, height1).build(),
+                entityId1);
+
+        final String entityId2 = "height2";
+        final Length height2 = fromMeters(2.0);
+        migrate(
+                new HeightRecord.Builder(getMetadata(entityId2), mEndTime, height2).build(),
+                entityId2);
+
+        finishMigration();
+
+        final List<HeightRecord> records = getRecords(HeightRecord.class);
+        mExpect.that(records.stream().map(HeightRecord::getHeight).toList())
+                .containsExactly(height1, height2);
+    }
+
+    // Special case for hydration, must not ignore
+    @Test
+    public void migrateHydration_noClientIdsAndSameTime_notIgnored() {
+        final String entityId1 = "hydration1";
+        final Volume volume1 = Volume.fromLiters(0.2);
+        migrate(
+                new HydrationRecord.Builder(getMetadata(), mStartTime, mEndTime, volume1).build(),
+                entityId1);
+
+        final String entityId2 = "hydration2";
+        final Volume volume2 = Volume.fromLiters(0.3);
+        migrate(
+                new HydrationRecord.Builder(getMetadata(), mStartTime, mEndTime, volume2).build(),
+                entityId2);
+
+        finishMigration();
+
+        final List<HydrationRecord> records = getRecords(HydrationRecord.class);
+        mExpect.that(records.stream().map(HydrationRecord::getVolume).toList())
+                .containsExactly(volume1, volume2);
+    }
+
+    // Special case for nutrition, must not ignore
+    @Test
+    public void migrateNutrition_noClientIdsAndSameTime_notIgnored() {
+        final String entityId1 = "nutrition1";
+        final Mass protein1 = Mass.fromGrams(1.0);
+        migrate(
+                new NutritionRecord.Builder(getMetadata(), mStartTime, mEndTime)
+                        .setProtein(protein1)
+                        .build(),
+                entityId1);
+
+        final String entityId2 = "nutrition2";
+        final Mass protein2 = Mass.fromGrams(2.0);
+        migrate(
+                new NutritionRecord.Builder(getMetadata(), mStartTime, mEndTime)
+                        .setProtein(protein2)
+                        .build(),
+                entityId2);
+
+        finishMigration();
+
+        final List<NutritionRecord> records = getRecords(NutritionRecord.class);
+        mExpect.that(records.stream().map(NutritionRecord::getProtein).toList())
+                .containsExactly(protein1, protein2);
+    }
+
+    @Test
+    public void migratePermissions_hasValidPermissions_validPermissionsGranted() {
+        revokeHealthPermissions(APP_PACKAGE_NAME);
 
         final String entityId = "permissions";
 
@@ -243,16 +434,20 @@ public class DataMigrationTest {
                 new MigrationEntity(
                         entityId,
                         new PermissionMigrationPayload.Builder(APP_PACKAGE_NAME, Instant.now())
+                                .addPermission(INVALID_PERMISSION_1)
                                 .addPermission(READ_HEIGHT)
+                                .addPermission(INVALID_PERMISSION_2)
                                 .addPermission(WRITE_HEIGHT)
                                 .build()));
-
-        assertThat(getGrantedAppPermissions()).containsAtLeast(READ_HEIGHT, WRITE_HEIGHT);
+        finishMigration();
+        final List<String> grantedPermissions = getGrantedAppPermissions();
+        mExpect.that(grantedPermissions).containsAtLeast(READ_HEIGHT, WRITE_HEIGHT);
+        mExpect.that(grantedPermissions).containsNoneOf(INVALID_PERMISSION_1, INVALID_PERMISSION_2);
     }
 
     @Test
-    public void migratePermissions_invalidPermission_throwsMigrationException() {
-        revokeAppPermissions(READ_HEIGHT, WRITE_HEIGHT);
+    public void migratePermissions_allInvalidPermissions_throwsMigrationException() {
+        revokeHealthPermissions(APP_PACKAGE_NAME);
 
         final String entityId = "permissions";
 
@@ -260,15 +455,87 @@ public class DataMigrationTest {
                 new MigrationEntity(
                         entityId,
                         new PermissionMigrationPayload.Builder(APP_PACKAGE_NAME, Instant.now())
-                                .addPermission("invalid.permission")
+                                .addPermission(INVALID_PERMISSION_1)
+                                .addPermission(INVALID_PERMISSION_2)
                                 .build());
         try {
             migrate(entity);
             fail("Expected to fail with MigrationException but didn't");
         } catch (MigrationException e) {
-            assertEquals(MigrationException.ERROR_MIGRATE_ENTITY, e.getErrorCode());
-            assertEquals(entityId, e.getFailedEntityId());
+            mExpect.that(e.getErrorCode()).isEqualTo(MigrationException.ERROR_MIGRATE_ENTITY);
+            mExpect.that(e.getFailedEntityId()).isEqualTo(entityId);
+            mExpect.that(getGrantedAppPermissions())
+                    .containsNoneOf(INVALID_PERMISSION_1, INVALID_PERMISSION_2);
+            finishMigration();
         }
+    }
+
+    /** Test metadata migration, migrating record retention period. */
+    @Test
+    public void migrateMetadata_migratingRetentionPeriod_metadataSaved() {
+
+        final String entityId = "metadata";
+
+        migrate(
+                new MigrationEntity(
+                        entityId,
+                        new MetadataMigrationPayload.Builder()
+                                .setRecordRetentionPeriodDays(100)
+                                .build()));
+        finishMigration();
+
+        assertThat(getRecordRetentionPeriodInDays()).isEqualTo(100);
+    }
+
+    /** Test priority migration where migration payload have additional apps. */
+    @Test
+    public void migratePriority_additionalAppsInMigrationPayload_prioritySaved() {
+        revokeHealthPermissions(APP_PACKAGE_NAME);
+        revokeHealthPermissions(APP_PACKAGE_NAME_2);
+
+        String permissionMigrationEntityId1 = "permissionMigration1";
+        String permissionMigrationEntityId2 = "permissionMigration2";
+        String priorityMigrationEntityId = "priorityMigration";
+
+        /*
+        Migrating permissions first as any package that do not have required permissions would be
+        removed from the priority list during priority migration.
+        */
+
+        migrate(
+                new MigrationEntity(
+                        permissionMigrationEntityId1,
+                        new PermissionMigrationPayload.Builder(APP_PACKAGE_NAME, Instant.now())
+                                .addPermission(READ_HEIGHT)
+                                .addPermission(WRITE_HEIGHT)
+                                .build()),
+                new MigrationEntity(
+                        permissionMigrationEntityId2,
+                        new PermissionMigrationPayload.Builder(APP_PACKAGE_NAME_2, Instant.now())
+                                .addPermission(READ_HEIGHT)
+                                .addPermission(WRITE_HEIGHT)
+                                .build()),
+                new MigrationEntity(
+                        priorityMigrationEntityId,
+                        new PriorityMigrationPayload.Builder()
+                                .setDataCategory(HealthDataCategory.BODY_MEASUREMENTS)
+                                .addDataOrigin(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(APP_PACKAGE_NAME_2)
+                                                .build())
+                                .addDataOrigin(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(APP_PACKAGE_NAME)
+                                                .build())
+                                .build()));
+
+        finishMigration();
+
+        List<String> activityPriorityList =
+                getHealthDataCategoryPriority(HealthDataCategory.BODY_MEASUREMENTS);
+
+        verifyAddedPriorityOrder(
+                List.of(APP_PACKAGE_NAME_2, APP_PACKAGE_NAME), activityPriorityList);
     }
 
     @Test
@@ -276,7 +543,7 @@ public class DataMigrationTest {
         runWithShellPermissionIdentity(
                 () -> {
                     assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IDLE);
+                            .isEqualTo(MIGRATION_STATE_IDLE);
                     TestUtils.startMigration();
                     assertThat(TestUtils.getHealthConnectDataMigrationState())
                             .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
@@ -288,15 +555,15 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void testInsertMinDataMigrationSdkExtensionVersion() {
-        int version = Build.VERSION_CODES.UPSIDE_DOWN_CAKE;
+    public void testInsertMinDataMigrationSdkExtensionVersion_upgradeRequired() {
+        int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) + 1;
         runWithShellPermissionIdentity(
                 () -> {
                     assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IDLE);
+                            .isEqualTo(MIGRATION_STATE_IDLE);
                     TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                    // TODO(b/265616837) Check if the state is updated to ALLOWED or
-                    // UPGRADE_REQUIRED
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
                     TestUtils.startMigration();
                     assertThat(TestUtils.getHealthConnectDataMigrationState())
                             .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
@@ -308,12 +575,35 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateAppInfo_notInstalledAppAndRecordsMigrated_appInfoSaved() {
+    public void testInsertMinDataMigrationSdkExtensionVersion_noUpgradeRequired() {
+        int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
+        runWithShellPermissionIdentity(
+                () -> {
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(MIGRATION_STATE_IDLE);
+                    TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(MIGRATION_STATE_ALLOWED);
+                    TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(MIGRATION_STATE_ALLOWED);
+                    TestUtils.startMigration();
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                    TestUtils.finishMigration();
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+                },
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    }
+
+    @Test
+    public void migrateAppInfo_notInstalledAppAndRecordsMigrated_appInfoSaved()
+            throws InterruptedException {
         final String recordEntityId = "steps";
         final String appInfoEntityId = "appInfo";
         final Bitmap icon = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
         final byte[] iconBytes = getBitmapBytes(icon);
-
         migrate(
                 new StepsRecord.Builder(
                                 getMetadata(recordEntityId, PACKAGE_NAME_NOT_INSTALLED),
@@ -321,7 +611,6 @@ public class DataMigrationTest {
                                 mEndTime,
                                 10)
                         .build());
-
         migrate(
                 new MigrationEntity(
                         appInfoEntityId,
@@ -329,6 +618,11 @@ public class DataMigrationTest {
                                 .setAppIcon(iconBytes)
                                 .build()));
 
+        finishMigration();
+        // When recordTypes are modified the appInfo also gets updated and this update happens on
+        // a background thread. To ensure the test has the latest values for appInfo, add a wait
+        // time before fetching it.
+        Thread.sleep(500);
         final AppInfo appInfo = getContributorApplicationInfo(PACKAGE_NAME_NOT_INSTALLED);
 
         mExpect.that(appInfo).isNotNull();
@@ -350,18 +644,19 @@ public class DataMigrationTest {
                                 .setAppIcon(iconBytes)
                                 .build()));
 
+        finishMigration();
         final AppInfo appInfo = getContributorApplicationInfo(PACKAGE_NAME_NOT_INSTALLED);
 
         assertThat(appInfo).isNull();
     }
 
     @Test
-    public void migrateAppInfo_installedAppAndRecordsMigrated_appInfoNotSaved() {
+    public void migrateAppInfo_installedAppAndRecordsMigrated_appInfoNotSaved()
+            throws InterruptedException {
         final String recordEntityId = "steps";
         final String appInfoEntityId = "appInfo";
         final Bitmap icon = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
         final byte[] iconBytes = getBitmapBytes(icon);
-
         migrate(
                 new StepsRecord.Builder(
                                 getMetadata(recordEntityId, APP_PACKAGE_NAME),
@@ -377,6 +672,11 @@ public class DataMigrationTest {
                                 .setAppIcon(iconBytes)
                                 .build()));
 
+        finishMigration();
+        // When recordTypes are modified the appInfo also gets updated and this update happens on
+        // a background thread. To ensure the test has the latest values for appInfo, add a wait
+        // time before fetching it.
+        Thread.sleep(500);
         final AppInfo appInfo = getContributorApplicationInfo(APP_PACKAGE_NAME);
 
         mExpect.that(appInfo).isNotNull();
@@ -395,13 +695,23 @@ public class DataMigrationTest {
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    private void migrate(Record record) {
-        migrate(getRecordEntity(record));
+    private void finishMigration() {
+        DataMigrationTest.<Void, MigrationException>blockingCallWithPermissions(
+                callback -> mManager.finishMigration(mOutcomeExecutor, callback),
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
     }
 
-    private MigrationEntity getRecordEntity(Record record) {
+    private void migrate(Record record) {
+        migrate(record, /* entityId= */ record.getMetadata().getClientRecordId());
+    }
+
+    private void migrate(Record record, String entityId) {
+        migrate(getRecordEntity(record, entityId));
+    }
+
+    private MigrationEntity getRecordEntity(Record record, String entityId) {
         return new MigrationEntity(
-                record.getMetadata().getClientRecordId(),
+                entityId,
                 new RecordMigrationPayload.Builder(
                                 record.getMetadata().getDataOrigin().getPackageName(),
                                 "Example App",
@@ -466,16 +776,30 @@ public class DataMigrationTest {
                 "android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA");
     }
 
-    private void revokeAppPermissions(String... permissions) {
-        final PackageManager pm = mTargetContext.getPackageManager();
+    private void revokeHealthPermissions(String packageName) {
+        runWithShellPermissionIdentity(() -> revokeHealthPermissionsPrivileged(packageName));
+    }
+
+    private void revokeHealthPermissionsPrivileged(String packageName)
+            throws PackageManager.NameNotFoundException {
+        final PackageManager packageManager = mTargetContext.getPackageManager();
         final UserHandle user = mTargetContext.getUser();
 
-        runWithShellPermissionIdentity(
-                () -> {
-                    for (String permission : permissions) {
-                        pm.revokeRuntimePermission(APP_PACKAGE_NAME, permission, user);
-                    }
-                });
+        final PackageInfo packageInfo =
+                packageManager.getPackageInfo(
+                        packageName,
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+
+        final String[] permissions = packageInfo.requestedPermissions;
+        if (permissions == null) {
+            return;
+        }
+
+        for (String permission : permissions) {
+            if (permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
+                packageManager.revokeRuntimePermission(packageName, permission, user);
+            }
+        }
     }
 
     private List<String> getGrantedAppPermissions() {
@@ -562,5 +886,70 @@ public class DataMigrationTest {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Verifies that the added priority matches with expected priority
+     *
+     * @param expectedAddedPriorityList expected added packages priority list.
+     * @param actualPriorityList actual priority stored in HealthConnect module
+     */
+    private void verifyAddedPriorityOrder(
+            List<String> expectedAddedPriorityList, List<String> actualPriorityList) {
+        assertThat(actualPriorityList.size()).isAtLeast(expectedAddedPriorityList.size());
+
+        List<String> addedPriorityList =
+                actualPriorityList.stream()
+                        .filter(packageName -> expectedAddedPriorityList.contains(packageName))
+                        .toList();
+
+        assertThat(addedPriorityList).isEqualTo(expectedAddedPriorityList);
+    }
+
+    /**
+     * Fetches data category's priority of packages.
+     *
+     * @param dataCategory category for which priority is being fetched
+     * @return list of packages ordered in priority.
+     */
+    private List<String> getHealthDataCategoryPriority(int dataCategory) {
+        return runWithShellPermissionIdentity(
+                () ->
+                        DataMigrationTest
+                                .<FetchDataOriginsPriorityOrderResponse, HealthConnectException>
+                                        blockingCall(
+                                                callback ->
+                                                        getHealthDataCategoryPriorityAsync(
+                                                                dataCategory, callback))
+                                .getDataOriginsPriorityOrder()
+                                .stream()
+                                .map(dataOrigin -> dataOrigin.getPackageName())
+                                .collect(Collectors.toList()),
+                HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
+    }
+
+    /**
+     * Fetches data category's priority of packages asynchronously
+     *
+     * @param dataCategory category for which priority is being fetched
+     * @param callback called after receiving results.
+     */
+    private void getHealthDataCategoryPriorityAsync(
+            int dataCategory,
+            OutcomeReceiver<FetchDataOriginsPriorityOrderResponse, HealthConnectException>
+                    callback) {
+        mManager.fetchDataOriginsPriorityOrder(
+                dataCategory, Executors.newSingleThreadExecutor(), callback);
+    }
+
+    /**
+     * Fetched recordRetentionPeriodInDays from HealthConnectModule
+     *
+     * @return number of days for retention.
+     */
+    private int getRecordRetentionPeriodInDays() {
+        return runWithShellPermissionIdentity(
+                () -> mManager.getRecordRetentionPeriodInDays(),
+                HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
     }
 }

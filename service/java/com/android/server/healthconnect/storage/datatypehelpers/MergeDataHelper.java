@@ -25,6 +25,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.RecordHel
 
 import android.annotation.NonNull;
 import android.database.Cursor;
+import android.util.Pair;
 
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TimeUtils;
@@ -92,7 +93,7 @@ public final class MergeDataHelper {
     private TreeSet<RecordData> mBufferWindow;
     private List<RecordData> mRecordDataList = new ArrayList<>();
     private final Cursor mCursor;
-    private List<String> mReversedPriorityList;
+    private List<Long> mReversedPriorityList;
     private Instant mStartTime;
     private Instant mEndTime;
     private final String mColumnNameToMerge;
@@ -100,7 +101,7 @@ public final class MergeDataHelper {
 
     public MergeDataHelper(
             @NonNull Cursor cursor,
-            @NonNull List<String> priorityList,
+            @NonNull List<Long> priorityList,
             @NonNull String columnNameToMerge,
             @NonNull Class<?> valueColumnType) {
         Objects.requireNonNull(cursor);
@@ -110,7 +111,7 @@ public final class MergeDataHelper {
         mCursor = cursor;
         // In priority list, the first element has the highest priority. To make it easier to
         // understand and code, reverse the list and use index as data points' priorities
-        mReversedPriorityList = List.copyOf(priorityList);
+        mReversedPriorityList = new ArrayList<>(priorityList);
         Collections.reverse(mReversedPriorityList);
         mColumnNameToMerge = columnNameToMerge;
         mValueColumnType = valueColumnType;
@@ -118,6 +119,11 @@ public final class MergeDataHelper {
                 Comparator.comparing(RecordData::getStartTime)
                         .thenComparing((a, b) -> compare(b, a));
         mBufferWindow = new TreeSet<>(mRecordDataComparator);
+    }
+
+    /** Returns aggregate sum between the startTime and endTime */
+    public double readCursor(Instant startTime, Instant endTime) {
+        return readCursor(startTime.toEpochMilli(), endTime.toEpochMilli());
     }
 
     /**
@@ -190,6 +196,24 @@ public final class MergeDataHelper {
             }
         }
         return sum;
+    }
+
+    /**
+     * Returns list of empty intervals where there are gaps without any record data in the final
+     * merge used to calculate aggregate
+     */
+    public List<Pair<Instant, Instant>> getEmptyIntervals() {
+        List<Pair<Instant, Instant>> emptyIntervals = new ArrayList<>();
+        if (mRecordDataList != null) {
+            for (int i = 0; i < mRecordDataList.size() - 1; i++) {
+                Instant currentEnd = mRecordDataList.get(i).getEndTime();
+                Instant nextStart = mRecordDataList.get(i + 1).getStartTime();
+                if (nextStart.isAfter(currentEnd)) {
+                    emptyIntervals.add(new Pair(currentEnd, nextStart));
+                }
+            }
+        }
+        return emptyIntervals;
     }
 
     private TreeSet<RecordData> eliminateEarliestRecordOverlaps(TreeSet<RecordData> bufferWindow) {
@@ -344,8 +368,8 @@ public final class MergeDataHelper {
 
     private int compare(RecordData data1, RecordData data2) {
 
-        int priority1 = mReversedPriorityList.indexOf(String.valueOf(data1.getAppId()));
-        int priority2 = mReversedPriorityList.indexOf(String.valueOf(data2.getAppId()));
+        int priority1 = mReversedPriorityList.indexOf(data1.getAppId());
+        int priority2 = mReversedPriorityList.indexOf(data2.getAppId());
 
         return (priority1 != priority2) ? (priority1 - priority2) : getRecentUpdated(data1, data2);
     }

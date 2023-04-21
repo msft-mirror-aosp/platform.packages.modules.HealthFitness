@@ -24,11 +24,11 @@ import android.health.connect.datatypes.ExerciseSegment
 import android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_JUMPING_JACK
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING
+import android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT
 import android.health.connect.datatypes.units.Length
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.dataentries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter
-import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.getMetaData
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -49,13 +49,12 @@ class ExerciseSessionFormatterTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @Inject lateinit var formatter: ExerciseSessionFormatter
-    @Inject lateinit var preferences: UnitPreferences
     private lateinit var context: Context
 
     @Before
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().context
-        context.setLocale(Locale.US)
+        context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
 
         hiltRule.inject()
@@ -65,16 +64,16 @@ class ExerciseSessionFormatterTest {
     fun formatValue() = runBlocking {
         assertThat(
                 formatter.formatValue(
-                    getRecord(type = EXERCISE_SESSION_TYPE_BIKING), unitPreferences = preferences))
-            .isEqualTo("16m, Biking")
+                    getRecord(type = EXERCISE_SESSION_TYPE_BIKING)))
+            .isEqualTo("16 m, Cycling")
     }
 
     @Test
     fun formatA11yValue() = runBlocking {
         assertThat(
                 formatter.formatA11yValue(
-                    getRecord(type = EXERCISE_SESSION_TYPE_BIKING), unitPreferences = preferences))
-            .isEqualTo("16 minutes, Biking")
+                    getRecord(type = EXERCISE_SESSION_TYPE_BIKING)))
+            .isEqualTo("16 minutes, Cycling")
     }
 
     @Test
@@ -102,24 +101,24 @@ class ExerciseSessionFormatterTest {
                         .build())
             }
         val record =
-            getRecord(type = EXERCISE_SESSION_TYPE_BIKING, segments = segments, laps = laps)
+            getRecord(type = EXERCISE_SESSION_TYPE_OTHER_WORKOUT, segments = segments, laps = laps)
         assertThat(formatter.formatRecordDetails(record))
             .isEqualTo(
                 listOf(
                     FormattedEntry.SessionHeader("Exercise segments"),
                     FormattedEntry.FormattedSessionDetail(
                         uuid = record.metadata.id,
-                        header = "7:06 AM - 7:14 AM",
-                        headerA11y = "from 7:06 AM to 7:14 AM",
+                        header = "07:06 - 07:14",
+                        headerA11y = "from 07:06 to 07:14",
                         title = "Jumping jack: 2 reps",
                         titleA11y = "Jumping jack: 2 repetitions"),
                     FormattedEntry.SessionHeader("Laps"),
                     FormattedEntry.FormattedSessionDetail(
                         uuid = record.metadata.id,
-                        header = "7:06 AM - 7:14 AM",
-                        headerA11y = "from 7:06 AM to 7:14 AM",
+                        header = "07:06 - 07:14",
+                        headerA11y = "from 07:06 to 07:14",
                         title = "0.02 km",
-                        titleA11y = "0.02 kilometers"),
+                        titleA11y = "0.02 kilometres"),
                 ))
     }
 

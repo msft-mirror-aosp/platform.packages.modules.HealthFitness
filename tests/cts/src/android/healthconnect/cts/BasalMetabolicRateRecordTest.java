@@ -24,10 +24,15 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogTokenResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -41,6 +46,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,9 +56,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -67,6 +73,7 @@ public class BasalMetabolicRateRecordTest {
                         .setStartTime(Instant.EPOCH)
                         .setEndTime(Instant.now())
                         .build());
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
@@ -82,14 +89,16 @@ public class BasalMetabolicRateRecordTest {
                 Arrays.asList(
                         getCompleteBasalMetabolicRateRecord(),
                         getCompleteBasalMetabolicRateRecord());
-        readBasalMetabolicRateRecordUsingIds(recordList);
+        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+
+        readBasalMetabolicRateRecordUsingIds(insertedRecords);
     }
 
     @Test
     public void testReadBasalMetabolicRateRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<BasalMetabolicRateRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(BasalMetabolicRateRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<BasalMetabolicRateRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -143,7 +152,7 @@ public class BasalMetabolicRateRecordTest {
             throws InterruptedException {
         TimeInstantRangeFilter filter =
                 new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
+                        .setStartTime(Instant.now().minus(1, ChronoUnit.DAYS))
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
         BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
@@ -215,7 +224,7 @@ public class BasalMetabolicRateRecordTest {
     public void testDeleteBasalMetabolicRateRecord_time_filters() throws InterruptedException {
         TimeInstantRangeFilter timeRangeFilter =
                 new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
+                        .setStartTime(Instant.now().minus(1, ChronoUnit.DAYS))
                         .setEndTime(Instant.now().plusMillis(1000))
                         .build();
         String id = TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
@@ -288,7 +297,7 @@ public class BasalMetabolicRateRecordTest {
     public void testDeleteBasalMetabolicRateRecord_time_range() throws InterruptedException {
         TimeInstantRangeFilter timeRangeFilter =
                 new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
+                        .setStartTime(Instant.now().minus(1, ChronoUnit.DAYS))
                         .setEndTime(Instant.now().plusMillis(1000))
                         .build();
         String id = TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
@@ -299,24 +308,27 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testAggregation_BasalCaloriesBurntTotal() throws Exception {
         List<Record> records =
-                Arrays.asList(getBasalMetabolicRateRecord(25.5), getBasalMetabolicRateRecord(71.5));
+                Arrays.asList(
+                        getBasalMetabolicRateRecord(30.0, 3), getBasalMetabolicRateRecord(75.0, 2));
         AggregateRecordsResponse<Energy> oldResponse =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Energy>(
                                         new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(3, ChronoUnit.DAYS))
+                                                .setStartTime(
+                                                        Instant.now().minus(10, ChronoUnit.DAYS))
+                                                .setEndTime(Instant.now().minus(1, ChronoUnit.DAYS))
                                                 .build())
                                 .addAggregationType(BASAL_CALORIES_TOTAL)
                                 .build(),
                         records);
-        List<Record> recordNew = Arrays.asList(getBasalMetabolicRateRecord(45.5));
+        List<Record> recordNew = Arrays.asList(getBasalMetabolicRateRecord(46, 1));
         AggregateRecordsResponse<Energy> newResponse =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Energy>(
                                         new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(3, ChronoUnit.DAYS))
+                                                .setStartTime(
+                                                        Instant.now().minus(10, ChronoUnit.DAYS))
+                                                .setEndTime(Instant.now())
                                                 .build())
                                 .addAggregationType(BASAL_CALORIES_TOTAL)
                                 .build(),
@@ -324,7 +336,8 @@ public class BasalMetabolicRateRecordTest {
         assertThat(newResponse.get(BASAL_CALORIES_TOTAL)).isNotNull();
         Energy newEnergy = newResponse.get(BASAL_CALORIES_TOTAL);
         Energy oldEnergy = oldResponse.get(BASAL_CALORIES_TOTAL);
-        assertThat(newEnergy.getInJoules() - oldEnergy.getInJoules()).isEqualTo(45.5);
+        assertThat((double) Math.round(newEnergy.getInCalories() - oldEnergy.getInCalories()))
+                .isEqualTo(46);
         Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(BASAL_CALORIES_TOTAL);
         for (DataOrigin itr : newDataOrigin) {
             assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
@@ -348,6 +361,168 @@ public class BasalMetabolicRateRecordTest {
         assertThat(builder.clearZoneOffset().build().getZoneOffset()).isEqualTo(defaultZoneOffset);
     }
 
+    @Test
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
+            throws InterruptedException {
+
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readBasalMetabolicRateRecordUsingIds(insertedRecords);
+
+        // Generate a new set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(
+                        getCompleteBasalMetabolicRateRecord(),
+                        getCompleteBasalMetabolicRateRecord());
+
+        // Modify the uid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getBasalMetabolicRateRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+        }
+
+        TestUtils.updateRecords(updateRecords);
+
+        // assert the inserted data has been modified by reading the data.
+        readBasalMetabolicRateRecordUsingIds(updateRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readBasalMetabolicRateRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(
+                        getCompleteBasalMetabolicRateRecord(),
+                        getCompleteBasalMetabolicRateRecord());
+
+        // Modify the Uid of the updateRecords to the UUID that was present in the insert records,
+        // leaving out alternate records so that they have a new UUID which is not present in the
+        // dataBase.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getBasalMetabolicRateRecord_update(
+                            updateRecords.get(itr),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString(),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString()));
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid records ids.");
+        } catch (HealthConnectException exception) {
+            assertThat(exception.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readBasalMetabolicRateRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readBasalMetabolicRateRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(
+                        getCompleteBasalMetabolicRateRecord(),
+                        getCompleteBasalMetabolicRateRecord());
+
+        // Modify the Uuid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getBasalMetabolicRateRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+            //             adding an entry with invalid packageName.
+            updateRecords.set(itr, getCompleteBasalMetabolicRateRecord());
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid package.");
+        } catch (Exception exception) {
+            // verify that the testcase failed due to invalid argument exception.
+            assertThat(exception).isNotNull();
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readBasalMetabolicRateRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testInsertAndDeleteRecord_changelogs() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(
+                        new ChangeLogTokenRequest.Builder()
+                                .addDataOriginFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .addRecordType(BasalMetabolicRateRecord.class)
+                                .build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        List<Record> testRecord = Collections.singletonList(getCompleteBasalMetabolicRateRecord());
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        assertThat(
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(BasalMetabolicRateRecord.class)
+                        .build());
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getDeletedLogs()).isEmpty();
+    }
+
     private void readBasalMetabolicRateRecordUsingClientId(List<Record> insertedRecord)
             throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<BasalMetabolicRateRecord> request =
@@ -356,46 +531,63 @@ public class BasalMetabolicRateRecordTest {
             request.addClientRecordId(record.getMetadata().getClientRecordId());
         }
         List<BasalMetabolicRateRecord> result = TestUtils.readRecords(request.build());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecord.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-
-        for (int i = 0; i < result.size(); i++) {
-            BasalMetabolicRateRecord other = (BasalMetabolicRateRecord) insertedRecord.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
+        assertThat(result.size()).isEqualTo(insertedRecord.size());
+        assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
     private void readBasalMetabolicRateRecordUsingIds(List<Record> recordList)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<BasalMetabolicRateRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(BasalMetabolicRateRecord.class);
-        for (Record record : insertedRecords) {
+        for (Record record : recordList) {
             request.addId(record.getMetadata().getId());
         }
         ReadRecordsRequestUsingIds requestUsingIds = request.build();
         assertThat(requestUsingIds.getRecordType()).isEqualTo(BasalMetabolicRateRecord.class);
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<BasalMetabolicRateRecord> result = TestUtils.readRecords(requestUsingIds);
-        assertThat(result).hasSize(insertedRecords.size());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecords.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
+        assertThat(result).hasSize(recordList.size());
+        assertThat(result).containsExactlyElementsIn(recordList);
+    }
 
-        for (int i = 0; i < result.size(); i++) {
-            BasalMetabolicRateRecord other = (BasalMetabolicRateRecord) insertedRecords.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateBasalMetabolicRateRecord_invalidValue() {
+        new BasalMetabolicRateRecord.Builder(
+                        new Metadata.Builder().build(), Instant.now(), Power.fromWatts(484.26))
+                .build();
+    }
+
+    BasalMetabolicRateRecord getBasalMetabolicRateRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new BasalMetabolicRateRecord.Builder(
+                        metadataWithId, Instant.now(), Power.fromWatts(200.0))
+                .setZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
     }
 
     static BasalMetabolicRateRecord getBaseBasalMetabolicRateRecord() {
         return new BasalMetabolicRateRecord.Builder(
-                        new Metadata.Builder().build(), Instant.now(), Power.fromWatts(100.0))
+                        new Metadata.Builder().build(),
+                        Instant.now().minus(1, ChronoUnit.DAYS),
+                        Power.fromWatts(100.0))
                 .build();
     }
 
-    static BasalMetabolicRateRecord getBasalMetabolicRateRecord(double power) {
+    static BasalMetabolicRateRecord getBasalMetabolicRateRecord(double power, int days) {
         return new BasalMetabolicRateRecord.Builder(
-                        new Metadata.Builder().build(), Instant.now(), Power.fromWatts(power))
+                        new Metadata.Builder().build(),
+                        Instant.now().minus(days, ChronoUnit.DAYS),
+                        Power.fromWatts(power))
                 .build();
     }
 
@@ -411,9 +603,12 @@ public class BasalMetabolicRateRecordTest {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId("BMR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         return new BasalMetabolicRateRecord.Builder(
-                        testMetadataBuilder.build(), Instant.now(), Power.fromWatts(100.0))
+                        testMetadataBuilder.build(),
+                        Instant.now().minus(1, ChronoUnit.DAYS),
+                        Power.fromWatts(100.0))
                 .build();
     }
 }

@@ -16,8 +16,10 @@
 
 package com.android.server.healthconnect.backuprestore;
 
+import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_FETCHING_DATA;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_NONE;
+import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_VERSION_DIFF;
 import static android.health.connect.HealthConnectDataState.RESTORE_STATE_IDLE;
 import static android.health.connect.HealthConnectDataState.RESTORE_STATE_IN_PROGRESS;
 import static android.health.connect.HealthConnectDataState.RESTORE_STATE_PENDING;
@@ -25,12 +27,23 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UNKNOWN;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.database.Cursor;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager.DataDownloadState;
+import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
+import android.health.connect.datatypes.Record;
+import android.health.connect.internal.datatypes.RecordInternal;
+import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
@@ -39,13 +52,25 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.util.Pair;
 import android.util.Slog;
 
+import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
+import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.utils.FilesUtil;
+import com.android.server.healthconnect.utils.RunnableWithThrowable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,7 +82,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -82,14 +109,15 @@ public final class BackupRestore {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-        INTERNAL_RESTORE_STATE_UNKNOWN,
-        INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING,
-        INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS,
-        INTERNAL_RESTORE_STATE_STAGING_DONE,
-        INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS,
-        INTERNAL_RESTORE_STATE_MERGING_DONE
+            INTERNAL_RESTORE_STATE_UNKNOWN,
+            INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING,
+            INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS,
+            INTERNAL_RESTORE_STATE_STAGING_DONE,
+            INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS,
+            INTERNAL_RESTORE_STATE_MERGING_DONE
     })
     public @interface InternalRestoreState {}
+
     // Key for storing the current data restore state on disk.
     public static final String DATA_RESTORE_STATE_KEY = "data_restore_state_key";
     // Key for storing the error restoring HC data.
@@ -98,11 +126,26 @@ public final class BackupRestore {
     private static final String TAG = "HealthConnectBackupRestore";
     private final ReentrantReadWriteLock mStatesLock = new ReentrantReadWriteLock(true);
     private final FirstGrantTimeManager mFirstGrantTimeManager;
+    private final MigrationStateManager mMigrationStateManager;
+
+    private final Context mStagedDbContext;
+    private final Context mContext;
+    private final Map<Long, String> mStagedPackageNamesByAppIds = new ArrayMap<>();
+    private final Object mMergingLock = new Object();
+
+    @GuardedBy("mMergingLock")
+    private HealthConnectDatabase mStagedDatabase;
 
     private boolean mActivelyStagingRemoteData = false;
 
-    public BackupRestore(FirstGrantTimeManager firstGrantTimeManager) {
+    public BackupRestore(
+            FirstGrantTimeManager firstGrantTimeManager,
+            MigrationStateManager migrationStateManager,
+            @NonNull Context context) {
         mFirstGrantTimeManager = firstGrantTimeManager;
+        mMigrationStateManager = migrationStateManager;
+        mStagedDbContext = new StagedDatabaseContext(context);
+        mContext = context;
     }
 
     /**
@@ -111,11 +154,11 @@ public final class BackupRestore {
      * @return true if the preparation was successful. false either if staging already in progress
      *     or done.
      */
-    public boolean prepForStagingIfNotAlreadyDone(int userId) {
+    public boolean prepForStagingIfNotAlreadyDone() {
         mStatesLock.writeLock().lock();
         try {
-            setDataDownloadState(DATA_DOWNLOAD_COMPLETE, userId, false /* force */);
-            @InternalRestoreState int curDataRestoreState = getInternalRestoreState(userId);
+            setDataDownloadState(DATA_DOWNLOAD_COMPLETE, false /* force */);
+            @InternalRestoreState int curDataRestoreState = getInternalRestoreState();
             if (curDataRestoreState >= INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS) {
                 if (curDataRestoreState >= INTERNAL_RESTORE_STATE_STAGING_DONE) {
                     Slog.w(TAG, "Staging is already done. Cur state " + curDataRestoreState);
@@ -126,8 +169,7 @@ public final class BackupRestore {
                 return false;
             }
             mActivelyStagingRemoteData = true;
-            setInternalRestoreState(
-                    INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS, userId, false /* force */);
+            setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS, false /* force */);
             return true;
         } finally {
             mStatesLock.writeLock().unlock();
@@ -188,7 +230,7 @@ public final class BackupRestore {
             // We are done staging all the remote data, update the data restore state.
             // Even if we encountered any exception we still say that we are "done" as
             // we don't expect the caller to retry and see different results.
-            setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, userId, false);
+            setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, false);
             mActivelyStagingRemoteData = false;
 
             // Share the result / exception with the caller.
@@ -196,7 +238,7 @@ public final class BackupRestore {
                 if (exceptionsByFileName.isEmpty()) {
                     callback.onResult();
                 } else {
-                    setDataRestoreError(RESTORE_ERROR_FETCHING_DATA, userId);
+                    setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
                     callback.onError(new StageRemoteDataException(exceptionsByFileName));
                 }
             } catch (RemoteException e) {
@@ -206,6 +248,10 @@ public final class BackupRestore {
                         TAG,
                         "Restore response could not be sent due to conflicting AIDL definitions",
                         e);
+            } finally {
+                // Now that the callback for the stageAllHealthConnectRemoteData API has been called
+                // we can start the merging process.
+                merge();
             }
         }
     }
@@ -217,9 +263,9 @@ public final class BackupRestore {
         Map<String, ParcelFileDescriptor> pfdsByFileName =
                 stageRemoteDataRequest.getPfdsByFileName();
 
+        var backupFilesByFileNames = getBackupFilesByFileNames(userHandle, false);
         pfdsByFileName.forEach(
                 (fileName, pfd) -> {
-                    var backupFilesByFileNames = getBackupFilesByFileNames(userHandle);
                     Path sourceFilePath = backupFilesByFileNames.get(fileName).toPath();
                     try (FileOutputStream outputStream =
                             new FileOutputStream(pfd.getFileDescriptor())) {
@@ -237,55 +283,54 @@ public final class BackupRestore {
     }
 
     /** Get the file names of all the files that are transported during backup / restore. */
-    public BackupFileNamesSet getAllBackupFileNames(@NonNull UserHandle userHandle) {
-        return new BackupFileNamesSet(getBackupFilesByFileNames(userHandle).keySet());
+    public BackupFileNamesSet getAllBackupFileNames(
+            @NonNull UserHandle userHandle, boolean forDeviceToDevice) {
+        return new BackupFileNamesSet(
+                getBackupFilesByFileNames(userHandle, !forDeviceToDevice).keySet());
     }
 
-    private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
+    private Map<String, File> getBackupFilesByFileNames(
+            UserHandle userHandle, boolean excludeLargeFiles) {
         ArrayMap<String, File> backupFilesByFileNames = new ArrayMap<>();
-        backupFilesByFileNames.put(
-                TransactionManager.getInitialisedInstance().getDatabasePath().getName(),
-                TransactionManager.getInitialisedInstance().getDatabasePath());
-        backupFilesByFileNames.put(
-                mFirstGrantTimeManager.getFile(userHandle).getName(),
-                mFirstGrantTimeManager.getFile(userHandle));
+        if (!excludeLargeFiles) {
+            File databasePath = TransactionManager.getInitialisedInstance().getDatabasePath();
+            backupFilesByFileNames.put(databasePath.getName(), databasePath);
+        }
+        File grantTimeFile = mFirstGrantTimeManager.getFile(userHandle);
+        backupFilesByFileNames.put(grantTimeFile.getName(), grantTimeFile);
         return backupFilesByFileNames;
     }
 
     /** Updates the download state of the remote data. */
-    public void updateDataDownloadState(
-            @DataDownloadState int downloadState, @NonNull UserHandle userHandle) {
-        setDataDownloadState(downloadState, userHandle.getIdentifier(), false /* force */);
+    public void updateDataDownloadState(@DataDownloadState int downloadState) {
+        setDataDownloadState(downloadState, false /* force */);
 
         if (downloadState == DATA_DOWNLOAD_COMPLETE) {
-            setInternalRestoreState(
-                    INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING,
-                    userHandle.getIdentifier(),
-                    false /* force */);
+            setInternalRestoreState(INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING, false /* force */);
         } else if (downloadState == DATA_DOWNLOAD_FAILED) {
-            setInternalRestoreState(
-                    INTERNAL_RESTORE_STATE_MERGING_DONE,
-                    userHandle.getIdentifier(),
-                    false /* force */);
-            setDataRestoreError(RESTORE_ERROR_FETCHING_DATA, userHandle.getIdentifier());
+            setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false /* force */);
+            setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
         }
     }
 
     /** Deletes all the staged data and resets all the states. */
     public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
-        FilesUtil.deleteDir(getStagedRemoteDataDirectoryForUser(userHandle.getIdentifier()));
-        setDataDownloadState(
-                DATA_DOWNLOAD_STATE_UNKNOWN, userHandle.getIdentifier(), true /* force */);
-        setInternalRestoreState(
-                INTERNAL_RESTORE_STATE_UNKNOWN, userHandle.getIdentifier(), true /* force */);
-        setDataRestoreError(RESTORE_ERROR_NONE, userHandle.getIdentifier());
+        // Don't delete anything while we are in the process of merging staged data.
+        synchronized (mMergingLock) {
+            mStagedDbContext.deleteDatabase(HealthConnectDatabase.getName());
+            mStagedDatabase = null;
+            FilesUtil.deleteDir(getStagedRemoteDataDirectoryForUser(userHandle.getIdentifier()));
+        }
+        setDataDownloadState(DATA_DOWNLOAD_STATE_UNKNOWN, true /* force */);
+        setInternalRestoreState(INTERNAL_RESTORE_STATE_UNKNOWN, true /* force */);
+        setDataRestoreError(RESTORE_ERROR_NONE);
     }
 
     /** Shares the {@link HealthConnectDataState} in the provided callback. */
-    public @HealthConnectDataState.DataRestoreState int getDataRestoreState(int userId) {
+    public @HealthConnectDataState.DataRestoreState int getDataRestoreState() {
         @HealthConnectDataState.DataRestoreState int dataRestoreState = RESTORE_STATE_IDLE;
 
-        @InternalRestoreState int currentRestoreState = getInternalRestoreState(userId);
+        @InternalRestoreState int currentRestoreState = getInternalRestoreState();
 
         if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_DONE) {
             // already with correct values.
@@ -295,7 +340,7 @@ public final class BackupRestore {
             dataRestoreState = RESTORE_STATE_PENDING;
         }
 
-        @DataDownloadState int currentDownloadState = getDataDownloadState(userId);
+        @DataDownloadState int currentDownloadState = getDataDownloadState();
         if (currentDownloadState == DATA_DOWNLOAD_FAILED) {
             // already with correct values.
         } else if (currentDownloadState != DATA_DOWNLOAD_STATE_UNKNOWN) {
@@ -306,8 +351,7 @@ public final class BackupRestore {
     }
 
     /** Get the current data restore error. */
-    public @HealthConnectDataState.DataRestoreError int getDataRestoreError(int userId) {
-        // TODO(b/264070899) Get on a per user basis when we have per user db
+    public @HealthConnectDataState.DataRestoreError int getDataRestoreError() {
         @HealthConnectDataState.DataRestoreError int dataRestoreError = RESTORE_ERROR_NONE;
         String restoreErrorOnDisk =
                 PreferenceHelper.getInstance().getPreference(DATA_RESTORE_ERROR_KEY);
@@ -328,9 +372,13 @@ public final class BackupRestore {
                 .collect(Collectors.toSet());
     }
 
-    void setInternalRestoreState(
-            @InternalRestoreState int dataRestoreState, int userID, boolean force) {
-        @InternalRestoreState int currentRestoreState = getInternalRestoreState(userID);
+    /** Returns true if restore merging is in progress. API calls are blocked when this is true. */
+    public boolean isRestoreMergingInProgress() {
+        return getInternalRestoreState() == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS;
+    }
+
+    void setInternalRestoreState(@InternalRestoreState int dataRestoreState, boolean force) {
+        @InternalRestoreState int currentRestoreState = getInternalRestoreState();
         mStatesLock.writeLock().lock();
         try {
             if (!force && currentRestoreState >= dataRestoreState) {
@@ -342,19 +390,17 @@ public final class BackupRestore {
                                 + dataRestoreState);
                 return;
             }
-            // TODO(b/264070899) Store on a per user basis when we have per user db
             PreferenceHelper.getInstance()
-                    .insertPreference(DATA_RESTORE_STATE_KEY, String.valueOf(dataRestoreState));
+                    .insertOrReplacePreference(
+                            DATA_RESTORE_STATE_KEY, String.valueOf(dataRestoreState));
         } finally {
             mStatesLock.writeLock().unlock();
         }
     }
 
-    @InternalRestoreState
-    int getInternalRestoreState(int userId) {
+    @InternalRestoreState int getInternalRestoreState() {
         mStatesLock.readLock().lock();
         try {
-            // TODO(b/264070899) Get on a per user basis when we have per user db
             String restoreStateOnDisk =
                     PreferenceHelper.getInstance().getPreference(DATA_RESTORE_STATE_KEY);
             @InternalRestoreState int currentRestoreState = INTERNAL_RESTORE_STATE_UNKNOWN;
@@ -379,11 +425,9 @@ public final class BackupRestore {
         }
     }
 
-    @DataDownloadState
-    private int getDataDownloadState(int userId) {
+    @DataDownloadState private int getDataDownloadState() {
         mStatesLock.readLock().lock();
         try {
-            // TODO(b/264070899) Get on a per user basis when we have per user db
             String downloadStateOnDisk =
                     PreferenceHelper.getInstance().getPreference(DATA_DOWNLOAD_STATE_KEY);
             @DataDownloadState int currentDownloadState = DATA_DOWNLOAD_STATE_UNKNOWN;
@@ -401,20 +445,19 @@ public final class BackupRestore {
         }
     }
 
-    private void setDataDownloadState(
-            @DataDownloadState int downloadState, int userId, boolean force) {
+    private void setDataDownloadState(@DataDownloadState int downloadState, boolean force) {
         mStatesLock.writeLock().lock();
         try {
-            @DataDownloadState int currentDownloadState = getDataDownloadState(userId);
+            @DataDownloadState int currentDownloadState = getDataDownloadState();
             if (!force
                     && (currentDownloadState == DATA_DOWNLOAD_FAILED
                             || currentDownloadState == DATA_DOWNLOAD_COMPLETE)) {
                 Slog.w(TAG, "HC data download already in terminal state.");
                 return;
             }
-            // TODO(b/264070899) Store on a per user basis when we have per user db
             PreferenceHelper.getInstance()
-                    .insertPreference(DATA_DOWNLOAD_STATE_KEY, String.valueOf(downloadState));
+                    .insertOrReplacePreference(
+                            DATA_DOWNLOAD_STATE_KEY, String.valueOf(downloadState));
         } finally {
             mStatesLock.writeLock().unlock();
         }
@@ -423,18 +466,223 @@ public final class BackupRestore {
     // Creating a separate single line method to keep this code close to the rest of the code that
     // uses PreferenceHelper to keep data on the disk.
     private void setDataRestoreError(
-            @HealthConnectDataState.DataRestoreError int dataRestoreError, int userId) {
-        // TODO(b/264070899) Store on a per user basis when we have per user db
+            @HealthConnectDataState.DataRestoreError int dataRestoreError) {
         PreferenceHelper.getInstance()
-                .insertPreference(DATA_RESTORE_ERROR_KEY, String.valueOf(dataRestoreError));
+                .insertOrReplacePreference(
+                        DATA_RESTORE_ERROR_KEY, String.valueOf(dataRestoreError));
     }
 
     /**
      * Get the dir for the user with all the staged data - either from the cloud restore or from the
      * d2d process.
      */
-    private File getStagedRemoteDataDirectoryForUser(int userId) {
+    private static File getStagedRemoteDataDirectoryForUser(int userId) {
         File hcDirectoryForUser = FilesUtil.getDataSystemCeHCDirectoryForUser(userId);
         return new File(hcDirectoryForUser, "remote_staged");
+    }
+
+    private void merge() {
+        if (getInternalRestoreState() >= INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
+            return;
+        }
+
+        // TODO(b/271078264): Retry after appropriate time.
+        if (mMigrationStateManager.isMigrationInProgress()) {
+            return;
+        }
+
+        setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS, false);
+        mergeDatabase();
+        setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
+    }
+
+    private void mergeDatabase() {
+        synchronized (mMergingLock) {
+            if (!mStagedDbContext.getDatabasePath(HealthConnectDatabase.getName()).exists()) {
+                // no db was staged
+                return;
+            }
+
+            int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
+            int stagedDbVersion = getStagedDatabase().getReadableDatabase().getVersion();
+            if (currentDbVersion < stagedDbVersion) {
+                setDataRestoreError(RESTORE_ERROR_VERSION_DIFF);
+                return;
+            }
+
+            // We never read from the staged db if the module version is behind the staged db
+            // version. So, we are guaranteed that the merging code will be able to read all the
+            // records from the db - as the upcoming code is guaranteed to understand the records
+            // present in the staged db.
+
+            // We are sure to migrate the db now, so prepare
+            prepInternalDataPerStagedDb();
+
+            // Go through each record type and migrate all records of that type.
+            var recordTypeMap = RecordMapper.getInstance().getRecordIdToExternalRecordClassMap();
+            for (var recordTypeMapEntry : recordTypeMap.entrySet()) {
+                mergeRecordsOfType(recordTypeMapEntry.getKey(), recordTypeMapEntry.getValue());
+            }
+        }
+    }
+
+    private <T extends Record> void mergeRecordsOfType(int recordType, Class<T> recordTypeClass) {
+        RecordHelper<?> recordHelper =
+                RecordHelperProvider.getInstance().getRecordHelper(recordType);
+        // Read all the records of the given type from the staged db and insert them into the
+        // existing healthconnect db.
+        long token = DEFAULT_LONG;
+        do {
+            var recordsToMergeAndToken = getRecordsToMerge(recordTypeClass, token, recordHelper);
+            if (recordsToMergeAndToken.first.isEmpty()) {
+                break;
+            }
+            // Using null package name for making insertion for two reasons:
+            // 1. we don't want to update the logs for this package.
+            // 2. we don't want to update the package name in the records as they already have the
+            //    correct package name.
+            UpsertTransactionRequest upsertTransactionRequest =
+                    new UpsertTransactionRequest(
+                            null /* packageName */,
+                            recordsToMergeAndToken.first,
+                            mContext,
+                            true /* isInsertRequest */,
+                            true /* skipPackageNameAndLogs */);
+            TransactionManager.getInitialisedInstance().insertAll(upsertTransactionRequest);
+
+            token = DEFAULT_LONG;
+            if (recordsToMergeAndToken.second != DEFAULT_LONG) {
+                token = recordsToMergeAndToken.second * 2;
+            }
+        } while (token != DEFAULT_LONG);
+
+        // Once all the records of this type have been merged we can delete the table.
+
+        // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
+        // final query.
+        DeleteTableRequest deleteTableRequest =
+                recordHelper.getDeleteTableRequest(
+                        null, DEFAULT_LONG /* startTime */, DEFAULT_LONG /* endTime */);
+        getStagedDatabase().getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
+    }
+
+    private <T extends Record> Pair<List<RecordInternal<?>>, Long> getRecordsToMerge(
+            Class<T> recordTypeClass, long requestToken, RecordHelper<?> recordHelper) {
+        ReadRecordsRequestUsingFilters<T> readRecordsRequest =
+                new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
+                        .setAscending(true)
+                        .setPageSize(2000)
+                        .setPageToken(requestToken)
+                        .build();
+
+        Map<String, Boolean> extraReadPermsMapping = new ArrayMap<>();
+        List<String> extraReadPerms = recordHelper.getExtraReadPermissions();
+        for (var extraReadPerm : extraReadPerms) {
+            extraReadPermsMapping.put(extraReadPerm, true);
+        }
+
+        // Working with startDateAccess of -1 as we don't want to have time based filtering in the
+        // query.
+        ReadTransactionRequest readTransactionRequest =
+                new ReadTransactionRequest(
+                        null,
+                        readRecordsRequest.toReadRecordsRequestParcel(),
+                        DEFAULT_LONG /* startDateAccess */,
+                        false,
+                        extraReadPermsMapping);
+
+        List<RecordInternal<?>> recordInternalList;
+        long token = DEFAULT_LONG;
+        ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
+        try (Cursor cursor = read(readTableRequest)) {
+            recordInternalList =
+                    recordHelper.getInternalRecords(
+                            cursor, readTableRequest.getPageSize(), mStagedPackageNamesByAppIds);
+            String startTimeColumnName = recordHelper.getStartTimeColumnName();
+
+            populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
+
+            // Get the token for the next read request.
+            if (cursor.moveToNext()) {
+                token = getCursorLong(cursor, startTimeColumnName);
+            }
+        }
+        return Pair.create(recordInternalList, token);
+    }
+
+    private Cursor read(ReadTableRequest request) {
+        synchronized (mMergingLock) {
+            return mStagedDatabase.getReadableDatabase().rawQuery(request.getReadCommand(), null);
+        }
+    }
+
+    private void populateInternalRecordsWithExtraData(
+            List<RecordInternal<?>> records, ReadTableRequest request) {
+        if (request.getExtraReadRequests() == null) {
+            return;
+        }
+        for (ReadTableRequest extraDataRequest : request.getExtraReadRequests()) {
+            Cursor cursorExtraData = read(extraDataRequest);
+            request.getRecordHelper()
+                    .updateInternalRecordsWithExtraFields(
+                            records, cursorExtraData, extraDataRequest.getTableName());
+        }
+    }
+
+    private void prepInternalDataPerStagedDb() {
+        try (Cursor cursor = read(new ReadTableRequest(AppInfoHelper.TABLE_NAME))) {
+            while (cursor.moveToNext()) {
+                long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
+                String packageName = getCursorString(cursor, AppInfoHelper.PACKAGE_COLUMN_NAME);
+                String appName = getCursorString(cursor, AppInfoHelper.APPLICATION_COLUMN_NAME);
+                byte[] icon = getCursorBlob(cursor, AppInfoHelper.APP_ICON_COLUMN_NAME);
+                mStagedPackageNamesByAppIds.put(rowId, packageName);
+
+                // If this package is not installed on the target device and is not present in the
+                // health db, then fill the health db with the info from source db.
+                AppInfoHelper.getInstance()
+                        .addOrUpdateAppInfoIfNotInstalled(
+                                mContext, packageName, appName, icon, false /* onlyReplace */);
+            }
+        }
+    }
+
+    private HealthConnectDatabase getStagedDatabase() {
+        synchronized (mMergingLock) {
+            if (mStagedDatabase == null) {
+                mStagedDatabase = new HealthConnectDatabase(mStagedDbContext);
+            }
+            return mStagedDatabase;
+        }
+    }
+
+    /**
+     * {@link Context} for the staged health connect db.
+     *
+     * @hide
+     */
+    private static final class StagedDatabaseContext extends ContextWrapper {
+        StagedDatabaseContext(@NonNull Context context) {
+            super(context);
+            Objects.requireNonNull(context);
+        }
+
+        @Override
+        public File getDatabasePath(String name) {
+            File stagedDataDir = getStagedRemoteDataDirectoryForUser(0);
+            stagedDataDir.mkdirs();
+            return new File(stagedDataDir, name);
+        }
+    }
+
+    /** Execute the task as critical section by holding read lock. */
+    public <E extends Throwable> void runWithStatesReadLock(RunnableWithThrowable<E> task)
+            throws E {
+        mStatesLock.readLock().lock();
+        try {
+            task.run();
+        } finally {
+            mStatesLock.readLock().unlock();
+        }
     }
 }

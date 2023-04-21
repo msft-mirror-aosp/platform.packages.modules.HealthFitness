@@ -25,21 +25,26 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.dataaccess.HealthDataAccessViewModel.DataAccessAppState
+import com.android.healthconnect.controller.dataaccess.HealthDataAccessViewModel.DataAccessScreenState
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
+import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
+import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.logging.DataAccessElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.setTitle
-import com.android.healthconnect.controller.utils.setupSharedMenu
-import com.android.settingslib.widget.AppPreference
+import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.TopIntroPreference
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,6 +53,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
 
     companion object {
+        private const val DATA_ACCESS_HEADER = "data_access_header"
         private const val PERMISSION_TYPE_DESCRIPTION = "permission_type_description"
         private const val CAN_READ_SECTION = "can_read"
         private const val CAN_WRITE_SECTION = "can_write"
@@ -55,9 +61,18 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         private const val ALL_ENTRIES_BUTTON = "all_entries_button"
         private const val DELETE_PERMISSION_TYPE_DATA_BUTTON = "delete_permission_type_data"
     }
+
+    init {
+        this.setPageName(PageName.DATA_ACCESS_PAGE)
+    }
+
     private val viewModel: HealthDataAccessViewModel by viewModels()
 
     private lateinit var permissionType: HealthPermissionType
+
+    private val mDataAccessHeader: AppHeaderPreference? by lazy {
+        preferenceScreen.findPreference(DATA_ACCESS_HEADER)
+    }
 
     private val mPermissionTypeDescription: TopIntroPreference? by lazy {
         preferenceScreen.findPreference(PERMISSION_TYPE_DESCRIPTION)
@@ -75,11 +90,11 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         preferenceScreen.findPreference(INACTIVE_SECTION)
     }
 
-    private val mAllEntriesButton: Preference? by lazy {
+    private val mAllEntriesButton: HealthPreference? by lazy {
         preferenceScreen.findPreference(ALL_ENTRIES_BUTTON)
     }
 
-    private val mDeletePermissionTypeData: Preference? by lazy {
+    private val mDeletePermissionTypeData: HealthPreference? by lazy {
         preferenceScreen.findPreference(DELETE_PERMISSION_TYPE_DATA_BUTTON)
     }
 
@@ -105,6 +120,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
 
+        mAllEntriesButton?.logName = DataAccessElement.SEE_ALL_ENTRIES_BUTTON
         mAllEntriesButton?.setOnPreferenceClickListener {
             findNavController()
                 .navigate(
@@ -112,6 +128,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                     bundleOf(PERMISSION_TYPE_KEY to permissionType))
             true
         }
+        mDeletePermissionTypeData?.logName = DataAccessElement.DELETE_THIS_DATA_BUTTON
         mDeletePermissionTypeData?.setOnPreferenceClickListener {
             val deletionType =
                 DeletionType.DeletionTypeHealthPermissionTypeData(
@@ -137,15 +154,28 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
     override fun onResume() {
         super.onResume()
         setTitle(fromPermissionType(permissionType).uppercaseLabel)
+        viewModel.loadAppMetaDataMap(permissionType)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSharedMenu(viewLifecycleOwner)
 
+        mDataAccessHeader?.icon = fromHealthPermissionType(permissionType).icon(requireContext())
+        mDataAccessHeader?.title = getString(fromPermissionType(permissionType).uppercaseLabel)
         viewModel.loadAppMetaDataMap(permissionType)
-        viewModel.appMetadataMap.observe(viewLifecycleOwner) { appMetadataMap ->
-            updateDataAccess(appMetadataMap)
+        viewModel.appMetadataMap.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is DataAccessScreenState.Loading -> {
+                    setLoading(isLoading = true)
+                }
+                is DataAccessScreenState.Error -> {
+                    setError(hasError = true)
+                }
+                is DataAccessScreenState.WithData -> {
+                    setLoading(isLoading = false, animate = false)
+                    updateDataAccess(state.appMetadata)
+                }
+            }
         }
     }
 
@@ -159,8 +189,8 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                 mCanReadSection?.isVisible = false
             } else {
                 mCanReadSection?.isVisible = true
-                appMetadataMap[DataAccessAppState.Read]!!.forEach { appMetadata ->
-                    mCanReadSection?.addPreference(createAppPreference(appMetadata))
+                appMetadataMap[DataAccessAppState.Read]!!.forEach { _appMetadata ->
+                    mCanReadSection?.addPreference(createAppPreference(_appMetadata))
                 }
             }
         }
@@ -170,11 +200,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
             } else {
                 mCanWriteSection?.isVisible = true
                 appMetadataMap[DataAccessAppState.Write]!!.forEach { _appMetadata ->
-                    mCanWriteSection?.addPreference(
-                        AppPreference(requireContext()).also {
-                            it.title = _appMetadata.appName
-                            it.icon = _appMetadata.icon
-                        })
+                    mCanWriteSection?.addPreference(createAppPreference(_appMetadata))
                 }
             }
         }
@@ -195,6 +221,7 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
                         InactiveAppPreference(requireContext()).also {
                             it.title = _appMetadata.appName
                             it.icon = _appMetadata.icon
+                            it.logName = DataAccessElement.DATA_ACCESS_INACTIVE_APP_BUTTON
                             it.setOnDeleteButtonClickListener {
                                 val deletionType =
                                     DeletionType.DeletionTypeAppData(
@@ -208,14 +235,14 @@ class HealthDataAccessFragment : Hilt_HealthDataAccessFragment() {
         }
     }
 
-    private fun createAppPreference(appMetadata: AppMetadata): AppPreference {
-        return AppPreference(requireContext()).also {
-            it.title = appMetadata.appName
-            it.icon = appMetadata.icon
+    private fun createAppPreference(appMetadata: AppMetadata): HealthAppPreference {
+        return HealthAppPreference(requireContext(), appMetadata).also {
+            it.logName = DataAccessElement.DATA_ACCESS_APP_BUTTON
             it.setOnPreferenceClickListener {
+                // TODO (b/270859815) might need to navigate to appAccess instead
                 findNavController()
                     .navigate(
-                        R.id.action_healthDataAccessFragment_to_manageAppPermissions,
+                        R.id.action_healthDataAccessFragment_to_appAccess,
                         bundleOf(EXTRA_PACKAGE_NAME to appMetadata.packageName))
                 true
             }

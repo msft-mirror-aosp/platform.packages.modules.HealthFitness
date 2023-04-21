@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.categories
 import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.AttrRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
@@ -28,7 +29,9 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange
 import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
-import com.android.healthconnect.controller.autodelete.numberOfMonths
+import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.Error
+import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.Loading
+import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
@@ -37,10 +40,14 @@ import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
-import com.android.healthconnect.controller.shared.HealthDataCategoryInt
+import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.logging.CategoriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment for health data categories. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
@@ -53,6 +60,12 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
         private const val DELETE_ALL_DATA_BUTTON = "delete_all_data"
     }
 
+    init {
+        this.setPageName(PageName.CATEGORIES_PAGE)
+    }
+
+    @Inject lateinit var logger: HealthConnectLogger
+
     private val categoriesViewModel: HealthDataCategoryViewModel by viewModels()
     private val autoDeleteViewModel: AutoDeleteViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
@@ -60,10 +73,10 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
     private val mBrowseDataCategory: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(BROWSE_DATA_CATEGORY)
     }
-    private val mAutoDelete: Preference? by lazy {
+    private val mAutoDelete: HealthPreference? by lazy {
         preferenceScreen.findPreference(AUTO_DELETE_BUTTON)
     }
-    private val mDeleteAllData: Preference? by lazy {
+    private val mDeleteAllData: HealthPreference? by lazy {
         preferenceScreen.findPreference(DELETE_ALL_DATA_BUTTON)
     }
 
@@ -74,10 +87,13 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
         if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
+
+        mAutoDelete?.logName = CategoriesElement.AUTO_DELETE_BUTTON
         mAutoDelete?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_healthDataCategories_to_autoDelete)
             true
         }
+        mDeleteAllData?.logName = CategoriesElement.DELETE_ALL_DATA_BUTTON
         mDeleteAllData?.setOnPreferenceClickListener {
             val deletionType = DeletionType.DeletionTypeAllData()
             childFragmentManager.setFragmentResult(
@@ -89,30 +105,43 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
 
     private fun buildSummary(autoDeleteRange: AutoDeleteRange): String {
         return when (autoDeleteRange) {
-            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> getString(R.string.range_never)
+            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> getString(R.string.range_off)
             AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS -> {
-                val count = numberOfMonths(AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS)
+                val count = AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS.numberOfMonths
                 MessageFormat.format(
                     getString(R.string.range_after_x_months), mapOf("count" to count))
             }
             AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS -> {
-                val count = numberOfMonths(AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS)
+                val count = AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS.numberOfMonths
                 MessageFormat.format(
                     getString(R.string.range_after_x_months), mapOf("count" to count))
             }
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    @AttrRes
+    private fun iconAttribute(autoDeleteRange: AutoDeleteRange): Int {
+        return when (autoDeleteRange) {
+            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> R.attr.autoDeleteOffIcon
+            else -> R.attr.autoDeleteIcon
+        }
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSharedMenu(viewLifecycleOwner)
+        categoriesViewModel.loadCategories()
 
         categoriesViewModel.categoriesData.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is HealthDataCategoryViewModel.CategoriesFragmentState.Loading -> {}
-                is HealthDataCategoryViewModel.CategoriesFragmentState.WithData -> {
+                is Loading -> {
+                    setLoading(true)
+                }
+                is WithData -> {
+                    setLoading(false)
                     updateDataList(state.categories)
+                }
+                Error -> {
+                    setError(true)
                 }
             }
         }
@@ -121,12 +150,17 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
             when (state) {
                 AutoDeleteViewModel.AutoDeleteState.Loading -> {
                     mAutoDelete?.summary = ""
+                    mAutoDelete?.icon = null
                 }
                 is AutoDeleteViewModel.AutoDeleteState.LoadingFailed -> {
                     mAutoDelete?.summary = ""
+                    mAutoDelete?.icon = null
                 }
                 is AutoDeleteViewModel.AutoDeleteState.WithData -> {
                     mAutoDelete?.summary = buildSummary(state.autoDeleteRange)
+                    mAutoDelete?.setIcon(
+                        AttributeResolver.getResource(
+                            requireContext(), iconAttribute(state.autoDeleteRange)))
                 }
             }
         }
@@ -138,48 +172,50 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
         }
     }
 
-    private fun updateDataList(categoriesList: List<@HealthDataCategoryInt Int>) {
-        val sortedCategoriesList: List<@HealthDataCategoryInt Int> =
-            categoriesList.sortedBy { getString(it.uppercaseTitle()) }
+    private fun updateDataList(categoriesList: List<HealthCategoryUiState>) {
+        val sortedCategoriesList: List<HealthCategoryUiState> =
+            categoriesList
+                .filter { it.hasData }
+                .sortedBy { getString(it.category.uppercaseTitle()) }
         mBrowseDataCategory?.removeAll()
         if (sortedCategoriesList.isEmpty()) {
             mBrowseDataCategory?.addPreference(
                 Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
         } else {
-            sortedCategoriesList.forEach { category ->
-                mBrowseDataCategory?.addPreference(
-                    Preference(requireContext()).also {
-                        it.setTitle(category.uppercaseTitle())
-                        it.setIcon(category.icon())
-                        it.onPreferenceClickListener =
-                            Preference.OnPreferenceClickListener {
-                                findNavController()
-                                    .navigate(
-                                        R.id.action_healthDataCategories_to_healthPermissionTypes,
-                                        bundleOf(CATEGORY_KEY to category))
-                                true
-                            }
-                    })
+            sortedCategoriesList.forEach { categoryState ->
+                val newCategoryPreference =
+                    HealthPreference(requireContext()).also {
+                        it.setTitle(categoryState.category.uppercaseTitle())
+                        it.icon = categoryState.category.icon(requireContext())
+                        it.logName = CategoriesElement.CATEGORY_BUTTON
+                        it.setOnPreferenceClickListener {
+                            findNavController()
+                                .navigate(
+                                    R.id.action_healthDataCategories_to_healthPermissionTypes,
+                                    bundleOf(CATEGORY_KEY to categoryState.category))
+                            true
+                        }
+                    }
+                mBrowseDataCategory?.addPreference(newCategoryPreference)
             }
         }
-
-        categoriesViewModel.allCategoriesData.observe(viewLifecycleOwner) { allCategoriesList ->
-            if (sortedCategoriesList.size < allCategoriesList.size) {
-                mBrowseDataCategory?.addPreference(
-                    Preference(requireContext()).also {
-                        it.setTitle(R.string.see_all_categories)
-                        it.setIcon(R.drawable.quantum_gm_ic_keyboard_arrow_right_vd_theme_24)
-                        it.onPreferenceClickListener =
-                            Preference.OnPreferenceClickListener {
-                                findNavController()
-                                    .navigate(
-                                        R.id.action_healthDataCategories_to_healthDataAllCategories)
-                                true
-                            }
-                    })
-            }
+        if (sortedCategoriesList.isEmpty() || categoriesList.any { !it.hasData }) {
+            addSeeAllCategoriesPreference()
         }
+        mDeleteAllData?.isEnabled = sortedCategoriesList.isNotEmpty()
+    }
 
-        mDeleteAllData?.isEnabled = categoriesList.isNotEmpty()
+    private fun addSeeAllCategoriesPreference() {
+        mBrowseDataCategory?.addPreference(
+            HealthPreference(requireContext()).also {
+                it.setTitle(R.string.see_all_categories)
+                it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.seeAllIcon))
+                it.logName = CategoriesElement.SEE_ALL_CATEGORIES_BUTTON
+                it.setOnPreferenceClickListener {
+                    findNavController()
+                        .navigate(R.id.action_healthDataCategories_to_healthDataAllCategories)
+                    true
+                }
+            })
     }
 }
