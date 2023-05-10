@@ -17,22 +17,23 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.SLEEP_SESSION_DURATION_TOTAL;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION;
 
-import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectException;
 import android.health.connect.datatypes.AggregationType;
+import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.util.Pair;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
@@ -41,13 +42,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Record helper for Sleep session.
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RECORD_TYPE_SLEEP_SESSION)
 public final class SleepSessionRecordHelper
         extends IntervalRecordHelper<SleepSessionRecordInternal> {
     private static final String SLEEP_SESSION_RECORD_TABLE_NAME = "sleep_session_record_table";
@@ -58,20 +59,14 @@ public final class SleepSessionRecordHelper
 
     private static final int NO_SLEEP_TABLE_DB_VERSION = 1;
 
+    public SleepSessionRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION);
+    }
+
     /** Returns the table name to be created corresponding to this helper */
     @Override
     String getMainTableName() {
         return SLEEP_SESSION_RECORD_TABLE_NAME;
-    }
-
-    @Override
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion <= NO_SLEEP_TABLE_DB_VERSION) {
-            createTable(db, getCreateTableRequest());
-            return; // No more queries running after this, the table is already on latest schema
-        }
-
-        // Add more upgrades here
     }
 
     @Override
@@ -85,7 +80,11 @@ public final class SleepSessionRecordHelper
                             SLEEP_SESSION_RECORD_TABLE_NAME, sessionColumns, START_TIME_COLUMN_NAME)
                     .setJoin(
                             SleepStageRecordHelper.getJoinForDurationAggregation(
-                                    getMainTableName()));
+                                    getMainTableName()))
+                    .setPriorityAggregationExtraParams(
+                            new AggregateParams.PriorityAggregationExtraParams(
+                                    SleepStageRecordHelper.getStartTimeColumnName(),
+                                    SleepStageRecordHelper.getEndTimeColumnName()));
         }
         return null;
     }
@@ -93,7 +92,7 @@ public final class SleepSessionRecordHelper
     @Override
     void populateSpecificRecordValue(
             @NonNull Cursor cursor, @NonNull SleepSessionRecordInternal sleepSessionRecord) {
-        String uuid = getCursorString(cursor, UUID_COLUMN_NAME);
+        UUID uuid = getCursorUUID(cursor, UUID_COLUMN_NAME);
         sleepSessionRecord.setNotes(getCursorString(cursor, NOTES_COLUMN_NAME));
         sleepSessionRecord.setTitle(getCursorString(cursor, TITLE_COLUMN_NAME));
 
@@ -101,7 +100,7 @@ public final class SleepSessionRecordHelper
             // Populate stages from each row.
             sleepSessionRecord.addSleepStage(
                     SleepStageRecordHelper.populateStageIfRecorded(cursor));
-        } while (cursor.moveToNext() && uuid.equals(getCursorString(cursor, UUID_COLUMN_NAME)));
+        } while (cursor.moveToNext() && uuid.equals(getCursorUUID(cursor, UUID_COLUMN_NAME)));
         // In case we hit another record, move the cursor back to read next record in outer
         // RecordHelper#getInternalRecords loop.
         cursor.moveToPrevious();
@@ -150,10 +149,12 @@ public final class SleepSessionRecordHelper
     }
 
     @Override
-    public List<String> checkFlagsAndGetExtraWritePermissions(RecordInternal<?> recordInternal) {
+    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {
+        super.checkRecordOperationsAreEnabled(recordInternal);
         if (!isRecordOperationsEnabled()) {
-            throw new UnsupportedOperationException("Writing sleep sessions is not supported.");
+            throw new HealthConnectException(
+                    HealthConnectException.ERROR_UNSUPPORTED_OPERATION,
+                    "Writing sleep sessions is not supported.");
         }
-        return Collections.emptyList();
     }
 }

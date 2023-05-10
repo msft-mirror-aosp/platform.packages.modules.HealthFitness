@@ -16,11 +16,10 @@
 
 package android.healthconnect.cts;
 
-import static android.Manifest.permission.WRITE_DEVICE_CONFIG;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import android.app.UiAutomation;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.ExerciseSessionRecord;
@@ -30,7 +29,10 @@ import android.provider.DeviceConfig;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.modules.utils.build.SdkLevel;
+
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -53,12 +55,18 @@ public class SessionDatatypeDisabledFeatureTest {
         TestUtils.verifyDeleteRecords(ExerciseSessionRecord.class, mFilterAll);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testWriteExerciseSession_insertWithDisableFeature_throwsException()
             throws InterruptedException {
         setSessionDatatypesFeatureEnabledFlag(false);
         List<Record> records = List.of(TestUtils.buildExerciseSession());
-        TestUtils.insertRecords(records);
+        try {
+            TestUtils.insertRecords(records);
+            Assert.fail("Writing exercise session when flag is disabled should not be allowed");
+        } catch (HealthConnectException healthConnectException) {
+            assertThat(healthConnectException.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+        }
     }
 
     @Test
@@ -74,12 +82,18 @@ public class SessionDatatypeDisabledFeatureTest {
         assertThat(readRecords).isEmpty();
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testWriteSleepSession_insertWithDisableFeature_throwsException()
             throws InterruptedException {
         setSessionDatatypesFeatureEnabledFlag(false);
         List<Record> records = List.of(TestUtils.buildSleepSession());
-        TestUtils.insertRecords(records);
+        try {
+            TestUtils.insertRecords(records);
+            Assert.fail("Writing sleep session when flag is disabled should not be allowed");
+        } catch (HealthConnectException healthConnectException) {
+            assertThat(healthConnectException.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_UNSUPPORTED_OPERATION);
+        }
     }
 
     @Test
@@ -96,10 +110,20 @@ public class SessionDatatypeDisabledFeatureTest {
         assertThat(readRecords).isEmpty();
     }
 
-    private void setSessionDatatypesFeatureEnabledFlag(boolean flag) {
-        mUiAutomation.adoptShellPermissionIdentity(WRITE_DEVICE_CONFIG);
+    private void setSessionDatatypesFeatureEnabledFlag(boolean flag) throws InterruptedException {
+        if (SdkLevel.isAtLeastU()) {
+            mUiAutomation.adoptShellPermissionIdentity(
+                    "android.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG");
+        } else {
+            mUiAutomation.adoptShellPermissionIdentity("android.permission.WRITE_DEVICE_CONFIG");
+        }
+
         DeviceConfig.setProperty(
-                "health_connect", "session_types_enable", flag ? "true" : "false", false);
+                DeviceConfig.NAMESPACE_HEALTH_FITNESS,
+                "session_types_enable",
+                flag ? "true" : "false",
+                false);
         mUiAutomation.dropShellPermissionIdentity();
+        Thread.sleep(100);
     }
 }

@@ -19,11 +19,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.RadioGroup
-import androidx.core.content.res.ResourcesCompat
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
@@ -46,16 +47,21 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionTypesElement
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
+import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment for health permission types. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() {
 
     companion object {
+        private const val TAG = "HealthPermissionTypesFT"
         private const val PERMISSION_TYPES_HEADER = "permission_types_header"
         private const val APP_FILTERS_PREFERENCE = "app_filters_preference"
         private const val PERMISSION_TYPES_CATEGORY = "permission_types"
@@ -69,9 +75,11 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
         this.setPageName(PageName.PERMISSION_TYPES_PAGE)
     }
 
+    @Inject lateinit var logger: HealthConnectLogger
+
     @HealthDataCategoryInt private var category: Int = 0
 
-    private val viewModel: HealthPermissionTypesViewModel by viewModels()
+    private val viewModel: HealthPermissionTypesViewModel by activityViewModels()
 
     private val mPermissionTypesHeader: AppHeaderPreference? by lazy {
         preferenceScreen.findPreference(PERMISSION_TYPES_HEADER)
@@ -119,11 +127,22 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mPermissionTypesHeader?.icon =
-            ResourcesCompat.getDrawable(resources, category.icon(), requireContext().theme)
+        mPermissionTypesHeader?.icon = category.icon(requireContext())
         mPermissionTypesHeader?.title = getString(category.uppercaseTitle())
         viewModel.loadData(category)
         viewModel.loadAppsWithData(category)
+
+        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
+            menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_open_units -> {
+                    logger.logImpression(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                    findNavController().navigate(R.id.action_healthPermissionTypes_to_unitsFragment)
+                    true
+                }
+                else -> false
+            }
+        }
 
         viewModel.permissionTypesData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -144,9 +163,14 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
             }
         }
         childFragmentManager.setFragmentResultListener(PRIORITY_UPDATED_EVENT, this) { _, bundle ->
-            Log.e("SUCCESSFUL_UPDATE", "event sent")
             bundle.getStringArrayList(PRIORITY_UPDATED_EVENT)?.let {
-                viewModel.updatePriorityList(category, it)
+                try {
+                    viewModel.updatePriorityList(category, it)
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Failed to update priorities!", ex)
+                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
 
@@ -178,8 +202,9 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
                     it.key = APP_PRIORITY_BUTTON
                     it.order = 4
                     it.setOnPreferenceClickListener {
-                        PriorityListDialogFragment(
-                                priorityList, getString(category.lowercaseTitle()))
+                        viewModel.setEditedPriorityList(priorityList)
+                        viewModel.setCategoryLabel(getString(category.lowercaseTitle()))
+                        PriorityListDialogFragment()
                             .show(childFragmentManager, PriorityListDialogFragment.TAG)
                         true
                     }
@@ -189,7 +214,13 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     }
 
     private fun updatePermissionTypesList(permissionTypeList: List<HealthPermissionType>) {
+        mDeleteCategoryData?.isEnabled = permissionTypeList.isNotEmpty()
         mPermissionTypes?.removeAll()
+        if (permissionTypeList.isEmpty()) {
+            mPermissionTypes?.addPreference(
+                Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
+            return
+        }
         permissionTypeList.forEach { permissionType ->
             mPermissionTypes?.addPreference(
                 HealthPreference(requireContext()).also {

@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
@@ -57,6 +58,8 @@ import java.util.stream.Collectors;
 public class HealthDataCategoryPriorityHelper {
     private static final String TABLE_NAME = "health_data_category_priority_table";
     private static final String HEALTH_DATA_CATEGORY_COLUMN_NAME = "health_data_category";
+    public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
+            Collections.singletonList(new Pair<>(HEALTH_DATA_CATEGORY_COLUMN_NAME, TYPE_STRING));
     private static final String APP_ID_PRIORITY_ORDER_COLUMN_NAME = "app_id_priority_order";
     private static final String TAG = "HealthConnectPrioHelper";
     private static final String DEFAULT_APP_RESOURCE_NAME =
@@ -71,17 +74,8 @@ public class HealthDataCategoryPriorityHelper {
 
     private HealthDataCategoryPriorityHelper() {}
 
-    @NonNull
-    public static synchronized HealthDataCategoryPriorityHelper getInstance() {
-        if (sHealthDataCategoryPriorityHelper == null) {
-            sHealthDataCategoryPriorityHelper = new HealthDataCategoryPriorityHelper();
-        }
-
-        return sHealthDataCategoryPriorityHelper;
-    }
-
     // Called on DB update.
-    public void onUpgrade(int newVersion, @NonNull SQLiteDatabase db) {
+    public void onUpgrade(int oldVersion, int newVersion, @NonNull SQLiteDatabase db) {
         // empty by default
     }
 
@@ -94,7 +88,7 @@ public class HealthDataCategoryPriorityHelper {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    public void appendToPriorityList(
+    public synchronized void appendToPriorityList(
             @NonNull String packageName,
             @HealthDataCategory.Type int dataCategory,
             Context context) {
@@ -119,7 +113,9 @@ public class HealthDataCategoryPriorityHelper {
         }
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME, getContentValuesFor(dataCategory, newPriorityOrder)),
+                        TABLE_NAME,
+                        getContentValuesFor(dataCategory, newPriorityOrder),
+                        UNIQUE_COLUMN_INFO),
                 dataCategory,
                 newPriorityOrder);
     }
@@ -137,29 +133,15 @@ public class HealthDataCategoryPriorityHelper {
                 return;
             }
         }
+        removeFromPriorityListInternal(dataCategory, packageName);
+    }
 
-        List<Long> newPriorityList =
-                new ArrayList<>(
-                        getHealthDataCategoryToAppIdPriorityMap()
-                                .getOrDefault(dataCategory, Collections.emptyList()));
-        if (newPriorityList.isEmpty()) {
-            return;
+    /** Removes app from priorityList for all HealthData Categories if the package is uninstalled */
+    public void removeAppFromPriorityList(@NonNull String packageName) {
+        Objects.requireNonNull(packageName);
+        for (Integer dataCategory : getHealthDataCategoryToAppIdPriorityMap().keySet()) {
+            removeFromPriorityListInternal(dataCategory, packageName);
         }
-
-        newPriorityList.remove(AppInfoHelper.getInstance().getAppInfoId(packageName));
-        if (newPriorityList.isEmpty()) {
-            safelyUpdateDBAndUpdateCache(
-                    new DeleteTableRequest(TABLE_NAME)
-                            .setId(HEALTH_DATA_CATEGORY_COLUMN_NAME, String.valueOf(dataCategory)),
-                    dataCategory);
-            return;
-        }
-
-        safelyUpdateDBAndUpdateCache(
-                new UpsertTableRequest(
-                        TABLE_NAME, getContentValuesFor(dataCategory, newPriorityList)),
-                dataCategory,
-                newPriorityList);
     }
 
     /** Returns list of package names based on priority for the input {@link HealthDataCategory} */
@@ -197,7 +179,9 @@ public class HealthDataCategoryPriorityHelper {
 
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME, getContentValuesFor(dataCategory, newPriorityOrder)),
+                        TABLE_NAME,
+                        getContentValuesFor(dataCategory, newPriorityOrder),
+                        UNIQUE_COLUMN_INFO),
                 dataCategory,
                 newPriorityOrder);
     }
@@ -218,6 +202,11 @@ public class HealthDataCategoryPriorityHelper {
         }
 
         return mHealthDataCategoryToAppIdPriorityMap;
+    }
+
+    /** Returns an immutable map of data categories along with their priority order. */
+    public Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMapImmutable() {
+        return Collections.unmodifiableMap(getHealthDataCategoryToAppIdPriorityMap());
     }
 
     private synchronized void populateDataCategoryToAppIdPriorityMap() {
@@ -293,5 +282,42 @@ public class HealthDataCategoryPriorityHelper {
         columnInfo.add(new Pair<>(APP_ID_PRIORITY_ORDER_COLUMN_NAME, TEXT_NOT_NULL));
 
         return columnInfo;
+    }
+
+    @NonNull
+    public static synchronized HealthDataCategoryPriorityHelper getInstance() {
+        if (sHealthDataCategoryPriorityHelper == null) {
+            sHealthDataCategoryPriorityHelper = new HealthDataCategoryPriorityHelper();
+        }
+
+        return sHealthDataCategoryPriorityHelper;
+    }
+
+    private synchronized void removeFromPriorityListInternal(
+            int dataCategory, @NonNull String packageName) {
+        List<Long> newPriorityList =
+                new ArrayList<>(
+                        getHealthDataCategoryToAppIdPriorityMap()
+                                .getOrDefault(dataCategory, Collections.emptyList()));
+        if (newPriorityList.isEmpty()) {
+            return;
+        }
+
+        newPriorityList.remove(AppInfoHelper.getInstance().getAppInfoId(packageName));
+        if (newPriorityList.isEmpty()) {
+            safelyUpdateDBAndUpdateCache(
+                    new DeleteTableRequest(TABLE_NAME)
+                            .setId(HEALTH_DATA_CATEGORY_COLUMN_NAME, String.valueOf(dataCategory)),
+                    dataCategory);
+            return;
+        }
+
+        safelyUpdateDBAndUpdateCache(
+                new UpsertTableRequest(
+                        TABLE_NAME,
+                        getContentValuesFor(dataCategory, newPriorityList),
+                        UNIQUE_COLUMN_INFO),
+                dataCategory,
+                newPriorityList);
     }
 }

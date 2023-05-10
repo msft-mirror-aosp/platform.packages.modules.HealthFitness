@@ -16,22 +16,25 @@
 
 package com.android.server.healthconnect.migration;
 
-import android.Manifest;
+import static com.android.server.healthconnect.migration.MigrationConstants.HC_PACKAGE_NAME_CONFIG_NAME;
+import static com.android.server.healthconnect.migration.MigrationUtils.filterIntent;
+import static com.android.server.healthconnect.migration.MigrationUtils.filterPermissions;
+
 import android.annotation.NonNull;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectManager;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.Slog;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * This class contains methods to:
@@ -72,21 +75,17 @@ public class MigrationBroadcast {
      * handle {@link android.health.connect.HealthConnectManager#ACTION_SHOW_MIGRATION_INFO}.
      */
     public void sendInvocationBroadcast() throws Exception {
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "Calling sendInvocationBroadcast()");
-        }
+        Slog.i(TAG, "Calling sendInvocationBroadcast()");
 
         String hcMigratorPackage =
-                mContext.getString(
-                        mContext.getResources()
-                                .getIdentifier(
-                                        "config_healthConnectMigratorPackageName",
-                                        "string",
-                                        "android"));
+                mContext.getResources()
+                        .getString(
+                                Resources.getSystem()
+                                        .getIdentifier(HC_PACKAGE_NAME_CONFIG_NAME, null, null));
         String migrationAwarePackage;
 
-        List<String> permissionFilteredPackages = filterPermissions();
-        List<String> filteredPackages = filterIntent(permissionFilteredPackages);
+        List<String> permissionFilteredPackages = filterPermissions(mContext);
+        List<String> filteredPackages = filterIntent(mContext, permissionFilteredPackages);
 
         int numPackages = filteredPackages.size();
 
@@ -113,95 +112,75 @@ public class MigrationBroadcast {
             Slog.d(TAG, "Checking if migration aware package is installed on user");
         }
 
-        if (isPackageInstalled(migrationAwarePackage, mUser)) {
-            Intent intent =
-                    new Intent(HealthConnectManager.ACTION_HEALTH_CONNECT_MIGRATION_READY)
-                            .setPackage(migrationAwarePackage);
-            mContext.sendBroadcastAsUser(intent, mUser);
-            if (Constants.DEBUG) {
-                Slog.d(TAG, "Sent broadcast to migration aware application.");
+        Context userContext = mContext.createContextAsUser(mUser, 0);
+        if (isPackageInstalled(migrationAwarePackage, userContext)) {
+            UserManager userManager =
+                    Objects.requireNonNull(userContext.getSystemService(UserManager.class));
+            if (userManager.isUserForeground()) {
+                Intent intent =
+                        new Intent(HealthConnectManager.ACTION_HEALTH_CONNECT_MIGRATION_READY)
+                                .setPackage(migrationAwarePackage);
+
+                queryAndSetComponentForIntent(intent);
+
+                mContext.sendBroadcastAsUser(intent, mUser);
+                if (Constants.DEBUG) {
+                    Slog.d(TAG, "Sent broadcast to migration aware application.");
+                }
+            } else if (Constants.DEBUG) {
+                Slog.d(TAG, "User " + mUser + " is not currently active");
             }
         } else if (Constants.DEBUG) {
             Slog.d(TAG, "Migration aware app is not installed on the current user");
         }
     }
 
-    /**
-     * Filters and returns the package names of applications which hold permission {@link
-     * android.Manifest.permission#MIGRATE_HEALTH_CONNECT_DATA}.
-     *
-     * @return List of filtered app package names which hold the specified permission
-     */
-    private List<String> filterPermissions() {
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "Calling filterPermissions()");
-        }
-
-        String[] permissions = new String[] {Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA};
-
-        List<PackageInfo> packageInfos =
-                mContext.getPackageManager()
-                        .getPackagesHoldingPermissions(
-                                permissions, PackageManager.PackageInfoFlags.of(0));
-
-        List<String> permissionFilteredPackages =
-                packageInfos.stream().map(info -> info.packageName).collect(Collectors.toList());
-
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "permissionFilteredPackages : " + permissionFilteredPackages);
-        }
-        return permissionFilteredPackages;
-    }
-
-    /**
-     * Filters and returns the package names of applications which handle intent {@link
-     * android.health.connect.HealthConnectManager#ACTION_SHOW_MIGRATION_INFO}.
-     *
-     * @param permissionFilteredPackages List of app package names holding permission {@link
-     *     android.Manifest.permission#MIGRATE_HEALTH_CONNECT_DATA}
-     * @return List of filtered app package names which handle the specified intent action
-     */
-    private List<String> filterIntent(List<String> permissionFilteredPackages) {
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "Calling filterIntents()");
-        }
-
-        List<String> filteredPackages = new ArrayList<String>(permissionFilteredPackages.size());
-
-        for (String packageName : permissionFilteredPackages) {
-
-            if (Constants.DEBUG) {
-                Slog.d(TAG, "Checking intent for package : " + packageName);
-            }
-
-            Intent intentToCheck =
-                    new Intent(HealthConnectManager.ACTION_SHOW_MIGRATION_INFO)
-                            .setPackage(packageName);
-
-            ResolveInfo resolveResult =
-                    mContext.getPackageManager()
-                            .resolveActivity(
-                                    intentToCheck,
-                                    PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL));
-
-            if (resolveResult != null) {
-                filteredPackages.add(packageName);
-            }
-        }
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "filteredPackages : " + filteredPackages);
-        }
-        return filteredPackages;
-    }
-
-    private boolean isPackageInstalled(String packageName, UserHandle user) {
+    /** Checks if the package is installed on the given user. */
+    private boolean isPackageInstalled(String packageName, Context userContext) {
         try {
-            PackageManager packageManager =
-                    mContext.createContextAsUser(user, 0).getPackageManager();
+            PackageManager packageManager = userContext.getPackageManager();
             packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0));
             return true;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
+        }
+    }
+
+    /**
+     * Sets the component to send the migration ready intent to, if only one such receiver is found.
+     *
+     * <p>This is needed to send an explicit broadcast containing an explicit intent which has the
+     * target component specified.
+     *
+     * @param intent Intent which has the package set, for which the broadcast receiver is to be
+     *     queried.
+     * @throws Exception if multiple broadcast receivers are found for the migration ready intent.
+     */
+    private void queryAndSetComponentForIntent(Intent intent) throws Exception {
+        List<ResolveInfo> queryResults =
+                mContext.getPackageManager()
+                        .queryBroadcastReceiversAsUser(
+                                intent,
+                                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_ALL),
+                                mUser);
+
+        int numReceivers = queryResults.size();
+
+        if (numReceivers == 0 && Constants.DEBUG) {
+            Slog.d(TAG, "Found no broadcast receivers for the migration broadcast intent");
+        } else if (numReceivers == 1) {
+            ResolveInfo queryResult = queryResults.get(0);
+            if (queryResult.activityInfo != null) {
+                ComponentName componentName =
+                        new ComponentName(
+                                queryResult.activityInfo.packageName,
+                                queryResult.activityInfo.name);
+                intent.setComponent(componentName);
+            } else if (Constants.DEBUG) {
+                Slog.d(TAG, "Found no corresponding broadcast receiver for intent resolution");
+            }
+        } else if (numReceivers > 1 && Constants.DEBUG) {
+            Slog.d(TAG, "Found multiple broadcast receivers for migration broadcast intent");
         }
     }
 }

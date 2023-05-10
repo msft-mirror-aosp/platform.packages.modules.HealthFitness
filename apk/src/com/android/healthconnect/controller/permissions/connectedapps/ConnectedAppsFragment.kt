@@ -20,6 +20,7 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commitNow
@@ -35,15 +36,19 @@ import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState
 import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.APP_INTEGRATION_REQUEST_BUCKET_ID
+import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.INACTIVE
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
+import com.android.healthconnect.controller.shared.preference.BannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAllAppsDialogElement
@@ -76,6 +81,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
 
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
     private val viewModel: ConnectedAppsViewModel by viewModels()
     private lateinit var searchMenuItem: MenuItem
 
@@ -125,7 +131,10 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 R.string.permissions_disconnect_all_dialog_disconnect,
                 DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON) { _, _
                     ->
-                    viewModel.disconnectAllApps(apps)
+                    if (!viewModel.disconnectAllApps(apps)) {
+                        Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             .create()
             .show()
@@ -186,14 +195,18 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 activeApps.addAll(notAllowedApps)
 
                 mSettingsAndHelpCategory?.addPreference(
-                    getRemoveAccessForAllAppsPreference().also {
-                        it.isEnabled = allowedApps.isNotEmpty()
-                        it.setOnPreferenceClickListener {
+                    getRemoveAccessForAllAppsPreference().apply {
+                        isEnabled = allowedApps.isNotEmpty()
+                        setOnPreferenceClickListener {
                             openRemoveAllAppsAccessDialog(activeApps)
                             true
                         }
                     })
-                mSettingsAndHelpCategory?.addPreference(getHelpAndFeedbackPreference())
+
+                if (deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
+                    deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
+                    mSettingsAndHelpCategory?.addPreference(getHelpAndFeedbackPreference())
+                }
 
                 updateAllowedApps(allowedApps)
                 updateDeniedApps(notAllowedApps)
@@ -336,9 +349,27 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             it.summary = resources.getString(R.string.send_feedback_description)
             it.setOnPreferenceClickListener {
                 val intent = Intent(Intent.ACTION_BUG_REPORT)
-                requireActivity().startActivity(intent)
+                intent.putExtra("category_tag", APP_INTEGRATION_REQUEST_BUCKET_ID)
+                activity?.startActivityForResult(intent, FEEDBACK_INTENT_RESULT_CODE)
                 true
             }
+        }
+    }
+
+    // TODO (b/275602235) Use this banner to indicate one or more apps need updating to work with
+    // Android U
+    private fun getAppUpdateNeededBanner(): BannerPreference {
+        return BannerPreference(requireContext()).also { banner ->
+            banner.setButton(resources.getString(R.string.app_update_needed_banner_button))
+            banner.title = resources.getString(R.string.app_update_needed_banner_title)
+            banner.summary =
+                resources.getString(R.string.app_update_needed_banner_description_multiple)
+            banner.setIcon(R.drawable.ic_apps_outage)
+            banner.setButtonOnClickListener {
+                // TODO (b/275602235) navigate to play store
+            }
+            banner.setIsDismissable(true)
+            banner.setDismissAction { preferenceScreen.removePreference(banner) }
         }
     }
 

@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_healthDataCategories_to_healthPermissionTypes"
             app:destination="@id/healthPermissionTypesFragment" />
+        <action
+            android:id="@+id/action_dataCategoriesFragment_to_unitsFragment"
+            app:destination="@+id/unitFragment" />
     </fragment>
     <fragment
         android:id="@+id/autoDeleteFragment"
@@ -51,11 +54,11 @@
         android:id="@+id/dataEntriesFragment"
         android:name="com.android.healthconnect.controller.dataentries.DataEntriesFragment">
         <action
-            android:id="@+id/action_dataEntriesFragment_to_unitsFragment"
-            app:destination="@+id/unitFragment" />
-        <action
             android:id="@+id/action_dataEntriesFragment_to_dataEntryDetailsFragment"
             app:destination="@id/dataEntryDetailsFragment" />
+        <action
+            android:id="@+id/action_dataEntriesFragment_to_unitsFragment"
+            app:destination="@+id/unitFragment" />
     </fragment>
 
     <fragment
@@ -65,6 +68,9 @@
         <action
             android:id="@+id/action_healthPermissionTypes_to_healthDataAccess"
             app:destination="@id/healthDataAccessFragment" />
+        <action
+            android:id="@+id/action_healthPermissionTypes_to_unitsFragment"
+            app:destination="@+id/unitFragment" />
     </fragment>
 
     <fragment
@@ -74,8 +80,11 @@
             android:id="@+id/action_healthDataAccess_to_dataEntries"
             app:destination="@id/dataEntriesFragment" />
         <action
-            android:id="@+id/action_healthDataAccessFragment_to_manageAppPermissions"
-            app:destination="@id/manageAppPermissions" />
+            android:id="@+id/action_healthDataAccessFragment_to_appAccess"
+            app:destination="@id/connectedAppFragment" />
+        <action
+            android:id="@+id/action_healthDataAccessFragment_to_unitsFragment"
+            app:destination="@+id/unitFragment" />
     </fragment>
 
     <fragment
@@ -90,6 +99,15 @@
         <action
             android:id="@+id/action_dataEntryDetailsFragment_to_unitFragment"
             app:destination="@id/unitFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/connectedAppFragment"
+        android:label="@string/app_access_title"
+        android:name="com.android.healthconnect.controller.permissions.app.ConnectedAppFragment">
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
     </fragment>
 
     <activity

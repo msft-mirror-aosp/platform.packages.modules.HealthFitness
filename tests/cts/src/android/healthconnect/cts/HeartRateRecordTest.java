@@ -29,10 +29,15 @@ import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogTokenResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.HeartRateRecord;
@@ -45,6 +50,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,9 +62,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -73,6 +79,7 @@ public class HeartRateRecordTest {
                         .setStartTime(Instant.EPOCH)
                         .setEndTime(Instant.now())
                         .build());
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
@@ -80,7 +87,7 @@ public class HeartRateRecordTest {
         ArrayList<Record> hearRateRecords = new ArrayList<>();
         for (int i = 0; i < 2500; i++) {
             hearRateRecords.addAll(
-                    Arrays.asList(getBaseHeartRateRecord(), getCompleteHeartRateRecord()));
+                    Arrays.asList(getBaseHeartRateRecord(10), getCompleteHeartRateRecord()));
         }
         TestUtils.insertRecords(hearRateRecords);
     }
@@ -88,7 +95,7 @@ public class HeartRateRecordTest {
     @Test
     public void testInsertHeartRateRecord() throws InterruptedException {
         TestUtils.insertRecords(
-                Arrays.asList(getBaseHeartRateRecord(), getCompleteHeartRateRecord()));
+                Arrays.asList(getBaseHeartRateRecord(10), getCompleteHeartRateRecord()));
     }
 
     @Test
@@ -100,7 +107,7 @@ public class HeartRateRecordTest {
     public void testReadHeartRateRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<HeartRateRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeartRateRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<HeartRateRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -193,6 +200,13 @@ public class HeartRateRecordTest {
         assertThat(newHeartRateRecords.size() - oldHeartRateRecords.size()).isEqualTo(1);
         assertThat(newHeartRateRecords.get(newHeartRateRecords.size() - 1).equals(testRecord))
                 .isTrue();
+        HeartRateRecord newRecord = newHeartRateRecords.get(newHeartRateRecords.size() - 1);
+        for (int idx = 0; idx < newRecord.getSamples().size(); idx++) {
+            assertThat(newRecord.getSamples().get(idx).getTime().toEpochMilli())
+                    .isEqualTo(testRecord.getSamples().get(idx).getTime().toEpochMilli());
+            assertThat(newRecord.getSamples().get(idx).getBeatsPerMinute())
+                    .isEqualTo(testRecord.getSamples().get(idx).getBeatsPerMinute());
+        }
     }
 
     @Test
@@ -300,7 +314,7 @@ public class HeartRateRecordTest {
 
     @Test
     public void testDeleteHeartRateRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseHeartRateRecord(), getCompleteHeartRateRecord());
+        List<Record> records = List.of(getBaseHeartRateRecord(10), getCompleteHeartRateRecord());
         TestUtils.insertRecords(records);
 
         for (Record record : records) {
@@ -339,16 +353,43 @@ public class HeartRateRecordTest {
 
     @Test
     public void testDeleteHeartRateRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseHeartRateRecord(), getCompleteHeartRateRecord());
+        List<Record> records = List.of(getBaseHeartRateRecord(10), getCompleteHeartRateRecord());
         List<Record> insertedRecord = TestUtils.insertRecords(records);
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
         for (Record record : insertedRecord) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
+        for (RecordIdFilter recordIdFilter : recordIds) {
+            assertThat(recordIdFilter.getClientRecordId()).isNull();
+            assertThat(recordIdFilter.getId()).isNotNull();
+            assertThat(recordIdFilter.getRecordType()).isEqualTo(HeartRateRecord.class);
+        }
 
         TestUtils.verifyDeleteRecords(recordIds);
         for (Record record : records) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
+        }
+    }
+
+    @Test
+    public void testDeleteHeartRateRecord_usingInvalidClientIds() throws InterruptedException {
+        List<Record> records = List.of(getBaseHeartRateRecord(10), getCompleteHeartRateRecord());
+        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
+        for (Record record : insertedRecord) {
+            recordIds.add(
+                    RecordIdFilter.fromClientRecordId(
+                            record.getClass(), record.getMetadata().getId()));
+        }
+        for (RecordIdFilter recordIdFilter : recordIds) {
+            assertThat(recordIdFilter.getClientRecordId()).isNotNull();
+            assertThat(recordIdFilter.getId()).isNull();
+            assertThat(recordIdFilter.getRecordType()).isEqualTo(HeartRateRecord.class);
+        }
+
+        TestUtils.verifyDeleteRecords(recordIds);
+        for (Record record : records) {
+            TestUtils.assertRecordFound(record.getMetadata().getId(), record.getClass());
         }
     }
 
@@ -399,9 +440,9 @@ public class HeartRateRecordTest {
     public void testBpmAggregation_timeRange_all() throws Exception {
         List<Record> records =
                 Arrays.asList(
-                        TestUtils.getHeartRateRecord(71),
-                        TestUtils.getHeartRateRecord(72),
-                        TestUtils.getHeartRateRecord(73));
+                        getBaseHeartRateRecord(71),
+                        getBaseHeartRateRecord(72),
+                        getBaseHeartRateRecord(73));
         AggregateRecordsResponse<Long> response =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Long>(
@@ -472,9 +513,9 @@ public class HeartRateRecordTest {
         Context context = ApplicationProvider.getApplicationContext();
         List<Record> records =
                 Arrays.asList(
-                        TestUtils.getHeartRateRecord(71),
-                        TestUtils.getHeartRateRecord(72),
-                        TestUtils.getHeartRateRecord(73));
+                        getBaseHeartRateRecord(71),
+                        getBaseHeartRateRecord(72),
+                        getBaseHeartRateRecord(73));
         AggregateRecordsResponse<Long> response =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Long>(
@@ -640,9 +681,9 @@ public class HeartRateRecordTest {
     public void testHeartAggregation_measurement_count() throws Exception {
         List<Record> records =
                 Arrays.asList(
-                        TestUtils.getHeartRateRecord(71),
-                        TestUtils.getHeartRateRecord(72),
-                        TestUtils.getHeartRateRecord(73));
+                        getBaseHeartRateRecord(71),
+                        getBaseHeartRateRecord(72),
+                        getBaseHeartRateRecord(73));
         AggregateRecordsResponse<Long> response =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Long>(
@@ -656,9 +697,9 @@ public class HeartRateRecordTest {
                         records);
         List<Record> recordsNew =
                 Arrays.asList(
-                        TestUtils.getHeartRateRecord(71),
-                        TestUtils.getHeartRateRecord(72),
-                        TestUtils.getHeartRateRecord(73));
+                        getBaseHeartRateRecord(71),
+                        getBaseHeartRateRecord(72),
+                        getBaseHeartRateRecord(73));
         AggregateRecordsResponse<Long> newResponse =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Long>(
@@ -677,6 +718,156 @@ public class HeartRateRecordTest {
                 .isEqualTo(6);
     }
 
+    @Test
+    public void testInsertAndDeleteRecord_changelogs() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(
+                        new ChangeLogTokenRequest.Builder()
+                                .addDataOriginFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .addRecordType(HeartRateRecord.class)
+                                .build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        List<Record> testRecord = Collections.singletonList(getCompleteHeartRateRecord());
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        assertThat(
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(HeartRateRecord.class)
+                        .build());
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getDeletedLogs()).isEmpty();
+    }
+
+    @Test
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
+            throws InterruptedException {
+
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readHeartRateRecordUsingIds(insertedRecords);
+
+        // Generate a new set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord());
+
+        // Modify the uid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getHeartRateRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+        }
+
+        TestUtils.updateRecords(updateRecords);
+
+        // assert the inserted data has been modified by reading the data.
+        readHeartRateRecordUsingIds(updateRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readHeartRateRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord());
+
+        // Modify the Uid of the updateRecords to the UUID that was present in the insert records,
+        // leaving out alternate records so that they have a new UUID which is not present in the
+        // dataBase.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getHeartRateRecord_update(
+                            updateRecords.get(itr),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString(),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString()));
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid records ids.");
+        } catch (HealthConnectException exception) {
+            assertThat(exception.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readHeartRateRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readHeartRateRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord());
+
+        // Modify the Uuid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getHeartRateRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+            //             adding an entry with invalid packageName.
+            updateRecords.set(itr, getCompleteHeartRateRecord());
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid package.");
+        } catch (Exception exception) {
+            // verify that the testcase failed due to invalid argument exception.
+            assertThat(exception).isNotNull();
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readHeartRateRecordUsingIds(insertedRecords);
+    }
+
     private void testReadHeartRateRecordIds() throws InterruptedException {
         List<Record> recordList =
                 Arrays.asList(getCompleteHeartRateRecord(), getCompleteHeartRateRecord());
@@ -691,13 +882,8 @@ public class HeartRateRecordTest {
             request.addClientRecordId(record.getMetadata().getClientRecordId());
         }
         List<HeartRateRecord> result = TestUtils.readRecords(request.build());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecord.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-
-        for (int i = 0; i < result.size(); i++) {
-            HeartRateRecord other = (HeartRateRecord) insertedRecord.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
+        assertThat(result.size()).isEqualTo(insertedRecord.size());
+        assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
     private void readHeartRateRecordUsingIds(List<Record> recordList) throws InterruptedException {
@@ -719,9 +905,9 @@ public class HeartRateRecordTest {
         for (int i = 0; i < times; i++) {
             List<Record> records =
                     Arrays.asList(
-                            TestUtils.getHeartRateRecord(71),
-                            TestUtils.getHeartRateRecord(72),
-                            TestUtils.getHeartRateRecord(73));
+                            getBaseHeartRateRecord(71),
+                            getBaseHeartRateRecord(72),
+                            getBaseHeartRateRecord(73));
 
             TestUtils.insertRecords(records);
             Thread.sleep(delayInMillis);
@@ -743,15 +929,40 @@ public class HeartRateRecordTest {
         }
     }
 
-    private static HeartRateRecord getBaseHeartRateRecord() {
+    HeartRateRecord getHeartRateRecord_update(Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+
+        HeartRateRecord.HeartRateSample heartRateRecordSample =
+                new HeartRateRecord.HeartRateSample(8, Instant.now().plusMillis(100));
+
+        return new HeartRateRecord.Builder(
+                        metadataWithId,
+                        Instant.now(),
+                        Instant.now().plusMillis(2000),
+                        List.of(heartRateRecordSample, heartRateRecordSample))
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
+    }
+
+    private static HeartRateRecord getBaseHeartRateRecord(long beatsPerMinute) {
         HeartRateRecord.HeartRateSample heartRateRecord =
-                new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));
+                new HeartRateRecord.HeartRateSample(beatsPerMinute, Instant.now().plusMillis(100));
         ArrayList<HeartRateRecord.HeartRateSample> heartRateRecords = new ArrayList<>();
         heartRateRecords.add(heartRateRecord);
         heartRateRecords.add(heartRateRecord);
 
         return new HeartRateRecord.Builder(
-                        new Metadata.Builder().build(),
+                        new Metadata.Builder().setClientRecordId("HRR" + Math.random()).build(),
                         Instant.now(),
                         Instant.now().plusMillis(500),
                         heartRateRecords)
@@ -770,6 +981,7 @@ public class HeartRateRecordTest {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId("HRR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         HeartRateRecord.HeartRateSample heartRateRecord =
                 new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));

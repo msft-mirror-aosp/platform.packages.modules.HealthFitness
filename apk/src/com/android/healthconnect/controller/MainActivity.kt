@@ -15,35 +15,46 @@
  */
 package com.android.healthconnect.controller
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.navigation.findNavController
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
+import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthconnect.controller.onboarding.OnboardingActivity
+import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
+import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
 /** Entry point activity for Health Connect. */
 @AndroidEntryPoint(CollapsingToolbarBaseActivity::class)
 class MainActivity : Hilt_MainActivity() {
     @Inject lateinit var logger: HealthConnectLogger
+    private val migrationViewModel: MigrationViewModel by viewModels()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         setTitle(R.string.app_label)
-        /** Displaying onboarding screen if user is opening Health Connect app for the first time */
-        val sharedPreference = getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-        val previouslyOpened =
-            sharedPreference.getBoolean(getString(R.string.previously_opened), false)
-        if (!previouslyOpened) {
-            val intent = Intent(this, OnboardingActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
-            finish()
+
+        if (maybeRedirectIntoTwoPaneSettings(this)) {
+            return
+        }
+
+        if (maybeRedirectToOnboardingActivity(this, intent)) {
+            return
+        }
+
+        val currentMigrationState: MigrationState
+        runBlocking { currentMigrationState = migrationViewModel.getCurrentMigrationUiState() }
+
+        if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
+            return
         }
     }
 
@@ -51,6 +62,13 @@ class MainActivity : Hilt_MainActivity() {
         super.onStart()
         findNavController(R.id.nav_host_fragment)
             .addOnDestinationChangedListener(DestinationChangedListener(this))
+    }
+
+    override fun onBackPressed() {
+        val navController = findNavController(R.id.nav_host_fragment)
+        if (!navController.popBackStack()) {
+            finish()
+        }
     }
 
     override fun onNavigateUp(): Boolean {
@@ -66,4 +84,5 @@ class MainActivity : Hilt_MainActivity() {
     //        logger.logInteraction(ElementName.TOOLBAR_SETTINGS_BUTTON)
     //        return super.onMenuOpened(featureId, menu)
     //    }
+
 }

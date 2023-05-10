@@ -17,14 +17,13 @@
 package android.health.connect.aidl;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.internal.ParcelUtils;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.ParcelRecordConverter;
-import android.health.connect.ratelimiter.RateLimiter;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.SharedMemory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -52,28 +51,27 @@ public class RecordsParcel implements Parcelable {
             };
 
     private final List<RecordInternal<?>> mRecordInternals;
+    private long mRecordsChunkSize;
+    private List<Long> mRecordsSize;
 
     public RecordsParcel(@NonNull List<RecordInternal<?>> recordInternals) {
         mRecordInternals = recordInternals;
     }
 
     private RecordsParcel(@NonNull Parcel in) {
-        int parcelType = in.readInt();
-        if (parcelType == ParcelUtils.USING_SHARED_MEMORY) {
-            in = ParcelUtils.getParcelForSharedMemory(in);
-        }
-
+        in = ParcelUtils.getParcelForSharedMemoryIfRequired(in);
         int size = in.readInt();
         mRecordInternals = new ArrayList<>(size);
-        long remainingParcelSize = in.dataSize();
-        RateLimiter.checkMaxChunkMemoryUsage(remainingParcelSize);
+        mRecordsSize = new ArrayList<>(size);
+        long remainingParcelSize = in.dataAvail();
+        mRecordsChunkSize = remainingParcelSize;
         for (int i = 0; i < size; i++) {
             int identifier = in.readInt();
             try {
                 mRecordInternals.add(ParcelRecordConverter.getInstance().getRecord(in, identifier));
                 // Calculating record size based on before and after values of parcel size.
-                RateLimiter.checkMaxRecordMemoryUsage(remainingParcelSize - in.dataSize());
-                remainingParcelSize = in.dataSize();
+                mRecordsSize.add(remainingParcelSize - in.dataAvail());
+                remainingParcelSize = in.dataAvail();
             } catch (InstantiationException
                      | IllegalAccessException
                      | NoSuchMethodException
@@ -90,24 +88,29 @@ public class RecordsParcel implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        final Parcel dataParcel = Parcel.obtain();
-        writeToParcelInternal(dataParcel);
-        final int dataParcelSize = dataParcel.dataSize();
-        if (dataParcelSize > ParcelUtils.KBS_750) {
-            SharedMemory sharedMemory = ParcelUtils.getSharedMemoryForParcel(
-                    dataParcel, dataParcelSize);
-            dest.writeInt(ParcelUtils.USING_SHARED_MEMORY);
-            sharedMemory.writeToParcel(dest, flags);
-        } else {
-            dest.writeInt(ParcelUtils.USING_PARCEL);
-            writeToParcelInternal(dest);
-        }
+        ParcelUtils.putToRequiredMemory(dest, flags, this::writeToParcelInternal);
     }
 
     @NonNull
     public List<RecordInternal<?>> getRecords() {
         return mRecordInternals;
     }
+
+    /**
+     * @return a list containing size of the individual records. Used for memory rate limiting.
+     */
+    @Nullable
+    public List<Long> getRecordsSize() {
+        return mRecordsSize;
+    }
+
+    /**
+     * @return size of the record parcel. Used for memory rate limiting.
+     */
+    public long getRecordsChunkSize() {
+        return mRecordsChunkSize;
+    }
+
     private void writeToParcelInternal(@NonNull Parcel dest) {
         dest.writeInt(mRecordInternals.size());
         for (RecordInternal<?> recordInternal : mRecordInternals) {

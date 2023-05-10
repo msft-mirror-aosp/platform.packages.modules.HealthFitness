@@ -22,6 +22,7 @@ import android.os.Bundle
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
+import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,6 +38,13 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
         super.onStart()
         findNavController(R.id.nav_host_fragment)
             .addOnDestinationChangedListener(DestinationChangedListener(this))
+    }
+
+    override fun onBackPressed() {
+        val navController = findNavController(R.id.nav_host_fragment)
+        if (!navController.popBackStack()) {
+            finish()
+        }
     }
 
     override fun onNavigateUp(): Boolean {

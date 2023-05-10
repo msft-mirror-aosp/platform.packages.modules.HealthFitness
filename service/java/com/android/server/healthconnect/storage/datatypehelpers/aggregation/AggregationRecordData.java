@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.datatypehelpers.aggregation;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_ZONE_OFFSET_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
@@ -28,6 +29,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 /**
  * Represents priority aggregation data.
@@ -40,13 +42,6 @@ public abstract class AggregationRecordData {
     private long mAppId;
     private long mLastModifiedTime;
     private ZoneOffset mStartTimeZoneOffset;
-
-    /** Calculates overlap between two intervals */
-    static long calculateIntervalOverlapDuration(
-            long intervalStart1, long intervalStart2, long intervalEnd1, long intervalEnd2) {
-        return Math.max(
-                Math.min(intervalEnd1, intervalEnd2) - Math.max(intervalStart1, intervalStart2), 0);
-    }
 
     long getStartTime() {
         return mRecordStartTime;
@@ -68,8 +63,8 @@ public abstract class AggregationRecordData {
         return mStartTimeZoneOffset;
     }
 
-    protected String readUuid(Cursor cursor) {
-        return StorageUtils.getCursorString(cursor, UUID_COLUMN_NAME);
+    protected UUID readUuid(Cursor cursor) {
+        return StorageUtils.getCursorUUID(cursor, UUID_COLUMN_NAME);
     }
 
     void populateAggregationData(Cursor cursor) {
@@ -77,7 +72,7 @@ public abstract class AggregationRecordData {
         mRecordEndTime = StorageUtils.getCursorLong(cursor, END_TIME_COLUMN_NAME);
         mAppId = StorageUtils.getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
         mLastModifiedTime = StorageUtils.getCursorLong(cursor, LAST_MODIFIED_TIME_COLUMN_NAME);
-        mStartTimeZoneOffset = readZoneOffset(cursor);
+        mStartTimeZoneOffset = StorageUtils.getZoneOffset(cursor, START_ZONE_OFFSET_COLUMN_NAME);
         populateSpecificAggregationData(cursor);
     }
 
@@ -109,10 +104,15 @@ public abstract class AggregationRecordData {
 
     abstract void populateSpecificAggregationData(Cursor cursor);
 
-    abstract ZoneOffset readZoneOffset(Cursor cursor);
-
     @Override
     public String toString() {
         return "AggregData{startTime=" + mRecordStartTime + ", endTime=" + mRecordEndTime + "}";
+    }
+
+    /** Calculates overlap between two intervals */
+    static long calculateIntervalOverlapDuration(
+            long intervalStart1, long intervalStart2, long intervalEnd1, long intervalEnd2) {
+        return Math.max(
+                Math.min(intervalEnd1, intervalEnd2) - Math.max(intervalStart1, intervalStart2), 0);
     }
 }

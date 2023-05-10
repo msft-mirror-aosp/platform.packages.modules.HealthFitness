@@ -34,16 +34,19 @@
       "name": "CtsHealthConnectControllerTestCases"
     },
     {
-      "name": "HealthFitnessWithoutManagePermissionsIntegrationTests"
-    },
-    {
-      "name": "HealthFitnessWithManagePermissionsIntegrationTests"
+      "name": "HealthFitnessIntegrationTests"
     },
     {
       "name": "HealthFitnessUnitTests"
     },
     {
       "name": "HealthConnectBackupRestoreUnitTests"
+    },
+    {
+      "name": "CtsHealthConnectHostTestCases"
+    },
+    {
+      "name": "CtsHealthConnectHostSideDeviceTestCases"
     }
   ]
 }

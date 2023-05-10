@@ -57,6 +57,7 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.loadCategories()
 
         viewModel.categoriesData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -86,7 +87,7 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
                 val newPreference =
                     HealthPreference(requireContext()).also {
                         it.setTitle(categoryInfo.category.uppercaseTitle())
-                        it.setIcon(categoryInfo.category.icon())
+                        it.icon = categoryInfo.category.icon(requireContext())
                         it.logName = CategoriesElement.CATEGORY_BUTTON
                         if (!categoryInfo.hasData) {
                             it.setSummary(R.string.no_data)

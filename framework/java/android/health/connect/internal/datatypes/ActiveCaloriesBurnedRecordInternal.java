@@ -49,10 +49,10 @@ public final class ActiveCaloriesBurnedRecordInternal
                         buildMetaData(),
                         getStartTime(),
                         getEndTime(),
-                        Energy.fromJoules(getEnergy()))
+                        Energy.fromCalories(getEnergy()))
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override

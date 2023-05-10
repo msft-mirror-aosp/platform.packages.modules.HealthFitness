@@ -20,7 +20,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -29,23 +29,30 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.SpeedRecordInternal;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Helper class for SpeedRecord.
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_SPEED)
 public class SpeedRecordHelper
         extends SeriesRecordHelper<SpeedRecordInternal, SpeedRecordInternal.SpeedRecordSample> {
+
+    @VisibleForTesting public static final String TABLE_NAME = "SpeedRecordTable";
     public static final int NUM_LOCAL_COLUMNS = 1;
-    private static final String TABLE_NAME = "SpeedRecordTable";
     private static final String SERIES_TABLE_NAME = "speed_record_table";
     private static final String SPEED_COLUMN_NAME = "speed";
     private static final String EPOCH_MILLIS_COLUMN_NAME = "epoch_millis";
+
+    public SpeedRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_SPEED);
+    }
 
     @Override
     String getMainTableName() {
@@ -69,14 +76,14 @@ public class SpeedRecordHelper
     @Override
     void populateSpecificValues(@NonNull Cursor seriesTableCursor, SpeedRecordInternal record) {
         HashSet<SpeedRecordInternal.SpeedRecordSample> speedRecordSampleSet = new HashSet<>();
-        String uuid = getCursorString(seriesTableCursor, UUID_COLUMN_NAME);
+        UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
         do {
             speedRecordSampleSet.add(
                     new SpeedRecordInternal.SpeedRecordSample(
                             getCursorDouble(seriesTableCursor, SPEED_COLUMN_NAME),
                             getCursorLong(seriesTableCursor, EPOCH_MILLIS_COLUMN_NAME)));
         } while (seriesTableCursor.moveToNext()
-                && uuid.equals(getCursorString(seriesTableCursor, UUID_COLUMN_NAME)));
+                && uuid.equals(getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME)));
         // In case we hit another record, move the cursor back to read next record in outer
         // RecordHelper#getInternalRecords loop.
         seriesTableCursor.moveToPrevious();

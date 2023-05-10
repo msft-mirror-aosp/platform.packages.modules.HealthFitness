@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.categories
 import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.AttrRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
@@ -45,6 +46,8 @@ import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.logging.CategoriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
+import com.android.healthconnect.controller.utils.setupMenu
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -104,7 +107,7 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
 
     private fun buildSummary(autoDeleteRange: AutoDeleteRange): String {
         return when (autoDeleteRange) {
-            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> getString(R.string.range_never)
+            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> getString(R.string.range_off)
             AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS -> {
                 val count = AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS.numberOfMonths
                 MessageFormat.format(
@@ -118,8 +121,17 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
         }
     }
 
+    @AttrRes
+    private fun iconAttribute(autoDeleteRange: AutoDeleteRange): Int {
+        return when (autoDeleteRange) {
+            AutoDeleteRange.AUTO_DELETE_RANGE_NEVER -> R.attr.autoDeleteOffIcon
+            else -> R.attr.autoDeleteIcon
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        categoriesViewModel.loadCategories()
 
         categoriesViewModel.categoriesData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -136,16 +148,34 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
             }
         }
 
+        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
+            menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_open_units -> {
+                    logger.logImpression(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                    findNavController()
+                        .navigate(R.id.action_dataCategoriesFragment_to_unitsFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+
         autoDeleteViewModel.storedAutoDeleteRange.observe(viewLifecycleOwner) { state ->
             when (state) {
                 AutoDeleteViewModel.AutoDeleteState.Loading -> {
                     mAutoDelete?.summary = ""
+                    mAutoDelete?.icon = null
                 }
                 is AutoDeleteViewModel.AutoDeleteState.LoadingFailed -> {
                     mAutoDelete?.summary = ""
+                    mAutoDelete?.icon = null
                 }
                 is AutoDeleteViewModel.AutoDeleteState.WithData -> {
                     mAutoDelete?.summary = buildSummary(state.autoDeleteRange)
+                    mAutoDelete?.setIcon(
+                        AttributeResolver.getResource(
+                            requireContext(), iconAttribute(state.autoDeleteRange)))
                 }
             }
         }
@@ -171,7 +201,7 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
                 val newCategoryPreference =
                     HealthPreference(requireContext()).also {
                         it.setTitle(categoryState.category.uppercaseTitle())
-                        it.setIcon(categoryState.category.icon())
+                        it.icon = categoryState.category.icon(requireContext())
                         it.logName = CategoriesElement.CATEGORY_BUTTON
                         it.setOnPreferenceClickListener {
                             findNavController()
@@ -183,12 +213,11 @@ class HealthDataCategoriesFragment : Hilt_HealthDataCategoriesFragment() {
                     }
                 mBrowseDataCategory?.addPreference(newCategoryPreference)
             }
-            if (categoriesList.any { !it.hasData }) {
-                addSeeAllCategoriesPreference()
-            }
         }
-
-        mDeleteAllData?.isEnabled = categoriesList.isNotEmpty()
+        if (sortedCategoriesList.isEmpty() || categoriesList.any { !it.hasData }) {
+            addSeeAllCategoriesPreference()
+        }
+        mDeleteAllData?.isEnabled = sortedCategoriesList.isNotEmpty()
     }
 
     private fun addSeeAllCategoriesPreference() {

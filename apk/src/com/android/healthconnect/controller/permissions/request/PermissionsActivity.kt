@@ -45,9 +45,15 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
+import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,15 +69,25 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     @Inject lateinit var logger: HealthConnectLogger
     private val viewModel: RequestPermissionViewModel by viewModels()
+    private val migrationViewModel: MigrationViewModel by viewModels()
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_permissions)
 
         if (!intent.hasExtra(EXTRA_PACKAGE_NAME)) {
             Log.e(TAG, "Invalid Intent Extras, finishing")
             finish()
+        }
+
+        if (maybeRedirectIntoTwoPaneSettings(this)) {
+            return
+        }
+
+        if (maybeRedirectToOnboardingActivity(this, intent)) {
+            return
         }
 
         val rationalIntentDeclared =
@@ -86,6 +102,9 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
             if (notGrantedPermissions.isEmpty()) {
                 handleResults(viewModel.request(getPackageNameExtra()))
             }
+        }
+        migrationViewModel.migrationState.observe(this) { migrationState ->
+            maybeShowMigrationDialog(migrationState)
         }
 
         supportFragmentManager
@@ -106,6 +125,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
         cancelButton.setOnClickListener {
             logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
+            viewModel.updatePermissions(false)
             handleResults(viewModel.request(getPackageNameExtra()))
         }
     }
@@ -122,7 +142,40 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
     }
 
-    private fun handleResults(results: Map<HealthPermission, PermissionState>) {
+    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
+        when (migrationState) {
+            MigrationState.IN_PROGRESS -> {
+                showMigrationInProgressDialog(
+                    this,
+                    getString(
+                        R.string.migration_in_progress_permissions_dialog_content,
+                        viewModel.appMetadata.value?.appName)) { _, _ ->
+                        finish()
+                    }
+            }
+            MigrationState.ALLOWED_PAUSED,
+            MigrationState.ALLOWED_NOT_STARTED,
+            MigrationState.APP_UPGRADE_REQUIRED,
+            MigrationState.MODULE_UPGRADE_REQUIRED -> {
+                showMigrationPendingDialog(
+                    this,
+                    getString(
+                        R.string.migration_pending_permissions_dialog_content,
+                        viewModel.appMetadata.value?.appName),
+                    null,
+                ) { _, _ ->
+                    viewModel.updatePermissions(false)
+                    handleResults(viewModel.request(getPackageNameExtra()))
+                    finish()
+                }
+            }
+            else -> {
+                // Show nothing
+            }
+        }
+    }
+
+    fun handleResults(results: Map<HealthPermission, PermissionState>) {
         val grants =
             results.values
                 .map { permissionSelection ->

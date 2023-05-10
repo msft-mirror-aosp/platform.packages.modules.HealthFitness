@@ -16,7 +16,8 @@
 package android.health.connect.datatypes;
 
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_NUTRITION;
-import static android.health.connect.datatypes.ValidationUtils.requireInRangeIfExists;
+import static android.health.connect.datatypes.validation.ValidationUtils.requireInRangeIfExists;
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -32,10 +33,10 @@ import java.util.Objects;
 /** Captures what nutrients were consumed as part of a meal or a food item. */
 @Identifier(recordIdentifier = RECORD_TYPE_NUTRITION)
 public final class NutritionRecord extends IntervalRecord {
-    private static final Energy ENERGY_0_0 = Energy.fromJoules(0.0);
-    private static final Mass MASS_0_0 = Mass.fromKilograms(0.0);
-    private static final Mass MASS_0_1 = Mass.fromKilograms(0.1);
-    private static final Mass MASS_100 = Mass.fromKilograms(100.0);
+    private static final Energy ENERGY_0_0 = Energy.fromCalories(0.0);
+    private static final Mass MASS_0_0 = Mass.fromGrams(0.0);
+    private static final Mass MASS_100 = Mass.fromGrams(100.0);
+    private static final Mass MASS_100000 = Mass.fromGrams(100000.0);
 
     /** Builder class for {@link NutritionRecord} */
     public static final class Builder {
@@ -145,7 +146,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setUnsaturatedFat(@Nullable Mass unsaturatedFat) {
-            requireInRangeIfExists(unsaturatedFat, MASS_0_0, MASS_100, "unsaturatedFat");
             mUnsaturatedFat = unsaturatedFat;
             return this;
         }
@@ -157,7 +157,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setPotassium(@Nullable Mass potassium) {
-            requireInRangeIfExists(potassium, MASS_0_0, MASS_0_1, "potassium");
             mPotassium = potassium;
             return this;
         }
@@ -169,7 +168,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setThiamin(@Nullable Mass thiamin) {
-            requireInRangeIfExists(thiamin, MASS_0_0, MASS_0_1, "thiamin");
             mThiamin = thiamin;
             return this;
         }
@@ -192,7 +190,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setTransFat(@Nullable Mass transFat) {
-            requireInRangeIfExists(transFat, MASS_0_0, MASS_100, "transFat");
             mTransFat = transFat;
             return this;
         }
@@ -204,7 +201,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setManganese(@Nullable Mass manganese) {
-            requireInRangeIfExists(manganese, MASS_0_0, MASS_0_1, "manganese");
             mManganese = manganese;
             return this;
         }
@@ -216,8 +212,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setEnergyFromFat(@Nullable Energy energyFromFat) {
-            requireInRangeIfExists(
-                    energyFromFat, ENERGY_0_0, Energy.fromJoules(418400000.0), "energyFromFat");
             mEnergyFromFat = energyFromFat;
             return this;
         }
@@ -229,7 +223,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setCaffeine(@Nullable Mass caffeine) {
-            requireInRangeIfExists(caffeine, MASS_0_0, MASS_0_1, "caffeine");
             mCaffeine = caffeine;
             return this;
         }
@@ -241,7 +234,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setDietaryFiber(@Nullable Mass dietaryFiber) {
-            requireInRangeIfExists(dietaryFiber, MASS_0_0, MASS_100, "dietaryFiber");
             mDietaryFiber = dietaryFiber;
             return this;
         }
@@ -253,7 +245,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setSelenium(@Nullable Mass selenium) {
-            requireInRangeIfExists(selenium, MASS_0_0, MASS_0_1, "selenium");
             mSelenium = selenium;
             return this;
         }
@@ -265,7 +256,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminB6(@Nullable Mass vitaminB6) {
-            requireInRangeIfExists(vitaminB6, MASS_0_0, MASS_0_1, "vitaminB6");
             mVitaminB6 = vitaminB6;
             return this;
         }
@@ -277,7 +267,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setProtein(@Nullable Mass protein) {
-            requireInRangeIfExists(protein, MASS_0_0, MASS_100, "protein");
             mProtein = protein;
             return this;
         }
@@ -289,7 +278,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setChloride(@Nullable Mass chloride) {
-            requireInRangeIfExists(chloride, MASS_0_0, MASS_0_1, "chloride");
             mChloride = chloride;
             return this;
         }
@@ -301,7 +289,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setCholesterol(@Nullable Mass cholesterol) {
-            requireInRangeIfExists(cholesterol, MASS_0_0, MASS_0_1, "cholesterol");
             mCholesterol = cholesterol;
             return this;
         }
@@ -313,7 +300,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setCopper(@Nullable Mass copper) {
-            requireInRangeIfExists(copper, MASS_0_0, MASS_0_1, "copper");
             mCopper = copper;
             return this;
         }
@@ -325,7 +311,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setIodine(@Nullable Mass iodine) {
-            requireInRangeIfExists(iodine, MASS_0_0, MASS_0_1, "iodine");
             mIodine = iodine;
             return this;
         }
@@ -337,7 +322,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminB12(@Nullable Mass vitaminB12) {
-            requireInRangeIfExists(vitaminB12, MASS_0_0, MASS_0_1, "vitaminB12");
             mVitaminB12 = vitaminB12;
             return this;
         }
@@ -349,7 +333,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setZinc(@Nullable Mass zinc) {
-            requireInRangeIfExists(zinc, MASS_0_0, MASS_0_1, "zinc");
             mZinc = zinc;
             return this;
         }
@@ -361,7 +344,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setRiboflavin(@Nullable Mass riboflavin) {
-            requireInRangeIfExists(riboflavin, MASS_0_0, MASS_0_1, "riboflavin");
             mRiboflavin = riboflavin;
             return this;
         }
@@ -373,7 +355,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setEnergy(@Nullable Energy energy) {
-            requireInRangeIfExists(energy, ENERGY_0_0, Energy.fromJoules(418400000.0), "energy");
             mEnergy = energy;
             return this;
         }
@@ -385,7 +366,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setMolybdenum(@Nullable Mass molybdenum) {
-            requireInRangeIfExists(molybdenum, MASS_0_0, MASS_0_1, "molybdenum");
             mMolybdenum = molybdenum;
             return this;
         }
@@ -397,7 +377,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setPhosphorus(@Nullable Mass phosphorus) {
-            requireInRangeIfExists(phosphorus, MASS_0_0, MASS_0_1, "phosphorus");
             mPhosphorus = phosphorus;
             return this;
         }
@@ -409,7 +388,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setChromium(@Nullable Mass chromium) {
-            requireInRangeIfExists(chromium, MASS_0_0, MASS_0_1, "chromium");
             mChromium = chromium;
             return this;
         }
@@ -421,7 +399,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setTotalFat(@Nullable Mass totalFat) {
-            requireInRangeIfExists(totalFat, MASS_0_0, MASS_100, "totalFat");
             mTotalFat = totalFat;
             return this;
         }
@@ -433,7 +410,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setCalcium(@Nullable Mass calcium) {
-            requireInRangeIfExists(calcium, MASS_0_0, MASS_0_1, "calcium");
             mCalcium = calcium;
             return this;
         }
@@ -445,7 +421,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminC(@Nullable Mass vitaminC) {
-            requireInRangeIfExists(vitaminC, MASS_0_0, MASS_0_1, "vitaminC");
             mVitaminC = vitaminC;
             return this;
         }
@@ -457,7 +432,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminE(@Nullable Mass vitaminE) {
-            requireInRangeIfExists(vitaminE, MASS_0_0, MASS_0_1, "vitaminE");
             mVitaminE = vitaminE;
             return this;
         }
@@ -469,7 +443,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setBiotin(@Nullable Mass biotin) {
-            requireInRangeIfExists(biotin, MASS_0_0, MASS_0_1, "biotin");
             mBiotin = biotin;
             return this;
         }
@@ -481,7 +454,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminD(@Nullable Mass vitaminD) {
-            requireInRangeIfExists(vitaminD, MASS_0_0, MASS_0_1, "vitaminD");
             mVitaminD = vitaminD;
             return this;
         }
@@ -493,7 +465,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setNiacin(@Nullable Mass niacin) {
-            requireInRangeIfExists(niacin, MASS_0_0, MASS_0_1, "niacin");
             mNiacin = niacin;
             return this;
         }
@@ -505,7 +476,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setMagnesium(@Nullable Mass magnesium) {
-            requireInRangeIfExists(magnesium, MASS_0_0, MASS_0_1, "magnesium");
             mMagnesium = magnesium;
             return this;
         }
@@ -517,7 +487,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setTotalCarbohydrate(@Nullable Mass totalCarbohydrate) {
-            requireInRangeIfExists(totalCarbohydrate, MASS_0_0, MASS_100, "totalCarbohydrate");
             mTotalCarbohydrate = totalCarbohydrate;
             return this;
         }
@@ -529,7 +498,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminK(@Nullable Mass vitaminK) {
-            requireInRangeIfExists(vitaminK, MASS_0_0, MASS_0_1, "vitaminK");
             mVitaminK = vitaminK;
             return this;
         }
@@ -541,7 +509,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setPolyunsaturatedFat(@Nullable Mass polyunsaturatedFat) {
-            requireInRangeIfExists(polyunsaturatedFat, MASS_0_0, MASS_100, "polyunsaturatedFat");
             mPolyunsaturatedFat = polyunsaturatedFat;
             return this;
         }
@@ -553,7 +520,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setSaturatedFat(@Nullable Mass saturatedFat) {
-            requireInRangeIfExists(saturatedFat, MASS_0_0, MASS_100, "saturatedFat");
             mSaturatedFat = saturatedFat;
             return this;
         }
@@ -565,7 +531,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setSodium(@Nullable Mass sodium) {
-            requireInRangeIfExists(sodium, MASS_0_0, MASS_0_1, "sodium");
             mSodium = sodium;
             return this;
         }
@@ -577,7 +542,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setFolate(@Nullable Mass folate) {
-            requireInRangeIfExists(folate, MASS_0_0, MASS_0_1, "folate");
             mFolate = folate;
             return this;
         }
@@ -589,7 +553,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setMonounsaturatedFat(@Nullable Mass monounsaturatedFat) {
-            requireInRangeIfExists(monounsaturatedFat, MASS_0_0, MASS_100, "monounsaturatedFat");
             mMonounsaturatedFat = monounsaturatedFat;
             return this;
         }
@@ -601,7 +564,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setPantothenicAcid(@Nullable Mass pantothenicAcid) {
-            requireInRangeIfExists(pantothenicAcid, MASS_0_0, MASS_0_1, "pantothenicAcid");
             mPantothenicAcid = pantothenicAcid;
             return this;
         }
@@ -624,7 +586,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setIron(@Nullable Mass iron) {
-            requireInRangeIfExists(iron, MASS_0_0, MASS_0_1, "iron");
             mIron = iron;
             return this;
         }
@@ -636,7 +597,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setVitaminA(@Nullable Mass vitaminA) {
-            requireInRangeIfExists(vitaminA, MASS_0_0, MASS_0_1, "vitaminA");
             mVitaminA = vitaminA;
             return this;
         }
@@ -648,7 +608,6 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setFolicAcid(@Nullable Mass folicAcid) {
-            requireInRangeIfExists(folicAcid, MASS_0_0, MASS_0_1, "folicAcid");
             mFolicAcid = folicAcid;
             return this;
         }
@@ -660,9 +619,67 @@ public final class NutritionRecord extends IntervalRecord {
          */
         @NonNull
         public Builder setSugar(@Nullable Mass sugar) {
-            requireInRangeIfExists(sugar, MASS_0_0, MASS_100, "sugar");
             mSugar = sugar;
             return this;
+        }
+
+        /**
+         * @return Object of {@link NutritionRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public NutritionRecord buildWithoutValidation() {
+            return new NutritionRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mUnsaturatedFat,
+                    mPotassium,
+                    mThiamin,
+                    mMealType,
+                    mTransFat,
+                    mManganese,
+                    mEnergyFromFat,
+                    mCaffeine,
+                    mDietaryFiber,
+                    mSelenium,
+                    mVitaminB6,
+                    mProtein,
+                    mChloride,
+                    mCholesterol,
+                    mCopper,
+                    mIodine,
+                    mVitaminB12,
+                    mZinc,
+                    mRiboflavin,
+                    mEnergy,
+                    mMolybdenum,
+                    mPhosphorus,
+                    mChromium,
+                    mTotalFat,
+                    mCalcium,
+                    mVitaminC,
+                    mVitaminE,
+                    mBiotin,
+                    mVitaminD,
+                    mNiacin,
+                    mMagnesium,
+                    mTotalCarbohydrate,
+                    mVitaminK,
+                    mPolyunsaturatedFat,
+                    mSaturatedFat,
+                    mSodium,
+                    mFolate,
+                    mMonounsaturatedFat,
+                    mPantothenicAcid,
+                    mMealName,
+                    mIron,
+                    mVitaminA,
+                    mFolicAcid,
+                    mSugar,
+                    true);
         }
 
         /**
@@ -719,7 +736,8 @@ public final class NutritionRecord extends IntervalRecord {
                     mIron,
                     mVitaminA,
                     mFolicAcid,
-                    mSugar);
+                    mSugar,
+                    false);
         }
     }
 
@@ -1286,6 +1304,7 @@ public final class NutritionRecord extends IntervalRecord {
      * @param vitaminA VitaminA of this activity in {@link Mass} unit. Optional field.
      * @param folicAcid FolicAcid of this activity in {@link Mass} unit. Optional field.
      * @param sugar Sugar of this activity in {@link Mass} unit. Optional field.
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private NutritionRecord(
             @NonNull Metadata metadata,
@@ -1336,8 +1355,55 @@ public final class NutritionRecord extends IntervalRecord {
             @Nullable Mass iron,
             @Nullable Mass vitaminA,
             @Nullable Mass folicAcid,
-            @Nullable Mass sugar) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
+            @Nullable Mass sugar,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        validateIntDefValue(mealType, MealType.VALID_TYPES, MealType.class.getSimpleName());
+        if (!skipValidation) {
+            requireInRangeIfExists(unsaturatedFat, MASS_0_0, MASS_100000, "unsaturatedFat");
+            requireInRangeIfExists(potassium, MASS_0_0, MASS_100, "potassium");
+            requireInRangeIfExists(thiamin, MASS_0_0, MASS_100, "thiamin");
+            requireInRangeIfExists(transFat, MASS_0_0, MASS_100000, "transFat");
+            requireInRangeIfExists(manganese, MASS_0_0, MASS_100, "manganese");
+            requireInRangeIfExists(
+                    energyFromFat, ENERGY_0_0, Energy.fromCalories(100000000.0), "energyFromFat");
+            requireInRangeIfExists(caffeine, MASS_0_0, MASS_100, "caffeine");
+            requireInRangeIfExists(dietaryFiber, MASS_0_0, MASS_100000, "dietaryFiber");
+            requireInRangeIfExists(selenium, MASS_0_0, MASS_100, "selenium");
+            requireInRangeIfExists(vitaminB6, MASS_0_0, MASS_100, "vitaminB6");
+            requireInRangeIfExists(protein, MASS_0_0, MASS_100000, "protein");
+            requireInRangeIfExists(chloride, MASS_0_0, MASS_100, "chloride");
+            requireInRangeIfExists(cholesterol, MASS_0_0, MASS_100, "cholesterol");
+            requireInRangeIfExists(copper, MASS_0_0, MASS_100, "copper");
+            requireInRangeIfExists(iodine, MASS_0_0, MASS_100, "iodine");
+            requireInRangeIfExists(vitaminB12, MASS_0_0, MASS_100, "vitaminB12");
+            requireInRangeIfExists(zinc, MASS_0_0, MASS_100, "zinc");
+            requireInRangeIfExists(riboflavin, MASS_0_0, MASS_100, "riboflavin");
+            requireInRangeIfExists(energy, ENERGY_0_0, Energy.fromCalories(100000000.0), "energy");
+            requireInRangeIfExists(molybdenum, MASS_0_0, MASS_100, "molybdenum");
+            requireInRangeIfExists(phosphorus, MASS_0_0, MASS_100, "phosphorus");
+            requireInRangeIfExists(chromium, MASS_0_0, MASS_100, "chromium");
+            requireInRangeIfExists(totalFat, MASS_0_0, MASS_100000, "totalFat");
+            requireInRangeIfExists(calcium, MASS_0_0, MASS_100, "calcium");
+            requireInRangeIfExists(vitaminC, MASS_0_0, MASS_100, "vitaminC");
+            requireInRangeIfExists(vitaminE, MASS_0_0, MASS_100, "vitaminE");
+            requireInRangeIfExists(biotin, MASS_0_0, MASS_100, "biotin");
+            requireInRangeIfExists(vitaminD, MASS_0_0, MASS_100, "vitaminD");
+            requireInRangeIfExists(niacin, MASS_0_0, MASS_100, "niacin");
+            requireInRangeIfExists(magnesium, MASS_0_0, MASS_100, "magnesium");
+            requireInRangeIfExists(totalCarbohydrate, MASS_0_0, MASS_100000, "totalCarbohydrate");
+            requireInRangeIfExists(vitaminK, MASS_0_0, MASS_100, "vitaminK");
+            requireInRangeIfExists(polyunsaturatedFat, MASS_0_0, MASS_100000, "polyunsaturatedFat");
+            requireInRangeIfExists(saturatedFat, MASS_0_0, MASS_100000, "saturatedFat");
+            requireInRangeIfExists(sodium, MASS_0_0, MASS_100, "sodium");
+            requireInRangeIfExists(folate, MASS_0_0, MASS_100, "folate");
+            requireInRangeIfExists(monounsaturatedFat, MASS_0_0, MASS_100000, "monounsaturatedFat");
+            requireInRangeIfExists(pantothenicAcid, MASS_0_0, MASS_100, "pantothenicAcid");
+            requireInRangeIfExists(iron, MASS_0_0, MASS_100, "iron");
+            requireInRangeIfExists(vitaminA, MASS_0_0, MASS_100, "vitaminA");
+            requireInRangeIfExists(folicAcid, MASS_0_0, MASS_100, "folicAcid");
+            requireInRangeIfExists(sugar, MASS_0_0, MASS_100000, "sugar");
+        }
         mUnsaturatedFat = unsaturatedFat;
         mPotassium = potassium;
         mThiamin = thiamin;
@@ -1860,7 +1926,8 @@ public final class NutritionRecord extends IntervalRecord {
                                 .setClientRecordVersion(getMetadata().getClientRecordVersion())
                                 .setManufacturer(getMetadata().getDevice().getManufacturer())
                                 .setModel(getMetadata().getDevice().getModel())
-                                .setDeviceType(getMetadata().getDevice().getType());
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
 
         recordInternal.setStartTime(getStartTime().toEpochMilli());
         recordInternal.setEndTime(getEndTime().toEpochMilli());
@@ -1868,134 +1935,134 @@ public final class NutritionRecord extends IntervalRecord {
         recordInternal.setEndZoneOffset(getEndZoneOffset().getTotalSeconds());
 
         if (!Objects.isNull(getUnsaturatedFat())) {
-            recordInternal.setUnsaturatedFat(getUnsaturatedFat().getInKilograms());
+            recordInternal.setUnsaturatedFat(getUnsaturatedFat().getInGrams());
         }
         if (!Objects.isNull(getPotassium())) {
-            recordInternal.setPotassium(getPotassium().getInKilograms());
+            recordInternal.setPotassium(getPotassium().getInGrams());
         }
         if (!Objects.isNull(getThiamin())) {
-            recordInternal.setThiamin(getThiamin().getInKilograms());
+            recordInternal.setThiamin(getThiamin().getInGrams());
         }
         recordInternal.setMealType(getMealType());
         if (!Objects.isNull(getTransFat())) {
-            recordInternal.setTransFat(getTransFat().getInKilograms());
+            recordInternal.setTransFat(getTransFat().getInGrams());
         }
         if (!Objects.isNull(getManganese())) {
-            recordInternal.setManganese(getManganese().getInKilograms());
+            recordInternal.setManganese(getManganese().getInGrams());
         }
         if (!Objects.isNull(getEnergyFromFat())) {
-            recordInternal.setEnergyFromFat(getEnergyFromFat().getInJoules());
+            recordInternal.setEnergyFromFat(getEnergyFromFat().getInCalories());
         }
         if (!Objects.isNull(getCaffeine())) {
-            recordInternal.setCaffeine(getCaffeine().getInKilograms());
+            recordInternal.setCaffeine(getCaffeine().getInGrams());
         }
         if (!Objects.isNull(getDietaryFiber())) {
-            recordInternal.setDietaryFiber(getDietaryFiber().getInKilograms());
+            recordInternal.setDietaryFiber(getDietaryFiber().getInGrams());
         }
         if (!Objects.isNull(getSelenium())) {
-            recordInternal.setSelenium(getSelenium().getInKilograms());
+            recordInternal.setSelenium(getSelenium().getInGrams());
         }
         if (!Objects.isNull(getVitaminB6())) {
-            recordInternal.setVitaminB6(getVitaminB6().getInKilograms());
+            recordInternal.setVitaminB6(getVitaminB6().getInGrams());
         }
         if (!Objects.isNull(getProtein())) {
-            recordInternal.setProtein(getProtein().getInKilograms());
+            recordInternal.setProtein(getProtein().getInGrams());
         }
         if (!Objects.isNull(getChloride())) {
-            recordInternal.setChloride(getChloride().getInKilograms());
+            recordInternal.setChloride(getChloride().getInGrams());
         }
         if (!Objects.isNull(getCholesterol())) {
-            recordInternal.setCholesterol(getCholesterol().getInKilograms());
+            recordInternal.setCholesterol(getCholesterol().getInGrams());
         }
         if (!Objects.isNull(getCopper())) {
-            recordInternal.setCopper(getCopper().getInKilograms());
+            recordInternal.setCopper(getCopper().getInGrams());
         }
         if (!Objects.isNull(getIodine())) {
-            recordInternal.setIodine(getIodine().getInKilograms());
+            recordInternal.setIodine(getIodine().getInGrams());
         }
         if (!Objects.isNull(getVitaminB12())) {
-            recordInternal.setVitaminB12(getVitaminB12().getInKilograms());
+            recordInternal.setVitaminB12(getVitaminB12().getInGrams());
         }
         if (!Objects.isNull(getZinc())) {
-            recordInternal.setZinc(getZinc().getInKilograms());
+            recordInternal.setZinc(getZinc().getInGrams());
         }
         if (!Objects.isNull(getRiboflavin())) {
-            recordInternal.setRiboflavin(getRiboflavin().getInKilograms());
+            recordInternal.setRiboflavin(getRiboflavin().getInGrams());
         }
         if (!Objects.isNull(getEnergy())) {
-            recordInternal.setEnergy(getEnergy().getInJoules());
+            recordInternal.setEnergy(getEnergy().getInCalories());
         }
         if (!Objects.isNull(getMolybdenum())) {
-            recordInternal.setMolybdenum(getMolybdenum().getInKilograms());
+            recordInternal.setMolybdenum(getMolybdenum().getInGrams());
         }
         if (!Objects.isNull(getPhosphorus())) {
-            recordInternal.setPhosphorus(getPhosphorus().getInKilograms());
+            recordInternal.setPhosphorus(getPhosphorus().getInGrams());
         }
         if (!Objects.isNull(getChromium())) {
-            recordInternal.setChromium(getChromium().getInKilograms());
+            recordInternal.setChromium(getChromium().getInGrams());
         }
         if (!Objects.isNull(getTotalFat())) {
-            recordInternal.setTotalFat(getTotalFat().getInKilograms());
+            recordInternal.setTotalFat(getTotalFat().getInGrams());
         }
         if (!Objects.isNull(getCalcium())) {
-            recordInternal.setCalcium(getCalcium().getInKilograms());
+            recordInternal.setCalcium(getCalcium().getInGrams());
         }
         if (!Objects.isNull(getVitaminC())) {
-            recordInternal.setVitaminC(getVitaminC().getInKilograms());
+            recordInternal.setVitaminC(getVitaminC().getInGrams());
         }
         if (!Objects.isNull(getVitaminE())) {
-            recordInternal.setVitaminE(getVitaminE().getInKilograms());
+            recordInternal.setVitaminE(getVitaminE().getInGrams());
         }
         if (!Objects.isNull(getBiotin())) {
-            recordInternal.setBiotin(getBiotin().getInKilograms());
+            recordInternal.setBiotin(getBiotin().getInGrams());
         }
         if (!Objects.isNull(getVitaminD())) {
-            recordInternal.setVitaminD(getVitaminD().getInKilograms());
+            recordInternal.setVitaminD(getVitaminD().getInGrams());
         }
         if (!Objects.isNull(getNiacin())) {
-            recordInternal.setNiacin(getNiacin().getInKilograms());
+            recordInternal.setNiacin(getNiacin().getInGrams());
         }
         if (!Objects.isNull(getMagnesium())) {
-            recordInternal.setMagnesium(getMagnesium().getInKilograms());
+            recordInternal.setMagnesium(getMagnesium().getInGrams());
         }
         if (!Objects.isNull(getTotalCarbohydrate())) {
-            recordInternal.setTotalCarbohydrate(getTotalCarbohydrate().getInKilograms());
+            recordInternal.setTotalCarbohydrate(getTotalCarbohydrate().getInGrams());
         }
         if (!Objects.isNull(getVitaminK())) {
-            recordInternal.setVitaminK(getVitaminK().getInKilograms());
+            recordInternal.setVitaminK(getVitaminK().getInGrams());
         }
         if (!Objects.isNull(getPolyunsaturatedFat())) {
-            recordInternal.setPolyunsaturatedFat(getPolyunsaturatedFat().getInKilograms());
+            recordInternal.setPolyunsaturatedFat(getPolyunsaturatedFat().getInGrams());
         }
         if (!Objects.isNull(getSaturatedFat())) {
-            recordInternal.setSaturatedFat(getSaturatedFat().getInKilograms());
+            recordInternal.setSaturatedFat(getSaturatedFat().getInGrams());
         }
         if (!Objects.isNull(getSodium())) {
-            recordInternal.setSodium(getSodium().getInKilograms());
+            recordInternal.setSodium(getSodium().getInGrams());
         }
         if (!Objects.isNull(getFolate())) {
-            recordInternal.setFolate(getFolate().getInKilograms());
+            recordInternal.setFolate(getFolate().getInGrams());
         }
         if (!Objects.isNull(getMonounsaturatedFat())) {
-            recordInternal.setMonounsaturatedFat(getMonounsaturatedFat().getInKilograms());
+            recordInternal.setMonounsaturatedFat(getMonounsaturatedFat().getInGrams());
         }
         if (!Objects.isNull(getPantothenicAcid())) {
-            recordInternal.setPantothenicAcid(getPantothenicAcid().getInKilograms());
+            recordInternal.setPantothenicAcid(getPantothenicAcid().getInGrams());
         }
         if (!Objects.isNull(getMealName())) {
             recordInternal.setMealName(getMealName());
         }
         if (!Objects.isNull(getIron())) {
-            recordInternal.setIron(getIron().getInKilograms());
+            recordInternal.setIron(getIron().getInGrams());
         }
         if (!Objects.isNull(getVitaminA())) {
-            recordInternal.setVitaminA(getVitaminA().getInKilograms());
+            recordInternal.setVitaminA(getVitaminA().getInGrams());
         }
         if (!Objects.isNull(getFolicAcid())) {
-            recordInternal.setFolicAcid(getFolicAcid().getInKilograms());
+            recordInternal.setFolicAcid(getFolicAcid().getInGrams());
         }
         if (!Objects.isNull(getSugar())) {
-            recordInternal.setSugar(getSugar().getInKilograms());
+            recordInternal.setSugar(getSugar().getInGrams());
         }
 
         return recordInternal;

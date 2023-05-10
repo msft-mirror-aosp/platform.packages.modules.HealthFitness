@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers.aggregation;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_ZONE_OFFSET_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 
@@ -25,13 +24,12 @@ import android.health.connect.Constants;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
-import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Helper class to aggregate Sleep and Exercise Sessions.
@@ -40,13 +38,10 @@ import java.util.List;
  */
 public class SessionDurationAggregationData extends AggregationRecordData {
     private static final String TAG = "HealthSessionPriorityAggregation";
-
+    private final String mExcludeIntervalStartTimeColumn;
+    private final String mExcludeIntervalEndTimeColumn;
     List<Long> mExcludeStarts;
     List<Long> mExcludeEnds;
-
-    private final String mExcludeIntervalStartTimeColumn;
-
-    private final String mExcludeIntervalEndTimeColumn;
 
     public SessionDurationAggregationData(
             String excludeIntervalStartTimeColumn, String excludeIntervalEndTimeColumn) {
@@ -63,7 +58,7 @@ public class SessionDurationAggregationData extends AggregationRecordData {
 
     @Override
     void populateSpecificAggregationData(Cursor cursor) {
-        String currentSessionUuid = readUuid(cursor);
+        UUID currentSessionUuid = readUuid(cursor);
         do {
             // Populate stages from each row.
             updateIntervalsToExclude(cursor);
@@ -82,23 +77,11 @@ public class SessionDurationAggregationData extends AggregationRecordData {
         }
     }
 
-    @Override
-    ZoneOffset readZoneOffset(Cursor cursor) {
-        ZoneOffset zoneOffset = null;
-        if (cursor.getColumnIndex(START_ZONE_OFFSET_COLUMN_NAME) != -1) {
-            zoneOffset =
-                    ZoneOffset.ofTotalSeconds(
-                            StorageUtils.getCursorInt(cursor, START_ZONE_OFFSET_COLUMN_NAME));
-        }
-
-        return zoneOffset;
-    }
-
     @VisibleForTesting
     SessionDurationAggregationData setExcludeIntervals(
-            List<Long> excludeStarts, List<Long> exceludeEnds) {
+            List<Long> excludeStarts, List<Long> excludeEnds) {
         mExcludeStarts = excludeStarts;
-        mExcludeEnds = exceludeEnds;
+        mExcludeEnds = excludeEnds;
         return this;
     }
 

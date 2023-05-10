@@ -93,7 +93,9 @@ public final class ExerciseSessionRecordInternal
     @NonNull
     public ExerciseSessionRecordInternal setRoute(ExerciseRouteInternal route) {
         this.mExerciseRoute = route;
-        this.mHasRoute = true;
+        if (route != null) {
+            this.mHasRoute = true;
+        }
         return this;
     }
 
@@ -175,7 +177,7 @@ public final class ExerciseSessionRecordInternal
         if (getSegments() != null) {
             builder.setSegments(ExerciseSegmentInternal.getExternalSegments(mExerciseSegments));
         }
-        return builder.build();
+        return builder.buildWithoutValidation();
     }
 
     @Override
