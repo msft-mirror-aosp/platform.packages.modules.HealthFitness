@@ -17,11 +17,13 @@
 package android.healthconnect.cts.device;
 
 import static android.healthconnect.cts.lib.TestUtils.CHANGE_LOGS_RESPONSE;
+import static android.healthconnect.cts.lib.TestUtils.CHANGE_LOG_TOKEN;
 import static android.healthconnect.cts.lib.TestUtils.READ_RECORDS_SIZE;
 import static android.healthconnect.cts.lib.TestUtils.RECORD_IDS;
 import static android.healthconnect.cts.lib.TestUtils.SUCCESS;
 import static android.healthconnect.cts.lib.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.lib.TestUtils.deleteRecordsAs;
+import static android.healthconnect.cts.lib.TestUtils.getChangeLogTokenAs;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordAs;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordWithAnotherAppPackageName;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordWithGivenClientId;
@@ -87,7 +89,7 @@ public class HealthConnectDeviceTest {
     private static final TestApp APP_WITH_DATA_MANAGE_PERMS_ONLY =
             new TestApp(
                     "TestAppD",
-                    "android.healthconnect.cts.testapp.dataManagePerms",
+                    "android.healthconnect.cts.testapp.data.manage.permissions",
                     VERSION_CODE,
                     false,
                     "CtsHealthConnectTestAppWithDataManagePermission.apk");
@@ -115,6 +117,7 @@ public class HealthConnectDeviceTest {
             deleteRecordsAs(APP_B_WITH_READ_WRITE_PERMS, listOfRecordIdsAndClass);
             Assert.fail("Should have thrown an Invalid Argument Exception!");
         } catch (HealthConnectException e) {
+
             assertThat(e.getErrorCode()).isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
         }
     }
@@ -269,14 +272,23 @@ public class HealthConnectDeviceTest {
 
     @Test
     public void testAppCanReadChangeLogsUsingDataOriginFilters() throws Exception {
-        Bundle bundle = insertRecordAs(APP_A_WITH_READ_WRITE_PERMS);
+        Bundle bundle =
+                getChangeLogTokenAs(
+                        APP_B_WITH_READ_WRITE_PERMS, APP_A_WITH_READ_WRITE_PERMS.getPackageName());
+        String changeLogTokenForAppB = bundle.getString(CHANGE_LOG_TOKEN);
+
+        bundle =
+                getChangeLogTokenAs(
+                        APP_A_WITH_READ_WRITE_PERMS, APP_B_WITH_READ_WRITE_PERMS.getPackageName());
+        String changeLogTokenForAppA = bundle.getString(CHANGE_LOG_TOKEN);
+
+        bundle = insertRecordAs(APP_A_WITH_READ_WRITE_PERMS);
         assertThat(bundle.getBoolean(SUCCESS)).isTrue();
 
         List<TestUtils.RecordTypeAndRecordIds> listOfRecordIdsAndClass =
                 (List<TestUtils.RecordTypeAndRecordIds>) bundle.getSerializable(RECORD_IDS);
 
         List<String> listOfRecordIdsInsertedByAppA = new ArrayList<>();
-
         int noOfRecordsInsertedByAppA = 0;
         for (TestUtils.RecordTypeAndRecordIds recordTypeAndRecordIds : listOfRecordIdsAndClass) {
             noOfRecordsInsertedByAppA += recordTypeAndRecordIds.getRecordIds().size();
@@ -291,13 +303,20 @@ public class HealthConnectDeviceTest {
         listOfRecordIdsAndClass =
                 (List<TestUtils.RecordTypeAndRecordIds>) bundle.getSerializable(RECORD_IDS);
 
+        int noOfRecordsInsertedByAppB = 0;
+        for (TestUtils.RecordTypeAndRecordIds recordTypeAndRecordIds : listOfRecordIdsAndClass) {
+            noOfRecordsInsertedByAppB += recordTypeAndRecordIds.getRecordIds().size();
+        }
+
         deleteRecordsAs(APP_B_WITH_READ_WRITE_PERMS, listOfRecordIdsAndClass);
 
-        bundle = readChangeLogsUsingDataOriginFiltersAs(APP_A_WITH_READ_WRITE_PERMS);
+        bundle =
+                readChangeLogsUsingDataOriginFiltersAs(
+                        APP_B_WITH_READ_WRITE_PERMS, changeLogTokenForAppB);
 
         ChangeLogsResponse response = bundle.getParcelable(CHANGE_LOGS_RESPONSE);
 
-        assertThat(response.getUpsertedRecords().size()).isEqualTo(2 * noOfRecordsInsertedByAppA);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(noOfRecordsInsertedByAppA);
         assertThat(
                         response.getUpsertedRecords().stream()
                                 .map(Record::getMetadata)
@@ -306,5 +325,14 @@ public class HealthConnectDeviceTest {
                 .containsExactlyElementsIn(listOfRecordIdsInsertedByAppA);
 
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        bundle =
+                readChangeLogsUsingDataOriginFiltersAs(
+                        APP_A_WITH_READ_WRITE_PERMS, changeLogTokenForAppA);
+
+        response = bundle.getParcelable(CHANGE_LOGS_RESPONSE);
+
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(noOfRecordsInsertedByAppB);
     }
 }

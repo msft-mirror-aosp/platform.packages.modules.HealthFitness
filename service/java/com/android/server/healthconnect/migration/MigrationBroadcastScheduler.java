@@ -20,12 +20,8 @@ import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_ALLO
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS;
 
 import static com.android.server.healthconnect.migration.MigrationConstants.COUNT_DEFAULT;
-import static com.android.server.healthconnect.migration.MigrationConstants.COUNT_MIGRATION_STATE_ALLOWED;
-import static com.android.server.healthconnect.migration.MigrationConstants.COUNT_MIGRATION_STATE_IN_PROGRESS;
 import static com.android.server.healthconnect.migration.MigrationConstants.EXTRA_USER_ID;
 import static com.android.server.healthconnect.migration.MigrationConstants.INTERVAL_DEFAULT;
-import static com.android.server.healthconnect.migration.MigrationConstants.IN_PROGRESS_STATE_TIMEOUT_PERIOD;
-import static com.android.server.healthconnect.migration.MigrationConstants.NON_IDLE_STATE_TIMEOUT_PERIOD;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -37,10 +33,9 @@ import android.util.Slog;
 
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -52,17 +47,19 @@ import java.util.UUID;
 public final class MigrationBroadcastScheduler {
 
     private static final String TAG = "MigrationBroadcastScheduler";
+
+    @VisibleForTesting
+    static final String MIGRATION_BROADCAST_NAMESPACE = "HEALTH_CONNECT_MIGRATION_BROADCAST";
+
     private final Object mLock = new Object();
+    private final HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager =
+            HealthConnectDeviceConfigManager.getInitialisedInstance();
 
     @GuardedBy("mLock")
     private int mUserId;
 
-    @GuardedBy("mLock")
-    private List<Integer> mJobIdArray;
-
     public MigrationBroadcastScheduler(int userId) {
         mUserId = userId;
-        mJobIdArray = new ArrayList<Integer>();
     }
 
     /** Sets userId. Invoked when the user is switched. */
@@ -89,15 +86,9 @@ public final class MigrationBroadcastScheduler {
                 Slog.d(TAG, "Current user: " + mUserId);
             }
 
-            JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
-            Objects.requireNonNull(jobScheduler);
-            for (int jobId : mJobIdArray) {
-                if (Constants.DEBUG) {
-                    Slog.d(TAG, "Cancelling job : " + jobId);
-                }
-                jobScheduler.cancel(jobId);
-            }
-            mJobIdArray.clear();
+            Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                    .forNamespace(MIGRATION_BROADCAST_NAMESPACE)
+                    .cancelAll();
 
             int requiredCount = getRequiredCount(migrationState);
             long requiredInterval = getRequiredInterval(migrationState);
@@ -164,14 +155,14 @@ public final class MigrationBroadcastScheduler {
             builder.setMinimumLatency(interval).setOverrideDeadline(interval);
         }
 
-        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
-        Objects.requireNonNull(jobScheduler);
+        JobScheduler jobScheduler =
+                Objects.requireNonNull(context.getSystemService(JobScheduler.class))
+                        .forNamespace(MIGRATION_BROADCAST_NAMESPACE);
         int result = jobScheduler.schedule(builder.build());
         if (result == JobScheduler.RESULT_SUCCESS) {
             if (Constants.DEBUG) {
                 Slog.d(TAG, "Successfully scheduled migration broadcast job");
             }
-            mJobIdArray.add(jobId);
         } else {
             throw new Exception("Failed to schedule migration broadcast job");
         }
@@ -184,9 +175,9 @@ public final class MigrationBroadcastScheduler {
     int getRequiredCount(int migrationState) {
         switch (migrationState) {
             case MIGRATION_STATE_IN_PROGRESS:
-                return COUNT_MIGRATION_STATE_IN_PROGRESS;
+                return mHealthConnectDeviceConfigManager.getMigrationStateInProgressCount();
             case MIGRATION_STATE_ALLOWED:
-                return COUNT_MIGRATION_STATE_ALLOWED;
+                return mHealthConnectDeviceConfigManager.getMigrationStateAllowedCount();
             default:
                 return COUNT_DEFAULT;
         }
@@ -198,10 +189,12 @@ public final class MigrationBroadcastScheduler {
         switch (migrationState) {
             case MIGRATION_STATE_IN_PROGRESS:
                 return calculateRequiredInterval(
-                        IN_PROGRESS_STATE_TIMEOUT_PERIOD, COUNT_MIGRATION_STATE_IN_PROGRESS);
+                        mHealthConnectDeviceConfigManager.getInProgressStateTimeoutPeriod(),
+                        getRequiredCount(MIGRATION_STATE_IN_PROGRESS));
             case MIGRATION_STATE_ALLOWED:
                 return calculateRequiredInterval(
-                        NON_IDLE_STATE_TIMEOUT_PERIOD, COUNT_MIGRATION_STATE_ALLOWED);
+                        mHealthConnectDeviceConfigManager.getNonIdleStateTimeoutPeriod(),
+                        getRequiredCount(MIGRATION_STATE_ALLOWED));
             default:
                 return INTERVAL_DEFAULT;
         }

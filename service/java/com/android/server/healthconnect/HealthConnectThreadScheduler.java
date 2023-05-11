@@ -21,6 +21,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -49,7 +51,8 @@ public final class HealthConnectThreadScheduler {
     private static final String TAG = "HealthConnectScheduler";
 
     // Executor to run HC background tasks
-    private static volatile ThreadPoolExecutor sBackgroundThreadExecutor =
+    @VisibleForTesting
+    static volatile ThreadPoolExecutor sBackgroundThreadExecutor =
             new ThreadPoolExecutor(
                     NUM_EXECUTOR_THREADS_BACKGROUND,
                     NUM_EXECUTOR_THREADS_BACKGROUND,
@@ -57,7 +60,8 @@ public final class HealthConnectThreadScheduler {
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
     // Executor to run HC background tasks
-    private static volatile ThreadPoolExecutor sInternalBackgroundExecutor =
+    @VisibleForTesting
+    static volatile ThreadPoolExecutor sInternalBackgroundExecutor =
             new ThreadPoolExecutor(
                     NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
                     NUM_EXECUTOR_THREADS_INTERNAL_BACKGROUND,
@@ -65,7 +69,8 @@ public final class HealthConnectThreadScheduler {
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
     // Executor to run HC tasks for clients
-    private static volatile ThreadPoolExecutor sForegroundExecutor =
+    @VisibleForTesting
+    static volatile ThreadPoolExecutor sForegroundExecutor =
             new ThreadPoolExecutor(
                     NUM_EXECUTOR_THREADS_FOREGROUND,
                     NUM_EXECUTOR_THREADS_FOREGROUND,
@@ -73,7 +78,8 @@ public final class HealthConnectThreadScheduler {
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
     // Executor to run HC controller tasks
-    private static volatile ThreadPoolExecutor sControllerExecutor =
+    @VisibleForTesting
+    static volatile ThreadPoolExecutor sControllerExecutor =
             new ThreadPoolExecutor(
                     NUM_EXECUTOR_THREADS_CONTROLLER,
                     NUM_EXECUTOR_THREADS_CONTROLLER,
@@ -127,58 +133,51 @@ public final class HealthConnectThreadScheduler {
 
     /** Schedules the task on the executor dedicated for performing internal tasks */
     public static void scheduleInternalTask(Runnable task) {
-        sInternalBackgroundExecutor.execute(
-                () -> {
-                    try {
-                        task.run();
-                    } catch (Exception e) {
-                        Slog.e(TAG, "Internal task schedule failed", e);
-                    }
-                });
+        sInternalBackgroundExecutor.execute(getSafeRunnable(task));
     }
 
     /** Schedules the task on the executor dedicated for performing controller tasks */
     static void scheduleControllerTask(Runnable task) {
-        sControllerExecutor.execute(task);
+        sControllerExecutor.execute(getSafeRunnable(task));
     }
 
     /** Schedules the task on the best possible executor based on the parameters */
     static void schedule(Context context, @NonNull Runnable task, int uid, boolean isController) {
         if (isController) {
-            sControllerExecutor.execute(task);
+            sControllerExecutor.execute(getSafeRunnable(task));
             return;
         }
 
         if (isUidInForeground(context, uid)) {
             sForegroundExecutor.execute(
-                    () -> {
-                        try {
-                            if (!isUidInForeground(context, uid)) {
-                                // The app is no longer in foreground so move the task to background
-                                // thread. This is because foreground thread should only be used by
-                                // the foreground app and since the request of this task is no
-                                // longer in foreground we don't want it to consume foreground
-                                // resource anymore.
-                                HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.addTask(uid, task);
-                                sBackgroundThreadExecutor.execute(
-                                        () ->
-                                                HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER
-                                                        .getNextTask()
-                                                        .run());
-                                return;
-                            }
-                        } catch (Exception exception) {
-                            // This is very unlikely, nonetheless we were unable to push the task to
-                            // the background thread, ignore this and try to run it on foreground
-                            // thread
-                        }
+                    getSafeRunnable(
+                            () -> {
+                                if (!isUidInForeground(context, uid)) {
+                                    // The app is no longer in foreground so move the task to
+                                    // background thread. This is because foreground thread should
+                                    // only be used by the foreground app and since the request of
+                                    // this task is no longer in foreground we don't want it to
+                                    // consume foreground resource anymore.
+                                    HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.addTask(
+                                            uid, task);
+                                    sBackgroundThreadExecutor.execute(
+                                            () ->
+                                                    HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER
+                                                            .getNextTask()
+                                                            .run());
+                                    return;
+                                }
 
-                        task.run();
-                    });
+                                task.run();
+                            }));
         } else {
             HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.addTask(uid, task);
             sBackgroundThreadExecutor.execute(
-                    () -> HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.getNextTask().run());
+                    getSafeRunnable(
+                            () ->
+                                    HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER
+                                            .getNextTask()
+                                            .run()));
         }
     }
 
@@ -195,5 +194,16 @@ public final class HealthConnectThreadScheduler {
             }
         }
         return false;
+    }
+
+    // Makes sure that any exceptions don't end up in system_server.
+    private static Runnable getSafeRunnable(Runnable task) {
+        return () -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                Slog.e(TAG, "Internal task schedule failed", e);
+            }
+        };
     }
 }

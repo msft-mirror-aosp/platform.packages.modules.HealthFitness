@@ -15,9 +15,17 @@
  */
 package android.healthconnect.cts.lib
 
+import android.Manifest.permission.GRANT_RUNTIME_PERMISSIONS
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.EXTRA_PACKAGE_NAME
+import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
+import android.health.connect.HealthConnectManager
+import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.skipOnboardingIfAppears
+import android.healthconnect.cts.lib.UiTestUtils.skipUpgradeNeededDialogIfAppears
+import android.healthconnect.cts.lib.UiTestUtils.skipUpgradeNeededIfAppears
+import com.android.compatibility.common.util.SystemUtil
 import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
 
 /** A class that provides a way to launch the Health Connect [MainActivity] in tests. */
@@ -31,6 +39,7 @@ object ActivityLauncher {
         executeBlockAndExit(block) {
             startActivity(intent)
             skipOnboardingIfAppears()
+            skipUpgradeNeededIfAppears()
         }
     }
 
@@ -42,6 +51,30 @@ object ActivityLauncher {
         executeBlockAndExit(block) {
             startActivity(intent)
             skipOnboardingIfAppears()
+            skipUpgradeNeededIfAppears()
+        }
+    }
+
+    fun Context.launchRequestPermissionActivity(
+        packageName: String = TEST_APP_PACKAGE_NAME,
+        permissions: List<String>,
+        block: () -> Unit
+    ) {
+        val intent =
+            Intent(HealthConnectManager.ACTION_REQUEST_HEALTH_PERMISSIONS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, permissions.toTypedArray())
+                putExtra(EXTRA_PACKAGE_NAME, packageName)
+            }
+        executeBlockAndExit(block) {
+            SystemUtil.runWithShellPermissionIdentity(
+                {
+                    startActivity(intent)
+                    skipOnboardingIfAppears()
+                    skipUpgradeNeededDialogIfAppears()
+                },
+                GRANT_RUNTIME_PERMISSIONS)
         }
     }
 

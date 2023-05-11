@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.SLEEP_SESSION_DURATION_TOTAL;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
@@ -28,11 +27,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthConnectException;
 import android.health.connect.datatypes.AggregationType;
+import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.util.Pair;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
@@ -48,7 +49,6 @@ import java.util.UUID;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RECORD_TYPE_SLEEP_SESSION)
 public final class SleepSessionRecordHelper
         extends IntervalRecordHelper<SleepSessionRecordInternal> {
     private static final String SLEEP_SESSION_RECORD_TABLE_NAME = "sleep_session_record_table";
@@ -56,6 +56,12 @@ public final class SleepSessionRecordHelper
     // Sleep session columns names
     private static final String NOTES_COLUMN_NAME = "notes";
     private static final String TITLE_COLUMN_NAME = "title";
+
+    private static final int NO_SLEEP_TABLE_DB_VERSION = 1;
+
+    public SleepSessionRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION);
+    }
 
     /** Returns the table name to be created corresponding to this helper */
     @Override
@@ -74,7 +80,11 @@ public final class SleepSessionRecordHelper
                             SLEEP_SESSION_RECORD_TABLE_NAME, sessionColumns, START_TIME_COLUMN_NAME)
                     .setJoin(
                             SleepStageRecordHelper.getJoinForDurationAggregation(
-                                    getMainTableName()));
+                                    getMainTableName()))
+                    .setPriorityAggregationExtraParams(
+                            new AggregateParams.PriorityAggregationExtraParams(
+                                    SleepStageRecordHelper.getStartTimeColumnName(),
+                                    SleepStageRecordHelper.getEndTimeColumnName()));
         }
         return null;
     }

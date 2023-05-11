@@ -19,13 +19,13 @@
 package com.android.healthconnect.controller.tests.permissions.request
 
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.content.pm.PackageManager.PERMISSION_DENIED
-import android.health.connect.HealthConnectDataState
 import android.health.connect.HealthPermissions.READ_HEART_RATE
 import android.health.connect.HealthPermissions.READ_STEPS
 import android.health.connect.HealthPermissions.WRITE_DISTANCE
@@ -46,11 +46,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.ONBOARDING_SHOWN_PREF_KEY
+import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.request.PermissionsActivity
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
@@ -58,7 +62,6 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import java.time.Duration
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.instanceOf
 import org.hamcrest.Matchers.`is`
@@ -90,14 +93,11 @@ class PermissionsActivityTest {
         hiltRule.inject()
         context = getInstrumentation().context
         permissionManager.revokeAllHealthPermissions(TEST_APP_PACKAGE_NAME)
-        whenever(migrationViewModel.migrationTimeout).then { MutableLiveData(Duration.ZERO) }
-        whenever(migrationViewModel.migrationState).then {
-            MutableLiveData(HealthConnectDataState.MIGRATION_STATE_IDLE)
-        }
+        whenever(migrationViewModel.migrationState).then { MutableLiveData(MigrationState.IDLE) }
         val sharedPreference =
-            context.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+            context.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
-        editor.putBoolean("Previously Opened", true)
+        editor.putBoolean(ONBOARDING_SHOWN_PREF_KEY, true)
         editor.apply()
     }
 
@@ -121,6 +121,20 @@ class PermissionsActivityTest {
                 withText(
                     "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun unsupportedApp_returnsCancelled() {
+        val unsupportedAppIntent =
+            Intent.makeMainActivity(ComponentName(context, PermissionsActivity::class.java))
+                .putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, permissions)
+                .putExtra(Intent.EXTRA_PACKAGE_NAME, UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        val scenario = launchActivityForResult<PermissionsActivity>(unsupportedAppIntent)
+
+        assertThat(scenario.result.resultCode).isEqualTo(RESULT_CANCELED)
     }
 
     @Test

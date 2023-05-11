@@ -31,6 +31,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RestingHeartRateRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,12 +42,15 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE)
 public final class RestingHeartRateRecordHelper
         extends InstantRecordHelper<RestingHeartRateRecordInternal> {
     private static final String RESTING_HEART_RATE_RECORD_TABLE_NAME =
             "resting_heart_rate_record_table";
     private static final String BEATS_PER_MINUTE_COLUMN_NAME = "beats_per_minute";
+
+    public RestingHeartRateRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(

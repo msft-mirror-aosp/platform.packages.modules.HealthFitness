@@ -16,10 +16,7 @@
 package com.android.healthconnect.controller.route
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.Intent.EXTRA_PACKAGE_NAME
-import android.health.connect.HealthConnectManager.ACTION_REQUEST_EXERCISE_ROUTE
 import android.health.connect.HealthConnectManager.EXTRA_EXERCISE_ROUTE
 import android.health.connect.HealthConnectManager.EXTRA_SESSION_ID
 import android.os.Bundle
@@ -33,7 +30,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter
-import com.android.healthconnect.controller.onboarding.OnboardingActivity
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
+import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.route.ExerciseRouteViewModel.SessionWithAttribution
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
@@ -56,34 +56,16 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var featureUtils: FeatureUtils
 
-    @VisibleForTesting lateinit var dialog: AlertDialog
+    @VisibleForTesting var dialog: AlertDialog? = null
     @VisibleForTesting lateinit var infoDialog: AlertDialog
 
     private val viewModel: ExerciseRouteViewModel by viewModels()
+    private val migrationViewModel: MigrationViewModel by viewModels()
+
+    private var requester: String? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        /** Displaying onboarding screen if user is opening Health Connect app for the first time */
-        val sharedPreference = getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-        val previouslyOpened =
-            sharedPreference.getBoolean(getString(R.string.previously_opened), false)
-        if (!previouslyOpened) {
-            val onboardingIntent = Intent(this, OnboardingActivity::class.java)
-            onboardingIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            val intentAfterOnboarding = Intent(ACTION_REQUEST_EXERCISE_ROUTE)
-            if (intent.hasExtra(EXTRA_SESSION_ID)) {
-                intentAfterOnboarding.putExtra(
-                    EXTRA_SESSION_ID, intent.getStringExtra(EXTRA_SESSION_ID)!!)
-            }
-            if (intent.hasExtra(EXTRA_PACKAGE_NAME)) {
-                intentAfterOnboarding.putExtra(
-                    EXTRA_PACKAGE_NAME, intent.getStringExtra(EXTRA_PACKAGE_NAME)!!)
-            }
-            onboardingIntent.putExtra(Intent.EXTRA_INTENT, intentAfterOnboarding)
-            startActivity(onboardingIntent)
-            finish()
-        }
 
         if (!featureUtils.isExerciseRouteEnabled()) {
             Log.e(TAG, "Exercise routes not available, finishing.")
@@ -94,15 +76,20 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
         if (!intent.hasExtra(EXTRA_SESSION_ID) ||
             intent.getStringExtra(EXTRA_SESSION_ID) == null ||
-            !intent.hasExtra(EXTRA_PACKAGE_NAME) ||
-            intent.getStringExtra(EXTRA_PACKAGE_NAME) == null) {
+            callingPackage == null) {
             Log.e(TAG, "Invalid Intent Extras, finishing.")
             setResult(Activity.RESULT_CANCELED, Intent())
             finish()
             return
         }
+
         viewModel.getExerciseWithRoute(intent.getStringExtra(EXTRA_SESSION_ID)!!)
+        runBlocking { requester = appInfoReader.getAppMetadata(callingPackage!!).appName }
         viewModel.exerciseSession.observe(this) { session -> setupRequestDialog(session) }
+
+        migrationViewModel.migrationState.observe(this) { migrationState ->
+            maybeShowMigrationDialog(migrationState)
+        }
     }
 
     private fun setupRequestDialog(data: SessionWithAttribution?) {
@@ -131,21 +118,14 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
             else session.title
         val view = layoutInflater.inflate(R.layout.route_request_dialog, null)
 
-        val title: String
-
-        runBlocking {
-            val requester =
-                appInfoReader.getAppMetadata(intent.getStringExtra(EXTRA_PACKAGE_NAME)!!)
-            title =
-                applicationContext.getString(R.string.request_route_header_title, requester.appName)
-        }
+        val title = applicationContext.getString(R.string.request_route_header_title, requester)
 
         view.findViewById<MapView>(R.id.map_view).setRoute(session.route!!)
         view.findViewById<TextView>(R.id.session_title).text = sessionTitle
         view.findViewById<TextView>(R.id.date_app).text = sessionDetails
 
         view.findViewById<LinearLayout>(R.id.more_info).setOnClickListener {
-            dialog.hide()
+            dialog?.hide()
             setupInfoDialog()
             infoDialog.show()
         }
@@ -171,7 +151,6 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 .setView(view)
                 .setCancelable(false)
                 .create()
-        dialog.show()
     }
 
     private fun setupInfoDialog() {
@@ -181,15 +160,50 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 .setIcon(R.attr.privacyPolicyIcon)
                 .setTitle(getString(R.string.request_route_info_header_title))
                 .setNegativeButton(R.string.back_button, ErrorPageElement.UNKNOWN_ELEMENT) { _, _ ->
-                    dialog.show()
+                    dialog?.show()
                 }
                 .setView(view)
                 .setCancelable(false)
                 .create()
     }
 
+    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
+        when (migrationState) {
+            MigrationState.IN_PROGRESS -> {
+                showMigrationInProgressDialog(
+                    this,
+                    applicationContext.getString(
+                        R.string.migration_in_progress_permissions_dialog_content, requester)) {
+                        _,
+                        _ ->
+                        finish()
+                    }
+            }
+            MigrationState.ALLOWED_PAUSED,
+            MigrationState.ALLOWED_NOT_STARTED,
+            MigrationState.APP_UPGRADE_REQUIRED,
+            MigrationState.MODULE_UPGRADE_REQUIRED -> {
+                showMigrationPendingDialog(
+                    this,
+                    applicationContext.getString(
+                        R.string.migration_pending_permissions_dialog_content, requester),
+                    positiveButtonAction = { _, _ -> dialog?.show() },
+                    negativeButtonAction = { _, _ ->
+                        val result = Intent()
+                        result.putExtra(EXTRA_SESSION_ID, intent.getStringExtra(EXTRA_SESSION_ID))
+                        setResult(Activity.RESULT_CANCELED, result)
+                        finish()
+                    })
+            }
+            else -> {
+                // Show the request dialog
+                dialog?.show()
+            }
+        }
+    }
+
     override fun onPause() {
-        dialog.dismiss()
+        dialog?.dismiss()
         super.onPause()
     }
 }

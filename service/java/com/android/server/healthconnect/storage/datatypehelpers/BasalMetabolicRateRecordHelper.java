@@ -30,6 +30,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.BasalMetabolicRateRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,12 +42,15 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE)
 public final class BasalMetabolicRateRecordHelper
         extends InstantRecordHelper<BasalMetabolicRateRecordInternal> {
     public static final String BASAL_METABOLIC_RATE_RECORD_TABLE_NAME =
             "basal_metabolic_rate_record_table";
     public static final String BASAL_METABOLIC_RATE_COLUMN_NAME = "basal_metabolic_rate";
+
+    public BasalMetabolicRateRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(

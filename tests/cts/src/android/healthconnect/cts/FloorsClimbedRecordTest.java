@@ -205,6 +205,23 @@ public class FloorsClimbedRecordTest {
     }
 
     @Test
+    public void testTotalAggregation_oneRecord_returnsItsTotal() throws Exception {
+        List<Record> records = Arrays.asList(getBaseFloorsClimbedRecord(1));
+        AggregateRecordsResponse<Double> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Double>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(FLOORS_CLIMBED_TOTAL)
+                                .build(),
+                        records);
+        assertThat(response.get(FLOORS_CLIMBED_TOTAL)).isNotNull();
+        assertThat(response.get(FLOORS_CLIMBED_TOTAL)).isEqualTo(10);
+    }
+
+    @Test
     public void testAggregation_FloorsClimbedTotal() throws Exception {
         List<Record> records =
                 Arrays.asList(getBaseFloorsClimbedRecord(1), getBaseFloorsClimbedRecord(2));
@@ -436,13 +453,7 @@ public class FloorsClimbedRecordTest {
                         .addRecordType(FloorsClimbedRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs().size()).isEqualTo(testRecord.size());
-        assertThat(
-                        response.getDeletedLogs().stream()
-                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
-                                .toList())
-                .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs()).isEmpty();
     }
 
     private void readFloorsClimbedRecordUsingIds(List<Record> recordList)

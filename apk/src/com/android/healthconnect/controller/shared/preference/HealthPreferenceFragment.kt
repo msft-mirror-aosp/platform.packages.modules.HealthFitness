@@ -53,8 +53,8 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setupLogger()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onResume() {
@@ -113,6 +113,7 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
             setViewShown(preferenceContainer, !hasError, canAnimate)
             setViewShown(loadingView, !hasError, canAnimate)
             setViewShown(errorView, hasError, canAnimate)
+            errorView.setText(errorText)
         }
     }
 

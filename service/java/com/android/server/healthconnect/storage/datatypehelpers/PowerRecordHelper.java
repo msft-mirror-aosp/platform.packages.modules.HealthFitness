@@ -35,6 +35,7 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.PowerRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 
 import java.util.ArrayList;
@@ -48,7 +49,6 @@ import java.util.UUID;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_POWER)
 public class PowerRecordHelper
         extends SeriesRecordHelper<PowerRecordInternal, PowerRecordInternal.PowerRecordSample> {
     public static final int NUM_LOCAL_COLUMNS = 1;
@@ -56,6 +56,10 @@ public class PowerRecordHelper
     private static final String SERIES_TABLE_NAME = "power_record_table";
     private static final String POWER_COLUMN_NAME = "power";
     private static final String EPOCH_MILLIS_COLUMN_NAME = "epoch_millis";
+
+    public PowerRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_POWER);
+    }
 
     @Override
     public final AggregateResult<?> getAggregateResult(
