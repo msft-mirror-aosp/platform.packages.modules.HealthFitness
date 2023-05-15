@@ -98,6 +98,8 @@ public class MigrationNotificationFactory {
     private static final String SYSTEM_SETTINGS_FALLBACK_ACTION = "android.settings.SETTINGS";
     private static final Intent FALLBACK_INTENT = new Intent(SYSTEM_SETTINGS_FALLBACK_ACTION);
 
+    @VisibleForTesting static final String APP_ICON_DRAWABLE_NAME = "health_connect_logo";
+
     public MigrationNotificationFactory(@NonNull Context context) {
         mContext = context;
         mResContext = new HealthConnectResourcesContext(mContext);
@@ -184,11 +186,6 @@ public class MigrationNotificationFactory {
                 getStringResource(MIGRATION_MODULE_UPDATE_NEEDED_NOTIFICATION_TITLE);
         String notificationContent =
                 getStringResource(MIGRATION_UPDATE_NEEDED_NOTIFICATION_CONTENT);
-        String notificationAction = getStringResource(MIGRATION_UPDATE_NEEDED_NOTIFICATION_ACTION);
-
-        Notification.Action action =
-                new Notification.Action.Builder(getAppIcon(), notificationAction, pendingIntent)
-                        .build();
 
         Notification notification =
                 new Notification.Builder(mContext, channelId)
@@ -196,11 +193,9 @@ public class MigrationNotificationFactory {
                         .setContentTitle(notificationTitle)
                         .setContentText(notificationContent)
                         .setContentIntent(pendingIntent)
-                        .setActions(action)
-                        .setOngoing(true)
+                        .setAutoCancel(true)
                         .build();
 
-        notification.flags = Notification.FLAG_NO_CLEAR;
         return notification;
     }
 
@@ -212,11 +207,6 @@ public class MigrationNotificationFactory {
                 getStringResource(MIGRATION_APP_UPDATE_NEEDED_NOTIFICATION_TITLE);
         String notificationContent =
                 getStringResource(MIGRATION_UPDATE_NEEDED_NOTIFICATION_CONTENT);
-        String notificationAction = getStringResource(MIGRATION_UPDATE_NEEDED_NOTIFICATION_ACTION);
-
-        Notification.Action action =
-                new Notification.Action.Builder(getAppIcon(), notificationAction, pendingIntent)
-                        .build();
 
         Notification notification =
                 new Notification.Builder(mContext, channelId)
@@ -224,11 +214,9 @@ public class MigrationNotificationFactory {
                         .setContentTitle(notificationTitle)
                         .setContentText(notificationContent)
                         .setContentIntent(pendingIntent)
-                        .setActions(action)
-                        .setOngoing(true)
+                        .setAutoCancel(true)
                         .build();
 
-        notification.flags = Notification.FLAG_NO_CLEAR;
         return notification;
     }
 
@@ -280,18 +268,12 @@ public class MigrationNotificationFactory {
         // TODO (b/275685600) replace with timeout
         String notificationContent =
                 getStringResourceWithArgs(RESUME_MIGRATION_NOTIFICATION_CONTENT, "1 day");
-        String notificationAction = getStringResource(RESUME_MIGRATION_NOTIFICATION_ACTION);
-
-        Notification.Action action =
-                new Notification.Action.Builder(getAppIcon(), notificationAction, pendingIntent)
-                        .build();
 
         Notification notification =
                 new Notification.Builder(mContext, channelId)
                         .setSmallIcon(getAppIcon())
                         .setContentTitle(notificationTitle)
                         .setContentText(notificationContent)
-                        .setActions(action)
                         .setOngoing(true)
                         .build();
 
@@ -304,17 +286,12 @@ public class MigrationNotificationFactory {
         PendingIntent pendingIntent = getHealthHomeSettingsPendingIntent();
 
         String notificationTitle = getStringResource(MIGRATION_NOT_COMPLETE_NOTIFICATION_TITLE);
-        String notificationAction = getStringResource(MIGRATION_NOT_COMPLETE_NOTIFICATION_ACTION);
-
-        Notification.Action action =
-                new Notification.Action.Builder(getAppIcon(), notificationAction, pendingIntent)
-                        .build();
 
         Notification notification =
                 new Notification.Builder(mContext, channelId)
                         .setSmallIcon(getAppIcon())
                         .setContentTitle(notificationTitle)
-                        .setActions(action)
+                        .setContentIntent(pendingIntent)
                         .setOngoing(true)
                         .build();
 
@@ -326,18 +303,12 @@ public class MigrationNotificationFactory {
     private Notification getMigrationCompleteNotification(@NonNull String channelId) {
         PendingIntent pendingIntent = getHealthHomeSettingsPendingIntent();
         String notificationTitle = getStringResource(MIGRATION_COMPLETE_NOTIFICATION_TITLE);
-        String notificationAction = getStringResource(MIGRATION_COMPLETE_NOTIFICATION_ACTION);
-
-        Notification.Action action =
-                new Notification.Action.Builder(getAppIcon(), notificationAction, pendingIntent)
-                        .build();
 
         Notification notification =
                 new Notification.Builder(mContext, channelId)
                         .setSmallIcon(getAppIcon())
                         .setContentTitle(notificationTitle)
                         .setContentIntent(pendingIntent)
-                        .setActions(action)
                         .setOngoing(true)
                         .build();
 
@@ -349,18 +320,12 @@ public class MigrationNotificationFactory {
     private Notification getMigrationPausedNotification(@NonNull String channelId) {
         PendingIntent pendingIntent = getMigrationInfoPendingIntent();
         String notificationTitle = getStringResource(MIGRATION_PAUSED_NOTIFICATION_TITLE);
-        String notificationAction = getStringResource(MIGRATION_PAUSED_NOTIFICATION_ACTION);
-
-        Notification.Action action =
-                new Notification.Action.Builder(getAppIcon(), notificationAction, pendingIntent)
-                        .build();
 
         Notification notification =
                 new Notification.Builder(mContext, channelId)
                         .setSmallIcon(getAppIcon())
                         .setContentTitle(notificationTitle)
                         .setContentIntent(pendingIntent)
-                        .setActions(action)
                         .setOngoing(true)
                         .build();
 
@@ -430,13 +395,13 @@ public class MigrationNotificationFactory {
         return getPendingIntent(intent);
     }
 
-    @NonNull
-    private Icon getAppIcon() {
+    @VisibleForTesting
+    @Nullable
+    Icon getAppIcon() {
         // Caches the first valid appIcon
         if (mAppIcon == null) {
-            mAppIcon = mResContext.getAppIcon();
+            mAppIcon = mResContext.getIconByDrawableName(APP_ICON_DRAWABLE_NAME);
         }
-
         return mAppIcon;
     }
 

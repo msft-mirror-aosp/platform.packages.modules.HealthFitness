@@ -60,9 +60,6 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     private final UidToGrantTimeCache mUidToGrantTimeCache;
 
     @GuardedBy("mGrantTimeLock")
-    private final Map<UserHandle, UserGrantTimeState> mUserToGrantTimeStagedState;
-
-    @GuardedBy("mGrantTimeLock")
     private final Set<Integer> mRestoredAndValidatedUsers = new ArraySet<>();
 
     private final PackageInfoUtils mPackageInfoHelper;
@@ -75,7 +72,6 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         mDatastore = datastore;
         mPackageManager = context.getPackageManager();
         mUidToGrantTimeCache = new UidToGrantTimeCache();
-        mUserToGrantTimeStagedState = new ArrayMap<>();
         mPackageInfoHelper = new PackageInfoUtils(context);
         mPackageManager.addOnPermissionsChangeListener(this);
     }
@@ -108,7 +104,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     }
 
     /**
-     * Sets the provided first grant time for the given {@code packageName}, if it's not set yet.
+     * Sets the provided first grant time for the given {@code packageName}.
      */
     public void setFirstGrantTime(
             @NonNull String packageName, @NonNull Instant time, @NonNull UserHandle user) {
@@ -197,7 +193,8 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
         mGrantTimeLock.writeLock().lock();
         try {
-            mUserToGrantTimeStagedState.put(userId, state);
+            // Write the state into the disk as staged data so that it can be merged.
+            mDatastore.writeForUser(state, userId, DATA_TYPE_STAGED);
             updateGrantTimesWithStagedDataLocked(userId);
         } finally {
             mGrantTimeLock.writeLock().unlock();
@@ -259,10 +256,6 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         if (stateChanged) {
             mDatastore.writeForUser(
                     mUidToGrantTimeCache.extractUserGrantTimeState(user), user, DATA_TYPE_CURRENT);
-        }
-
-        if (mUserToGrantTimeStagedState.containsKey(user)) {
-            mDatastore.writeForUser(mUserToGrantTimeStagedState.get(user), user, DATA_TYPE_STAGED);
         }
     }
 

@@ -101,6 +101,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -202,8 +203,10 @@ public final class BackupRestore {
         mCurrentForegroundUser = mContext.getUser();
     }
 
-    public void onUserSwitching(UserHandle currentForegroundUser) {
+    public void setupForUser(UserHandle currentForegroundUser) {
+        Slog.d(TAG, "Performing user switch operations.");
         mCurrentForegroundUser = currentForegroundUser;
+        HealthConnectThreadScheduler.scheduleInternalTask(this::scheduleAllJobs);
     }
 
     /**
@@ -215,6 +218,7 @@ public final class BackupRestore {
     public boolean prepForStagingIfNotAlreadyDone() {
         mStatesLock.writeLock().lock();
         try {
+            Slog.d(TAG, "Prepping for staging.");
             setDataDownloadState(DATA_DOWNLOAD_COMPLETE, false /* force */);
             @InternalRestoreState int curDataRestoreState = getInternalRestoreState();
             if (curDataRestoreState >= INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS) {
@@ -262,12 +266,20 @@ public final class BackupRestore {
                                     destinationPath,
                                     StandardCopyOption.REPLACE_EXISTING);
                         } catch (IOException e) {
+                            Slog.e(
+                                    TAG,
+                                    "Failed to get copy to destination: "
+                                            + destination.getName(), e);
                             destination.delete();
                             exceptionsByFileName.put(
                                     fileName,
                                     new HealthConnectException(
                                             HealthConnectException.ERROR_IO, e.getMessage()));
                         } catch (SecurityException e) {
+                            Slog.e(
+                                    TAG,
+                                    "Failed to get copy to destination: "
+                                            + destination.getName(), e);
                             destination.delete();
                             exceptionsByFileName.put(
                                     fileName,
@@ -296,6 +308,7 @@ public final class BackupRestore {
                 if (exceptionsByFileName.isEmpty()) {
                     callback.onResult();
                 } else {
+                    Slog.i(TAG, "Exceptions encountered during staging.");
                     setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
                     callback.onError(new StageRemoteDataException(exceptionsByFileName));
                 }
@@ -318,6 +331,7 @@ public final class BackupRestore {
     public void getAllDataForBackup(
             @NonNull StageRemoteDataRequest stageRemoteDataRequest,
             @NonNull UserHandle userHandle) {
+        Slog.d(TAG, "Incoming request to get all data for backup");
         Map<String, ParcelFileDescriptor> pfdsByFileName =
                 stageRemoteDataRequest.getPfdsByFileName();
 
@@ -349,27 +363,6 @@ public final class BackupRestore {
         }
         backupFileNames.add(GRANT_TIME_FILE_NAME);
         return new BackupFileNamesSet(backupFileNames);
-    }
-
-    private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
-        ArrayMap<String, File> backupFilesByFileNames = new ArrayMap<>();
-
-        File databasePath = TransactionManager.getInitialisedInstance().getDatabasePath();
-        backupFilesByFileNames.put(databasePath.getName(), databasePath);
-
-        File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());
-        backupDataDir.mkdirs();
-        File grantTimeFile = new File(backupDataDir, GRANT_TIME_FILE_NAME);
-        try {
-            grantTimeFile.createNewFile();
-            GrantTimeXmlHelper.serializeGrantTimes(
-                    grantTimeFile, mFirstGrantTimeManager.createBackupState(userHandle));
-            backupFilesByFileNames.put(grantTimeFile.getName(), grantTimeFile);
-        } catch (IOException e) {
-            Slog.e(TAG, "Could not create the grant time file for backup.", e);
-        }
-
-        return backupFilesByFileNames;
     }
 
     /** Updates the download state of the remote data. */
@@ -441,7 +434,11 @@ public final class BackupRestore {
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
     public Set<String> getStagedRemoteFileNames(int userId) {
-        return Stream.of(getStagedRemoteDataDirectoryForUser(userId).listFiles())
+        File[] allFiles = getStagedRemoteDataDirectoryForUser(userId).listFiles();
+        if (allFiles == null) {
+            return Collections.emptySet();
+        }
+        return Stream.of(allFiles)
                 .filter(file -> !file.isDirectory())
                 .map(File::getName)
                 .collect(Collectors.toSet());
@@ -450,6 +447,34 @@ public final class BackupRestore {
     /** Returns true if restore merging is in progress. API calls are blocked when this is true. */
     public boolean isRestoreMergingInProgress() {
         return getInternalRestoreState() == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS;
+    }
+
+    /** Schedules any pending jobs. */
+    public void scheduleAllJobs() {
+        scheduleDownloadStateTimeoutJob();
+        scheduleStagingTimeoutJob();
+        scheduleMergingTimeoutJob();
+
+        // We can schedule "retry merging" only if we are in the STAGING_DONE state.  However, if we
+        // are in STAGING_DONE state, then we should definitely attempt merging now - and that's
+        // what we will do below.
+        // So, there's no point in scheduling a "retry merging" job.  If Migration is going on then
+        // the merge attempt will take care of that automatically (and schedule the retry job as
+        // needed).
+        triggerMergingIfApplicable();
+    }
+
+    /** Cancel all the jobs and sets the cancelled time. */
+    public void cancelAllJobs() {
+        BackupRestoreJobService.cancelAllJobs(mContext);
+        setJobCancelledTimeIfExists(DATA_DOWNLOAD_TIMEOUT_KEY, DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY);
+        setJobCancelledTimeIfExists(DATA_STAGING_TIMEOUT_KEY, DATA_STAGING_TIMEOUT_CANCELLED_KEY);
+        setJobCancelledTimeIfExists(DATA_MERGING_TIMEOUT_KEY, DATA_MERGING_TIMEOUT_CANCELLED_KEY);
+        setJobCancelledTimeIfExists(DATA_MERGING_RETRY_KEY, DATA_MERGING_RETRY_CANCELLED_KEY);
+    }
+
+    public UserHandle getCurrentUserHandle() {
+        return mCurrentForegroundUser;
     }
 
     void setInternalRestoreState(@InternalRestoreState int dataRestoreState, boolean force) {
@@ -505,6 +530,81 @@ public final class BackupRestore {
         } finally {
             mStatesLock.readLock().unlock();
         }
+    }
+
+    /** Returns true if this job needs rescheduling; false otherwise. */
+    @VisibleForTesting
+    boolean handleJob(PersistableBundle extras) {
+        String jobName = extras.getString(EXTRA_JOB_NAME_KEY);
+        switch (jobName) {
+            case DATA_DOWNLOAD_TIMEOUT_KEY -> executeDownloadStateTimeoutJob();
+            case DATA_STAGING_TIMEOUT_KEY -> executeStagingTimeoutJob();
+            case DATA_MERGING_TIMEOUT_KEY -> executeMergingTimeoutJob();
+            case DATA_MERGING_RETRY_KEY -> executeRetryMergingJob();
+            default -> Slog.w(TAG, "Unknown job" + jobName + " delivered.");
+        }
+        // None of the jobs want to reschedule.
+        return false;
+    }
+
+    @VisibleForTesting
+    boolean shouldAttemptMerging() {
+        @InternalRestoreState int internalRestoreState = getInternalRestoreState();
+        if (internalRestoreState == INTERNAL_RESTORE_STATE_STAGING_DONE
+                || internalRestoreState == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
+            Slog.i(TAG, "Will attempt merging as it was already happening or bound to happen");
+            return true;
+        }
+        return false;
+    }
+
+    @VisibleForTesting
+    void merge() {
+        @InternalRestoreState int internalRestoreState = getInternalRestoreState();
+        if (internalRestoreState >= INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
+            Slog.i(TAG, "Not merging as internalRestoreState is " + internalRestoreState);
+            return;
+        }
+
+        if (mMigrationStateManager.isMigrationInProgress()) {
+            Slog.i(TAG, "Not merging as Migration in progress.");
+            scheduleRetryMergingJob();
+            return;
+        }
+
+        int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
+        int stagedDbVersion = getStagedDatabase().getReadableDatabase().getVersion();
+        if (currentDbVersion < stagedDbVersion) {
+            Slog.i(TAG, "Module needs upgrade for merging to version " + stagedDbVersion);
+            setDataRestoreError(RESTORE_ERROR_VERSION_DIFF);
+            return;
+        }
+
+        setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS, false);
+        mergeGrantTimes();
+        mergeDatabase();
+        setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
+    }
+
+    private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
+        ArrayMap<String, File> backupFilesByFileNames = new ArrayMap<>();
+
+        File databasePath = TransactionManager.getInitialisedInstance().getDatabasePath();
+        backupFilesByFileNames.put(databasePath.getName(), databasePath);
+
+        File backupDataDir = getBackupDataDirectoryForUser(userHandle.getIdentifier());
+        backupDataDir.mkdirs();
+        File grantTimeFile = new File(backupDataDir, GRANT_TIME_FILE_NAME);
+        try {
+            grantTimeFile.createNewFile();
+            GrantTimeXmlHelper.serializeGrantTimes(
+                    grantTimeFile, mFirstGrantTimeManager.createBackupState(userHandle));
+            backupFilesByFileNames.put(grantTimeFile.getName(), grantTimeFile);
+        } catch (IOException e) {
+            Slog.e(TAG, "Could not create the grant time file for backup.", e);
+        }
+
+        return backupFilesByFileNames;
     }
 
     @DataDownloadState private int getDataDownloadState() {
@@ -567,7 +667,7 @@ public final class BackupRestore {
         @DataDownloadState int currentDownloadState = getDataDownloadState();
         if (currentDownloadState != DATA_DOWNLOAD_STARTED
                 && currentDownloadState != DATA_DOWNLOAD_RETRY) {
-            Slog.d(
+            Slog.i(
                     TAG,
                     "Attempt to schedule download timeout job with state: "
                             + currentDownloadState);
@@ -789,6 +889,16 @@ public final class BackupRestore {
         }
     }
 
+    private void triggerMergingIfApplicable() {
+        HealthConnectThreadScheduler.scheduleInternalTask(() -> {
+            if (shouldAttemptMerging()) {
+                Slog.i(TAG, "Attempting merging.");
+                setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, true);
+                merge();
+            }
+        });
+    }
+
     private long getRemainingTimeout(
             String startTimeKey, String cancelledTimeKey, long stdTimeout) {
         String startTimeStr = PreferenceHelper.getInstance().getPreference(startTimeKey);
@@ -802,37 +912,6 @@ public final class BackupRestore {
         }
         long spentTime = Long.parseLong(cancelledTimeStr) - Long.parseLong(startTimeStr);
         return Math.max(0, stdTimeout - spentTime);
-    }
-
-    @VisibleForTesting
-    boolean handleJob(PersistableBundle extras) {
-        String jobName = extras.getString(EXTRA_JOB_NAME_KEY);
-        switch (jobName) {
-            case DATA_DOWNLOAD_TIMEOUT_KEY -> executeDownloadStateTimeoutJob();
-            case DATA_STAGING_TIMEOUT_KEY -> executeStagingTimeoutJob();
-            case DATA_MERGING_TIMEOUT_KEY -> executeMergingTimeoutJob();
-            case DATA_MERGING_RETRY_KEY -> executeRetryMergingJob();
-            default -> Slog.w(TAG, "Unknown job" + jobName + " delivered.");
-        }
-        // None of the jobs want to reschedule.
-        return false;
-    }
-
-    /** Schedules any pending jobs. */
-    public void scheduleAllPendingJobs() {
-        scheduleDownloadStateTimeoutJob();
-        scheduleStagingTimeoutJob();
-        scheduleMergingTimeoutJob();
-        scheduleRetryMergingJob();
-    }
-
-    /** Cancel all the jobs and sets the cancelled time. */
-    public void cancelAllJobs() {
-        BackupRestoreJobService.cancelAllJobs(mContext);
-        setJobCancelledTimeIfExists(DATA_DOWNLOAD_TIMEOUT_KEY, DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY);
-        setJobCancelledTimeIfExists(DATA_STAGING_TIMEOUT_KEY, DATA_STAGING_TIMEOUT_CANCELLED_KEY);
-        setJobCancelledTimeIfExists(DATA_MERGING_TIMEOUT_KEY, DATA_MERGING_TIMEOUT_CANCELLED_KEY);
-        setJobCancelledTimeIfExists(DATA_MERGING_RETRY_KEY, DATA_MERGING_RETRY_CANCELLED_KEY);
     }
 
     private void setJobCancelledTimeIfExists(String startTimeKey, String cancelTimeKey) {
@@ -860,24 +939,8 @@ public final class BackupRestore {
         return new File(hcDirectoryForUser, dirName);
     }
 
-    @VisibleForTesting
-    void merge() {
-        if (getInternalRestoreState() >= INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
-            return;
-        }
-
-        if (mMigrationStateManager.isMigrationInProgress()) {
-            scheduleRetryMergingJob();
-            return;
-        }
-
-        setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS, false);
-        mergeGrantTimes();
-        mergeDatabase();
-        setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
-    }
-
     private void mergeGrantTimes() {
+        Slog.i(TAG, "Merging grant times.");
         File restoredGrantTimeFile =
                 new File(
                         getStagedRemoteDataDirectoryForUser(mCurrentForegroundUser.getIdentifier()),
@@ -891,14 +954,8 @@ public final class BackupRestore {
     private void mergeDatabase() {
         synchronized (mMergingLock) {
             if (!mStagedDbContext.getDatabasePath(HealthConnectDatabase.getName()).exists()) {
+                Slog.i(TAG, "No staged db found.");
                 // no db was staged
-                return;
-            }
-
-            int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
-            int stagedDbVersion = getStagedDatabase().getReadableDatabase().getVersion();
-            if (currentDbVersion < stagedDbVersion) {
-                setDataRestoreError(RESTORE_ERROR_VERSION_DIFF);
                 return;
             }
 
@@ -915,6 +972,11 @@ public final class BackupRestore {
             for (var recordTypeMapEntry : recordTypeMap.entrySet()) {
                 mergeRecordsOfType(recordTypeMapEntry.getKey(), recordTypeMapEntry.getValue());
             }
+
+            // Delete the staged db as we are done merging.
+            Slog.i(TAG, "Deleting staged db after merging.");
+            mStagedDbContext.deleteDatabase(HealthConnectDatabase.getName());
+            mStagedDatabase = null;
         }
     }
 
@@ -929,6 +991,7 @@ public final class BackupRestore {
             if (recordsToMergeAndToken.first.isEmpty()) {
                 break;
             }
+            Slog.d(TAG, "Found record to merge: " + recordsToMergeAndToken.first.getClass());
             // Using null package name for making insertion for two reasons:
             // 1. we don't want to update the logs for this package.
             // 2. we don't want to update the package name in the records as they already have the
@@ -953,6 +1016,7 @@ public final class BackupRestore {
 
         // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
         // final query.
+        Slog.d(TAG, "Deleting table for: " + recordTypeClass);
         DeleteTableRequest deleteTableRequest =
                 recordHelper.getDeleteTableRequest(
                         null, DEFAULT_LONG /* startTime */, DEFAULT_LONG /* endTime */);
@@ -1040,17 +1104,14 @@ public final class BackupRestore {
         }
     }
 
-    private HealthConnectDatabase getStagedDatabase() {
+    @VisibleForTesting
+    HealthConnectDatabase getStagedDatabase() {
         synchronized (mMergingLock) {
             if (mStagedDatabase == null) {
                 mStagedDatabase = new HealthConnectDatabase(mStagedDbContext);
             }
             return mStagedDatabase;
         }
-    }
-
-    public Context getContext() {
-        return mContext;
     }
 
     /**
@@ -1088,21 +1149,20 @@ public final class BackupRestore {
         public static final String BACKUP_RESTORE_JOBS_NAMESPACE = "BACKUP_RESTORE_JOBS_NAMESPACE";
         public static final String EXTRA_USER_ID = "user_id";
         public static final String EXTRA_JOB_NAME_KEY = "job_name";
-        public static final String EXTRA_JOB_PERIOD = "job_period";
         private static final int BACKUP_RESTORE_JOB_ID = 1000;
 
-        static BackupRestore sBackupRestore;
+        static volatile BackupRestore sBackupRestore;
 
         @Override
         public boolean onStartJob(JobParameters params) {
             int userId = params.getExtras().getInt(EXTRA_USER_ID, DEFAULT_INT);
-            if (userId != sBackupRestore.getContext().getUser().getIdentifier()) {
+            if (userId != sBackupRestore.getCurrentUserHandle().getIdentifier()) {
                 Slog.w(
                         TAG,
                         "Got onStartJob for non active user: "
                                 + userId
                                 + ", but the current active user is: "
-                                + sBackupRestore.getContext().getUser().getIdentifier());
+                                + sBackupRestore.getCurrentUserHandle().getIdentifier());
                 return false;
             }
 

@@ -25,13 +25,21 @@ import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.logging.MigrationElement
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint(FragmentActivity::class)
 class MigrationActivity : Hilt_MigrationActivity() {
 
     companion object {
+        const val MIGRATION_COMPLETE_KEY = "migration_complete_key"
+
+        private fun isMigrationComplete(activity: Activity): Boolean {
+            val sharedPreference =
+                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+            return sharedPreference.getBoolean(MIGRATION_COMPLETE_KEY, false)
+        }
+
         fun maybeRedirectToMigrationActivity(
             activity: Activity,
             migrationState: MigrationState
@@ -80,15 +88,17 @@ class MigrationActivity : Hilt_MigrationActivity() {
             negativeButtonAction: DialogInterface.OnClickListener? = null
         ) {
             AlertDialogBuilder(context)
-                .setLogName(ErrorPageElement.UNKNOWN_ELEMENT)
+                .setLogName(MigrationElement.MIGRATION_PENDING_DIALOG_CONTAINER)
                 .setTitle(R.string.migration_pending_permissions_dialog_title)
                 .setMessage(message)
                 .setCancelable(false)
                 .setNegativeButton(
-                    android.R.string.cancel, ErrorPageElement.UNKNOWN_ELEMENT, negativeButtonAction)
+                    android.R.string.cancel,
+                    MigrationElement.MIGRATION_PENDING_DIALOG_CANCEL_BUTTON,
+                    negativeButtonAction)
                 .setPositiveButton(
                     R.string.migration_pending_permissions_dialog_button_continue,
-                    ErrorPageElement.UNKNOWN_ELEMENT,
+                    MigrationElement.MIGRATION_PENDING_DIALOG_CONTINUE_BUTTON,
                     positiveButtonAction)
                 .create()
                 .show()
@@ -100,13 +110,13 @@ class MigrationActivity : Hilt_MigrationActivity() {
             negativeButtonAction: DialogInterface.OnClickListener? = null
         ) {
             AlertDialogBuilder(context)
-                .setLogName(ErrorPageElement.UNKNOWN_ELEMENT)
+                .setLogName(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
                 .setTitle(R.string.migration_in_progress_permissions_dialog_title)
                 .setMessage(message)
                 .setCancelable(false)
                 .setNegativeButton(
                     R.string.migration_in_progress_permissions_dialog_button_got_it,
-                    ErrorPageElement.UNKNOWN_ELEMENT,
+                    MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON,
                     negativeButtonAction)
                 .create()
                 .show()
@@ -131,6 +141,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
             finish()
         }
     }
+
     override fun onNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         if (!navController.popBackStack()) {
