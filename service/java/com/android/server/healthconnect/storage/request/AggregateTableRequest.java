@@ -25,7 +25,6 @@ import static android.health.connect.datatypes.AggregationType.SUM;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 
 import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.database.Cursor;
 import android.health.connect.AggregateResult;
 import android.health.connect.Constants;
@@ -33,6 +32,7 @@ import android.health.connect.TimeRangeFilter;
 import android.health.connect.TimeRangeFilterHelper;
 import android.health.connect.datatypes.AggregationType;
 import android.util.ArrayMap;
+import android.util.Pair;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -45,9 +45,7 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +79,16 @@ public class AggregateTableRequest {
     private String mGroupByColumnName;
     private long mGroupByEnd;
     private int mGroupBySize = 1;
-    private List<String> mAdditionalColumnsToFetch;
+    private final List<String> mAdditionalColumnsToFetch;
     private final AggregateParams.PriorityAggregationExtraParams mPriorityParams;
+
+    private final boolean mUseLocalTime;
 
     public AggregateTableRequest(
             AggregateParams params,
             AggregationType<?> aggregationType,
-            RecordHelper<?> recordHelper) {
+            RecordHelper<?> recordHelper,
+            boolean useLocalTime) {
         mTableName = params.getTableName();
         mColumnNamesToAggregate = params.getColumnsToFetch();
         mTimeColumnName = params.getTimeColumnName();
@@ -96,15 +97,13 @@ public class AggregateTableRequest {
         mSqlJoin = params.getJoin();
         mPriorityParams = params.getPriorityAggregationExtraParams();
         mEndTimeColumnName = params.getExtraTimeColumnName();
-    }
-
-    /**
-     * @param additionalColumnsToFetch Additional columns to fetch for the matching record
-     */
-    public AggregateTableRequest setAdditionalColumnsToFetch(
-            @Nullable List<String> additionalColumnsToFetch) {
-        mAdditionalColumnsToFetch = additionalColumnsToFetch;
-        return this;
+        mAdditionalColumnsToFetch = new ArrayList<>();
+        mAdditionalColumnsToFetch.add(params.getTimeOffsetColumnName());
+        mAdditionalColumnsToFetch.add(mTimeColumnName);
+        if (mEndTimeColumnName != null) {
+            mAdditionalColumnsToFetch.add(mEndTimeColumnName);
+        }
+        mUseLocalTime = useLocalTime;
     }
 
     /**
@@ -139,7 +138,7 @@ public class AggregateTableRequest {
     public String getCommandToFetchAggregateMetadata() {
         final StringBuilder builder = new StringBuilder("SELECT DISTINCT ");
         builder.append(APP_INFO_ID_COLUMN_NAME).append(", ");
-        return appendAggregateCommand(builder, true);
+        return appendAggregateCommand(builder, /* isMetadata= */ true);
     }
 
     /** Returns SQL statement to perform aggregation operation */
@@ -200,21 +199,33 @@ public class AggregateTableRequest {
     }
 
     /** Sets group by fields. */
-    public void setGroupBy(String columnName, Period period, TimeRangeFilter timeRangeFilter) {
+    public void setGroupBy(
+            String columnName, Period period, Duration duration, TimeRangeFilter timeRangeFilter) {
         mGroupByColumnName = columnName;
-        mGroupByStart = TimeRangeFilterHelper.getPeriodStart(timeRangeFilter);
-        mGroupByDelta = StorageUtils.getPeriodDelta(period);
-        mGroupByEnd = TimeRangeFilterHelper.getPeriodEnd(timeRangeFilter);
+        mGroupByStart = TimeRangeFilterHelper.getFilterStartTimeMillis(timeRangeFilter);
+        mGroupByEnd = TimeRangeFilterHelper.getFilterEndTimeMillis(timeRangeFilter);
+        if (period != null) {
+            mGroupByDelta = StorageUtils.getPeriodDeltaInMillis(period);
+        } else if (duration != null) {
+            mGroupByDelta = StorageUtils.getDurationDelta(duration);
+        } else {
+            throw new IllegalArgumentException(
+                    "Either aggregation period or duration should be not null");
+        }
         setGroupBySize();
-    }
 
-    /** Sets group by fields. */
-    public void setGroupBy(String columnName, Duration duration, TimeRangeFilter timeRangeFilter) {
-        mGroupByColumnName = columnName;
-        mGroupByStart = TimeRangeFilterHelper.getDurationStart(timeRangeFilter);
-        mGroupByDelta = StorageUtils.getDurationDelta(duration);
-        mGroupByEnd = TimeRangeFilterHelper.getDurationEnd(timeRangeFilter);
-        setGroupBySize();
+        if (Constants.DEBUG) {
+            Slog.d(
+                    TAG,
+                    "Aggregation group delta: "
+                            + mGroupByDelta
+                            + " group size: "
+                            + mGroupBySize
+                            + " start: "
+                            + mGroupByStart
+                            + " group end: "
+                            + mGroupByEnd);
+        }
     }
 
     public void onResultsFetched(Cursor cursor, Cursor metaDataCursor) {
@@ -239,7 +250,8 @@ public class AggregateTableRequest {
                         getGroupSplits(),
                         priorityList,
                         mAggregationType.getAggregationTypeIdentifier(),
-                        mPriorityParams);
+                        mPriorityParams,
+                        mUseLocalTime);
         aggregator.calculateAggregation(cursor);
         AggregateResult<?> result;
         for (int groupNumber = 0; groupNumber < mGroupBySize; groupNumber++) {
@@ -294,11 +306,11 @@ public class AggregateTableRequest {
             int groupByIndex = 0;
             for (long i = mGroupByStart; i < mGroupByEnd; i += mGroupByDelta) {
                 builder.append(" WHEN ")
-                        .append(mGroupByColumnName)
+                        .append(mTimeColumnName)
                         .append(" >= ")
                         .append(i)
                         .append(" AND ")
-                        .append(mGroupByColumnName)
+                        .append(mTimeColumnName)
                         .append(" < ")
                         .append(i + mGroupByDelta)
                         .append(" THEN ")
@@ -337,12 +349,12 @@ public class AggregateTableRequest {
 
         if (mEndTimeColumnName != null) {
             // Filter all records which overlap with time filter interval:
-            // recordStartTime < filterEndTime and recordEndTime > filterStartTime
-            whereClauses.addWhereLessThanClause(mTimeColumnName, mEndTime);
-            whereClauses.addWhereGreaterThanClause(mEndTimeColumnName, mStartTime);
+            // recordStartTime < filterEndTime and recordEndTime >= filterStartTime
+            whereClauses.addWhereGreaterThanOrEqualClause(mEndTimeColumnName, mStartTime);
         } else {
-            whereClauses.addWhereBetweenClause(mTimeColumnName, mStartTime, mEndTime);
+            whereClauses.addWhereGreaterThanOrEqualClause(mTimeColumnName, mStartTime);
         }
+        whereClauses.addWhereLessThanClause(mTimeColumnName, mEndTime);
 
         return whereClauses.get(/* withWhereKeyword= */ true);
     }
@@ -358,8 +370,24 @@ public class AggregateTableRequest {
                 (n, v) -> mAggregateResults.get(n).setDataOrigins(packageNames));
     }
 
+    public List<Pair<Long, Long>> getGroupSplitIntervals() {
+        List<Long> groupSplits = getGroupSplits();
+        List<Pair<Long, Long>> groupIntervals = new ArrayList<>();
+        long previous = groupSplits.get(0);
+        for (int i = 1; i < groupSplits.size(); i++) {
+            Pair<Long, Long> pair = new Pair<>(previous, groupSplits.get(i));
+            groupIntervals.add(pair);
+            previous = groupSplits.get(i);
+        }
+
+        return groupIntervals;
+    }
+
     private List<Long> getGroupSplits() {
-        long currentStart = mGroupByStart;
+        if (mGroupByDelta <= 0) {
+            return List.of(mStartTime, mEndTime);
+        }
+        long currentStart = mStartTime;
         List<Long> splits = new ArrayList<>();
         splits.add(currentStart);
         long currentEnd = getGroupEndTime(currentStart);
@@ -372,25 +400,11 @@ public class AggregateTableRequest {
     }
 
     private long getGroupEndTime(long groupStartTime) {
-        if (mGroupByColumnName.equals(mRecordHelper.getPeriodGroupByColumnName())) {
-            // Calculate and return start time for group Aggregation based on period
-            return (Instant.ofEpochMilli(groupStartTime).plus(mGroupByDelta, ChronoUnit.DAYS))
-                    .toEpochMilli();
-        } else {
-            // Calculate and return end time for group Aggregation based on duration
-            return groupStartTime + mGroupByDelta;
-        }
+        return groupStartTime + mGroupByDelta;
     }
 
     private void deriveAggregate(Cursor cursor) {
-        double[] derivedAggregateArray =
-                mRecordHelper.deriveAggregate(
-                        cursor,
-                        mStartTime,
-                        mEndTime,
-                        mGroupBySize,
-                        mGroupByDelta,
-                        mGroupByColumnName);
+        double[] derivedAggregateArray = mRecordHelper.deriveAggregate(cursor, this);
         int index = 0;
         cursor.moveToFirst();
         for (double aggregate : derivedAggregateArray) {
