@@ -29,6 +29,8 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -163,23 +165,21 @@ public class PackageInfoUtils {
 
     @Nullable
     String getPackageNameFromUid(int uid) {
-        String[] packages =
-                mUsersPackageManager
-                        .get(UserHandle.getUserHandleForUid(uid))
-                        .getPackagesForUid(uid);
+        String[] packages = getPackageNamesForUid(uid);
         if (packages == null || packages.length != 1) {
             Log.w(TAG, "Can't get one package name for UID: " + uid);
             return null;
         }
-        try {
-            PackageInfo info =
-                    getPackageManagerAsUser(UserHandle.getUserHandleForUid(uid))
-                            .getPackageInfo(packages[0], PackageManager.PackageInfoFlags.of(0));
-            return info.packageName;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Package " + packages[0] + " not found.");
-            return null;
-        }
+        return packages[0];
+    }
+
+    @Nullable
+    String[] getPackageNamesForUid(int uid) {
+        String[] packages =
+                mUsersPackageManager
+                        .get(UserHandle.getUserHandleForUid(uid))
+                        .getPackagesForUid(uid);
+        return packages;
     }
 
     @Nullable
@@ -195,6 +195,19 @@ public class PackageInfoUtils {
             Log.e(TAG, "NameNotFound exception for " + packageName);
         }
         return uid;
+    }
+
+    void updateHealthDataPriority(@NonNull String[] packageNames, @NonNull UserHandle user) {
+        for (String packageName : packageNames) {
+            PackageInfo info = getPackageInfoWithPermissionsAsUser(packageName, user);
+            if (anyRequestedHealthPermissionGranted(mContext, info)) {
+                HealthDataCategoryPriorityHelper.getInstance()
+                        .removeFromPriorityListIfNeeded(info, mContext);
+            } else {
+                HealthDataCategoryPriorityHelper.getInstance()
+                        .removeAppFromPriorityList(packageName);
+            }
+        }
     }
 
     @NonNull

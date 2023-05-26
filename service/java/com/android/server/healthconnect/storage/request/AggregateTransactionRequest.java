@@ -20,6 +20,7 @@ import android.annotation.NonNull;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.AggregateResult;
 import android.health.connect.TimeRangeFilter;
+import android.health.connect.TimeRangeFilterHelper;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.aidl.AggregateDataResponseParcel;
 import android.health.connect.datatypes.AggregationType;
@@ -50,9 +51,6 @@ public final class AggregateTransactionRequest {
     private final Duration mDuration;
     private final TimeRangeFilter mTimeRangeFilter;
 
-    /**
-     * TODO(b/249581069): Add support for aggregates that require information from multiple tables
-     */
     public AggregateTransactionRequest(
             @NonNull String packageName, @NonNull AggregateDataRequestParcel request) {
         mPackageName = packageName;
@@ -75,15 +73,15 @@ public final class AggregateTransactionRequest {
                                 aggregationType,
                                 request.getPackageFilters(),
                                 request.getStartTime(),
-                                request.getEndTime());
-                if (mDuration != null) {
+                                request.getEndTime(),
+                                TimeRangeFilterHelper.isLocalTimeFilter(mTimeRangeFilter));
+
+                if (mDuration != null || mPeriod != null) {
                     aggregateTableRequest.setGroupBy(
                             recordHelper.getDurationGroupByColumnName(),
+                            mPeriod,
                             mDuration,
                             mTimeRangeFilter);
-                } else if (mPeriod != null) {
-                    aggregateTableRequest.setGroupBy(
-                            recordHelper.getPeriodGroupByColumnName(), mPeriod, mTimeRangeFilter);
                 }
                 mAggregateTableRequests.add(aggregateTableRequest);
             } else {
@@ -102,7 +100,6 @@ public final class AggregateTransactionRequest {
      */
     public AggregateDataResponseParcel getAggregateDataResponseParcel() {
         Map<AggregationType<?>, List<AggregateResult<?>>> results = new ArrayMap<>();
-        int size = 0;
         for (AggregateTableRequest aggregateTableRequest : mAggregateTableRequests) {
             // Compute aggregations
             TransactionManager.getInitialisedInstance()
@@ -110,12 +107,15 @@ public final class AggregateTransactionRequest {
             results.put(
                     aggregateTableRequest.getAggregationType(),
                     aggregateTableRequest.getAggregateResults());
-            size = aggregateTableRequest.getAggregateResults().size();
         }
 
         // Convert DB friendly results to aggregateRecordsResponses
-        List<AggregateRecordsResponse<?>> aggregateRecordsResponses = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
+        int responseSize =
+                mAggregateTableRequests.isEmpty()
+                        ? 0
+                        : mAggregateTableRequests.get(0).getAggregateResults().size();
+        List<AggregateRecordsResponse<?>> aggregateRecordsResponses = new ArrayList<>(responseSize);
+        for (int i = 0; i < responseSize; i++) {
             Map<Integer, AggregateResult<?>> aggregateResultMap = new ArrayMap<>();
             for (AggregationType<?> aggregationType : results.keySet()) {
                 aggregateResultMap.put(

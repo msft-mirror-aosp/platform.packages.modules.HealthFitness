@@ -23,13 +23,13 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.AggregateResult;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ElevationGainedRecordInternal;
 import android.util.Pair;
 
-import java.time.ZoneOffset;
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,25 +40,14 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_ELEVATION_GAINED)
 public final class ElevationGainedRecordHelper
         extends IntervalRecordHelper<ElevationGainedRecordInternal> {
     private static final String ELEVATION_GAINED_RECORD_TABLE_NAME =
             "elevation_gained_record_table";
     private static final String ELEVATION_COLUMN_NAME = "elevation";
 
-    @Override
-    public AggregateResult<?> getAggregateResult(
-            Cursor results, AggregationType<?> aggregationType, double aggregation) {
-        switch (aggregationType.getAggregationTypeIdentifier()) {
-            case ELEVATION_RECORD_ELEVATION_GAINED_TOTAL:
-                results.moveToFirst();
-                ZoneOffset zoneOffset = getZoneOffset(results);
-                return new AggregateResult<>(aggregation).setZoneOffset(zoneOffset);
-
-            default:
-                return null;
-        }
+    public ElevationGainedRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_ELEVATION_GAINED);
     }
 
     @Override
@@ -74,7 +63,6 @@ public final class ElevationGainedRecordHelper
                 return new AggregateParams(
                         ELEVATION_GAINED_RECORD_TABLE_NAME,
                         new ArrayList(Arrays.asList(ELEVATION_COLUMN_NAME)),
-                        START_TIME_COLUMN_NAME,
                         Double.class);
             default:
                 return null;

@@ -19,6 +19,8 @@ package com.android.server.healthconnect.storage;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
@@ -50,17 +52,21 @@ public class AutoDeleteService {
     /** Sets auto delete period for automatically deleting record entries */
     public static void setRecordRetentionPeriodInDays(int days) {
         PreferenceHelper.getInstance()
-                .insertPreference(AUTO_DELETE_DURATION_RECORDS_KEY, String.valueOf(days));
+                .insertOrReplacePreference(AUTO_DELETE_DURATION_RECORDS_KEY, String.valueOf(days));
     }
 
     /** Starts the Auto Deletion process. */
     public static void startAutoDelete() {
         try {
-            // Only do transactional operations here - as this job might get cancelled for
-            // several reasons, such as: User switch, low battery etc.
+            // Only do transactional operations here - as this job might get cancelled for several
+            // reasons, such as: User switch, low battery etc.
             deleteStaleRecordEntries();
             deleteStaleChangeLogEntries();
             deleteStaleAccessLogEntries();
+            // Update the recordTypesUsed by packages if required after the deletion of records.
+            AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+            // Re-sync activity dates table
+            ActivityDateHelper.getInstance().reSyncForAllRecords();
         } catch (Exception e) {
             Slog.e(TAG, "Auto delete run failed", e);
             // Don't rethrow as that will crash system_server

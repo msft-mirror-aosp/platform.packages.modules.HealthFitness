@@ -29,6 +29,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.ActiveCaloriesBurnedRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,12 +42,15 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED)
 public final class ActiveCaloriesBurnedRecordHelper
         extends IntervalRecordHelper<ActiveCaloriesBurnedRecordInternal> {
-    private static final String ACTIVE_CALORIES_BURNED_RECORD_TABLE_NAME =
+    public static final String ACTIVE_CALORIES_BURNED_RECORD_TABLE_NAME =
             "active_calories_burned_record_table";
-    private static final String ENERGY_COLUMN_NAME = "energy";
+    public static final String ENERGY_COLUMN_NAME = "energy";
+
+    public ActiveCaloriesBurnedRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_ACTIVE_CALORIES_BURNED);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(
@@ -73,7 +78,6 @@ public final class ActiveCaloriesBurnedRecordHelper
                 return new AggregateParams(
                         ACTIVE_CALORIES_BURNED_RECORD_TABLE_NAME,
                         new ArrayList(Arrays.asList(ENERGY_COLUMN_NAME)),
-                        START_TIME_COLUMN_NAME,
                         Double.class);
             default:
                 return null;

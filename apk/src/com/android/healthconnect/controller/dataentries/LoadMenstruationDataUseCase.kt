@@ -24,6 +24,8 @@ import android.health.connect.ReadRecordsResponse
 import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.Record
+import android.util.Log
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.dataentries.formatters.MenstruationPeriodFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
@@ -33,7 +35,7 @@ import java.time.Duration.ofDays
 import java.time.Duration.ofHours
 import java.time.Duration.ofMinutes
 import java.time.Instant
-import java.time.temporal.ChronoUnit
+import java.time.ZoneId
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -48,19 +50,25 @@ constructor(
 ) : BaseUseCase<Instant, List<FormattedEntry>>(dispatcher) {
 
     companion object {
+        private const val TAG = "LoadMenstruationDataUse"
         private val SEARCH_RANGE = ofDays(30)
     }
 
-    override suspend fun execute(selectedDate: Instant): List<FormattedEntry> {
+    override suspend fun execute(input: Instant): List<FormattedEntry> {
         val data = buildList {
-            addAll(getMenstruationPeriodRecords(selectedDate))
-            addAll(getMenstruationFlowRecords(selectedDate))
+            addAll(getMenstruationPeriodRecords(input))
+            addAll(getMenstruationFlowRecords(input))
         }
         return data
     }
 
     private suspend fun getMenstruationPeriodRecords(selectedDate: Instant): List<FormattedEntry> {
-        val startDate = selectedDate.truncatedTo(ChronoUnit.DAYS)
+        val startDate =
+            selectedDate
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
         val end = startDate.plus(ofHours(23)).plus(ofMinutes(59))
         val start = end.minus(SEARCH_RANGE)
 
@@ -81,15 +89,21 @@ constructor(
                 }
                 .records
                 .filter { menstruationPeriodRecord ->
-                    menstruationPeriodRecord.startTime.isBefore(startDate) &&
-                        menstruationPeriodRecord.endTime.isAfter(startDate)
+                    menstruationPeriodRecord.startTime.isBefore(end) &&
+                        (menstruationPeriodRecord.endTime.isAfter(startDate) ||
+                            menstruationPeriodRecord.endTime.equals(startDate))
                 }
 
         return records.map { record -> menstruationPeriodFormatter.format(startDate, record) }
     }
 
     private suspend fun getMenstruationFlowRecords(selectedDate: Instant): List<FormattedEntry> {
-        val start = selectedDate.truncatedTo(ChronoUnit.DAYS)
+        val start =
+            selectedDate
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
         val end = start.plus(ofHours(23)).plus(ofMinutes(59))
         val timeRange = TimeInstantRangeFilter.Builder().setStartTime(start).setEndTime(end).build()
         val filter =
@@ -105,6 +119,15 @@ constructor(
                 }
                 .records
 
-        return records.map { healthDataEntryFormatter.format(it) }
+        return records.mapNotNull { record -> getFormatterRecord(record) }
+    }
+
+    private suspend fun getFormatterRecord(record: Record): FormattedEntry? {
+        return try {
+            healthDataEntryFormatter.format(record)
+        } catch (ex: Exception) {
+            Log.i(TAG, "Failed to format record!")
+            null
+        }
     }
 }

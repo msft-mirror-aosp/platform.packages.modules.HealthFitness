@@ -15,8 +15,10 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION;
 import static android.health.connect.datatypes.RecordUtils.isEqualNullableCharSequences;
-import static android.health.connect.datatypes.ValidationUtils.sortAndValidateTimeIntervalHolders;
+import static android.health.connect.datatypes.validation.ValidationUtils.sortAndValidateTimeIntervalHolders;
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
 
 import android.annotation.IntDef;
 import android.annotation.NonNull;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +46,19 @@ import java.util.stream.Collectors;
  */
 @Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION)
 public final class SleepSessionRecord extends IntervalRecord {
+
+    /**
+     * Metric identifier to retrieve total sleep session duration using aggregate APIs in {@link
+     * android.health.connect.HealthConnectManager}. Calculated in milliseconds.
+     */
+    @NonNull
+    public static final AggregationType<Long> SLEEP_DURATION_TOTAL =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.SLEEP_SESSION_DURATION_TOTAL,
+                    AggregationType.SUM,
+                    RECORD_TYPE_SLEEP_SESSION,
+                    Long.class);
+
     private final List<Stage> mStages;
     private final CharSequence mNotes;
     private final CharSequence mTitle;
@@ -57,6 +73,7 @@ public final class SleepSessionRecord extends IntervalRecord {
      * @param stages list of {@link Stage} of the sleep sessions.
      * @param notes Additional notes for the session. Optional field.
      * @param title Title of the session. Optional field.
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     @SuppressWarnings("unchecked")
     private SleepSessionRecord(
@@ -67,8 +84,9 @@ public final class SleepSessionRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull List<Stage> stages,
             @Nullable CharSequence notes,
-            @Nullable CharSequence title) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
+            @Nullable CharSequence title,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
         Objects.requireNonNull(stages);
         mStages =
                 Collections.unmodifiableList(
@@ -134,6 +152,7 @@ public final class SleepSessionRecord extends IntervalRecord {
                 @NonNull Instant startTime,
                 @NonNull Instant endTime,
                 @StageType.StageTypes int stageType) {
+            validateIntDefValue(stageType, StageType.VALID_TYPES, StageType.class.getSimpleName());
             this.mInterval = new TimeInterval(startTime, endTime);
             this.mStageType = stageType;
         }
@@ -215,6 +234,23 @@ public final class SleepSessionRecord extends IntervalRecord {
         /** The user is awake and in bed. */
         public static final int STAGE_TYPE_AWAKE_IN_BED = 7;
 
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(
+                        STAGE_TYPE_UNKNOWN,
+                        STAGE_TYPE_AWAKE,
+                        STAGE_TYPE_SLEEPING,
+                        STAGE_TYPE_AWAKE_OUT_OF_BED,
+                        STAGE_TYPE_SLEEPING_LIGHT,
+                        STAGE_TYPE_SLEEPING_DEEP,
+                        STAGE_TYPE_SLEEPING_REM,
+                        STAGE_TYPE_AWAKE_IN_BED);
+
         private StageType() {}
 
         /** @hide */
@@ -230,6 +266,14 @@ public final class SleepSessionRecord extends IntervalRecord {
         })
         @Retention(RetentionPolicy.SOURCE)
         public @interface StageTypes {}
+
+        /**
+         * Sleep stage types which are excluded from sleep session duration.
+         *
+         * @hide
+         */
+        public static final List<Integer> DURATION_EXCLUDE_TYPES =
+                List.of(STAGE_TYPE_AWAKE, STAGE_TYPE_AWAKE_OUT_OF_BED, STAGE_TYPE_AWAKE_IN_BED);
     }
 
     /** Builder class for {@link SleepSessionRecord} */
@@ -327,6 +371,24 @@ public final class SleepSessionRecord extends IntervalRecord {
             return this;
         }
 
+        /**
+         * @return Object of {@link SleepSessionRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public SleepSessionRecord buildWithoutValidation() {
+            return new SleepSessionRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mStages,
+                    mNotes,
+                    mTitle,
+                    true);
+        }
+
         /** Returns {@link SleepSessionRecord} */
         @NonNull
         public SleepSessionRecord build() {
@@ -338,7 +400,8 @@ public final class SleepSessionRecord extends IntervalRecord {
                     mEndZoneOffset,
                     mStages,
                     mNotes,
-                    mTitle);
+                    mTitle,
+                    false);
         }
     }
 
@@ -356,7 +419,8 @@ public final class SleepSessionRecord extends IntervalRecord {
                                 .setClientRecordVersion(getMetadata().getClientRecordVersion())
                                 .setManufacturer(getMetadata().getDevice().getManufacturer())
                                 .setModel(getMetadata().getDevice().getModel())
-                                .setDeviceType(getMetadata().getDevice().getType());
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
         recordInternal.setStartTime(getStartTime().toEpochMilli());
         recordInternal.setEndTime(getEndTime().toEpochMilli());
         recordInternal.setStartZoneOffset(getStartZoneOffset().getTotalSeconds());

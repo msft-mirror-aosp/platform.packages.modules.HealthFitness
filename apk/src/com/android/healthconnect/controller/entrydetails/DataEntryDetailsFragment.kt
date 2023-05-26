@@ -28,11 +28,16 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.dataentries.ExerciseSessionItemViewBinder
 import com.android.healthconnect.controller.dataentries.FormattedEntry.ExerciseSessionEntry
 import com.android.healthconnect.controller.dataentries.FormattedEntry.FormattedSessionDetail
+import com.android.healthconnect.controller.dataentries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.dataentries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.dataentries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.dataentries.OnDeleteEntryListener
+import com.android.healthconnect.controller.dataentries.SeriesDataItemViewBinder
 import com.android.healthconnect.controller.dataentries.SleepSessionItemViewBinder
-import com.android.healthconnect.controller.deletion.DeletionConstants
+import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
+import com.android.healthconnect.controller.deletion.DeletionConstants.END_TIME
+import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
+import com.android.healthconnect.controller.deletion.DeletionConstants.START_TIME
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.Loading
@@ -42,8 +47,13 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setupMenu
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
+import javax.inject.Inject
 
 @AndroidEntryPoint(Fragment::class)
 class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
@@ -55,6 +65,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
             return bundleOf(PERMISSION_TYPE_KEY to permissionType, ENTRY_ID_KEY to entryId)
         }
     }
+    @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: DataEntryDetailsViewModel by viewModels()
 
@@ -66,8 +77,14 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
     private lateinit var detailsAdapter: RecyclerViewAdapter
     private val onDeleteEntryListener by lazy {
         object : OnDeleteEntryListener {
-            override fun onDeleteEntry(id: String, dataType: DataType, index: Int) {
-                deleteEntry(id, dataType, index)
+            override fun onDeleteEntry(
+                id: String,
+                dataType: DataType,
+                index: Int,
+                startTime: Instant?,
+                endTime: Instant?
+            ) {
+                deleteEntry(id, dataType, index, startTime, endTime)
             }
         }
     }
@@ -83,14 +100,34 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
             onItemClickedListener = null,
             onDeleteEntryClicked = onDeleteEntryListener)
     }
+    private val heartRateItemViewBinder by lazy {
+        SeriesDataItemViewBinder(
+            showSecondAction = false,
+            onItemClickedListener = null,
+            onDeleteEntryClicked = onDeleteEntryListener)
+    }
     private val sessionDetailViewBinder by lazy { SessionDetailViewBinder() }
     private val sessionHeaderViewBinder by lazy { SessionHeaderViewBinder() }
+
+    private val pageName = PageName.ENTRY_DETAILS_PAGE
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        logger.setPageId(pageName)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logger.setPageId(pageName)
+        logger.logPageImpression()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        logger.setPageId(pageName)
         val view = inflater.inflate(R.layout.fragment_data_entry_details, container, false)
         permissionType =
             requireArguments()
@@ -106,6 +143,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
             RecyclerViewAdapter.Builder()
                 .setViewBinder(SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)
+                .setViewBinder(SeriesDataEntry::class.java, heartRateItemViewBinder)
                 .setViewBinder(FormattedSessionDetail::class.java, sessionDetailViewBinder)
                 .setViewBinder(SessionHeader::class.java, sessionHeaderViewBinder)
                 .build()
@@ -115,9 +153,11 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 adapter = detailsAdapter
             }
         viewModel.loadEntryData(permissionType, entryId)
-        setupMenu(R.menu.data_entries, viewLifecycleOwner) { menuItem ->
+        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
+            menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_open_units -> {
+                    logger.logInteraction(ToolbarElement.TOOLBAR_UNITS_BUTTON)
                     findNavController()
                         .navigate(R.id.action_dataEntryDetailsFragment_to_unitFragment)
                     true
@@ -125,6 +165,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 else -> false
             }
         }
+        logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
         return view
     }
 
@@ -154,10 +195,23 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
         }
     }
 
-    private fun deleteEntry(uuid: String, dataType: DataType, index: Int) {
+    private fun deleteEntry(
+        uuid: String,
+        dataType: DataType,
+        index: Int,
+        startTime: Instant?,
+        endTime: Instant?
+    ) {
         val deletionType = DeletionType.DeleteDataEntry(uuid, dataType, index)
-        childFragmentManager.setFragmentResult(
-            DeletionConstants.START_DELETION_EVENT,
-            bundleOf(DeletionConstants.DELETION_TYPE to deletionType))
+
+        if (deletionType.dataType == DataType.MENSTRUATION_PERIOD) {
+            childFragmentManager.setFragmentResult(
+                START_DELETION_EVENT,
+                bundleOf(
+                    DELETION_TYPE to deletionType, START_TIME to startTime, END_TIME to endTime))
+        } else {
+            childFragmentManager.setFragmentResult(
+                START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+        }
     }
 }

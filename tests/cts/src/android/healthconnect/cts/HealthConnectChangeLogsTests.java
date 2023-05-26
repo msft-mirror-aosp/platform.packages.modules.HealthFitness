@@ -31,6 +31,7 @@ import android.platform.test.annotations.AppModeFull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +44,13 @@ import java.util.List;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectChangeLogsTests {
+    @Before
+    public void setUp() {
+        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
+        // Temporary fix to set firstGrantTime for the correct user in HSUM.
+        TestUtils.deleteAllStagedRemoteData();
+    }
+
     @Test
     public void testGetChangeLogToken() throws InterruptedException {
         ChangeLogTokenRequest changeLogTokenRequest = new ChangeLogTokenRequest.Builder().build();
@@ -342,5 +350,32 @@ public class HealthConnectChangeLogsTests {
         TestUtils.insertRecords(testRecord);
         ChangeLogsResponse newResponse = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(newResponse.getUpsertedRecords().size()).isEqualTo(testRecord.size());
+    }
+
+    // Test added for b/271607816 to make sure that getChangeLogs() method returns the requested
+    // changelog token as nextPageToken in the response when it is the end of page.
+    // ( i.e. hasMoreRecords is false)
+    @Test
+    public void testChangeLogs_checkToken_hasMorePages_False() throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.hasMorePages()).isFalse();
+        List<Record> testRecord = TestUtils.getTestRecords();
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(testRecord.size());
+        assertThat(response.hasMorePages()).isFalse();
+        ChangeLogsRequest changeLogsRequestNew =
+                new ChangeLogsRequest.Builder(response.getNextChangesToken())
+                        .setPageSize(2)
+                        .build();
+        ChangeLogsResponse newResponse = TestUtils.getChangeLogs(changeLogsRequestNew);
+        assertThat(newResponse.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(newResponse.hasMorePages()).isFalse();
+        assertThat(newResponse.getNextChangesToken()).isEqualTo(changeLogsRequestNew.getToken());
     }
 }

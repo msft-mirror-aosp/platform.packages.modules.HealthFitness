@@ -16,10 +16,12 @@
 
 package android.health.connect.datatypes;
 
-import static android.health.connect.datatypes.ValidationUtils.sortAndValidateTimeIntervalHolders;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
+import static android.health.connect.datatypes.validation.ValidationUtils.sortAndValidateTimeIntervalHolders;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.datatypes.validation.ExerciseSessionTypesValidation;
 import android.health.connect.internal.datatypes.ExerciseSessionRecordInternal;
 
 import java.time.Instant;
@@ -38,8 +40,21 @@ import java.util.stream.Collectors;
  * optional independent lists of time intervals: {@link ExerciseSegment} represents particular
  * exercise within session, {@link ExerciseLap} represents a lap time within session.
  */
-@Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION)
+@Identifier(recordIdentifier = RECORD_TYPE_EXERCISE_SESSION)
 public final class ExerciseSessionRecord extends IntervalRecord {
+
+    /**
+     * Metric identifier to retrieve total exercise session duration using aggregate APIs in {@link
+     * android.health.connect.HealthConnectManager}. Calculated in milliseconds.
+     */
+    @NonNull
+    public static final AggregationType<Long> EXERCISE_DURATION_TOTAL =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.EXERCISE_SESSION_DURATION_TOTAL,
+                    AggregationType.SUM,
+                    RECORD_TYPE_EXERCISE_SESSION,
+                    Long.class);
+
     private final int mExerciseType;
 
     private final CharSequence mNotes;
@@ -62,6 +77,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
      * @param exerciseType Type of exercise (e.g. walking, swimming). Required field. Allowed
      *     values: {@link ExerciseSessionType.ExerciseSessionTypes }
      * @param title Title of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     @SuppressWarnings("unchecked")
     private ExerciseSessionRecord(
@@ -76,8 +92,9 @@ public final class ExerciseSessionRecord extends IntervalRecord {
             @Nullable ExerciseRoute route,
             boolean hasRoute,
             @NonNull List<ExerciseSegment> segments,
-            @NonNull List<ExerciseLap> laps) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
+            @NonNull List<ExerciseLap> laps,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
         mNotes = notes;
         mExerciseType = exerciseType;
         mTitle = title;
@@ -85,11 +102,18 @@ public final class ExerciseSessionRecord extends IntervalRecord {
             throw new IllegalArgumentException("HasRoute must be true if the route is not null");
         }
         mRoute = route;
+        if (!skipValidation) {
+            ExerciseSessionTypesValidation.validateExerciseRouteTimestamps(
+                    startTime, endTime, route);
+        }
         mHasRoute = hasRoute;
         mSegments =
                 Collections.unmodifiableList(
                         (List<ExerciseSegment>)
                                 sortAndValidateTimeIntervalHolders(startTime, endTime, segments));
+        if (!skipValidation) {
+            ExerciseSessionTypesValidation.validateSessionAndSegmentsTypes(exerciseType, mSegments);
+        }
         mLaps =
                 Collections.unmodifiableList(
                         (List<ExerciseLap>)
@@ -314,6 +338,28 @@ public final class ExerciseSessionRecord extends IntervalRecord {
             return this;
         }
 
+        /**
+         * @return Object of {@link ExerciseSessionRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public ExerciseSessionRecord buildWithoutValidation() {
+            return new ExerciseSessionRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mNotes,
+                    mExerciseType,
+                    mTitle,
+                    mRoute,
+                    mHasRoute,
+                    mSegments,
+                    mLaps,
+                    true);
+        }
+
         /** Returns {@link ExerciseSessionRecord} */
         @NonNull
         public ExerciseSessionRecord build() {
@@ -329,7 +375,8 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                     mRoute,
                     mHasRoute,
                     mSegments,
-                    mLaps);
+                    mLaps,
+                    false);
         }
     }
 
@@ -347,7 +394,8 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                                 .setClientRecordVersion(getMetadata().getClientRecordVersion())
                                 .setManufacturer(getMetadata().getDevice().getManufacturer())
                                 .setModel(getMetadata().getDevice().getModel())
-                                .setDeviceType(getMetadata().getDevice().getType());
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
         recordInternal.setStartTime(getStartTime().toEpochMilli());
         recordInternal.setEndTime(getEndTime().toEpochMilli());
         recordInternal.setStartZoneOffset(getStartZoneOffset().getTotalSeconds());
@@ -361,7 +409,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
             recordInternal.setTitle(getTitle().toString());
         }
 
-        if (hasRoute()) {
+        if (getRoute() != null) {
             recordInternal.setRoute(getRoute().toRouteInternal());
         }
 

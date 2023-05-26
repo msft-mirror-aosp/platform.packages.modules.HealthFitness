@@ -16,20 +16,24 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <com.android.settingslib.widget.TopIntroPreference
         android:key="health_connect_top_intro"
-        android:title="@string/home_subtitle" />
+        android:title="@string/home_subtitle"
+        android:order="0"
+        />
     <PreferenceCategory
         android:key="recent_access"
-        android:title="@string/recent_access_header" />
+        android:title="@string/recent_access_header"
+        android:order="2"/>
     <PreferenceCategory
         android:key="permissions_and_data_category"
-        android:title="@string/permissions_and_data_header">
-        <Preference
+        android:title="@string/permissions_and_data_header"
+        android:order="3">
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
             android:key="connected_apps"
-            android:icon="@drawable/quantum_gm_ic_link_vd_theme_24"
+            android:icon="?attr/appPermissionsIcon"
             android:title="@string/connected_apps_title"/>
-        <Preference
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
             android:key="data_and_access"
-            android:icon="@drawable/ic_health_data"
+            android:icon="?attr/dataAndAccessIcon"
             android:title="@string/data_title" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -19,12 +19,15 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.Constants.DEFAULT_DOUBLE;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.LOCAL_DATE_TIME_END_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.LOCAL_DATE_TIME_START_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 
 import android.annotation.NonNull;
 import android.database.Cursor;
+import android.util.Pair;
 
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.TimeUtils;
@@ -90,19 +93,22 @@ public final class MergeDataHelper {
 
     private final Comparator<RecordData> mRecordDataComparator;
     private TreeSet<RecordData> mBufferWindow;
-    private List<RecordData> mRecordDataList = new ArrayList<>();
+    private final List<RecordData> mRecordDataList = new ArrayList<>();
     private final Cursor mCursor;
-    private List<String> mReversedPriorityList;
+    private final List<Long> mReversedPriorityList;
     private Instant mStartTime;
     private Instant mEndTime;
     private final String mColumnNameToMerge;
     private final Class<?> mValueColumnType;
 
+    private final boolean mUseLocalTime;
+
     public MergeDataHelper(
             @NonNull Cursor cursor,
-            @NonNull List<String> priorityList,
+            @NonNull List<Long> priorityList,
             @NonNull String columnNameToMerge,
-            @NonNull Class<?> valueColumnType) {
+            @NonNull Class<?> valueColumnType,
+            boolean useLocalTime) {
         Objects.requireNonNull(cursor);
         Objects.requireNonNull(priorityList);
         Objects.requireNonNull(columnNameToMerge);
@@ -110,10 +116,11 @@ public final class MergeDataHelper {
         mCursor = cursor;
         // In priority list, the first element has the highest priority. To make it easier to
         // understand and code, reverse the list and use index as data points' priorities
-        mReversedPriorityList = List.copyOf(priorityList);
+        mReversedPriorityList = new ArrayList<>(priorityList);
         Collections.reverse(mReversedPriorityList);
         mColumnNameToMerge = columnNameToMerge;
         mValueColumnType = valueColumnType;
+        mUseLocalTime = useLocalTime;
         mRecordDataComparator =
                 Comparator.comparing(RecordData::getStartTime)
                         .thenComparing((a, b) -> compare(b, a));
@@ -170,26 +177,63 @@ public final class MergeDataHelper {
     }
 
     private boolean cursorOutOfRange() {
-        long cursorStartTime = StorageUtils.getCursorLong(mCursor, START_TIME_COLUMN_NAME);
-        long cursorEndTime = StorageUtils.getCursorLong(mCursor, END_TIME_COLUMN_NAME);
-        if ((cursorStartTime < mStartTime.toEpochMilli()
+        long cursorStartTime = StorageUtils.getCursorLong(mCursor, getStartTimeColumnName());
+        long cursorEndTime = StorageUtils.getCursorLong(mCursor, getEndTimeColumnName());
+        return (cursorStartTime < mStartTime.toEpochMilli()
                         && cursorEndTime <= mStartTime.toEpochMilli())
                 || (cursorStartTime > mEndTime.toEpochMilli()
-                        && cursorEndTime > mEndTime.toEpochMilli())) {
-            return true;
-        }
-        return false;
+                        && cursorEndTime > mEndTime.toEpochMilli());
+    }
+
+    private String getStartTimeColumnName() {
+        return mUseLocalTime ? LOCAL_DATE_TIME_START_TIME_COLUMN_NAME : START_TIME_COLUMN_NAME;
+    }
+
+    private String getEndTimeColumnName() {
+        return mUseLocalTime ? LOCAL_DATE_TIME_END_TIME_COLUMN_NAME : END_TIME_COLUMN_NAME;
     }
 
     /** Returns sum of the values from Buffer window */
     private double getTotal() {
         double sum = 0;
-        if (mRecordDataList != null) {
-            for (RecordData item : mRecordDataList) {
-                sum += item.getValue();
-            }
+        for (RecordData item : mRecordDataList) {
+            sum += item.getValue();
         }
         return sum;
+    }
+
+    /**
+     * Returns list of empty intervals where there are gaps without any record data in the final
+     * merge used to calculate aggregate
+     */
+    public List<Pair<Instant, Instant>> getEmptyIntervals(Instant startTime, Instant endTime) {
+        List<Pair<Instant, Instant>> emptyIntervals = new ArrayList<>();
+        if (mRecordDataList.size() == 0) {
+            if (!startTime.equals(endTime)) {
+                emptyIntervals.add(new Pair<>(startTime, endTime));
+            }
+            return emptyIntervals;
+        }
+
+        if (startTime.isBefore(mRecordDataList.get(0).getStartTime())) {
+            emptyIntervals.add(new Pair<>(startTime, mRecordDataList.get(0).getStartTime()));
+        }
+
+        for (int i = 0; i < mRecordDataList.size() - 1; i++) {
+            Instant currentEnd = mRecordDataList.get(i).getEndTime();
+            Instant nextStart = mRecordDataList.get(i + 1).getStartTime();
+            if (nextStart.isAfter(currentEnd)) {
+                emptyIntervals.add(new Pair<>(currentEnd, nextStart));
+            }
+        }
+
+        if (endTime.isAfter(mRecordDataList.get(mRecordDataList.size() - 1).getEndTime())) {
+            emptyIntervals.add(
+                    new Pair<>(
+                            mRecordDataList.get(mRecordDataList.size() - 1).getEndTime(), endTime));
+        }
+
+        return emptyIntervals;
     }
 
     private TreeSet<RecordData> eliminateEarliestRecordOverlaps(TreeSet<RecordData> bufferWindow) {
@@ -267,9 +311,10 @@ public final class MergeDataHelper {
             double factor = 1;
             Instant startTime =
                     Instant.ofEpochMilli(
-                            StorageUtils.getCursorLong(cursor, START_TIME_COLUMN_NAME));
+                            StorageUtils.getCursorLong(cursor, getStartTimeColumnName()));
             Instant endTime =
-                    Instant.ofEpochMilli(StorageUtils.getCursorLong(cursor, END_TIME_COLUMN_NAME));
+                    Instant.ofEpochMilli(
+                            StorageUtils.getCursorLong(cursor, getEndTimeColumnName()));
             Instant currentStartTime = TimeUtils.latest(startTime, mStartTime);
             Instant currentEndTime = TimeUtils.earliest(endTime, mEndTime);
             double aggregateData = getDataToAggregate(cursor);
@@ -344,8 +389,8 @@ public final class MergeDataHelper {
 
     private int compare(RecordData data1, RecordData data2) {
 
-        int priority1 = mReversedPriorityList.indexOf(String.valueOf(data1.getAppId()));
-        int priority2 = mReversedPriorityList.indexOf(String.valueOf(data2.getAppId()));
+        int priority1 = mReversedPriorityList.indexOf(data1.getAppId());
+        int priority2 = mReversedPriorityList.indexOf(data2.getAppId());
 
         return (priority1 != priority2) ? (priority1 - priority2) : getRecentUpdated(data1, data2);
     }

@@ -38,15 +38,15 @@ import java.util.Set;
 public class HeartRateRecordInternal
         extends SeriesRecordInternal<HeartRateRecord, HeartRateRecord.HeartRateSample> {
     public static final class HeartRateSample implements Sample {
-        private final long mBeatsPerMinute;
+        private final int mBeatsPerMinute;
         private final long mEpochMillis;
 
-        public HeartRateSample(long beatsPerMinute, long epochMillis) {
+        public HeartRateSample(int beatsPerMinute, long epochMillis) {
             mBeatsPerMinute = beatsPerMinute;
             mEpochMillis = epochMillis;
         }
 
-        public long getBeatsPerMinute() {
+        public int getBeatsPerMinute() {
             return mBeatsPerMinute;
         }
 
@@ -91,7 +91,7 @@ public class HeartRateRecordInternal
                         buildMetaData(), getStartTime(), getEndTime(), getExternalSamples())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class HeartRateRecordInternal
         mHeartRateHeartRateSamples = new HashSet<>(size);
         for (int i = 0; i < size; i++) {
             mHeartRateHeartRateSamples.add(
-                    new HeartRateSample(parcel.readLong(), parcel.readLong()));
+                    new HeartRateSample(parcel.readInt(), parcel.readLong()));
         }
     }
 
@@ -108,7 +108,7 @@ public class HeartRateRecordInternal
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
         parcel.writeInt(mHeartRateHeartRateSamples.size());
         for (HeartRateSample heartRateSample : mHeartRateHeartRateSamples) {
-            parcel.writeLong(heartRateSample.getBeatsPerMinute());
+            parcel.writeInt(heartRateSample.getBeatsPerMinute());
             parcel.writeLong(heartRateSample.getEpochMillis());
         }
     }
@@ -121,7 +121,8 @@ public class HeartRateRecordInternal
             heartRateRecords.add(
                     new HeartRateRecord.HeartRateSample(
                             heartRateSample.getBeatsPerMinute(),
-                            Instant.ofEpochMilli(heartRateSample.getEpochMillis())));
+                            Instant.ofEpochMilli(heartRateSample.getEpochMillis()),
+                            true));
         }
 
         return heartRateRecords;

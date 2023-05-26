@@ -22,6 +22,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.utils.logging.AutoDeleteElement
 import dagger.hilt.android.AndroidEntryPoint
 
 /** A {@link DialogFragment} to inform the user about data deletion. */
@@ -40,15 +41,18 @@ class DeletionStartedDialogFragment : Hilt_DeletionStartedDialogFragment() {
         }
         val alertDialog =
             AlertDialogBuilder(this)
+                .setLogName(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_CONTAINER)
                 .setTitle(R.string.deletion_started_title)
                 .setIcon(R.attr.successIcon)
-                .setPositiveButton(R.string.deletion_started_done_button)
+                .setPositiveButton(
+                    R.string.deletion_started_done_button,
+                    AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_DONE_BUTTON)
         viewModel.newAutoDeleteRange.value?.let { alertDialog.setMessage(buildMessage(it)) }
         return alertDialog.create()
     }
 
     private fun buildMessage(autoDeleteRange: AutoDeleteRange): String {
-        val count = numberOfMonths(autoDeleteRange)
+        val count = autoDeleteRange.numberOfMonths
         return MessageFormat.format(
             requireContext().getString(R.string.deletion_started_x_months), mapOf("count" to count))
     }

@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.HealthConnectDatabase.DB_VERSION_GENERATED_LOCAL_TIME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -23,13 +24,20 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
+import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -40,14 +48,27 @@ import java.util.List;
  *
  * @hide
  */
-abstract class InstantRecordHelper<T extends InstantRecordInternal<?>> extends RecordHelper<T> {
-    protected static final String TIME_COLUMN_NAME = "time";
+public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
+        extends RecordHelper<T> {
+    public static final String TIME_COLUMN_NAME = "time";
     private static final String ZONE_OFFSET_COLUMN_NAME = "zone_offset";
+    private static final String LOCAL_DATE_TIME_EXPRESSION =
+            TIME_COLUMN_NAME + " + 1000 * " + ZONE_OFFSET_COLUMN_NAME;
     private static final String LOCAL_DATE_COLUMN_NAME = "local_date";
+    public static final String LOCAL_DATE_TIME_COLUMN_NAME = "local_date_time";
+
+    InstantRecordHelper(@RecordTypeIdentifier.RecordType int recordIdentifier) {
+        super(recordIdentifier);
+    }
 
     @Override
     public final String getStartTimeColumnName() {
         return TIME_COLUMN_NAME;
+    }
+
+    @Override
+    public final String getLocalStartTimeColumnName() {
+        return LOCAL_DATE_TIME_COLUMN_NAME;
     }
 
     @Override
@@ -58,6 +79,32 @@ abstract class InstantRecordHelper<T extends InstantRecordInternal<?>> extends R
     @Override
     public final String getPeriodGroupByColumnName() {
         return LOCAL_DATE_COLUMN_NAME;
+    }
+
+    @Override
+    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+        try {
+            if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
+                db.execSQL(
+                        AlterTableRequest.getAlterTableCommandToAddGeneratedColumn(
+                                getMainTableName(),
+                                new CreateTableRequest.GeneratedColumnInfo(
+                                        LOCAL_DATE_TIME_COLUMN_NAME,
+                                        INTEGER,
+                                        LOCAL_DATE_TIME_EXPRESSION)));
+            }
+        } catch (SQLException sqlException) {
+            // Ignore this means the field exists. This is possible via module rollback followed by
+            // an upgrade
+        }
+    }
+
+    @Override
+    @NonNull
+    protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
+        return List.of(
+                new CreateTableRequest.GeneratedColumnInfo(
+                        LOCAL_DATE_TIME_COLUMN_NAME, INTEGER, LOCAL_DATE_TIME_EXPRESSION));
     }
 
     /**
@@ -105,10 +152,14 @@ abstract class InstantRecordHelper<T extends InstantRecordInternal<?>> extends R
 
     final ZoneOffset getZoneOffset(Cursor cursor) {
         ZoneOffset zoneOffset = null;
-        if (cursor.getColumnIndex(ZONE_OFFSET_COLUMN_NAME) != -1) {
-            zoneOffset =
-                    ZoneOffset.ofTotalSeconds(
-                            StorageUtils.getCursorInt(cursor, ZONE_OFFSET_COLUMN_NAME));
+        if (cursor.getCount() > 0 && cursor.getColumnIndex(ZONE_OFFSET_COLUMN_NAME) != -1) {
+            try {
+                zoneOffset =
+                        ZoneOffset.ofTotalSeconds(
+                                StorageUtils.getCursorInt(cursor, ZONE_OFFSET_COLUMN_NAME));
+            } catch (Exception exception) {
+                zoneOffset = OffsetDateTime.now(ZoneId.systemDefault()).getOffset();
+            }
         }
 
         return zoneOffset;

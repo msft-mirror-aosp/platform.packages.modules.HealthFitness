@@ -30,6 +30,11 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.BasalMetabolicRateRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+import com.android.server.healthconnect.storage.request.AggregateTableRequest;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,22 +43,22 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE)
 public final class BasalMetabolicRateRecordHelper
         extends InstantRecordHelper<BasalMetabolicRateRecordInternal> {
-    private static final String BASAL_METABOLIC_RATE_RECORD_TABLE_NAME =
+    public static final String BASAL_METABOLIC_RATE_RECORD_TABLE_NAME =
             "basal_metabolic_rate_record_table";
-    private static final String BASAL_METABOLIC_RATE_COLUMN_NAME = "basal_metabolic_rate";
+    public static final String BASAL_METABOLIC_RATE_COLUMN_NAME = "basal_metabolic_rate";
+
+    public BasalMetabolicRateRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(
-            Cursor results, AggregationType<?> aggregationType) {
+            Cursor results, AggregationType<?> aggregationType, double result) {
         switch (aggregationType.getAggregationTypeIdentifier()) {
             case BMR_RECORD_BASAL_CALORIES_TOTAL:
-                return new AggregateResult<>(
-                                results.getDouble(
-                                        results.getColumnIndex(BASAL_METABOLIC_RATE_COLUMN_NAME)))
-                        .setZoneOffset(getZoneOffset(results));
+                return new AggregateResult<>(result).setZoneOffset(getZoneOffset(results));
 
             default:
                 return null;
@@ -72,8 +77,7 @@ public final class BasalMetabolicRateRecordHelper
             case BMR_RECORD_BASAL_CALORIES_TOTAL:
                 return new AggregateParams(
                         BASAL_METABOLIC_RATE_RECORD_TABLE_NAME,
-                        Collections.singletonList(BASAL_METABOLIC_RATE_COLUMN_NAME),
-                        TIME_COLUMN_NAME);
+                        new ArrayList(Arrays.asList(BASAL_METABOLIC_RATE_COLUMN_NAME)));
             default:
                 return null;
         }
@@ -85,6 +89,15 @@ public final class BasalMetabolicRateRecordHelper
             @NonNull BasalMetabolicRateRecordInternal basalMetabolicRateRecord) {
         contentValues.put(
                 BASAL_METABOLIC_RATE_COLUMN_NAME, basalMetabolicRateRecord.getBasalMetabolicRate());
+    }
+
+    @Override
+    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
+        DeriveBasalCaloriesBurnedHelper deriveBasalCaloriesBurnedHelper =
+                new DeriveBasalCaloriesBurnedHelper(
+                        cursor, BASAL_METABOLIC_RATE_COLUMN_NAME, request.getTimeColumnName());
+        List<Pair<Long, Long>> groupIntervals = request.getGroupSplitIntervals();
+        return deriveBasalCaloriesBurnedHelper.getBasalCaloriesBurned(groupIntervals);
     }
 
     @Override
