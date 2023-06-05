@@ -113,9 +113,9 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     private static final boolean EXERCISE_ROUTE_DEFAULT_FLAG_VALUE = true;
     public static final boolean ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE = true;
     public static final int QUOTA_BUCKET_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 1000;
-    public static final int QUOTA_BUCKET_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 5000;
-    public static final int QUOTA_BUCKET_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE = 300;
-    public static final int QUOTA_BUCKET_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE = 5000;
+    public static final int QUOTA_BUCKET_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 8000;
+    public static final int QUOTA_BUCKET_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE = 1000;
+    public static final int QUOTA_BUCKET_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE = 8000;
     public static final int CHUNK_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE = 5000000;
     public static final int RECORD_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE = 1000000;
 
@@ -123,7 +123,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     public static final int MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE = 5;
 
     @VisibleForTesting public static final int MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE = 5;
-    @VisibleForTesting public static final int MAX_START_MIGRATION_CALLS_DEFAULT_FLAG_VALUE = 3;
+    @VisibleForTesting public static final int MAX_START_MIGRATION_CALLS_DEFAULT_FLAG_VALUE = 6;
     @VisibleForTesting public static final int IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE = 120;
     @VisibleForTesting public static final int NON_IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE = 15;
 
@@ -146,7 +146,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     public static final boolean ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE = false;
 
     @VisibleForTesting
-    public static final boolean ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE = true;
+    public static final boolean ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE = false;
 
     private static HealthConnectDeviceConfigManager sDeviceConfigManager;
     private final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();

@@ -51,13 +51,12 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -72,6 +71,13 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class HeartRateRecordTest {
     private static final String TAG = "HeartRateRecordTest";
+
+    @Before
+    public void setUp() {
+        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
+        // Temporary fix to set firstGrantTime for the correct user in HSUM.
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -333,12 +339,12 @@ public class HeartRateRecordTest {
 
     @Test
     public void testDeleteStepsRecord_time_filters_local() throws InterruptedException {
+        LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(LocalDateTime.of(2023, Month.APRIL, 29, 8, 30, 29))
-                        .setEndTime(LocalDateTime.of(2023, Month.APRIL, 29, 8, 30, 32))
+                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
+                        .setEndTime(recordTime.plus(2, ChronoUnit.SECONDS))
                         .build();
-        LocalDateTime recordTime = LocalDateTime.of(2023, Month.APRIL, 29, 8, 30, 30);
         String id1 =
                 TestUtils.insertRecordAndGetId(
                         getBaseHeartRateRecord(

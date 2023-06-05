@@ -236,7 +236,7 @@
     <string name="write_permission_category" msgid="1529702804865008111">"Consenti scrittura all\'app \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annulla"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Consenti"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Concedi tutte"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Consenti tutte"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Non consentire"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Scegli i dati da far leggere o scrivere a questa app in Connessione Salute"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Se concedi l\'accesso in lettura, questa app potrà leggere i nuovi dati e quelli degli ultimi 30 giorni"</string>
@@ -495,8 +495,7 @@
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> di sonno"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"di veglia"</string>
-    <!-- no translation found for sleep_stage_awake_in_bed (5533385496857888503) -->
-    <skip />
+    <string name="sleep_stage_awake_in_bed" msgid="5533385496857888503">"a letto senza dormire"</string>
     <string name="sleep_stage_sleeping" msgid="5122840110107303518">"di sonno"</string>
     <string name="sleep_stage_out_of_bed" msgid="522297068981578046">"in piedi"</string>
     <string name="sleep_stage_rem" msgid="1694477904067543104">"di sonno REM"</string>
