@@ -26,6 +26,7 @@ import static android.health.connect.HealthPermissionCategory.BASAL_METABOLIC_RA
 import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
+import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_ACTIVELY_RECORDED;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
@@ -113,6 +114,7 @@ import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.migration.MigrationException;
 import android.os.OutcomeReceiver;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.util.Pair;
 
@@ -120,6 +122,11 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -442,7 +449,9 @@ public class TestUtils {
             AggregateRecordsRequest<T> request, List<Record> recordsToInsert)
             throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
-        insertRecords(recordsToInsert);
+        if (recordsToInsert != null) {
+            insertRecords(recordsToInsert);
+        }
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
         CountDownLatch latch = new CountDownLatch(1);
@@ -920,9 +929,10 @@ public class TestUtils {
     public static void startMigration() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
-
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
+        AtomicReference<MigrationException> migrationExceptionAtomicReference =
+                new AtomicReference<>();
         service.startMigration(
                 Executors.newSingleThreadExecutor(),
                 new OutcomeReceiver<Void, MigrationException>() {
@@ -933,18 +943,24 @@ public class TestUtils {
 
                     @Override
                     public void onError(MigrationException exception) {
+                        migrationExceptionAtomicReference.set(exception);
                         Log.e(TAG, exception.getMessage());
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (migrationExceptionAtomicReference.get() != null) {
+            throw migrationExceptionAtomicReference.get();
+        }
     }
 
     public static void finishMigration() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
-
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
+        AtomicReference<MigrationException> migrationExceptionAtomicReference =
+                new AtomicReference<>();
         service.finishMigration(
                 Executors.newSingleThreadExecutor(),
                 new OutcomeReceiver<Void, MigrationException>() {
@@ -956,10 +972,15 @@ public class TestUtils {
 
                     @Override
                     public void onError(MigrationException exception) {
+                        migrationExceptionAtomicReference.set(exception);
                         Log.e(TAG, exception.getMessage());
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (migrationExceptionAtomicReference.get() != null) {
+            throw migrationExceptionAtomicReference.get();
+        }
     }
 
     public static void insertMinDataMigrationSdkExtensionVersion(int version)
@@ -1084,6 +1105,69 @@ public class TestUtils {
                         new DataOrigin.Builder().setPackageName(context.getPackageName()).build())
                 .setDevice(buildDevice())
                 .setRecordingMethod(Metadata.RECORDING_METHOD_UNKNOWN)
+                .build();
+    }
+
+    public static HeartRateRecord getHugeHeartRateRecord() {
+        Device device =
+                new Device.Builder()
+                        .setManufacturer("google")
+                        .setModel("Pixel4a")
+                        .setType(2)
+                        .build();
+        DataOrigin dataOrigin =
+                new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
+        Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
+        testMetadataBuilder.setClientRecordId("HRR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
+
+        HeartRateRecord.HeartRateSample heartRateRecord =
+                new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));
+        ArrayList<HeartRateRecord.HeartRateSample> heartRateRecords =
+                new ArrayList<>(Collections.nCopies(85000, heartRateRecord));
+
+        return new HeartRateRecord.Builder(
+                        testMetadataBuilder.build(),
+                        Instant.now(),
+                        Instant.now().plusMillis(500),
+                        heartRateRecords)
+                .build();
+    }
+
+    public static StepsRecord getCompleteStepsRecord() {
+        Device device =
+                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
+        DataOrigin dataOrigin =
+                new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
+
+        Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
+        testMetadataBuilder.setClientRecordId("SR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
+        Metadata testMetaData = testMetadataBuilder.build();
+        assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);
+        return new StepsRecord.Builder(
+                        testMetaData, Instant.now(), Instant.now().plusMillis(1000), 10)
+                .build();
+    }
+
+    public static StepsRecord getStepsRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new StepsRecord.Builder(
+                        metadataWithId, Instant.now(), Instant.now().plusMillis(2000), 20)
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
                 .build();
     }
 
@@ -1296,6 +1380,29 @@ public class TestUtils {
                 BasalMetabolicRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+    }
+
+    static String runShellCommand(String command) throws IOException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity();
+        final ParcelFileDescriptor stdout = uiAutomation.executeShellCommand(command);
+        StringBuilder output = new StringBuilder();
+
+        try (BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(new FileInputStream(stdout.getFileDescriptor())))) {
+            char[] buffer = new char[4096];
+            int bytesRead;
+            while ((bytesRead = reader.read(buffer)) != -1) {
+                output.append(buffer, 0, bytesRead);
+            }
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return output.toString();
     }
 
     static final class RecordAndIdentifier {

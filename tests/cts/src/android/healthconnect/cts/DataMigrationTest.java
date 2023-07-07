@@ -25,12 +25,17 @@ import static android.health.connect.HealthPermissions.READ_HEIGHT;
 import static android.health.connect.HealthPermissions.WRITE_HEIGHT;
 import static android.health.connect.datatypes.units.Length.fromMeters;
 import static android.health.connect.datatypes.units.Power.fromWatts;
+import static android.healthconnect.cts.TestUtils.runShellCommand;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeFalse;
+
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 import android.Manifest;
 import android.content.Context;
@@ -45,7 +50,9 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
+import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.AppInfo;
@@ -94,16 +101,19 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RunWith(AndroidJUnit4.class)
 public class DataMigrationTest {
 
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts.app";
     private static final String APP_PACKAGE_NAME_2 = "android.healthconnect.cts.app2";
     private static final String PACKAGE_NAME_NOT_INSTALLED = "not.installed.package";
@@ -112,13 +122,18 @@ public class DataMigrationTest {
     private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
     private static final String APP_NAME = "Test App";
     private static final String APP_NAME_NEW = "Test App 2";
-
+    private static final String ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG =
+            "enable_pause_state_change_jobs";
+    private static final String ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG =
+            "enable_complete_state_change_jobs";
+    private static final String ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE = "true";
+    private static final String ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE = "false";
     // DEFAULT_PAGE_SIZE should hold the same value as Constants#DEFAULT_PAGE_SIZE
     private static final int DEFAULT_PAGE_SIZE = 1000;
 
     @Rule public final Expect mExpect = Expect.create();
 
-    private final Executor mOutcomeExecutor = Executors.newSingleThreadExecutor();
+    private final Executor mOutcomeExecutor = newSingleThreadExecutor();
     private final Instant mEndTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     private final Instant mStartTime = mEndTime.minus(Duration.ofHours(1));
 
@@ -131,6 +146,9 @@ public class DataMigrationTest {
                     mEndTime, ZoneOffset.systemDefault().getRules().getOffset(mEndTime));
     private Context mTargetContext;
     private HealthConnectManager mManager;
+    private String mEnableCompletionJobsBackup;
+    private String mEnablePauseJobsBackup;
+    private String mStateChangeJobAdbDumpsys;
 
     private static <T, E extends RuntimeException> T blockingCall(
             Consumer<OutcomeReceiver<T, E>> action) {
@@ -151,20 +169,29 @@ public class DataMigrationTest {
         }
     }
 
-    private static Metadata getMetadata(String clientRecordId, String packageName) {
+    private static Metadata getMetadata(UUID id, String clientRecordId, String packageName) {
         return new Metadata.Builder()
+                .setId(id == null ? "" : id.toString())
                 .setClientRecordId(clientRecordId)
                 .setDataOrigin(new DataOrigin.Builder().setPackageName(packageName).build())
                 .setDevice(new Device.Builder().setManufacturer("Device").setModel("Model").build())
                 .build();
     }
 
+    private static Metadata getMetadata(UUID uuid) {
+        return getMetadata(uuid, /* clientRecordId= */ null, PACKAGE_NAME);
+    }
+
+    private static Metadata getMetadata(String clientRecordId, String packageName) {
+        return getMetadata(/* id= */ null, clientRecordId, packageName);
+    }
+
     private static Metadata getMetadata(String clientRecordId) {
-        return getMetadata(clientRecordId, APP_PACKAGE_NAME);
+        return getMetadata(/* id= */ null, clientRecordId, PACKAGE_NAME);
     }
 
     private static Metadata getMetadata() {
-        return getMetadata(/* clientRecordId= */ null);
+        return getMetadata(/* id= */ null, /* clientRecordId= */ null, PACKAGE_NAME);
     }
 
     private static byte[] getBitmapBytes(Bitmap bitmap) {
@@ -193,18 +220,40 @@ public class DataMigrationTest {
     }
 
     private void clearData() {
-        deleteAllRecords();
         deleteAllStagedRemoteData();
+        deleteAllRecords();
     }
 
     @Test
-    public void migrateHeightUsingParcel_heightSaved() throws InterruptedException {
+    public void migrateHeight_clientRecordId_heightSaved() throws InterruptedException {
         final String entityId = "height";
 
-        migrate(new HeightRecord.Builder(getMetadata(entityId), mEndTime, fromMeters(3D)).build());
+        migrate(
+                new HeightRecord.Builder(getMetadata(entityId), mEndTime, fromMeters(3D)).build(),
+                entityId);
 
         finishMigration();
         final HeightRecord record = getRecord(HeightRecord.class, entityId);
+        mExpect.that(record).isNotNull();
+        mExpect.that(record.getHeight().getInMeters()).isEqualTo(3D);
+        mExpect.that(record.getTime()).isEqualTo(mEndTime);
+
+        List<LocalDate> activityDates = TestUtils.getActivityDates(List.of(record.getClass()));
+        assertThat(activityDates.size()).isEqualTo(1);
+        assertThat(activityDates.get(0).compareTo(mEndDate)).isEqualTo(0);
+    }
+
+    @Test
+    public void migrateHeight_uuid_heightSaved() throws InterruptedException {
+        final UUID uuid = UUID.randomUUID();
+        final String entityId = "height";
+
+        migrate(
+                new HeightRecord.Builder(getMetadata(uuid), mEndTime, fromMeters(3D)).build(),
+                entityId);
+
+        finishMigration();
+        final HeightRecord record = getRecord(HeightRecord.class, uuid);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getHeight().getInMeters()).isEqualTo(3D);
         mExpect.that(record.getTime()).isEqualTo(mEndTime);
@@ -254,13 +303,36 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void migrateSteps_stepsSaved() throws InterruptedException {
+    public void migrateSteps_clientRecordId_stepsSaved() throws InterruptedException {
         final String entityId = "steps";
 
-        migrate(new StepsRecord.Builder(getMetadata(entityId), mStartTime, mEndTime, 10).build());
+        migrate(
+                new StepsRecord.Builder(getMetadata(entityId), mStartTime, mEndTime, 10).build(),
+                entityId);
 
         finishMigration();
         final StepsRecord record = getRecord(StepsRecord.class, entityId);
+        mExpect.that(record).isNotNull();
+        mExpect.that(record.getCount()).isEqualTo(10);
+        mExpect.that(record.getStartTime()).isEqualTo(mStartTime);
+        mExpect.that(record.getEndTime()).isEqualTo(mEndTime);
+
+        List<LocalDate> activityDates = TestUtils.getActivityDates(List.of(record.getClass()));
+        assertThat(activityDates.size()).isEqualTo(1);
+        assertThat(activityDates.get(0).compareTo(mStartDate)).isEqualTo(0);
+    }
+
+    @Test
+    public void migrateSteps_uuid_stepsSaved() throws InterruptedException {
+        final UUID uuid = UUID.randomUUID();
+        final String entityId = "steps";
+
+        migrate(
+                new StepsRecord.Builder(getMetadata(uuid), mStartTime, mEndTime, 10).build(),
+                entityId);
+
+        finishMigration();
+        final StepsRecord record = getRecord(StepsRecord.class, uuid);
         mExpect.that(record).isNotNull();
         mExpect.that(record.getCount()).isEqualTo(10);
         mExpect.that(record.getStartTime()).isEqualTo(mStartTime);
@@ -284,7 +356,8 @@ public class DataMigrationTest {
                                         new PowerRecordSample(fromWatts(10D), mEndTime),
                                         new PowerRecordSample(fromWatts(20D), mEndTime),
                                         new PowerRecordSample(fromWatts(30D), mEndTime)))
-                        .build());
+                        .build(),
+                entityId);
 
         finishMigration();
         final PowerRecord record = getRecord(PowerRecord.class, entityId);
@@ -500,6 +573,8 @@ public class DataMigrationTest {
 
     @Test
     public void migratePermissions_hasValidPermissions_validPermissionsGranted() {
+        assumeFalse(TestUtils.isHardwareAutomotive());
+
         revokeHealthPermissions(APP_PACKAGE_NAME);
 
         final String entityId = "permissions";
@@ -521,6 +596,8 @@ public class DataMigrationTest {
 
     @Test
     public void migratePermissions_allInvalidPermissions_throwsMigrationException() {
+        assumeFalse(TestUtils.isHardwareAutomotive());
+
         revokeHealthPermissions(APP_PACKAGE_NAME);
 
         final String entityId = "permissions";
@@ -564,6 +641,8 @@ public class DataMigrationTest {
     /** Test priority migration where migration payload have additional apps. */
     @Test
     public void migratePriority_additionalAppsInMigrationPayload_prioritySaved() {
+        assumeFalse(TestUtils.isHardwareAutomotive());
+
         revokeHealthPermissions(APP_PACKAGE_NAME);
         revokeHealthPermissions(APP_PACKAGE_NAME_2);
 
@@ -613,62 +692,115 @@ public class DataMigrationTest {
     }
 
     @Test
-    public void testStartMigrationFromIdleState() {
-        runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(MIGRATION_STATE_IDLE);
-                    TestUtils.startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                    TestUtils.finishMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                },
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    public void testStartMigrationFromIdleState() throws IOException {
+        try {
+            enableStateChangeJobs();
+            runWithShellPermissionIdentity(
+                    () -> {
+                        assertStateChangeJobDoesNotExist();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_IDLE);
+                        TestUtils.startMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                        assertStateChangeJobExists();
+                        TestUtils.finishMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+                        assertStateChangeJobDoesNotExist();
+                    },
+                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        } finally {
+            restoreDeviceConfigs();
+        }
     }
 
     @Test
-    public void testInsertMinDataMigrationSdkExtensionVersion_upgradeRequired() {
+    public void testInsertMinDataMigrationSdkExtensionVersion_upgradeRequired() throws IOException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE) + 1;
-        runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(MIGRATION_STATE_IDLE);
-                    TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
-                    TestUtils.startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                    TestUtils.finishMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                },
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        try {
+            enableStateChangeJobs();
+            runWithShellPermissionIdentity(
+                    () -> {
+                        assertStateChangeJobDoesNotExist();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_IDLE);
+                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_MODULE_UPGRADE_REQUIRED);
+                        assertStateChangeJobExists();
+                        TestUtils.startMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                        assertStateChangeJobExists();
+                        TestUtils.finishMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+                        assertStateChangeJobDoesNotExist();
+                    },
+                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        } finally {
+            restoreDeviceConfigs();
+        }
     }
 
     @Test
-    public void testInsertMinDataMigrationSdkExtensionVersion_noUpgradeRequired() {
+    public void testInsertMinDataMigrationSdkExtensionVersion_noUpgradeRequired()
+            throws IOException {
         int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
-        runWithShellPermissionIdentity(
-                () -> {
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(MIGRATION_STATE_IDLE);
-                    TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(MIGRATION_STATE_ALLOWED);
-                    TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(MIGRATION_STATE_ALLOWED);
-                    TestUtils.startMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
-                    TestUtils.finishMigration();
-                    assertThat(TestUtils.getHealthConnectDataMigrationState())
-                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
-                },
-                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        try {
+            enableStateChangeJobs();
+            runWithShellPermissionIdentity(
+                    () -> {
+                        assertStateChangeJobDoesNotExist();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_IDLE);
+                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_ALLOWED);
+                        assertStateChangeJobExists();
+                        TestUtils.startMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                        assertStateChangeJobExists();
+                        TestUtils.finishMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+                        assertStateChangeJobDoesNotExist();
+                    },
+                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        } finally {
+            restoreDeviceConfigs();
+        }
+    }
+
+    @Test
+    public void testInsertMinDataMigrationSdkExtensionVersion_jobsDisabled() throws IOException {
+        int version = SdkExtensions.getExtensionVersion(Build.VERSION_CODES.UPSIDE_DOWN_CAKE);
+        try {
+            disableStateChangeJobs();
+            runWithShellPermissionIdentity(
+                    () -> {
+                        assertStateChangeJobDoesNotExist();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_IDLE);
+                        TestUtils.insertMinDataMigrationSdkExtensionVersion(version);
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(MIGRATION_STATE_ALLOWED);
+                        assertStateChangeJobDoesNotExist();
+                        TestUtils.startMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                        assertStateChangeJobDoesNotExist();
+                        TestUtils.finishMigration();
+                        assertThat(TestUtils.getHealthConnectDataMigrationState())
+                                .isEqualTo(HealthConnectDataState.MIGRATION_STATE_COMPLETE);
+                        assertStateChangeJobDoesNotExist();
+                    },
+                    Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+        } finally {
+            restoreDeviceConfigs();
+        }
     }
 
     @Test
@@ -684,7 +816,8 @@ public class DataMigrationTest {
                                 mStartTime,
                                 mEndTime,
                                 10)
-                        .build());
+                        .build(),
+                recordEntityId);
         migrate(
                 new MigrationEntity(
                         appInfoEntityId,
@@ -737,7 +870,8 @@ public class DataMigrationTest {
                                 mStartTime,
                                 mEndTime,
                                 10)
-                        .build());
+                        .build(),
+                recordEntityId);
 
         migrate(
                 new MigrationEntity(
@@ -758,6 +892,95 @@ public class DataMigrationTest {
         mExpect.that(getBitmapBytes(appInfo.getIcon())).isNotEqualTo(iconBytes);
     }
 
+    private boolean checkJobExists() throws IOException {
+        String scheduledStateChangeJobPattern =
+                "JOB class com\\.android\\.server\\.healthconnect\\.migration\\"
+                        + ".MigrationStateChangeJob:\\d+/\\d+: [a-f0-9]+ @class com\\"
+                        + ".android\\.server\\.healthconnect\\.migration\\"
+                        + ".MigrationStateChangeJob@android/com\\.android\\.server\\"
+                        + ".healthconnect\\.HealthConnectDailyService";
+
+        String commandOutput = runShellCommand("dumpsys jobscheduler");
+
+        Pattern regexPattern = Pattern.compile(scheduledStateChangeJobPattern);
+        Matcher matcher = regexPattern.matcher(commandOutput);
+        storeStateChangeJobAdbDumpsysOutput(commandOutput);
+        return matcher.find();
+    }
+
+    private void storeStateChangeJobAdbDumpsysOutput(String commandOutput) {
+        String stateChangeJobPattern = ".*MigrationStateChangeJob.*";
+        Pattern regexPattern = Pattern.compile(stateChangeJobPattern);
+        Matcher matcher = regexPattern.matcher(commandOutput);
+        StringBuilder output = new StringBuilder();
+        while (matcher.find()) {
+            output.append(matcher.group()).append("\n");
+        }
+        mStateChangeJobAdbDumpsys = output.toString();
+    }
+
+    private String getHealthFitnessDeviceConfig(String key, String defaultValue)
+            throws IOException {
+        String value = runShellCommand("device_config get health_fitness " + key);
+        return value.isBlank() ? defaultValue : value.strip();
+    }
+
+    private void enableStateChangeJobs() throws IOException {
+        mEnableCompletionJobsBackup =
+                getHealthFitnessDeviceConfig(
+                        ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG,
+                        ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
+        mEnablePauseJobsBackup =
+                getHealthFitnessDeviceConfig(
+                        ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG,
+                        ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
+        setHealthFitnessDeviceConfig(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG, "true");
+        setHealthFitnessDeviceConfig(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG, "true");
+    }
+
+    private void disableStateChangeJobs() throws IOException {
+        mEnableCompletionJobsBackup =
+                getHealthFitnessDeviceConfig(
+                        ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG,
+                        ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
+        mEnablePauseJobsBackup =
+                getHealthFitnessDeviceConfig(
+                        ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG,
+                        ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
+        setHealthFitnessDeviceConfig(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG, "false");
+        setHealthFitnessDeviceConfig(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG, "false");
+    }
+
+    private void restoreDeviceConfigs() throws IOException {
+        setHealthFitnessDeviceConfig(
+                ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG, mEnableCompletionJobsBackup);
+        setHealthFitnessDeviceConfig(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG, mEnablePauseJobsBackup);
+    }
+
+    private void setHealthFitnessDeviceConfig(String key, String value) throws IOException {
+        runShellCommand("device_config put health_fitness " + key + " " + value);
+    }
+
+    private void assertStateChangeJobExists() throws IOException {
+        boolean checkJobExists = checkJobExists();
+        assertWithMessage(
+                        "Expected to find a scheduled MigrationStateChangeJob but not found. ADB"
+                                + " 'dumpsys jobscheduler' output for MigrationStateChangeJob: \n"
+                                + mStateChangeJobAdbDumpsys)
+                .that(checkJobExists)
+                .isTrue();
+    }
+
+    private void assertStateChangeJobDoesNotExist() throws IOException {
+        boolean checkJobExists = checkJobExists();
+        assertWithMessage(
+                        "Did not expect a scheduled MigrationStateChangeJob but found one. ADB"
+                                + " 'dumpsys jobscheduler' output for MigrationStateChangeJob: \n"
+                                + mStateChangeJobAdbDumpsys)
+                .that(checkJobExists)
+                .isFalse();
+    }
+
     private void migrate(MigrationEntity... entities) {
         DataMigrationTest.<Void, MigrationException>blockingCallWithPermissions(
                 callback -> mManager.startMigration(mOutcomeExecutor, callback),
@@ -773,10 +996,6 @@ public class DataMigrationTest {
         DataMigrationTest.<Void, MigrationException>blockingCallWithPermissions(
                 callback -> mManager.finishMigration(mOutcomeExecutor, callback),
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
-    }
-
-    private void migrate(Record record) {
-        migrate(record, /* entityId= */ record.getMetadata().getClientRecordId());
     }
 
     private void migrate(Record record, String entityId) {
@@ -805,10 +1024,26 @@ public class DataMigrationTest {
     }
 
     private <T extends Record> T getRecord(Class<T> clazz, String clientRecordId) {
-        return getRecords(clazz).stream()
-                .filter(r -> clientRecordId.equals(r.getMetadata().getClientRecordId()))
-                .findFirst()
-                .orElse(null);
+        return getRecord(
+                new ReadRecordsRequestUsingIds.Builder<>(clazz)
+                        .addClientRecordId(clientRecordId)
+                        .build());
+    }
+
+    private <T extends Record> T getRecord(Class<T> clazz, UUID uuid) {
+        return getRecord(
+                new ReadRecordsRequestUsingIds.Builder<>(clazz).addId(uuid.toString()).build());
+    }
+
+    private <T extends Record> T getRecord(ReadRecordsRequest<T> request) {
+        final Consumer<OutcomeReceiver<ReadRecordsResponse<T>, HealthConnectException>> action =
+                callback -> mManager.readRecords(request, mOutcomeExecutor, callback);
+
+        final ReadRecordsResponse<T> response =
+                blockingCallWithPermissions(
+                        action, HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION);
+
+        return response.getRecords().stream().findFirst().orElse(null);
     }
 
     private <T extends Record> void getRecordsAsync(
@@ -822,7 +1057,7 @@ public class DataMigrationTest {
                                         .setEndTime(mEndTime)
                                         .build())
                         .build(),
-                Executors.newSingleThreadExecutor(),
+                mOutcomeExecutor,
                 callback);
     }
 
@@ -1012,8 +1247,7 @@ public class DataMigrationTest {
             int dataCategory,
             OutcomeReceiver<FetchDataOriginsPriorityOrderResponse, HealthConnectException>
                     callback) {
-        mManager.fetchDataOriginsPriorityOrder(
-                dataCategory, Executors.newSingleThreadExecutor(), callback);
+        mManager.fetchDataOriginsPriorityOrder(dataCategory, newSingleThreadExecutor(), callback);
     }
 
     /**

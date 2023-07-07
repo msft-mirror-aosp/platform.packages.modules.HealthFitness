@@ -31,6 +31,7 @@ import android.health.connect.internal.datatypes.BasalMetabolicRateRecordInterna
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
+import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,8 +77,7 @@ public final class BasalMetabolicRateRecordHelper
             case BMR_RECORD_BASAL_CALORIES_TOTAL:
                 return new AggregateParams(
                         BASAL_METABOLIC_RATE_RECORD_TABLE_NAME,
-                        new ArrayList(Arrays.asList(BASAL_METABOLIC_RATE_COLUMN_NAME)),
-                        TIME_COLUMN_NAME);
+                        new ArrayList(Arrays.asList(BASAL_METABOLIC_RATE_COLUMN_NAME)));
             default:
                 return null;
         }
@@ -92,25 +92,12 @@ public final class BasalMetabolicRateRecordHelper
     }
 
     @Override
-    public double[] deriveAggregate(
-            Cursor cursor,
-            long startTime,
-            long endTime,
-            int groupSize,
-            long groupDelta,
-            String groupByColumnName) {
+    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
         DeriveBasalCaloriesBurnedHelper deriveBasalCaloriesBurnedHelper =
-                new DeriveBasalCaloriesBurnedHelper(cursor, BASAL_METABOLIC_RATE_COLUMN_NAME);
-        List<Pair<Long, Long>> groupIntervals = new ArrayList<>();
-        long start = startTime;
-        for (int i = 0; i < groupSize; i++) {
-            Pair<Long, Long> pair = new Pair<>(start, start + groupDelta);
-            groupIntervals.add(pair);
-            start += groupDelta;
-        }
-        double[] basalCaloriesBurnedArray =
-                deriveBasalCaloriesBurnedHelper.getBasalCaloriesBurned(groupIntervals);
-        return basalCaloriesBurnedArray;
+                new DeriveBasalCaloriesBurnedHelper(
+                        cursor, BASAL_METABOLIC_RATE_COLUMN_NAME, request.getTimeColumnName());
+        List<Pair<Long, Long>> groupIntervals = request.getGroupSplitIntervals();
+        return deriveBasalCaloriesBurnedHelper.getBasalCaloriesBurned(groupIntervals);
     }
 
     @Override

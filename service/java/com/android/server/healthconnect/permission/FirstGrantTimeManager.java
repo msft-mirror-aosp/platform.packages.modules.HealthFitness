@@ -31,6 +31,9 @@ import android.util.ArraySet;
 import android.util.Log;
 
 import com.android.internal.annotations.GuardedBy;
+import com.android.server.healthconnect.HealthConnectThreadScheduler;
+import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.io.File;
 import java.time.Instant;
@@ -63,6 +66,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     private final Set<Integer> mRestoredAndValidatedUsers = new ArraySet<>();
 
     private final PackageInfoUtils mPackageInfoHelper;
+    private final Context mContext;
 
     public FirstGrantTimeManager(
             @NonNull Context context,
@@ -72,7 +76,8 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         mDatastore = datastore;
         mPackageManager = context.getPackageManager();
         mUidToGrantTimeCache = new UidToGrantTimeCache();
-        mPackageInfoHelper = new PackageInfoUtils(context);
+        mContext = context;
+        mPackageInfoHelper = PackageInfoUtils.getInstance();
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
@@ -81,7 +86,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     public Instant getFirstGrantTime(@NonNull String packageName, @NonNull UserHandle user)
             throws IllegalArgumentException {
 
-        Integer uid = mPackageInfoHelper.getPackageUid(packageName, user);
+        Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
         if (uid == null) {
             throw new IllegalArgumentException(
                     "Package name "
@@ -96,19 +101,19 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         if (grantTimeDate == null) {
             // Check and update the state in case health permission has been granted before
             // onPermissionsChanged callback was propagated.
-            onPermissionsChanged(mPackageInfoHelper.getPackageUid(packageName, user));
+            onPermissionsChanged(
+                    mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user)));
             grantTimeDate = getGrantTimeReadLocked(uid);
         }
 
         return grantTimeDate;
     }
 
-    /**
-     * Sets the provided first grant time for the given {@code packageName}, if it's not set yet.
-     */
+    /** Sets the provided first grant time for the given {@code packageName}. */
     public void setFirstGrantTime(
             @NonNull String packageName, @NonNull Instant time, @NonNull UserHandle user) {
-        final Integer uid = mPackageInfoHelper.getPackageUid(packageName, user);
+        final Integer uid =
+                mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
         if (uid == null) {
             throw new IllegalArgumentException(
                     "Package name "
@@ -147,13 +152,20 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         mGrantTimeLock.writeLock().lock();
         try {
             boolean anyHealthPermissionGranted =
-                    mPackageInfoHelper.hasGrantedHealthPermissions(packageNames, user);
+                    mPackageInfoHelper.hasGrantedHealthPermissions(
+                            packageNames, user, getUserContext(user));
 
             boolean grantTimeRecorded = (getGrantTimeReadLocked(uid) != null);
             if (grantTimeRecorded != anyHealthPermissionGranted) {
                 if (grantTimeRecorded) {
                     // An app doesn't have health permissions anymore, reset its grant time.
                     mUidToGrantTimeCache.remove(uid);
+                    // Update priority table only if migration is not in progress as it should
+                    // already take care of merging permissions.
+                    if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
+                        HealthConnectThreadScheduler.scheduleInternalTask(
+                                () -> removeAppFromPriorityList(packageNames));
+                    }
                 } else {
                     // An app got new health permission, set current time as it's first grant
                     // time if we can't update state from the staged data.
@@ -166,6 +178,16 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                         mUidToGrantTimeCache.extractUserGrantTimeState(user);
                 logIfInDebugMode("State after onPermissionsChanged :", updatedState);
                 mDatastore.writeForUser(updatedState, user, DATA_TYPE_CURRENT);
+            } else {
+                // Update priority table only if migration is not in progress as it should already
+                // take care of merging permissions
+                if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
+                    HealthConnectThreadScheduler.scheduleInternalTask(
+                            () ->
+                                    HealthDataCategoryPriorityHelper.getInstance()
+                                            .updateHealthDataPriority(
+                                                    packageNames, user, getUserContext(user)));
+                }
             }
         } finally {
             mGrantTimeLock.writeLock().unlock();
@@ -209,7 +231,8 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     void onPackageRemoved(
             @NonNull String packageName, int removedPackageUid, @NonNull UserHandle userHandle) {
         String[] leftSharedUidPackages =
-                mPackageInfoHelper.getPackagesForUid(removedPackageUid, userHandle);
+                mPackageInfoHelper.getPackagesForUid(
+                        removedPackageUid, userHandle, getUserContext(userHandle));
         if (leftSharedUidPackages != null && leftSharedUidPackages.length > 0) {
             // There are installed packages left with given UID,
             // don't need to update grant time state.
@@ -312,7 +335,8 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
             UserGrantTimeState restoredState = restoreCurrentUserStateLocked(user);
 
             List<PackageInfo> validHealthApps =
-                    mPackageInfoHelper.getPackagesHoldingHealthPermissions(user);
+                    mPackageInfoHelper.getPackagesHoldingHealthPermissions(
+                            user, getUserContext(user));
             logIfInDebugMode(
                     "Packages holding health perms of user " + user + " :", validHealthApps);
 
@@ -552,7 +576,8 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                     continue;
                 }
 
-                String sharedUserName = mPackageInfoHelper.getSharedUserNameFromUid(uid);
+                String sharedUserName =
+                        mPackageInfoHelper.getSharedUserNameFromUid(uid, getUserContext(user));
                 if (sharedUserName != null) {
                     sharedUserToGrantTime.put(sharedUserName, time);
                 } else {
@@ -616,11 +641,23 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                 String packageName = entry.getKey();
                 Instant time = entry.getValue();
 
-                Integer uid = mPackageInfoHelper.getPackageUid(packageName, user);
+                Integer uid =
+                        mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
                 if (uid != null) {
                     put(uid, time);
                 }
             }
         }
+    }
+
+    private void removeAppFromPriorityList(String[] packageNames) {
+        for (String packageName : packageNames) {
+            HealthDataCategoryPriorityHelper.getInstance().removeAppFromPriorityList(packageName);
+        }
+    }
+
+    @NonNull
+    private Context getUserContext(UserHandle userHandle) {
+        return mContext.createContextAsUser(userHandle, /*flags*/ 0);
     }
 }

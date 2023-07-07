@@ -71,6 +71,7 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
+import com.android.settingslib.widget.OnMainSwitchChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -87,6 +88,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         private const val FOOTER_KEY = "connected_app_footer"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
+
     init {
         this.setPageName(PageName.APP_ACCESS_PAGE)
     }
@@ -204,24 +206,25 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         }
     }
 
-    private fun setupAllowAllPreference() {
-        allowAllPreference?.addOnSwitchChangeListener { preference, grantAll ->
-            if (preference.isPressed) {
-                if (grantAll) {
-                    val permissionsUpdated = appPermissionViewModel.grantAllPermissions(packageName)
-                    if (!permissionsUpdated) {
-                        preference.isChecked = false
-                        Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                } else {
-                    showRevokeAllPermissions()
-                }
+    private val onSwitchChangeListener = OnMainSwitchChangeListener { switchView, isChecked ->
+        if (isChecked) {
+            val permissionsUpdated = appPermissionViewModel.grantAllPermissions(packageName)
+            if (!permissionsUpdated) {
+                switchView.isChecked = false
+                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
+        } else {
+            showRevokeAllPermissions()
         }
+    }
+
+    private fun setupAllowAllPreference() {
+        allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
         appPermissionViewModel.allAppPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted
             ->
+            allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
             allowAllPreference?.isChecked = isAllGranted
+            allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
         }
     }
 
@@ -262,7 +265,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                     }
 
                 val preference =
-                    HealthSwitchPreference(requireContext()).also {
+                    HealthSwitchPreference(requireContext()).also { it ->
                         val healthCategory =
                             fromHealthPermissionType(permission.healthPermissionType)
                         it.icon = healthCategory.icon(requireContext())
@@ -271,6 +274,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                         it.logNameActive = AppAccessElement.PERMISSION_SWITCH_ACTIVE
                         it.logNameInactive = AppAccessElement.PERMISSION_SWITCH_INACTIVE
                         it.setOnPreferenceChangeListener { _, newValue ->
+                            allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
                             val checked = newValue as Boolean
                             val permissionUpdated =
                                 appPermissionViewModel.updatePermission(
@@ -282,6 +286,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                                         Toast.LENGTH_SHORT)
                                     .show()
                             }
+                            allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
                             permissionUpdated
                         }
                     }
@@ -305,19 +310,24 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             getString(R.string.other_android_permissions) +
                 PARAGRAPH_SEPARATOR +
                 getString(R.string.manage_permissions_rationale, appName)
+        var contentDescription =
+            getString(R.string.other_android_permissions_content_description) +
+                PARAGRAPH_SEPARATOR +
+                getString(R.string.manage_permissions_rationale, appName)
 
         if (isAtLeastOneGranted) {
             val dataAccessDate = appPermissionViewModel.loadAccessDate(packageName)
             dataAccessDate?.let {
                 val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
-                title =
-                    getString(R.string.manage_permissions_time_frame, appName, formattedDate) +
-                        PARAGRAPH_SEPARATOR +
-                        title
+                val paragraph =
+                    getString(R.string.manage_permissions_time_frame, appName, formattedDate)
+                title = paragraph + PARAGRAPH_SEPARATOR + title
+                contentDescription = paragraph + PARAGRAPH_SEPARATOR + contentDescription
             }
         }
 
         mConnectedAppFooter?.title = title
+        mConnectedAppFooter?.setContentDescription(contentDescription)
         if (healthPermissionReader.isRationalIntentDeclared(packageName)) {
             mConnectedAppFooter?.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
             logger.logImpression(AppAccessElement.PRIVACY_POLICY_LINK)

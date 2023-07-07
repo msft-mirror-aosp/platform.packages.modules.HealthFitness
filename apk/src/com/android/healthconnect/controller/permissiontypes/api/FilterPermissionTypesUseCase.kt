@@ -1,8 +1,8 @@
 package com.android.healthconnect.controller.permissiontypes.api
 
 import android.health.connect.HealthConnectManager
-import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.HealthDataCategory
+import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -65,13 +65,16 @@ constructor(
             recordTypeInfoMap.values.filter {
                 it.dataCategory == category &&
                     it.contributingPackages.isNotEmpty() &&
-                    it.contributingPackages.firstNotNullOf { contributingApp ->
+                    it.contributingPackages.any { contributingApp ->
                         contributingApp.packageName == selectedAppPackageName
                     }
             }
-        return filteredRecordTypeInfos.map { recordTypeInfo ->
-            fromHealthPermissionCategory(recordTypeInfo.permissionCategory)
-        }
+        return filteredRecordTypeInfos
+            .map { recordTypeInfo ->
+                fromHealthPermissionCategory(recordTypeInfo.permissionCategory)
+            }
+            .toSet()
+            .toList()
     }
 
     /** Sorts list of App Metadata alphabetically */

@@ -21,11 +21,15 @@ import static android.healthconnect.cts.device.HealthConnectDeviceTest.APP_A_WIT
 import static android.healthconnect.cts.lib.TestUtils.READ_RECORDS_SIZE;
 import static android.healthconnect.cts.lib.TestUtils.SUCCESS;
 import static android.healthconnect.cts.lib.TestUtils.deleteAllStagedRemoteData;
+import static android.healthconnect.cts.lib.TestUtils.deleteTestData;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordAs;
 import static android.healthconnect.cts.lib.TestUtils.insertSessionNoRouteAs;
 import static android.healthconnect.cts.lib.TestUtils.readRecords;
 import static android.healthconnect.cts.lib.TestUtils.readRecordsAs;
 import static android.healthconnect.cts.lib.TestUtils.updateRouteAs;
+
+import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
+import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -39,6 +43,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,12 +57,15 @@ public class ExerciseRouteAccessTest {
     @Before
     public void setUp() {
         mAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        Assume.assumeFalse(hasSystemFeature(AUTOMOTIVE_FEATURE));
+
         mAutomation.grantRuntimePermission(
                 APP_A_WITH_READ_WRITE_PERMS.getPackageName(), WRITE_EXERCISE_ROUTE);
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws InterruptedException {
+        deleteTestData();
         deleteAllStagedRemoteData();
 
         mAutomation.grantRuntimePermission(
@@ -97,8 +105,14 @@ public class ExerciseRouteAccessTest {
 
     @Test
     public void testRouteUpdate_updateRouteWithPerm_noRouteAfterUpdate() throws Exception {
-        assertThat(insertRecordAs(APP_A_WITH_READ_WRITE_PERMS).getBoolean(SUCCESS)).isTrue();
         List<ExerciseSessionRecord> records =
+                readRecords(
+                        new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
+                                .build());
+        assertThat(records).isEmpty();
+
+        assertThat(insertRecordAs(APP_A_WITH_READ_WRITE_PERMS).getBoolean(SUCCESS)).isTrue();
+        records =
                 readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
                                 .build());

@@ -21,7 +21,6 @@ import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_COMP
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IDLE;
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS;
 
-import static com.android.server.healthconnect.HealthConnectDailyJobs.HC_DAILY_JOB;
 import static com.android.server.healthconnect.HealthConnectDailyService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.HealthConnectDailyService.EXTRA_USER_ID;
 import static com.android.server.healthconnect.migration.MigrationConstants.CURRENT_STATE_START_TIME_KEY;
@@ -52,11 +51,11 @@ import java.util.Objects;
  */
 public final class MigrationStateChangeJob {
     static final int MIN_JOB_ID = MigrationStateChangeJob.class.hashCode();
-    private static final HealthConnectDeviceConfigManager sHealthConnectDeviceConfigManager =
-            HealthConnectDeviceConfigManager.getInitialisedInstance();
 
     public static void scheduleMigrationCompletionJob(Context context, int userId) {
-        if (!sHealthConnectDeviceConfigManager.getEnableStateChangeJob()) {
+        HealthConnectDeviceConfigManager deviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
             return;
         }
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
@@ -65,9 +64,7 @@ public final class MigrationStateChangeJob {
         extras.putString(EXTRA_JOB_NAME_KEY, MIGRATION_COMPLETE_JOB_NAME);
         JobInfo.Builder builder =
                 new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
-                        .setPeriodic(
-                                sHealthConnectDeviceConfigManager
-                                        .getMigrationCompletionJobRunInterval())
+                        .setPeriodic(deviceConfigManager.getMigrationCompletionJobRunInterval())
                         .setExtras(extras);
 
         HealthConnectDailyService.schedule(
@@ -78,7 +75,9 @@ public final class MigrationStateChangeJob {
     }
 
     public static void scheduleMigrationPauseJob(Context context, int userId) {
-        if (!sHealthConnectDeviceConfigManager.getEnableStateChangeJob()) {
+        HealthConnectDeviceConfigManager deviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
             return;
         }
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
@@ -87,8 +86,7 @@ public final class MigrationStateChangeJob {
         extras.putString(EXTRA_JOB_NAME_KEY, MIGRATION_PAUSE_JOB_NAME);
         JobInfo.Builder builder =
                 new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
-                        .setPeriodic(
-                                sHealthConnectDeviceConfigManager.getMigrationPauseJobRunInterval())
+                        .setPeriodic(deviceConfigManager.getMigrationPauseJobRunInterval())
                         .setExtras(extras);
         HealthConnectDailyService.schedule(
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))
@@ -99,7 +97,9 @@ public final class MigrationStateChangeJob {
 
     /** Execute migration completion job */
     public static void executeMigrationCompletionJob(@NonNull Context context) {
-        if (!sHealthConnectDeviceConfigManager.getEnableStateChangeJob()) {
+        HealthConnectDeviceConfigManager deviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        if (!deviceConfigManager.isCompleteStateChangeJobEnabled()) {
             return;
         }
         if (MigrationStateManager.getInitialisedInstance().getMigrationState()
@@ -121,13 +121,11 @@ public final class MigrationStateChangeJob {
                         .plusMillis(
                                 MigrationStateManager.getInitialisedInstance().getMigrationState()
                                                 == MIGRATION_STATE_IDLE
-                                        ? sHealthConnectDeviceConfigManager
-                                                .getIdleStateTimeoutPeriod()
-                                                .toMillis()
-                                        : sHealthConnectDeviceConfigManager
+                                        ? deviceConfigManager.getIdleStateTimeoutPeriod().toMillis()
+                                        : deviceConfigManager
                                                 .getNonIdleStateTimeoutPeriod()
                                                 .toMillis())
-                        .minusMillis(sHealthConnectDeviceConfigManager.getExecutionTimeBuffer());
+                        .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
 
         if (MigrationStateManager.getInitialisedInstance().getMigrationState()
                         == MIGRATION_STATE_ALLOWED
@@ -138,8 +136,7 @@ public final class MigrationStateChangeJob {
             if (!Objects.isNull(allowedStateTimeout)) {
                 Instant parsedAllowedStateTimeout =
                         Instant.parse(allowedStateTimeout)
-                                .minusMillis(
-                                        sHealthConnectDeviceConfigManager.getExecutionTimeBuffer());
+                                .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
                 executionTime =
                         executionTime.isAfter(parsedAllowedStateTimeout)
                                 ? parsedAllowedStateTimeout
@@ -156,7 +153,9 @@ public final class MigrationStateChangeJob {
 
     /** Execute migration pausing job. */
     public static void executeMigrationPauseJob(@NonNull Context context) {
-        if (!sHealthConnectDeviceConfigManager.getEnableStateChangeJob()) {
+        HealthConnectDeviceConfigManager deviceConfigManager =
+                HealthConnectDeviceConfigManager.getInitialisedInstance();
+        if (!deviceConfigManager.isPauseStateChangeJobEnabled()) {
             return;
         }
         if (MigrationStateManager.getInitialisedInstance().getMigrationState()
@@ -175,10 +174,8 @@ public final class MigrationStateChangeJob {
         Instant executionTime =
                 Instant.parse(currentStateStartTime)
                         .plusMillis(
-                                sHealthConnectDeviceConfigManager
-                                        .getInProgressStateTimeoutPeriod()
-                                        .toMillis())
-                        .minusMillis(sHealthConnectDeviceConfigManager.getExecutionTimeBuffer());
+                                deviceConfigManager.getInProgressStateTimeoutPeriod().toMillis())
+                        .minusMillis(deviceConfigManager.getExecutionTimeBuffer());
 
         if (Instant.now().isAfter(executionTime)) {
             // If we move to ALLOWED from IN_PROGRESS, then we have reached the IN_PROGRESS_TIMEOUT
@@ -199,24 +196,6 @@ public final class MigrationStateChangeJob {
             }
         }
         return false;
-    }
-
-    /** Cancels old migration jobs that are persisted and were never canceled. */
-    // TODO(b/276415134): Code clean-up
-    static void cleanupOldPersistentMigrationJobs(@NonNull Context context) {
-        JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
-        Objects.requireNonNull(jobScheduler);
-
-        List<JobInfo> allJobs = jobScheduler.getAllPendingJobs();
-        for (JobInfo job : allJobs) {
-            if (job.isPersisted()
-                    && job.getService()
-                            .equals(new ComponentName(context, HealthConnectDailyService.class))
-                    && !Objects.equals(
-                            job.getExtras().getString(EXTRA_JOB_NAME_KEY), HC_DAILY_JOB)) {
-                jobScheduler.cancel(job.getId());
-            }
-        }
     }
 
     public static void cancelAllJobs(@NonNull Context context) {

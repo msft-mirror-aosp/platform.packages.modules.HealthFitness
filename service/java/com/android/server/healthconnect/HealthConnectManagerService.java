@@ -40,9 +40,7 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -79,12 +77,15 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectManager.getHealthPermissions(context),
                         permissionIntentTracker,
                         firstGrantTimeManager);
-        mPermissionPackageChangesOrchestrator =
-                new PermissionPackageChangesOrchestrator(
-                        permissionIntentTracker, firstGrantTimeManager, permissionHelper);
-        mUserManager = context.getSystemService(UserManager.class);
         mCurrentForegroundUser = context.getUser();
         mContext = context;
+        mPermissionPackageChangesOrchestrator =
+                new PermissionPackageChangesOrchestrator(
+                        permissionIntentTracker,
+                        firstGrantTimeManager,
+                        permissionHelper,
+                        mCurrentForegroundUser);
+        mUserManager = context.getSystemService(UserManager.class);
         mTransactionManager =
                 TransactionManager.getInstance(
                         new HealthConnectUserContext(mContext, mCurrentForegroundUser));
@@ -139,10 +140,7 @@ public class HealthConnectManagerService extends SystemService {
         }
 
         HealthConnectThreadScheduler.shutdownThreadPools();
-        AppInfoHelper.getInstance().clearCache();
-        DeviceInfoHelper.getInstance().clearCache();
-        HealthDataCategoryPriorityHelper.getInstance().clearCache();
-        PreferenceHelper.getInstance().clearCache();
+        DatabaseHelper.clearAllCache();
         mTransactionManager.onUserSwitching();
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
@@ -190,6 +188,7 @@ public class HealthConnectManagerService extends SystemService {
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser.getIdentifier());
         mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
+        mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
 
         HealthConnectDailyJobs.cancelAllJobs(mContext);
 
