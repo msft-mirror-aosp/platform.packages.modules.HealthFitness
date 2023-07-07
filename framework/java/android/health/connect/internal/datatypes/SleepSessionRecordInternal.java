@@ -26,7 +26,6 @@ import android.os.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @see SleepSessionRecord
@@ -100,24 +99,6 @@ public final class SleepSessionRecordInternal extends IntervalRecordInternal<Sle
         mStages = SleepStageInternal.populateStagesFromParcel(parcel);
     }
 
-    @Override
-    public void populateIntervalRecordFrom(@NonNull SleepSessionRecord sleepSessionRecord) {
-        if (sleepSessionRecord.getNotes() != null) {
-            mNotes = sleepSessionRecord.getNotes().toString();
-        }
-
-        if (sleepSessionRecord.getTitle() != null) {
-            mTitle = sleepSessionRecord.getTitle().toString();
-        }
-
-        if (sleepSessionRecord.getStages() != null && !sleepSessionRecord.getStages().isEmpty()) {
-            mStages =
-                    sleepSessionRecord.getStages().stream()
-                            .map(SleepStageInternal::fromExternalStage)
-                            .collect(Collectors.toList());
-        }
-    }
-
     @NonNull
     @Override
     public SleepSessionRecord toExternalRecord() {
@@ -143,6 +124,6 @@ public final class SleepSessionRecordInternal extends IntervalRecordInternal<Sle
         if (getSleepStages() != null) {
             builder.setStages(SleepStageInternal.getExternalStages(mStages));
         }
-        return builder.build();
+        return builder.buildWithoutValidation();
     }
 }

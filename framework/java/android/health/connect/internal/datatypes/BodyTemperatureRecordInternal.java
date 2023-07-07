@@ -65,19 +65,13 @@ public final class BodyTemperatureRecordInternal
                         getMeasurementLocation(),
                         Temperature.fromCelsius(getTemperature()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mMeasurementLocation = parcel.readInt();
         mTemperature = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull BodyTemperatureRecord bodyTemperatureRecord) {
-        mMeasurementLocation = bodyTemperatureRecord.getMeasurementLocation();
-        mTemperature = bodyTemperatureRecord.getTemperature().getInCelsius();
     }
 
     @Override

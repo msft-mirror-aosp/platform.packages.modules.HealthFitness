@@ -16,8 +16,11 @@
 
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.requireInRange;
+
 import android.annotation.NonNull;
 import android.health.connect.datatypes.units.Mass;
+import android.health.connect.internal.datatypes.BodyWaterMassRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -35,14 +38,19 @@ public final class BodyWaterMassRecord extends InstantRecord {
      * @param time time for this record
      * @param zoneOffset Zone offset for this record
      * @param bodyWaterMass bodyWaterMass, in Mass unit
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private BodyWaterMassRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @NonNull Mass bodyWaterMass) {
-        super(metadata, time, zoneOffset);
+            @NonNull Mass bodyWaterMass,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(bodyWaterMass);
+        if (!skipValidation) {
+            requireInRange(bodyWaterMass.getInGrams(), 0, 1000000, "mass");
+        }
         mBodyWaterMass = bodyWaterMass;
     }
 
@@ -110,10 +118,41 @@ public final class BodyWaterMassRecord extends InstantRecord {
             return this;
         }
 
+        /**
+         * @return Object of {@link BodyWaterMassRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public BodyWaterMassRecord buildWithoutValidation() {
+            return new BodyWaterMassRecord(mMetadata, mTime, mZoneOffset, mBodyWaterMass, true);
+        }
+
         /** Builds {@link BodyWaterMassRecord} */
         @NonNull
         public BodyWaterMassRecord build() {
-            return new BodyWaterMassRecord(mMetadata, mTime, mZoneOffset, mBodyWaterMass);
+            return new BodyWaterMassRecord(mMetadata, mTime, mZoneOffset, mBodyWaterMass, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public BodyWaterMassRecordInternal toRecordInternal() {
+        BodyWaterMassRecordInternal recordInternal =
+                (BodyWaterMassRecordInternal)
+                        new BodyWaterMassRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setBodyWaterMass(mBodyWaterMass.getInGrams());
+        return recordInternal;
     }
 }

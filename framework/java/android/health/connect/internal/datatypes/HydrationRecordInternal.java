@@ -48,20 +48,15 @@ public final class HydrationRecordInternal extends IntervalRecordInternal<Hydrat
                         buildMetaData(),
                         getStartTime(),
                         getEndTime(),
-                        Volume.fromMilliliters(getVolume()))
+                        Volume.fromLiters(getVolume()))
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {
         mVolume = parcel.readDouble();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull HydrationRecord hydrationRecord) {
-        mVolume = hydrationRecord.getVolume().getInMilliliters();
     }
 
     @Override

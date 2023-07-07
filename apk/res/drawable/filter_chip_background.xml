@@ -18,5 +18,4 @@
     <item android:drawable="@drawable/filter_chip_unselected_background" android:state_checked="false" />
 
     <item android:drawable="@drawable/filter_chip_selected_background" android:state_checked="true" />
-
 </selector>

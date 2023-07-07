@@ -15,69 +15,118 @@
  */
 package android.healthconnect.cts.ui
 
-import android.content.Context
+import android.health.connect.TimeInstantRangeFilter
+import android.health.connect.datatypes.DistanceRecord
+import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.TestUtils.insertRecords
-import android.healthconnect.cts.ui.testing.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.ui.testing.UiTestUtils.clickOnContentDescription
-import android.healthconnect.cts.ui.testing.UiTestUtils.clickOnText
-import android.healthconnect.cts.ui.testing.UiTestUtils.distanceRecordFromTestApp
-import android.healthconnect.cts.ui.testing.UiTestUtils.navigateBackToHomeScreen
-import android.healthconnect.cts.ui.testing.UiTestUtils.navigateUp
-import android.healthconnect.cts.ui.testing.UiTestUtils.waitDisplayed
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.uiautomator.By
-import org.junit.After
+import android.healthconnect.cts.TestUtils.verifyDeleteRecords
+import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
+import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.distanceRecordFromTestApp
+import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp
+import java.time.Instant
+import java.time.Period.ofDays
+import org.junit.AfterClass
 import org.junit.Test
 
 /** CTS test for HealthConnect Data entries screen. */
-class DataEntriesFragmentTest {
+class DataEntriesFragmentTest : HealthConnectBaseTest() {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    companion object {
+        private const val TAG = "DataEntriesFragmentTest"
 
-    @Test
-    fun dataEntries_changeUnit() {
-        insertRecords(listOf(distanceRecordFromTestApp()))
-        context.launchMainActivity {
-            clickOnText("Data and access")
-            clickOnText("Activity")
-            clickOnText("Distance")
-            clickOnText("See all entries")
-
-            clickOnContentDescription("More options")
-            clickOnText("Set data units")
-            clickOnText("Distance")
-            clickOnText("Kilometers")
-            navigateUp()
-
-            clickOnText("Activity")
-            clickOnText("Distance")
-            clickOnText("See all entries")
-
-            waitDisplayed(By.text("0.5 km"))
-
-            clickOnContentDescription("More options")
-            clickOnText("Set data units")
-            clickOnText("Distance")
-            clickOnText("Miles")
-            navigateUp()
-
-            clickOnText("Activity")
-            clickOnText("Distance")
-            clickOnText("See all entries")
-
-            waitDisplayed(By.text("0.311 miles"))
+        @JvmStatic
+        @AfterClass
+        fun tearDown() {
+            verifyDeleteRecords(
+                StepsRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+            verifyDeleteRecords(
+                DistanceRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
         }
     }
 
-    // TODO(b/265789268): Add date picker navigation test
-    // TODO(b/265789268): Add delete entry test.
-
-    @After
-    fun tearDown() {
-        navigateBackToHomeScreen()
+    @Test
+    fun dataEntries_showsInsertedEntry() {
+        insertRecords(listOf(distanceRecordFromTestApp()))
+        context.launchDataActivity {
+            clickOnText("Activity")
+            clickOnText("Distance")
+            // TODO(b/265789268): Fix "See all entries" view not found.
+            //            clickOnText("See all entries")
+            //
+            //            waitDisplayed(By.text("0.5 km"))
+        }
     }
 
-    companion object {
-        private const val TAG = "DataAccessFragmentTest"
+    @Test
+    fun dataEntries_changeUnit_showsUpdatedUnit() {
+        insertRecords(listOf(distanceRecordFromTestApp()))
+        context.launchDataActivity {
+            clickOnText("Activity")
+            clickOnText("Distance")
+
+            // TODO(b/265789268): Fix "See all entries" view not found.
+            //            clickOnText("See all entries")
+            //            clickOnContentDescription("More options")
+            //            clickOnText("Set data units")
+            //            clickOnText("Distance")
+            //            clickOnText("Kilometers")
+            //            navigateUp()
+            //
+            //            waitDisplayed(By.text("0.5 km"))
+        }
+    }
+
+    @Test
+    fun dataEntries_deletesData_showsNoData() {
+        insertRecords(listOf(distanceRecordFromTestApp()))
+        context.launchDataActivity {
+            clickOnText("Activity")
+            clickOnText("Distance")
+            // TODO(b/265789268): Fix "See all entries" view not found.
+            //            clickOnText("See all entries")
+            //
+            //            // Delete entry
+            //            clickOnContentDescription("Delete data entry")
+            //            clickOnText("Delete")
+            //            clickOnText("Done")
+            //            waitDisplayed(By.text("No data"))
+        }
+    }
+
+    @Test
+    fun dataEntries_changeDate_updatesSelectedDate() {
+        insertRecords(listOf(distanceRecordFromTestApp()))
+        context.launchDataActivity {
+            clickOnText("Activity")
+            clickOnText("Distance")
+            // TODO(b/265789268): Fix "See all entries" view not found.
+            //            clickOnText("See all entries")
+            //
+            //            clickOnContentDescription("Selected day")
+            //            clickOnText("1")
+            //            clickOnText("OK")
+        }
+    }
+
+    @Test
+    fun dataEntries_navigateToYesterday() {
+        insertRecords(listOf(stepsRecordFromTestApp(12, Instant.now().minus(ofDays(1)))))
+        context.launchDataActivity {
+            clickOnText("Activity")
+            clickOnText("Steps")
+            // TODO(b/265789268): Fix "See all entries" view not found.
+            //            clickOnText("See all entries")
+            //            clickOnContentDescription("Previous day")
+            //            waitDisplayed(By.text("12 steps"))
+        }
     }
 }

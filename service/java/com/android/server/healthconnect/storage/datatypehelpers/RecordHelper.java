@@ -22,13 +22,16 @@ import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTransactionRequest.TYPE_NOT_PRESENT_PACKAGE_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getDedupeByteBuffer;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.supportsPriority;
 
 import android.annotation.NonNull;
@@ -42,8 +45,12 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.os.Trace;
+import android.util.ArrayMap;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -63,6 +70,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -78,14 +86,18 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public static final String LAST_MODIFIED_TIME_COLUMN_NAME = "last_modified_time";
     private static final String CLIENT_RECORD_VERSION_COLUMN_NAME = "client_record_version";
     private static final String DEVICE_INFO_ID_COLUMN_NAME = "device_info_id";
+    private static final String RECORDING_METHOD_COLUMN_NAME = "recording_method";
+    private static final String DEDUPE_HASH_COLUMN_NAME = "dedupe_hash";
+    private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
+            List.of(
+                    new Pair<>(DEDUPE_HASH_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB),
+                    new Pair<>(UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
     private static final String TAG_RECORD_HELPER = "HealthConnectRecordHelper";
     private static final int TRACE_TAG_RECORD_HELPER = TAG_RECORD_HELPER.hashCode();
     @RecordTypeIdentifier.RecordType private final int mRecordIdentifier;
 
-    RecordHelper() {
-        HelperFor annotation = this.getClass().getAnnotation(HelperFor.class);
-        Objects.requireNonNull(annotation);
-        mRecordIdentifier = annotation.recordIdentifier();
+    RecordHelper(@RecordTypeIdentifier.RecordType int recordIdentifier) {
+        mRecordIdentifier = recordIdentifier;
     }
 
     public DeleteTableRequest getDeleteRequestForAutoDelete(int recordAutoDeletePeriodInDays) {
@@ -108,7 +120,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * or tables.
      */
     public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        // empty by default
+        // empty
     }
 
     /**
@@ -118,9 +130,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             AggregationType<?> aggregationType,
             List<String> packageFilter,
             long startTime,
-            long endTime) {
+            long endTime,
+            boolean useLocalTime) {
         AggregateParams params = getAggregateParams(aggregationType);
-        Objects.requireNonNull(params);
+        params.setTimeColumnName(
+                useLocalTime ? getLocalStartTimeColumnName() : getStartTimeColumnName());
+        params.setExtraTimeColumn(
+                useLocalTime ? getLocalEndTimeColumnName() : getEndTimeColumnName());
+        params.setOffsetColumnToFetch(getZoneOffsetColumnName());
+
         if (supportsPriority(mRecordIdentifier, aggregationType.getAggregateOperationType())) {
             List<String> columns =
                     Arrays.asList(
@@ -130,19 +148,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                             LAST_MODIFIED_TIME_COLUMN_NAME);
             params.appendAdditionalColumns(columns);
         }
+        if (StorageUtils.isDerivedType(mRecordIdentifier)) {
+            params.appendAdditionalColumns(Collections.singletonList(getStartTimeColumnName()));
+        }
 
-        return new AggregateTableRequest(
-                        params.mTableName,
-                        params.mColumnNames,
-                        aggregationType,
-                        this,
-                        params.mAggregateDataType)
+        return new AggregateTableRequest(params, aggregationType, this, useLocalTime)
                 .setPackageFilter(
                         AppInfoHelper.getInstance().getAppInfoIds(packageFilter),
                         APP_INFO_ID_COLUMN_NAME)
-                .setTimeFilter(startTime, endTime, params.mTimeColumnName)
-                .setSqlJoin(params.mJoin)
-                .setAdditionalColumnsToFetch(Collections.singletonList(getZoneOffsetColumnName()));
+                .setTimeFilter(startTime, endTime);
     }
 
     /**
@@ -150,7 +164,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *
      * @return {@link AggregateResult} for {@link AggregationType}
      */
-    public AggregateResult getAggregateResult(Cursor cursor, AggregationType<?> aggregationType) {
+    public AggregateResult<?> getAggregateResult(
+            Cursor cursor, AggregationType<?> aggregationType) {
         return null;
     }
 
@@ -160,8 +175,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *
      * @return {@link AggregateResult} for {@link AggregationType}
      */
-    public AggregateResult getAggregateResult(
+    public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType, double total) {
+        return null;
+    }
+
+    /**
+     * Used to calculate and get aggregate results for data types that support derived aggregates
+     */
+    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
         return null;
     }
 
@@ -177,28 +199,108 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         Collections.singletonList(DEVICE_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
                 .addForeignKey(
-                        AppInfoHelper.getInstance().getTableName(),
+                        AppInfoHelper.TABLE_NAME,
                         Collections.singletonList(APP_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
-                .setChildTableRequests(getChildTableCreateRequests());
+                .setChildTableRequests(getChildTableCreateRequests())
+                .setGeneratedColumnInfo(getGeneratedColumnInfo());
+    }
+
+    public UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
+        return getUpsertTableRequest(recordInternal, null);
     }
 
     @NonNull
     @SuppressWarnings("unchecked")
-    public UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
+    public UpsertTableRequest getUpsertTableRequest(
+            RecordInternal<?> recordInternal,
+            ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
         Trace.traceBegin(
                 TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetUpsertTableRequest"));
+        ContentValues upsertValues = getContentValues((T) recordInternal);
+        updateUpsertValuesIfRequired(upsertValues, extraWritePermissionToStateMap);
         UpsertTableRequest upsertTableRequest =
-                new UpsertTableRequest(getMainTableName(), getContentValues((T) recordInternal))
-                        .setChildTableRequests(getChildTableUpsertRequests((T) recordInternal));
+                new UpsertTableRequest(getMainTableName(), upsertValues, UNIQUE_COLUMNS_INFO)
+                        .setRequiresUpdateClause(
+                                new UpsertTableRequest.IRequiresUpdate() {
+                                    @Override
+                                    public boolean requiresUpdate(
+                                            Cursor cursor,
+                                            ContentValues contentValues,
+                                            UpsertTableRequest request) {
+                                        final UUID newUUID =
+                                                StorageUtils.convertBytesToUUID(
+                                                        contentValues.getAsByteArray(
+                                                                UUID_COLUMN_NAME));
+                                        final UUID oldUUID =
+                                                StorageUtils.getCursorUUID(
+                                                        cursor, UUID_COLUMN_NAME);
+
+                                        if (!Objects.equals(newUUID, oldUUID)) {
+                                            // Use old UUID in case of conflicts on de-dupe.
+                                            contentValues.put(
+                                                    UUID_COLUMN_NAME,
+                                                    StorageUtils.convertUUIDToBytes(oldUUID));
+                                            request.getRecordInternal().setUuid(oldUUID);
+                                            // This means there was a duplication conflict, we want
+                                            // to update in this case.
+                                            return true;
+                                        }
+
+                                        long clientRecordVersion =
+                                                StorageUtils.getCursorLong(
+                                                        cursor, CLIENT_RECORD_VERSION_COLUMN_NAME);
+                                        long newClientRecordVersion =
+                                                contentValues.getAsLong(
+                                                        CLIENT_RECORD_VERSION_COLUMN_NAME);
+
+                                        return newClientRecordVersion >= clientRecordVersion;
+                                    }
+                                })
+                        .setChildTableRequests(getChildTableUpsertRequests((T) recordInternal))
+                        .setHelper(this)
+                        .setExtraWritePermissionsStateMapping(extraWritePermissionToStateMap);
         Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
         return upsertTableRequest;
+    }
+
+    /* Updates upsert content values based on extra permissions state. */
+    protected void updateUpsertValuesIfRequired(
+            @NonNull ContentValues values,
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {}
+
+    public List<String> getChildTablesToDeleteOnRecordUpsert(
+            ArrayMap<String, Boolean> extraWritePermissionToState) {
+        return getAllChildTables();
+    }
+
+    @NonNull
+    public List<String> getAllChildTables() {
+        List<String> childTables = new ArrayList<>();
+        for (CreateTableRequest childTableCreateRequest : getChildTableCreateRequests()) {
+            populateWithTablesNames(childTableCreateRequest, childTables);
+        }
+
+        return childTables;
+    }
+
+    @NonNull
+    protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
+        return Collections.emptyList();
+    }
+
+    private void populateWithTablesNames(
+            CreateTableRequest childTableCreateRequest, List<String> childTables) {
+        childTables.add(childTableCreateRequest.getTableName());
+        for (CreateTableRequest childTableRequest :
+                childTableCreateRequest.getChildTableRequests()) {
+            populateWithTablesNames(childTableRequest, childTables);
+        }
     }
 
     /**
      * Returns ReadSingleTableRequest for {@code request} and package name {@code packageName}
      *
-     * @return
      */
     public ReadTableRequest getReadTableRequest(
             ReadRecordsRequestParcel request,
@@ -219,13 +321,36 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 request, packageName, startDateAccess, extraPermsState));
     }
 
+    /**
+     * Logs metrics specific to a record type's insertion/update.
+     *
+     * @param recordInternals List of records being inserted/updated
+     * @param packageName Caller package name
+     */
+    public void logUpsertMetrics(
+            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+        // Do nothing, implement in record specific helpers
+    }
+
+    /**
+     * Logs metrics specific to a record type's read.
+     *
+     * @param recordInternals List of records being read
+     * @param packageName Caller package name
+     */
+    public void logReadMetrics(
+            @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
+        // Do nothing, implement in record specific helpers
+    }
+
     /** Returns ReadTableRequest for {@code uuids} */
-    public ReadTableRequest getReadTableRequest(List<String> uuids, long startDateAccess) {
+    public ReadTableRequest getReadTableRequest(List<UUID> uuids, long startDateAccess) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
                         new WhereClauses()
-                                .addWhereInClause(UUID_COLUMN_NAME, uuids)
+                                .addWhereInClauseWithoutQuotes(
+                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
                                 .addWhereLaterThanTimeClause(
                                         getStartTimeColumnName(), startDateAccess))
                 .setRecordHelper(this)
@@ -248,7 +373,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Returns list if ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
      * change logs read requests.
      */
-    List<ReadTableRequest> getExtraDataReadRequests(List<String> uuids, long startDateAccess) {
+    List<ReadTableRequest> getExtraDataReadRequests(List<UUID> uuids, long startDateAccess) {
         return Collections.emptyList();
     }
 
@@ -265,8 +390,16 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /** Returns List of Internal records from the cursor */
     @SuppressWarnings("unchecked")
     public List<RecordInternal<?>> getInternalRecords(Cursor cursor, int requestSize) {
+        return getInternalRecords(cursor, requestSize, null);
+    }
+
+    /** Returns List of Internal records from the cursor */
+    @SuppressWarnings("unchecked")
+    public List<RecordInternal<?>> getInternalRecords(
+            Cursor cursor, int requestSize, Map<Long, String> packageNamesByAppIds) {
         Trace.traceBegin(TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetInternalRecords"));
         List<RecordInternal<?>> recordInternalList = new ArrayList<>();
+
         int count = 0;
         long prevStartTime = DEFAULT_LONG;
         long currentStartTime = DEFAULT_LONG;
@@ -281,16 +414,18 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                         .get(getRecordIdentifier())
                                         .getConstructor()
                                         .newInstance();
-                record.setUuid(getCursorString(cursor, UUID_COLUMN_NAME));
+                record.setUuid(getCursorUUID(cursor, UUID_COLUMN_NAME));
                 record.setLastModifiedTime(getCursorLong(cursor, LAST_MODIFIED_TIME_COLUMN_NAME));
                 record.setClientRecordId(getCursorString(cursor, CLIENT_RECORD_ID_COLUMN_NAME));
                 record.setClientRecordVersion(
                         getCursorLong(cursor, CLIENT_RECORD_VERSION_COLUMN_NAME));
+                record.setRecordingMethod(getCursorInt(cursor, RECORDING_METHOD_COLUMN_NAME));
                 record.setRowId(getCursorInt(cursor, PRIMARY_COLUMN_NAME));
                 long deviceInfoId = getCursorLong(cursor, DEVICE_INFO_ID_COLUMN_NAME);
                 DeviceInfoHelper.getInstance().populateRecordWithValue(deviceInfoId, record);
                 long appInfoId = getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
-                AppInfoHelper.getInstance().populateRecordWithValue(appInfoId, record);
+                AppInfoHelper.getInstance()
+                        .populateRecordWithValue(appInfoId, record, packageNamesByAppIds);
                 populateRecordValue(cursor, record);
 
                 prevStartTime = currentStartTime;
@@ -361,6 +496,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return recordInternalList;
     }
 
+    /** Returns is the read of this record type is enabled */
+    public boolean isRecordOperationsEnabled() {
+        return true;
+    }
+
     /** Populate internalRecords fields using extraDataCursor */
     @SuppressWarnings("unchecked")
     public void updateInternalRecordsWithExtraFields(
@@ -369,18 +509,23 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     public DeleteTableRequest getDeleteTableRequest(
-            List<String> packageFilters, long startTime, long endTime) {
+            List<String> packageFilters,
+            long startTime,
+            long endTime,
+            boolean usesLocalTimeFilter) {
+        final String timeColumnName =
+                usesLocalTimeFilter ? getLocalStartTimeColumnName() : getStartTimeColumnName();
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setTimeFilter(getStartTimeColumnName(), startTime, endTime)
+                .setTimeFilter(timeColumnName, startTime, endTime)
                 .setPackageFilter(
                         APP_INFO_ID_COLUMN_NAME,
                         AppInfoHelper.getInstance().getAppInfoIds(packageFilters))
                 .setRequiresUuId(UUID_COLUMN_NAME);
     }
 
-    public DeleteTableRequest getDeleteTableRequest(List<String> ids) {
+    public DeleteTableRequest getDeleteTableRequest(List<UUID> ids) {
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setIds(UUID_COLUMN_NAME, ids)
+                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids))
                 .setRequiresUuId(UUID_COLUMN_NAME)
                 .setEnforcePackageCheck(APP_INFO_ID_COLUMN_NAME, UUID_COLUMN_NAME);
     }
@@ -390,6 +535,16 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public abstract String getPeriodGroupByColumnName();
 
     public abstract String getStartTimeColumnName();
+
+    public abstract String getLocalStartTimeColumnName();
+
+    public String getLocalEndTimeColumnName() {
+        return null;
+    }
+
+    public String getEndTimeColumnName() {
+        return null;
+    }
 
     /** Populate internalRecords with extra data. */
     void readExtraData(List<T> internalRecords, Cursor cursorExtraData, String tableName) {}
@@ -463,7 +618,9 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                             .distinct()
                             .collect(Collectors.toList());
             if (enforceSelfRead) {
-                appIds = AppInfoHelper.getInstance().getAppInfoIds(request.getPackageFilters());
+                appIds =
+                        AppInfoHelper.getInstance()
+                                .getAppInfoIds(Collections.singletonList(packageName));
             }
             if (appIds.size() == 1 && appIds.get(0) == DEFAULT_INT) {
                 throw new TypeNotPresentException(TYPE_NOT_PRESENT_PACKAGE_NAME, new Throwable());
@@ -473,27 +630,42 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                     new WhereClauses().addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appIds);
 
             if (request.getPageToken() != DEFAULT_LONG) {
+                // Since pageToken passed contains detail of sort order. Actual token value for read
+                // is calculated back from the requested pageToken based on sort order.
                 if (request.isAscending()) {
                     clauses.addWhereGreaterThanOrEqualClause(
-                            getStartTimeColumnName(), request.getPageToken());
+                            getStartTimeColumnName(), request.getPageToken() / 2);
                 } else {
                     clauses.addWhereLessThanOrEqualClause(
-                            getStartTimeColumnName(), request.getPageToken());
+                            getStartTimeColumnName(), (request.getPageToken() - 1) / 2);
                 }
             }
 
-            return clauses.addWhereBetweenTimeClause(
-                    getStartTimeColumnName(), startDateAccess, request.getEndTime());
+            if (request.usesLocalTimeFilter()) {
+                clauses.addWhereGreaterThanOrEqualClause(getStartTimeColumnName(), startDateAccess);
+                clauses.addWhereBetweenClause(
+                        getLocalStartTimeColumnName(),
+                        request.getStartTime(),
+                        request.getEndTime());
+            } else {
+                clauses.addWhereBetweenTimeClause(
+                        getStartTimeColumnName(), startDateAccess, request.getEndTime());
+            }
+
+            return clauses;
         }
 
         // Since for now we don't support mixing IDs and filters, we need to look for IDs now
-        List<String> ids =
+        List<UUID> ids =
                 request.getRecordIdFiltersParcel().getRecordIdFilters().stream()
                         .map(
                                 (recordIdFilter) ->
                                         StorageUtils.getUUIDFor(recordIdFilter, packageName))
                         .collect(Collectors.toList());
-        WhereClauses whereClauses = new WhereClauses().addWhereInClause(UUID_COLUMN_NAME, ids);
+        WhereClauses whereClauses =
+                new WhereClauses()
+                        .addWhereInClauseWithoutQuotes(
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids));
 
         if (enforceSelfRead) {
             long id = AppInfoHelper.getInstance().getAppInfoId(packageName);
@@ -512,7 +684,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     private OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
         OrderByClause orderByClause = new OrderByClause();
-        if (request.getRecordIdFiltersParcel() != null) {
+        if (request.getRecordIdFiltersParcel() == null) {
             orderByClause.addOrderByClause(getStartTimeColumnName(), request.isAscending());
         }
         return orderByClause;
@@ -522,14 +694,17 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     private ContentValues getContentValues(@NonNull T recordInternal) {
         ContentValues recordContentValues = new ContentValues();
 
-        recordContentValues.put(UUID_COLUMN_NAME, recordInternal.getUuid());
+        recordContentValues.put(
+                UUID_COLUMN_NAME, StorageUtils.convertUUIDToBytes(recordInternal.getUuid()));
         recordContentValues.put(
                 LAST_MODIFIED_TIME_COLUMN_NAME, recordInternal.getLastModifiedTime());
         recordContentValues.put(CLIENT_RECORD_ID_COLUMN_NAME, recordInternal.getClientRecordId());
         recordContentValues.put(
                 CLIENT_RECORD_VERSION_COLUMN_NAME, recordInternal.getClientRecordVersion());
+        recordContentValues.put(RECORDING_METHOD_COLUMN_NAME, recordInternal.getRecordingMethod());
         recordContentValues.put(DEVICE_INFO_ID_COLUMN_NAME, recordInternal.getDeviceInfoId());
         recordContentValues.put(APP_INFO_ID_COLUMN_NAME, recordInternal.getAppInfoId());
+        recordContentValues.put(DEDUPE_HASH_COLUMN_NAME, getDedupeByteBuffer(recordInternal));
 
         populateContentValues(recordContentValues, recordInternal);
 
@@ -548,58 +723,35 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     private List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
-        columnInfo.add(new Pair<>(UUID_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
+        columnInfo.add(new Pair<>(UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL));
         columnInfo.add(new Pair<>(LAST_MODIFIED_TIME_COLUMN_NAME, INTEGER));
         columnInfo.add(new Pair<>(CLIENT_RECORD_ID_COLUMN_NAME, TEXT_NULL));
         columnInfo.add(new Pair<>(CLIENT_RECORD_VERSION_COLUMN_NAME, TEXT_NULL));
         columnInfo.add(new Pair<>(DEVICE_INFO_ID_COLUMN_NAME, INTEGER));
         columnInfo.add(new Pair<>(APP_INFO_ID_COLUMN_NAME, INTEGER));
+        columnInfo.add(new Pair<>(RECORDING_METHOD_COLUMN_NAME, INTEGER));
+        columnInfo.add(new Pair<>(DEDUPE_HASH_COLUMN_NAME, BLOB_UNIQUE_NULL));
 
         columnInfo.addAll(getSpecificColumnInfo());
 
         return columnInfo;
     }
 
-    /** Returns extra permissions required to write given record. */
-    public List<String> getExtraWritePermissionsToCheck(RecordInternal<?> recordInternal) {
-        return Collections.emptyList();
-    }
+    /** Checks that operation with current record type are supported. */
+    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {}
 
     /** Returns permissions required to read extra record data. */
     public List<String> getExtraReadPermissions() {
         return Collections.emptyList();
     }
 
-    static class AggregateParams {
-        private final String mTableName;
-        private List<String> mColumnNames;
-        private final String mTimeColumnName;
-        private SqlJoin mJoin;
-        private Class<?> mAggregateDataType;
+    /** Returns all extra permissions associated with current record type. */
+    public List<String> getExtraWritePermissions() {
+        return Collections.emptyList();
+    }
 
-        public AggregateParams(String tableName, List<String> columnNames, String timeColumnName) {
-            this(tableName, columnNames, timeColumnName, null);
-        }
-
-        AggregateParams(
-                String tableName,
-                List<String> columnNames,
-                String timeColumnName,
-                Class<?> aggregateDataType) {
-            mTableName = tableName;
-            mColumnNames = columnNames;
-            mTimeColumnName = timeColumnName;
-            mAggregateDataType = aggregateDataType;
-        }
-
-        public AggregateParams setJoin(SqlJoin join) {
-            mJoin = join;
-            return this;
-        }
-
-        public AggregateParams appendAdditionalColumns(List<String> additionColumns) {
-            mColumnNames.addAll(additionColumns);
-            return this;
-        }
+    /** Returns extra permissions required to write given record. */
+    public List<String> getRequiredExtraWritePermissions(RecordInternal<?> recordInternal) {
+        return Collections.emptyList();
     }
 }

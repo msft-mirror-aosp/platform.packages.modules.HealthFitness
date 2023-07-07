@@ -46,17 +46,12 @@ public final class RespiratoryRateRecordInternal
     public RespiratoryRateRecord toExternalRecord() {
         return new RespiratoryRateRecord.Builder(buildMetaData(), getTime(), getRate())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mRate = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull RespiratoryRateRecord respiratoryRateRecord) {
-        mRate = respiratoryRateRecord.getRate();
     }
 
     @Override

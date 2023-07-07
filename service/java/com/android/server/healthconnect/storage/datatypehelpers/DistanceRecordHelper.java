@@ -23,13 +23,13 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.AggregateResult;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.DistanceRecordInternal;
 import android.util.Pair;
 
-import java.time.ZoneOffset;
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,23 +40,11 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_DISTANCE)
 public final class DistanceRecordHelper extends IntervalRecordHelper<DistanceRecordInternal> {
     private static final String DISTANCE_RECORD_TABLE_NAME = "distance_record_table";
     private static final String DISTANCE_COLUMN_NAME = "distance";
-
-    @Override
-    public AggregateResult<?> getAggregateResult(
-            Cursor results, AggregationType<?> aggregationType, double aggregation) {
-        switch (aggregationType.getAggregationTypeIdentifier()) {
-            case DISTANCE_RECORD_DISTANCE_TOTAL:
-                results.moveToFirst();
-                ZoneOffset zoneOffset = getZoneOffset(results);
-                return new AggregateResult<>(aggregation).setZoneOffset(zoneOffset);
-
-            default:
-                return null;
-        }
+    public DistanceRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_DISTANCE);
     }
 
     @Override
@@ -72,7 +60,6 @@ public final class DistanceRecordHelper extends IntervalRecordHelper<DistanceRec
                 return new AggregateParams(
                         DISTANCE_RECORD_TABLE_NAME,
                         new ArrayList(Arrays.asList(DISTANCE_COLUMN_NAME)),
-                        START_TIME_COLUMN_NAME,
                         Double.class);
             default:
                 return null;

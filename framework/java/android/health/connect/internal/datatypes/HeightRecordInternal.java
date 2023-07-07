@@ -46,17 +46,12 @@ public final class HeightRecordInternal extends InstantRecordInternal<HeightReco
     public HeightRecord toExternalRecord() {
         return new HeightRecord.Builder(buildMetaData(), getTime(), Length.fromMeters(getHeight()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mHeight = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull HeightRecord heightRecord) {
-        mHeight = heightRecord.getHeight().getInMeters();
     }
 
     @Override

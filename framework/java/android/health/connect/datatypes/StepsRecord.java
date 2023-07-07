@@ -20,6 +20,8 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import android.annotation.NonNull;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.StepsRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -95,12 +97,34 @@ public final class StepsRecord extends IntervalRecord {
         }
 
         /**
+         * @return Object of {@link StepsRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public StepsRecord buildWithoutValidation() {
+            return new StepsRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mCount,
+                    true);
+        }
+
+        /**
          * @return Object of {@link StepsRecord}
          */
         @NonNull
         public StepsRecord build() {
             return new StepsRecord(
-                    mMetadata, mStartTime, mStartZoneOffset, mEndTime, mEndZoneOffset, mCount);
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mCount,
+                    false);
         }
     }
 
@@ -124,10 +148,12 @@ public final class StepsRecord extends IntervalRecord {
             @NonNull ZoneOffset startZoneOffset,
             @NonNull Instant endTime,
             @NonNull ZoneOffset endZoneOffset,
-            long count) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
-        ValidationUtils.requireInRange(
-                ValidationUtils.valuePerSecond(count, startTime, endTime), 0.0, 10.0, "stepsCount");
+            long count,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(count, 0, 1000000, "stepsCount");
+        }
         mCount = count;
     }
 
@@ -158,5 +184,29 @@ public final class StepsRecord extends IntervalRecord {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getCount());
+    }
+
+    /** @hide */
+    @Override
+    public StepsRecordInternal toRecordInternal() {
+        StepsRecordInternal recordInternal =
+                (StepsRecordInternal)
+                        new StepsRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setStartTime(getStartTime().toEpochMilli());
+        recordInternal.setEndTime(getEndTime().toEpochMilli());
+        recordInternal.setStartZoneOffset(getStartZoneOffset().getTotalSeconds());
+        recordInternal.setEndZoneOffset(getEndZoneOffset().getTotalSeconds());
+        recordInternal.setCount((int) mCount);
+        return recordInternal;
     }
 }

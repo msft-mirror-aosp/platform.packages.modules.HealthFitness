@@ -48,17 +48,12 @@ public final class MenstruationFlowRecordInternal
     public MenstruationFlowRecord toExternalRecord() {
         return new MenstruationFlowRecord.Builder(buildMetaData(), getTime(), getFlow())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mFlow = parcel.readInt();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull MenstruationFlowRecord menstruationFlowRecord) {
-        mFlow = menstruationFlowRecord.getFlow();
     }
 
     @Override

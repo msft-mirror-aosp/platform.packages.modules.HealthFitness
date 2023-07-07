@@ -51,17 +51,12 @@ public final class DistanceRecordInternal extends IntervalRecordInternal<Distanc
                         Length.fromMeters(getDistance()))
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {
         mDistance = parcel.readDouble();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull DistanceRecord distanceRecord) {
-        mDistance = distanceRecord.getDistance().getInMeters();
     }
 
     @Override

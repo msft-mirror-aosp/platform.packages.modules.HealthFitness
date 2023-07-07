@@ -18,18 +18,19 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.STEPS_RECORD_COUNT_TOTAL;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.AggregateResult;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.StepsRecordInternal;
 import android.util.Pair;
 
-import java.time.ZoneOffset;
+import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,22 +41,13 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_STEPS)
 public final class StepsRecordHelper extends IntervalRecordHelper<StepsRecordInternal> {
-    private static final String STEPS_TABLE_NAME = "steps_record_table";
+
+    @VisibleForTesting public static final String STEPS_TABLE_NAME = "steps_record_table";
     private static final String COUNT_COLUMN_NAME = "count";
 
-    @Override
-    public AggregateResult<?> getAggregateResult(
-            Cursor results, AggregationType<?> aggregationType, double aggregation) {
-        switch (aggregationType.getAggregationTypeIdentifier()) {
-            case STEPS_RECORD_COUNT_TOTAL:
-                results.moveToFirst();
-                ZoneOffset zoneOffset = getZoneOffset(results);
-                return new AggregateResult<>((long) aggregation).setZoneOffset(zoneOffset);
-            default:
-                return null;
-        }
+    public StepsRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_STEPS);
     }
 
     @Override
@@ -71,7 +63,6 @@ public final class StepsRecordHelper extends IntervalRecordHelper<StepsRecordInt
                 return new AggregateParams(
                         STEPS_TABLE_NAME,
                         new ArrayList(Arrays.asList(COUNT_COLUMN_NAME)),
-                        START_TIME_COLUMN_NAME,
                         Long.class);
             default:
                 return null;
@@ -81,7 +72,7 @@ public final class StepsRecordHelper extends IntervalRecordHelper<StepsRecordInt
     @Override
     void populateSpecificRecordValue(
             @NonNull Cursor cursor, @NonNull StepsRecordInternal recordInternal) {
-        recordInternal.setCount(getCursorLong(cursor, COUNT_COLUMN_NAME));
+        recordInternal.setCount(getCursorInt(cursor, COUNT_COLUMN_NAME));
     }
 
     @Override

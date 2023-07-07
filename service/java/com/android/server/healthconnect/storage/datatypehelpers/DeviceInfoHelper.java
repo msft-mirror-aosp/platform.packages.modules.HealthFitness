@@ -28,7 +28,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.datatypes.Device.DeviceType;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
@@ -51,23 +50,16 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @hide
  */
-public class DeviceInfoHelper {
+public class DeviceInfoHelper extends DatabaseHelper {
     private static final String TABLE_NAME = "device_info_table";
     private static final String MANUFACTURER_COLUMN_NAME = "manufacturer";
     private static final String MODEL_COLUMN_NAME = "model";
     private static final String DEVICE_TYPE_COLUMN_NAME = "device_type";
     private static volatile DeviceInfoHelper sDeviceInfoHelper;
     /** Map to store deviceInfoId -> DeviceInfo mapping for populating record for read */
-    private ConcurrentHashMap<Long, DeviceInfo> mIdDeviceInfoMap;
+    private volatile ConcurrentHashMap<Long, DeviceInfo> mIdDeviceInfoMap;
     /** ArrayMap to store DeviceInfo -> rowId mapping (model,manufacturer,device_type -> rowId) */
-    private ConcurrentHashMap<DeviceInfo, Long> mDeviceInfoMap;
-
-    public static synchronized DeviceInfoHelper getInstance() {
-        if (sDeviceInfoHelper == null) {
-            sDeviceInfoHelper = new DeviceInfoHelper();
-        }
-        return sDeviceInfoHelper;
-    }
+    private volatile ConcurrentHashMap<DeviceInfo, Long> mDeviceInfoMap;
 
     /**
      * Returns a requests representing the tables that should be created corresponding to this
@@ -90,7 +82,7 @@ public class DeviceInfoHelper {
         DeviceInfo deviceInfo = new DeviceInfo(manufacturer, model, deviceType);
         long rowId = getDeviceInfoMap().getOrDefault(deviceInfo, DEFAULT_LONG);
         if (rowId == DEFAULT_LONG) {
-            rowId = insertDeviceInfoAndGetRowId(deviceInfo);
+            rowId = insertIfNotPresent(deviceInfo);
         }
         recordInternal.setDeviceInfoId(rowId);
     }
@@ -110,14 +102,15 @@ public class DeviceInfoHelper {
         }
     }
 
-    // Called on DB update.
-    public void onUpgrade(int newVersion, @NonNull SQLiteDatabase db) {
-        // empty by default
-    }
-
+    @Override
     public synchronized void clearCache() {
         mDeviceInfoMap = null;
         mIdDeviceInfoMap = null;
+    }
+
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
     }
 
     private synchronized void populateDeviceInfoMap() {
@@ -128,8 +121,7 @@ public class DeviceInfoHelper {
         ConcurrentHashMap<DeviceInfo, Long> deviceInfoMap = new ConcurrentHashMap<>();
         ConcurrentHashMap<Long, DeviceInfo> idDeviceInfoMap = new ConcurrentHashMap<>();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        final SQLiteDatabase db = transactionManager.getReadableDb();
-        try (Cursor cursor = transactionManager.read(db, new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
                 String manufacturer = getCursorString(cursor, MANUFACTURER_COLUMN_NAME);
@@ -160,7 +152,12 @@ public class DeviceInfoHelper {
         return mDeviceInfoMap;
     }
 
-    private long insertDeviceInfoAndGetRowId(DeviceInfo deviceInfo) {
+    private synchronized long insertIfNotPresent(DeviceInfo deviceInfo) {
+        Long currentRowId = getDeviceInfoMap().get(deviceInfo);
+        if (currentRowId != null) {
+            return currentRowId;
+        }
+
         long rowId =
                 TransactionManager.getInitialisedInstance()
                         .insert(
@@ -195,7 +192,7 @@ public class DeviceInfoHelper {
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    protected List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(MANUFACTURER_COLUMN_NAME, TEXT_NULL));
@@ -203,6 +200,13 @@ public class DeviceInfoHelper {
         columnInfo.add(new Pair<>(DEVICE_TYPE_COLUMN_NAME, INTEGER));
 
         return columnInfo;
+    }
+
+    public static synchronized DeviceInfoHelper getInstance() {
+        if (sDeviceInfoHelper == null) {
+            sDeviceInfoHelper = new DeviceInfoHelper();
+        }
+        return sDeviceInfoHelper;
     }
 
     private static final class DeviceInfo {

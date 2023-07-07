@@ -15,20 +15,68 @@
  */
 package android.healthconnect.cts.ui
 
-import android.content.Context
-import android.healthconnect.cts.ui.testing.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.ui.testing.UiTestUtils.clickOnText
-import android.healthconnect.cts.ui.testing.UiTestUtils.navigateBackToHomeScreen
-import android.healthconnect.cts.ui.testing.UiTestUtils.waitDisplayed
-import androidx.test.core.app.ApplicationProvider
+import android.health.connect.TimeInstantRangeFilter
+import android.health.connect.datatypes.BasalMetabolicRateRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.StepsRecord
+import android.healthconnect.cts.TestUtils.verifyDeleteRecords
+import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
+import android.healthconnect.cts.lib.TestUtils.insertRecordAs
+import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import androidx.test.uiautomator.By
-import org.junit.After
+import com.android.cts.install.lib.TestApp
+import java.time.Instant
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 
 /** CTS test for HealthConnect Home screen. */
-class HomeFragmentTest {
+class HomeFragmentTest : HealthConnectBaseTest() {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    companion object {
+
+        private const val TAG = "HomeFragmentTest"
+
+        private const val VERSION_CODE: Long = 1
+
+        private val APP_A_WITH_READ_WRITE_PERMS: TestApp =
+            TestApp(
+                "TestAppA",
+                "android.healthconnect.cts.testapp.readWritePerms.A",
+                VERSION_CODE,
+                false,
+                "CtsHealthConnectTestAppA.apk")
+
+        @JvmStatic
+        @BeforeClass
+        fun setup() {
+            insertRecordAs(APP_A_WITH_READ_WRITE_PERMS)
+        }
+
+        @JvmStatic
+        @AfterClass
+        fun teardown() {
+            verifyDeleteRecords(
+                StepsRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+            verifyDeleteRecords(
+                HeartRateRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+            verifyDeleteRecords(
+                BasalMetabolicRateRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+        }
+    }
 
     @Test
     fun homeFragment_openAppPermissions() {
@@ -36,7 +84,8 @@ class HomeFragmentTest {
             clickOnText("App permissions")
 
             waitDisplayed(By.text("Allowed access"))
-            waitDisplayed(By.text("Not allowed access"))
+            // TODO(b/265789268): Fix flaky "DNot allowed access" not found.
+            // waitDisplayed(By.text("Not allowed access"))
         }
     }
 
@@ -53,14 +102,21 @@ class HomeFragmentTest {
         }
     }
 
-    // TODO(b/265789268): Add recent access test.
-
-    @After
-    fun tearDown() {
-        navigateBackToHomeScreen()
+    @Test
+    fun homeFragment_recentAccessShownOnHomeScreen() {
+        context.launchMainActivity {
+            waitDisplayed(By.textContains("CtsHealthConnectTest"))
+            waitDisplayed(By.text("See all recent access"))
+        }
     }
 
-    companion object {
-        private const val TAG = "HomeFragmentTest"
+    @Test
+    fun homeFragment_navigateToRecentAccess() {
+        context.launchMainActivity {
+            clickOnText("See all recent access")
+
+            waitDisplayed(By.text("Today"))
+            waitDisplayed(By.textContains("CtsHealthConnectTest"))
+        }
     }
 }

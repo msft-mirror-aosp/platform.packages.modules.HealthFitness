@@ -35,14 +35,11 @@ public final class MenstruationPeriodRecordInternal
         return new MenstruationPeriodRecord.Builder(buildMetaData(), getStartTime(), getEndTime())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {}
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull MenstruationPeriodRecord menstruationPeriodRecord) {}
 
     @Override
     void populateIntervalRecordTo(@NonNull Parcel parcel) {}

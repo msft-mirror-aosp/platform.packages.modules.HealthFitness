@@ -29,6 +29,7 @@ import android.os.Parcelable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
  */
 public class DeleteUsingFiltersRequestParcel implements Parcelable {
     public static final Creator<DeleteUsingFiltersRequestParcel> CREATOR =
-            new Creator<DeleteUsingFiltersRequestParcel>() {
+            new Creator<>() {
                 @Override
                 public DeleteUsingFiltersRequestParcel createFromParcel(Parcel in) {
                     return new DeleteUsingFiltersRequestParcel(in);
@@ -48,17 +49,19 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
                     return new DeleteUsingFiltersRequestParcel[size];
                 }
             };
-    private final List<String> mPackageNameFilters;
+    private List<String> mPackageNameFilters;
     private final int[] mRecordTypeFilters;
     private final long mStartTime;
     private final long mEndTime;
     private final RecordIdFiltersParcel mRecordIdFiltersParcel;
+    private final boolean mLocalTimeFilter;
 
     protected DeleteUsingFiltersRequestParcel(Parcel in) {
         mPackageNameFilters = in.createStringArrayList();
         mRecordTypeFilters = in.createIntArray();
         mStartTime = in.readLong();
         mEndTime = in.readLong();
+        mLocalTimeFilter = in.readBoolean();
         mRecordIdFiltersParcel =
                 in.readParcelable(
                         RecordIdFiltersParcel.class.getClassLoader(), RecordIdFiltersParcel.class);
@@ -80,9 +83,11 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
             mStartTime = DEFAULT_LONG;
             mEndTime = DEFAULT_LONG;
         } else {
-            mStartTime = TimeRangeFilterHelper.getDurationStart(request.getTimeRangeFilter());
-            mEndTime = TimeRangeFilterHelper.getDurationEnd(request.getTimeRangeFilter());
+            mStartTime =
+                    TimeRangeFilterHelper.getFilterStartTimeMillis(request.getTimeRangeFilter());
+            mEndTime = TimeRangeFilterHelper.getFilterEndTimeMillis(request.getTimeRangeFilter());
         }
+        mLocalTimeFilter = TimeRangeFilterHelper.isLocalTimeFilter(request.getTimeRangeFilter());
         mRecordIdFiltersParcel = new RecordIdFiltersParcel(Collections.emptyList());
     }
 
@@ -93,6 +98,7 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
         mRecordTypeFilters = new int[0];
         mStartTime = DEFAULT_LONG;
         mEndTime = DEFAULT_LONG;
+        mLocalTimeFilter = false;
         mRecordIdFiltersParcel = recordIdFiltersParcel;
     }
 
@@ -104,7 +110,25 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
         return mPackageNameFilters;
     }
 
+    public void setPackageNameFilters(@NonNull List<String> packages) {
+        Objects.requireNonNull(packages);
+        mPackageNameFilters = packages;
+    }
+
     public List<Integer> getRecordTypeFilters() {
+        if (mRecordIdFiltersParcel != null
+                && !mRecordIdFiltersParcel.getRecordIdFilters().isEmpty()) {
+            return mRecordIdFiltersParcel.getRecordIdFilters().stream()
+                    .map(
+                            (recordIdFilter) ->
+                                    RecordMapper.getInstance()
+                                            .getRecordType(recordIdFilter.getRecordType()))
+                    .toList()
+                    .stream()
+                    .distinct()
+                    .toList();
+        }
+
         return Arrays.stream(mRecordTypeFilters).boxed().toList();
     }
 
@@ -114,6 +138,11 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
 
     public long getEndTime() {
         return mEndTime;
+    }
+
+    public boolean usesIdFilters() {
+        return mRecordIdFiltersParcel.getRecordIdFilters() != null
+                && !mRecordIdFiltersParcel.getRecordIdFilters().isEmpty();
     }
 
     @Override
@@ -127,6 +156,17 @@ public class DeleteUsingFiltersRequestParcel implements Parcelable {
         dest.writeIntArray(mRecordTypeFilters);
         dest.writeLong(mStartTime);
         dest.writeLong(mEndTime);
+        dest.writeBoolean(mLocalTimeFilter);
         dest.writeParcelable(mRecordIdFiltersParcel, 0);
+    }
+
+    public boolean isLocalTimeFilter() {
+        return mLocalTimeFilter;
+    }
+
+    public boolean usesNonIdFilters() {
+        return mRecordTypeFilters.length != 0
+                || mStartTime != DEFAULT_LONG
+                || mEndTime != DEFAULT_LONG;
     }
 }

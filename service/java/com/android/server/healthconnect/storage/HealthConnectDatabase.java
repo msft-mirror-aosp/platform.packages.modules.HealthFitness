@@ -20,20 +20,28 @@ import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.utils.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Class to maintain the health connect DB. Actual operations are performed by {@link
@@ -42,56 +50,38 @@ import java.util.Collection;
  * @hide
  */
 public class HealthConnectDatabase extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    public static final int DB_VERSION_UUID_BLOB = 9;
+
+    public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
+    private static final String TAG = "HealthConnectDatabase";
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "healthconnect.db";
-
     @NonNull private final Collection<RecordHelper<?>> mRecordHelpers;
-
-    /** Runs create table request on database. */
-    public static void createTable(SQLiteDatabase db, CreateTableRequest createTableRequest) {
-        db.execSQL(createTableRequest.getCreateCommand());
-        createTableRequest
-                .getChildTableRequests()
-                .forEach(
-                        (childTableRequest) -> {
-                            createTable(db, childTableRequest);
-                        });
-        createTableRequest.getCreateIndexStatements().forEach(db::execSQL);
-    }
+    private final Context mContext;
 
     public HealthConnectDatabase(@NonNull Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mRecordHelpers = RecordHelperProvider.getInstance().getRecordHelpers().values();
+        mContext = context;
     }
 
     @Override
     public void onCreate(@NonNull SQLiteDatabase db) {
-        mRecordHelpers.forEach(
-                recordHelper -> {
-                    createTable(db, recordHelper.getCreateTableRequest());
-                });
-        createTable(db, DeviceInfoHelper.getInstance().getCreateTableRequest());
-        createTable(db, AppInfoHelper.getInstance().getCreateTableRequest());
-        createTable(db, ActivityDateHelper.getInstance().getCreateTableRequest());
-        createTable(db, ChangeLogsHelper.getInstance().getCreateTableRequest());
-        createTable(db, ChangeLogsRequestHelper.getInstance().getCreateTableRequest());
-        createTable(db, HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest());
-        createTable(db, PreferenceHelper.getInstance().getCreateTableRequest());
-        createTable(db, AccessLogsHelper.getInstance().getCreateTableRequest());
+        for (CreateTableRequest createTableRequest : getCreateTableRequests()) {
+            createTable(db, createTableRequest);
+        }
     }
 
     @Override
     public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        mRecordHelpers.forEach(
-                recordHelper -> {
-                    recordHelper.onUpgrade(db, oldVersion, newVersion);
-                });
-        DeviceInfoHelper.getInstance().onUpgrade(newVersion, db);
-        AppInfoHelper.getInstance().onUpgrade(newVersion, db);
-        ChangeLogsHelper.getInstance().onUpgrade(newVersion, db);
-        ChangeLogsRequestHelper.getInstance().onUpgrade(newVersion, db);
-        HealthDataCategoryPriorityHelper.getInstance().onUpgrade(newVersion, db);
-        ActivityDateHelper.getInstance().onUpgrade(newVersion, db);
+        if (oldVersion < DB_VERSION_UUID_BLOB) {
+            dropAllTables(db);
+            onCreate(db);
+            return;
+        }
+
+        mRecordHelpers.forEach(recordHelper -> recordHelper.onUpgrade(db, oldVersion, newVersion));
+        DatabaseHelper.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
@@ -103,6 +93,61 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        super.onDowngrade(db, oldVersion, newVersion);
+        Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        DatabaseHelper.onDowngrade(db, oldVersion, newVersion);
+    }
+
+    public File getDatabasePath() {
+        return mContext.getDatabasePath(DATABASE_NAME);
+    }
+
+    private void dropAllTables(SQLiteDatabase db) {
+        List<String> allTables =
+                getCreateTableRequests().stream().map(CreateTableRequest::getTableName).toList();
+        for (String table : allTables) {
+            db.execSQL(new DropTableRequest(table).getCommand());
+        }
+    }
+
+    private List<CreateTableRequest> getCreateTableRequests() {
+        List<CreateTableRequest> requests = new ArrayList<>();
+        mRecordHelpers.forEach(
+                (recordHelper) ->
+                        addCreateRequestsFor(recordHelper.getCreateTableRequest(), requests));
+        addCreateRequestsFor(DeviceInfoHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(AppInfoHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(ActivityDateHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(ChangeLogsHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(
+                ChangeLogsRequestHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(
+                HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(PreferenceHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(AccessLogsHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(MigrationEntityHelper.getInstance().getCreateTableRequest(), requests);
+        addCreateRequestsFor(
+                PriorityMigrationHelper.getInstance().getCreateTableRequest(), requests);
+
+        return requests;
+    }
+
+    private void addCreateRequestsFor(
+            CreateTableRequest createTableRequest, List<CreateTableRequest> tableRequests) {
+        tableRequests.add(createTableRequest);
+        createTableRequest
+                .getChildTableRequests()
+                .forEach(
+                        (childTableRequest) ->
+                                addCreateRequestsFor(childTableRequest, tableRequests));
+    }
+
+    /** Runs create table request on database. */
+    public static void createTable(SQLiteDatabase db, CreateTableRequest createTableRequest) {
+        db.execSQL(createTableRequest.getCreateCommand());
+        createTableRequest.getCreateIndexStatements().forEach(db::execSQL);
+    }
+
+    public static String getName() {
+        return DATABASE_NAME;
     }
 }

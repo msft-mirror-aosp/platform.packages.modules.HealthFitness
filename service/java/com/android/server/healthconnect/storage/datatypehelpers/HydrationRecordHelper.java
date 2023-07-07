@@ -29,6 +29,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.HydrationRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -37,10 +39,13 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_HYDRATION)
 public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationRecordInternal> {
     private static final String HYDRATION_RECORD_TABLE_NAME = "hydration_record_table";
     private static final String VOLUME_COLUMN_NAME = "volume";
+
+    public HydrationRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_HYDRATION);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(
@@ -73,9 +78,7 @@ public final class HydrationRecordHelper extends IntervalRecordHelper<HydrationR
         switch (aggregateRequest.getAggregationTypeIdentifier()) {
             case HYDRATION_RECORD_VOLUME_TOTAL:
                 return new AggregateParams(
-                        HYDRATION_RECORD_TABLE_NAME,
-                        Collections.singletonList(VOLUME_COLUMN_NAME),
-                        START_TIME_COLUMN_NAME);
+                        HYDRATION_RECORD_TABLE_NAME, Collections.singletonList(VOLUME_COLUMN_NAME));
             default:
                 return null;
         }

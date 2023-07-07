@@ -41,16 +41,22 @@ public final class CreateTableRequest {
     public static final String FOREIGN_KEY_COMMAND = " FOREIGN KEY (";
     private static final String CREATE_INDEX_COMMAND = "CREATE INDEX  idx_";
     private static final String CREATE_TABLE_COMMAND = "CREATE TABLE IF NOT EXISTS ";
+    private static final String UNIQUE_COMMAND = "UNIQUE ( ";
     private final String mTableName;
     private final List<Pair<String, String>> mColumnInfo;
     private final List<String> mColumnsToIndex = new ArrayList<>();
-
-    private List<ForeignKey> mForeignKeys;
+    private final List<List<String>> mUniqueColumns = new ArrayList<>();
+    private List<ForeignKey> mForeignKeys = new ArrayList<>();
     private List<CreateTableRequest> mChildTableRequests = Collections.emptyList();
+    private List<GeneratedColumnInfo> mGeneratedColumnInfo = Collections.emptyList();
 
     public CreateTableRequest(String tableName, List<Pair<String, String>> columnInfo) {
         mTableName = tableName;
         mColumnInfo = columnInfo;
+    }
+
+    public String getTableName() {
+        return mTableName;
     }
 
     @NonNull
@@ -96,19 +102,45 @@ public final class CreateTableRequest {
                                 .append(columnInfo.second)
                                 .append(", "));
 
+        for (GeneratedColumnInfo generatedColumnInfo : mGeneratedColumnInfo) {
+            builder.append(generatedColumnInfo.getColumnName())
+                    .append(" ")
+                    .append(generatedColumnInfo.getColumnType())
+                    .append(" AS (")
+                    .append(generatedColumnInfo.getExpression())
+                    .append("), ");
+        }
+
         if (mForeignKeys != null) {
             for (ForeignKey foreignKey : mForeignKeys) {
                 builder.append(foreignKey.getFkConstraint()).append(", ");
             }
         }
 
+        if (!mUniqueColumns.isEmpty()) {
+            mUniqueColumns.forEach(
+                    columns -> {
+                        builder.append(UNIQUE_COMMAND);
+                        for (String column : columns) {
+                            builder.append(column).append(", ");
+                        }
+                        builder.setLength(builder.length() - 2); // Remove the last 2 char i.e. ", "
+                        builder.append("), ");
+                    });
+        }
         builder.setLength(builder.length() - 2); // Remove the last 2 char i.e. ", "
+
         builder.append(")");
         if (Constants.DEBUG) {
             Slog.d(TAG, "Create table: " + builder);
         }
 
         return builder.toString();
+    }
+
+    public CreateTableRequest addUniqueConstraints(List<String> columnNames) {
+        mUniqueColumns.add(columnNames);
+        return this;
     }
 
     @NonNull
@@ -128,6 +160,14 @@ public final class CreateTableRequest {
         }
 
         return result;
+    }
+
+    public CreateTableRequest setGeneratedColumnInfo(
+            @NonNull List<GeneratedColumnInfo> generatedColumnInfo) {
+        Objects.requireNonNull(generatedColumnInfo);
+
+        mGeneratedColumnInfo = generatedColumnInfo;
+        return this;
     }
 
     private String getCreateIndexCommand(String indexName, List<String> columnNames) {
@@ -155,6 +195,30 @@ public final class CreateTableRequest {
                 + "("
                 + columnName
                 + ")";
+    }
+
+    public static final class GeneratedColumnInfo {
+        private final String columnName;
+        private final String type;
+        private final String expression;
+
+        public GeneratedColumnInfo(String columnName, String type, String expression) {
+            this.columnName = columnName;
+            this.type = type;
+            this.expression = expression;
+        }
+
+        public String getColumnName() {
+            return columnName;
+        }
+
+        public String getColumnType() {
+            return type;
+        }
+
+        public String getExpression() {
+            return expression;
+        }
     }
 
     private final class ForeignKey {

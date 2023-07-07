@@ -38,6 +38,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PermissionGroupInfo;
 import android.content.pm.PermissionInfo;
 import android.health.connect.accesslog.AccessLog;
+import android.health.connect.accesslog.AccessLogsResponseParcel;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.ActivityDatesResponseParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
@@ -55,6 +56,7 @@ import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IEmptyResponseCallback;
 import android.health.connect.aidl.IGetChangeLogTokenCallback;
 import android.health.connect.aidl.IGetHealthConnectDataStateCallback;
+import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
@@ -76,7 +78,9 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.InternalExternalRecordConverter;
+import android.health.connect.migration.HealthConnectMigrationUiState;
 import android.health.connect.migration.MigrationEntity;
+import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.migration.MigrationException;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
@@ -101,6 +105,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 /**
  * This class provides APIs to interact with the centralized HealthConnect storage maintained by the
@@ -301,64 +306,6 @@ public class HealthConnectManager {
     }
 
     /**
-     * Returns {@code true} if the given permission protects access to health connect data.
-     *
-     * @hide
-     */
-    @SystemApi
-    public static boolean isHealthPermission(
-            @NonNull Context context, @NonNull final String permission) {
-        if (!permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
-            return false;
-        }
-        return getHealthPermissions(context).contains(permission);
-    }
-
-    /**
-     * Returns an <b>immutable</b> set of health permissions defined within the module and belonging
-     * to {@link android.health.connect.HealthPermissions#HEALTH_PERMISSION_GROUP}.
-     *
-     * <p><b>Note:</b> If we, for some reason, fail to retrieve these, we return an empty set rather
-     * than crashing the device. This means the health permissions infra will be inactive.
-     *
-     * @hide
-     */
-    @NonNull
-    @SystemApi
-    public static Set<String> getHealthPermissions(@NonNull Context context) {
-        if (sHealthPermissions != null) {
-            return sHealthPermissions;
-        }
-
-        PackageInfo packageInfo = null;
-        try {
-            final PackageManager pm = context.getApplicationContext().getPackageManager();
-            final PermissionGroupInfo permGroupInfo =
-                    pm.getPermissionGroupInfo(
-                            android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP,
-                            /* flags= */ 0);
-            packageInfo =
-                    pm.getPackageInfo(
-                            permGroupInfo.packageName,
-                            PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
-        } catch (PackageManager.NameNotFoundException ex) {
-            Log.e(TAG, "Health permission group or HC package not found", ex);
-            sHealthPermissions = Collections.emptySet();
-            return sHealthPermissions;
-        }
-
-        Set<String> permissions = new HashSet<>();
-        for (PermissionInfo perm : packageInfo.permissions) {
-            if (android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP.equals(
-                    perm.group)) {
-                permissions.add(perm.name);
-            }
-        }
-        sHealthPermissions = Collections.unmodifiableSet(permissions);
-        return sHealthPermissions;
-    }
-
-    /**
      * Grant a runtime permission to an application which the application does not already have. The
      * permission must have been requested by the application. If the application is not allowed to
      * hold the permission, a {@link java.lang.SecurityException} is thrown. If the package or
@@ -474,8 +421,11 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
+            // Unset any set ids for insert. This is to prevent random string ids from creating
+            // illegal argument exception.
+            records.forEach((record) -> record.getMetadata().setId(""));
             List<RecordInternal<?>> recordInternals =
-                    mInternalExternalRecordConverter.getInternalRecords(records);
+                    records.stream().map(Record::toRecordInternal).collect(Collectors.toList());
             mService.insertRecords(
                     mContext.getAttributionSource(),
                     new RecordsParcel(recordInternals),
@@ -588,6 +538,9 @@ public class HealthConnectManager {
                             callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(duration);
+        if (duration.toMillis() < 1) {
+            throw new IllegalArgumentException("Duration should be at least 1 millisecond");
+        }
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
@@ -655,6 +608,9 @@ public class HealthConnectManager {
                             callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(period);
+        if (period == Period.ZERO) {
+            throw new IllegalArgumentException("Period duration should be at least a day");
+        }
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
@@ -758,7 +714,7 @@ public class HealthConnectManager {
         }
 
         try {
-            mService.deleteUsingFilters(
+            mService.deleteUsingFiltersForSelf(
                     mContext.getAttributionSource(),
                     new DeleteUsingFiltersRequestParcel(
                             new RecordIdFiltersParcel(recordIds), mContext.getPackageName()),
@@ -799,7 +755,7 @@ public class HealthConnectManager {
         Objects.requireNonNull(callback);
 
         try {
-            mService.deleteUsingFilters(
+            mService.deleteUsingFiltersForSelf(
                     mContext.getAttributionSource(),
                     new DeleteUsingFiltersRequestParcel(
                             new DeleteUsingFiltersRequest.Builder()
@@ -885,7 +841,7 @@ public class HealthConnectManager {
             @NonNull OutcomeReceiver<ChangeLogTokenResponse, HealthConnectException> callback) {
         try {
             mService.getChangeLogToken(
-                    mContext.getPackageName(),
+                    mContext.getAttributionSource(),
                     request,
                     new IGetChangeLogTokenCallback.Stub() {
                         @Override
@@ -1102,9 +1058,9 @@ public class HealthConnectManager {
                     mContext.getPackageName(),
                     new IAccessLogsResponseCallback.Stub() {
                         @Override
-                        public void onResult(List<AccessLog> parcel) {
+                        public void onResult(AccessLogsResponseParcel parcel) {
                             Binder.clearCallingIdentity();
-                            executor.execute(() -> callback.onResult(parcel));
+                            executor.execute(() -> callback.onResult(parcel.getAccessLogs()));
                         }
 
                         @Override
@@ -1136,17 +1092,11 @@ public class HealthConnectManager {
      * <p>An app without both read and write permissions will not be able to read any record and the
      * API will throw Security Exception.
      *
-     * <p>For subsequent read using {@link ReadRecordsRequestUsingFilters} in the request it is
-     * expected to set only either pageToken or sort order but not both. When pageToken is set along
-     * with a different sorting order then the API will throw IllegalStateException.
-     *
      * @param request Read request based on {@link ReadRecordsRequestUsingFilters} or {@link
      *     ReadRecordsRequestUsingIds}
      * @param executor Executor on which to invoke the callback.
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if request page size set is more than 5000 in {@link
-     *     ReadRecordsRequestUsingFilters}
-     * @throws IllegalStateException if both pageToken and new sort order is set in {@link
      *     ReadRecordsRequestUsingFilters}
      * @throws SecurityException if app without read or write permission tries to read.
      */
@@ -1190,29 +1140,13 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
-
-            // verify that the package requesting the change is same as the packageName in the
-            // records.
-            String contextPackageName = mContext.getPackageName();
-            for (Record record : records) {
-                if (!Objects.equals(
-                        contextPackageName,
-                        record.getMetadata().getDataOrigin().getPackageName())) {
-                    throw new IllegalArgumentException(
-                            "The package requesting the change does not match "
-                                    + "the packageName in input records");
-                }
-            }
-
             List<RecordInternal<?>> recordInternals =
-                    mInternalExternalRecordConverter.getInternalRecords(records);
-
+                    records.stream().map(Record::toRecordInternal).collect(Collectors.toList());
             // Verify if the input record has clientRecordId or UUID.
             for (RecordInternal<?> recordInternal : recordInternals) {
                 if ((recordInternal.getClientRecordId() == null
                                 || recordInternal.getClientRecordId().isEmpty())
-                        && (recordInternal.getUuid() == null
-                                || recordInternal.getUuid().isEmpty())) {
+                        && recordInternal.getUuid() == null) {
                     throw new IllegalArgumentException(
                             "At least one of the records is missing both ClientRecordID"
                                     + " and UUID. RecordType of the input: "
@@ -1289,7 +1223,8 @@ public class HealthConnectManager {
 
     /**
      * Stages all HealthConnect remote data and returns any errors in a callback. Errors encountered
-     * for all the files are shared in the provided callback.
+     * for all the files are shared in the provided callback. Any authorization / permissions
+     * related error is reported to the callback with an empty file name.
      *
      * <p>The staged data will later be restored (integrated) into the existing Health Connect data.
      * Any existing data will not be affected by the staged data.
@@ -1348,6 +1283,41 @@ public class HealthConnectManager {
     }
 
     /**
+     * Copies all HealthConnect backup data in the passed FDs.
+     *
+     * <p>The shared data must later be sent for Backup to cloud or another device.
+     *
+     * <p>We are responsible for closing the original file descriptors. The caller must not close
+     * the FD before that.
+     *
+     * @param pfdsByFileName The map of file names and their {@link ParcelFileDescriptor}s.
+     * @hide
+     */
+    public void getAllDataForBackup(@NonNull Map<String, ParcelFileDescriptor> pfdsByFileName) {
+        Objects.requireNonNull(pfdsByFileName);
+
+        try {
+            mService.getAllDataForBackup(
+                    new StageRemoteDataRequest(pfdsByFileName), mContext.getUser());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns the names of all HealthConnect Backup files
+     *
+     * @hide
+     */
+    public Set<String> getAllBackupFileNames(boolean forDeviceToDevice) {
+        try {
+            return mService.getAllBackupFileNames(forDeviceToDevice).getFileNames();
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Deletes all previously staged HealthConnect data from the disk. For testing purposes only.
      *
      * <p>This deletes only the staged data leaving any other Health Connect data untouched.
@@ -1380,7 +1350,7 @@ public class HealthConnectManager {
      *       #DATA_DOWNLOAD_COMPLETE}
      *   <li>{@link #DATA_DOWNLOAD_STARTED} to {@link #DATA_DOWNLOAD_FAILED}
      *   <li>{@link #DATA_DOWNLOAD_STARTED} to {@link #DATA_DOWNLOAD_RETRY} to {@link
-     *       #DATA_DOWNLOAD_RETRY}
+     *       #DATA_DOWNLOAD_FAILED}
      * </ul>
      *
      * <p>Note that it's okay if some states are missing in of the sequences above but the order has
@@ -1398,7 +1368,52 @@ public class HealthConnectManager {
     @RequiresPermission(Manifest.permission.STAGE_HEALTH_CONNECT_REMOTE_DATA)
     public void updateDataDownloadState(@DataDownloadState int downloadState) {
         try {
-            mService.updateDataDownloadState(downloadState, mContext.getUser());
+            mService.updateDataDownloadState(downloadState);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Asynchronously returns the current UI state of Health Connect as it goes through the
+     * Data-Migration process. In case there was an error reading the data on the disk the error
+     * will be returned in the callback.
+     *
+     * <p>See also {@link HealthConnectMigrationUiState} object describing the HealthConnect UI
+     * state.
+     *
+     * @param executor The {@link Executor} on which to invoke the callback.
+     * @param callback The callback which will receive the current {@link
+     *     HealthConnectMigrationUiState} or the {@link HealthConnectException}.
+     * @hide
+     */
+    @UserHandleAware
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    @NonNull
+    public void getHealthConnectMigrationUiState(
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<HealthConnectMigrationUiState, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.getHealthConnectMigrationUiState(
+                    new IGetHealthConnectMigrationUiStateCallback.Stub() {
+                        @Override
+                        public void onResult(HealthConnectMigrationUiState migrationUiState) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(migrationUiState));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(
+                                    () -> callback.onError(exception.getHealthConnectException()));
+                        }
+                    });
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1431,7 +1446,6 @@ public class HealthConnectManager {
         Objects.requireNonNull(callback);
         try {
             mService.getHealthConnectDataState(
-                    mContext.getUser(),
                     new IGetHealthConnectDataStateCallback.Stub() {
                         @Override
                         public void onResult(HealthConnectDataState healthConnectDataState) {
@@ -1561,7 +1575,9 @@ public class HealthConnectManager {
 
         try {
             mService.writeMigrationData(
-                    mContext.getPackageName(), entities, wrapMigrationCallback(executor, callback));
+                    mContext.getPackageName(),
+                    new MigrationEntityParcel(entities),
+                    wrapMigrationCallback(executor, callback));
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1648,6 +1664,75 @@ public class HealthConnectManager {
         executor.execute(() -> callback.onError(exception.getHealthConnectException()));
     }
 
+    /** @hide */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({
+        DATA_DOWNLOAD_STATE_UNKNOWN,
+        DATA_DOWNLOAD_STARTED,
+        DATA_DOWNLOAD_RETRY,
+        DATA_DOWNLOAD_FAILED,
+        DATA_DOWNLOAD_COMPLETE
+    })
+    public @interface DataDownloadState {}
+
+    /**
+     * Returns {@code true} if the given permission protects access to health connect data.
+     *
+     * @hide
+     */
+    @SystemApi
+    public static boolean isHealthPermission(
+            @NonNull Context context, @NonNull final String permission) {
+        if (!permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
+            return false;
+        }
+        return getHealthPermissions(context).contains(permission);
+    }
+
+    /**
+     * Returns an <b>immutable</b> set of health permissions defined within the module and belonging
+     * to {@link android.health.connect.HealthPermissions#HEALTH_PERMISSION_GROUP}.
+     *
+     * <p><b>Note:</b> If we, for some reason, fail to retrieve these, we return an empty set rather
+     * than crashing the device. This means the health permissions infra will be inactive.
+     *
+     * @hide
+     */
+    @NonNull
+    @SystemApi
+    public static Set<String> getHealthPermissions(@NonNull Context context) {
+        if (sHealthPermissions != null) {
+            return sHealthPermissions;
+        }
+
+        PackageInfo packageInfo;
+        try {
+            final PackageManager pm = context.getApplicationContext().getPackageManager();
+            final PermissionGroupInfo permGroupInfo =
+                    pm.getPermissionGroupInfo(
+                            android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP,
+                            /* flags= */ 0);
+            packageInfo =
+                    pm.getPackageInfo(
+                            permGroupInfo.packageName,
+                            PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+        } catch (PackageManager.NameNotFoundException ex) {
+            Log.e(TAG, "Health permission group or HC package not found", ex);
+            sHealthPermissions = Collections.emptySet();
+            return sHealthPermissions;
+        }
+
+        Set<String> permissions = new HashSet<>();
+        for (PermissionInfo perm : packageInfo.permissions) {
+            if (android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP.equals(
+                    perm.group)) {
+                permissions.add(perm.name);
+            }
+        }
+        sHealthPermissions = Collections.unmodifiableSet(permissions);
+        return sHealthPermissions;
+    }
+
     @NonNull
     private static IMigrationCallback wrapMigrationCallback(
             @NonNull @CallbackExecutor Executor executor,
@@ -1666,15 +1751,4 @@ public class HealthConnectManager {
             }
         };
     }
-
-    /** @hide */
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-        DATA_DOWNLOAD_STATE_UNKNOWN,
-        DATA_DOWNLOAD_STARTED,
-        DATA_DOWNLOAD_RETRY,
-        DATA_DOWNLOAD_FAILED,
-        DATA_DOWNLOAD_COMPLETE
-    })
-    public @interface DataDownloadState {}
 }

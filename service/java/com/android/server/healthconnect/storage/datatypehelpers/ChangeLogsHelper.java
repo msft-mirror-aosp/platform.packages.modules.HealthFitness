@@ -22,19 +22,17 @@ import static android.health.connect.Constants.UPSERT;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper.DEFAULT_CHANGE_LOG_TIME_PERIOD_IN_DAYS;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorStringList;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog.OperationType;
+import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse.DeletedLog;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.ArrayMap;
@@ -45,6 +43,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Instant;
@@ -54,6 +53,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-public final class ChangeLogsHelper {
+public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String APP_ID_COLUMN_NAME = "app_id";
@@ -72,42 +72,6 @@ public final class ChangeLogsHelper {
     private static volatile ChangeLogsHelper sChangeLogsHelper;
 
     private ChangeLogsHelper() {}
-
-    public static synchronized ChangeLogsHelper getInstance() {
-        if (sChangeLogsHelper == null) {
-            sChangeLogsHelper = new ChangeLogsHelper();
-        }
-
-        return sChangeLogsHelper;
-    }
-
-    @NonNull
-    public static List<DeletedLog> getDeletedLogs(Map<Integer, ChangeLogs> operationToChangeLogs) {
-        ChangeLogs logs = operationToChangeLogs.get(DELETE);
-
-        if (!Objects.isNull(logs)) {
-            List<String> ids = logs.getUUIds();
-            long timeStamp = logs.getChangeLogTimeStamp();
-            List<DeletedLog> deletedLogs = new ArrayList<>(ids.size());
-            for (String id : ids) {
-                deletedLogs.add(new DeletedLog(id, timeStamp));
-            }
-            return deletedLogs;
-        }
-        return new ArrayList<>();
-    }
-
-    @NonNull
-    public static Map<Integer, List<String>> getRecordTypeToInsertedUuids(
-            Map<Integer, ChangeLogs> operationToChangeLogs) {
-        ChangeLogs logs = operationToChangeLogs.getOrDefault(UPSERT, null);
-
-        if (!Objects.isNull(logs)) {
-            return logs.getRecordTypeToUUIDMap();
-        }
-
-        return new ArrayMap<>(0);
-    }
 
     public DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
@@ -126,14 +90,15 @@ public final class ChangeLogsHelper {
                 .createIndexOn(APP_ID_COLUMN_NAME);
     }
 
-    // Called on DB update.
-    public void onUpgrade(int newVersion, @NonNull SQLiteDatabase db) {
-        // empty by default
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
     }
 
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
     public ChangeLogsResponse getChangeLogs(
-            ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest, int pageSize) {
+            ChangeLogsRequestHelper.TokenRequest changeLogTokenRequest,
+            ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
         WhereClauses whereClause =
                 new WhereClauses()
@@ -153,6 +118,7 @@ public final class ChangeLogsHelper {
         // In setLimit(pagesize) method size will be set to pageSize + 1,so that if number of
         // records returned is more than pageSize we know there are more records available to return
         // for the next read.
+        int pageSize = changeLogsRequest.getPageSize();
         final ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize);
 
@@ -160,8 +126,7 @@ public final class ChangeLogsHelper {
         TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         long nextChangesToken = DEFAULT_LONG;
         boolean hasMoreRecords = false;
-        final SQLiteDatabase db = transactionManager.getReadableDb();
-        try (Cursor cursor = transactionManager.read(db, readTableRequest)) {
+        try (Cursor cursor = transactionManager.read(readTableRequest)) {
             int count = 0;
             while (cursor.moveToNext()) {
                 if (count >= pageSize) {
@@ -177,7 +142,7 @@ public final class ChangeLogsHelper {
                 nextChangesToken != DEFAULT_LONG
                         ? ChangeLogsRequestHelper.getNextPageToken(
                                 changeLogTokenRequest, nextChangesToken)
-                        : String.valueOf(token);
+                        : String.valueOf(changeLogsRequest.getToken());
 
         return new ChangeLogsResponse(operationToChangeLogMap, nextToken, hasMoreRecords);
     }
@@ -191,29 +156,68 @@ public final class ChangeLogsHelper {
         int recordType = getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME);
         @OperationType.OperationTypes
         int operationType = getCursorInt(cursor, OPERATION_TYPE_COLUMN_NAME);
-        List<String> uuidList = getCursorStringList(cursor, UUIDS_COLUMN_NAME, DELIMITER);
+        List<UUID> uuidList = StorageUtils.getCursorUUIDList(cursor, UUIDS_COLUMN_NAME);
+        long appId = getCursorLong(cursor, APP_ID_COLUMN_NAME);
         changeLogs.putIfAbsent(
                 operationType,
                 new ChangeLogs(operationType, getCursorLong(cursor, TIME_COLUMN_NAME)));
-        changeLogs.get(operationType).addUUIDs(recordType, uuidList);
+        changeLogs.get(operationType).addUUIDs(recordType, appId, uuidList);
         return uuidList.size();
     }
 
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    protected List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
         columnInfo.add(new Pair<>(RECORD_TYPE_COLUMN_NAME, INTEGER));
         columnInfo.add(new Pair<>(APP_ID_COLUMN_NAME, INTEGER));
-        columnInfo.add(new Pair<>(UUIDS_COLUMN_NAME, TEXT_NOT_NULL));
+        columnInfo.add(new Pair<>(UUIDS_COLUMN_NAME, BLOB_NON_NULL));
         columnInfo.add(new Pair<>(OPERATION_TYPE_COLUMN_NAME, INTEGER));
         columnInfo.add(new Pair<>(TIME_COLUMN_NAME, INTEGER));
 
         return columnInfo;
     }
 
+    public static synchronized ChangeLogsHelper getInstance() {
+        if (sChangeLogsHelper == null) {
+            sChangeLogsHelper = new ChangeLogsHelper();
+        }
+
+        return sChangeLogsHelper;
+    }
+
+    @NonNull
+    public static List<DeletedLog> getDeletedLogs(Map<Integer, ChangeLogs> operationToChangeLogs) {
+        ChangeLogs logs = operationToChangeLogs.get(DELETE);
+
+        if (!Objects.isNull(logs)) {
+            List<UUID> ids = logs.getUUIds();
+            long timeStamp = logs.getChangeLogTimeStamp();
+            List<DeletedLog> deletedLogs = new ArrayList<>(ids.size());
+            for (UUID id : ids) {
+                deletedLogs.add(new DeletedLog(id.toString(), timeStamp));
+            }
+
+            return deletedLogs;
+        }
+        return new ArrayList<>();
+    }
+
+    @NonNull
+    public static Map<Integer, List<UUID>> getRecordTypeToInsertedUuids(
+            Map<Integer, ChangeLogs> operationToChangeLogs) {
+        ChangeLogs logs = operationToChangeLogs.getOrDefault(UPSERT, null);
+
+        if (!Objects.isNull(logs)) {
+            return logs.getRecordTypeToUUIDMap();
+        }
+
+        return new ArrayMap<>(0);
+    }
+
     public static final class ChangeLogs {
-        private final Map<Integer, List<String>> mRecordTypeToUUIDMap = new ArrayMap<>();
+        private final Map<RecordTypeAndAppIdPair, List<UUID>> mRecordTypeAndAppIdToUUIDMap =
+                new ArrayMap<>();
         @OperationType.OperationTypes private final int mOperationType;
         private final String mPackageName;
         private final long mChangeLogTimeStamp;
@@ -234,7 +238,6 @@ public final class ChangeLogsHelper {
             mPackageName = packageName;
             mChangeLogTimeStamp = timeStamp;
         }
-
         /**
          * Creates a change logs object used to add a new change log for {@code operationType}
          * logged at time {@code timeStamp }
@@ -249,12 +252,22 @@ public final class ChangeLogsHelper {
             mPackageName = null;
         }
 
-        public Map<Integer, List<String>> getRecordTypeToUUIDMap() {
-            return mRecordTypeToUUIDMap;
+        public Map<Integer, List<UUID>> getRecordTypeToUUIDMap() {
+            Map<Integer, List<UUID>> recordTypeToUUIDMap = new ArrayMap<>();
+            mRecordTypeAndAppIdToUUIDMap.forEach(
+                    (recordTypeAndAppIdPair, uuids) -> {
+                        recordTypeToUUIDMap.putIfAbsent(
+                                recordTypeAndAppIdPair.getRecordType(), new ArrayList<>());
+                        Objects.requireNonNull(
+                                        recordTypeToUUIDMap.get(
+                                                recordTypeAndAppIdPair.getRecordType()))
+                                .addAll(uuids);
+                    });
+            return recordTypeToUUIDMap;
         }
 
-        public List<String> getUUIds() {
-            return mRecordTypeToUUIDMap.values().stream()
+        public List<UUID> getUUIds() {
+            return mRecordTypeAndAppIdToUUIDMap.values().stream()
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
         }
@@ -263,42 +276,87 @@ public final class ChangeLogsHelper {
             return mChangeLogTimeStamp;
         }
 
-        public void addUUID(@RecordTypeIdentifier.RecordType int recordType, @NonNull String uuid) {
+        /** Function to add an uuid corresponding to given pair of @recordType and @appId */
+        public void addUUID(
+                @RecordTypeIdentifier.RecordType int recordType,
+                @NonNull long appId,
+                @NonNull UUID uuid) {
             Objects.requireNonNull(uuid);
 
-            mRecordTypeToUUIDMap.putIfAbsent(recordType, new ArrayList<>());
-            mRecordTypeToUUIDMap.get(recordType).add(uuid);
+            RecordTypeAndAppIdPair recordTypeAndAppIdPair =
+                    new RecordTypeAndAppIdPair(recordType, appId);
+            mRecordTypeAndAppIdToUUIDMap.putIfAbsent(recordTypeAndAppIdPair, new ArrayList<>());
+            mRecordTypeAndAppIdToUUIDMap.get(recordTypeAndAppIdPair).add(uuid);
         }
 
         /**
          * @return List of {@link UpsertTableRequest} for change log table as per {@code
-         *     mRecordIdToUUIDMap}
+         *     mRecordTypeAndAppIdPairToUUIDMap}
          */
         public List<UpsertTableRequest> getUpsertTableRequests() {
             Objects.requireNonNull(mPackageName);
 
-            List<UpsertTableRequest> requests = new ArrayList<>(mRecordTypeToUUIDMap.size());
-            // TODO(b/261848494): Use correct packageNameId when deletes are from UI APK.
-            // Pass appId in addUUIDs and then we can create upsert requests there itself
-            long packageNameId = AppInfoHelper.getInstance().getAppInfoId(mPackageName);
-            mRecordTypeToUUIDMap.forEach(
-                    (recordType, uuids) -> {
+            List<UpsertTableRequest> requests =
+                    new ArrayList<>(mRecordTypeAndAppIdToUUIDMap.size());
+            mRecordTypeAndAppIdToUUIDMap.forEach(
+                    (recordTypeAndAppIdPair, uuids) -> {
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put(RECORD_TYPE_COLUMN_NAME, recordType);
-                        contentValues.put(APP_ID_COLUMN_NAME, packageNameId);
+                        contentValues.put(
+                                RECORD_TYPE_COLUMN_NAME, recordTypeAndAppIdPair.getRecordType());
+                        contentValues.put(APP_ID_COLUMN_NAME, recordTypeAndAppIdPair.getAppId());
                         contentValues.put(OPERATION_TYPE_COLUMN_NAME, mOperationType);
                         contentValues.put(TIME_COLUMN_NAME, mChangeLogTimeStamp);
-                        contentValues.put(UUIDS_COLUMN_NAME, String.join(DELIMITER, uuids));
+                        contentValues.put(
+                                UUIDS_COLUMN_NAME, StorageUtils.getSingleByteArray(uuids));
                         requests.add(new UpsertTableRequest(TABLE_NAME, contentValues));
                     });
             return requests;
         }
 
         public ChangeLogs addUUIDs(
-                @RecordTypeIdentifier.RecordType int recordType, @NonNull List<String> uuids) {
-            mRecordTypeToUUIDMap.putIfAbsent(recordType, new ArrayList<>());
-            mRecordTypeToUUIDMap.get(recordType).addAll(uuids);
+                @RecordTypeIdentifier.RecordType int recordType,
+                @NonNull long appId,
+                @NonNull List<UUID> uuids) {
+            RecordTypeAndAppIdPair recordTypeAndAppIdPair =
+                    new RecordTypeAndAppIdPair(recordType, appId);
+            mRecordTypeAndAppIdToUUIDMap.putIfAbsent(recordTypeAndAppIdPair, new ArrayList<>());
+            mRecordTypeAndAppIdToUUIDMap.get(recordTypeAndAppIdPair).addAll(uuids);
             return this;
+        }
+
+        public void clear() {
+            mRecordTypeAndAppIdToUUIDMap.clear();
+        }
+
+        /** A helper class to create a pair of recordType and appId */
+        private static final class RecordTypeAndAppIdPair {
+            private final int mRecordType;
+            private final long mAppId;
+
+            private RecordTypeAndAppIdPair(int recordType, long appId) {
+                mRecordType = recordType;
+                mAppId = appId;
+            }
+
+            public int getRecordType() {
+                return mRecordType;
+            }
+
+            public long getAppId() {
+                return mAppId;
+            }
+
+            public boolean equals(Object obj) {
+                if (this == obj) return true;
+                if (obj == null || obj.getClass() != this.getClass()) return false;
+                RecordTypeAndAppIdPair recordTypeAndAppIdPair = (RecordTypeAndAppIdPair) obj;
+                return (recordTypeAndAppIdPair.mRecordType == this.mRecordType
+                        && recordTypeAndAppIdPair.mAppId == this.mAppId);
+            }
+
+            public int hashCode() {
+                return Objects.hash(this.mRecordType, this.mAppId);
+            }
         }
     }
 

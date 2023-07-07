@@ -34,11 +34,6 @@ public final class BodyWaterMassRecordInternal extends InstantRecordInternal<Bod
     }
 
     @Override
-    void populateInstantRecordFrom(@NonNull BodyWaterMassRecord bodyWaterMassRecord) {
-        mBodyWaterMass = bodyWaterMassRecord.getBodyWaterMass().getInKilograms();
-    }
-
-    @Override
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mBodyWaterMass);
     }
@@ -55,8 +50,8 @@ public final class BodyWaterMassRecordInternal extends InstantRecordInternal<Bod
     @Override
     public BodyWaterMassRecord toExternalRecord() {
         return new BodyWaterMassRecord.Builder(
-                        buildMetaData(), getTime(), Mass.fromKilograms(getBodyWaterMass()))
+                        buildMetaData(), getTime(), Mass.fromGrams(getBodyWaterMass()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 }

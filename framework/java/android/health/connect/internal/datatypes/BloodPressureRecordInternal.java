@@ -92,7 +92,7 @@ public final class BloodPressureRecordInternal extends InstantRecordInternal<Blo
                         Pressure.fromMillimetersOfMercury(getDiastolic()),
                         getBodyPosition())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
@@ -101,14 +101,6 @@ public final class BloodPressureRecordInternal extends InstantRecordInternal<Blo
         mSystolic = parcel.readDouble();
         mDiastolic = parcel.readDouble();
         mBodyPosition = parcel.readInt();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull BloodPressureRecord bloodPressureRecord) {
-        mMeasurementLocation = bloodPressureRecord.getMeasurementLocation();
-        mSystolic = bloodPressureRecord.getSystolic().getInMillimetersOfMercury();
-        mDiastolic = bloodPressureRecord.getDiastolic().getInMillimetersOfMercury();
-        mBodyPosition = bloodPressureRecord.getBodyPosition();
     }
 
     @Override

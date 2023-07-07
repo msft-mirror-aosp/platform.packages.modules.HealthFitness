@@ -16,14 +16,26 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_AVG;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_MAX;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_MIN;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
+import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogTokenResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -35,15 +47,19 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
@@ -59,13 +75,20 @@ public class CyclingPedalingCadenceRecordTest {
                         .setStartTime(Instant.EPOCH)
                         .setEndTime(Instant.now())
                         .build());
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
     public void testInsertCyclingPedalingCadenceRecord() throws InterruptedException {
+        CyclingPedalingCadenceRecord baseCyclingPedalingCadenceRecord =
+                getBaseCyclingPedalingCadenceRecord();
+
+        assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getTime()).isNotNull();
+        assertThat(baseCyclingPedalingCadenceRecord.getSamples().get(0).getRevolutionsPerMinute())
+                .isNotNull();
         TestUtils.insertRecords(
                 Arrays.asList(
-                        getBaseCyclingPedalingCadenceRecord(),
+                        baseCyclingPedalingCadenceRecord,
                         getCompleteCyclingPedalingCadenceRecord()));
     }
 
@@ -78,7 +101,7 @@ public class CyclingPedalingCadenceRecordTest {
     public void testReadCyclingPedalingCadenceRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<CyclingPedalingCadenceRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(CyclingPedalingCadenceRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<CyclingPedalingCadenceRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -187,6 +210,15 @@ public class CyclingPedalingCadenceRecordTest {
                                 .get(newCyclingPedalingCadenceRecords.size() - 1)
                                 .equals(testRecord))
                 .isTrue();
+
+        CyclingPedalingCadenceRecord newRecord =
+                newCyclingPedalingCadenceRecords.get(newCyclingPedalingCadenceRecords.size() - 1);
+        for (int idx = 0; idx < newRecord.getSamples().size(); idx++) {
+            assertThat(newRecord.getSamples().get(idx).getTime().toEpochMilli())
+                    .isEqualTo(testRecord.getSamples().get(idx).getTime().toEpochMilli());
+            assertThat(newRecord.getSamples().get(idx).getRevolutionsPerMinute())
+                    .isEqualTo(testRecord.getSamples().get(idx).getRevolutionsPerMinute());
+        }
     }
 
     @Test
@@ -324,6 +356,209 @@ public class CyclingPedalingCadenceRecordTest {
                 .isEqualTo(defaultZoneOffset);
     }
 
+    @Test
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
+            throws InterruptedException {
+
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readCyclingPedalingCadenceRecordUsingIds(insertedRecords);
+
+        // Generate a new set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(
+                        getCompleteCyclingPedalingCadenceRecord(),
+                        getCompleteCyclingPedalingCadenceRecord());
+
+        // Modify the uid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getCyclingPedalingCadenceRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+        }
+
+        TestUtils.updateRecords(updateRecords);
+
+        // assert the inserted data has been modified by reading the data.
+        readCyclingPedalingCadenceRecordUsingIds(updateRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readCyclingPedalingCadenceRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(
+                        getCompleteCyclingPedalingCadenceRecord(),
+                        getCompleteCyclingPedalingCadenceRecord());
+
+        // Modify the Uid of the updateRecords to the UUID that was present in the insert records,
+        // leaving out alternate records so that they have a new UUID which is not present in the
+        // dataBase.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getCyclingPedalingCadenceRecord_update(
+                            updateRecords.get(itr),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString(),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString()));
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid records ids.");
+        } catch (HealthConnectException exception) {
+            assertThat(exception.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readCyclingPedalingCadenceRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readCyclingPedalingCadenceRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(
+                        getCompleteCyclingPedalingCadenceRecord(),
+                        getCompleteCyclingPedalingCadenceRecord());
+
+        // Modify the Uuid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getCyclingPedalingCadenceRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+            //             adding an entry with invalid packageName.
+            updateRecords.set(itr, getCompleteCyclingPedalingCadenceRecord());
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid package.");
+        } catch (Exception exception) {
+            // verify that the testcase failed due to invalid argument exception.
+            assertThat(exception).isNotNull();
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readCyclingPedalingCadenceRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testInsertAndDeleteRecord_changelogs() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(
+                        new ChangeLogTokenRequest.Builder()
+                                .addDataOriginFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .addRecordType(CyclingPedalingCadenceRecord.class)
+                                .build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        List<Record> testRecord =
+                Collections.singletonList(getCompleteCyclingPedalingCadenceRecord());
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        assertThat(
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(CyclingPedalingCadenceRecord.class)
+                        .build());
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getDeletedLogs()).isEmpty();
+    }
+
+    @Test
+    public void testRpmAggregation_getAggregationFromThreerecords_aggResponsesAreCorrect()
+            throws Exception {
+        List<Record> records =
+                Arrays.asList(
+                        buildRecordForRpm(120, 100),
+                        buildRecordForRpm(100, 101),
+                        buildRecordForRpm(80, 102));
+        AggregateRecordsResponse<Double> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Double>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(RPM_MAX)
+                                .addAggregationType(RPM_MIN)
+                                .addAggregationType(RPM_AVG)
+                                .build(),
+                        records);
+        checkAggregationResult(RPM_MIN, 80, response);
+        checkAggregationResult(RPM_AVG, 100, response);
+        checkAggregationResult(RPM_MAX, 120, response);
+    }
+
+    private void checkAggregationResult(
+            AggregationType<Double> type,
+            double expectedResult,
+            AggregateRecordsResponse<Double> response) {
+        assertThat(response.get(type)).isNotNull();
+        assertThat(response.get(type)).isEqualTo(expectedResult);
+        assertThat(response.getZoneOffset(type))
+                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+        Set<DataOrigin> dataOrigins = response.getDataOrigins(type);
+        assertThat(dataOrigins).hasSize(1);
+        for (DataOrigin itr : dataOrigins) {
+            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
+        }
+    }
+
     private void testReadCyclingPedalingCadenceRecordIds() throws InterruptedException {
         List<Record> recordList =
                 Arrays.asList(
@@ -359,6 +594,36 @@ public class CyclingPedalingCadenceRecordTest {
         assertThat(result.containsAll(insertedRecords)).isTrue();
     }
 
+    CyclingPedalingCadenceRecord getCyclingPedalingCadenceRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+
+        CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
+                cyclingPedalingCadenceRecordSample =
+                        new CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample(
+                                8, Instant.now().plusMillis(100));
+
+        return new CyclingPedalingCadenceRecord.Builder(
+                        metadataWithId,
+                        Instant.now(),
+                        Instant.now().plusMillis(2000),
+                        List.of(
+                                cyclingPedalingCadenceRecordSample,
+                                cyclingPedalingCadenceRecordSample))
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
+    }
+
     private static CyclingPedalingCadenceRecord getBaseCyclingPedalingCadenceRecord() {
         CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
                 cyclingPedalingCadenceRecord =
@@ -378,7 +643,11 @@ public class CyclingPedalingCadenceRecordTest {
     }
 
     private static CyclingPedalingCadenceRecord getCompleteCyclingPedalingCadenceRecord() {
+        return buildRecordForRpm(1, 100);
+    }
 
+    private static CyclingPedalingCadenceRecord buildRecordForRpm(
+            double rpm, long millisFromStart) {
         Device device =
                 new Device.Builder()
                         .setManufacturer("google")
@@ -390,11 +659,13 @@ public class CyclingPedalingCadenceRecordTest {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId("CPCR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
+        Instant recordStartTime = Instant.now();
 
         CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
                 cyclingPedalingCadenceRecord =
                         new CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample(
-                                1, Instant.now().plusMillis(100));
+                                rpm, recordStartTime.plusMillis(millisFromStart));
 
         ArrayList<CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample>
                 cyclingPedalingCadenceRecords = new ArrayList<>();
@@ -403,8 +674,8 @@ public class CyclingPedalingCadenceRecordTest {
 
         return new CyclingPedalingCadenceRecord.Builder(
                         testMetadataBuilder.build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
+                        recordStartTime,
+                        recordStartTime.plusMillis(1000),
                         cyclingPedalingCadenceRecords)
                 .build();
     }

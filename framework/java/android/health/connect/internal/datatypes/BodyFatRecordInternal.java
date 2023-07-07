@@ -47,17 +47,12 @@ public final class BodyFatRecordInternal extends InstantRecordInternal<BodyFatRe
         return new BodyFatRecord.Builder(
                         buildMetaData(), getTime(), Percentage.fromValue(getPercentage()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mPercentage = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull BodyFatRecord bodyFatRecord) {
-        mPercentage = bodyFatRecord.getPercentage().getValue();
     }
 
     @Override

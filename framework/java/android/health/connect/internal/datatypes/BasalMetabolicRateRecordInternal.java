@@ -49,17 +49,12 @@ public final class BasalMetabolicRateRecordInternal
         return new BasalMetabolicRateRecord.Builder(
                         buildMetaData(), getTime(), Power.fromWatts(getBasalMetabolicRate()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mBasalMetabolicRate = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull BasalMetabolicRateRecord basalMetabolicRateRecord) {
-        mBasalMetabolicRate = basalMetabolicRateRecord.getBasalMetabolicRate().getInWatts();
     }
 
     @Override

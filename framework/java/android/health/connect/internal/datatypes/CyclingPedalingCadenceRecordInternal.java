@@ -41,25 +41,6 @@ public class CyclingPedalingCadenceRecordInternal
     private Set<CyclingPedalingCadenceRecordSample> mCyclingPedalingCadenceRecordSamples;
 
     @Override
-    void populateIntervalRecordFrom(
-            @NonNull CyclingPedalingCadenceRecord cyclingPedalingCadenceRecord) {
-        mCyclingPedalingCadenceRecordSamples =
-                new HashSet<>(cyclingPedalingCadenceRecord.getSamples().size());
-        for (CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
-                cyclingPedalingCadenceRecordSample : cyclingPedalingCadenceRecord.getSamples()) {
-            mCyclingPedalingCadenceRecordSamples.add(
-                    new CyclingPedalingCadenceRecordSample(
-                            cyclingPedalingCadenceRecordSample.getRevolutionsPerMinute(),
-                            cyclingPedalingCadenceRecordSample.getTime().toEpochMilli()));
-        }
-
-        if (mCyclingPedalingCadenceRecordSamples.size()
-                != cyclingPedalingCadenceRecord.getSamples().size()) {
-            throw new IllegalArgumentException("Duplicate time instant values present.");
-        }
-    }
-
-    @Override
     @NonNull
     public Set<CyclingPedalingCadenceRecordSample> getSamples() {
         return mCyclingPedalingCadenceRecordSamples;
@@ -70,7 +51,7 @@ public class CyclingPedalingCadenceRecordInternal
     public CyclingPedalingCadenceRecordInternal setSamples(Set<? extends Sample> samples) {
         Objects.requireNonNull(samples);
         this.mCyclingPedalingCadenceRecordSamples =
-               (Set<CyclingPedalingCadenceRecordSample>) samples;
+                (Set<CyclingPedalingCadenceRecordSample>) samples;
         return this;
     }
 
@@ -81,7 +62,7 @@ public class CyclingPedalingCadenceRecordInternal
                         buildMetaData(), getStartTime(), getEndTime(), getExternalSamples())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
@@ -115,7 +96,8 @@ public class CyclingPedalingCadenceRecordInternal
                     new CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample(
                             cyclingPedalingCadenceRecordSample.getRevolutionsPerMinute(),
                             Instant.ofEpochMilli(
-                                    cyclingPedalingCadenceRecordSample.getEpochMillis())));
+                                    cyclingPedalingCadenceRecordSample.getEpochMillis()),
+                            true));
         }
         return cyclingPedalingCadenceRecords;
     }

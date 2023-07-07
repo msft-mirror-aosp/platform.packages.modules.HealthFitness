@@ -18,18 +18,18 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.health.connect.AggregateResult;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.WheelchairPushesRecordInternal;
 import android.util.Pair;
 
-import java.time.ZoneOffset;
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,24 +40,14 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_WHEELCHAIR_PUSHES)
 public final class WheelchairPushesRecordHelper
         extends IntervalRecordHelper<WheelchairPushesRecordInternal> {
     private static final String WHEELCHAIR_PUSHES_RECORD_TABLE_NAME =
             "wheelchair_pushes_record_table";
     private static final String COUNT_COLUMN_NAME = "count";
 
-    @Override
-    public AggregateResult<?> getAggregateResult(
-            Cursor results, AggregationType<?> aggregationType, double aggregation) {
-        switch (aggregationType.getAggregationTypeIdentifier()) {
-            case WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL:
-                results.moveToFirst();
-                ZoneOffset zoneOffset = getZoneOffset(results);
-                return new AggregateResult<>((long) aggregation).setZoneOffset(zoneOffset);
-            default:
-                return null;
-        }
+    public WheelchairPushesRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_WHEELCHAIR_PUSHES);
     }
 
     @Override
@@ -68,13 +58,11 @@ public final class WheelchairPushesRecordHelper
 
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
-        List<String> columnNames;
         switch (aggregateRequest.getAggregationTypeIdentifier()) {
             case WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL:
                 return new AggregateParams(
                         WHEELCHAIR_PUSHES_RECORD_TABLE_NAME,
                         new ArrayList(Arrays.asList(COUNT_COLUMN_NAME)),
-                        START_TIME_COLUMN_NAME,
                         Long.class);
             default:
                 return null;
@@ -85,7 +73,7 @@ public final class WheelchairPushesRecordHelper
     void populateSpecificRecordValue(
             @NonNull Cursor cursor,
             @NonNull WheelchairPushesRecordInternal wheelchairPushesRecord) {
-        wheelchairPushesRecord.setCount(getCursorLong(cursor, COUNT_COLUMN_NAME));
+        wheelchairPushesRecord.setCount(getCursorInt(cursor, COUNT_COLUMN_NAME));
     }
 
     @Override

@@ -17,6 +17,8 @@
 package android.health.connect.datatypes;
 
 import android.annotation.NonNull;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.HeartRateVariabilityRmssdRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -35,15 +37,19 @@ public final class HeartRateVariabilityRmssdRecord extends InstantRecord {
      * @param time time for this record
      * @param zoneOffset Zone offset for the record
      * @param heartRateVariabilityMillis heartRateVariability in milliseconds
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private HeartRateVariabilityRmssdRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            double heartRateVariabilityMillis) {
-        super(metadata, time, zoneOffset);
-        ValidationUtils.requireInRange(
-                heartRateVariabilityMillis, 0.0, 1.0, "heartRateVariabilityMillis");
+            double heartRateVariabilityMillis,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(
+                    heartRateVariabilityMillis, 1.0, 200.0, "heartRateVariabilityMillis");
+        }
         mHeartRateVariabilityMillis = heartRateVariabilityMillis;
     }
 
@@ -112,11 +118,43 @@ public final class HeartRateVariabilityRmssdRecord extends InstantRecord {
             return this;
         }
 
+        /**
+         * @return Object of {@link HeartRateVariabilityRmssdRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public HeartRateVariabilityRmssdRecord buildWithoutValidation() {
+            return new HeartRateVariabilityRmssdRecord(
+                    mMetadata, mTime, mZoneOffset, mHeartRateVariabilityMillis, true);
+        }
+
         /** Builds {@link HeartRateVariabilityRmssdRecord} */
         @NonNull
         public HeartRateVariabilityRmssdRecord build() {
             return new HeartRateVariabilityRmssdRecord(
-                    mMetadata, mTime, mZoneOffset, mHeartRateVariabilityMillis);
+                    mMetadata, mTime, mZoneOffset, mHeartRateVariabilityMillis, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public HeartRateVariabilityRmssdRecordInternal toRecordInternal() {
+        HeartRateVariabilityRmssdRecordInternal recordInternal =
+                (HeartRateVariabilityRmssdRecordInternal)
+                        new HeartRateVariabilityRmssdRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setHeartRateVariabilityMillis(mHeartRateVariabilityMillis);
+        return recordInternal;
     }
 }

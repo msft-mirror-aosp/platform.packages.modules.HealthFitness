@@ -16,14 +16,28 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.BloodPressureRecord.DIASTOLIC_AVG;
+import static android.health.connect.datatypes.BloodPressureRecord.DIASTOLIC_MAX;
+import static android.health.connect.datatypes.BloodPressureRecord.DIASTOLIC_MIN;
+import static android.health.connect.datatypes.BloodPressureRecord.SYSTOLIC_AVG;
+import static android.health.connect.datatypes.BloodPressureRecord.SYSTOLIC_MAX;
+import static android.health.connect.datatypes.BloodPressureRecord.SYSTOLIC_MIN;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
+import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogTokenResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -35,21 +49,36 @@ import android.platform.test.annotations.AppModeFull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class BloodPressureRecordTest {
     private static final String TAG = "BloodPressureRecordTest";
+
+    @After
+    public void tearDown() throws InterruptedException {
+        TestUtils.verifyDeleteRecords(
+                BloodPressureRecord.class,
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.EPOCH)
+                        .setEndTime(Instant.now())
+                        .build());
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @Test
     public void testInsertBloodPressureRecord() throws InterruptedException {
@@ -62,14 +91,15 @@ public class BloodPressureRecordTest {
     public void testReadBloodPressureRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
                 Arrays.asList(getCompleteBloodPressureRecord(), getCompleteBloodPressureRecord());
-        readBloodPressureRecordUsingIds(recordList);
+        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+        readBloodPressureRecordUsingIds(insertedRecords);
     }
 
     @Test
     public void testReadBloodPressureRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<BloodPressureRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(BloodPressureRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<BloodPressureRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -189,35 +219,23 @@ public class BloodPressureRecordTest {
             request.addClientRecordId(record.getMetadata().getClientRecordId());
         }
         List<BloodPressureRecord> result = TestUtils.readRecords(request.build());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecord.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-
-        for (int i = 0; i < result.size(); i++) {
-            BloodPressureRecord other = (BloodPressureRecord) insertedRecord.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
+        assertThat(result.size()).isEqualTo(insertedRecord.size());
+        assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
     private void readBloodPressureRecordUsingIds(List<Record> recordList)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<BloodPressureRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(BloodPressureRecord.class);
-        for (Record record : insertedRecords) {
+        for (Record record : recordList) {
             request.addId(record.getMetadata().getId());
         }
         ReadRecordsRequestUsingIds requestUsingIds = request.build();
         assertThat(requestUsingIds.getRecordType()).isEqualTo(BloodPressureRecord.class);
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<BloodPressureRecord> result = TestUtils.readRecords(requestUsingIds);
-        assertThat(result).hasSize(insertedRecords.size());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecords.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-
-        for (int i = 0; i < result.size(); i++) {
-            BloodPressureRecord other = (BloodPressureRecord) insertedRecords.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
+        assertThat(result).hasSize(recordList.size());
+        assertThat(result).containsExactlyElementsIn(recordList);
     }
 
     @Test
@@ -311,6 +329,30 @@ public class BloodPressureRecordTest {
         TestUtils.assertRecordNotFound(id, BloodPressureRecord.class);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateBloodPressureRecord_invalidDiastolicValue() {
+        new BloodPressureRecord.Builder(
+                        new Metadata.Builder().build(),
+                        Instant.now(),
+                        1,
+                        Pressure.fromMillimetersOfMercury(19.0),
+                        Pressure.fromMillimetersOfMercury(10.0),
+                        1)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateBloodPressureRecord_invalidSystolicValue() {
+        new BloodPressureRecord.Builder(
+                        new Metadata.Builder().build(),
+                        Instant.now(),
+                        1,
+                        Pressure.fromMillimetersOfMercury(20.0),
+                        Pressure.fromMillimetersOfMercury(9.0),
+                        1)
+                .build();
+    }
+
     @Test
     public void testZoneOffsets() {
         final ZoneOffset defaultZoneOffset =
@@ -327,6 +369,248 @@ public class BloodPressureRecordTest {
 
         assertThat(builder.setZoneOffset(zoneOffset).build().getZoneOffset()).isEqualTo(zoneOffset);
         assertThat(builder.clearZoneOffset().build().getZoneOffset()).isEqualTo(defaultZoneOffset);
+    }
+
+    @Test
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
+            throws InterruptedException {
+
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBloodPressureRecord(),
+                                getCompleteBloodPressureRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readBloodPressureRecordUsingIds(insertedRecords);
+
+        // Generate a new set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteBloodPressureRecord(), getCompleteBloodPressureRecord());
+
+        // Modify the uid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getBloodPressureRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+        }
+
+        TestUtils.updateRecords(updateRecords);
+
+        // assert the inserted data has been modified by reading the data.
+        readBloodPressureRecordUsingIds(updateRecords);
+    }
+
+    private static BloodPressureRecord getBaseBloodPressureRecord(
+            double systolic, double diastolic, int delay) {
+        return new BloodPressureRecord.Builder(
+                        new Metadata.Builder().build(),
+                        Instant.now().minusMillis(delay),
+                        1,
+                        Pressure.fromMillimetersOfMercury(systolic),
+                        Pressure.fromMillimetersOfMercury(diastolic),
+                        1)
+                .build();
+    }
+
+    @Test
+    public void testAggregation_bloodPressure() throws Exception {
+        Context context = ApplicationProvider.getApplicationContext();
+        List<Record> records =
+                Arrays.asList(
+                        getBaseBloodPressureRecord(26.0, 35.0, 10),
+                        getBaseBloodPressureRecord(30.0, 60.0, 5),
+                        getBaseBloodPressureRecord(40.0, 52.0, 1));
+        AggregateRecordsResponse<Pressure> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Pressure>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(DIASTOLIC_AVG)
+                                .addAggregationType(DIASTOLIC_MAX)
+                                .addAggregationType(DIASTOLIC_MIN)
+                                .addAggregationType(SYSTOLIC_AVG)
+                                .addAggregationType(SYSTOLIC_MAX)
+                                .addAggregationType(SYSTOLIC_MIN)
+                                .addDataOriginsFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .build(),
+                        records);
+        Pressure maxDiastolicPressure = response.get(DIASTOLIC_MAX);
+        Pressure minDiastolicPressure = response.get(DIASTOLIC_MIN);
+        Pressure avgDiastolicPressure = response.get(DIASTOLIC_AVG);
+        Pressure maxSystolicPressure = response.get(SYSTOLIC_MAX);
+        Pressure minSystolicPressure = response.get(SYSTOLIC_MIN);
+        Pressure avgSystolicPressure = response.get(SYSTOLIC_AVG);
+        assertThat(maxDiastolicPressure).isNotNull();
+        assertThat(maxDiastolicPressure.getInMillimetersOfMercury()).isEqualTo(60.0);
+        assertThat(minDiastolicPressure).isNotNull();
+        assertThat(minDiastolicPressure.getInMillimetersOfMercury()).isEqualTo(35.0);
+        assertThat(avgDiastolicPressure).isNotNull();
+        assertThat(avgDiastolicPressure.getInMillimetersOfMercury()).isEqualTo(49.0);
+        assertThat(maxSystolicPressure).isNotNull();
+        assertThat(maxSystolicPressure.getInMillimetersOfMercury()).isEqualTo(40.0);
+        assertThat(minSystolicPressure).isNotNull();
+        assertThat(minSystolicPressure.getInMillimetersOfMercury()).isEqualTo(26.0);
+        assertThat(avgSystolicPressure).isNotNull();
+        assertThat(avgSystolicPressure.getInMillimetersOfMercury()).isEqualTo(32.0);
+        Set<DataOrigin> dataOrigins = response.getDataOrigins(DIASTOLIC_AVG);
+        for (DataOrigin itr : dataOrigins) {
+            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
+        }
+    }
+
+    @Test
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBloodPressureRecord(),
+                                getCompleteBloodPressureRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readBloodPressureRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteBloodPressureRecord(), getCompleteBloodPressureRecord());
+
+        // Modify the Uid of the updateRecords to the UUID that was present in the insert records,
+        // leaving out alternate records so that they have a new UUID which is not present in the
+        // dataBase.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getBloodPressureRecord_update(
+                            updateRecords.get(itr),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString(),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString()));
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid records ids.");
+        } catch (HealthConnectException exception) {
+            assertThat(exception.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readBloodPressureRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBloodPressureRecord(),
+                                getCompleteBloodPressureRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readBloodPressureRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteBloodPressureRecord(), getCompleteBloodPressureRecord());
+
+        // Modify the Uuid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getBloodPressureRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+            //             adding an entry with invalid packageName.
+            updateRecords.set(itr, getCompleteBloodPressureRecord());
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid package.");
+        } catch (Exception exception) {
+            // verify that the testcase failed due to invalid argument exception.
+            assertThat(exception).isNotNull();
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readBloodPressureRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testInsertAndDeleteRecord_changelogs() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(
+                        new ChangeLogTokenRequest.Builder()
+                                .addDataOriginFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .addRecordType(BloodPressureRecord.class)
+                                .build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        List<Record> testRecord = Collections.singletonList(getCompleteBloodPressureRecord());
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        assertThat(
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(BloodPressureRecord.class)
+                        .build());
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getDeletedLogs()).isEmpty();
+    }
+
+    BloodPressureRecord getBloodPressureRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new BloodPressureRecord.Builder(
+                        metadataWithId,
+                        Instant.now(),
+                        2,
+                        Pressure.fromMillimetersOfMercury(30.0),
+                        Pressure.fromMillimetersOfMercury(20.0),
+                        2)
+                .setZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
     }
 
     private static BloodPressureRecord getBaseBloodPressureRecord() {
@@ -352,6 +636,7 @@ public class BloodPressureRecordTest {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId("BPR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         return new BloodPressureRecord.Builder(
                         testMetadataBuilder.build(),

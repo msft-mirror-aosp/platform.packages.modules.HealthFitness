@@ -20,6 +20,8 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import android.annotation.FloatRange;
 import android.annotation.NonNull;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.FloorsClimbedRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -50,6 +52,7 @@ public final class FloorsClimbedRecord extends IntervalRecord {
      * @param endTime End time of this activity
      * @param endZoneOffset Zone offset of the user when the activity finished
      * @param floors Number of floors of this activity. Valid range: 0-1000000.
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private FloorsClimbedRecord(
             @NonNull Metadata metadata,
@@ -57,9 +60,12 @@ public final class FloorsClimbedRecord extends IntervalRecord {
             @NonNull ZoneOffset startZoneOffset,
             @NonNull Instant endTime,
             @NonNull ZoneOffset endZoneOffset,
-            @FloatRange(from = 0f, to = 1000000f) double floors) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
-        ValidationUtils.requireInRange(floors, 0.0, 1000000.0, "floors");
+            @FloatRange(from = 0f, to = 1000000f) double floors,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(floors, 0.0, 1000000.0, "floors");
+        }
         mFloors = floors;
     }
 
@@ -157,12 +163,58 @@ public final class FloorsClimbedRecord extends IntervalRecord {
         }
 
         /**
+         * @return Object of {@link FloorsClimbedRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public FloorsClimbedRecord buildWithoutValidation() {
+            return new FloorsClimbedRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mFloors,
+                    true);
+        }
+
+        /**
          * @return Object of {@link FloorsClimbedRecord}
          */
         @NonNull
         public FloorsClimbedRecord build() {
             return new FloorsClimbedRecord(
-                    mMetadata, mStartTime, mStartZoneOffset, mEndTime, mEndZoneOffset, mFloors);
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mFloors,
+                    false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public FloorsClimbedRecordInternal toRecordInternal() {
+        FloorsClimbedRecordInternal recordInternal =
+                (FloorsClimbedRecordInternal)
+                        new FloorsClimbedRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setStartTime(getStartTime().toEpochMilli());
+        recordInternal.setEndTime(getEndTime().toEpochMilli());
+        recordInternal.setStartZoneOffset(getStartZoneOffset().getTotalSeconds());
+        recordInternal.setEndZoneOffset(getEndZoneOffset().getTotalSeconds());
+        recordInternal.setFloors(mFloors);
+        return recordInternal;
     }
 }

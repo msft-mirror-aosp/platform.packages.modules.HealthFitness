@@ -49,21 +49,15 @@ public final class ActiveCaloriesBurnedRecordInternal
                         buildMetaData(),
                         getStartTime(),
                         getEndTime(),
-                        Energy.fromJoules(getEnergy()))
+                        Energy.fromCalories(getEnergy()))
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {
         mEnergy = parcel.readDouble();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(
-            @NonNull ActiveCaloriesBurnedRecord activeCaloriesBurnedRecord) {
-        mEnergy = activeCaloriesBurnedRecord.getEnergy().getInJoules();
     }
 
     @Override

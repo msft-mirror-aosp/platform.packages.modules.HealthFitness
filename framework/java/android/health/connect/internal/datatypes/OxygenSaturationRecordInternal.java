@@ -48,17 +48,12 @@ public final class OxygenSaturationRecordInternal
         return new OxygenSaturationRecord.Builder(
                         buildMetaData(), getTime(), Percentage.fromValue(getPercentage()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mPercentage = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull OxygenSaturationRecord oxygenSaturationRecord) {
-        mPercentage = oxygenSaturationRecord.getPercentage().getValue();
     }
 
     @Override

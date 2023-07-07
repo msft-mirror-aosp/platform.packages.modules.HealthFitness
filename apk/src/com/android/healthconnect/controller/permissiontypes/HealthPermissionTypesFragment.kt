@@ -19,13 +19,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.RadioGroup
-import androidx.core.content.res.ResourcesCompat
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
@@ -45,26 +44,42 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.shared.preference.HealthPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.PermissionTypesElement
+import com.android.healthconnect.controller.utils.logging.ToolbarElement
+import com.android.healthconnect.controller.utils.setupMenu
 import com.android.settingslib.widget.AppHeaderPreference
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment for health permission types. */
-@AndroidEntryPoint(PreferenceFragmentCompat::class)
+@AndroidEntryPoint(HealthPreferenceFragment::class)
 open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() {
 
     companion object {
+        private const val TAG = "HealthPermissionTypesFT"
         private const val PERMISSION_TYPES_HEADER = "permission_types_header"
         private const val APP_FILTERS_PREFERENCE = "app_filters_preference"
-        private const val PERMISSION_TYPES = "permission_types"
+        private const val PERMISSION_TYPES_CATEGORY = "permission_types"
+        private const val MANAGE_DATA_CATEGORY = "manage_data_category"
         const val PERMISSION_TYPE_KEY = "permission_type_key"
         private const val APP_PRIORITY_BUTTON = "app_priority"
         private const val DELETE_CATEGORY_DATA_BUTTON = "delete_category_data"
     }
 
+    init {
+        this.setPageName(PageName.PERMISSION_TYPES_PAGE)
+    }
+
+    @Inject lateinit var logger: HealthConnectLogger
+
     @HealthDataCategoryInt private var category: Int = 0
 
-    private val viewModel: HealthPermissionTypesViewModel by viewModels()
+    private val viewModel: HealthPermissionTypesViewModel by activityViewModels()
 
     private val mPermissionTypesHeader: AppHeaderPreference? by lazy {
         preferenceScreen.findPreference(PERMISSION_TYPES_HEADER)
@@ -75,18 +90,19 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     }
 
     private val mPermissionTypes: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(PERMISSION_TYPES)
+        preferenceScreen.findPreference(PERMISSION_TYPES_CATEGORY)
     }
 
-    private val mAppPriorityButton: Preference? by lazy {
-        preferenceScreen.findPreference(APP_PRIORITY_BUTTON)
+    private val mManageDataCategory: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(MANAGE_DATA_CATEGORY)
     }
 
-    private val mDeleteCategoryData: Preference? by lazy {
+    private val mDeleteCategoryData: HealthPreference? by lazy {
         preferenceScreen.findPreference(DELETE_CATEGORY_DATA_BUTTON)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.health_permission_types_screen, rootKey)
 
         if (requireArguments().containsKey(CATEGORY_KEY)) {
@@ -97,6 +113,7 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
         }
 
+        mDeleteCategoryData?.logName = PermissionTypesElement.DELETE_CATEGORY_DATA_BUTTON
         mDeleteCategoryData?.title =
             getString(R.string.delete_category_data_button, getString(category.lowercaseTitle()))
         mDeleteCategoryData?.setOnPreferenceClickListener {
@@ -109,12 +126,23 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSharedMenu(viewLifecycleOwner)
-        mPermissionTypesHeader?.icon =
-            ResourcesCompat.getDrawable(resources, category.icon(), requireContext().theme)
+
+        mPermissionTypesHeader?.icon = category.icon(requireContext())
         mPermissionTypesHeader?.title = getString(category.uppercaseTitle())
         viewModel.loadData(category)
         viewModel.loadAppsWithData(category)
+
+        setupMenu(R.menu.set_data_units_with_send_feedback_and_help, viewLifecycleOwner, logger) {
+            menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_open_units -> {
+                    logger.logImpression(ToolbarElement.TOOLBAR_UNITS_BUTTON)
+                    findNavController().navigate(R.id.action_healthPermissionTypes_to_unitsFragment)
+                    true
+                }
+                else -> false
+            }
+        }
 
         viewModel.permissionTypesData.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -135,19 +163,24 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
             }
         }
         childFragmentManager.setFragmentResultListener(PRIORITY_UPDATED_EVENT, this) { _, bundle ->
-            Log.e("SUCCESSFUL_UPDATE", "event sent")
             bundle.getStringArrayList(PRIORITY_UPDATED_EVENT)?.let {
-                viewModel.updatePriorityList(category, it)
+                try {
+                    viewModel.updatePriorityList(category, it)
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Failed to update priorities!", ex)
+                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
 
         viewModel.priorityList.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is HealthPermissionTypesViewModel.PriorityListState.Loading -> {
-                    mAppPriorityButton?.isVisible = false
+                    mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
                 }
                 is HealthPermissionTypesViewModel.PriorityListState.LoadingFailed -> {
-                    mAppPriorityButton?.isVisible = false
+                    mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
                 }
                 is HealthPermissionTypesViewModel.PriorityListState.WithData -> {
                     updatePriorityButton(state.priorityList)
@@ -157,25 +190,42 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     }
 
     private fun updatePriorityButton(priorityList: List<AppMetadata>) {
-        if (priorityList.size < 2) {
-            mAppPriorityButton?.isVisible = false
-            return
-        }
-        mAppPriorityButton?.isVisible = true
-        mAppPriorityButton?.summary = priorityList.first().appName
-        mAppPriorityButton?.setOnPreferenceClickListener {
-            PriorityListDialogFragment(priorityList, getString(category.lowercaseTitle()))
-                .show(childFragmentManager, PriorityListDialogFragment.TAG)
-            true
+        mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
+        if (priorityList.size > 1) {
+            val appPriorityButton =
+                HealthPreference(requireContext()).also {
+                    it.title = resources.getString(R.string.app_priority_button)
+                    it.icon =
+                        AttributeResolver.getDrawable(requireContext(), R.attr.appPriorityIcon)
+                    it.logName = PermissionTypesElement.SET_APP_PRIORITY_BUTTON
+                    it.summary = priorityList.first().appName
+                    it.key = APP_PRIORITY_BUTTON
+                    it.order = 4
+                    it.setOnPreferenceClickListener {
+                        viewModel.setEditedPriorityList(priorityList)
+                        viewModel.setCategoryLabel(getString(category.lowercaseTitle()))
+                        PriorityListDialogFragment()
+                            .show(childFragmentManager, PriorityListDialogFragment.TAG)
+                        true
+                    }
+                }
+            mManageDataCategory?.addPreference(appPriorityButton)
         }
     }
 
     private fun updatePermissionTypesList(permissionTypeList: List<HealthPermissionType>) {
+        mDeleteCategoryData?.isEnabled = permissionTypeList.isNotEmpty()
         mPermissionTypes?.removeAll()
+        if (permissionTypeList.isEmpty()) {
+            mPermissionTypes?.addPreference(
+                Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
+            return
+        }
         permissionTypeList.forEach { permissionType ->
             mPermissionTypes?.addPreference(
-                Preference(requireContext()).also {
+                HealthPreference(requireContext()).also {
                     it.setTitle(fromPermissionType(permissionType).uppercaseLabel)
+                    it.logName = PermissionTypesElement.PERMISSION_TYPE_BUTTON
                     it.setOnPreferenceClickListener {
                         findNavController()
                             .navigate(

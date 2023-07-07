@@ -17,7 +17,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <com.android.settingslib.widget.AppHeaderPreference
         android:key="manage_app_permission_header" />
-    <com.android.settingslib.widget.MainSwitchPreference
+    <com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
         android:key="allow_all_preference"
         android:title="@string/request_permissions_allow_all"/>
     <PreferenceCategory
@@ -27,4 +27,7 @@
         android:key="write_permission_category"
         android:title="@string/manage_permissions_write_header">
     </PreferenceCategory>
+    <com.android.settingslib.widget.FooterPreference
+        android:key="manage_app_permission_footer"
+    />
 </PreferenceScreen>

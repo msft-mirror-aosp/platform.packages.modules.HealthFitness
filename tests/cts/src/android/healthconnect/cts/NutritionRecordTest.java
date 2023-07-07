@@ -48,6 +48,7 @@ import static android.health.connect.datatypes.NutritionRecord.SUGAR_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.THIAMIN_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.TOTAL_CARBOHYDRATE_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.TOTAL_FAT_TOTAL;
+import static android.health.connect.datatypes.NutritionRecord.TRANS_FAT_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.UNSATURATED_FAT_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.VITAMIN_A_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.VITAMIN_B12_TOTAL;
@@ -64,10 +65,15 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogTokenResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -81,6 +87,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -90,13 +97,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class NutritionRecordTest {
     private static final String TAG = "NutritionRecordTest";
+
     private List<AggregationType<Mass>> mMassAggregateTypesList =
             Arrays.asList(
                     BIOTIN_TOTAL,
@@ -128,6 +136,7 @@ public class NutritionRecordTest {
                     SUGAR_TOTAL,
                     THIAMIN_TOTAL,
                     TOTAL_CARBOHYDRATE_TOTAL,
+                    TRANS_FAT_TOTAL,
                     TOTAL_FAT_TOTAL,
                     UNSATURATED_FAT_TOTAL,
                     VITAMIN_A_TOTAL,
@@ -147,6 +156,7 @@ public class NutritionRecordTest {
                         .setStartTime(Instant.EPOCH)
                         .setEndTime(Instant.now())
                         .build());
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
@@ -159,14 +169,15 @@ public class NutritionRecordTest {
     public void testReadNutritionRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
                 Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord());
-        readNutritionRecordUsingIds(recordList);
+        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+        readNutritionRecordUsingIds(insertedRecords);
     }
 
     @Test
     public void testReadNutritionRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<NutritionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(NutritionRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<NutritionRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -441,6 +452,7 @@ public class NutritionRecordTest {
                                 .addAggregationType(THIAMIN_TOTAL)
                                 .addAggregationType(TOTAL_CARBOHYDRATE_TOTAL)
                                 .addAggregationType(TOTAL_FAT_TOTAL)
+                                .addAggregationType(TRANS_FAT_TOTAL)
                                 .addAggregationType(UNSATURATED_FAT_TOTAL)
                                 .addAggregationType(VITAMIN_A_TOTAL)
                                 .addAggregationType(VITAMIN_B12_TOTAL)
@@ -492,6 +504,7 @@ public class NutritionRecordTest {
                                 .addAggregationType(TOTAL_CARBOHYDRATE_TOTAL)
                                 .addAggregationType(TOTAL_FAT_TOTAL)
                                 .addAggregationType(UNSATURATED_FAT_TOTAL)
+                                .addAggregationType(TRANS_FAT_TOTAL)
                                 .addAggregationType(VITAMIN_A_TOTAL)
                                 .addAggregationType(VITAMIN_B12_TOTAL)
                                 .addAggregationType(VITAMIN_B6_TOTAL)
@@ -507,7 +520,7 @@ public class NutritionRecordTest {
             Mass oldTotal = oldResponse.get(type);
             assertThat(newTotal).isNotNull();
             assertThat(oldTotal).isNotNull();
-            assertThat(newTotal.getInKilograms() - oldTotal.getInKilograms()).isEqualTo(0.2);
+            assertThat(newTotal.getInGrams() - oldTotal.getInGrams()).isEqualTo(0.2);
             Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(type);
             for (DataOrigin itr : newDataOrigin) {
                 assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
@@ -553,8 +566,8 @@ public class NutritionRecordTest {
         assertThat(oldEnergy).isNotNull();
         assertThat(newFatEnergy).isNotNull();
         assertThat(oldFatEnergy).isNotNull();
-        assertThat(newEnergy.getInJoules() - oldEnergy.getInJoules()).isEqualTo(0.1);
-        assertThat(newFatEnergy.getInJoules() - oldFatEnergy.getInJoules()).isEqualTo(0.1);
+        assertThat(newEnergy.getInCalories() - oldEnergy.getInCalories()).isEqualTo(0.1);
+        assertThat(newFatEnergy.getInCalories() - oldFatEnergy.getInCalories()).isEqualTo(0.1);
     }
 
     @Test
@@ -577,6 +590,241 @@ public class NutritionRecordTest {
                 .isEqualTo(defaultZoneOffset);
         assertThat(builder.clearEndZoneOffset().build().getEndZoneOffset())
                 .isEqualTo(defaultZoneOffset);
+    }
+
+    @Test
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
+            throws InterruptedException {
+
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readNutritionRecordUsingIds(insertedRecords);
+
+        // Generate a new set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord());
+
+        // Modify the uid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getNutritionRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+        }
+
+        TestUtils.updateRecords(updateRecords);
+
+        // assert the inserted data has been modified by reading the data.
+        readNutritionRecordUsingIds(updateRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readNutritionRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord());
+
+        // Modify the Uid of the updateRecords to the UUID that was present in the insert records,
+        // leaving out alternate records so that they have a new UUID which is not present in the
+        // dataBase.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getNutritionRecord_update(
+                            updateRecords.get(itr),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString(),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString()));
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid records ids.");
+        } catch (HealthConnectException exception) {
+            assertThat(exception.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readNutritionRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readNutritionRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord());
+
+        // Modify the Uuid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getNutritionRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+            //             adding an entry with invalid packageName.
+            updateRecords.set(itr, getCompleteNutritionRecord());
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid package.");
+        } catch (Exception exception) {
+            // verify that the testcase failed due to invalid argument exception.
+            assertThat(exception).isNotNull();
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readNutritionRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testInsertAndDeleteRecord_changelogs() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(
+                        new ChangeLogTokenRequest.Builder()
+                                .addDataOriginFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .addRecordType(NutritionRecord.class)
+                                .build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        List<Record> testRecord = Collections.singletonList(getCompleteNutritionRecord());
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        assertThat(
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(NutritionRecord.class)
+                        .build());
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getDeletedLogs()).isEmpty();
+    }
+
+    private void readNutritionRecordUsingClientId(List<Record> insertedRecord)
+            throws InterruptedException {
+        ReadRecordsRequestUsingIds.Builder<NutritionRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(NutritionRecord.class);
+        for (Record record : insertedRecord) {
+            request.addClientRecordId(record.getMetadata().getClientRecordId());
+        }
+        List<NutritionRecord> result = TestUtils.readRecords(request.build());
+        assertThat(result.size()).isEqualTo(insertedRecord.size());
+        assertThat(result).containsExactlyElementsIn(insertedRecord);
+    }
+
+    private void readNutritionRecordUsingIds(List<Record> recordList) throws InterruptedException {
+        ReadRecordsRequestUsingIds.Builder<NutritionRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(NutritionRecord.class);
+        for (Record record : recordList) {
+            request.addId(record.getMetadata().getId());
+        }
+        List<NutritionRecord> result = TestUtils.readRecords(request.build());
+        assertThat(result).hasSize(recordList.size());
+        assertThat(result).containsExactlyElementsIn(recordList);
+    }
+
+    NutritionRecord getNutritionRecord_update(Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new NutritionRecord.Builder(
+                        metadataWithId, Instant.now(), Instant.now().plusMillis(2000))
+                .setUnsaturatedFat(Mass.fromGrams(0.1))
+                .setPotassium(Mass.fromGrams(0.1))
+                .setThiamin(Mass.fromGrams(0.1))
+                .setMealType(1)
+                .setTransFat(Mass.fromGrams(0.1))
+                .setManganese(Mass.fromGrams(0.1))
+                .setEnergyFromFat(Energy.fromCalories(0.1))
+                .setCaffeine(Mass.fromGrams(0.1))
+                .setDietaryFiber(Mass.fromGrams(0.1))
+                .setSelenium(Mass.fromGrams(0.1))
+                .setVitaminB6(Mass.fromGrams(0.1))
+                .setProtein(Mass.fromGrams(0.1))
+                .setChloride(Mass.fromGrams(0.1))
+                .setCholesterol(Mass.fromGrams(0.1))
+                .setCopper(Mass.fromGrams(0.1))
+                .setIodine(Mass.fromGrams(0.1))
+                .setVitaminB12(Mass.fromGrams(0.1))
+                .setZinc(Mass.fromGrams(0.1))
+                .setRiboflavin(Mass.fromGrams(0.1))
+                .setEnergy(Energy.fromCalories(0.1))
+                .setMolybdenum(Mass.fromGrams(0.1))
+                .setPhosphorus(Mass.fromGrams(0.1))
+                .setChromium(Mass.fromGrams(0.1))
+                .setTotalFat(Mass.fromGrams(0.1))
+                .setCalcium(Mass.fromGrams(0.1))
+                .setVitaminC(Mass.fromGrams(0.1))
+                .setVitaminE(Mass.fromGrams(0.1))
+                .setBiotin(Mass.fromGrams(0.1))
+                .setVitaminD(Mass.fromGrams(0.1))
+                .setNiacin(Mass.fromGrams(0.1))
+                .setMagnesium(Mass.fromGrams(0.02))
+                .setTotalCarbohydrate(Mass.fromGrams(0.1))
+                .setVitaminK(Mass.fromGrams(0.1))
+                .setPolyunsaturatedFat(Mass.fromGrams(0.1))
+                .setSaturatedFat(Mass.fromGrams(0.1))
+                .setSodium(Mass.fromGrams(0.1))
+                .setFolate(Mass.fromGrams(0.1))
+                .setMonounsaturatedFat(Mass.fromGrams(0.1))
+                .setPantothenicAcid(Mass.fromGrams(0.1))
+                .setMealName("Brunch")
+                .setIron(Mass.fromGrams(0.1))
+                .setVitaminA(Mass.fromGrams(0.1))
+                .setFolicAcid(Mass.fromGrams(0.1))
+                .setSugar(Mass.fromGrams(0.2))
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
     }
 
     static NutritionRecord getBaseNutritionRecord() {
@@ -602,87 +850,52 @@ public class NutritionRecordTest {
 
         return new NutritionRecord.Builder(
                         testMetadataBuilder.build(), Instant.now(), Instant.now().plusMillis(1000))
-                .setUnsaturatedFat(Mass.fromKilograms(0.1))
-                .setPotassium(Mass.fromKilograms(0.1))
-                .setThiamin(Mass.fromKilograms(0.1))
+                .setUnsaturatedFat(Mass.fromGrams(0.1))
+                .setPotassium(Mass.fromGrams(0.1))
+                .setThiamin(Mass.fromGrams(0.1))
                 .setMealType(1)
-                .setTransFat(Mass.fromKilograms(0.1))
-                .setManganese(Mass.fromKilograms(0.1))
-                .setEnergyFromFat(Energy.fromJoules(0.1))
-                .setCaffeine(Mass.fromKilograms(0.1))
-                .setDietaryFiber(Mass.fromKilograms(0.1))
-                .setSelenium(Mass.fromKilograms(0.1))
-                .setVitaminB6(Mass.fromKilograms(0.1))
-                .setProtein(Mass.fromKilograms(0.1))
-                .setChloride(Mass.fromKilograms(0.1))
-                .setCholesterol(Mass.fromKilograms(0.1))
-                .setCopper(Mass.fromKilograms(0.1))
-                .setIodine(Mass.fromKilograms(0.1))
-                .setVitaminB12(Mass.fromKilograms(0.1))
-                .setZinc(Mass.fromKilograms(0.1))
-                .setRiboflavin(Mass.fromKilograms(0.1))
-                .setEnergy(Energy.fromJoules(0.1))
-                .setMolybdenum(Mass.fromKilograms(0.1))
-                .setPhosphorus(Mass.fromKilograms(0.1))
-                .setChromium(Mass.fromKilograms(0.1))
-                .setTotalFat(Mass.fromKilograms(0.1))
-                .setCalcium(Mass.fromKilograms(0.1))
-                .setVitaminC(Mass.fromKilograms(0.1))
-                .setVitaminE(Mass.fromKilograms(0.1))
-                .setBiotin(Mass.fromKilograms(0.1))
-                .setVitaminD(Mass.fromKilograms(0.1))
-                .setNiacin(Mass.fromKilograms(0.1))
-                .setMagnesium(Mass.fromKilograms(0.1))
-                .setTotalCarbohydrate(Mass.fromKilograms(0.1))
-                .setVitaminK(Mass.fromKilograms(0.1))
-                .setPolyunsaturatedFat(Mass.fromKilograms(0.1))
-                .setSaturatedFat(Mass.fromKilograms(0.1))
-                .setSodium(Mass.fromKilograms(0.1))
-                .setFolate(Mass.fromKilograms(0.1))
-                .setMonounsaturatedFat(Mass.fromKilograms(0.1))
-                .setPantothenicAcid(Mass.fromKilograms(0.1))
+                .setTransFat(Mass.fromGrams(0.1))
+                .setManganese(Mass.fromGrams(0.1))
+                .setEnergyFromFat(Energy.fromCalories(0.1))
+                .setCaffeine(Mass.fromGrams(0.1))
+                .setDietaryFiber(Mass.fromGrams(0.1))
+                .setSelenium(Mass.fromGrams(0.1))
+                .setVitaminB6(Mass.fromGrams(0.1))
+                .setProtein(Mass.fromGrams(0.1))
+                .setChloride(Mass.fromGrams(0.1))
+                .setCholesterol(Mass.fromGrams(0.1))
+                .setCopper(Mass.fromGrams(0.1))
+                .setIodine(Mass.fromGrams(0.1))
+                .setVitaminB12(Mass.fromGrams(0.1))
+                .setZinc(Mass.fromGrams(0.1))
+                .setRiboflavin(Mass.fromGrams(0.1))
+                .setEnergy(Energy.fromCalories(0.1))
+                .setMolybdenum(Mass.fromGrams(0.1))
+                .setPhosphorus(Mass.fromGrams(0.1))
+                .setChromium(Mass.fromGrams(0.1))
+                .setTotalFat(Mass.fromGrams(0.1))
+                .setCalcium(Mass.fromGrams(0.1))
+                .setVitaminC(Mass.fromGrams(0.1))
+                .setVitaminE(Mass.fromGrams(0.1))
+                .setBiotin(Mass.fromGrams(0.1))
+                .setVitaminD(Mass.fromGrams(0.1))
+                .setNiacin(Mass.fromGrams(0.1))
+                .setMagnesium(Mass.fromGrams(0.1))
+                .setTotalCarbohydrate(Mass.fromGrams(0.1))
+                .setVitaminK(Mass.fromGrams(0.1))
+                .setPolyunsaturatedFat(Mass.fromGrams(0.1))
+                .setSaturatedFat(Mass.fromGrams(0.1))
+                .setSodium(Mass.fromGrams(0.1))
+                .setFolate(Mass.fromGrams(0.1))
+                .setMonounsaturatedFat(Mass.fromGrams(0.1))
+                .setPantothenicAcid(Mass.fromGrams(0.1))
                 .setMealName("Brunch")
-                .setIron(Mass.fromKilograms(0.1))
-                .setVitaminA(Mass.fromKilograms(0.1))
-                .setFolicAcid(Mass.fromKilograms(0.1))
-                .setSugar(Mass.fromKilograms(0.1))
+                .setIron(Mass.fromGrams(0.1))
+                .setVitaminA(Mass.fromGrams(0.1))
+                .setFolicAcid(Mass.fromGrams(0.1))
+                .setSugar(Mass.fromGrams(0.1))
                 .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
                 .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
                 .build();
-    }
-
-    private void readNutritionRecordUsingClientId(List<Record> insertedRecord)
-            throws InterruptedException {
-        ReadRecordsRequestUsingIds.Builder<NutritionRecord> request =
-                new ReadRecordsRequestUsingIds.Builder<>(NutritionRecord.class);
-        for (Record record : insertedRecord) {
-            request.addClientRecordId(record.getMetadata().getClientRecordId());
-        }
-        List<NutritionRecord> result = TestUtils.readRecords(request.build());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecord.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-
-        for (int i = 0; i < result.size(); i++) {
-            NutritionRecord other = (NutritionRecord) insertedRecord.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
-    }
-
-    private void readNutritionRecordUsingIds(List<Record> recordList) throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
-        ReadRecordsRequestUsingIds.Builder<NutritionRecord> request =
-                new ReadRecordsRequestUsingIds.Builder<>(NutritionRecord.class);
-        for (Record record : insertedRecords) {
-            request.addId(record.getMetadata().getId());
-        }
-        List<NutritionRecord> result = TestUtils.readRecords(request.build());
-        assertThat(result).hasSize(insertedRecords.size());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecords.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-
-        for (int i = 0; i < result.size(); i++) {
-            NutritionRecord other = (NutritionRecord) insertedRecords.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
     }
 }

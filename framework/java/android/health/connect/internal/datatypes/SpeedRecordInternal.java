@@ -69,21 +69,7 @@ public class SpeedRecordInternal
                         buildMetaData(), getStartTime(), getEndTime(), getExternalSamples())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull SpeedRecord speedRecord) {
-        mSpeedRecordSamples = new HashSet<>(speedRecord.getSamples().size());
-        for (SpeedRecord.SpeedRecordSample speedRecordSample : speedRecord.getSamples()) {
-            mSpeedRecordSamples.add(
-                    new SpeedRecordSample(
-                            speedRecordSample.getSpeed().getInMetersPerSecond(),
-                            speedRecordSample.getTime().toEpochMilli()));
-        }
-        if (mSpeedRecordSamples.size() != speedRecord.getSamples().size()) {
-            throw new IllegalArgumentException("Duplicate time instant values present.");
-        }
+                .buildWithoutValidation();
     }
 
     @Override
@@ -102,7 +88,8 @@ public class SpeedRecordInternal
             speedRecords.add(
                     new SpeedRecord.SpeedRecordSample(
                             Velocity.fromMetersPerSecond(speedRecordSample.getSpeed()),
-                            Instant.ofEpochMilli(speedRecordSample.getEpochMillis())));
+                            Instant.ofEpochMilli(speedRecordSample.getEpochMillis()),
+                            true));
         }
         return speedRecords;
     }

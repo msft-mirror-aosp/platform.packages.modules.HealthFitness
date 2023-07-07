@@ -20,6 +20,8 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import android.annotation.NonNull;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.units.Mass;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.WeightRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -68,18 +70,22 @@ public final class WeightRecord extends InstantRecord {
      * @param time Start time of this activity
      * @param zoneOffset Zone offset of the user when the activity started
      * @param weight Weight of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private WeightRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @NonNull Mass weight) {
-        super(metadata, time, zoneOffset);
+            @NonNull Mass weight,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
         Objects.requireNonNull(weight);
-        ValidationUtils.requireInRange(weight.getInKilograms(), 0.0, 1000.0, "weight");
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(weight.getInGrams(), 0.0, 1000000.0, "weight");
+        }
         mWeight = weight;
     }
     /**
@@ -120,8 +126,8 @@ public final class WeightRecord extends InstantRecord {
         /**
          * @param metadata Metadata to be associated with the record. See {@link Metadata}.
          * @param time Start time of this activity
-         * @param weight User's weight in {@link Mass} unit. Required field. Valid range: 0-1000
-         *     kilograms.
+         * @param weight User's weight in {@link Mass} unit. Required field. Valid range: 0-1000000
+         *     grams.
          */
         public Builder(@NonNull Metadata metadata, @NonNull Instant time, @NonNull Mass weight) {
             Objects.requireNonNull(metadata);
@@ -149,11 +155,42 @@ public final class WeightRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link WeightRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public WeightRecord buildWithoutValidation() {
+            return new WeightRecord(mMetadata, mTime, mZoneOffset, mWeight, true);
+        }
+
+        /**
          * @return Object of {@link WeightRecord}
          */
         @NonNull
         public WeightRecord build() {
-            return new WeightRecord(mMetadata, mTime, mZoneOffset, mWeight);
+            return new WeightRecord(mMetadata, mTime, mZoneOffset, mWeight, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public WeightRecordInternal toRecordInternal() {
+        WeightRecordInternal recordInternal =
+                (WeightRecordInternal)
+                        new WeightRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setWeight(mWeight.getInGrams());
+        return recordInternal;
     }
 }

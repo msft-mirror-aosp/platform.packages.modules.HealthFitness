@@ -15,55 +15,99 @@
  */
 package android.healthconnect.cts.ui
 
-import android.content.Context
-import android.healthconnect.cts.TestUtils.insertRecords
-import android.healthconnect.cts.ui.testing.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.ui.testing.UiTestUtils.clickOnText
-import android.healthconnect.cts.ui.testing.UiTestUtils.navigateBackToHomeScreen
-import android.healthconnect.cts.ui.testing.UiTestUtils.stepsRecordFromTestApp
-import androidx.test.core.app.ApplicationProvider
-import org.junit.After
+import android.health.connect.TimeInstantRangeFilter
+import android.health.connect.datatypes.BasalMetabolicRateRecord
+import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.StepsRecord
+import android.healthconnect.cts.TestUtils.verifyDeleteRecords
+import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
+import android.healthconnect.cts.lib.TestUtils.insertRecordAs
+import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import androidx.test.uiautomator.By
+import com.android.cts.install.lib.TestApp
+import java.time.Instant
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 
 /** CTS test for HealthConnect Permission types screen. */
-class PermissionTypesFragmentTest {
+class PermissionTypesFragmentTest : HealthConnectBaseTest() {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    companion object {
+        private const val TAG = "PermissionTypesFragmentTest"
+
+        private const val VERSION_CODE: Long = 1
+
+        private val APP_A_WITH_READ_WRITE_PERMS: TestApp =
+            TestApp(
+                "TestAppA",
+                "android.healthconnect.cts.testapp.readWritePerms.A",
+                VERSION_CODE,
+                false,
+                "CtsHealthConnectTestAppA.apk")
+
+        private val APP_B_WITH_READ_WRITE_PERMS: TestApp =
+            TestApp(
+                "TestAppB",
+                "android.healthconnect.cts.testapp.readWritePerms.B",
+                VERSION_CODE,
+                false,
+                "CtsHealthConnectTestAppB.apk")
+
+        @JvmStatic
+        @BeforeClass
+        fun setup() {
+            insertRecordAs(APP_A_WITH_READ_WRITE_PERMS)
+            insertRecordAs(APP_B_WITH_READ_WRITE_PERMS)
+        }
+
+        @JvmStatic
+        @AfterClass
+        fun teardown() {
+            verifyDeleteRecords(
+                StepsRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+            verifyDeleteRecords(
+                HeartRateRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+            verifyDeleteRecords(
+                BasalMetabolicRateRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+        }
+    }
 
     @Test
     fun permissionTypes_navigateToPermissionTypes() {
-        insertRecords(listOf(stepsRecordFromTestApp()))
-        context.launchMainActivity {
-            clickOnText("Data and access")
+        context.launchDataActivity { clickOnText("Activity") }
+    }
+
+    @Test
+    fun permissionTypes_showsDeleteCategoryData() {
+        context.launchDataActivity {
             clickOnText("Activity")
+            waitDisplayed(By.text("Delete activity data"))
         }
     }
 
     @Test
-    fun permissionTypes_deleteCategoryData() {
-        insertRecords(listOf(stepsRecordFromTestApp()))
-        context.launchMainActivity {
-            clickOnText("Data and access")
+    fun permissionTypes_filterByApp() {
+        context.launchDataActivity {
             clickOnText("Activity")
-            clickOnText("Delete activity data")
-            clickOnText("Delete all data")
-            clickOnText("Next")
-            clickOnText("Delete")
-            clickOnText("Done")
+            waitDisplayed(By.text("All apps"))
+
+            // "CtsHealthConnectTestAppAWithNormalReadWritePermission" is ellipsed on chip.
+            waitDisplayed(By.textContains("CtsHealthConnect"))
+            waitDisplayed(By.text("Steps"))
         }
-    }
-
-    // TODO(b/265789268): Add one app, no filter test.
-    // TODO(b/265789268): Add two apps, filter test.
-    // TODO(b/265789268): Add delete category data test.
-    // TODO(b/265789268): Add app priority test.
-
-    @After
-    fun tearDown() {
-        navigateBackToHomeScreen()
-    }
-
-    companion object {
-        private const val TAG = "DataAccessFragmentTest"
     }
 }

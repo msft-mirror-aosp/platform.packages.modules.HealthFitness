@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
 
@@ -23,16 +24,18 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,27 +45,46 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @hide
  */
-public final class PreferenceHelper {
+public final class PreferenceHelper extends DatabaseHelper {
     private static final String TABLE_NAME = "preference_table";
     private static final String KEY_COLUMN_NAME = "key";
+    public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
+            Collections.singletonList(new Pair<>(KEY_COLUMN_NAME, TYPE_STRING));
     private static final String VALUE_COLUMN_NAME = "value";
     private static volatile PreferenceHelper sPreferenceHelper;
-    private ConcurrentHashMap<String, String> mPreferences;
+    private volatile ConcurrentHashMap<String, String> mPreferences;
 
     private PreferenceHelper() {}
 
-    public static synchronized PreferenceHelper getInstance() {
-        if (sPreferenceHelper == null) {
-            sPreferenceHelper = new PreferenceHelper();
-        }
-
-        return sPreferenceHelper;
+    /** Note: Overrides existing preference (if it exists) with the new value */
+    public synchronized void insertOrReplacePreference(String key, String value) {
+        TransactionManager.getInitialisedInstance()
+                .insertOrReplace(
+                        new UpsertTableRequest(
+                                TABLE_NAME, getContentValues(key, value), UNIQUE_COLUMN_INFO));
+        getPreferences().put(key, value);
     }
 
-    public void insertPreference(String key, String value) {
+    /** Removes key entry from the table */
+    public synchronized void removeKey(String id) {
         TransactionManager.getInitialisedInstance()
-                .insertOrReplace(new UpsertTableRequest(TABLE_NAME, getContentValues(key, value)));
-        getPreferences().put(key, value);
+                .delete(new DeleteTableRequest(TABLE_NAME).setId(KEY_COLUMN_NAME, id));
+        getPreferences().remove(id);
+    }
+
+    /** Inserts multiple preferences together in a transaction */
+    public synchronized void insertOrReplacePreferencesTransaction(
+            HashMap<String, String> keyValues) {
+        List<UpsertTableRequest> requests = new ArrayList<>();
+        keyValues.forEach(
+                (key, value) ->
+                        requests.add(
+                                new UpsertTableRequest(
+                                        TABLE_NAME,
+                                        getContentValues(key, value),
+                                        UNIQUE_COLUMN_INFO)));
+        TransactionManager.getInitialisedInstance().insertOrReplaceAll(requests);
+        getPreferences().putAll(keyValues);
     }
 
     @NonNull
@@ -75,8 +97,19 @@ public final class PreferenceHelper {
         return getPreferences().get(key);
     }
 
+    @Override
     public synchronized void clearCache() {
         mPreferences = null;
+    }
+
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
+    }
+
+    /** Fetch preferences into memory. */
+    public void initializePreferences() {
+        populatePreferences();
     }
 
     private Map<String, String> getPreferences() {
@@ -101,8 +134,7 @@ public final class PreferenceHelper {
 
         mPreferences = new ConcurrentHashMap<>();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        final SQLiteDatabase db = transactionManager.getReadableDb();
-        try (Cursor cursor = transactionManager.read(db, new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 String key = StorageUtils.getCursorString(cursor, KEY_COLUMN_NAME);
                 String value = StorageUtils.getCursorString(cursor, VALUE_COLUMN_NAME);
@@ -111,12 +143,21 @@ public final class PreferenceHelper {
         }
     }
 
+    @Override
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    protected List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(KEY_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
         columnInfo.add(new Pair<>(VALUE_COLUMN_NAME, TEXT_NULL));
 
         return columnInfo;
+    }
+
+    public static synchronized PreferenceHelper getInstance() {
+        if (sPreferenceHelper == null) {
+            sPreferenceHelper = new PreferenceHelper();
+        }
+
+        return sPreferenceHelper;
     }
 }

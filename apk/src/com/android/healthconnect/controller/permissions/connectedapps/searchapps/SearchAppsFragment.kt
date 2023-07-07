@@ -33,11 +33,14 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel
+import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
 import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.INACTIVE
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
+import com.android.settingslib.widget.TopIntroPreference
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,21 +52,27 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
         const val ALLOWED_APPS_CATEGORY = "allowed_apps"
         private const val NOT_ALLOWED_APPS = "not_allowed_apps"
         private const val INACTIVE_APPS = "inactive_apps"
+        private const val EMPTY_SEARCH_RESULT = "no_search_result_preference"
+        private const val TOP_INTRO_PREF = "search_apps_top_intro"
     }
 
-    private var mSearchView: SearchView? = null
+    private var searchView: SearchView? = null
     private val viewModel: ConnectedAppsViewModel by viewModels()
 
-    private val mAllowedAppsCategory: PreferenceGroup? by lazy {
+    private val allowedAppsCategory: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(ALLOWED_APPS_CATEGORY)
     }
-
-    private val mNotAllowedAppsCategory: PreferenceGroup? by lazy {
+    private val notAllowedAppsCategory: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(NOT_ALLOWED_APPS)
     }
-
-    private val mInactiveAppsPreference: PreferenceGroup? by lazy {
+    private val inactiveAppsPreference: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(INACTIVE_APPS)
+    }
+    private val emptySearchResultsPreference: NoSearchResultPreference? by lazy {
+        preferenceScreen.findPreference(EMPTY_SEARCH_RESULT)
+    }
+    private val topIntroPreference: TopIntroPreference? by lazy {
+        preferenceScreen.findPreference(TOP_INTRO_PREF)
     }
 
     private val menuProvider =
@@ -85,10 +94,10 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
                             return true
                         }
                     })
-                mSearchView = searchMenuItem.actionView as SearchView
-                mSearchView!!.queryHint = getText(R.string.search_connected_apps)
-                mSearchView!!.setOnQueryTextListener(this)
-                mSearchView!!.maxWidth = Int.MAX_VALUE
+                searchView = searchMenuItem.actionView as SearchView
+                searchView!!.queryHint = getText(R.string.search_connected_apps)
+                searchView!!.setOnQueryTextListener(this)
+                searchView!!.maxWidth = Int.MAX_VALUE
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -115,8 +124,8 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
         setupMenu()
         hideTitleFromCollapsingToolbarLayout()
         viewModel.connectedApps.observe(viewLifecycleOwner) { connectedApps ->
-            preferenceScreen.findPreference<Preference>("no_search_result_preference")?.isVisible =
-                connectedApps.isEmpty()
+            emptySearchResultsPreference?.isVisible = connectedApps.isEmpty()
+            topIntroPreference?.isVisible = connectedApps.isNotEmpty()
 
             val connectedAppsGroup = connectedApps.groupBy { it.status }
             updateAllowedApps(connectedAppsGroup[ALLOWED].orEmpty())
@@ -136,38 +145,36 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     }
 
     private fun updateInactiveApps(appsList: List<ConnectedAppMetadata>) {
-        mInactiveAppsPreference?.removeAll()
+        inactiveAppsPreference?.removeAll()
         if (appsList.isEmpty()) {
-            preferenceScreen.removePreference(mInactiveAppsPreference)
+            preferenceScreen.removePreference(inactiveAppsPreference)
         } else {
-            preferenceScreen.addPreference(mInactiveAppsPreference)
-            appsList.forEach { app ->
-                mInactiveAppsPreference?.addPreference(getAppPreference(app))
-            }
+            preferenceScreen.addPreference(inactiveAppsPreference)
+            appsList.forEach { app -> inactiveAppsPreference?.addPreference(getAppPreference(app)) }
         }
     }
 
     private fun updateAllowedApps(appsList: List<ConnectedAppMetadata>) {
-        mAllowedAppsCategory?.removeAll()
+        allowedAppsCategory?.removeAll()
         if (appsList.isEmpty()) {
-            preferenceScreen.removePreference(mAllowedAppsCategory)
+            preferenceScreen.removePreference(allowedAppsCategory)
         } else {
-            preferenceScreen.addPreference(mAllowedAppsCategory)
+            preferenceScreen.addPreference(allowedAppsCategory)
             appsList.forEach { app ->
-                mAllowedAppsCategory?.addPreference(
+                allowedAppsCategory?.addPreference(
                     getAppPreference(app) { navigateToAppInfoScreen(app) })
             }
         }
     }
 
     private fun updateDeniedApps(appsList: List<ConnectedAppMetadata>) {
-        mNotAllowedAppsCategory?.removeAll()
+        notAllowedAppsCategory?.removeAll()
         if (appsList.isEmpty()) {
-            preferenceScreen.removePreference(mNotAllowedAppsCategory)
+            preferenceScreen.removePreference(notAllowedAppsCategory)
         } else {
-            preferenceScreen.addPreference(mNotAllowedAppsCategory)
+            preferenceScreen.addPreference(notAllowedAppsCategory)
             appsList.forEach { app ->
-                mNotAllowedAppsCategory?.addPreference(
+                notAllowedAppsCategory?.addPreference(
                     getAppPreference(app) { navigateToAppInfoScreen(app) })
             }
         }
@@ -186,9 +193,12 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
         app: ConnectedAppMetadata,
         onClick: (() -> Unit)? = null
     ): Preference {
-        return Preference(requireContext()).also {
-            it.title = app.appMetadata.appName
-            it.icon = app.appMetadata.icon
+        return HealthAppPreference(requireContext(), app.appMetadata).also {
+            if (app.status == ALLOWED) {
+                it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
+            } else if (app.status == DENIED) {
+                it.logName = AppPermissionsElement.NOT_CONNECTED_APP_BUTTON
+            }
             it.setOnPreferenceClickListener {
                 onClick?.invoke()
                 true

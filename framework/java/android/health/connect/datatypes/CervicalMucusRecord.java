@@ -15,14 +15,18 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.health.connect.internal.datatypes.CervicalMucusRecordInternal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Captures the description of cervical mucus. Each record represents a self-assessed description of
@@ -41,17 +45,27 @@ public final class CervicalMucusRecord extends InstantRecord {
      * @param zoneOffset Zone offset of the user when the activity started
      * @param sensation Sensation of this activity
      * @param appearance Appearance of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private CervicalMucusRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
             @CervicalMucusSensation.CervicalMucusSensations int sensation,
-            @CervicalMucusAppearance.CervicalMucusAppearances int appearance) {
-        super(metadata, time, zoneOffset);
+            @CervicalMucusAppearance.CervicalMucusAppearances int appearance,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
+        validateIntDefValue(
+                sensation,
+                CervicalMucusSensation.VALID_TYPES,
+                CervicalMucusSensation.class.getSimpleName());
+        validateIntDefValue(
+                appearance,
+                CervicalMucusAppearance.VALID_TYPES,
+                CervicalMucusAppearance.class.getSimpleName());
         mSensation = sensation;
         mAppearance = appearance;
     }
@@ -95,6 +109,22 @@ public final class CervicalMucusRecord extends InstantRecord {
         /** A constant describing an unusual (worth attention) kind of cervical mucus. */
         public static final int APPEARANCE_UNUSUAL = 6;
 
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(
+                        APPEARANCE_UNKNOWN,
+                        APPEARANCE_DRY,
+                        APPEARANCE_STICKY,
+                        APPEARANCE_CREAMY,
+                        APPEARANCE_WATERY,
+                        APPEARANCE_EGG_WHITE,
+                        APPEARANCE_UNUSUAL);
+
         CervicalMucusAppearance() {}
 
         /** @hide */
@@ -117,6 +147,15 @@ public final class CervicalMucusRecord extends InstantRecord {
         public static final int SENSATION_LIGHT = 1;
         public static final int SENSATION_MEDIUM = 2;
         public static final int SENSATION_HEAVY = 3;
+
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(SENSATION_UNKNOWN, SENSATION_LIGHT, SENSATION_MEDIUM, SENSATION_HEAVY);
 
         CervicalMucusSensation() {}
 
@@ -192,11 +231,45 @@ public final class CervicalMucusRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link CervicalMucusRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public CervicalMucusRecord buildWithoutValidation() {
+            return new CervicalMucusRecord(
+                    mMetadata, mTime, mZoneOffset, mSensation, mAppearance, true);
+        }
+
+        /**
          * @return Object of {@link CervicalMucusRecord}
          */
         @NonNull
         public CervicalMucusRecord build() {
-            return new CervicalMucusRecord(mMetadata, mTime, mZoneOffset, mSensation, mAppearance);
+            return new CervicalMucusRecord(
+                    mMetadata, mTime, mZoneOffset, mSensation, mAppearance, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public CervicalMucusRecordInternal toRecordInternal() {
+        CervicalMucusRecordInternal recordInternal =
+                (CervicalMucusRecordInternal)
+                        new CervicalMucusRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setSensation(mSensation);
+        recordInternal.setAppearance(mAppearance);
+        return recordInternal;
     }
 }

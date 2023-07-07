@@ -15,14 +15,18 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.health.connect.internal.datatypes.OvulationTestRecordInternal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Objects;
+import java.util.Set;
 
 /** Each record represents the result of an ovulation test. */
 @Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_OVULATION_TEST)
@@ -35,16 +39,20 @@ public final class OvulationTestRecord extends InstantRecord {
      * @param time Start time of this activity
      * @param zoneOffset Zone offset of the user when the activity started
      * @param result Result of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private OvulationTestRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @OvulationTestResult.OvulationTestResults int result) {
-        super(metadata, time, zoneOffset);
+            @OvulationTestResult.OvulationTestResults int result,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
+        validateIntDefValue(
+                result, OvulationTestResult.VALID_TYPES, OvulationTestResult.class.getSimpleName());
         mResult = result;
     }
 
@@ -82,6 +90,15 @@ public final class OvulationTestRecord extends InstantRecord {
          * cycle where fertility/conception is expected to be low.
          */
         public static final int RESULT_NEGATIVE = 3;
+
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(RESULT_INCONCLUSIVE, RESULT_POSITIVE, RESULT_HIGH, RESULT_NEGATIVE);
 
         OvulationTestResult() {}
 
@@ -152,11 +169,42 @@ public final class OvulationTestRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link OvulationTestRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public OvulationTestRecord buildWithoutValidation() {
+            return new OvulationTestRecord(mMetadata, mTime, mZoneOffset, mResult, true);
+        }
+
+        /**
          * @return Object of {@link OvulationTestRecord}
          */
         @NonNull
         public OvulationTestRecord build() {
-            return new OvulationTestRecord(mMetadata, mTime, mZoneOffset, mResult);
+            return new OvulationTestRecord(mMetadata, mTime, mZoneOffset, mResult, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public OvulationTestRecordInternal toRecordInternal() {
+        OvulationTestRecordInternal recordInternal =
+                (OvulationTestRecordInternal)
+                        new OvulationTestRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setResult(mResult);
+        return recordInternal;
     }
 }

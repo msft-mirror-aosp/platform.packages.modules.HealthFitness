@@ -21,20 +21,27 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
-import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.shared.preference.HealthPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.logging.CategoriesElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment for all health data categories. */
-@AndroidEntryPoint(PreferenceFragmentCompat::class)
+@AndroidEntryPoint(HealthPreferenceFragment::class)
 class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
 
     companion object {
         private const val ALL_DATA_CATEGORY = "all_data_categories"
+    }
+
+    init {
+        this.setPageName(PageName.ALL_CATEGORIES_PAGE)
     }
 
     private val viewModel: HealthDataCategoryViewModel by viewModels()
@@ -44,24 +51,32 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.health_data_all_categories_screen, rootKey)
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSharedMenu(viewLifecycleOwner)
+        viewModel.loadCategories()
 
-        viewModel.allCategoriesData.observe(viewLifecycleOwner) { allCategoriesList ->
-            updateAllDataList(allCategoriesList)
+        viewModel.categoriesData.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is WithData -> {
+                    setLoading(false)
+                    updateAllDataList(state.categories)
+                }
+                HealthDataCategoryViewModel.CategoriesFragmentState.Error -> {
+                    setError(true)
+                }
+                HealthDataCategoryViewModel.CategoriesFragmentState.Loading -> {
+                    setLoading(true)
+                }
+            }
         }
     }
 
-    private fun updateAllDataList(categoriesList: List<AllCategoriesScreenHealthDataCategory>) {
-        val sortedAllCategoriesList: List<AllCategoriesScreenHealthDataCategory> =
+    private fun updateAllDataList(categoriesList: List<HealthCategoryUiState>) {
+        val sortedAllCategoriesList: List<HealthCategoryUiState> =
             categoriesList.sortedBy { getString(it.category.uppercaseTitle()) }
         mAllDataCategories?.removeAll()
         if (sortedAllCategoriesList.isEmpty()) {
@@ -69,27 +84,28 @@ class HealthDataAllCategoriesFragment : Hilt_HealthDataAllCategoriesFragment() {
                 Preference(requireContext()).also { it.setSummary(R.string.no_categories) })
         } else {
             sortedAllCategoriesList.forEach { categoryInfo ->
-                mAllDataCategories?.addPreference(
-                    Preference(requireContext()).also {
+                val newPreference =
+                    HealthPreference(requireContext()).also {
                         it.setTitle(categoryInfo.category.uppercaseTitle())
-                        it.setIcon(categoryInfo.category.icon())
-                        if (categoryInfo.noData) {
+                        it.icon = categoryInfo.category.icon(requireContext())
+                        it.logName = CategoriesElement.CATEGORY_BUTTON
+                        if (!categoryInfo.hasData) {
                             it.setSummary(R.string.no_data)
                             it.isEnabled = false
                         } else {
-                            it.onPreferenceClickListener =
-                                Preference.OnPreferenceClickListener {
-                                    findNavController()
-                                        .navigate(
-                                            R.id
-                                                .action_healthDataAllCategories_to_healthPermissionTypes,
-                                            bundleOf(
-                                                HealthDataCategoriesFragment.CATEGORY_KEY to
-                                                    categoryInfo.category))
-                                    true
-                                }
+                            it.setOnPreferenceClickListener {
+                                findNavController()
+                                    .navigate(
+                                        R.id
+                                            .action_healthDataAllCategories_to_healthPermissionTypes,
+                                        bundleOf(
+                                            HealthDataCategoriesFragment.CATEGORY_KEY to
+                                                categoryInfo.category))
+                                true
+                            }
                         }
-                    })
+                    }
+                mAllDataCategories?.addPreference(newPreference)
             }
         }
     }

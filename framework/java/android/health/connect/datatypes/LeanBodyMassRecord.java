@@ -17,6 +17,8 @@ package android.health.connect.datatypes;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.units.Mass;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.LeanBodyMassRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -35,18 +37,22 @@ public final class LeanBodyMassRecord extends InstantRecord {
      * @param time Start time of this activity
      * @param zoneOffset Zone offset of the user when the activity started
      * @param mass Mass of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private LeanBodyMassRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @NonNull Mass mass) {
-        super(metadata, time, zoneOffset);
+            @NonNull Mass mass,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
         Objects.requireNonNull(mass);
-        ValidationUtils.requireInRange(mass.getInKilograms(), 0.0, 1000.0, "mass");
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(mass.getInGrams(), 0.0, 1000000.0, "mass");
+        }
         mMass = mass;
     }
     /**
@@ -87,7 +93,7 @@ public final class LeanBodyMassRecord extends InstantRecord {
         /**
          * @param metadata Metadata to be associated with the record. See {@link Metadata}.
          * @param time Start time of this activity
-         * @param mass Mass in {@link Mass} unit. Required field. Valid range: 0-1000 kilograms.
+         * @param mass Mass in {@link Mass} unit. Required field. Valid range: 0-1000000 grams.
          */
         public Builder(@NonNull Metadata metadata, @NonNull Instant time, @NonNull Mass mass) {
             Objects.requireNonNull(metadata);
@@ -115,11 +121,42 @@ public final class LeanBodyMassRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link LeanBodyMassRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public LeanBodyMassRecord buildWithoutValidation() {
+            return new LeanBodyMassRecord(mMetadata, mTime, mZoneOffset, mMass, true);
+        }
+
+        /**
          * @return Object of {@link LeanBodyMassRecord}
          */
         @NonNull
         public LeanBodyMassRecord build() {
-            return new LeanBodyMassRecord(mMetadata, mTime, mZoneOffset, mMass);
+            return new LeanBodyMassRecord(mMetadata, mTime, mZoneOffset, mMass, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public LeanBodyMassRecordInternal toRecordInternal() {
+        LeanBodyMassRecordInternal recordInternal =
+                (LeanBodyMassRecordInternal)
+                        new LeanBodyMassRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setMass(mMass.getInGrams());
+        return recordInternal;
     }
 }

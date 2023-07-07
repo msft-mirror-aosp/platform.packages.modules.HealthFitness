@@ -31,6 +31,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.WeightRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,10 +42,13 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_WEIGHT)
 public final class WeightRecordHelper extends InstantRecordHelper<WeightRecordInternal> {
-    private static final String WEIGHT_RECORD_TABLE_NAME = "weight_record_table";
-    private static final String WEIGHT_COLUMN_NAME = "weight";
+    static final String WEIGHT_RECORD_TABLE_NAME = "weight_record_table";
+    static final String WEIGHT_COLUMN_NAME = "weight";
+
+    public WeightRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_WEIGHT);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(
@@ -79,7 +84,7 @@ public final class WeightRecordHelper extends InstantRecordHelper<WeightRecordIn
             default:
                 return null;
         }
-        return new AggregateParams(WEIGHT_RECORD_TABLE_NAME, columnNames, TIME_COLUMN_NAME);
+        return new AggregateParams(WEIGHT_RECORD_TABLE_NAME, columnNames);
     }
 
     @Override

@@ -20,11 +20,15 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import android.annotation.NonNull;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.HeartRateRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /** Captures the user's heart rate. Each record represents a series of measurements. */
 @Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_HEART_RATE)
@@ -83,11 +87,16 @@ public final class HeartRateRecord extends IntervalRecord {
             @NonNull ZoneOffset startZoneOffset,
             @NonNull Instant endTime,
             @NonNull ZoneOffset endZoneOffset,
-            @NonNull List<HeartRateSample> heartRateSamples) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
+            @NonNull List<HeartRateSample> heartRateSamples,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
         Objects.requireNonNull(heartRateSamples);
-        ValidationUtils.validateSampleStartAndEndTime(startTime, endTime,
-                heartRateSamples.stream().map(HeartRateSample::getTime).toList());
+        if (!skipValidation) {
+            ValidationUtils.validateSampleStartAndEndTime(
+                    startTime,
+                    endTime,
+                    heartRateSamples.stream().map(HeartRateSample::getTime).toList());
+        }
         mHeartRateSamples = heartRateSamples;
     }
 
@@ -141,8 +150,22 @@ public final class HeartRateRecord extends IntervalRecord {
          * @param time The point in time when the measurement was taken.
          */
         public HeartRateSample(long beatsPerMinute, @NonNull Instant time) {
+            this(beatsPerMinute, time, false);
+        }
+
+        /**
+         * Heart rate sample for entries of {@link HeartRateRecord}
+         *
+         * @param beatsPerMinute Heart beats per minute.
+         * @param time The point in time when the measurement was taken.
+         * @param skipValidation Boolean flag to skip validation of record values.
+         * @hide
+         */
+        public HeartRateSample(long beatsPerMinute, @NonNull Instant time, boolean skipValidation) {
             Objects.requireNonNull(time);
-            ValidationUtils.requireInRange(beatsPerMinute, 0, (long) 250, "beatsPerMinute");
+            if (!skipValidation) {
+                ValidationUtils.requireInRange(beatsPerMinute, 1, (long) 300, "beatsPerMinute");
+            }
 
             mBeatsPerMinute = beatsPerMinute;
             mTime = time;
@@ -269,6 +292,22 @@ public final class HeartRateRecord extends IntervalRecord {
         }
 
         /**
+         * @return Object of {@link HeartRateRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public HeartRateRecord buildWithoutValidation() {
+            return new HeartRateRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mHeartRateSamples,
+                    true);
+        }
+
+        /**
          * @return Object of {@link HeartRateRecord}
          */
         @NonNull
@@ -279,7 +318,41 @@ public final class HeartRateRecord extends IntervalRecord {
                     mStartZoneOffset,
                     mEndTime,
                     mEndZoneOffset,
-                    mHeartRateSamples);
+                    mHeartRateSamples,
+                    false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public HeartRateRecordInternal toRecordInternal() {
+        HeartRateRecordInternal recordInternal =
+                (HeartRateRecordInternal)
+                        new HeartRateRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        Set<HeartRateRecordInternal.HeartRateSample> samples = new HashSet<>(getSamples().size());
+
+        for (HeartRateRecord.HeartRateSample heartRateSample : getSamples()) {
+            samples.add(
+                    new HeartRateRecordInternal.HeartRateSample(
+                            (int) heartRateSample.getBeatsPerMinute(),
+                            heartRateSample.getTime().toEpochMilli()));
+        }
+        recordInternal.setSamples(samples);
+        recordInternal.setStartTime(getStartTime().toEpochMilli());
+        recordInternal.setEndTime(getEndTime().toEpochMilli());
+        recordInternal.setStartZoneOffset(getStartZoneOffset().getTotalSeconds());
+        recordInternal.setEndZoneOffset(getEndZoneOffset().getTotalSeconds());
+
+        return recordInternal;
     }
 }

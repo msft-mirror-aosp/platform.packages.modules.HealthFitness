@@ -69,22 +69,7 @@ public class PowerRecordInternal
                         buildMetaData(), getStartTime(), getEndTime(), getExternalSamples())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull PowerRecord powerRecord) {
-        mPowerRecordSamples = new HashSet<>(powerRecord.getSamples().size());
-        for (PowerRecord.PowerRecordSample powerRecordSample : powerRecord.getSamples()) {
-            mPowerRecordSamples.add(
-                    new PowerRecordSample(
-                            powerRecordSample.getPower().getInWatts(),
-                            powerRecordSample.getTime().toEpochMilli()));
-        }
-
-        if (mPowerRecordSamples.size() != powerRecord.getSamples().size()) {
-            throw new IllegalArgumentException("Duplicate time instant values present.");
-        }
+                .buildWithoutValidation();
     }
 
     @Override
@@ -103,7 +88,8 @@ public class PowerRecordInternal
             powerRecords.add(
                     new PowerRecord.PowerRecordSample(
                             Power.fromWatts(powerRecordSample.getPower()),
-                            Instant.ofEpochMilli(powerRecordSample.getEpochMillis())));
+                            Instant.ofEpochMilli(powerRecordSample.getEpochMillis()),
+                            true));
         }
         return powerRecords;
     }

@@ -37,6 +37,8 @@ java_library {
         ":statslog-healthfitness-java-gen",
     ],
     libs: [
+        // needed for restricted atoms
+        "androidx.annotation_annotation",
         // To add StatsLog as a dependency of the generated file.
         "framework-statsd.stubs.module_lib",
     ],
@@ -63,6 +65,7 @@ java_sdk_library {
     srcs: [":framework-healthfitness-sources"],
     defaults: ["framework-module-defaults"],
     sdk_version: "module_current",
+    min_sdk_version: "UpsideDownCake",
     apex_available: ["com.android.healthfitness"],
     impl_library_visibility: [
         "//packages/modules/HealthFitness:__subpackages__"

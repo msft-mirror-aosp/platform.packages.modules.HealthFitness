@@ -36,38 +36,41 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 /** @hide */
 public final class DeleteTransactionRequest {
     private static final String TAG = "HealthConnectDelete";
     private final List<DeleteTableRequest> mDeleteTableRequests;
-    private final ChangeLogsHelper.ChangeLogs mChangeLogs;
     private final long mRequestingPackageNameId;
+    private ChangeLogsHelper.ChangeLogs mChangeLogs;
     private boolean mHasHealthDataManagementPermission;
 
     public DeleteTransactionRequest(String packageName, DeleteUsingFiltersRequestParcel request) {
         Objects.requireNonNull(packageName);
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
-        mChangeLogs =
-                new ChangeLogsHelper.ChangeLogs(DELETE, packageName, Instant.now().toEpochMilli());
         mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
-        if (request.getRecordIdFiltersParcel().getRecordIdFilters() != null
-                && !request.getRecordIdFiltersParcel().getRecordIdFilters().isEmpty()) {
+        if (request.usesIdFilters()) {
+            // We don't keep change logs for bulk deletes
+            mChangeLogs =
+                    new ChangeLogsHelper.ChangeLogs(
+                            DELETE, packageName, Instant.now().toEpochMilli());
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();
-            Set<String> uuidSet = new ArraySet<>();
-            Map<RecordHelper<?>, List<String>> recordTypeToUuids = new ArrayMap<>();
+            Set<UUID> uuidSet = new ArraySet<>();
+            Map<RecordHelper<?>, List<UUID>> recordTypeToUuids = new ArrayMap<>();
             for (RecordIdFilter recordId : recordIds) {
                 RecordHelper<?> recordHelper =
                         RecordHelperProvider.getInstance()
                                 .getRecordHelper(
                                         RecordMapper.getInstance()
                                                 .getRecordType(recordId.getRecordType()));
-                String uuid = StorageUtils.getUUIDFor(recordId, packageName);
+                UUID uuid = StorageUtils.getUUIDFor(recordId, packageName);
                 if (uuidSet.contains(uuid)) {
                     // id has been already been processed;
                     continue;
@@ -78,9 +81,8 @@ public final class DeleteTransactionRequest {
             }
 
             recordTypeToUuids.forEach(
-                    (recordHelper, uuids) -> {
-                        mDeleteTableRequests.add(recordHelper.getDeleteTableRequest(uuids));
-                    });
+                    (recordHelper, uuids) ->
+                            mDeleteTableRequests.add(recordHelper.getDeleteTableRequest(uuids)));
 
             // We currently only support either using filters or ids, so if we are deleting using
             // ids no need to proceed further.
@@ -107,7 +109,8 @@ public final class DeleteTransactionRequest {
                             recordHelper.getDeleteTableRequest(
                                     request.getPackageNameFilters(),
                                     request.getStartTime(),
-                                    request.getEndTime()));
+                                    request.getEndTime(),
+                                    request.isLocalTimeFilter()));
                 });
     }
 
@@ -118,17 +121,28 @@ public final class DeleteTransactionRequest {
         return mDeleteTableRequests;
     }
 
-    public void onUuidFetched(
-            @RecordTypeIdentifier.RecordType int recordType, @NonNull String uuid) {
-        mChangeLogs.addUUID(recordType, uuid);
+    /**
+     * Function to add an uuid corresponding to given pair of @recordType and @appId to
+     * recordTypeAndAppIdToUUIDMap of changeLogs
+     */
+    public void onRecordFetched(
+            @RecordTypeIdentifier.RecordType int recordType, long appId, UUID uuid) {
+        if (mChangeLogs == null) {
+            return;
+        }
+        mChangeLogs.addUUID(recordType, appId, uuid);
     }
 
     @NonNull
     public List<UpsertTableRequest> getChangeLogUpsertRequests() {
+        if (mChangeLogs == null) {
+            return Collections.emptyList();
+        }
+
         return mChangeLogs.getUpsertTableRequests();
     }
 
-    public void enforcePackageCheck(String uuid, long appInfoId) {
+    public void enforcePackageCheck(UUID uuid, long appInfoId) {
         if (mHasHealthDataManagementPermission) {
             // Skip this check if the caller has data management permission
             return;

@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.categories.HealthDataCategoriesFragm
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel
+import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_3
@@ -75,6 +76,10 @@ class HealthPermissionTypesFragmentTest {
                 HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData(listOf()))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData<List<AppMetadata>>(listOf(TEST_APP, TEST_APP_2))
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("Active calories burned")).check(doesNotExist())
@@ -112,22 +117,26 @@ class HealthPermissionTypesFragmentTest {
                 HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData(listOf()))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData<List<AppMetadata>>(listOf())
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("Active calories burned")).check(doesNotExist())
-        onView(withText("Distance")).check(matches(isDisplayed()))
+        onView(withText("Distance")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Elevation gained")).check(doesNotExist())
-        onView(withText("Exercise")).check(matches(isDisplayed()))
+        onView(withText("Exercise")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Floors climbed")).check(doesNotExist())
         onView(withText("Power")).check(doesNotExist())
-        onView(withText("Steps")).check(matches(isDisplayed()))
+        onView(withText("Steps")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Total calories burned")).check(doesNotExist())
         onView(withText("VO2 max")).check(doesNotExist())
         onView(withText("Wheelchair pushes")).check(doesNotExist())
-        onView(withText("Manage data")).check(matches(isDisplayed()))
+        onView(withText("Manage data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("App priority")).check(doesNotExist())
         onView(withText("Health Connect test app")).check(doesNotExist())
-        onView(withText("Delete activity data")).check(matches(isDisplayed()))
+        onView(withText("Delete activity data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -149,22 +158,24 @@ class HealthPermissionTypesFragmentTest {
                 HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData(listOf()))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        Mockito.`when`(viewModel.editedPriorityList).then { MutableLiveData(listOf(TEST_APP)) }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("Active calories burned")).check(doesNotExist())
-        onView(withText("Distance")).check(matches(isDisplayed()))
+        onView(withText("Distance")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Elevation gained")).check(doesNotExist())
-        onView(withText("Exercise")).check(matches(isDisplayed()))
+        onView(withText("Exercise")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Floors climbed")).check(doesNotExist())
         onView(withText("Power")).check(doesNotExist())
-        onView(withText("Steps")).check(matches(isDisplayed()))
+        onView(withText("Steps")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Total calories burned")).check(doesNotExist())
         onView(withText("VO2 max")).check(doesNotExist())
         onView(withText("Wheelchair pushes")).check(doesNotExist())
-        onView(withText("Manage data")).check(matches(isDisplayed()))
+        onView(withText("Manage data")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("App priority")).check(doesNotExist())
         onView(withText("Health Connect test app")).check(doesNotExist())
-        onView(withText("Delete activity data")).check(matches(isDisplayed()))
+        onView(withText("Delete activity data")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -187,6 +198,10 @@ class HealthPermissionTypesFragmentTest {
                 HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData(listOf()))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("App priority")).perform(click())
@@ -197,7 +212,10 @@ class HealthPermissionTypesFragmentTest {
                         "the app highest in this list. Drag apps to reorder them."))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+        onView(withText("0")).inRoot(isDialog()).check(doesNotExist())
+        onView(withText("1")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Health Connect test app")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("2")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Health Connect test app 2"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
@@ -225,6 +243,10 @@ class HealthPermissionTypesFragmentTest {
                     listOf(TEST_APP, TEST_APP_2)))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData<List<AppMetadata>>(listOf())
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("All apps")).check(matches(isDisplayed()))
@@ -249,6 +271,10 @@ class HealthPermissionTypesFragmentTest {
                     listOf(TEST_APP_3)))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData<List<AppMetadata>>(listOf())
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText("All apps")).check(doesNotExist())
@@ -272,6 +298,10 @@ class HealthPermissionTypesFragmentTest {
                     listOf(TEST_APP, TEST_APP_3)))
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("All apps") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData<List<AppMetadata>>(listOf())
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
 
         onView(withText(TEST_APP_3.appName)).perform(scrollTo(), click())

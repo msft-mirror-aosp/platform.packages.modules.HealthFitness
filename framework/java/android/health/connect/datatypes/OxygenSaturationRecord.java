@@ -17,6 +17,8 @@ package android.health.connect.datatypes;
 
 import android.annotation.NonNull;
 import android.health.connect.datatypes.units.Percentage;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.OxygenSaturationRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -37,18 +39,22 @@ public final class OxygenSaturationRecord extends InstantRecord {
      * @param time Start time of this activity
      * @param zoneOffset Zone offset of the user when the activity started
      * @param percentage Percentage of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private OxygenSaturationRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @NonNull Percentage percentage) {
-        super(metadata, time, zoneOffset);
+            @NonNull Percentage percentage,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
         Objects.requireNonNull(percentage);
-        ValidationUtils.requireInRange(percentage.getValue(), 0.0, 100.0, "percentage");
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(percentage.getValue(), 0.0, 100.0, "percentage");
+        }
         mPercentage = percentage;
     }
     /**
@@ -119,11 +125,42 @@ public final class OxygenSaturationRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link OxygenSaturationRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public OxygenSaturationRecord buildWithoutValidation() {
+            return new OxygenSaturationRecord(mMetadata, mTime, mZoneOffset, mPercentage, true);
+        }
+
+        /**
          * @return Object of {@link OxygenSaturationRecord}
          */
         @NonNull
         public OxygenSaturationRecord build() {
-            return new OxygenSaturationRecord(mMetadata, mTime, mZoneOffset, mPercentage);
+            return new OxygenSaturationRecord(mMetadata, mTime, mZoneOffset, mPercentage, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public OxygenSaturationRecordInternal toRecordInternal() {
+        OxygenSaturationRecordInternal recordInternal =
+                (OxygenSaturationRecordInternal)
+                        new OxygenSaturationRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setPercentage(mPercentage.getValue());
+        return recordInternal;
     }
 }

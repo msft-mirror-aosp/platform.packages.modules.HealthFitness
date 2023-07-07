@@ -26,11 +26,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import java.text.NumberFormat
 
 /** RecyclerView adapter that holds the list of the priority list. */
-class PriorityListAdapter(appMetadataList: List<AppMetadata>) :
-    RecyclerView.Adapter<PriorityListAdapter.PriorityListItemViewHolder?>() {
+class PriorityListAdapter(
+    appMetadataList: List<AppMetadata>,
+    private val viewModel: HealthPermissionTypesViewModel
+) : RecyclerView.Adapter<PriorityListAdapter.PriorityListItemViewHolder?>() {
 
     private var listener: ItemTouchHelper? = null
     private var appMetadataList = appMetadataList.toMutableList()
@@ -46,7 +50,7 @@ class PriorityListAdapter(appMetadataList: List<AppMetadata>) :
     }
 
     override fun onBindViewHolder(viewHolder: PriorityListItemViewHolder, position: Int) {
-        viewHolder.bind(appMetadataList[position].appName, appMetadataList[position].icon)
+        viewHolder.bind(position, appMetadataList[position].appName, appMetadataList[position].icon)
     }
 
     override fun getItemCount(): Int {
@@ -58,6 +62,7 @@ class PriorityListAdapter(appMetadataList: List<AppMetadata>) :
         appMetadataList.add(
             if (toPosition > fromPosition + 1) toPosition - 1 else toPosition, movedAppInfo)
         notifyItemMoved(fromPosition, toPosition)
+        viewModel.setEditedPriorityList(appMetadataList)
         return true
     }
 
@@ -76,6 +81,7 @@ class PriorityListAdapter(appMetadataList: List<AppMetadata>) :
     /** Shows a single item of the priority list. */
     class PriorityListItemViewHolder(itemView: View, onItemDragStartedListener: ItemTouchHelper?) :
         RecyclerView.ViewHolder(itemView) {
+        private val appPositionView: TextView
         private val appNameView: TextView
         private val appIconView: ImageView
         private val dragIconView: View
@@ -83,6 +89,7 @@ class PriorityListAdapter(appMetadataList: List<AppMetadata>) :
         private val onItemDragStartedListener: ItemTouchHelper?
 
         init {
+            appPositionView = itemView.findViewById(R.id.app_position)
             appNameView = itemView.findViewById(R.id.app_name)
             appIconView = itemView.findViewById(R.id.app_icon)
             dragIconView = itemView.findViewById(R.id.drag_icon)
@@ -93,7 +100,11 @@ class PriorityListAdapter(appMetadataList: List<AppMetadata>) :
         // conditions.
         // Drag&drop in accessibility mode (talk back) is implemented as custom actions.
         @SuppressLint("ClickableViewAccessibility")
-        fun bind(appName: String?, appIcon: Drawable?) {
+        fun bind(appPosition: Int, appName: String?, appIcon: Drawable?) {
+            // Adding 1 to position as position starts from 0 but should show to the user starting
+            // from 1.
+            val positionString: String = NumberFormat.getIntegerInstance().format(appPosition + 1)
+            appPositionView.text = positionString
             appNameView.text = appName
             appIconView.setImageDrawable(appIcon)
             dragIconView.setOnTouchListener { _, event ->

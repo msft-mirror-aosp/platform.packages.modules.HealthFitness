@@ -15,14 +15,18 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.health.connect.internal.datatypes.MenstruationFlowRecordInternal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Captures a description of how heavy a user's menstrual flow was (spotting, light, medium, or
@@ -38,16 +42,20 @@ public final class MenstruationFlowRecord extends InstantRecord {
      * @param time Start time of this activity
      * @param zoneOffset Zone offset of the user when the activity started
      * @param flow Flow of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private MenstruationFlowRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @MenstruationFlowType.MenstruationFlowTypes int flow) {
-        super(metadata, time, zoneOffset);
+            @MenstruationFlowType.MenstruationFlowTypes int flow,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
+        validateIntDefValue(
+                flow, MenstruationFlowType.VALID_TYPES, MenstruationFlowType.class.getSimpleName());
         mFlow = flow;
     }
 
@@ -64,6 +72,15 @@ public final class MenstruationFlowRecord extends InstantRecord {
         public static final int FLOW_LIGHT = 1;
         public static final int FLOW_MEDIUM = 2;
         public static final int FLOW_HEAVY = 3;
+
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(FLOW_UNKNOWN, FLOW_LIGHT, FLOW_MEDIUM, FLOW_HEAVY);
 
         MenstruationFlowType() {}
 
@@ -134,11 +151,42 @@ public final class MenstruationFlowRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link MenstruationFlowRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public MenstruationFlowRecord buildWithoutValidation() {
+            return new MenstruationFlowRecord(mMetadata, mTime, mZoneOffset, mFlow, true);
+        }
+
+        /**
          * @return Object of {@link MenstruationFlowRecord}
          */
         @NonNull
         public MenstruationFlowRecord build() {
-            return new MenstruationFlowRecord(mMetadata, mTime, mZoneOffset, mFlow);
+            return new MenstruationFlowRecord(mMetadata, mTime, mZoneOffset, mFlow, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public MenstruationFlowRecordInternal toRecordInternal() {
+        MenstruationFlowRecordInternal recordInternal =
+                (MenstruationFlowRecordInternal)
+                        new MenstruationFlowRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setFlow(mFlow);
+        return recordInternal;
     }
 }

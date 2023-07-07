@@ -20,6 +20,8 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import android.annotation.NonNull;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.HeightRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -69,18 +71,22 @@ public final class HeightRecord extends InstantRecord {
      * @param time Start time of this activity
      * @param zoneOffset Zone offset of the user when the activity started
      * @param height Height of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private HeightRecord(
             @NonNull Metadata metadata,
             @NonNull Instant time,
             @NonNull ZoneOffset zoneOffset,
-            @NonNull Length height) {
-        super(metadata, time, zoneOffset);
+            @NonNull Length height,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
         Objects.requireNonNull(height);
-        ValidationUtils.requireInRange(height.getInMeters(), 0.0, 3.0, "height");
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(height.getInMeters(), 0.0, 3.0, "height");
+        }
         mHeight = height;
     }
     /**
@@ -149,11 +155,42 @@ public final class HeightRecord extends InstantRecord {
         }
 
         /**
+         * @return Object of {@link HeightRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public HeightRecord buildWithoutValidation() {
+            return new HeightRecord(mMetadata, mTime, mZoneOffset, mHeight, true);
+        }
+
+        /**
          * @return Object of {@link HeightRecord}
          */
         @NonNull
         public HeightRecord build() {
-            return new HeightRecord(mMetadata, mTime, mZoneOffset, mHeight);
+            return new HeightRecord(mMetadata, mTime, mZoneOffset, mHeight, false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public HeightRecordInternal toRecordInternal() {
+        HeightRecordInternal recordInternal =
+                (HeightRecordInternal)
+                        new HeightRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setHeight(mHeight.getInMeters());
+        return recordInternal;
     }
 }

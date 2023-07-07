@@ -567,53 +567,53 @@ public final class NutritionRecordInternal extends IntervalRecordInternal<Nutrit
     @Override
     public NutritionRecord toExternalRecord() {
         return new NutritionRecord.Builder(buildMetaData(), getStartTime(), getEndTime())
-                .setUnsaturatedFat(Mass.fromKilograms(getUnsaturatedFat()))
-                .setPotassium(Mass.fromKilograms(getPotassium()))
-                .setThiamin(Mass.fromKilograms(getThiamin()))
+                .setUnsaturatedFat(Mass.fromGrams(getUnsaturatedFat()))
+                .setPotassium(Mass.fromGrams(getPotassium()))
+                .setThiamin(Mass.fromGrams(getThiamin()))
                 .setMealType(getMealType())
-                .setTransFat(Mass.fromKilograms(getTransFat()))
-                .setManganese(Mass.fromKilograms(getManganese()))
-                .setEnergyFromFat(Energy.fromJoules(getEnergyFromFat()))
-                .setCaffeine(Mass.fromKilograms(getCaffeine()))
-                .setDietaryFiber(Mass.fromKilograms(getDietaryFiber()))
-                .setSelenium(Mass.fromKilograms(getSelenium()))
-                .setVitaminB6(Mass.fromKilograms(getVitaminB6()))
-                .setProtein(Mass.fromKilograms(getProtein()))
-                .setChloride(Mass.fromKilograms(getChloride()))
-                .setCholesterol(Mass.fromKilograms(getCholesterol()))
-                .setCopper(Mass.fromKilograms(getCopper()))
-                .setIodine(Mass.fromKilograms(getIodine()))
-                .setVitaminB12(Mass.fromKilograms(getVitaminB12()))
-                .setZinc(Mass.fromKilograms(getZinc()))
-                .setRiboflavin(Mass.fromKilograms(getRiboflavin()))
-                .setEnergy(Energy.fromJoules(getEnergy()))
-                .setMolybdenum(Mass.fromKilograms(getMolybdenum()))
-                .setPhosphorus(Mass.fromKilograms(getPhosphorus()))
-                .setChromium(Mass.fromKilograms(getChromium()))
-                .setTotalFat(Mass.fromKilograms(getTotalFat()))
-                .setCalcium(Mass.fromKilograms(getCalcium()))
-                .setVitaminC(Mass.fromKilograms(getVitaminC()))
-                .setVitaminE(Mass.fromKilograms(getVitaminE()))
-                .setBiotin(Mass.fromKilograms(getBiotin()))
-                .setVitaminD(Mass.fromKilograms(getVitaminD()))
-                .setNiacin(Mass.fromKilograms(getNiacin()))
-                .setMagnesium(Mass.fromKilograms(getMagnesium()))
-                .setTotalCarbohydrate(Mass.fromKilograms(getTotalCarbohydrate()))
-                .setVitaminK(Mass.fromKilograms(getVitaminK()))
-                .setPolyunsaturatedFat(Mass.fromKilograms(getPolyunsaturatedFat()))
-                .setSaturatedFat(Mass.fromKilograms(getSaturatedFat()))
-                .setSodium(Mass.fromKilograms(getSodium()))
-                .setFolate(Mass.fromKilograms(getFolate()))
-                .setMonounsaturatedFat(Mass.fromKilograms(getMonounsaturatedFat()))
-                .setPantothenicAcid(Mass.fromKilograms(getPantothenicAcid()))
+                .setTransFat(Mass.fromGrams(getTransFat()))
+                .setManganese(Mass.fromGrams(getManganese()))
+                .setEnergyFromFat(Energy.fromCalories(getEnergyFromFat()))
+                .setCaffeine(Mass.fromGrams(getCaffeine()))
+                .setDietaryFiber(Mass.fromGrams(getDietaryFiber()))
+                .setSelenium(Mass.fromGrams(getSelenium()))
+                .setVitaminB6(Mass.fromGrams(getVitaminB6()))
+                .setProtein(Mass.fromGrams(getProtein()))
+                .setChloride(Mass.fromGrams(getChloride()))
+                .setCholesterol(Mass.fromGrams(getCholesterol()))
+                .setCopper(Mass.fromGrams(getCopper()))
+                .setIodine(Mass.fromGrams(getIodine()))
+                .setVitaminB12(Mass.fromGrams(getVitaminB12()))
+                .setZinc(Mass.fromGrams(getZinc()))
+                .setRiboflavin(Mass.fromGrams(getRiboflavin()))
+                .setEnergy(Energy.fromCalories(getEnergy()))
+                .setMolybdenum(Mass.fromGrams(getMolybdenum()))
+                .setPhosphorus(Mass.fromGrams(getPhosphorus()))
+                .setChromium(Mass.fromGrams(getChromium()))
+                .setTotalFat(Mass.fromGrams(getTotalFat()))
+                .setCalcium(Mass.fromGrams(getCalcium()))
+                .setVitaminC(Mass.fromGrams(getVitaminC()))
+                .setVitaminE(Mass.fromGrams(getVitaminE()))
+                .setBiotin(Mass.fromGrams(getBiotin()))
+                .setVitaminD(Mass.fromGrams(getVitaminD()))
+                .setNiacin(Mass.fromGrams(getNiacin()))
+                .setMagnesium(Mass.fromGrams(getMagnesium()))
+                .setTotalCarbohydrate(Mass.fromGrams(getTotalCarbohydrate()))
+                .setVitaminK(Mass.fromGrams(getVitaminK()))
+                .setPolyunsaturatedFat(Mass.fromGrams(getPolyunsaturatedFat()))
+                .setSaturatedFat(Mass.fromGrams(getSaturatedFat()))
+                .setSodium(Mass.fromGrams(getSodium()))
+                .setFolate(Mass.fromGrams(getFolate()))
+                .setMonounsaturatedFat(Mass.fromGrams(getMonounsaturatedFat()))
+                .setPantothenicAcid(Mass.fromGrams(getPantothenicAcid()))
                 .setMealName(getMealName())
-                .setIron(Mass.fromKilograms(getIron()))
-                .setVitaminA(Mass.fromKilograms(getVitaminA()))
-                .setFolicAcid(Mass.fromKilograms(getFolicAcid()))
-                .setSugar(Mass.fromKilograms(getSugar()))
+                .setIron(Mass.fromGrams(getIron()))
+                .setVitaminA(Mass.fromGrams(getVitaminA()))
+                .setFolicAcid(Mass.fromGrams(getFolicAcid()))
+                .setSugar(Mass.fromGrams(getSugar()))
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
@@ -662,138 +662,6 @@ public final class NutritionRecordInternal extends IntervalRecordInternal<Nutrit
         mVitaminA = parcel.readDouble();
         mFolicAcid = parcel.readDouble();
         mSugar = parcel.readDouble();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull NutritionRecord nutritionRecord) {
-        if (nutritionRecord.getUnsaturatedFat() != null) {
-            mUnsaturatedFat = nutritionRecord.getUnsaturatedFat().getInKilograms();
-        }
-        if (nutritionRecord.getPotassium() != null) {
-            mPotassium = nutritionRecord.getPotassium().getInKilograms();
-        }
-        if (nutritionRecord.getThiamin() != null) {
-            mThiamin = nutritionRecord.getThiamin().getInKilograms();
-        }
-        mMealType = nutritionRecord.getMealType();
-        if (nutritionRecord.getTransFat() != null) {
-            mTransFat = nutritionRecord.getTransFat().getInKilograms();
-        }
-        if (nutritionRecord.getManganese() != null) {
-            mManganese = nutritionRecord.getManganese().getInKilograms();
-        }
-        if (nutritionRecord.getEnergyFromFat() != null) {
-            mEnergyFromFat = nutritionRecord.getEnergyFromFat().getInJoules();
-        }
-        if (nutritionRecord.getCaffeine() != null) {
-            mCaffeine = nutritionRecord.getCaffeine().getInKilograms();
-        }
-        if (nutritionRecord.getDietaryFiber() != null) {
-            mDietaryFiber = nutritionRecord.getDietaryFiber().getInKilograms();
-        }
-        if (nutritionRecord.getSelenium() != null) {
-            mSelenium = nutritionRecord.getSelenium().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminB6() != null) {
-            mVitaminB6 = nutritionRecord.getVitaminB6().getInKilograms();
-        }
-        if (nutritionRecord.getProtein() != null) {
-            mProtein = nutritionRecord.getProtein().getInKilograms();
-        }
-        if (nutritionRecord.getChloride() != null) {
-            mChloride = nutritionRecord.getChloride().getInKilograms();
-        }
-        if (nutritionRecord.getCholesterol() != null) {
-            mCholesterol = nutritionRecord.getCholesterol().getInKilograms();
-        }
-        if (nutritionRecord.getCopper() != null) {
-            mCopper = nutritionRecord.getCopper().getInKilograms();
-        }
-        if (nutritionRecord.getIodine() != null) {
-            mIodine = nutritionRecord.getIodine().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminB12() != null) {
-            mVitaminB12 = nutritionRecord.getVitaminB12().getInKilograms();
-        }
-        if (nutritionRecord.getZinc() != null) {
-            mZinc = nutritionRecord.getZinc().getInKilograms();
-        }
-        if (nutritionRecord.getRiboflavin() != null) {
-            mRiboflavin = nutritionRecord.getRiboflavin().getInKilograms();
-        }
-        if (nutritionRecord.getEnergy() != null) {
-            mEnergy = nutritionRecord.getEnergy().getInJoules();
-        }
-        if (nutritionRecord.getMolybdenum() != null) {
-            mMolybdenum = nutritionRecord.getMolybdenum().getInKilograms();
-        }
-        if (nutritionRecord.getPhosphorus() != null) {
-            mPhosphorus = nutritionRecord.getPhosphorus().getInKilograms();
-        }
-        if (nutritionRecord.getChromium() != null) {
-            mChromium = nutritionRecord.getChromium().getInKilograms();
-        }
-        if (nutritionRecord.getTotalFat() != null) {
-            mTotalFat = nutritionRecord.getTotalFat().getInKilograms();
-        }
-        if (nutritionRecord.getCalcium() != null) {
-            mCalcium = nutritionRecord.getCalcium().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminC() != null) {
-            mVitaminC = nutritionRecord.getVitaminC().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminE() != null) {
-            mVitaminE = nutritionRecord.getVitaminE().getInKilograms();
-        }
-        if (nutritionRecord.getBiotin() != null) {
-            mBiotin = nutritionRecord.getBiotin().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminD() != null) {
-            mVitaminD = nutritionRecord.getVitaminD().getInKilograms();
-        }
-        if (nutritionRecord.getNiacin() != null) {
-            mNiacin = nutritionRecord.getNiacin().getInKilograms();
-        }
-        if (nutritionRecord.getMagnesium() != null) {
-            mMagnesium = nutritionRecord.getMagnesium().getInKilograms();
-        }
-        if (nutritionRecord.getTotalCarbohydrate() != null) {
-            mTotalCarbohydrate = nutritionRecord.getTotalCarbohydrate().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminK() != null) {
-            mVitaminK = nutritionRecord.getVitaminK().getInKilograms();
-        }
-        if (nutritionRecord.getPolyunsaturatedFat() != null) {
-            mPolyunsaturatedFat = nutritionRecord.getPolyunsaturatedFat().getInKilograms();
-        }
-        if (nutritionRecord.getSaturatedFat() != null) {
-            mSaturatedFat = nutritionRecord.getSaturatedFat().getInKilograms();
-        }
-        if (nutritionRecord.getSodium() != null) {
-            mSodium = nutritionRecord.getSodium().getInKilograms();
-        }
-        if (nutritionRecord.getFolate() != null) {
-            mFolate = nutritionRecord.getFolate().getInKilograms();
-        }
-        if (nutritionRecord.getMonounsaturatedFat() != null) {
-            mMonounsaturatedFat = nutritionRecord.getMonounsaturatedFat().getInKilograms();
-        }
-        if (nutritionRecord.getPantothenicAcid() != null) {
-            mPantothenicAcid = nutritionRecord.getPantothenicAcid().getInKilograms();
-        }
-        mMealName = nutritionRecord.getMealName();
-        if (nutritionRecord.getIron() != null) {
-            mIron = nutritionRecord.getIron().getInKilograms();
-        }
-        if (nutritionRecord.getVitaminA() != null) {
-            mVitaminA = nutritionRecord.getVitaminA().getInKilograms();
-        }
-        if (nutritionRecord.getFolicAcid() != null) {
-            mFolicAcid = nutritionRecord.getFolicAcid().getInKilograms();
-        }
-        if (nutritionRecord.getSugar() != null) {
-            mSugar = nutritionRecord.getSugar().getInKilograms();
-        }
     }
 
     @Override

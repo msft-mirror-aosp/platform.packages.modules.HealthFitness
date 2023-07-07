@@ -42,15 +42,6 @@ public class ExerciseSegmentInternal {
 
     private int mRepetitionsCount;
 
-    /** Builds segment from internal records. */
-    public static ExerciseSegmentInternal fromExternalSegment(ExerciseSegment segment) {
-        return new ExerciseSegmentInternal()
-                .setStarTime(segment.getStartTime().toEpochMilli())
-                .setEndTime(segment.getEndTime().toEpochMilli())
-                .setSegmentType(segment.getSegmentType())
-                .setRepetitionsCount(segment.getRepetitionsCount());
-    }
-
     /** Reads record from parcel. */
     @VisibleForTesting
     public static ExerciseSegmentInternal readFromParcel(Parcel parcel) {
@@ -106,7 +97,7 @@ public class ExerciseSegmentInternal {
                         Instant.ofEpochMilli(getEndTime()),
                         getSegmentType())
                 .setRepetitionsCount(getRepetitionsCount())
-                .build();
+                .buildWithoutValidation();
     }
 
     /** Sets segment start time. Returns record with start time set. */

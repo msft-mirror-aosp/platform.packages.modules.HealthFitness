@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class TestUtils {
 
@@ -40,7 +41,7 @@ public class TestUtils {
 
     public static ExerciseRouteInternal.LocationInternal buildInternalLocationAllFields() {
         return new ExerciseRouteInternal.LocationInternal()
-                .setTime((long) 1e10)
+                .setTime(START_TIME + 2)
                 .setLatitude(60.321)
                 .setLongitude(59.123)
                 .setVerticalAccuracy(1.2)
@@ -50,7 +51,7 @@ public class TestUtils {
 
     public static ExerciseRouteInternal.LocationInternal buildInternalLocation() {
         return new ExerciseRouteInternal.LocationInternal()
-                .setTime((long) 1e10)
+                .setTime(START_TIME + 1)
                 .setLatitude(60.321)
                 .setLongitude(59.123);
     }
@@ -63,8 +64,7 @@ public class TestUtils {
     public static ExerciseSessionRecordInternal buildExerciseSessionInternal() {
         return (ExerciseSessionRecordInternal)
                 new ExerciseSessionRecordInternal()
-                        .setExerciseType(
-                                ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
+                        .setExerciseType(ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
                         .setRoute(buildExerciseRouteInternal())
                         .setTitle("Morning walk")
                         .setNotes("Sunny weather")
@@ -78,7 +78,7 @@ public class TestUtils {
                         .setClientRecordId("client_id")
                         .setManufacturer("manufacturer")
                         .setClientRecordVersion(12)
-                        .setUuid("id")
+                        .setUuid(UUID.randomUUID())
                         .setPackageName("android.healthconnect.unittests")
                         .setModel("Pixel4a");
     }
@@ -97,7 +97,7 @@ public class TestUtils {
                         .setClientRecordId("client_id")
                         .setManufacturer("manufacturer")
                         .setClientRecordVersion(12)
-                        .setUuid("id")
+                        .setUuid(UUID.randomUUID())
                         .setPackageName("android.healthconnect.unittests")
                         .setModel("Pixel4a");
     }
@@ -124,11 +124,10 @@ public class TestUtils {
     public static ExerciseSessionRecordInternal buildExerciseSessionInternalNoExtraFields() {
         return (ExerciseSessionRecordInternal)
                 new ExerciseSessionRecordInternal()
-                        .setExerciseType(
-                                ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
+                        .setExerciseType(ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
                         .setStartTime((long) 1e9)
                         .setEndTime((long) 1e10)
-                        .setUuid("id")
+                        .setUuid(UUID.randomUUID())
                         .setPackageName("android.healthconnect.unittests");
     }
 
@@ -137,7 +136,7 @@ public class TestUtils {
                 new SleepSessionRecordInternal()
                         .setStartTime((long) 1e9)
                         .setEndTime((long) 1e10)
-                        .setUuid("id")
+                        .setUuid(UUID.randomUUID())
                         .setPackageName("android.healthconnect.unittests");
     }
 

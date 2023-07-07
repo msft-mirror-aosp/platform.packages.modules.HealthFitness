@@ -16,10 +16,23 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.HealthDataCategory.ACTIVITY;
+import static android.health.connect.HealthDataCategory.BODY_MEASUREMENTS;
+import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
+import static android.health.connect.HealthDataCategory.NUTRITION;
+import static android.health.connect.HealthDataCategory.SLEEP;
+import static android.health.connect.HealthDataCategory.VITALS;
+import static android.health.connect.HealthPermissionCategory.BASAL_METABOLIC_RATE;
+import static android.health.connect.HealthPermissionCategory.EXERCISE;
+import static android.health.connect.HealthPermissionCategory.HEART_RATE;
+import static android.health.connect.HealthPermissionCategory.STEPS;
+import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_ACTIVELY_RECORDED;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 
+import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
+import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -30,40 +43,78 @@ import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.HealthPermissionCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordIdFilter;
+import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
+import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
+import android.health.connect.datatypes.AppInfo;
+import android.health.connect.datatypes.BasalBodyTemperatureRecord;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
+import android.health.connect.datatypes.BloodGlucoseRecord;
+import android.health.connect.datatypes.BloodPressureRecord;
+import android.health.connect.datatypes.BodyFatRecord;
+import android.health.connect.datatypes.BodyTemperatureRecord;
+import android.health.connect.datatypes.BodyWaterMassRecord;
+import android.health.connect.datatypes.BoneMassRecord;
+import android.health.connect.datatypes.CervicalMucusRecord;
+import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
+import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.ElevationGainedRecord;
 import android.health.connect.datatypes.ExerciseLap;
 import android.health.connect.datatypes.ExerciseRoute;
 import android.health.connect.datatypes.ExerciseSegment;
 import android.health.connect.datatypes.ExerciseSegmentType;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.ExerciseSessionType;
+import android.health.connect.datatypes.FloorsClimbedRecord;
 import android.health.connect.datatypes.HeartRateRecord;
+import android.health.connect.datatypes.HeartRateVariabilityRmssdRecord;
+import android.health.connect.datatypes.HeightRecord;
+import android.health.connect.datatypes.HydrationRecord;
+import android.health.connect.datatypes.IntermenstrualBleedingRecord;
+import android.health.connect.datatypes.LeanBodyMassRecord;
+import android.health.connect.datatypes.MenstruationFlowRecord;
+import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.NutritionRecord;
+import android.health.connect.datatypes.OvulationTestRecord;
+import android.health.connect.datatypes.OxygenSaturationRecord;
+import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
+import android.health.connect.datatypes.RespiratoryRateRecord;
+import android.health.connect.datatypes.RestingHeartRateRecord;
+import android.health.connect.datatypes.SexualActivityRecord;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.health.connect.datatypes.SpeedRecord;
+import android.health.connect.datatypes.StepsCadenceRecord;
 import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.health.connect.datatypes.Vo2MaxRecord;
+import android.health.connect.datatypes.WeightRecord;
+import android.health.connect.datatypes.WheelchairPushesRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.migration.MigrationException;
 import android.os.OutcomeReceiver;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.util.Pair;
 
@@ -71,6 +122,11 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -80,7 +136,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -89,10 +148,14 @@ import java.util.stream.Collectors;
 
 public class TestUtils {
     public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
-    private static final String TAG = "HCTestUtils";
     public static final Instant SESSION_START_TIME = Instant.now().minus(10, ChronoUnit.DAYS);
     public static final Instant SESSION_END_TIME =
             Instant.now().minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
+    private static final String TAG = "HCTestUtils";
+
+    public static boolean isHardwareAutomotive() {
+        return hasSystemFeature(AUTOMOTIVE_FEATURE);
+    }
 
     public static ChangeLogTokenResponse getChangeLogToken(ChangeLogTokenRequest request)
             throws InterruptedException {
@@ -101,14 +164,28 @@ public class TestUtils {
         assertThat(service).isNotNull();
         CountDownLatch latch = new CountDownLatch(1);
         AtomicReference<ChangeLogTokenResponse> response = new AtomicReference<>();
+        AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
         service.getChangeLogToken(
                 request,
                 Executors.newSingleThreadExecutor(),
-                result -> {
-                    response.set(result);
-                    latch.countDown();
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(ChangeLogTokenResponse result) {
+                        response.set(result);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        Log.e(TAG, exception.getMessage());
+                        exceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (exceptionAtomicReference.get() != null) {
+            throw exceptionAtomicReference.get();
+        }
         return response.get();
     }
 
@@ -141,7 +218,6 @@ public class TestUtils {
 
                     @Override
                     public void onError(HealthConnectException exception) {
-                        Log.e(TAG, exception.getMessage());
                         exceptionAtomicReference.set(exception);
                         latch.countDown();
                     }
@@ -240,9 +316,10 @@ public class TestUtils {
                         RECORD_TYPE_BASAL_METABOLIC_RATE, getBasalMetabolicRateRecord()));
     }
 
-    public static ExerciseRoute.Location buildLocationTimePoint() {
+    public static ExerciseRoute.Location buildLocationTimePoint(Instant startTime) {
         return new ExerciseRoute.Location.Builder(
-                        Instant.ofEpochMilli((long) (1e10 + Math.random() * 50)),
+                        Instant.ofEpochMilli(
+                                (long) (startTime.toEpochMilli() + 10 + Math.random() * 50)),
                         Math.random() * 50,
                         Math.random() * 50)
                 .build();
@@ -251,9 +328,9 @@ public class TestUtils {
     public static ExerciseRoute buildExerciseRoute() {
         return new ExerciseRoute(
                 List.of(
-                        buildLocationTimePoint(),
-                        buildLocationTimePoint(),
-                        buildLocationTimePoint()));
+                        buildLocationTimePoint(SESSION_START_TIME),
+                        buildLocationTimePoint(SESSION_START_TIME),
+                        buildLocationTimePoint(SESSION_START_TIME)));
     }
 
     public static StepsRecord getStepsRecord() {
@@ -267,6 +344,24 @@ public class TestUtils {
                                 .setDevice(device)
                                 .setDataOrigin(dataOrigin)
                                 .setClientRecordId("SR" + Math.random())
+                                .build(),
+                        Instant.now(),
+                        Instant.now().plusMillis(1000),
+                        10)
+                .build();
+    }
+
+    public static StepsRecord getStepsRecord(String id) {
+        Context context = ApplicationProvider.getApplicationContext();
+        Device device =
+                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
+        DataOrigin dataOrigin =
+                new DataOrigin.Builder().setPackageName(context.getPackageName()).build();
+        return new StepsRecord.Builder(
+                        new Metadata.Builder()
+                                .setDevice(device)
+                                .setId(id)
+                                .setDataOrigin(dataOrigin)
                                 .build(),
                         Instant.now(),
                         Instant.now().plusMillis(1000),
@@ -354,7 +449,9 @@ public class TestUtils {
             AggregateRecordsRequest<T> request, List<Record> recordsToInsert)
             throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
-        insertRecords(recordsToInsert);
+        if (recordsToInsert != null) {
+            insertRecords(recordsToInsert);
+        }
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
         CountDownLatch latch = new CountDownLatch(1);
@@ -481,6 +578,8 @@ public class TestUtils {
                     @Override
                     public void onError(HealthConnectException exception) {
                         Log.e(TAG, exception.getMessage());
+                        healthConnectExceptionAtomicReference.set(exception);
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
@@ -694,17 +793,71 @@ public class TestUtils {
 
             CountDownLatch latch = new CountDownLatch(1);
             AtomicReference<List<AccessLog>> response = new AtomicReference<>();
+            AtomicReference<HealthConnectException> exceptionAtomicReference =
+                    new AtomicReference<>();
             service.queryAccessLogs(
                     Executors.newSingleThreadExecutor(),
-                    result -> {
-                        response.set(result);
-                        latch.countDown();
+                    new OutcomeReceiver<List<AccessLog>, HealthConnectException>() {
+
+                        @Override
+                        public void onResult(List<AccessLog> result) {
+                            response.set(result);
+                            latch.countDown();
+                        }
+
+                        @Override
+                        public void onError(@NonNull HealthConnectException exception) {
+                            exceptionAtomicReference.set(exception);
+                            latch.countDown();
+                        }
                     });
             assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
+            if (exceptionAtomicReference.get() != null) {
+                throw exceptionAtomicReference.get();
+            }
             return response.get();
         } finally {
             uiAutomation.dropShellPermissionIdentity();
         }
+    }
+
+    public static Map<Class<? extends Record>, RecordTypeInfoResponse> queryAllRecordTypesInfo()
+            throws InterruptedException, NullPointerException {
+        UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        AtomicReference<Map<Class<? extends Record>, RecordTypeInfoResponse>> response =
+                new AtomicReference<>();
+        AtomicReference<HealthConnectException> responseException = new AtomicReference<>();
+        try {
+            Context context = ApplicationProvider.getApplicationContext();
+            CountDownLatch latch = new CountDownLatch(1);
+            HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+            assertThat(service).isNotNull();
+            service.queryAllRecordTypesInfo(
+                    Executors.newSingleThreadExecutor(),
+                    new OutcomeReceiver<
+                            Map<Class<? extends Record>, RecordTypeInfoResponse>,
+                            HealthConnectException>() {
+                        @Override
+                        public void onResult(
+                                Map<Class<? extends Record>, RecordTypeInfoResponse> result) {
+                            response.set(result);
+                            latch.countDown();
+                        }
+
+                        @Override
+                        public void onError(HealthConnectException exception) {
+                            responseException.set(exception);
+                            latch.countDown();
+                        }
+                    });
+            assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
+            assertThat(responseException.get()).isNull();
+            assertThat(response).isNotNull();
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+        return response.get();
     }
 
     public static List<LocalDate> getActivityDates(List<Class<? extends Record>> recordTypes)
@@ -776,9 +929,10 @@ public class TestUtils {
     public static void startMigration() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
-
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
+        AtomicReference<MigrationException> migrationExceptionAtomicReference =
+                new AtomicReference<>();
         service.startMigration(
                 Executors.newSingleThreadExecutor(),
                 new OutcomeReceiver<Void, MigrationException>() {
@@ -789,18 +943,24 @@ public class TestUtils {
 
                     @Override
                     public void onError(MigrationException exception) {
+                        migrationExceptionAtomicReference.set(exception);
                         Log.e(TAG, exception.getMessage());
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (migrationExceptionAtomicReference.get() != null) {
+            throw migrationExceptionAtomicReference.get();
+        }
     }
 
     public static void finishMigration() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
-
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
+        AtomicReference<MigrationException> migrationExceptionAtomicReference =
+                new AtomicReference<>();
         service.finishMigration(
                 Executors.newSingleThreadExecutor(),
                 new OutcomeReceiver<Void, MigrationException>() {
@@ -812,10 +972,15 @@ public class TestUtils {
 
                     @Override
                     public void onError(MigrationException exception) {
+                        migrationExceptionAtomicReference.set(exception);
                         Log.e(TAG, exception.getMessage());
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (migrationExceptionAtomicReference.get() != null) {
+            throw migrationExceptionAtomicReference.get();
+        }
     }
 
     public static void insertMinDataMigrationSdkExtensionVersion(int version)
@@ -824,6 +989,8 @@ public class TestUtils {
         CountDownLatch latch = new CountDownLatch(1);
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
+        AtomicReference<MigrationException> migrationExceptionAtomicReference =
+                new AtomicReference<>();
         service.insertMinDataMigrationSdkExtensionVersion(
                 version,
                 Executors.newSingleThreadExecutor(),
@@ -836,10 +1003,15 @@ public class TestUtils {
 
                     @Override
                     public void onError(MigrationException exception) {
+                        migrationExceptionAtomicReference.set(exception);
                         Log.e(TAG, exception.getMessage());
+                        latch.countDown();
                     }
                 });
         assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (migrationExceptionAtomicReference.get() != null) {
+            throw migrationExceptionAtomicReference.get();
+        }
     }
 
     public static void deleteAllStagedRemoteData() {
@@ -883,33 +1055,119 @@ public class TestUtils {
         return returnedHealthConnectDataState.get().getDataMigrationState();
     }
 
-    static final class RecordAndIdentifier {
-        private final int id;
-        private final Record recordClass;
+    public static List<AppInfo> getApplicationInfo() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        CountDownLatch latch = new CountDownLatch(1);
+        assertThat(service).isNotNull();
+        AtomicReference<List<AppInfo>> response = new AtomicReference<>();
+        AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
+        service.getContributorApplicationsInfo(
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(ApplicationInfoResponse result) {
+                        response.set(result.getApplicationInfoList());
+                        latch.countDown();
+                    }
 
-        public RecordAndIdentifier(int id, Record recordClass) {
-            this.id = id;
-            this.recordClass = recordClass;
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        exceptionAtomicReference.set(exception);
+                        Log.e(TAG, exception.getMessage());
+                        latch.countDown();
+                    }
+                });
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
+        if (exceptionAtomicReference.get() != null) {
+            throw exceptionAtomicReference.get();
+        }
+        return response.get();
+    }
+
+    public static <T extends Record> T getRecordById(List<T> list, String id) {
+        for (T record : list) {
+            if (record.getMetadata().getId().equals(id)) {
+                return record;
+            }
         }
 
-        public int getId() {
-            return id;
-        }
-
-        public Record getRecordClass() {
-            return recordClass;
-        }
+        throw new AssertionError("Record not found with id: " + id);
     }
 
     static Metadata generateMetadata() {
         Context context = ApplicationProvider.getApplicationContext();
         return new Metadata.Builder()
                 .setDevice(buildDevice())
-                .setId("recordId" + Math.random())
+                .setId(UUID.randomUUID().toString())
                 .setClientRecordId("clientRecordId" + Math.random())
                 .setDataOrigin(
                         new DataOrigin.Builder().setPackageName(context.getPackageName()).build())
                 .setDevice(buildDevice())
+                .setRecordingMethod(Metadata.RECORDING_METHOD_UNKNOWN)
+                .build();
+    }
+
+    public static HeartRateRecord getHugeHeartRateRecord() {
+        Device device =
+                new Device.Builder()
+                        .setManufacturer("google")
+                        .setModel("Pixel4a")
+                        .setType(2)
+                        .build();
+        DataOrigin dataOrigin =
+                new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
+        Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
+        testMetadataBuilder.setClientRecordId("HRR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
+
+        HeartRateRecord.HeartRateSample heartRateRecord =
+                new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));
+        ArrayList<HeartRateRecord.HeartRateSample> heartRateRecords =
+                new ArrayList<>(Collections.nCopies(85000, heartRateRecord));
+
+        return new HeartRateRecord.Builder(
+                        testMetadataBuilder.build(),
+                        Instant.now(),
+                        Instant.now().plusMillis(500),
+                        heartRateRecords)
+                .build();
+    }
+
+    public static StepsRecord getCompleteStepsRecord() {
+        Device device =
+                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
+        DataOrigin dataOrigin =
+                new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
+
+        Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
+        testMetadataBuilder.setClientRecordId("SR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
+        Metadata testMetaData = testMetadataBuilder.build();
+        assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);
+        return new StepsRecord.Builder(
+                        testMetaData, Instant.now(), Instant.now().plusMillis(1000), 10)
+                .build();
+    }
+
+    public static StepsRecord getStepsRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new StepsRecord.Builder(
+                        metadataWithId, Instant.now(), Instant.now().plusMillis(2000), 20)
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
                 .build();
     }
 
@@ -919,7 +1177,7 @@ public class TestUtils {
                         generateMetadata(),
                         SESSION_START_TIME,
                         SESSION_END_TIME,
-                        ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
                 .setRoute(route)
                 .setLaps(
                         List.of(
@@ -950,5 +1208,245 @@ public class TestUtils {
                 .setNotes(notes)
                 .setTitle(title)
                 .build();
+    }
+
+    static void populateAndResetExpectedResponseMap(
+            HashMap<Class<? extends Record>, RecordTypeInfoTestResponse> expectedResponseMap) {
+        expectedResponseMap.put(
+                ElevationGainedRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.ELEVATION_GAINED, new ArrayList<>()));
+        expectedResponseMap.put(
+                OvulationTestRecord.class,
+                new RecordTypeInfoTestResponse(
+                        CYCLE_TRACKING,
+                        HealthPermissionCategory.OVULATION_TEST,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                DistanceRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.DISTANCE, new ArrayList<>()));
+        expectedResponseMap.put(
+                SpeedRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.SPEED, new ArrayList<>()));
+
+        expectedResponseMap.put(
+                Vo2MaxRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.VO2_MAX, new ArrayList<>()));
+        expectedResponseMap.put(
+                OxygenSaturationRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.OXYGEN_SATURATION, new ArrayList<>()));
+        expectedResponseMap.put(
+                TotalCaloriesBurnedRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY,
+                        HealthPermissionCategory.TOTAL_CALORIES_BURNED,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                HydrationRecord.class,
+                new RecordTypeInfoTestResponse(
+                        NUTRITION, HealthPermissionCategory.HYDRATION, new ArrayList<>()));
+        expectedResponseMap.put(
+                StepsRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, STEPS, new ArrayList<>()));
+        expectedResponseMap.put(
+                CervicalMucusRecord.class,
+                new RecordTypeInfoTestResponse(
+                        CYCLE_TRACKING,
+                        HealthPermissionCategory.CERVICAL_MUCUS,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                ExerciseSessionRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, EXERCISE, new ArrayList<>()));
+        expectedResponseMap.put(
+                HeartRateRecord.class,
+                new RecordTypeInfoTestResponse(VITALS, HEART_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                RespiratoryRateRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.RESPIRATORY_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                BasalBodyTemperatureRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS,
+                        HealthPermissionCategory.BASAL_BODY_TEMPERATURE,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                WheelchairPushesRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.WHEELCHAIR_PUSHES, new ArrayList<>()));
+        expectedResponseMap.put(
+                PowerRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.POWER, new ArrayList<>()));
+        expectedResponseMap.put(
+                BodyWaterMassRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS,
+                        HealthPermissionCategory.BODY_WATER_MASS,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                WeightRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS, HealthPermissionCategory.WEIGHT, new ArrayList<>()));
+        expectedResponseMap.put(
+                BoneMassRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS, HealthPermissionCategory.BONE_MASS, new ArrayList<>()));
+        expectedResponseMap.put(
+                RestingHeartRateRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.RESTING_HEART_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                ActiveCaloriesBurnedRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY,
+                        HealthPermissionCategory.ACTIVE_CALORIES_BURNED,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                BodyFatRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS, HealthPermissionCategory.BODY_FAT, new ArrayList<>()));
+        expectedResponseMap.put(
+                BodyTemperatureRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.BODY_TEMPERATURE, new ArrayList<>()));
+        expectedResponseMap.put(
+                NutritionRecord.class,
+                new RecordTypeInfoTestResponse(
+                        NUTRITION, HealthPermissionCategory.NUTRITION, new ArrayList<>()));
+        expectedResponseMap.put(
+                LeanBodyMassRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS,
+                        HealthPermissionCategory.LEAN_BODY_MASS,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                HeartRateVariabilityRmssdRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS,
+                        HealthPermissionCategory.HEART_RATE_VARIABILITY,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                MenstruationFlowRecord.class,
+                new RecordTypeInfoTestResponse(
+                        CYCLE_TRACKING, HealthPermissionCategory.MENSTRUATION, new ArrayList<>()));
+        expectedResponseMap.put(
+                BloodGlucoseRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.BLOOD_GLUCOSE, new ArrayList<>()));
+        expectedResponseMap.put(
+                BloodPressureRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.BLOOD_PRESSURE, new ArrayList<>()));
+        expectedResponseMap.put(
+                CyclingPedalingCadenceRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, EXERCISE, new ArrayList<>()));
+        expectedResponseMap.put(
+                IntermenstrualBleedingRecord.class,
+                new RecordTypeInfoTestResponse(
+                        CYCLE_TRACKING,
+                        HealthPermissionCategory.INTERMENSTRUAL_BLEEDING,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                FloorsClimbedRecord.class,
+                new RecordTypeInfoTestResponse(
+                        ACTIVITY, HealthPermissionCategory.FLOORS_CLIMBED, new ArrayList<>()));
+        expectedResponseMap.put(
+                StepsCadenceRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, STEPS, new ArrayList<>()));
+        expectedResponseMap.put(
+                HeightRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS, HealthPermissionCategory.HEIGHT, new ArrayList<>()));
+        expectedResponseMap.put(
+                SexualActivityRecord.class,
+                new RecordTypeInfoTestResponse(
+                        CYCLE_TRACKING,
+                        HealthPermissionCategory.SEXUAL_ACTIVITY,
+                        new ArrayList<>()));
+        expectedResponseMap.put(
+                MenstruationPeriodRecord.class,
+                new RecordTypeInfoTestResponse(
+                        CYCLE_TRACKING, HealthPermissionCategory.MENSTRUATION, new ArrayList<>()));
+        expectedResponseMap.put(
+                SleepSessionRecord.class,
+                new RecordTypeInfoTestResponse(
+                        SLEEP, HealthPermissionCategory.SLEEP, new ArrayList<>()));
+        expectedResponseMap.put(
+                BasalMetabolicRateRecord.class,
+                new RecordTypeInfoTestResponse(
+                        BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+    }
+
+    static String runShellCommand(String command) throws IOException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity();
+        final ParcelFileDescriptor stdout = uiAutomation.executeShellCommand(command);
+        StringBuilder output = new StringBuilder();
+
+        try (BufferedReader reader =
+                new BufferedReader(
+                        new InputStreamReader(new FileInputStream(stdout.getFileDescriptor())))) {
+            char[] buffer = new char[4096];
+            int bytesRead;
+            while ((bytesRead = reader.read(buffer)) != -1) {
+                output.append(buffer, 0, bytesRead);
+            }
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return output.toString();
+    }
+
+    static final class RecordAndIdentifier {
+        private final int id;
+        private final Record recordClass;
+
+        public RecordAndIdentifier(int id, Record recordClass) {
+            this.id = id;
+            this.recordClass = recordClass;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Record getRecordClass() {
+            return recordClass;
+        }
+    }
+
+    static class RecordTypeInfoTestResponse {
+        private final int mRecordTypePermission;
+        private final ArrayList<String> mContributingPackages;
+        private final int mRecordTypeCategory;
+
+        RecordTypeInfoTestResponse(
+                int recordTypeCategory,
+                int recordTypePermission,
+                ArrayList<String> contributingPackages) {
+            mRecordTypeCategory = recordTypeCategory;
+            mRecordTypePermission = recordTypePermission;
+            mContributingPackages = contributingPackages;
+        }
+
+        public int getRecordTypeCategory() {
+            return mRecordTypeCategory;
+        }
+
+        public int getRecordTypePermission() {
+            return mRecordTypePermission;
+        }
+
+        public ArrayList<String> getContributingPackages() {
+            return mContributingPackages;
+        }
     }
 }

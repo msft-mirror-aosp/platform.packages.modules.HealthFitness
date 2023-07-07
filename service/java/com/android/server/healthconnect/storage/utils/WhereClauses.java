@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 
 /** @hide */
 public final class WhereClauses {
-    final List<String> mClauses = new ArrayList<>();
+    private final List<String> mClauses = new ArrayList<>();
+    private boolean mUseOr = false;
 
     public WhereClauses addWhereBetweenClause(String columnName, long start, long end) {
         mClauses.add(columnName + " BETWEEN " + start + " AND " + end);
@@ -63,18 +64,32 @@ public final class WhereClauses {
         return this;
     }
 
+    public WhereClauses addWhereInClauseWithoutQuotes(String columnName, List<String> values) {
+        if (values == null || values.isEmpty()) return this;
+
+        mClauses.add(columnName + " IN " + "(" + String.join(", ", values) + ")");
+
+        return this;
+    }
+
     public WhereClauses addWhereEqualsClause(String columnName, String value) {
         if (columnName == null || value == null || value.isEmpty() || columnName.isEmpty()) {
             return this;
         }
 
-        mClauses.add(columnName + " = '" + value + "'");
-
+        mClauses.add(columnName + " = " + StorageUtils.getNormalisedString(value));
         return this;
     }
 
     public WhereClauses addWhereGreaterThanClause(String columnName, String value) {
         mClauses.add(columnName + " > '" + value + "'");
+
+        return this;
+    }
+
+    /** Add clause columnName > value */
+    public WhereClauses addWhereGreaterThanClause(String columnName, long value) {
+        mClauses.add(columnName + " > " + value);
 
         return this;
     }
@@ -87,6 +102,13 @@ public final class WhereClauses {
 
     public WhereClauses addWhereLessThanOrEqualClause(String columnName, long value) {
         mClauses.add(columnName + " <= " + value);
+
+        return this;
+    }
+
+    /** Add clause columnName < value */
+    public WhereClauses addWhereLessThanClause(String columnName, long value) {
+        mClauses.add(columnName + " < " + value);
 
         return this;
     }
@@ -140,6 +162,16 @@ public final class WhereClauses {
             return "";
         }
 
-        return (withWhereKeyword ? " WHERE " : "") + String.join(" AND ", mClauses);
+        return (withWhereKeyword ? " WHERE " : "") + String.join(getJoinClause(), mClauses);
+    }
+
+    private String getJoinClause() {
+        return mUseOr ? " OR " : " AND ";
+    }
+
+    public WhereClauses setUseOr(boolean useOr) {
+        mUseOr = useOr;
+
+        return this;
     }
 }

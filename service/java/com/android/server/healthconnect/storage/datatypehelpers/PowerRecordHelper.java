@@ -24,7 +24,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.REAL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorDouble;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -35,19 +35,20 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.PowerRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Helper class for PowerRecord.
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_POWER)
 public class PowerRecordHelper
         extends SeriesRecordHelper<PowerRecordInternal, PowerRecordInternal.PowerRecordSample> {
     public static final int NUM_LOCAL_COLUMNS = 1;
@@ -55,6 +56,10 @@ public class PowerRecordHelper
     private static final String SERIES_TABLE_NAME = "power_record_table";
     private static final String POWER_COLUMN_NAME = "power";
     private static final String EPOCH_MILLIS_COLUMN_NAME = "epoch_millis";
+
+    public PowerRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_POWER);
+    }
 
     @Override
     public final AggregateResult<?> getAggregateResult(
@@ -84,9 +89,7 @@ public class PowerRecordHelper
             case POWER_RECORD_POWER_MAX:
             case POWER_RECORD_POWER_AVG:
                 return new AggregateParams(
-                                SERIES_TABLE_NAME,
-                                Collections.singletonList(POWER_COLUMN_NAME),
-                                START_TIME_COLUMN_NAME)
+                                SERIES_TABLE_NAME, Collections.singletonList(POWER_COLUMN_NAME))
                         .setJoin(
                                 new SqlJoin(
                                         SERIES_TABLE_NAME,
@@ -114,14 +117,14 @@ public class PowerRecordHelper
     @Override
     void populateSpecificValues(@NonNull Cursor seriesTableCursor, PowerRecordInternal record) {
         HashSet<PowerRecordInternal.PowerRecordSample> powerRecordSampleSet = new HashSet<>();
-        String uuid = getCursorString(seriesTableCursor, UUID_COLUMN_NAME);
+        UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
         do {
             powerRecordSampleSet.add(
                     new PowerRecordInternal.PowerRecordSample(
                             getCursorDouble(seriesTableCursor, POWER_COLUMN_NAME),
                             getCursorLong(seriesTableCursor, EPOCH_MILLIS_COLUMN_NAME)));
         } while (seriesTableCursor.moveToNext()
-                && uuid.equals(getCursorString(seriesTableCursor, UUID_COLUMN_NAME)));
+                && uuid.equals(getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME)));
         // In case we hit another record, move the cursor back to read next record in outer
         // RecordHelper#getInternalRecords loop.
         seriesTableCursor.moveToPrevious();

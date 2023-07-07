@@ -15,7 +15,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_label" description="Label shown on the system app launcher. Note: Health Connect is the brand. [CHAR_LIMIT=40]">Health&#160;Connect</string>
-
+    <!-- Title shown for Health Connect [CHAR LIMIT=50] -->
+    <string name="health_connect_summary" description="Health connect summary, which describes what user can do when they click Health Connect">Manage app access to health data</string>
     <!-- region Home screen -->
     <string name="permissions_and_data_header" description="Header for section listing actions for showing connected apps permissions and data screens [CHAR LIMIT=NONE] ">Permissions and data</string>
     <string name="home_subtitle" description="Description on the home screen of the app. [CHAR_LIMIT=NONE]">Manage the health and fitness data on your phone, and control which apps can access it</string>
@@ -312,13 +313,6 @@
     <!--endregion-->
     <!--endregion-->
 
-    <!--region apps -->
-    <string name="app_1" translatable="false">App 1</string>
-    <string name="app_2" translatable="false">App 2</string>
-    <string name="app_3" translatable="false">App 3</string>
-    <string name="app_4" translatable="false">App 4</string>
-    <!--endregion-->
-
     <!-- region Permissions -->
     <string name="read_permission_category" description="Title for read permission category in the app permission screen">Allow &#8220;<xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>&#8221; to read</string>
     <string name="write_permission_category" description="Title for write permission category in the app permission screen">Allow &#8220;<xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>&#8221; to write</string>
@@ -339,12 +333,13 @@
 
     <!-- region Data Entries -->
     <string name="navigation_next_day" description="Content description for button that changes the current data view to the next day [CHAR_LIMIT=NONE]">Next day</string>
+    <string name="navigation_selected_day" description="Content description for button that contains selected day. [CHAR_LIMIT=NONE]">Selected day</string>
     <string name="navigation_previous_day" description="Content description for button that changes the current data view to the previous day [CHAR_LIMIT=NONE]">Previous day</string>
     <string name="default_error" description="Label shown when a user initiated action fails (e.g. deleting data) [CHAR_LIMIT=NONE]">Something went wrong. Please try again.</string>
     <!-- endregion -->
 
     <!-- region Connected apps -->
-    <string name="health_permission_header_description" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Apps with this permission can read and write your health data.</string>
+    <string name="health_permission_header_description" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Apps with this permission can read and write your health and fitness data.</string>
     <string name="connected_apps_text" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Control which apps can access data stored in Health&#160;Connect. Tap an app to review the data it can read or write.</string>
     <string name="connected_apps_section_title" description="Title of section containing all the connected apps [CHAR_LIMIT=40]">Allowed access</string>
     <string name="not_connected_apps_section_title" description="Title of section containing all the not-connected apps [CHAR_LIMIT=40]">Not allowed access</string>
@@ -355,20 +350,20 @@
     <string name="no_apps_allowed" description="Label when no apps have ben granted access to Health data.[CHAR_LIMIT=40]">No apps allowed</string>
     <string name="no_apps_denied" description="Label when no apps have been denied a health permission [CHAR_LIMIT=40]">No apps denied</string>
     <string name="permissions_disconnect_all_dialog_title" description="Title for dialog asking the user to confirm they want to remove all permissions for all apps [CHAR_LIMIT=50]">Remove access for all apps?</string>
-    <string name="permissions_disconnect_all_dialog_message" description="Text informing the user that all apps will no longer be able to read or write data after the permissions have been removed. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">None of your apps will be able to access or add new data to Health&#160;Connect. This doesn’t delete any existing data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone.</string>
+    <string name="permissions_disconnect_all_dialog_message" description="Text informing the user that all apps will no longer be able to read or write data after the permissions have been removed. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">None of your apps will be able to access or add new data to Health&#160;Connect. This doesn\'t delete any existing data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone.</string>
     <string name="permissions_disconnect_all_dialog_disconnect" description="Label for dialog button to confirm removal of all permissions for all apps [CHAR_LIMIT=20]">Remove all</string>
     <string name="manage_permissions_manage_app_header" description="Title shown for section to manage app [CHAR_LIMIT=40]">Manage app</string>
     <string name="delete_app_data" description="Label of a button that deletes data written by given app. [CHAR_LIMIT=40]">Delete app data</string>
     <string name="inactive_apps_section_title" description="Title shown for section of inactive apps [CHAR_LIMIT=40]">Inactive apps</string>
     <string name="inactive_apps_section_message" description="Description text shown in the inactive apps section that explains what inactive apps are [CHAR_LIMIT=NONE]">These apps no longer have access, but still have data stored in Health&#160;Connect</string>
-    <string name="manage_permissions_time_frame" description="Text describing the time frame of data which an app will be able to access [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can access data added after <xliff:g example="22 January 2022" id="data_access_date">%2$s</xliff:g></string>
+    <string name="manage_permissions_time_frame" description="Text describing the time frame of data which an app will be able to access [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> can read data added after <xliff:g example="22 January 2022" id="data_access_date">%2$s</xliff:g></string>
     <string name="other_android_permissions" description="Text that describes how users can change other android permissions through the system settings [CHAR_LIMIT=NONE]">To manage other Android permissions this app can access, go to Settings > Apps</string>
     <string name="manage_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy [CHAR_LIMIT=NONE]">Data you share with <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> is covered by their privacy policy</string>
     <string name="other_android_permissions_content_description" description="Content description that describes how users can change other android permissions through the system settings [CHAR_LIMIT=NONE]">To manage other Android permissions this app can access, go to Settings, then tap Apps</string>
     <string name="manage_permissions_learn_more" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">Read privacy policy</string>
     <string name="app_perms_content_provider_24h" description="Summary for showing the last access text for content provider permissions [CHAR LIMIT=70]">Accessed in past 24 hours</string>
     <string name="app_access_title" description="Title of screen for a user to manage the health and fitness data a particular app has access to [CHAR_LIMIT=40]">App access</string>
-    <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don’t currently have any compatible apps installed</string>
+    <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -392,7 +387,7 @@
     <string name="manage_your_settings_description" description="Content description for how the user can change app permissions and manage data">Change app permissions and manage your data at any time</string>
     <string name="onboarding_go_back_button_text" description="Content description for button to exit from onboarding page">Go back</string>
     <string name="onboarding_get_started_button_text" description="Content description for button to get started with Health Connect app">Get started</string>
-    <string name="previously_opened" description="Label used as key to track if user has opened Health Connected previously" translatable="false">Previously Opened</string>
+    <string name="previously_opened" description="Label used as key to track if user has opened Health Connect previously" translatable="false">Previously Opened</string>
     <!--endregion-->
 
     <!-- region Deletion -->
@@ -440,6 +435,7 @@
 
     <string name="confirming_question_single_entry" description="Description of what permanent deletion of a single data point means. [CHAR_LIMIT=NONE]">Permanently delete this entry?</string>
     <string name="confirming_question_message" description="Description of what permanent deletion of some data means. [CHAR_LIMIT=NONE]">Connected apps will no longer be able to access this data from Health&#160;Connect</string>
+    <string name="confirming_question_message_menstruation" description="Description of what menstruation entries this action will delete [CHAR_LIMIT=NONE]">This will delete all menstruation entries from <xliff:g example="22 January 2022" id="start_date">%1$s</xliff:g> to <xliff:g example="22 January 2022" id="end_date">%2$s</xliff:g>.</string>
     <!--endregion-->
 
     <!-- region Dialog buttons -->
@@ -465,8 +461,9 @@
 
     <!-- region Data entries -->
     <string name="data_entry_header" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
-    <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Data entry options</string>
+    <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry</string>
     <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry</string>
+    <string name="aggregation_total" description="Description before the total value. For instance, Total: 1000 steps. [CHAR LIMIT=50]">Total: <xliff:g id="total_value" example="1000 steps">%s</xliff:g></string>
 
     <string name="watt_format" description="Power value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 W} other {# W}}</string>
     <string name="watt_format_long" description="Power value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 watt} other {# watts}}</string>
@@ -654,6 +651,7 @@
     <string name="sleep_session_with_one_field" translatable="false"><xliff:g example="My Oura sleep" id="title">%1$s</xliff:g></string>
     <string name="sleep_session_with_notes" translatable="false"><xliff:g example="My Oura sleep" id="title">%1$s</xliff:g> \n<xliff:g example="This was a peaceful night" id="notes">%2$s</xliff:g></string>
     <string name="sleep_stage_awake" description="Awake stage throughout the sleep session. [CHAR LIMIT=50]">awake</string>
+    <string name="sleep_stage_awake_in_bed" description="Awake stage throughout the sleep session. [CHAR LIMIT=50]">awake in bed</string>
     <string name="sleep_stage_sleeping" description="Sleeping stage throughout the sleep session. [CHAR LIMIT=50]">sleeping</string>
     <string name="sleep_stage_out_of_bed" description="Out of bed stage throughout the sleep session. [CHAR LIMIT=50]">out of bed</string>
     <string name="sleep_stage_rem" description="REM stage throughout the sleep session. [CHAR LIMIT=50]">REM sleep</string>
@@ -670,8 +668,13 @@
     <string name="hour_minute_duration_accessibility" translation_description="Hour and minute time duration representation used by accessibility, 'space' between minute and second should be deleted or replaced according to each language to translate [CHAR LIMIT=NONE]">
   <xliff:g example="2 hours" id="hours">%1$s</xliff:g> <xliff:g example="2 minutes" id="minutes">%2$s</xliff:g>
   </string>
-    <string translation_description="Hour and minute time duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="hour_duration_accessibility">{count, plural, =1 {1 hour} other {# hours}}</string>
+    <string translation_description="Hour time duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="hour_duration_accessibility">{count, plural, =1 {1 hour} other {# hours}}</string>
     <string translation_description="minute duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="minute_duration_accessibility">{count, plural, =1 {1 minute} other {# minutes}}</string>
+
+
+    <string translation_description="Days duration representation [CHAR LIMIT=8]" name="day_duration"><xliff:g id="days" example="2 days">%1$s</xliff:g></string>
+    <string translation_description="Days and hours time duration representation [CHAR LIMIT=8]" name="day_hour_duration"><xliff:g id="days" example="2 days">%1$s</xliff:g> and <xliff:g id="hours" example="3 hours">%2$s</xliff:g></string>
+    <string translation_description="Days duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="day_duration_accessibility">{count, plural, =1 {1 day} other {# days}}</string>
     <!-- endregion -->
 
     <!--  region vo2 max-->
@@ -875,14 +878,14 @@
 
     <!-- region Help and Feedback -->
     <string name="help_and_feedback" description="Label used to display help and feedback">Help &amp; feedback</string>
-    <string name="cant_see_all_your_apps_description" description="Description of can't see all your apps screen">If you can’t see an installed app, it may not be compatible with Health&#160;Connect yet</string>
+    <string name="cant_see_all_your_apps_description" description="Description of can't see all your apps screen">If you can\'t see an installed app, it may not be compatible with Health&#160;Connect yet</string>
     <string name="things_to_try" description="Label used to show how user can try with different options">Things to try</string>
     <string name="check_for_updates" description="Label for a button that is used to check for updates">Check for updates</string>
     <string name="check_for_updates_description" description="Content description for a button that is used to check for updates">Make sure installed apps are up-to-date</string>
     <string name="see_all_compatible_apps" description="Label for a button that is used to show all compatible apps on Google Play">See all compatible apps</string>
     <string name="see_all_compatible_apps_description" description="Content description for a button that is used to show all compatible apps on Google Play">Find apps on Google&#160;Play</string>
     <string name="send_feedback" description="Label for a button that is used to send feedback">Send feedback</string>
-    <string name="send_feedback_description" description="Content description for a button that is used to send feedback">Tell us which health &amp; fitness apps you’d like to work with Health&#160;Connect</string>
+    <string name="send_feedback_description" description="Content description for a button that is used to send feedback">Tell us which health &amp; fitness apps you\'d like to work with Health&#160;Connect</string>
     <!--endregion-->
 
     <!-- region Play Store -->
@@ -896,10 +899,11 @@
     <string name="auto_delete_button" description="Label for a button that open the auto-deletion settings. [CHAR_LIMIT=50]">Auto-delete</string>
     <string name="auto_delete_title" description="Title of screen for a user to manage the auto-deletion settings [CHAR_LIMIT=40]">Auto-delete</string>
     <string name="auto_delete_header" description="Description for the auto-delete settings page. [CHAR_LIMIT=NONE]">Control how long your data is stored in Health&#160;Connect by scheduling it to delete after a set time</string>
-    <string name="auto_delete_learn_more" description="Label of a link that helps to learn more about auto-delete. [CHAR_LIMIT=50]">Learn more</string>
+    <string name="auto_delete_learn_more" description="Label of a link that helps to learn more about auto-delete. [CHAR_LIMIT=50]">Learn more about auto-delete</string>
     <string name="auto_delete_section" description="Label for a section that picks the time range for auto-deletion. [CHAR_LIMIT=50]">Auto-delete data</string>
     <string name="range_after_x_months" description="Item in a list of possible time ranges for auto-deletion. Choosing this will automatically delete data older than x months. [CHAR_LIMIT=50]">{count, plural, =1{After # month}other{After # months}}</string>
     <string name="range_never" description="Item in a list of possible time ranges for auto-deletion. Choosing this will never delete data automatically. [CHAR_LIMIT=50]">Never</string>
+    <string name="range_off" description="Summary of the auto-delete button when auto-delete is set to never. [CHAR_LIMIT=50]">Off</string>
     <string name="auto_delete_rationale" description="Footer note explaining that after changing auto-delete settings, corresponding data will be deleted. [CHAR_LIMIT=NONE]">When you change these settings, Health&#160;Connect deletes existing data to reflect your new preferences</string>
     <string name="confirming_question_x_months" description="Title of a dialog that asks the user to confirm whether they want to auto-delete all data that is older than x months. [CHAR_LIMIT=NONE]">{count, plural,
     =1{Auto-delete data after # month?}
@@ -953,9 +957,120 @@
     <string name="request_route_header_title" description="Title for screen to give permissions to an app to access a route for an exercise session. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access this exercise route in Health&#160;Connect?</string>
     <string name="request_route_disclaimer_notice" description="A note on a dialog asking to grant access to a specific exercise route, stressing the fact that the route contains past locations of the user. [CHAR_LIMIT=NONE]">This app will be able to read your past location in the route</string>
     <string name="date_owner_format" description="Format for displaying a date attributed to the data and the name of the application the data comes from. Example: Mon 13 Jun - Nokia Health Mate. [CHAR LIMIT=NONE]"><xliff:g example="Mon 13 Jun" id="date">%1$s</xliff:g> \u2022 <xliff:g example="Nokia Health Mate" id="app_name">%2$s</xliff:g></string>
+    <string name="request_route_info_header_title" description="Title for screen explaining in more detail what it means to give permissions to an app to access a route for an exercise session. [CHAR_LIMIT=NONE]">Exercise routes include location information</string>
+    <string name="request_route_info_who_can_see_data_title" description="Title for the section explaining in more detail what it means to give permissions to an app to access a route for an exercise session and who will have access to the data. [CHAR_LIMIT=NONE]">Who can see this data?</string>
+    <string name="request_route_info_who_can_see_data_summary" description="Summary of the section explaining in more detail what it means to give permissions to an app to access a route for an exercise session and who will have access to the data. [CHAR_LIMIT=NONE]">Only apps you allow to access your exercise routes</string>
+    <string name="request_route_info_access_management_title" description="Title for the section explaining in more detail what it means to give permissions to an app to access a route for an exercise session and how to manage the access. [CHAR_LIMIT=NONE]">How can I manage access?</string>
+    <string name="request_route_info_access_management_summary" description="Summary of the section explaining in more detail what it means to give permissions to an app to access a route for an exercise session and and how to manage the access. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">You can manage app access to exercise routes in Health&#160;Connect settings</string>
+    <string name="back_button" description="Label on the back button. [CHAR_LIMIT=20]">Back</string>
     <!--  endregion-->
 
     <!-- region Loading -->
     <string name="loading" description="Label shown when loading data. [CHAR_LIMIT=40]">Loading&#8230;</string>
     <!--  endregion -->
+
+    <!-- region Migration -->
+
+    <string name="module_update_needed_seen" description="Label used as key to track if user has seen the Module Update Needed migration screen" translatable="false">Module Update Seen</string>
+    <string name="app_update_needed_seen" description="Label used as key to track if user has seen the App Update Needed migration screen" translatable="false">App Update Seen</string>
+    <string name="whats_new_dialog_seen" description="Label used as key to track if user has seen the What's new migration dialog" translatable="false">Whats New Seen</string>
+    <string name="migration_not_complete_dialog_seen" description="Label used as key to track if user has seen the Migration not complete dialog" translatable="false">Migration Not Complete Seen</string>
+
+    <!-- region In progress -->
+    <string name="migration_in_progress_screen_title" description="Title of screen shown when migration is in progress">Integration in progress</string>
+    <string name="migration_in_progress_screen_integration_details" description="Detail information shown when migration is in progress">Health&#160;Connect is being integrated with the Android system.\n\nIt may take some time while your data and permissions are being transferred.</string>
+    <string name="migration_in_progress_screen_integration_dont_close" description="Instruction to not close application shown when migration is in progress">Don\'t close the app until you get a notification that the process is complete.</string>
+    <string name="migration_in_progress_notification_title" description="Title of notification sent when migration is in progress">Health&#160;Connect integration in progress</string>
+    <!--  endregion -->
+
+    <!-- region Update needed common -->
+    <string name="migration_update_needed_screen_title" description="Title of screen shown when migration is pending and an update is needed.">Update needed</string>
+    <string name="migration_update_needed_screen_details" description="Detail information shown when migration is pending and an update is needed.">Health&#160;Connect is being integrated with the Android system so you can access it directly from your settings.</string>
+    <string name="update_button" description="Text of a button prompting the user to update an app or their phone system [CHAR_LIMIT=40]">Update</string>
+    <string name="migration_update_needed_notification_content" description="Content of notification sent when migration is pending and an app or module update is needed.">Start this update so that Health&#160;Connect can continue integrating with your system settings</string>
+    <string name="migration_update_needed_notification_action" description="Action of notification sent when migration is pending and an app or module update is needed.">Update now</string>
+    <!--  endregion -->
+
+    <!-- region Module Update needed -->
+    <string name="migration_module_update_needed_notification_title" description="Title of notification sent when migration is pending and an app or module update is needed.">System update needed</string>
+    <string name="migration_module_update_needed_action" description="Action information shown when migration is pending and a system update is needed.">Before continuing, update your phone system.</string>
+    <string name="migration_module_update_needed_restart" description="Detail information shown when migration is pending and one update is needed.">If you\'ve already updated your phone system, try restarting your phone to continue the integration</string>
+
+    <!--  endregion -->
+    <!-- region App Update needed -->
+    <string name="migration_app_update_needed_notification_title" description="Title of notification sent when migration is pending and an app or module update is needed.">Health&#160;Connect update needed</string>
+    <string name="migration_app_update_needed_action" description="Action information shown when migration is pending and an app update is needed.">Before continuing, update the Health&#160;Connect app to the latest version.</string>
+    <!--  endregion -->
+
+    <!-- region More space needed -->
+    <string name="migration_more_space_needed_screen_title" description="Title of screen shown when migration is pending and more space is needed.">More space needed</string>
+<!--    TODO (b/275685595) use string resource for storage space -->
+    <string name="migration_more_space_needed_screen_details" description="Detail information shown when migration is pending and more space is needed.">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone in order for the integration to continue.\n\nClear some space on your phone and then try again.</string>
+    <string name="try_again_button" description="Text of a button prompting the user to try looking at the space again [CHAR_LIMIT=40]">Try again</string>
+    <string name="free_up_space_button" description="Text of a button leading the user to their system storage so they can free up space. [CHAR_LIMIT=40]">Free up space</string>
+    <string name="migration_more_space_needed_notification_title" description="Title of notification sent when migration is pending and more space is needed.">More space needed</string>
+    <string name="migration_more_space_needed_notification_content" description="Content of notification sent when migration is pending and more space is needed.">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone to continue integrating.</string>
+    <!--  endregion -->
+
+    <!-- region Migration paused -->
+    <string name="migration_paused_screen_title" description="Title of screen shown when migration has been paused.">Integration paused</string>
+    <string name="migration_paused_screen_details" description="Detail information shown when migration has been paused.">The Health&#160;Connect app closed while it was being integrated with the Android system.\n\nClick resume to reopen the app and continue transferring your data and permissions.</string>
+    <string name="migration_paused_screen_details_timeout" description="Detail information about migration timeout shown when migration has been paused.">In order to keep your Health&#160;Connect data, complete this within <xliff:g example="1 day" id="time_needed">%1$s</xliff:g></string>
+    <string name="resume_button" description="Text of a button prompting the user resume migration [CHAR_LIMIT=40]">Resume</string>
+    <string name="migration_paused_notification_title" description="Title of notification sent when migration has been paused.">Integration paused</string>
+    <string name="migration_paused_notification_content" description="Content of notification sent when migration has been paused.">Health&#160;Connect is being integrated with the Android system. Tap to continue</string>
+    <!--  endregion -->
+
+    <!-- region Resume migration banner -->
+    <string name="resume_migration_banner_title" description="Title of banner prompting the user to resume actions needed for migration">Resume integration</string>
+    <string name="resume_migration_banner_description" description="Description of banner prompting the user to resume actions needed for migration">Tap to continue integrating Health&#160;Connect with the Android system. In order to keep your data, complete this within <xliff:g example="1 day" id="time_needed">%1$s</xliff:g></string>
+    <string name="resume_migration_banner_description_fallback" description="Fallback description of banner prompting the user to resume actions needed for migration">Tap to continue integrating Health&#160;Connect with the Android system.</string>
+    <string name="resume_migration_banner_button" description="Button of banner prompting the user to resume actions needed for migration">Continue</string>
+    <string name="resume_migration_notification_title" description="Title of notification prompting the user to resume actions needed for migration">Resume Health&#160;Connect integration</string>
+    <string name="resume_migration_notification_content" description="Content of notification prompting the user to resume actions needed for migration">In order to keep your data, complete this within <xliff:g example="1 day" id="time_needed">%1$s</xliff:g></string>
+    <!--  endregion -->
+
+    <!-- region App update needed banner -->
+    <string name="app_update_needed_banner_title" description="Title of banner prompting the user to update an app which is not currently working on this Android version.">App update needed</string>
+    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be up-to-date in order to keep working with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be up-to-date in order to keep working with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Check for updates</string>
+    <!--  endregion -->
+
+    <!-- region Migration pending permissions dialog -->
+    <string name="migration_pending_permissions_dialog_title" description="Title of dialog shown to the user when migration is pending and an app is requesting permissions.">Health&#160;Connect integration</string>
+    <string name="migration_pending_permissions_dialog_content" description="Content of dialog shown to the user when migration is pending and an app is requesting permissions.">Health&#160;Connect is ready to be integrated with your Android system. If you give <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> access now, some features may not work until integration is complete.</string>
+    <string name="migration_pending_permissions_dialog_content_apps" description="Content of dialog shown to the user when migration is pending and the user is viewing health permissions.">Health&#160;Connect is ready to be integrated with your Android system. If you give apps access now, some features may not work until integration is complete.</string>
+    <string name="migration_pending_permissions_dialog_button_continue" description="Button of dialog shown to the user when migration is pending and an app is requesting permissions.">Continue</string>
+    <string name="migration_pending_permissions_dialog_button_start_integration" description="Button of dialog shown to the user when migration is pending and an app is requesting permissions.">Start integration</string>
+    <!--  endregion -->
+
+    <!-- region Migration in progress permissions dialog -->
+    <string name="migration_in_progress_permissions_dialog_title" description="Title of dialog shown to the user when migration is in progress and an app is requesting permissions.">Health&#160;Connect integration in progress</string>
+    <string name="migration_in_progress_permissions_dialog_content" description="Content of dialog shown to the user when migration is in progress and an app is requesting permissions.">Health&#160;Connect is being integrated with the Android system.\n\nYou\'ll get a notification when the process is complete and you can use <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> with Health&#160;Connect.</string>
+    <string name="migration_in_progress_permissions_dialog_content_apps" description="Content of dialog shown to the user when migration is in progress and the user is viewing health permissions.">Health&#160;Connect is being integrated with the Android system.\n\nYou\'ll get a notification when the process is complete and you can use Health&#160;Connect.</string>
+    <string name="migration_in_progress_permissions_dialog_button_got_it" description="Button of dialog shown to the user when migration is in progress and an app is requesting permissions.">Got it</string>
+    <!--  endregion -->
+
+    <!-- region Migration did not complete dialog -->
+    <string name="migration_not_complete_dialog_title" description="Title of dialog shown to the user when migration did not complete due to an error.">Health&#160;Connect integration didn\'t complete</string>
+    <string name="migration_not_complete_dialog_content" description="Content of dialog shown to the user when migration did not complete due to an error.">You\'ll get a notification when it becomes available again.</string>
+    <string name="migration_not_complete_dialog_button" description="Button of dialog shown to the user when migration did not complete due to an error.">Got it</string>
+    <string name="migration_not_complete_notification_title" description="Title of notification shown to the user when migration did not complete due to an error.">Health&#160;Connect integration didn\'t complete</string>
+    <string name="migration_not_complete_notification_action" description="Action of notification shown to the user when migration did not complete due to an error.">Read more</string>
+    <!--  endregion -->
+
+    <!-- region Migration complete -->
+    <string name="migration_complete_notification_title" description="Title of notification shown to the user when migration is complete">Health&#160;Connect integration complete</string>
+    <string name="migration_complete_notification_action" description="Action of notification shown to the user when migration is complete">Open</string>
+    <!--  endregion -->
+
+    <!-- region Whats new dialog -->
+    <string name="migration_whats_new_dialog_title" description="Title of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">What\'s new</string>
+    <string name="migration_whats_new_dialog_content" description="Content of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">You can now access Health&#160;Connect directly from your settings. Uninstall the Health&#160;Connect app any time.</string>
+    <string name="migration_whats_new_dialog_button" description="Button of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">Got it</string>
+    <!--  endregion -->
+
+    <!--  endregion -->
+
 </resources>

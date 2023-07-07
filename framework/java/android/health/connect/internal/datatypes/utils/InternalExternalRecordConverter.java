@@ -16,6 +16,8 @@
 
 package android.health.connect.internal.datatypes.utils;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.INTDEF_VALIDATION_ERROR_PREFIX;
+
 import android.annotation.NonNull;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -56,29 +58,6 @@ public final class InternalExternalRecordConverter {
         return sInternalExternalRecordConverter;
     }
 
-    /** Returns a record for {@param record} */
-    @NonNull
-    public List<RecordInternal<?>> getInternalRecords(@NonNull List<? extends Record> records) {
-        List<RecordInternal<?>> internalRecordListInternal = new ArrayList<>(records.size());
-
-        for (Record record : records) {
-            internalRecordListInternal.add(getInternalRecord(record));
-        }
-
-        return internalRecordListInternal;
-    }
-
-    /** Converts {@link Record} to {@link RecordInternal}. */
-    @NonNull
-    public RecordInternal<?> getInternalRecord(@NonNull Record record) {
-        Objects.requireNonNull(record);
-
-        final RecordInternal<?> recordInternal = newInternalRecord(record.getRecordType());
-        recordInternal.populateUsing(record);
-
-        return recordInternal;
-    }
-
     /** Returns a new instance of {@link RecordInternal} for the provided {@code type }. */
     @NonNull
     public RecordInternal<?> newInternalRecord(@RecordTypeIdentifier.RecordType int type) {
@@ -104,7 +83,15 @@ public final class InternalExternalRecordConverter {
         List<Record> externalRecordList = new ArrayList<>(recordInternals.size());
 
         for (RecordInternal<?> recordInternal : recordInternals) {
+            try {
             externalRecordList.add(recordInternal.toExternalRecord());
+            } catch (IllegalArgumentException illegalArgumentException) {
+                if (!illegalArgumentException
+                        .getMessage()
+                        .contains(INTDEF_VALIDATION_ERROR_PREFIX)) {
+                    throw illegalArgumentException;
+                }
+            }
         }
 
         return externalRecordList;

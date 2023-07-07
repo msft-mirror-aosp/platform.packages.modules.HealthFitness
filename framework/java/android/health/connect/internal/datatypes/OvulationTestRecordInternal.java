@@ -47,17 +47,12 @@ public final class OvulationTestRecordInternal extends InstantRecordInternal<Ovu
     public OvulationTestRecord toExternalRecord() {
         return new OvulationTestRecord.Builder(buildMetaData(), getTime(), getResult())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mResult = parcel.readInt();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull OvulationTestRecord ovulationTestRecord) {
-        mResult = ovulationTestRecord.getResult();
     }
 
     @Override

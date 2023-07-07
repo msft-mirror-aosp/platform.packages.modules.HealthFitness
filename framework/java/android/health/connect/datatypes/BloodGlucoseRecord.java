@@ -15,15 +15,20 @@
  */
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.health.connect.datatypes.units.BloodGlucose;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.BloodGlucoseRecordInternal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Captures the concentration of glucose in the blood. Each record represents a single instantaneous
@@ -44,6 +49,7 @@ public final class BloodGlucoseRecord extends InstantRecord {
      * @param level Level of this activity
      * @param relationToMeal RelationToMeal of this activity
      * @param mealType MealType of this activity
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private BloodGlucoseRecord(
             @NonNull Metadata metadata,
@@ -52,13 +58,23 @@ public final class BloodGlucoseRecord extends InstantRecord {
             @SpecimenSource.SpecimenSourceType int specimenSource,
             @NonNull BloodGlucose level,
             @RelationToMealType.RelationToMealTypes int relationToMeal,
-            @MealType.MealTypes int mealType) {
-        super(metadata, time, zoneOffset);
+            @MealType.MealTypes int mealType,
+            boolean skipValidation) {
+        super(metadata, time, zoneOffset, skipValidation);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(time);
         Objects.requireNonNull(zoneOffset);
         Objects.requireNonNull(level);
-        ValidationUtils.requireInRange(level.getInMillimolesPerLiter(), 0.0, 50.0, "level");
+        if (!skipValidation) {
+            ValidationUtils.requireInRange(level.getInMillimolesPerLiter(), 0.0, 50.0, "level");
+        }
+        validateIntDefValue(
+                specimenSource, SpecimenSource.VALID_TYPES, SpecimenSource.class.getSimpleName());
+        validateIntDefValue(
+                relationToMeal,
+                RelationToMealType.VALID_TYPES,
+                RelationToMealType.class.getSimpleName());
+        validateIntDefValue(mealType, MealType.VALID_TYPES, MealType.class.getSimpleName());
         mSpecimenSource = specimenSource;
         mLevel = level;
         mRelationToMeal = relationToMeal;
@@ -115,6 +131,20 @@ public final class BloodGlucoseRecord extends InstantRecord {
         /** Reading was taken after an unspecified meal. */
         public static final int RELATION_TO_MEAL_AFTER_MEAL = 4;
 
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(
+                        RELATION_TO_MEAL_UNKNOWN,
+                        RELATION_TO_MEAL_GENERAL,
+                        RELATION_TO_MEAL_FASTING,
+                        RELATION_TO_MEAL_BEFORE_MEAL,
+                        RELATION_TO_MEAL_AFTER_MEAL);
+
         private RelationToMealType() {}
 
         /** @hide */
@@ -145,6 +175,22 @@ public final class BloodGlucoseRecord extends InstantRecord {
         public static final int SPECIMEN_SOURCE_TEARS = 5;
         /** Glucose was measured from whole blood. */
         public static final int SPECIMEN_SOURCE_WHOLE_BLOOD = 6;
+
+        /**
+         * Valid set of values for this IntDef. Update this set when add new type or deprecate
+         * existing type.
+         *
+         * @hide
+         */
+        public static final Set<Integer> VALID_TYPES =
+                Set.of(
+                        SPECIMEN_SOURCE_UNKNOWN,
+                        SPECIMEN_SOURCE_INTERSTITIAL_FLUID,
+                        SPECIMEN_SOURCE_CAPILLARY_BLOOD,
+                        SPECIMEN_SOURCE_PLASMA,
+                        SPECIMEN_SOURCE_SERUM,
+                        SPECIMEN_SOURCE_TEARS,
+                        SPECIMEN_SOURCE_WHOLE_BLOOD);
 
         private SpecimenSource() {}
 
@@ -245,6 +291,22 @@ public final class BloodGlucoseRecord extends InstantRecord {
             mZoneOffset = RecordUtils.getDefaultZoneOffset();
             return this;
         }
+        /**
+         * @return Object of {@link BloodGlucoseRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public BloodGlucoseRecord buildWithoutValidation() {
+            return new BloodGlucoseRecord(
+                    mMetadata,
+                    mTime,
+                    mZoneOffset,
+                    mSpecimenSource,
+                    mLevel,
+                    mRelationToMeal,
+                    mMealType,
+                    true);
+        }
 
         /**
          * @return Object of {@link BloodGlucoseRecord}
@@ -258,7 +320,33 @@ public final class BloodGlucoseRecord extends InstantRecord {
                     mSpecimenSource,
                     mLevel,
                     mRelationToMeal,
-                    mMealType);
+                    mMealType,
+                    false);
         }
+    }
+
+    /** @hide */
+    @Override
+    public BloodGlucoseRecordInternal toRecordInternal() {
+        BloodGlucoseRecordInternal recordInternal =
+                (BloodGlucoseRecordInternal)
+                        new BloodGlucoseRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        recordInternal.setTime(getTime().toEpochMilli());
+        recordInternal.setZoneOffset(getZoneOffset().getTotalSeconds());
+        recordInternal.setSpecimenSource(mSpecimenSource);
+        recordInternal.setLevel(mLevel.getInMillimolesPerLiter());
+        recordInternal.setRelationToMeal(mRelationToMeal);
+        recordInternal.setMealType(mMealType);
+        return recordInternal;
     }
 }

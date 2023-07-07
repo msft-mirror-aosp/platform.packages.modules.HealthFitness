@@ -83,6 +83,11 @@ constructor(
             _deletionParameters.value?.copy(endTimeMs = endTime.toEpochMilli())
     }
 
+    fun setStartTime(startTime: Instant) {
+        _deletionParameters.value =
+            _deletionParameters.value?.copy(startTimeMs = startTime.toEpochMilli())
+    }
+
     private var _categoriesReloadNeeded = MutableLiveData(false)
     private val _appPermissionReloadNeeded = MutableLiveData(false)
 
@@ -118,12 +123,13 @@ constructor(
                     is DeletionType.DeletionTypeAllData -> {
                         _deletionParameters.value?.let {
                             deleteAllDataUseCase.invoke(timeRangeFilter)
+                            _categoriesReloadNeeded.postValue(true)
                         }
                     }
                     is DeletionType.DeletionTypeCategoryData -> {
                         deletionParameters.value?.let {
                             deleteCategoryUseCase.invoke(deletionType, timeRangeFilter)
-                            _categoriesReloadNeeded.value = true
+                            _categoriesReloadNeeded.postValue(true)
                         }
                     }
                     is DeletionType.DeletionTypeHealthPermissionTypeData -> {

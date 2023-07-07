@@ -23,9 +23,15 @@ import static com.google.common.truth.Truth.assertThat;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogTokenResponse;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.FloorsClimbedRecord;
@@ -36,6 +42,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,9 +51,9 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class FloorsClimbedRecordTest {
@@ -60,6 +67,7 @@ public class FloorsClimbedRecordTest {
                         .setStartTime(Instant.EPOCH)
                         .setEndTime(Instant.now())
                         .build());
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
@@ -73,14 +81,22 @@ public class FloorsClimbedRecordTest {
     public void testReadFloorsClimbedRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
                 Arrays.asList(getCompleteFloorsClimbedRecord(), getCompleteFloorsClimbedRecord());
-        readFloorsClimbedRecordUsingIds(recordList);
+        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+        readFloorsClimbedRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testCreateFloorsClimbedRecord_sameStartEndTime() {
+        Instant startTime = Instant.now();
+        new FloorsClimbedRecord.Builder(new Metadata.Builder().build(), startTime, startTime, 10)
+                .build();
     }
 
     @Test
     public void testReadFloorsClimbedRecord_invalidIds() throws InterruptedException {
         ReadRecordsRequestUsingIds<FloorsClimbedRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(FloorsClimbedRecord.class)
-                        .addId("abc")
+                        .addId(UUID.randomUUID().toString())
                         .build();
         List<FloorsClimbedRecord> result = TestUtils.readRecords(request);
         assertThat(result.size()).isEqualTo(0);
@@ -172,6 +188,7 @@ public class FloorsClimbedRecordTest {
         FloorsClimbedRecord newRecord =
                 newFloorsClimbedRecords.get(newFloorsClimbedRecords.size() - 1);
         assertThat(newRecord.equals(testRecord)).isTrue();
+        assertThat(newRecord.getFloors()).isEqualTo(testRecord.getFloors());
     }
 
     @Test
@@ -185,6 +202,23 @@ public class FloorsClimbedRecordTest {
                                         new DataOrigin.Builder().setPackageName("abc").build())
                                 .build());
         assertThat(newFloorsClimbedRecords.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void testTotalAggregation_oneRecord_returnsItsTotal() throws Exception {
+        List<Record> records = Arrays.asList(getBaseFloorsClimbedRecord(1));
+        AggregateRecordsResponse<Double> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Double>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(FLOORS_CLIMBED_TOTAL)
+                                .build(),
+                        records);
+        assertThat(response.get(FLOORS_CLIMBED_TOTAL)).isNotNull();
+        assertThat(response.get(FLOORS_CLIMBED_TOTAL)).isEqualTo(10);
     }
 
     @Test
@@ -251,6 +285,123 @@ public class FloorsClimbedRecordTest {
                 .isEqualTo(defaultZoneOffset);
     }
 
+    @Test
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
+            throws InterruptedException {
+
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteFloorsClimbedRecord(),
+                                getCompleteFloorsClimbedRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readFloorsClimbedRecordUsingIds(insertedRecords);
+
+        // Generate a new set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteFloorsClimbedRecord(), getCompleteFloorsClimbedRecord());
+
+        // Modify the uid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getFloorsClimbedRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+        }
+
+        TestUtils.updateRecords(updateRecords);
+
+        // assert the inserted data has been modified by reading the data.
+        readFloorsClimbedRecordUsingIds(updateRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteFloorsClimbedRecord(),
+                                getCompleteFloorsClimbedRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readFloorsClimbedRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteFloorsClimbedRecord(), getCompleteFloorsClimbedRecord());
+
+        // Modify the Uid of the updateRecords to the UUID that was present in the insert records,
+        // leaving out alternate records so that they have a new UUID which is not present in the
+        // dataBase.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getFloorsClimbedRecord_update(
+                            updateRecords.get(itr),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString(),
+                            itr % 2 == 0
+                                    ? insertedRecords.get(itr).getMetadata().getId()
+                                    : UUID.randomUUID().toString()));
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid records ids.");
+        } catch (HealthConnectException exception) {
+            assertThat(exception.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_INVALID_ARGUMENT);
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readFloorsClimbedRecordUsingIds(insertedRecords);
+    }
+
+    @Test
+    public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
+            throws InterruptedException {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteFloorsClimbedRecord(),
+                                getCompleteFloorsClimbedRecord()));
+
+        // read inserted records and verify that the data is same as inserted.
+        readFloorsClimbedRecordUsingIds(insertedRecords);
+
+        // Generate a second set of records that will be used to perform the update operation.
+        List<Record> updateRecords =
+                Arrays.asList(getCompleteFloorsClimbedRecord(), getCompleteFloorsClimbedRecord());
+
+        // Modify the Uuid of the updateRecords to the uuid that was present in the insert records.
+        for (int itr = 0; itr < updateRecords.size(); itr++) {
+            updateRecords.set(
+                    itr,
+                    getFloorsClimbedRecord_update(
+                            updateRecords.get(itr),
+                            insertedRecords.get(itr).getMetadata().getId(),
+                            insertedRecords.get(itr).getMetadata().getClientRecordId()));
+            //             adding an entry with invalid packageName.
+            updateRecords.set(itr, getCompleteFloorsClimbedRecord());
+        }
+
+        try {
+            TestUtils.updateRecords(updateRecords);
+            Assert.fail("Expected to fail due to invalid package.");
+        } catch (Exception exception) {
+            // verify that the testcase failed due to invalid argument exception.
+            assertThat(exception).isNotNull();
+        }
+
+        // assert the inserted data has not been modified by reading the data.
+        readFloorsClimbedRecordUsingIds(insertedRecords);
+    }
+
     private void readFloorsClimbedRecordUsingClientId(List<Record> insertedRecord)
             throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<FloorsClimbedRecord> request =
@@ -262,33 +413,98 @@ public class FloorsClimbedRecordTest {
         assertThat(requestUsingIds.getRecordType()).isEqualTo(FloorsClimbedRecord.class);
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<FloorsClimbedRecord> result = TestUtils.readRecords(requestUsingIds);
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecord.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
+        assertThat(result.size()).isEqualTo(insertedRecord.size());
+        assertThat(result).containsExactlyElementsIn(insertedRecord);
+    }
 
-        for (int i = 0; i < result.size(); i++) {
-            FloorsClimbedRecord other = (FloorsClimbedRecord) insertedRecord.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-        }
+    @Test
+    public void testInsertAndDeleteRecord_changelogs() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(
+                        new ChangeLogTokenRequest.Builder()
+                                .addDataOriginFilter(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(context.getPackageName())
+                                                .build())
+                                .addRecordType(FloorsClimbedRecord.class)
+                                .build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        List<Record> testRecord = Collections.singletonList(getCompleteFloorsClimbedRecord());
+        TestUtils.insertRecords(testRecord);
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        assertThat(
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(FloorsClimbedRecord.class)
+                        .build());
+        response = TestUtils.getChangeLogs(changeLogsRequest);
+        assertThat(response.getDeletedLogs()).isEmpty();
     }
 
     private void readFloorsClimbedRecordUsingIds(List<Record> recordList)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<FloorsClimbedRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(FloorsClimbedRecord.class);
-        for (Record record : insertedRecords) {
+        for (Record record : recordList) {
             request.addId(record.getMetadata().getId());
         }
         List<FloorsClimbedRecord> result = TestUtils.readRecords(request.build());
-        assertThat(result).hasSize(insertedRecords.size());
-        result.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
-        insertedRecords.sort(Comparator.comparing(item -> item.getMetadata().getClientRecordId()));
+        assertThat(result).hasSize(recordList.size());
+        assertThat(result).containsExactlyElementsIn(recordList);
+    }
 
-        for (int i = 0; i < result.size(); i++) {
-            FloorsClimbedRecord other = (FloorsClimbedRecord) insertedRecords.get(i);
-            assertThat(result.get(i).equals(other)).isTrue();
-            assertThat(result.get(i).getFloors()).isEqualTo(other.getFloors());
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateFloorsClimbedRecord_invalidValue() {
+        new FloorsClimbedRecord.Builder(
+                        new Metadata.Builder().build(),
+                        Instant.now(),
+                        Instant.now().plus(30, ChronoUnit.MINUTES),
+                        1000001.0)
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateFloorsClimbedRecord_invalidTime() {
+        new FloorsClimbedRecord.Builder(
+                        new Metadata.Builder().build(),
+                        Instant.now().plusMillis(100),
+                        Instant.now().plus(30, ChronoUnit.MINUTES),
+                        1000001.0)
+                .build();
+    }
+
+    FloorsClimbedRecord getFloorsClimbedRecord_update(
+            Record record, String id, String clientRecordId) {
+        Metadata metadata = record.getMetadata();
+        Metadata metadataWithId =
+                new Metadata.Builder()
+                        .setId(id)
+                        .setClientRecordId(clientRecordId)
+                        .setClientRecordVersion(metadata.getClientRecordVersion())
+                        .setDataOrigin(metadata.getDataOrigin())
+                        .setDevice(metadata.getDevice())
+                        .setLastModifiedTime(metadata.getLastModifiedTime())
+                        .build();
+        return new FloorsClimbedRecord.Builder(
+                        metadataWithId, Instant.now(), Instant.now().plusMillis(2000), 20)
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+                .build();
     }
 
     static FloorsClimbedRecord getBaseFloorsClimbedRecord(int days) {
@@ -312,6 +528,7 @@ public class FloorsClimbedRecordTest {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId("FCR" + Math.random());
+        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
         return new FloorsClimbedRecord.Builder(
                         testMetadataBuilder.build(),
                         Instant.now(),

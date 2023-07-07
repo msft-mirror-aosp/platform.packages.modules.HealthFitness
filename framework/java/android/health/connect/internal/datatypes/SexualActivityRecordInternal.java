@@ -48,17 +48,12 @@ public final class SexualActivityRecordInternal
     public SexualActivityRecord toExternalRecord() {
         return new SexualActivityRecord.Builder(buildMetaData(), getTime(), getProtectionUsed())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mProtectionUsed = parcel.readInt();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull SexualActivityRecord sexualActivityRecord) {
-        mProtectionUsed = sexualActivityRecord.getProtectionUsed();
     }
 
     @Override

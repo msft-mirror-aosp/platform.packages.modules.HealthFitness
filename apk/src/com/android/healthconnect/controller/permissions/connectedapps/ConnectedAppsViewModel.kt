@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,6 +24,7 @@ import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermi
 import com.android.healthconnect.controller.permissions.connectedapps.searchapps.SearchHealthPermissionApps
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.utils.postValueIfUpdated
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,6 +40,10 @@ constructor(
     @IoDispatcher val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    companion object {
+        private const val TAG = "ConnectedAppsViewModel"
+    }
+
     private val _connectedApps = MutableLiveData<List<ConnectedAppMetadata>>()
     val connectedApps: LiveData<List<ConnectedAppMetadata>>
         get() = _connectedApps
@@ -52,25 +58,33 @@ constructor(
     }
 
     fun loadConnectedApps() {
-        viewModelScope.launch { _connectedApps.postValue(loadHealthPermissionApps.invoke()) }
+        viewModelScope.launch {
+            _connectedApps.postValueIfUpdated(loadHealthPermissionApps.invoke())
+        }
     }
 
     fun searchConnectedApps(searchValue: String) {
         viewModelScope.launch {
-            _connectedApps.postValue(
+            _connectedApps.postValueIfUpdated(
                 searchHealthPermissionApps.search(loadHealthPermissionApps.invoke(), searchValue))
         }
     }
 
-    fun disconnectAllApps(apps: List<ConnectedAppMetadata>) {
-        viewModelScope.launch(ioDispatcher) {
-            _disconnectAllState.postValue(DisconnectAllState.Loading)
-            apps.forEach { app ->
-                revokeAllHealthPermissionsUseCase.invoke(app.appMetadata.packageName)
+    fun disconnectAllApps(apps: List<ConnectedAppMetadata>): Boolean {
+        try {
+            viewModelScope.launch(ioDispatcher) {
+                _disconnectAllState.postValue(DisconnectAllState.Loading)
+                apps.forEach { app ->
+                    revokeAllHealthPermissionsUseCase.invoke(app.appMetadata.packageName)
+                }
+                loadConnectedApps()
+                _disconnectAllState.postValue(DisconnectAllState.Updated)
             }
-            loadConnectedApps()
-            _disconnectAllState.postValue(DisconnectAllState.Updated)
+            return true
+        } catch (ex: Exception) {
+            Log.e(TAG, "Failed to update permissions!", ex)
         }
+        return false
     }
 
     sealed class DisconnectAllState {

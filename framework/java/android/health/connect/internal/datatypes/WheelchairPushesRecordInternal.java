@@ -28,7 +28,7 @@ import android.os.Parcel;
 @Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_WHEELCHAIR_PUSHES)
 public final class WheelchairPushesRecordInternal
         extends IntervalRecordInternal<WheelchairPushesRecord> {
-    private long mCount;
+    private int mCount;
 
     public long getCount() {
         return mCount;
@@ -36,7 +36,7 @@ public final class WheelchairPushesRecordInternal
 
     /** returns this object with the specified count */
     @NonNull
-    public WheelchairPushesRecordInternal setCount(long count) {
+    public WheelchairPushesRecordInternal setCount(int count) {
         this.mCount = count;
         return this;
     }
@@ -48,21 +48,16 @@ public final class WheelchairPushesRecordInternal
                         buildMetaData(), getStartTime(), getEndTime(), getCount())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {
-        mCount = parcel.readLong();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull WheelchairPushesRecord wheelchairPushesRecord) {
-        mCount = wheelchairPushesRecord.getCount();
+        mCount = parcel.readInt();
     }
 
     @Override
     void populateIntervalRecordTo(@NonNull Parcel parcel) {
-        parcel.writeLong(mCount);
+        parcel.writeInt(mCount);
     }
 }

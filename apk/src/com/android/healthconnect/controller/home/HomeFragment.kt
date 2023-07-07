@@ -15,41 +15,62 @@
  */
 package com.android.healthconnect.controller.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
+import com.android.healthconnect.controller.HealthFitnessUiStatsLog.*
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.dataentries.formatters.DurationFormatter
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
+import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.permissions.shared.Constants
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessPreference
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
+import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
-import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.shared.preference.BannerPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.logging.HomePageElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Duration
 
 /** Home fragment for Health Connect. */
-@AndroidEntryPoint(PreferenceFragmentCompat::class)
+@AndroidEntryPoint(HealthPreferenceFragment::class)
 class HomeFragment : Hilt_HomeFragment() {
 
     companion object {
         private const val DATA_AND_ACCESS_PREFERENCE_KEY = "data_and_access"
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
+        private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
 
         @JvmStatic fun newInstance() = HomeFragment()
     }
 
+    init {
+        this.setPageName(PageName.HOME_PAGE)
+    }
+
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
+    private val migrationViewModel: MigrationViewModel by activityViewModels()
 
-    private val mDataAndAccessPreference: Preference? by lazy {
+    private val mDataAndAccessPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
     }
 
@@ -57,37 +78,135 @@ class HomeFragment : Hilt_HomeFragment() {
         preferenceScreen.findPreference(RECENT_ACCESS_PREFERENCE_KEY)
     }
 
-    private val mConnectedAppsPreference: Preference? by lazy {
+    private val mConnectedAppsPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(CONNECTED_APPS_PREFERENCE_KEY)
     }
 
+    private lateinit var migrationBannerSummary: String
+    private var migrationBanner: BannerPreference? = null
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.home_preference_screen, rootKey)
+        mDataAndAccessPreference?.logName = HomePageElement.DATA_AND_ACCESS_BUTTON
         mDataAndAccessPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_healthDataCategoriesFragment)
             true
         }
+        mConnectedAppsPreference?.logName = HomePageElement.APP_PERMISSIONS_BUTTON
         mConnectedAppsPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_connectedAppsFragment)
             true
         }
+
+        migrationBannerSummary = getString(R.string.resume_migration_banner_description_fallback)
+        migrationBanner = getMigrationBanner()
     }
 
     override fun onResume() {
         super.onResume()
+        recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
         homeFragmentViewModel.loadConnectedApps()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupSharedMenu(viewLifecycleOwner = viewLifecycleOwner)
         recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
-        recentAccessViewModel.recentAccessApps.observe(viewLifecycleOwner) { recentApps ->
-            updateRecentApps(recentApps)
+        recentAccessViewModel.recentAccessApps.observe(viewLifecycleOwner) { recentAppsState ->
+            when (recentAppsState) {
+                is RecentAccessState.WithData -> {
+                    updateRecentApps(recentAppsState.recentAccessEntries)
+                }
+                else -> {
+                    updateRecentApps(emptyList())
+                }
+            }
         }
         homeFragmentViewModel.connectedApps.observe(viewLifecycleOwner) { connectedApps ->
             updateConnectedApps(connectedApps)
+        }
+        migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
+            when (migrationState) {
+                is MigrationViewModel.MigrationFragmentState.WithData -> {
+                    showMigrationState(migrationState.migrationState)
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    private fun updateMigrationBannerText(duration: Duration) {
+        val formattedDuration =
+            DurationFormatter.formatDurationDaysOrHours(requireContext(), duration)
+        migrationBannerSummary =
+            getString(R.string.resume_migration_banner_description, formattedDuration)
+        migrationBanner?.summary = migrationBannerSummary
+    }
+
+    private fun showMigrationState(migrationState: MigrationState) {
+        preferenceScreen.removePreferenceRecursively(MIGRATION_BANNER_PREFERENCE_KEY)
+
+        when (migrationState) {
+            MigrationState.ALLOWED_PAUSED,
+            MigrationState.ALLOWED_NOT_STARTED,
+            MigrationState.MODULE_UPGRADE_REQUIRED,
+            MigrationState.APP_UPGRADE_REQUIRED -> {
+                migrationBanner = getMigrationBanner()
+                preferenceScreen.addPreference(migrationBanner)
+            }
+            MigrationState.COMPLETE -> {
+                maybeShowWhatsNewDialog(requireContext())
+            }
+            MigrationState.ALLOWED_ERROR -> {
+                maybeShowMigrationNotCompleteDialog()
+            }
+            else -> {
+                // show nothing
+            }
+        }
+    }
+
+    private fun maybeShowMigrationNotCompleteDialog() {
+        val sharedPreference =
+            requireActivity().getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+        val dialogSeen =
+            sharedPreference.getBoolean(
+                getString(R.string.migration_not_complete_dialog_seen), false)
+
+        if (!dialogSeen) {
+            AlertDialogBuilder(this)
+                .setLogName(ErrorPageElement.UNKNOWN_ELEMENT)
+                .setTitle(R.string.migration_not_complete_dialog_title)
+                .setMessage(R.string.migration_not_complete_dialog_content)
+                .setCancelable(false)
+                .setNegativeButton(
+                    R.string.migration_whats_new_dialog_button, ErrorPageElement.UNKNOWN_ELEMENT) {
+                        _,
+                        _ ->
+                        sharedPreference.edit().apply {
+                            putBoolean(getString(R.string.migration_not_complete_dialog_seen), true)
+                            apply()
+                        }
+                    }
+                .create()
+                .show()
+        }
+    }
+
+    private fun getMigrationBanner(): BannerPreference {
+        return BannerPreference(requireContext()).also {
+            it.setButton(resources.getString(R.string.resume_migration_banner_button))
+            it.title = resources.getString(R.string.resume_migration_banner_title)
+            it.key = MIGRATION_BANNER_PREFERENCE_KEY
+            it.summary = migrationBannerSummary
+            it.setIcon(R.drawable.ic_settings_alert)
+            it.setButtonOnClickListener {
+                findNavController().navigate(R.id.action_homeFragment_to_migrationActivity)
+            }
+            it.order = 1
         }
     }
 
@@ -119,15 +238,17 @@ class HomeFragment : Hilt_HomeFragment() {
 
     private fun updateRecentApps(recentAppsList: List<RecentAccessEntry>) {
         mRecentAccessPreference?.removeAll()
+
         if (recentAppsList.isEmpty()) {
             mRecentAccessPreference?.addPreference(
                 Preference(requireContext()).also { it.setSummary(R.string.no_recent_access) })
         } else {
             recentAppsList.forEach { recentApp ->
                 val newRecentAccessPreference =
-                    RecentAccessPreference(requireContext(), recentApp, false).also {
+                    RecentAccessPreference(requireContext(), recentApp, false).also { newPreference
+                        ->
                         if (!recentApp.isInactive) {
-                            it.setOnPreferenceClickListener {
+                            newPreference.setOnPreferenceClickListener {
                                 findNavController()
                                     .navigate(
                                         R.id.action_homeFragment_to_connectedAppFragment,
@@ -142,9 +263,10 @@ class HomeFragment : Hilt_HomeFragment() {
                 mRecentAccessPreference?.addPreference(newRecentAccessPreference)
             }
             val seeAllPreference =
-                Preference(requireContext()).also {
+                HealthPreference(requireContext()).also {
                     it.setTitle(R.string.show_recent_access_entries_button_title)
-                    it.setIcon(R.drawable.quantum_gm_ic_keyboard_arrow_right_vd_theme_24)
+                    it.setIcon(AttributeResolver.getResource(requireContext(), R.attr.seeAllIcon))
+                    it.logName = HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON
                 }
             seeAllPreference.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_recentAccessFragment)

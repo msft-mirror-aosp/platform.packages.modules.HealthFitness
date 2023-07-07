@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.request.UpsertTableRequest.TYPE_STRING;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_UNIQUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
@@ -24,16 +25,19 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.os.UserHandle;
+import android.util.ArraySet;
 import android.util.Pair;
 import android.util.Slog;
 
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
+import com.android.server.healthconnect.permission.PackageInfoUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -43,9 +47,11 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -54,9 +60,11 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-public class HealthDataCategoryPriorityHelper {
+public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     private static final String TABLE_NAME = "health_data_category_priority_table";
     private static final String HEALTH_DATA_CATEGORY_COLUMN_NAME = "health_data_category";
+    public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
+            Collections.singletonList(new Pair<>(HEALTH_DATA_CATEGORY_COLUMN_NAME, TYPE_STRING));
     private static final String APP_ID_PRIORITY_ORDER_COLUMN_NAME = "app_id_priority_order";
     private static final String TAG = "HealthConnectPrioHelper";
     private static final String DEFAULT_APP_RESOURCE_NAME =
@@ -67,23 +75,9 @@ public class HealthDataCategoryPriorityHelper {
      * map of {@link HealthDataCategory} to list of app ids from {@link AppInfoHelper}, in the order
      * of their priority
      */
-    private ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
+    private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
     private HealthDataCategoryPriorityHelper() {}
-
-    @NonNull
-    public static synchronized HealthDataCategoryPriorityHelper getInstance() {
-        if (sHealthDataCategoryPriorityHelper == null) {
-            sHealthDataCategoryPriorityHelper = new HealthDataCategoryPriorityHelper();
-        }
-
-        return sHealthDataCategoryPriorityHelper;
-    }
-
-    // Called on DB update.
-    public void onUpgrade(int newVersion, @NonNull SQLiteDatabase db) {
-        // empty by default
-    }
 
     /**
      * Returns a requests representing the tables that should be created corresponding to this
@@ -94,7 +88,7 @@ public class HealthDataCategoryPriorityHelper {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
-    public void appendToPriorityList(
+    public synchronized void appendToPriorityList(
             @NonNull String packageName,
             @HealthDataCategory.Type int dataCategory,
             Context context) {
@@ -119,12 +113,14 @@ public class HealthDataCategoryPriorityHelper {
         }
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME, getContentValuesFor(dataCategory, newPriorityOrder)),
+                        TABLE_NAME,
+                        getContentValuesFor(dataCategory, newPriorityOrder),
+                        UNIQUE_COLUMN_INFO),
                 dataCategory,
                 newPriorityOrder);
     }
 
-    public void removeFromPriorityList(
+    public synchronized void removeFromPriorityList(
             @NonNull String packageName,
             @HealthDataCategory.Type int dataCategory,
             HealthConnectPermissionHelper permissionHelper,
@@ -137,39 +133,50 @@ public class HealthDataCategoryPriorityHelper {
                 return;
             }
         }
-
-        List<Long> newPriorityList =
-                new ArrayList<>(
-                        getHealthDataCategoryToAppIdPriorityMap()
-                                .getOrDefault(dataCategory, Collections.emptyList()));
-        if (newPriorityList.isEmpty()) {
-            return;
-        }
-
-        newPriorityList.remove(AppInfoHelper.getInstance().getAppInfoId(packageName));
-        if (newPriorityList.isEmpty()) {
-            safelyUpdateDBAndUpdateCache(
-                    new DeleteTableRequest(TABLE_NAME)
-                            .setId(HEALTH_DATA_CATEGORY_COLUMN_NAME, String.valueOf(dataCategory)),
-                    dataCategory);
-            return;
-        }
-
-        safelyUpdateDBAndUpdateCache(
-                new UpsertTableRequest(
-                        TABLE_NAME, getContentValuesFor(dataCategory, newPriorityList)),
-                dataCategory,
-                newPriorityList);
+        removeFromPriorityListInternal(dataCategory, packageName);
     }
 
+    public synchronized void updateHealthDataPriority(
+            @NonNull String[] packageNames, @NonNull UserHandle user, @NonNull Context context) {
+        Objects.requireNonNull(packageNames);
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(context);
+        PackageInfoUtils packageInfoUtils = PackageInfoUtils.getInstance();
+        for (String packageName : packageNames) {
+            PackageInfo packageInfo =
+                    packageInfoUtils.getPackageInfoWithPermissionsAsUser(
+                            packageName, user, context);
+            if (packageInfoUtils.anyRequestedHealthPermissionGranted(context, packageInfo)) {
+                removeFromPriorityListIfNeeded(packageInfo, context);
+            } else {
+                removeAppFromPriorityList(packageName);
+            }
+        }
+    }
+
+    /** Removes app from priorityList for all HealthData Categories if the package is uninstalled */
+    public synchronized void removeAppFromPriorityList(@NonNull String packageName) {
+        Objects.requireNonNull(packageName);
+        for (Integer dataCategory : getHealthDataCategoryToAppIdPriorityMap().keySet()) {
+            removeFromPriorityListInternal(dataCategory, packageName);
+        }
+    }
+
+    /** Returns list of package names based on priority for the input {@link HealthDataCategory} */
     @NonNull
     public List<String> getPriorityOrder(@HealthDataCategory.Type int type) {
+        return AppInfoHelper.getInstance().getPackageNames(getAppIdPriorityOrder(type));
+    }
+
+    /** Returns list of App ids based on priority for the input {@link HealthDataCategory} */
+    @NonNull
+    public List<Long> getAppIdPriorityOrder(@HealthDataCategory.Type int type) {
         List<Long> packageIds = getHealthDataCategoryToAppIdPriorityMap().get(type);
         if (packageIds == null) {
             return Collections.emptyList();
         }
 
-        return AppInfoHelper.getInstance().getPackageNames(packageIds);
+        return packageIds;
     }
 
     public void setPriorityOrder(int dataCategory, @NonNull List<String> packagePriorityOrder) {
@@ -190,13 +197,27 @@ public class HealthDataCategoryPriorityHelper {
 
         safelyUpdateDBAndUpdateCache(
                 new UpsertTableRequest(
-                        TABLE_NAME, getContentValuesFor(dataCategory, newPriorityOrder)),
+                        TABLE_NAME,
+                        getContentValuesFor(dataCategory, newPriorityOrder),
+                        UNIQUE_COLUMN_INFO),
                 dataCategory,
                 newPriorityOrder);
     }
 
+    @Override
+    protected synchronized void clearData(@NonNull TransactionManager transactionManager) {
+        clearCache();
+        super.clearData(transactionManager);
+    }
+
+    @Override
     public synchronized void clearCache() {
         mHealthDataCategoryToAppIdPriorityMap = null;
+    }
+
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
     }
 
     private Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMap() {
@@ -207,6 +228,11 @@ public class HealthDataCategoryPriorityHelper {
         return mHealthDataCategoryToAppIdPriorityMap;
     }
 
+    /** Returns an immutable map of data categories along with their priority order. */
+    public Map<Integer, List<Long>> getHealthDataCategoryToAppIdPriorityMapImmutable() {
+        return Collections.unmodifiableMap(getHealthDataCategoryToAppIdPriorityMap());
+    }
+
     private synchronized void populateDataCategoryToAppIdPriorityMap() {
         if (mHealthDataCategoryToAppIdPriorityMap != null) {
             return;
@@ -215,8 +241,7 @@ public class HealthDataCategoryPriorityHelper {
         ConcurrentHashMap<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap =
                 new ConcurrentHashMap<>();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        final SQLiteDatabase db = transactionManager.getReadableDb();
-        try (Cursor cursor = transactionManager.read(db, new ReadTableRequest(TABLE_NAME))) {
+        try (Cursor cursor = transactionManager.read(new ReadTableRequest(TABLE_NAME))) {
             while (cursor.moveToNext()) {
                 int dataCategory =
                         cursor.getInt(cursor.getColumnIndex(HEALTH_DATA_CATEGORY_COLUMN_NAME));
@@ -231,7 +256,7 @@ public class HealthDataCategoryPriorityHelper {
         mHealthDataCategoryToAppIdPriorityMap = healthDataCategoryToAppIdPriorityMap;
     }
 
-    private void safelyUpdateDBAndUpdateCache(
+    private synchronized void safelyUpdateDBAndUpdateCache(
             UpsertTableRequest request,
             @HealthDataCategory.Type int dataCategory,
             List<Long> newList) {
@@ -244,7 +269,7 @@ public class HealthDataCategoryPriorityHelper {
         }
     }
 
-    private void safelyUpdateDBAndUpdateCache(
+    private synchronized void safelyUpdateDBAndUpdateCache(
             DeleteTableRequest request, @HealthDataCategory.Type int dataCategory) {
         try {
             TransactionManager.getInitialisedInstance().delete(request);
@@ -274,12 +299,149 @@ public class HealthDataCategoryPriorityHelper {
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    protected List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(HEALTH_DATA_CATEGORY_COLUMN_NAME, INTEGER_UNIQUE));
         columnInfo.add(new Pair<>(APP_ID_PRIORITY_ORDER_COLUMN_NAME, TEXT_NOT_NULL));
 
         return columnInfo;
+    }
+
+    @NonNull
+    public static synchronized HealthDataCategoryPriorityHelper getInstance() {
+        if (sHealthDataCategoryPriorityHelper == null) {
+            sHealthDataCategoryPriorityHelper = new HealthDataCategoryPriorityHelper();
+        }
+
+        return sHealthDataCategoryPriorityHelper;
+    }
+
+    /** Syncs priority table with the permissions */
+    public synchronized void reSyncHealthDataPriorityTable(@NonNull Context context) {
+        Objects.requireNonNull(context);
+        Map<Integer, Set<Long>> dataCategoryToAppIdMapHavingPermission =
+                getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        Map.Entry::getKey, e -> new HashSet<>(e.getValue())));
+        Map<Integer, Set<Long>> dataCategoryToAppIdMapWithoutPermission =
+                getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
+                        .collect(
+                                Collectors.toMap(
+                                        Map.Entry::getKey, e -> new HashSet<>(e.getValue())));
+        UserHandle user = TransactionManager.getInitialisedInstance().getCurrentUserHandle();
+        Context currentUserContext = context.createContextAsUser(user, /*flags*/ 0);
+        List<PackageInfo> validHealthApps =
+                PackageInfoUtils.getInstance()
+                        .getPackagesHoldingHealthPermissions(user, currentUserContext);
+        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
+        for (PackageInfo packageInfo : validHealthApps) {
+            long appInfoId = appInfoHelper.getAppInfoId(packageInfo.packageName);
+            for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
+                String currPerm = packageInfo.requestedPermissions[i];
+                if (HealthConnectManager.isHealthPermission(currentUserContext, currPerm)
+                        && ((packageInfo.requestedPermissionsFlags[i]
+                                        & PackageInfo.REQUESTED_PERMISSION_GRANTED)
+                                != 0)) {
+                    int dataCategory = HealthPermissions.getHealthDataCategory(currPerm);
+                    if (dataCategory != -1) {
+                        Set<Long> appIdsHavingPermission =
+                                dataCategoryToAppIdMapHavingPermission.getOrDefault(
+                                        dataCategory, new HashSet<>());
+                        if (appIdsHavingPermission.add(appInfoId)) {
+                            dataCategoryToAppIdMapHavingPermission.put(
+                                    dataCategory, appIdsHavingPermission);
+                        }
+                        Set<Long> appIdsWithoutPermission =
+                                dataCategoryToAppIdMapWithoutPermission.get(dataCategory);
+                        if (appIdsWithoutPermission.remove(appInfoId)) {
+                            dataCategoryToAppIdMapWithoutPermission.put(
+                                    dataCategory, appIdsWithoutPermission);
+                        }
+                    }
+                }
+            }
+        }
+        updateTableWithNewPriorityList(dataCategoryToAppIdMapHavingPermission);
+        removeAppsWithoutPermission(dataCategoryToAppIdMapWithoutPermission);
+    }
+
+    private synchronized void removeFromPriorityListIfNeeded(
+            @NonNull PackageInfo packageInfo, @NonNull Context context) {
+        Set<Integer> dataCategoryWithPermission = new ArraySet<>();
+        for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {
+            String currPerm = packageInfo.requestedPermissions[i];
+            if (HealthConnectManager.isHealthPermission(context, currPerm)
+                    && ((packageInfo.requestedPermissionsFlags[i]
+                                    & PackageInfo.REQUESTED_PERMISSION_GRANTED)
+                            != 0)) {
+                int dataCategory = HealthPermissions.getHealthDataCategory(currPerm);
+                if (dataCategory != -1) {
+                    dataCategoryWithPermission.add(dataCategory);
+                }
+            }
+        }
+        for (int category : getHealthDataCategoryToAppIdPriorityMap().keySet()) {
+            if (!dataCategoryWithPermission.contains(category)) {
+                removeFromPriorityListInternal(category, packageInfo.packageName);
+            }
+        }
+    }
+
+    private synchronized void removeFromPriorityListInternal(
+            int dataCategory, @NonNull String packageName) {
+        List<Long> newPriorityList =
+                new ArrayList<>(
+                        getHealthDataCategoryToAppIdPriorityMap()
+                                .getOrDefault(dataCategory, Collections.emptyList()));
+        if (newPriorityList.isEmpty()) {
+            return;
+        }
+
+        newPriorityList.remove(AppInfoHelper.getInstance().getAppInfoId(packageName));
+        if (newPriorityList.isEmpty()) {
+            safelyUpdateDBAndUpdateCache(
+                    new DeleteTableRequest(TABLE_NAME)
+                            .setId(HEALTH_DATA_CATEGORY_COLUMN_NAME, String.valueOf(dataCategory)),
+                    dataCategory);
+            return;
+        }
+
+        safelyUpdateDBAndUpdateCache(
+                new UpsertTableRequest(
+                        TABLE_NAME,
+                        getContentValuesFor(dataCategory, newPriorityList),
+                        UNIQUE_COLUMN_INFO),
+                dataCategory,
+                newPriorityList);
+    }
+
+    private synchronized void removeAppsWithoutPermission(
+            Map<Integer, Set<Long>> healthDataCategoryToAppIdPriorityMap) {
+        for (int dataCategory : healthDataCategoryToAppIdPriorityMap.keySet()) {
+            for (Long appInfoId : healthDataCategoryToAppIdPriorityMap.get(dataCategory)) {
+                removeFromPriorityListInternal(
+                        dataCategory, AppInfoHelper.getInstance().getPackageName(appInfoId));
+            }
+        }
+    }
+
+    private synchronized void updateTableWithNewPriorityList(
+            Map<Integer, Set<Long>> healthDataCategoryToAppIdPriorityMap) {
+        for (int dataCategory : healthDataCategoryToAppIdPriorityMap.keySet()) {
+            List<Long> appInfoIdList =
+                    List.copyOf(healthDataCategoryToAppIdPriorityMap.get(dataCategory));
+            if (!appInfoIdList.equals(
+                    getHealthDataCategoryToAppIdPriorityMap().get(dataCategory))) {
+                safelyUpdateDBAndUpdateCache(
+                        new UpsertTableRequest(
+                                TABLE_NAME,
+                                getContentValuesFor(dataCategory, appInfoIdList),
+                                UNIQUE_COLUMN_INFO),
+                        dataCategory,
+                        appInfoIdList);
+            }
+        }
     }
 }

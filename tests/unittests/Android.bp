@@ -37,6 +37,7 @@ android_test {
         "mockito-target-extended-minus-junit4",
         "truth-prebuilt",
         "services.core",
+        "androidx.test.ext.truth",
     ],
     jni_libs: [
         // Required for ExtendedMockito
@@ -47,6 +48,8 @@ android_test {
         "android.test.base",
         "android.test.mock",
         "android.test.runner",
+        "framework-sdkextensions",
+        "framework-configinfrastructure",
     ],
     // Test coverage system runs on different devices. Need to
     // compile for all architecture.

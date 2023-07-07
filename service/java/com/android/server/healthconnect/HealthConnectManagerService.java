@@ -27,16 +27,21 @@ import android.os.UserManager;
 import android.util.Slog;
 
 import com.android.server.SystemService;
-import com.android.server.healthconnect.migration.MigrationBroadcast;
+import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
+import com.android.server.healthconnect.migration.MigrationCleaner;
+import com.android.server.healthconnect.migration.MigrationStateManager;
+import com.android.server.healthconnect.migration.MigrationUiStateManager;
+import com.android.server.healthconnect.migration.MigratorPackageChangesReceiver;
+import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.migration.notification.MigrationNotificationSender;
 import com.android.server.healthconnect.permission.FirstGrantTimeDatastore;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
-import com.android.server.healthconnect.permission.PackagePermissionChangesMonitor;
+import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
@@ -49,10 +54,14 @@ import java.util.Objects;
 public class HealthConnectManagerService extends SystemService {
     private static final String TAG = "HealthConnectManagerService";
     private final Context mContext;
-    private final PackagePermissionChangesMonitor mPackageMonitor;
+    private final PermissionPackageChangesOrchestrator mPermissionPackageChangesOrchestrator;
     private final HealthConnectServiceImpl mHealthConnectService;
     private final TransactionManager mTransactionManager;
-    private UserHandle mCurrentUser;
+    private final UserManager mUserManager;
+    private final MigrationBroadcastScheduler mMigrationBroadcastScheduler;
+    private UserHandle mCurrentForegroundUser;
+    private MigrationUiStateManager mMigrationUiStateManager;
+    private final MigrationNotificationSender mMigrationNotificationSender;
 
     public HealthConnectManagerService(Context context) {
         super(context);
@@ -68,51 +77,126 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectManager.getHealthPermissions(context),
                         permissionIntentTracker,
                         firstGrantTimeManager);
-        mPackageMonitor =
-                new PackagePermissionChangesMonitor(permissionIntentTracker, firstGrantTimeManager);
-        mCurrentUser = context.getUser();
+        mCurrentForegroundUser = context.getUser();
         mContext = context;
+        mPermissionPackageChangesOrchestrator =
+                new PermissionPackageChangesOrchestrator(
+                        permissionIntentTracker,
+                        firstGrantTimeManager,
+                        permissionHelper,
+                        mCurrentForegroundUser);
+        mUserManager = context.getSystemService(UserManager.class);
         mTransactionManager =
                 TransactionManager.getInstance(
-                        new HealthConnectUserContext(mContext, mCurrentUser));
+                        new HealthConnectUserContext(mContext, mCurrentForegroundUser));
         HealthConnectDeviceConfigManager.initializeInstance(context);
+        mMigrationBroadcastScheduler =
+                new MigrationBroadcastScheduler(mCurrentForegroundUser.getIdentifier());
+        final MigrationStateManager migrationStateManager =
+                MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
+        migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
+        final MigrationCleaner migrationCleaner =
+                new MigrationCleaner(
+                        mTransactionManager,
+                        MigrationEntityHelper.getInstance(),
+                        PriorityMigrationHelper.getInstance());
+        mMigrationNotificationSender = new MigrationNotificationSender(context);
+        mMigrationUiStateManager =
+                new MigrationUiStateManager(
+                        mContext,
+                        mCurrentForegroundUser,
+                        migrationStateManager,
+                        mMigrationNotificationSender);
         mHealthConnectService =
                 new HealthConnectServiceImpl(
-                        mTransactionManager, permissionHelper, firstGrantTimeManager, mContext);
+                        mTransactionManager,
+                        permissionHelper,
+                        migrationCleaner,
+                        firstGrantTimeManager,
+                        migrationStateManager,
+                        mMigrationUiStateManager,
+                        mContext);
     }
 
     @Override
     public void onStart() {
-        mPackageMonitor.registerBroadcastReceiver(mContext);
+        mPermissionPackageChangesOrchestrator.registerBroadcastReceiver(mContext);
+        new MigratorPackageChangesReceiver(MigrationStateManager.getInitialisedInstance())
+                .registerBroadcastReceiver(mContext);
         publishBinderService(Context.HEALTHCONNECT_SERVICE, mHealthConnectService);
+        HealthConnectDeviceConfigManager.getInitialisedInstance().updateRateLimiterValues();
     }
 
+    /**
+     * NOTE: Don't put any code that uses DB in onUserSwitching, such code should be part of
+     * switchToSetupForUser which is only called once DB is in usable state.
+     */
     @Override
     public void onUserSwitching(@Nullable TargetUser from, @NonNull TargetUser to) {
+        if (from != null && mUserManager.isUserUnlocked(from.getUserHandle())) {
+            // We need to cancel any pending timers for the foreground user before it goes into the
+            // background.
+            mHealthConnectService.cancelBackupRestoreTimeouts();
+        }
+
         HealthConnectThreadScheduler.shutdownThreadPools();
-        AppInfoHelper.getInstance().clearCache();
-        DeviceInfoHelper.getInstance().clearCache();
-        HealthDataCategoryPriorityHelper.getInstance().clearCache();
-        PreferenceHelper.getInstance().clearCache();
+        DatabaseHelper.clearAllCache();
         mTransactionManager.onUserSwitching();
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
+        MigrationStateManager migrationStateManager =
+                MigrationStateManager.getInitialisedInstance();
+        migrationStateManager.onUserSwitching(mContext, to.getUserHandle().getIdentifier());
+
+        mCurrentForegroundUser = to.getUserHandle();
+
+        if (mUserManager.isUserUnlocked(to.getUserHandle())) {
+            // The user is already in unlocked state, so we should proceed with our setup right now,
+            // as we won't be getting a onUserUnlocked callback
+            switchToSetupForUser(to.getUserHandle());
+        }
+    }
+
+    // NOTE: The only scenario in which onUserUnlocked's code should be triggered is if the
+    // foreground user is unlocked. If {@code user} is not a foreground user, the following
+    // code should only be triggered when the {@code user} actually gets unlocked. And in
+    // such cases onUserSwitching will be triggered for {@code user} and this code will be
+    // triggered then.
+    @Override
+    public void onUserUnlocked(@NonNull TargetUser user) {
+        Objects.requireNonNull(user);
+        if (!user.getUserHandle().equals(mCurrentForegroundUser)) {
+            // Ignore unlocking requests for non-foreground users
+            return;
+        }
+
+        switchToSetupForUser(user.getUserHandle());
     }
 
     @Override
-    public void onUserUnlocking(@NonNull TargetUser user) {
-        Objects.requireNonNull(user);
+    public boolean isUserSupported(@NonNull TargetUser user) {
+        UserManager userManager =
+                getUserContext(mContext, user.getUserHandle()).getSystemService(UserManager.class);
+        return !(Objects.requireNonNull(userManager).isProfile());
+    }
 
-        if (!user.getUserHandle().equals(mCurrentUser)) {
-            mCurrentUser = user.getUserHandle();
-            mTransactionManager.onUserUnlocking(
-                    new HealthConnectUserContext(mContext, mCurrentUser));
-        }
+    private void switchToSetupForUser(UserHandle user) {
+        // Note: This is for test setup debugging, please don't surround with DEBUG flag
+        Slog.d(TAG, "switchToSetupForUser: " + user);
+        mTransactionManager.onUserUnlocked(
+                new HealthConnectUserContext(mContext, mCurrentForegroundUser));
+        mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
+        mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser.getIdentifier());
+        mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
+        mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
+
+        HealthConnectDailyJobs.cancelAllJobs(mContext);
 
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        HealthConnectDailyService.schedule(mContext, mCurrentUser.getIdentifier());
+                        HealthConnectDailyJobs.schedule(
+                                mContext, mCurrentForegroundUser.getIdentifier());
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to scheduled Health Connect daily service.", e);
                     }
@@ -121,32 +205,29 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     try {
-                        // TODO(b/267255123): Send broadcast up to 10 times with a 60s delay
-                        // (configurable)
-                        MigrationBroadcast migrationBroadcast =
-                                new MigrationBroadcast(mContext, mCurrentUser);
-                        migrationBroadcast.sendInvocationBroadcast();
+                        mMigrationBroadcastScheduler.scheduleNewJobs(mContext);
                     } catch (Exception e) {
-                        Slog.e(TAG, "Sending migration broadcast failed", e);
+                        Slog.e(TAG, "Migration broadcast schedule failed", e);
                     }
                 });
-    }
 
-    @Override
-    public boolean isUserSupported(@NonNull TargetUser user) {
-        UserManager userManager =
-            getUserContext(mContext, user.getUserHandle()).getSystemService(UserManager.class);
-        return !(userManager.isManagedProfile() || userManager.isCloneProfile());
-    }
-
-    @Override
-    public void onUserStopping(@NonNull TargetUser user) {
-        Objects.requireNonNull(user);
-        try {
-            HealthConnectDailyService.stop(mContext, user.getUserHandle().getIdentifier());
-        } catch (Exception e) {
-            Slog.e(TAG, "Failed to stop Health Connect daily service.", e);
-        }
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    try {
+                        MigrationStateManager.getInitialisedInstance()
+                                .switchToSetupForUser(mContext);
+                    } catch (Exception e) {
+                        Slog.e(TAG, "Failed to start user unlocked state changes actions", e);
+                    }
+                });
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    try {
+                        PreferenceHelper.getInstance().initializePreferences();
+                    } catch (Exception e) {
+                        Slog.e(TAG, "Failed to initialize preferences cache", e);
+                    }
+                });
     }
 
     @NonNull

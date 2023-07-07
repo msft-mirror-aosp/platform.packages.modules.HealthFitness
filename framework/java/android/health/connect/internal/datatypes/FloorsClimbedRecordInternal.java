@@ -47,17 +47,12 @@ public final class FloorsClimbedRecordInternal extends IntervalRecordInternal<Fl
                         buildMetaData(), getStartTime(), getEndTime(), getFloors())
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {
         mFloors = parcel.readDouble();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull FloorsClimbedRecord floorsClimbedRecord) {
-        mFloors = floorsClimbedRecord.getFloors();
     }
 
     @Override

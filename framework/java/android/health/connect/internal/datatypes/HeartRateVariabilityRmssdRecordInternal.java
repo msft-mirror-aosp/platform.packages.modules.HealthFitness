@@ -34,13 +34,6 @@ public final class HeartRateVariabilityRmssdRecordInternal
     }
 
     @Override
-    void populateInstantRecordFrom(
-            @NonNull HeartRateVariabilityRmssdRecord heartRateVariabilityRmssdRecord) {
-        mHeartRateVariabilityMillis =
-                heartRateVariabilityRmssdRecord.getHeartRateVariabilityMillis();
-    }
-
-    @Override
     void populateInstantRecordTo(@NonNull Parcel parcel) {
         parcel.writeDouble(mHeartRateVariabilityMillis);
     }
@@ -59,6 +52,6 @@ public final class HeartRateVariabilityRmssdRecordInternal
         return new HeartRateVariabilityRmssdRecord.Builder(
                         buildMetaData(), getTime(), getHeartRateVariabilityMillis())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 }

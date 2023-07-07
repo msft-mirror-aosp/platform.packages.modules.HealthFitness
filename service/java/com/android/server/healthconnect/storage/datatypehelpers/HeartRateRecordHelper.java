@@ -24,7 +24,7 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -34,27 +34,34 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.HeartRateRecordInternal;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Helper class for HeartRateRecord.
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_HEART_RATE)
 public class HeartRateRecordHelper
         extends SeriesRecordHelper<
                 HeartRateRecordInternal, HeartRateRecordInternal.HeartRateSample> {
+
+    @VisibleForTesting public static final String TABLE_NAME = "heart_rate_record_table";
     public static final int NUM_LOCAL_COLUMNS = 2;
-    private static final String TABLE_NAME = "heart_rate_record_table";
     private static final String SERIES_TABLE_NAME = "heart_rate_record_series_table";
     private static final String BEATS_PER_MINUTE_COLUMN_NAME = "beats_per_minute";
     private static final String EPOCH_MILLIS_COLUMN_NAME = "epoch_millis";
+
+    public HeartRateRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_HEART_RATE);
+    }
 
     @Override
     public final AggregateResult<?> getAggregateResult(
@@ -87,8 +94,7 @@ public class HeartRateRecordHelper
             case HEART_RATE_RECORD_MEASUREMENTS_COUNT:
                 return new AggregateParams(
                                 SERIES_TABLE_NAME,
-                                Collections.singletonList(BEATS_PER_MINUTE_COLUMN_NAME),
-                                START_TIME_COLUMN_NAME)
+                                Collections.singletonList(BEATS_PER_MINUTE_COLUMN_NAME))
                         .setJoin(
                                 new SqlJoin(
                                         SERIES_TABLE_NAME,
@@ -116,14 +122,14 @@ public class HeartRateRecordHelper
     @Override
     void populateSpecificValues(Cursor seriesTableCursor, HeartRateRecordInternal record) {
         HashSet<HeartRateRecordInternal.HeartRateSample> heartRateSamplesSet = new HashSet<>();
-        String uuid = getCursorString(seriesTableCursor, UUID_COLUMN_NAME);
+        UUID uuid = getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME);
         do {
             heartRateSamplesSet.add(
                     new HeartRateRecordInternal.HeartRateSample(
                             getCursorInt(seriesTableCursor, BEATS_PER_MINUTE_COLUMN_NAME),
                             getCursorLong(seriesTableCursor, EPOCH_MILLIS_COLUMN_NAME)));
         } while (seriesTableCursor.moveToNext()
-                && uuid.equals(getCursorString(seriesTableCursor, UUID_COLUMN_NAME)));
+                && uuid.equals(getCursorUUID(seriesTableCursor, UUID_COLUMN_NAME)));
         // In case we hit another record, move the cursor back to read next record in outer
         // RecordHelper#getInternalRecords loop.
         seriesTableCursor.moveToPrevious();

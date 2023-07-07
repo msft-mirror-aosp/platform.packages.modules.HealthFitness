@@ -95,37 +95,27 @@ public class GetApplicationInfoTest {
         AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
                 new AtomicReference<>();
         try {
-            service.getContributorApplicationsInfo(
-                    Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<>() {
-                        @Override
-                        public void onResult(ApplicationInfoResponse result) {
-                            response.set(result.getApplicationInfoList());
-                            latch.countDown();
-                        }
-
-                        @Override
-                        public void onError(HealthConnectException exception) {
-                            healthConnectExceptionAtomicReference.set(exception);
-                            latch.countDown();
-                        }
-                    });
-            Assert.fail();
-        } catch (SecurityException exception) {
-            assertThat(true).isTrue();
-            assertThat(exception).isNotNull();
+            TestUtils.getApplicationInfo();
+            Assert.fail("Reading app info must not be allowed without right HC permission");
+        } catch (HealthConnectException healthConnectException) {
+            assertThat(healthConnectException.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
         }
     }
 
     @Test
     public void testGetApplicationInfo() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        CountDownLatch latch = new CountDownLatch(1);
+        TestUtils.insertRecords(TestUtils.getTestRecords());
         sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
 
         try {
-            Context context = ApplicationProvider.getApplicationContext();
-            TestUtils.insertRecords(TestUtils.getTestRecords());
+            // Wait for some time, as app info table will be  updated in the background so might
+            // take some additional time.
+            latch.await(1, TimeUnit.SECONDS);
 
-            List<AppInfo> result = getApplicationInfo();
+            List<AppInfo> result = TestUtils.getApplicationInfo();
             assertThat(result).hasSize(1);
 
             AppInfo appInfo = result.get(0);
@@ -140,29 +130,5 @@ public class GetApplicationInfoTest {
         } finally {
             sUiAutomation.dropShellPermissionIdentity();
         }
-    }
-
-    private List<AppInfo> getApplicationInfo() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        CountDownLatch latch = new CountDownLatch(1);
-        assertThat(service).isNotNull();
-        AtomicReference<List<AppInfo>> response = new AtomicReference<>();
-        service.getContributorApplicationsInfo(
-                Executors.newSingleThreadExecutor(),
-                new OutcomeReceiver<>() {
-                    @Override
-                    public void onResult(ApplicationInfoResponse result) {
-                        response.set(result.getApplicationInfoList());
-                        latch.countDown();
-                    }
-
-                    @Override
-                    public void onError(HealthConnectException exception) {
-                        Log.e(TAG, exception.getMessage());
-                    }
-                });
-        assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
-        return response.get();
     }
 }

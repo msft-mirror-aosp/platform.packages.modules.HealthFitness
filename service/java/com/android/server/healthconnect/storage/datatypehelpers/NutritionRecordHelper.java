@@ -47,6 +47,7 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_THIAMIN_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_TOTAL_CARBOHYDRATE_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_TOTAL_FAT_TOTAL;
+import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_TRANS_FAT_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_UNSATURATED_FAT_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_VITAMIN_A_TOTAL;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.NUTRITION_RECORD_VITAMIN_B12_TOTAL;
@@ -73,6 +74,8 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.NutritionRecordInternal;
 import android.util.Pair;
 
+import com.android.server.healthconnect.storage.request.AggregateParams;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -82,7 +85,6 @@ import java.util.List;
  *
  * @hide
  */
-@HelperFor(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_NUTRITION)
 public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionRecordInternal> {
     private static final String NUTRITION_RECORD_TABLE_NAME = "nutrition_record_table";
     private static final String UNSATURATED_FAT_COLUMN_NAME = "unsaturated_fat";
@@ -129,6 +131,10 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
     private static final String VITAMIN_A_COLUMN_NAME = "vitamin_a";
     private static final String FOLIC_ACID_COLUMN_NAME = "folic_acid";
     private static final String SUGAR_COLUMN_NAME = "sugar";
+
+    public NutritionRecordHelper() {
+        super(RecordTypeIdentifier.RECORD_TYPE_NUTRITION);
+    }
 
     @Override
     public AggregateResult<?> getAggregateResult(
@@ -237,6 +243,9 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
                 break;
             case NUTRITION_RECORD_TOTAL_FAT_TOTAL:
                 aggregateValue = results.getDouble(results.getColumnIndex(TOTAL_FAT_COLUMN_NAME));
+                break;
+            case NUTRITION_RECORD_TRANS_FAT_TOTAL:
+                aggregateValue = results.getDouble(results.getColumnIndex(TRANS_FAT_COLUMN_NAME));
                 break;
             case NUTRITION_RECORD_UNSATURATED_FAT_TOTAL:
                 aggregateValue =
@@ -378,6 +387,9 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
             case NUTRITION_RECORD_TOTAL_FAT_TOTAL:
                 columnNames = Collections.singletonList(TOTAL_FAT_COLUMN_NAME);
                 break;
+            case NUTRITION_RECORD_TRANS_FAT_TOTAL:
+                columnNames = Collections.singletonList(TRANS_FAT_COLUMN_NAME);
+                break;
             case NUTRITION_RECORD_UNSATURATED_FAT_TOTAL:
                 columnNames = Collections.singletonList(UNSATURATED_FAT_COLUMN_NAME);
                 break;
@@ -408,8 +420,7 @@ public final class NutritionRecordHelper extends IntervalRecordHelper<NutritionR
             default:
                 return null;
         }
-        return new AggregateParams(
-                NUTRITION_RECORD_TABLE_NAME, columnNames, START_TIME_COLUMN_NAME);
+        return new AggregateParams(NUTRITION_RECORD_TABLE_NAME, columnNames);
     }
 
     @Override

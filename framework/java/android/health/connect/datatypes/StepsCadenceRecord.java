@@ -16,15 +16,57 @@
 package android.health.connect.datatypes;
 
 import android.annotation.NonNull;
+import android.health.connect.HealthConnectManager;
+import android.health.connect.datatypes.validation.ValidationUtils;
+import android.health.connect.internal.datatypes.StepsCadenceRecordInternal;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /** Captures the user's steps cadence. */
 @Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE)
 public final class StepsCadenceRecord extends IntervalRecord {
+
+    /**
+     * Metric identifier to retrieve average Steps cadence rate using aggregate APIs in {@link
+     * HealthConnectManager}
+     */
+    @NonNull
+    public static final AggregationType<Double> STEPS_CADENCE_RATE_AVG =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.STEPS_CADENCE_RECORD_RATE_AVG,
+                    AggregationType.AVG,
+                    RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE,
+                    Double.class);
+
+    /**
+     * Metric identifier to retrieve minimum Steps cadence rate using aggregate APIs in {@link
+     * HealthConnectManager}
+     */
+    @NonNull
+    public static final AggregationType<Double> STEPS_CADENCE_RATE_MIN =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.STEPS_CADENCE_RECORD_RATE_MIN,
+                    AggregationType.MIN,
+                    RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE,
+                    Double.class);
+
+    /**
+     * Metric identifier to retrieve maximum Steps cadence rate using aggregate APIs in {@link
+     * HealthConnectManager}
+     */
+    @NonNull
+    public static final AggregationType<Double> STEPS_CADENCE_RATE_MAX =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.STEPS_CADENCE_RECORD_RATE_MAX,
+                    AggregationType.MAX,
+                    RecordTypeIdentifier.RECORD_TYPE_STEPS_CADENCE,
+                    Double.class);
+
     private final List<StepsCadenceRecordSample> mStepsCadenceRecordSamples;
 
     /**
@@ -34,6 +76,7 @@ public final class StepsCadenceRecord extends IntervalRecord {
      * @param endTime End time of this activity
      * @param endZoneOffset Zone offset of the user when the activity finished
      * @param stepsCadenceRecordSamples Samples of recorded StepsCadenceRecord
+     * @param skipValidation Boolean flag to skip validation of record values.
      */
     private StepsCadenceRecord(
             @NonNull Metadata metadata,
@@ -41,11 +84,18 @@ public final class StepsCadenceRecord extends IntervalRecord {
             @NonNull ZoneOffset startZoneOffset,
             @NonNull Instant endTime,
             @NonNull ZoneOffset endZoneOffset,
-            @NonNull List<StepsCadenceRecordSample> stepsCadenceRecordSamples) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset);
+            @NonNull List<StepsCadenceRecordSample> stepsCadenceRecordSamples,
+            boolean skipValidation) {
+        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
         Objects.requireNonNull(stepsCadenceRecordSamples);
-        ValidationUtils.validateSampleStartAndEndTime(startTime, endTime,
-                stepsCadenceRecordSamples.stream().map(StepsCadenceRecordSample::getTime).toList());
+        if (!skipValidation) {
+            ValidationUtils.validateSampleStartAndEndTime(
+                    startTime,
+                    endTime,
+                    stepsCadenceRecordSamples.stream()
+                            .map(StepsCadenceRecordSample::getTime)
+                            .toList());
+        }
         mStepsCadenceRecordSamples = stepsCadenceRecordSamples;
     }
 
@@ -69,8 +119,23 @@ public final class StepsCadenceRecord extends IntervalRecord {
          * @param time The point in time when the measurement was taken.
          */
         public StepsCadenceRecordSample(double rate, @NonNull Instant time) {
+            this(rate, time, false);
+        }
+
+        /**
+         * StepsCadenceRecord sample for entries of {@link StepsCadenceRecord}
+         *
+         * @param rate Rate in steps per minute.
+         * @param time The point in time when the measurement was taken.
+         * @param skipValidation Boolean flag to skip validation of record values.
+         * @hide
+         */
+        public StepsCadenceRecordSample(
+                double rate, @NonNull Instant time, boolean skipValidation) {
             Objects.requireNonNull(time);
-            ValidationUtils.requireInRange(rate, 0.0, 10000.0, "rate");
+            if (!skipValidation) {
+                ValidationUtils.requireInRange(rate, 0.0, 10000.0, "rate");
+            }
             mTime = time;
             mRate = rate;
         }
@@ -178,6 +243,21 @@ public final class StepsCadenceRecord extends IntervalRecord {
             mEndZoneOffset = RecordUtils.getDefaultZoneOffset();
             return this;
         }
+        /**
+         * @return Object of {@link StepsCadenceRecord} without validating the values.
+         * @hide
+         */
+        @NonNull
+        public StepsCadenceRecord buildWithoutValidation() {
+            return new StepsCadenceRecord(
+                    mMetadata,
+                    mStartTime,
+                    mStartZoneOffset,
+                    mEndTime,
+                    mEndZoneOffset,
+                    mStepsCadenceRecordSamples,
+                    true);
+        }
 
         /**
          * @return Object of {@link StepsCadenceRecord}
@@ -190,7 +270,8 @@ public final class StepsCadenceRecord extends IntervalRecord {
                     mStartZoneOffset,
                     mEndTime,
                     mEndZoneOffset,
-                    mStepsCadenceRecordSamples);
+                    mStepsCadenceRecordSamples,
+                    false);
         }
     }
 
@@ -221,5 +302,39 @@ public final class StepsCadenceRecord extends IntervalRecord {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getSamples());
+    }
+
+    /** @hide */
+    @Override
+    public StepsCadenceRecordInternal toRecordInternal() {
+        StepsCadenceRecordInternal recordInternal =
+                (StepsCadenceRecordInternal)
+                        new StepsCadenceRecordInternal()
+                                .setUuid(getMetadata().getId())
+                                .setPackageName(getMetadata().getDataOrigin().getPackageName())
+                                .setLastModifiedTime(
+                                        getMetadata().getLastModifiedTime().toEpochMilli())
+                                .setClientRecordId(getMetadata().getClientRecordId())
+                                .setClientRecordVersion(getMetadata().getClientRecordVersion())
+                                .setManufacturer(getMetadata().getDevice().getManufacturer())
+                                .setModel(getMetadata().getDevice().getModel())
+                                .setDeviceType(getMetadata().getDevice().getType())
+                                .setRecordingMethod(getMetadata().getRecordingMethod());
+        Set<StepsCadenceRecordInternal.StepsCadenceRecordSample> samples =
+                new HashSet<>(getSamples().size());
+
+        for (StepsCadenceRecord.StepsCadenceRecordSample stepsCadenceRecordSample : getSamples()) {
+            samples.add(
+                    new StepsCadenceRecordInternal.StepsCadenceRecordSample(
+                            stepsCadenceRecordSample.getRate(),
+                            stepsCadenceRecordSample.getTime().toEpochMilli()));
+        }
+        recordInternal.setSamples(samples);
+        recordInternal.setStartTime(getStartTime().toEpochMilli());
+        recordInternal.setEndTime(getEndTime().toEpochMilli());
+        recordInternal.setStartZoneOffset(getStartZoneOffset().getTotalSeconds());
+        recordInternal.setEndZoneOffset(getEndZoneOffset().getTotalSeconds());
+
+        return recordInternal;
     }
 }

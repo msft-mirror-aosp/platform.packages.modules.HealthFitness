@@ -22,6 +22,7 @@ import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.InstantRecord
 import android.health.connect.datatypes.IntervalRecord
 import android.health.connect.datatypes.Record
+import android.util.Log
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -31,7 +32,7 @@ import com.android.healthconnect.controller.shared.usecase.BaseUseCase
 import java.time.Duration.ofHours
 import java.time.Duration.ofMinutes
 import java.time.Instant
-import java.time.temporal.ChronoUnit
+import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,6 +47,10 @@ constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : BaseUseCase<LoadDataEntriesInput, List<FormattedEntry>>(dispatcher) {
 
+    companion object {
+        private const val TAG = "LoadDataEntriesUseCase"
+    }
+
     override suspend fun execute(input: LoadDataEntriesInput): List<FormattedEntry> {
         val timeFilterRange = getTimeFilter(input.selectedDate)
         val dataTypes = getDataTypes(input.permissionType)
@@ -53,7 +58,12 @@ constructor(
     }
 
     private fun getTimeFilter(selectedDate: Instant): TimeInstantRangeFilter {
-        val start = selectedDate.truncatedTo(ChronoUnit.DAYS)
+        val start =
+            selectedDate
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
         val end = start.plus(ofHours(23)).plus(ofMinutes(59))
         return TimeInstantRangeFilter.Builder().setStartTime(start).setEndTime(end).build()
     }
@@ -70,8 +80,17 @@ constructor(
                         filter, Runnable::run, continuation.asOutcomeReceiver())
                 }
                 .records
-                .sortedBy { record -> getStartTime(record) }
-        return records.map { record -> healthDataEntryFormatter.format(record) }
+                .sortedByDescending { record -> getStartTime(record) }
+        return records.mapNotNull { record -> getFormatterRecord(record) }
+    }
+
+    private suspend fun getFormatterRecord(record: Record): FormattedEntry? {
+        return try {
+            healthDataEntryFormatter.format(record)
+        } catch (ex: Exception) {
+            Log.i(TAG, "Failed to format record!")
+            null
+        }
     }
 
     private fun getStartTime(record: Record): Instant {

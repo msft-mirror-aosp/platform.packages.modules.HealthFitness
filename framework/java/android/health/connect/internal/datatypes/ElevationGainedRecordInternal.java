@@ -52,17 +52,12 @@ public final class ElevationGainedRecordInternal
                         Length.fromMeters(getElevation()))
                 .setStartZoneOffset(getStartZoneOffset())
                 .setEndZoneOffset(getEndZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateIntervalRecordFrom(@NonNull Parcel parcel) {
         mElevation = parcel.readDouble();
-    }
-
-    @Override
-    void populateIntervalRecordFrom(@NonNull ElevationGainedRecord elevationGainedRecord) {
-        mElevation = elevationGainedRecord.getElevation().getInMeters();
     }
 
     @Override

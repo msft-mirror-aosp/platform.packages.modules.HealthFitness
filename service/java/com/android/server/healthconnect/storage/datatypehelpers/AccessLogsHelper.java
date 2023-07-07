@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -28,7 +29,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -36,10 +36,12 @@ import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,24 +51,17 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-public final class AccessLogsHelper {
+public final class AccessLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "access_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String APP_ID_COLUMN_NAME = "app_id";
     private static final String ACCESS_TIME_COLUMN_NAME = "access_time";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final int NUM_COLS = 5;
+    private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
     private static volatile AccessLogsHelper sAccessLogsHelper;
 
     private AccessLogsHelper() {}
-
-    public static synchronized AccessLogsHelper getInstance() {
-        if (sAccessLogsHelper == null) {
-            sAccessLogsHelper = new AccessLogsHelper();
-        }
-
-        return sAccessLogsHelper;
-    }
 
     @NonNull
     public CreateTableRequest getCreateTableRequest() {
@@ -82,8 +77,7 @@ public final class AccessLogsHelper {
         List<AccessLog> accessLogsList = new ArrayList<>();
         final AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
-        final SQLiteDatabase db = transactionManager.getReadableDb();
-        try (Cursor cursor = transactionManager.read(db, readTableRequest)) {
+        try (Cursor cursor = transactionManager.read(readTableRequest)) {
             while (cursor.moveToNext()) {
                 String packageName =
                         String.valueOf(
@@ -108,6 +102,14 @@ public final class AccessLogsHelper {
             String packageName,
             @RecordTypeIdentifier.RecordType List<Integer> recordTypeList,
             @OperationType.OperationTypes int operationType) {
+        UpsertTableRequest request =
+                getUpsertTableRequest(packageName, recordTypeList, operationType);
+        TransactionManager.getInitialisedInstance().insert(request);
+    }
+
+    @NonNull
+    public UpsertTableRequest getUpsertTableRequest(
+            String packageName, List<Integer> recordTypeList, int operationType) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(
                 RECORD_TYPE_COLUMN_NAME,
@@ -117,12 +119,26 @@ public final class AccessLogsHelper {
         contentValues.put(ACCESS_TIME_COLUMN_NAME, Instant.now().toEpochMilli());
         contentValues.put(OPERATION_TYPE_COLUMN_NAME, operationType);
 
-        UpsertTableRequest request = new UpsertTableRequest(TABLE_NAME, contentValues);
-        TransactionManager.getInitialisedInstance().insert(request);
+        return new UpsertTableRequest(TABLE_NAME, contentValues);
     }
 
+    /**
+     * Returns an instance of {@link DeleteTableRequest} to delete entries in access logs table
+     * older than a week.
+     */
+    public DeleteTableRequest getDeleteRequestForAutoDelete() {
+        return new DeleteTableRequest(TABLE_NAME)
+                .setTimeFilter(
+                        TIME_COLUMN_NAME,
+                        Instant.EPOCH.toEpochMilli(),
+                        Instant.now()
+                                .minus(DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
+                                .toEpochMilli());
+    }
+
+    @Override
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    public List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
         columnInfo.add(new Pair<>(APP_ID_COLUMN_NAME, INTEGER_NOT_NULL));
@@ -131,5 +147,18 @@ public final class AccessLogsHelper {
         columnInfo.add(new Pair<>(OPERATION_TYPE_COLUMN_NAME, INTEGER_NOT_NULL));
 
         return columnInfo;
+    }
+
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
+    }
+
+    public static synchronized AccessLogsHelper getInstance() {
+        if (sAccessLogsHelper == null) {
+            sAccessLogsHelper = new AccessLogsHelper();
+        }
+
+        return sAccessLogsHelper;
     }
 }

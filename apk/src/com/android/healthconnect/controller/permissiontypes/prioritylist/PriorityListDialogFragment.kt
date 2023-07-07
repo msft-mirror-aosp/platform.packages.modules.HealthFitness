@@ -21,32 +21,36 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.utils.logging.PermissionTypesElement
 import dagger.hilt.android.AndroidEntryPoint
 
 /** A {@link DialogFragment} that displays the apps in priority order. */
 @AndroidEntryPoint(DialogFragment::class)
-class PriorityListDialogFragment(
-    private val priorityList: List<AppMetadata>,
-    private val dataCategoryName: String,
-) : Hilt_PriorityListDialogFragment() {
+class PriorityListDialogFragment() : Hilt_PriorityListDialogFragment() {
+
+    private val viewModel: HealthPermissionTypesViewModel by activityViewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val priorityList: List<AppMetadata> = viewModel.editedPriorityList.value ?: emptyList()
+        val dataCategoryName: String? = viewModel.categoryLabel.value
         val parentView: View =
             LayoutInflater.from(context).inflate(R.layout.dialog_layout_priority, null)
         val priorityListView: RecyclerView =
             parentView.findViewById(R.id.priority_list_recycle_view)
-        val adapter = PriorityListAdapter(priorityList)
+        val adapter = PriorityListAdapter(priorityList, viewModel)
 
         priorityListView.layoutManager = PriorityListLinearLayoutManager(context, adapter)
         priorityListView.adapter = adapter
         val messageView = parentView.findViewById<TextView>(R.id.priority_list_message)
-        messageView.text = getString(R.string.priority_dialog_message, dataCategoryName)
+        dataCategoryName?.let { messageView.text = getString(R.string.priority_dialog_message, it) }
 
         val callback = PriorityListItemMoveCallback(adapter)
         val priorityListMover = ItemTouchHelper(callback)
@@ -54,11 +58,16 @@ class PriorityListDialogFragment(
         priorityListMover.attachToRecyclerView(priorityListView)
 
         return AlertDialogBuilder(this)
+            .setLogName(PermissionTypesElement.SET_APP_PRIORITY_DIALOG_CONTAINER)
             .setView(parentView)
-            .setNegativeButton(android.R.string.cancel)
-            .setPositiveButton(R.string.priority_dialog_positive_button) { _, _ ->
-                setFragmentResult(PRIORITY_UPDATED_EVENT, bundle(adapter.getPackageNameList()))
-            }
+            .setNegativeButton(
+                android.R.string.cancel,
+                PermissionTypesElement.SET_APP_PRIORITY_DIALOG_CANCEL_BUTTON)
+            .setPositiveButton(
+                R.string.priority_dialog_positive_button,
+                PermissionTypesElement.SET_APP_PRIORITY_DIALOG_SAVE_BUTTON) { _, _ ->
+                    setFragmentResult(PRIORITY_UPDATED_EVENT, bundle(adapter.getPackageNameList()))
+                }
             .create()
     }
 

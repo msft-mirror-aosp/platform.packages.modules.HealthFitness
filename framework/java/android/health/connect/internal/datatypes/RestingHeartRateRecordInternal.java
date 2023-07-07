@@ -28,15 +28,15 @@ import android.os.Parcel;
 @Identifier(recordIdentifier = RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE)
 public final class RestingHeartRateRecordInternal
         extends InstantRecordInternal<RestingHeartRateRecord> {
-    private long mBeatsPerMinute;
+    private int mBeatsPerMinute;
 
-    public long getBeatsPerMinute() {
+    public int getBeatsPerMinute() {
         return mBeatsPerMinute;
     }
 
     /** returns this object with the specified beatsPerMinute */
     @NonNull
-    public RestingHeartRateRecordInternal setBeatsPerMinute(long beatsPerMinute) {
+    public RestingHeartRateRecordInternal setBeatsPerMinute(int beatsPerMinute) {
         this.mBeatsPerMinute = beatsPerMinute;
         return this;
     }
@@ -46,21 +46,16 @@ public final class RestingHeartRateRecordInternal
     public RestingHeartRateRecord toExternalRecord() {
         return new RestingHeartRateRecord.Builder(buildMetaData(), getTime(), getBeatsPerMinute())
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
-        mBeatsPerMinute = parcel.readLong();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull RestingHeartRateRecord restingHeartRateRecord) {
-        mBeatsPerMinute = restingHeartRateRecord.getBeatsPerMinute();
+        mBeatsPerMinute = parcel.readInt();
     }
 
     @Override
     void populateInstantRecordTo(@NonNull Parcel parcel) {
-        parcel.writeLong(mBeatsPerMinute);
+        parcel.writeInt(mBeatsPerMinute);
     }
 }

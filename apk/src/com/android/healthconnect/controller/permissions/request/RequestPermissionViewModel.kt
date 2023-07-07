@@ -18,6 +18,7 @@
 
 package com.android.healthconnect.controller.permissions.request
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,6 +45,10 @@ constructor(
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
     private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG = "RequestPermissionViewMo"
+    }
 
     private val _appMetaData = MutableLiveData<AppMetadata>()
     val appMetadata: LiveData<AppMetadata>
@@ -96,7 +101,14 @@ constructor(
         val filteredPermissions =
             permissions
                 .filter { permissionString -> !grantedPermissions.contains(permissionString) }
-                .map { permissionString -> HealthPermission.fromPermissionString(permissionString) }
+                .mapNotNull { permissionString ->
+                    try {
+                        HealthPermission.fromPermissionString(permissionString)
+                    } catch (exception: IllegalArgumentException) {
+                        Log.e(TAG, "Unrecognized health exception!", exception)
+                        null
+                    }
+                }
 
         _permissionsList.postValue(filteredPermissions)
     }
@@ -113,9 +125,9 @@ constructor(
 
     fun updatePermissions(grant: Boolean) {
         if (grant) {
-            _grantedPermissions.postValue(_permissionsList.value.orEmpty().toSet())
+            _grantedPermissions.setValue(_permissionsList.value.orEmpty().toSet())
         } else {
-            _grantedPermissions.postValue(emptySet())
+            _grantedPermissions.setValue(emptySet())
         }
     }
 

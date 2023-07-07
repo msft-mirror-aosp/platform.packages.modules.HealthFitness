@@ -17,8 +17,9 @@ package com.android.healthconnect.controller.autodelete
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDialogFragment.Companion.AUTO_DELETE_CANCELLED_EVENT
@@ -26,18 +27,28 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDia
 import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDialogFragment.Companion.AUTO_DELETE_SAVED_EVENT
 import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDialogFragment.Companion.NEW_AUTO_DELETE_RANGE_BUNDLE
 import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDialogFragment.Companion.OLD_AUTO_DELETE_RANGE_BUNDLE
+import com.android.healthconnect.controller.autodelete.AutoDeleteRangePickerPreference.Companion.AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
 import com.android.healthconnect.controller.autodelete.AutoDeleteRangePickerPreference.Companion.SET_TO_NEVER_EVENT
-import com.android.healthconnect.controller.utils.setupSharedMenu
+import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment displaying auto delete settings. */
-@AndroidEntryPoint(PreferenceFragmentCompat::class)
+@AndroidEntryPoint(HealthPreferenceFragment::class)
 class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
 
     companion object {
         private const val AUTO_DELETE_SECTION = "auto_delete_section"
         private const val HEADER = "header"
     }
+
+    init {
+        this.setPageName(PageName.AUTO_DELETE_PAGE)
+    }
+
+    @Inject lateinit var logger: HealthConnectLogger
 
     private val viewModel: AutoDeleteViewModel by activityViewModels()
 
@@ -48,28 +59,49 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
     private val mHeaderSection: PreferenceGroup? by lazy { preferenceScreen.findPreference(HEADER) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.auto_delete_screen, rootKey)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupSharedMenu(viewLifecycleOwner)
 
         viewModel.storedAutoDeleteRange.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is AutoDeleteViewModel.AutoDeleteState.Loading -> {}
-                is AutoDeleteViewModel.AutoDeleteState.LoadingFailed -> {}
+                is AutoDeleteViewModel.AutoDeleteState.Loading -> {
+                    // do nothing
+                }
+                is AutoDeleteViewModel.AutoDeleteState.LoadingFailed -> {
+                    Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
+                }
                 is AutoDeleteViewModel.AutoDeleteState.WithData -> {
-                    mAutoDeleteSection?.removeAll()
-                    mAutoDeleteSection?.addPreference(
-                        AutoDeleteRangePickerPreference(
-                            requireContext(), childFragmentManager, state.autoDeleteRange))
+                    if (mAutoDeleteSection?.findPreference<Preference>(
+                        AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY) == null) {
+                        val autoDeletePreference =
+                            AutoDeleteRangePickerPreference(
+                                requireContext(),
+                                childFragmentManager,
+                                state.autoDeleteRange,
+                                logger)
+                        mAutoDeleteSection?.addPreference(autoDeletePreference)
+                    } else {
+                        val autoDeletePreference =
+                            mAutoDeleteSection?.findPreference<Preference>(
+                                AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY)
+                                as AutoDeleteRangePickerPreference
+                        autoDeletePreference.updateAutoDeleteRange(state.autoDeleteRange)
+                    }
                 }
             }
         }
 
         mHeaderSection?.removeAll()
-        mHeaderSection?.addPreference(HeaderPreference(requireContext(), requireActivity()))
+        mHeaderSection?.addPreference(
+            HeaderPreference(requireContext(), requireActivity()).also {
+                // prevents a11y readers from announcing that the header is selectable
+                // this does not prevent the link from being clickable
+                it.isSelectable = false
+            })
 
         childFragmentManager.setFragmentResultListener(SET_TO_NEVER_EVENT, this) { _, _ ->
             viewModel.updateAutoDeleteRange(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)

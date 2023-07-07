@@ -15,40 +15,60 @@
  */
 package android.healthconnect.cts.ui
 
-import android.content.Context
+import android.health.connect.TimeInstantRangeFilter
+import android.health.connect.datatypes.StepsRecord
 import android.healthconnect.cts.TestUtils.insertRecords
-import android.healthconnect.cts.ui.testing.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.ui.testing.UiTestUtils.clickOnText
-import android.healthconnect.cts.ui.testing.UiTestUtils.navigateBackToHomeScreen
-import android.healthconnect.cts.ui.testing.UiTestUtils.stepsRecordFromTestApp
-import androidx.test.core.app.ApplicationProvider
-import org.junit.After
+import android.healthconnect.cts.TestUtils.verifyDeleteRecords
+import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
+import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp
+import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import androidx.test.uiautomator.By
+import java.time.Duration
+import java.time.Instant
+import org.junit.AfterClass
 import org.junit.Test
 
 /** CTS test for HealthConnect Data access screen. */
-class DataAccessFragmentTest {
+class DataAccessFragmentTest : HealthConnectBaseTest() {
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    companion object {
+        private const val TAG = "DataAccessFragmentTest"
+
+        @JvmStatic
+        @AfterClass
+        fun tearDown() {
+            verifyDeleteRecords(
+                StepsRecord::class.java,
+                TimeInstantRangeFilter.Builder()
+                    .setStartTime(Instant.EPOCH)
+                    .setEndTime(Instant.now())
+                    .build())
+        }
+    }
 
     @Test
     fun dataAccess_navigateToDataAccess() {
         insertRecords(listOf(stepsRecordFromTestApp()))
-        context.launchMainActivity {
-            clickOnText("Data and access")
+        context.launchDataActivity {
             clickOnText("Activity")
-            clickOnText("Steps")
+
+            waitDisplayed(By.text("Steps"))
         }
     }
 
-    // TODO(b/265789268): Add inactive apps test.
-    // TODO(b/265789268): Add delete data test.
+    @Test
+    fun dataAccess_deleteCategoryData_showsDeleteDataRanges() {
+        insertRecords(listOf(stepsRecordFromTestApp(Instant.now().minus(Duration.ofDays(20)))))
+        context.launchDataActivity {
+            clickOnText("Activity")
+            clickOnText("Steps")
 
-    @After
-    fun tearDown() {
-        navigateBackToHomeScreen()
-    }
-
-    companion object {
-        private const val TAG = "DataAccessFragmentTest"
+            // TODO(b/265789268): Fix "Delete this data view" not found.
+            //            clickOnText("Delete this data")
+            //            waitDisplayed(By.text("Delete last 7 days"))
+            //            waitDisplayed(By.text("Delete last 30 days"))
+            //            waitDisplayed(By.text("Delete all data"))
+        }
     }
 }

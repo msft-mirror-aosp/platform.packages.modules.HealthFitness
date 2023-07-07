@@ -18,14 +18,27 @@
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
+    android:layoutDirection="locale"
+    android:textDirection="locale"
     android:clickable="false">
+
+    <TextView
+        android:id="@+id/app_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="?attr/textAppearanceItem" />
 
     <ImageView
         android:id="@+id/app_icon"
         android:layout_width="@dimen/app_icon_size"
         android:layout_height="@dimen/app_icon_size"
         android:layout_gravity="center_vertical"
-        android:importantForAccessibility="no" />
+        android:importantForAccessibility="no"
+        android:layout_marginStart="@dimen/spacing_xsmall" />
 
     <TextView
         android:id="@+id/app_name"
@@ -36,7 +49,7 @@
         android:layout_marginHorizontal="@dimen/spacing_normal"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+        android:textAppearance="?attr/textAppearanceSubheader" />
 
     <FrameLayout
         android:id="@+id/drag_icon"
@@ -51,7 +64,7 @@
             android:layout_gravity="center_vertical|center_horizontal"
             android:minHeight="@dimen/icon_size"
             android:minWidth="@dimen/icon_size"
-            android:background="@drawable/quantum_gm_ic_drag_handle_vd_theme_24"
+            android:background="?attr/priorityItemDragIcon"
             android:importantForAccessibility="no" />
     </FrameLayout>
 </LinearLayout>

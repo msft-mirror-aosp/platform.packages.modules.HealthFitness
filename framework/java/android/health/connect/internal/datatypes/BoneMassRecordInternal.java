@@ -44,19 +44,14 @@ public final class BoneMassRecordInternal extends InstantRecordInternal<BoneMass
     @NonNull
     @Override
     public BoneMassRecord toExternalRecord() {
-        return new BoneMassRecord.Builder(buildMetaData(), getTime(), Mass.fromKilograms(getMass()))
+        return new BoneMassRecord.Builder(buildMetaData(), getTime(), Mass.fromGrams(getMass()))
                 .setZoneOffset(getZoneOffset())
-                .build();
+                .buildWithoutValidation();
     }
 
     @Override
     void populateInstantRecordFrom(@NonNull Parcel parcel) {
         mMass = parcel.readDouble();
-    }
-
-    @Override
-    void populateInstantRecordFrom(@NonNull BoneMassRecord boneMassRecord) {
-        mMass = boneMassRecord.getMass().getInKilograms();
     }
 
     @Override

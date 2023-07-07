@@ -16,8 +16,11 @@
 
 package android.health.connect.datatypes;
 
+import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
+
 import android.annotation.NonNull;
 import android.annotation.SystemApi;
+import android.health.connect.internal.datatypes.RecordInternal;
 
 import java.util.Objects;
 
@@ -34,6 +37,10 @@ public abstract class Record {
         Objects.requireNonNull(metadata);
         Identifier annotation = getClass().getAnnotation(Identifier.class);
         Objects.requireNonNull(annotation);
+        validateIntDefValue(
+                annotation.recordIdentifier(),
+                RecordTypeIdentifier.VALID_TYPES,
+                RecordTypeIdentifier.class.getSimpleName());
         mRecordIdentifier = annotation.recordIdentifier();
         mMetadata = metadata;
     }
@@ -46,11 +53,7 @@ public abstract class Record {
         return mMetadata;
     }
 
-    /**
-     * TODO(b/249583483): Add permission so that only UI APK can access this
-     *
-     * @hide
-     */
+    /** @hide */
     @SystemApi
     @RecordTypeIdentifier.RecordType
     public int getRecordType() {
@@ -83,4 +86,7 @@ public abstract class Record {
     public int hashCode() {
         return Objects.hash(getMetadata(), getRecordType());
     }
+
+    /** @hide */
+    public abstract RecordInternal<?> toRecordInternal();
 }
