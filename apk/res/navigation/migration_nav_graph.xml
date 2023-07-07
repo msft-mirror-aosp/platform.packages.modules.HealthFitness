@@ -9,6 +9,8 @@
         android:name="com.android.healthconnect.controller.migration.MigrationNavigationFragment">
         <action
             android:id="@+id/action_migrationNavigationFragment_to_migrationInProgressFragment"
+            app:popUpTo="@id/migrationNavigationFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/migrationInProgressFragment"/>
         <action
             android:id="@+id/action_migrationNavigationFragment_to_migrationAppUpdateNeededFragment"
@@ -21,11 +23,13 @@
             app:popUpToInclusive="true"
             app:destination="@id/migrationModuleUpdateNeededFragment"/>
         <action
-            android:id="@+id/action_migrationNavigationFragment_to_migrationMoreSpaceNeededFragment"
-            app:destination="@id/migrationMoreSpaceNeededFragment"/>
-        <action
             android:id="@+id/action_migrationNavigationFragment_to_migrationPausedFragment"
+            app:popUpTo="@id/migrationNavigationFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/migrationPausedFragment"/>
+        <action
+            android:id="@+id/action_migrationNavigationFragment_to_homeFragment"
+            app:destination="@id/healthConnectHomeActivity"/>
     </fragment>
     <fragment
         android:id="@+id/migrationInProgressFragment"
@@ -40,9 +44,12 @@
             app:destination="@id/updateAppActivity"/>
         <action
             android:id="@+id/action_migrationAppUpdateNeededFragment_to_homeScreen"
+            app:destination="@id/healthConnectHomeActivity"/>
+        <action
+            android:id="@+id/action_migrationAppUpdateNeededFragment_to_migrationNavigationFragment"
             app:popUpTo="@id/migrationAppUpdateNeededFragment"
             app:popUpToInclusive="true"
-            app:destination="@id/healthConnectHomeActivity"/>
+            app:destination="@id/migrationNavigationFragment"/>
     </fragment>
 
     <fragment
@@ -53,22 +60,15 @@
             app:destination="@id/systemUpdateActivity"/>
         <action
             android:id="@+id/action_migrationModuleUpdateNeededFragment_to_homeScreen"
-            app:popUpTo="@id/migrationModuleUpdateNeededFragment"
-            app:popUpToInclusive="true"
             app:destination="@id/healthConnectHomeActivity"/>
-    </fragment>
-
-    <fragment
-        android:id="@+id/migrationMoreSpaceNeededFragment"
-        android:name="com.android.healthconnect.controller.migration.MoreSpaceNeededFragment">
-        <action
-            android:id="@+id/action_migrationMoreSpaceNeededFragment_to_storageSettingsActivity"
-            app:destination="@id/storageSettingsActivity"/>
     </fragment>
 
     <fragment
         android:id="@+id/migrationPausedFragment"
         android:name="com.android.healthconnect.controller.migration.MigrationPausedFragment">
+        <action
+            android:id="@+id/action_migrationPausedFragment_to_homeScreen"
+            app:destination="@id/healthConnectHomeActivity"/>
         <action
             android:id="@+id/action_migrationPausedFragment_to_migrationApk"
             app:destination="@id/migrationApk"/>
@@ -85,7 +85,6 @@
         app:action="android.settings.SYSTEM_UPDATE_SETTINGS"
         android:label="systemUpdateActivity"/>
 
-    <!--    TODO (b/275602235) replace with playstore update activity or remove -->
     <activity
         android:id="@+id/updateAppActivity"
         app:action="android.health.connect.action.SHOW_MIGRATION_INFO"

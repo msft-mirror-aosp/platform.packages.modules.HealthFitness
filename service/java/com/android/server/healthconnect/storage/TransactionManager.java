@@ -59,6 +59,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 /**
@@ -70,14 +71,16 @@ import java.util.function.BiConsumer;
  */
 public final class TransactionManager {
     private static final String TAG = "HealthConnectTransactionMan";
-    private static final HashMap<UserHandle, HealthConnectDatabase> mUserHandleToDatabaseMap =
-            new HashMap<>();
-    private static TransactionManager sTransactionManager;
-    private HealthConnectDatabase mHealthConnectDatabase;
+    private static final ConcurrentHashMap<UserHandle, HealthConnectDatabase>
+            mUserHandleToDatabaseMap = new ConcurrentHashMap<>();
+    private static volatile TransactionManager sTransactionManager;
+    private volatile HealthConnectDatabase mHealthConnectDatabase;
+    private UserHandle mUserHandle;
 
     private TransactionManager(@NonNull HealthConnectUserContext context) {
         mHealthConnectDatabase = new HealthConnectDatabase(context);
         mUserHandleToDatabaseMap.put(context.getCurrentUserHandle(), mHealthConnectDatabase);
+        mUserHandle = context.getCurrentUserHandle();
     }
 
     public void onUserUnlocked(@NonNull HealthConnectUserContext healthConnectUserContext) {
@@ -90,6 +93,7 @@ public final class TransactionManager {
 
         mHealthConnectDatabase =
                 mUserHandleToDatabaseMap.get(healthConnectUserContext.getCurrentUserHandle());
+        mUserHandle = healthConnectUserContext.getCurrentUserHandle();
     }
 
     /**
@@ -128,6 +132,7 @@ public final class TransactionManager {
         return request.getUUIdsInOrder();
     }
 
+    /** Ignores if a record is already present. */
     public void insertAll(@NonNull List<UpsertTableRequest> requests) throws SQLiteException {
         final SQLiteDatabase db = getWritableDb();
         db.beginTransaction();
@@ -619,7 +624,7 @@ public final class TransactionManager {
             }
         }
 
-        if (request.getChildTableRequests().isEmpty()) {
+        if (request.getAllChildTables().isEmpty()) {
             return;
         }
 
@@ -713,7 +718,7 @@ public final class TransactionManager {
 
     private void deleteChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
-        for (String childTable : request.getAllChildTables()) {
+        for (String childTable : request.getAllChildTablesToDelete()) {
             DeleteTableRequest deleteTableRequest =
                     new DeleteTableRequest(childTable).setId(PARENT_KEY, String.valueOf(rowId));
             db.execSQL(deleteTableRequest.getDeleteCommand());
@@ -735,7 +740,8 @@ public final class TransactionManager {
     }
 
     @NonNull
-    public static TransactionManager getInstance(@NonNull HealthConnectUserContext context) {
+    public static synchronized TransactionManager getInstance(
+            @NonNull HealthConnectUserContext context) {
         if (sTransactionManager == null) {
             sTransactionManager = new TransactionManager(context);
         }
@@ -748,5 +754,10 @@ public final class TransactionManager {
         Objects.requireNonNull(sTransactionManager);
 
         return sTransactionManager;
+    }
+
+    @NonNull
+    public UserHandle getCurrentUserHandle() {
+        return mUserHandle;
     }
 }

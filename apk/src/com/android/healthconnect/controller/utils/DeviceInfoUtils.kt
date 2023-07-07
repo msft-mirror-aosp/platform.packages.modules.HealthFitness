@@ -10,6 +10,8 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
+import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.USER_INITIATED_FEEDBACK_BUCKET_ID
 import com.android.settingslib.HelpUtils
 import dagger.Module
 import dagger.Provides
@@ -20,9 +22,13 @@ import javax.inject.Inject
 
 interface DeviceInfoUtils {
     fun isSendFeedbackAvailable(context: Context): Boolean
+
     fun getFeedbackReporterPackage(context: Context): String?
+
     fun isPlayStoreAvailable(context: Context): Boolean
+
     fun openHCGetStartedLink(activity: FragmentActivity)
+
     fun openSendFeedbackActivity(activity: FragmentActivity)
 }
 
@@ -80,7 +86,7 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
     }
 
     override fun openHCGetStartedLink(activity: FragmentActivity) {
-        val helpUrlString = FEEDBACK_REPORTER
+        val helpUrlString = activity.getString(R.string.hc_get_started_link)
         val fullUri = HelpUtils.uriWithAddedParameters(activity, Uri.parse(helpUrlString))
         val intent =
             Intent(Intent.ACTION_VIEW, fullUri).apply {
@@ -95,10 +101,8 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
 
     override fun openSendFeedbackActivity(activity: FragmentActivity) {
         val intent = Intent(Intent.ACTION_BUG_REPORT)
-        intent.putExtra(
-            "category_tag",
-            "com.google.android.healthconnect.controller.USER_INITIATED_FEEDBACK_REPORT")
-        activity.startActivityForResult(intent, 0)
+        intent.putExtra("category_tag", USER_INITIATED_FEEDBACK_BUCKET_ID)
+        activity.startActivityForResult(intent, FEEDBACK_INTENT_RESULT_CODE)
     }
 }
 

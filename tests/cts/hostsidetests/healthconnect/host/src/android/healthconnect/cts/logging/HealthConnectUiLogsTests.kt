@@ -20,6 +20,7 @@ import android.cts.statsdatom.lib.AtomTestUtils
 import android.cts.statsdatom.lib.ConfigUtils
 import android.cts.statsdatom.lib.DeviceUtils
 import android.cts.statsdatom.lib.ReportUtils
+import android.healthconnect.cts.logging.HostSideTestsUtils.isHardwareSupported
 import android.healthfitness.ui.ElementId
 import android.healthfitness.ui.PageId
 import com.android.os.StatsLog
@@ -42,6 +43,9 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
 
     override fun setUp() {
         super.setUp()
+        if(!isHardwareSupported(device)) {
+            return
+        }
         assertThat(mCtsBuild).isNotNull()
         ConfigUtils.removeConfig(device)
         ReportUtils.clearReports(device)
@@ -76,6 +80,9 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
     }
 
     fun testImpressionsAndInteractionsSent() {
+        if(!isHardwareSupported(device)) {
+            return
+        }
         DeviceUtils.runDeviceTests(
             device, TEST_APP_PKG_NAME, ".HealthConnectUiTestHelper", "openHomeFragment")
         Thread.sleep(AtomTestUtils.WAIT_TIME_LONG.toLong())

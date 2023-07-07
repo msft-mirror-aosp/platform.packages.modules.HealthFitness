@@ -28,20 +28,29 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.getAppStoreLink
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint(Fragment::class)
 class AppUpdateRequiredFragment : Hilt_AppUpdateRequiredFragment() {
 
+    @Inject lateinit var logger: HealthConnectLogger
+
     companion object {
         private const val TAG = "AppUpdateFragment"
-        private const val HC_PACKAGE_NAME = "com.google.apps.healthdata"
+        const val HC_PACKAGE_NAME_CONFIG_NAME =
+            "android:string/config_healthConnectMigratorPackageName"
     }
+
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val onBackPressedCallback =
+        onBackPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     findNavController()
@@ -57,6 +66,7 @@ class AppUpdateRequiredFragment : Hilt_AppUpdateRequiredFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        logger.setPageId(PageName.MIGRATION_APP_UPDATE_NEEDED_PAGE)
         return inflater.inflate(R.layout.migration_app_update_needed, container, false)
     }
 
@@ -65,10 +75,15 @@ class AppUpdateRequiredFragment : Hilt_AppUpdateRequiredFragment() {
 
         val updateButton = view.findViewById<Button>(R.id.update_button)
         val cancelButton = view.findViewById<Button>(R.id.cancel_button)
+        logger.logImpression(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
+        logger.logImpression(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
 
         updateButton.setOnClickListener {
+            logger.logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
             try {
-                val intent = getAppStoreLink(requireContext(), HC_PACKAGE_NAME)
+                val packageName =
+                    getString(resources.getIdentifier(HC_PACKAGE_NAME_CONFIG_NAME, null, null))
+                val intent = getAppStoreLink(requireContext(), packageName)
                 startActivity(intent!!)
             } catch (exception: Exception) {
                 Log.e(TAG, "App store activity does not exist", exception)
@@ -77,14 +92,26 @@ class AppUpdateRequiredFragment : Hilt_AppUpdateRequiredFragment() {
         }
 
         cancelButton.setOnClickListener {
+            logger.logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
             val sharedPreferences =
                 requireActivity()
                     .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            sharedPreferences.edit().apply {
-                putBoolean(getString(R.string.app_update_needed_seen), true)
-                apply()
+            val appUpdateSeen =
+                sharedPreferences.getBoolean(getString(R.string.app_update_needed_seen), false)
+            if (!appUpdateSeen) {
+                sharedPreferences.edit().apply {
+                    putBoolean(getString(R.string.app_update_needed_seen), true)
+                    apply()
+                }
+                findNavController()
+                    .navigate(R.id.action_migrationAppUpdateNeededFragment_to_homeScreen)
             }
             requireActivity().finish()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logger.logPageImpression()
     }
 }

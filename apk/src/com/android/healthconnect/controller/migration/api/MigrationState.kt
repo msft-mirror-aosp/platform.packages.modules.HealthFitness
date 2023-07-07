@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.healthconnect.controller.migration
+package com.android.healthconnect.controller.migration.api
 
-// TODO (b/273745755) Expose real UI states
-/** Denotes that the annotated [Integer] represents a [DataMigrationState]. */
-@Retention(AnnotationRetention.BINARY)
-@Target(
-    AnnotationTarget.VALUE_PARAMETER,
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.TYPE,
-    AnnotationTarget.FIELD,
-    AnnotationTarget.LOCAL_VARIABLE,
-)
-annotation class DataMigrationState
+/**
+ * Internal class representing the [HealthConnectMigrationUiState] and [HealthConnectDataState]
+ * received from the HealthConnectManager.
+ */
+enum class MigrationState {
+    IDLE,
+    ALLOWED_MIGRATOR_DISABLED,
+    ALLOWED_NOT_STARTED,
+    ALLOWED_PAUSED,
+    ALLOWED_ERROR,
+    IN_PROGRESS,
+    APP_UPGRADE_REQUIRED,
+    MODULE_UPGRADE_REQUIRED,
+    COMPLETE,
+    COMPLETE_IDLE,
+    UNKNOWN
+}

@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.increaseViewTouchTargetSize
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -144,11 +145,13 @@ class AlertDialogBuilder(private val context: Context) {
     ): AlertDialogBuilder {
         hasNegativeButton = true
         negativeButtonKey = buttonId
+
         val loggingClickListener =
             DialogInterface.OnClickListener { dialog, which ->
                 logger.logInteraction(negativeButtonKey)
                 onClickListener?.onClick(dialog, which)
             }
+
         alertDialogBuilder.setNegativeButton(textId, loggingClickListener)
         return this
     }
@@ -184,6 +187,8 @@ class AlertDialogBuilder(private val context: Context) {
         val dialog = alertDialogBuilder.create()
         setDialogGravityFromTheme(dialog)
 
+        dialog.setOnShowListener { increaseDialogTouchTargetSize(dialog) }
+
         // Dialog container
         logger.logImpression(elementName)
 
@@ -199,6 +204,20 @@ class AlertDialogBuilder(private val context: Context) {
         loggingAction()
 
         return dialog
+    }
+
+    private fun increaseDialogTouchTargetSize(dialog: AlertDialog) {
+        if (hasPositiveButton) {
+            val positiveButtonView = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            val parentView = positiveButtonView.parent as View
+            increaseViewTouchTargetSize(context, positiveButtonView, parentView)
+        }
+
+        if (hasNegativeButton) {
+            val negativeButtonView = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+            val parentView = negativeButtonView.parent.parent as View
+            increaseViewTouchTargetSize(context, negativeButtonView, parentView)
+        }
     }
 
     private fun setDialogGravityFromTheme(dialog: AlertDialog) {

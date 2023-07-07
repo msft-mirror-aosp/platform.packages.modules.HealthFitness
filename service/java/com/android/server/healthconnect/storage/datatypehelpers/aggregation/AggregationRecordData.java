@@ -17,6 +17,8 @@
 package com.android.server.healthconnect.storage.datatypehelpers.aggregation;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.LOCAL_DATE_TIME_END_TIME_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.LOCAL_DATE_TIME_START_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.START_ZONE_OFFSET_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
@@ -29,6 +31,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
 import java.time.ZoneOffset;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -36,10 +39,10 @@ import java.util.UUID;
  *
  * @hide
  */
-public abstract class AggregationRecordData {
+public abstract class AggregationRecordData implements Comparable<AggregationRecordData> {
     private long mRecordStartTime;
     private long mRecordEndTime;
-    private long mAppId;
+    private int mPriority;
     private long mLastModifiedTime;
     private ZoneOffset mStartTimeZoneOffset;
 
@@ -51,8 +54,8 @@ public abstract class AggregationRecordData {
         return mRecordEndTime;
     }
 
-    long getAppId() {
-        return mAppId;
+    int getPriority() {
+        return mPriority;
     }
 
     long getLastModifiedTime() {
@@ -67,30 +70,43 @@ public abstract class AggregationRecordData {
         return StorageUtils.getCursorUUID(cursor, UUID_COLUMN_NAME);
     }
 
-    void populateAggregationData(Cursor cursor) {
-        mRecordStartTime = StorageUtils.getCursorLong(cursor, START_TIME_COLUMN_NAME);
-        mRecordEndTime = StorageUtils.getCursorLong(cursor, END_TIME_COLUMN_NAME);
-        mAppId = StorageUtils.getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
+    void populateAggregationData(
+            Cursor cursor, boolean useLocalTime, Map<Long, Integer> appIdToPriority) {
+        mRecordStartTime =
+                StorageUtils.getCursorLong(
+                        cursor,
+                        useLocalTime
+                                ? LOCAL_DATE_TIME_START_TIME_COLUMN_NAME
+                                : START_TIME_COLUMN_NAME);
+        mRecordEndTime =
+                StorageUtils.getCursorLong(
+                        cursor,
+                        useLocalTime ? LOCAL_DATE_TIME_END_TIME_COLUMN_NAME : END_TIME_COLUMN_NAME);
         mLastModifiedTime = StorageUtils.getCursorLong(cursor, LAST_MODIFIED_TIME_COLUMN_NAME);
         mStartTimeZoneOffset = StorageUtils.getZoneOffset(cursor, START_ZONE_OFFSET_COLUMN_NAME);
-        populateSpecificAggregationData(cursor);
+        mPriority =
+                appIdToPriority.getOrDefault(
+                        StorageUtils.getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME),
+                        Integer.MIN_VALUE);
+        populateSpecificAggregationData(cursor, useLocalTime);
     }
 
     AggregationTimestamp getStartTimestamp() {
-        return new AggregationTimestamp(AggregationTimestamp.INTERVAL_START, mRecordStartTime)
+        return new AggregationTimestamp(AggregationTimestamp.INTERVAL_START, getStartTime())
                 .setParentData(this);
     }
 
     AggregationTimestamp getEndTimestamp() {
-        return new AggregationTimestamp(AggregationTimestamp.INTERVAL_END, mRecordEndTime)
+        return new AggregationTimestamp(AggregationTimestamp.INTERVAL_END, getEndTime())
                 .setParentData(this);
     }
 
     @VisibleForTesting
-    AggregationRecordData setData(long startTime, long endTime, long appId, long lastModifiedTime) {
+    AggregationRecordData setData(
+            long startTime, long endTime, int priority, long lastModifiedTime) {
         mRecordStartTime = startTime;
         mRecordEndTime = endTime;
-        mAppId = appId;
+        mPriority = priority;
         mLastModifiedTime = lastModifiedTime;
         return this;
     }
@@ -100,9 +116,10 @@ public abstract class AggregationRecordData {
      * may assume that it's will be called with non overlapping intervals. So (start time, end time)
      * input intervals of all calls will not overlap.
      */
-    abstract double getResultOnInterval(long startTime, long endTime);
+    abstract double getResultOnInterval(
+            AggregationTimestamp startPoint, AggregationTimestamp endPoint);
 
-    abstract void populateSpecificAggregationData(Cursor cursor);
+    abstract void populateSpecificAggregationData(Cursor cursor, boolean useLocalTime);
 
     @Override
     public String toString() {
@@ -114,5 +131,33 @@ public abstract class AggregationRecordData {
             long intervalStart1, long intervalStart2, long intervalEnd1, long intervalEnd2) {
         return Math.max(
                 Math.min(intervalEnd1, intervalEnd2) - Math.max(intervalStart1, intervalStart2), 0);
+    }
+
+    @Override
+    public int compareTo(AggregationRecordData o) {
+        if (this.equals(o)) {
+            return 0;
+        }
+
+        if (mPriority != o.getPriority()) {
+            return Integer.compare(mPriority, o.getPriority());
+        }
+
+        // The later the last modified time, the higher priority this record has.
+        if (getLastModifiedTime() != o.getLastModifiedTime()) {
+            return Long.compare(getLastModifiedTime(), o.getLastModifiedTime());
+        }
+
+        if (getStartTime() != o.getStartTime()) {
+            return Long.compare(getStartTime(), o.getStartTime());
+        }
+
+        if (getEndTime() != o.getEndTime()) {
+            return Long.compare(getEndTime(), o.getEndTime());
+        }
+
+        return Double.compare(
+                getResultOnInterval(getStartTimestamp(), getEndTimestamp()),
+                o.getResultOnInterval(o.getStartTimestamp(), o.getEndTimestamp()));
     }
 }

@@ -43,6 +43,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.migration.MigrationActivity
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
+import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
@@ -80,6 +86,7 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
     }
 
     private val viewModel: ConnectedAppsViewModel by viewModels()
+    private val migrationViewModel: MigrationViewModel by viewModels()
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -101,6 +108,35 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
                 else -> {
                     dismissLoadingDialog()
                 }
+            }
+        }
+        migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
+            when (migrationState) {
+                is MigrationViewModel.MigrationFragmentState.WithData -> {
+                    maybeShowMigrationDialog(migrationState.migrationState)
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
+        when (migrationState) {
+            MigrationState.IN_PROGRESS -> {
+                showMigrationInProgressDialog(
+                    requireContext(),
+                    getString(R.string.migration_in_progress_permissions_dialog_content_apps),
+                ) { _, _ ->
+                    requireActivity().finish()
+                }
+            }
+            MigrationState.COMPLETE -> {
+                maybeShowWhatsNewDialog(requireContext())
+            }
+            else -> {
+                // Show nothing
             }
         }
     }

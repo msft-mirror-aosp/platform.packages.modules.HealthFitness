@@ -21,6 +21,7 @@ import static com.android.server.healthconnect.storage.request.AggregateParams.P
 
 import android.database.Cursor;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.request.AggregateParams.PriorityAggregationExtraParams.ValueColumnType;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
@@ -30,7 +31,6 @@ import com.android.server.healthconnect.storage.utils.StorageUtils;
  * @hide
  */
 public class ValueColumnAggregationData extends AggregationRecordData {
-
     private final String mValueColumnName;
     @ValueColumnType private final int mValueColumnType;
     private double mValue;
@@ -41,13 +41,21 @@ public class ValueColumnAggregationData extends AggregationRecordData {
     }
 
     @Override
-    double getResultOnInterval(long startTime, long endTime) {
+    double getResultOnInterval(AggregationTimestamp startPoint, AggregationTimestamp endPoint) {
         double intervalDuration = getEndTime() - getStartTime();
         double overlapDuration =
-                Math.min(getEndTime(), endTime) - Math.max(getStartTime(), startTime);
+                Math.min(getEndTime(), endPoint.getTime())
+                        - Math.max(getStartTime(), startPoint.getTime());
 
-        // Case: start time equals end time
-        if (intervalDuration == 0) {
+        // Case when this record start time equals to end time.
+        // We check types of timestamps as if
+        // multiple instant (start time = end time) records have the same time, we want to account
+        // only one value. In this case sorted timestamps will look like
+        // [start1, start2, end1, end2] and we output non-zero value only after calling
+        // getResultOnInterval(start2, end1).
+        if (intervalDuration == 0
+                && startPoint.getType() == AggregationTimestamp.INTERVAL_START
+                && endPoint.getType() == AggregationTimestamp.INTERVAL_END) {
             return mValue;
         }
 
@@ -59,7 +67,7 @@ public class ValueColumnAggregationData extends AggregationRecordData {
     }
 
     @Override
-    void populateSpecificAggregationData(Cursor cursor) {
+    void populateSpecificAggregationData(Cursor cursor, boolean useLocalTime) {
         if (mValueColumnType == VALUE_TYPE_DOUBLE) {
             mValue = StorageUtils.getCursorDouble(cursor, mValueColumnName);
         } else if (mValueColumnType == VALUE_TYPE_LONG) {
@@ -67,5 +75,11 @@ public class ValueColumnAggregationData extends AggregationRecordData {
         } else {
             throw new IllegalArgumentException("Unknown aggregation column type.");
         }
+    }
+
+    @VisibleForTesting
+    AggregationRecordData setValue(double value) {
+        mValue = value;
+        return this;
     }
 }

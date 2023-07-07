@@ -36,7 +36,6 @@ import org.junit.Test;
 import java.util.List;
 
 public class ExerciseRouteDisabledFeatureTest {
-
     private final UiAutomation mUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
 

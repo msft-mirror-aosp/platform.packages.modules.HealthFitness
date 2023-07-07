@@ -28,6 +28,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
@@ -50,8 +51,10 @@ import java.util.List;
  */
 public class HealthConnectDatabase extends SQLiteOpenHelper {
     public static final int DB_VERSION_UUID_BLOB = 9;
+
+    public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
     private static final String TAG = "HealthConnectDatabase";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "healthconnect.db";
     @NonNull private final Collection<RecordHelper<?>> mRecordHelpers;
     private final Context mContext;
@@ -78,16 +81,7 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
         }
 
         mRecordHelpers.forEach(recordHelper -> recordHelper.onUpgrade(db, oldVersion, newVersion));
-        DeviceInfoHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        AppInfoHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        ChangeLogsHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        ChangeLogsRequestHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        HealthDataCategoryPriorityHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        ActivityDateHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        MigrationEntityHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        PriorityMigrationHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        PreferenceHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
-        AccessLogsHelper.getInstance().onUpgrade(oldVersion, newVersion, db);
+        DatabaseHelper.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
@@ -100,6 +94,7 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
+        DatabaseHelper.onDowngrade(db, oldVersion, newVersion);
     }
 
     public File getDatabasePath() {

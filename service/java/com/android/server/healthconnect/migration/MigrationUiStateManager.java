@@ -44,7 +44,7 @@ import com.android.server.healthconnect.migration.notification.MigrationNotifica
 public class MigrationUiStateManager {
 
     private final Context mContext;
-    private final UserHandle mUserHandle;
+    private volatile UserHandle mUserHandle;
     private final MigrationNotificationSender mMigrationNotificationSender;
     private final MigrationStateManager mMigrationStateManager;
     private static final String TAG = "MigrationUiStateManager";
@@ -58,6 +58,11 @@ public class MigrationUiStateManager {
         this.mUserHandle = userHandle;
         this.mMigrationNotificationSender = migrationNotificationSender;
         this.mMigrationStateManager = migrationStateManager;
+    }
+
+    /** Assigns a new user handle to this object. */
+    public void setUserHandle(@NonNull UserHandle userHandle) {
+        this.mUserHandle = userHandle;
     }
 
     /** Attaches this MigrationUiStateManager to the provided {@link MigrationStateManager}. */
@@ -116,15 +121,9 @@ public class MigrationUiStateManager {
         int migrationUiState = getHealthConnectMigrationUiState();
 
         switch (migrationUiState) {
-            case MIGRATION_UI_STATE_IDLE:
-            case MIGRATION_UI_STATE_COMPLETE_IDLE:
-            case MIGRATION_UI_STATE_ALLOWED_MIGRATOR_DISABLED:
-                mMigrationNotificationSender.clearNotifications(mUserHandle);
-                break;
-
-            case MIGRATION_UI_STATE_APP_UPGRADE_REQUIRED:
+            case MIGRATION_UI_STATE_ALLOWED_PAUSED:
                 mMigrationNotificationSender.sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_APP_UPDATE_NEEDED,
+                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_PAUSED,
                         mUserHandle);
                 break;
 
@@ -134,26 +133,8 @@ public class MigrationUiStateManager {
                                 .NOTIFICATION_TYPE_MIGRATION_MODULE_UPDATE_NEEDED,
                         mUserHandle);
                 break;
-            case MIGRATION_UI_STATE_ALLOWED_NOT_STARTED:
-            case MIGRATION_UI_STATE_ALLOWED_PAUSED:
-                mMigrationNotificationSender.sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_PAUSED,
-                        mUserHandle);
-                break;
-            case MIGRATION_UI_STATE_ALLOWED_ERROR:
-                mMigrationNotificationSender.sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_CANCELLED,
-                        mUserHandle);
-                break;
-            case MIGRATION_UI_STATE_IN_PROGRESS:
-                mMigrationNotificationSender.sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_IN_PROGRESS,
-                        mUserHandle);
-                break;
-            case MIGRATION_UI_STATE_COMPLETE:
-                mMigrationNotificationSender.sendNotification(
-                        MigrationNotificationSender.NOTIFICATION_TYPE_MIGRATION_COMPLETE,
-                        mUserHandle);
+            default:
+                mMigrationNotificationSender.clearNotifications(mUserHandle);
                 break;
         }
     }

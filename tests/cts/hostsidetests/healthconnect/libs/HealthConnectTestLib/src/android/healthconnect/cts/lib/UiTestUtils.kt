@@ -17,11 +17,7 @@ package android.healthconnect.cts.lib
 
 import android.Manifest
 import android.content.Context
-import android.health.connect.datatypes.DataOrigin
-import android.health.connect.datatypes.Device
-import android.health.connect.datatypes.DistanceRecord
-import android.health.connect.datatypes.Metadata
-import android.health.connect.datatypes.StepsRecord
+import android.health.connect.datatypes.*
 import android.health.connect.datatypes.units.Length
 import android.os.SystemClock
 import android.util.Log

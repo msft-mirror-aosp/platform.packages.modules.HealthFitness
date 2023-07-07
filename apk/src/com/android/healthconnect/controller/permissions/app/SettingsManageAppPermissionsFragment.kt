@@ -33,7 +33,10 @@
  */
 package com.android.healthconnect.controller.permissions.app
 
+import android.app.Activity
+import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
+import android.health.connect.HealthConnectManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -41,6 +44,13 @@ import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreference
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.migration.MigrationActivity
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.MIGRATION_ACTIVITY_INTENT
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
+import com.android.healthconnect.controller.migration.MigrationViewModel
+import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
@@ -86,6 +96,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     private lateinit var packageName: String
     private val viewModel: AppPermissionViewModel by viewModels()
     private val permissionMap: MutableMap<HealthPermission, SwitchPreference> = mutableMapOf()
+    private val migrationViewModel: MigrationViewModel by viewModels()
 
     private val allowAllPreference: HealthMainSwitchPreference? by lazy {
         preferenceScreen.findPreference(ALLOW_ALL_PREFERENCE)
@@ -146,8 +157,53 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             }
         }
 
-        setupHeader()
+        migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
+            when (migrationState) {
+                is MigrationViewModel.MigrationFragmentState.WithData -> {
+                    maybeShowMigrationDialog(migrationState.migrationState)
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
 
+        setupHeader()
+    }
+
+    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
+        when (migrationState) {
+            MigrationState.IN_PROGRESS -> {
+                showMigrationInProgressDialog(
+                    requireContext(),
+                    getString(
+                        R.string.migration_in_progress_permissions_dialog_content,
+                        viewModel.appInfo.value?.appName)) { _, _ ->
+                        requireActivity().finish()
+                    }
+            }
+            MigrationState.ALLOWED_PAUSED,
+            MigrationState.ALLOWED_NOT_STARTED,
+            MigrationState.APP_UPGRADE_REQUIRED,
+            MigrationState.MODULE_UPGRADE_REQUIRED -> {
+                showMigrationPendingDialog(
+                    requireContext(),
+                    getString(
+                        R.string.migration_pending_permissions_dialog_content,
+                        viewModel.appInfo.value?.appName),
+                        positiveButtonAction = null,
+                        negativeButtonAction = { _, _ ->
+                            requireContext().startActivity(Intent(MIGRATION_ACTIVITY_INTENT))
+                            requireActivity().finish()
+                        })
+            }
+            MigrationState.COMPLETE -> {
+                maybeShowWhatsNewDialog(requireContext())
+            }
+            else -> {
+                // Show nothing
+            }
+        }
     }
 
     private fun setupHeader() {

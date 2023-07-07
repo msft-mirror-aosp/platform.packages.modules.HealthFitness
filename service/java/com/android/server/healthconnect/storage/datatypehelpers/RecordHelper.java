@@ -45,7 +45,10 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.os.Trace;
+import android.util.ArrayMap;
 import android.util.Pair;
+
+import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
@@ -127,9 +130,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             AggregationType<?> aggregationType,
             List<String> packageFilter,
             long startTime,
-            long endTime) {
+            long endTime,
+            boolean useLocalTime) {
         AggregateParams params = getAggregateParams(aggregationType);
-        Objects.requireNonNull(params);
+        params.setTimeColumnName(
+                useLocalTime ? getLocalStartTimeColumnName() : getStartTimeColumnName());
+        params.setExtraTimeColumn(
+                useLocalTime ? getLocalEndTimeColumnName() : getEndTimeColumnName());
+        params.setOffsetColumnToFetch(getZoneOffsetColumnName());
+
         if (supportsPriority(mRecordIdentifier, aggregationType.getAggregateOperationType())) {
             List<String> columns =
                     Arrays.asList(
@@ -139,18 +148,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                             LAST_MODIFIED_TIME_COLUMN_NAME);
             params.appendAdditionalColumns(columns);
         }
-
-        params.setExtraTimeColumn(getEndTimeColumnName());
         if (StorageUtils.isDerivedType(mRecordIdentifier)) {
             params.appendAdditionalColumns(Collections.singletonList(getStartTimeColumnName()));
         }
 
-        return new AggregateTableRequest(params, aggregationType, this)
+        return new AggregateTableRequest(params, aggregationType, this, useLocalTime)
                 .setPackageFilter(
                         AppInfoHelper.getInstance().getAppInfoIds(packageFilter),
                         APP_INFO_ID_COLUMN_NAME)
-                .setTimeFilter(startTime, endTime)
-                .setAdditionalColumnsToFetch(Collections.singletonList(getZoneOffsetColumnName()));
+                .setTimeFilter(startTime, endTime);
     }
 
     /**
@@ -177,13 +183,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /**
      * Used to calculate and get aggregate results for data types that support derived aggregates
      */
-    public double[] deriveAggregate(
-            Cursor cursor,
-            long startTime,
-            long endTime,
-            int groupSize,
-            long groupDelta,
-            String groupByColumnName) {
+    public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
         return null;
     }
 
@@ -202,19 +202,25 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         AppInfoHelper.TABLE_NAME,
                         Collections.singletonList(APP_INFO_ID_COLUMN_NAME),
                         Collections.singletonList(PRIMARY_COLUMN_NAME))
-                .setChildTableRequests(getChildTableCreateRequests());
+                .setChildTableRequests(getChildTableCreateRequests())
+                .setGeneratedColumnInfo(getGeneratedColumnInfo());
+    }
+
+    public UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
+        return getUpsertTableRequest(recordInternal, null);
     }
 
     @NonNull
     @SuppressWarnings("unchecked")
-    public UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
+    public UpsertTableRequest getUpsertTableRequest(
+            RecordInternal<?> recordInternal,
+            ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
         Trace.traceBegin(
                 TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetUpsertTableRequest"));
+        ContentValues upsertValues = getContentValues((T) recordInternal);
+        updateUpsertValuesIfRequired(upsertValues, extraWritePermissionToStateMap);
         UpsertTableRequest upsertTableRequest =
-                new UpsertTableRequest(
-                                getMainTableName(),
-                                getContentValues((T) recordInternal),
-                                UNIQUE_COLUMNS_INFO)
+                new UpsertTableRequest(getMainTableName(), upsertValues, UNIQUE_COLUMNS_INFO)
                         .setRequiresUpdateClause(
                                 new UpsertTableRequest.IRequiresUpdate() {
                                     @Override
@@ -252,9 +258,20 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                     }
                                 })
                         .setChildTableRequests(getChildTableUpsertRequests((T) recordInternal))
-                        .setHelper(this);
+                        .setHelper(this)
+                        .setExtraWritePermissionsStateMapping(extraWritePermissionToStateMap);
         Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
         return upsertTableRequest;
+    }
+
+    /* Updates upsert content values based on extra permissions state. */
+    protected void updateUpsertValuesIfRequired(
+            @NonNull ContentValues values,
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {}
+
+    public List<String> getChildTablesToDeleteOnRecordUpsert(
+            ArrayMap<String, Boolean> extraWritePermissionToState) {
+        return getAllChildTables();
     }
 
     @NonNull
@@ -265,6 +282,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         }
 
         return childTables;
+    }
+
+    @NonNull
+    protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
+        return Collections.emptyList();
     }
 
     private void populateWithTablesNames(
@@ -487,9 +509,14 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     public DeleteTableRequest getDeleteTableRequest(
-            List<String> packageFilters, long startTime, long endTime) {
+            List<String> packageFilters,
+            long startTime,
+            long endTime,
+            boolean usesLocalTimeFilter) {
+        final String timeColumnName =
+                usesLocalTimeFilter ? getLocalStartTimeColumnName() : getStartTimeColumnName();
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setTimeFilter(getStartTimeColumnName(), startTime, endTime)
+                .setTimeFilter(timeColumnName, startTime, endTime)
                 .setPackageFilter(
                         APP_INFO_ID_COLUMN_NAME,
                         AppInfoHelper.getInstance().getAppInfoIds(packageFilters))
@@ -508,6 +535,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public abstract String getPeriodGroupByColumnName();
 
     public abstract String getStartTimeColumnName();
+
+    public abstract String getLocalStartTimeColumnName();
+
+    public String getLocalEndTimeColumnName() {
+        return null;
+    }
 
     public String getEndTimeColumnName() {
         return null;
@@ -608,8 +641,18 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 }
             }
 
-            return clauses.addWhereBetweenTimeClause(
-                    getStartTimeColumnName(), startDateAccess, request.getEndTime());
+            if (request.usesLocalTimeFilter()) {
+                clauses.addWhereGreaterThanOrEqualClause(getStartTimeColumnName(), startDateAccess);
+                clauses.addWhereBetweenClause(
+                        getLocalStartTimeColumnName(),
+                        request.getStartTime(),
+                        request.getEndTime());
+            } else {
+                clauses.addWhereBetweenTimeClause(
+                        getStartTimeColumnName(), startDateAccess, request.getEndTime());
+            }
+
+            return clauses;
         }
 
         // Since for now we don't support mixing IDs and filters, we need to look for IDs now
@@ -641,7 +684,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     private OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
         OrderByClause orderByClause = new OrderByClause();
-        if (request.getRecordIdFiltersParcel() != null) {
+        if (request.getRecordIdFiltersParcel() == null) {
             orderByClause.addOrderByClause(getStartTimeColumnName(), request.isAscending());
         }
         return orderByClause;
@@ -694,14 +737,21 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return columnInfo;
     }
 
-    /** Returns extra permissions required to write given record. */
-    public List<String> checkFlagsAndGetExtraWritePermissions(RecordInternal<?> recordInternal) {
-        return Collections.emptyList();
-    }
+    /** Checks that operation with current record type are supported. */
+    public void checkRecordOperationsAreEnabled(RecordInternal<?> recordInternal) {}
 
     /** Returns permissions required to read extra record data. */
     public List<String> getExtraReadPermissions() {
         return Collections.emptyList();
     }
 
+    /** Returns all extra permissions associated with current record type. */
+    public List<String> getExtraWritePermissions() {
+        return Collections.emptyList();
+    }
+
+    /** Returns extra permissions required to write given record. */
+    public List<String> getRequiredExtraWritePermissions(RecordInternal<?> recordInternal) {
+        return Collections.emptyList();
+    }
 }

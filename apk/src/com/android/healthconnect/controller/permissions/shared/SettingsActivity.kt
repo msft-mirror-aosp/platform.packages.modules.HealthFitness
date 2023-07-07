@@ -35,6 +35,8 @@ package com.android.healthconnect.controller.permissions.shared
 
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
@@ -42,6 +44,8 @@ import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
+import com.android.healthconnect.controller.onboarding.OnboardingActivityContract
+import com.android.healthconnect.controller.onboarding.OnboardingActivityContract.Companion.INTENT_RESULT_CANCELLED
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +60,7 @@ class SettingsActivity : Hilt_SettingsActivity() {
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setTitle(R.string.permgrouplab_health)
@@ -65,8 +69,8 @@ class SettingsActivity : Hilt_SettingsActivity() {
     override fun onStart() {
         super.onStart()
 
-        if (maybeRedirectToOnboardingActivity(this, intent)) {
-            return
+        if (maybeRedirectToOnboardingActivity(this)) {
+            openOnboardingActivity.launch(1)
         }
 
         val navController = findNavController(R.id.nav_host_fragment)
@@ -83,7 +87,9 @@ class SettingsActivity : Hilt_SettingsActivity() {
         val rationalIntentDeclared = healthPermissionReader.isRationalIntentDeclared(appPackageName)
         if (!rationalIntentDeclared) {
             Log.e(TAG, "App should support rational intent!")
-            finish()
+            // posting finish() on the next main loop iteration to prevent a blank screen
+            // if the activity has been started for the first time (b/284327172)
+            Handler(Looper.getMainLooper()).post(this::finish)
         }
     }
 
@@ -101,4 +107,11 @@ class SettingsActivity : Hilt_SettingsActivity() {
         }
         return true
     }
+
+    val openOnboardingActivity =
+        registerForActivityResult(OnboardingActivityContract()) { result ->
+            if (result == INTENT_RESULT_CANCELLED) {
+                finish()
+            }
+        }
 }

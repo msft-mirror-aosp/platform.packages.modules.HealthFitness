@@ -16,8 +16,6 @@
 
 package com.android.server.healthconnect.migration;
 
-import static com.android.server.healthconnect.migration.MigrationConstants.EXECUTION_TIME_BUFFER;
-
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 
@@ -27,12 +25,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.health.connect.HealthConnectManager;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /** Common methods and variables used by migration unit tests. */
 public class MigrationTestUtils {
-    static final String MOCK_CONFIGURED_PACKAGE = "com.configured.app";
+    public static final String MOCK_CONFIGURED_PACKAGE = "com.configured.app";
     static final String MOCK_UNCONFIGURED_PACKAGE_ONE = "com.unconfigured.app";
     static final String MOCK_UNCONFIGURED_PACKAGE_TWO = "com.unconfigured.apptwo";
     static final String MOCK_QUERIED_BROADCAST_RECEIVER_ONE = ".SampleReceiverOne";
@@ -45,7 +45,11 @@ public class MigrationTestUtils {
             "962F386525EE206D5ED146A3433411042E7F91D0C267C9DD08BA4F1F5E350000";
     static final String[] PERMISSIONS_TO_CHECK =
             new String[] {Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA};
-    static final long TIMEOUT_PERIOD_BUFFER = EXECUTION_TIME_BUFFER * 2;
+
+    static long getTimeoutPeriodBuffer() {
+        return HealthConnectDeviceConfigManager.getInitialisedInstance().getExecutionTimeBuffer()
+                * 2;
+    }
 
     static List<ResolveInfo> createResolveInfoList(
             boolean nullActivityInfo, String packageName, String... broadcastReceivers) {
@@ -62,13 +66,18 @@ public class MigrationTestUtils {
         return resolveInfoArray;
     }
 
-    static void setResolveActivityResult(ResolveInfo result, PackageManager packageManager) {
+    public static void setResolveActivityResult(ResolveInfo result, PackageManager packageManager) {
+        setResolveActivityResult(result, packageManager, PackageManager.MATCH_ALL);
+    }
+
+    static void setResolveActivityResult(
+            ResolveInfo result, PackageManager packageManager, int flags) {
         when(packageManager.resolveActivity(
                         argThat(
                                 intent ->
                                         (HealthConnectManager.ACTION_SHOW_MIGRATION_INFO.equals(
                                                 intent.getAction()))),
-                        argThat(flag -> (flag.getValue() == PackageManager.MATCH_ALL))))
+                        argThat(flag -> (flag.getValue() == flags))))
                 .thenReturn(result);
     }
 }

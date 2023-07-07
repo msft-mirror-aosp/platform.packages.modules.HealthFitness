@@ -538,6 +538,9 @@ public class HealthConnectManager {
                             callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(duration);
+        if (duration.toMillis() < 1) {
+            throw new IllegalArgumentException("Duration should be at least 1 millisecond");
+        }
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
@@ -605,6 +608,9 @@ public class HealthConnectManager {
                             callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(period);
+        if (period == Period.ZERO) {
+            throw new IllegalArgumentException("Period duration should be at least a day");
+        }
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
         try {
@@ -1217,7 +1223,8 @@ public class HealthConnectManager {
 
     /**
      * Stages all HealthConnect remote data and returns any errors in a callback. Errors encountered
-     * for all the files are shared in the provided callback.
+     * for all the files are shared in the provided callback. Any authorization / permissions
+     * related error is reported to the callback with an empty file name.
      *
      * <p>The staged data will later be restored (integrated) into the existing Health Connect data.
      * Any existing data will not be affected by the staged data.
@@ -1304,8 +1311,7 @@ public class HealthConnectManager {
      */
     public Set<String> getAllBackupFileNames(boolean forDeviceToDevice) {
         try {
-            return mService.getAllBackupFileNames(mContext.getUser(), forDeviceToDevice)
-                    .getFileNames();
+            return mService.getAllBackupFileNames(forDeviceToDevice).getFileNames();
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

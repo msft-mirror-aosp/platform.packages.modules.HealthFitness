@@ -16,22 +16,32 @@
 
 package android.healthconnect.cts.lib;
 
+import static android.content.pm.PackageManager.GET_PERMISSIONS;
+
 import static androidx.test.InstrumentationRegistry.getContext;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.app.UiAutomation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.HealthPermissions;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordIdFilter;
+import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.UpdateDataOriginPriorityOrderRequest;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -39,6 +49,9 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
+import android.health.connect.datatypes.ExerciseRoute;
+import android.health.connect.datatypes.ExerciseSessionRecord;
+import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
@@ -46,14 +59,18 @@ import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.units.Power;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
+import android.os.UserHandle;
 import android.util.Log;
 
+import androidx.test.InstrumentationRegistry;
 import androidx.test.core.app.ApplicationProvider;
 
 import com.android.cts.install.lib.TestApp;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -68,6 +85,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TestUtils {
     static final String TAG = "HealthConnectTest";
+    public static final String MANAGE_HEALTH_PERMISSION =
+            HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
     public static final String QUERY_TYPE = "android.healthconnect.cts.queryType";
     public static final String INTENT_EXTRA_CALLING_PKG = "android.healthconnect.cts.calling_pkg";
     public static final String APP_PKG_NAME_USED_IN_DATA_ORIGIN =
@@ -82,13 +101,20 @@ public class TestUtils {
     public static final String READ_CHANGE_LOGS_QUERY = "android.healthconnect.cts.readChangeLogs";
     public static final String CHANGE_LOGS_RESPONSE =
             "android.healthconnect.cts.changeLogsResponse";
+    public static final String CHANGE_LOG_TOKEN = "android.healthconnect.cts.changeLogToken";
     public static final String SUCCESS = "android.healthconnect.cts.success";
     public static final String CLIENT_ID = "android.healthconnect.cts.clientId";
     public static final String RECORD_IDS = "android.healthconnect.cts.records";
     public static final String DELETE_RECORDS_QUERY = "android.healthconnect.cts.deleteRecords";
     public static final String UPDATE_RECORDS_QUERY = "android.healthconnect.cts.updateRecords";
+    public static final String UPDATE_EXERCISE_ROUTE = "android.healthconnect.cts.updateRoute";
+
+    public static final String UPSERT_EXERCISE_ROUTE = "android.healthconnect.cts.upsertRoute";
+    public static final String GET_CHANGE_LOG_TOKEN_QUERY =
+            "android.healthconnect.cts.getChangeLogToken";
     public static final String INTENT_EXCEPTION = "android.healthconnect.cts.exception";
     private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(20);
+    private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
 
     public static class RecordTypeAndRecordIds implements Serializable {
         private String mRecordType;
@@ -135,6 +161,18 @@ public class TestUtils {
         return getFromTestApp(testAppToUpdateData, bundle);
     }
 
+    public static Bundle updateRouteAs(TestApp testAppToUpdateData) throws Exception {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, UPDATE_EXERCISE_ROUTE);
+        return getFromTestApp(testAppToUpdateData, bundle);
+    }
+
+    public static Bundle insertSessionNoRouteAs(TestApp testAppToUpdateData) throws Exception {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, UPSERT_EXERCISE_ROUTE);
+        return getFromTestApp(testAppToUpdateData, bundle);
+    }
+
     public static Bundle insertRecordWithAnotherAppPackageName(
             TestApp testAppToInsertData, TestApp testAppPkgNameUsed) throws Exception {
         Bundle bundle = new Bundle();
@@ -162,6 +200,43 @@ public class TestUtils {
         return getFromTestApp(testApp, bundle);
     }
 
+    public static void verifyDeleteRecords(DeleteUsingFiltersRequest request)
+            throws InterruptedException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+        uiAutomation.adoptShellPermissionIdentity("android.permission.MANAGE_HEALTH_DATA");
+        try {
+            Context context = ApplicationProvider.getApplicationContext();
+            HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+            CountDownLatch latch = new CountDownLatch(1);
+            AtomicReference<HealthConnectException> exceptionAtomicReference =
+                    new AtomicReference<>();
+            assertThat(service).isNotNull();
+            service.deleteRecords(
+                    request,
+                    Executors.newSingleThreadExecutor(),
+                    new OutcomeReceiver<>() {
+                        @Override
+                        public void onResult(Void result) {
+                            latch.countDown();
+                        }
+
+                        @Override
+                        public void onError(HealthConnectException healthConnectException) {
+                            exceptionAtomicReference.set(healthConnectException);
+                            latch.countDown();
+                        }
+                    });
+            assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
+            if (exceptionAtomicReference.get() != null) {
+                throw exceptionAtomicReference.get();
+            }
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
     public static Bundle readRecordsUsingDataOriginFiltersAs(
             TestApp testApp, ArrayList<String> recordClassesToRead) throws Exception {
         Bundle bundle = new Bundle();
@@ -172,10 +247,20 @@ public class TestUtils {
         return getFromTestApp(testApp, bundle);
     }
 
-    public static Bundle readChangeLogsUsingDataOriginFiltersAs(TestApp testApp) throws Exception {
+    public static Bundle readChangeLogsUsingDataOriginFiltersAs(
+            TestApp testApp, String changeLogToken) throws Exception {
         Bundle bundle = new Bundle();
         bundle.putString(QUERY_TYPE, READ_CHANGE_LOGS_QUERY);
+        bundle.putString(CHANGE_LOG_TOKEN, changeLogToken);
         bundle.putBoolean(READ_USING_DATA_ORIGIN_FILTERS, true);
+
+        return getFromTestApp(testApp, bundle);
+    }
+
+    public static Bundle getChangeLogTokenAs(TestApp testApp, String pkgName) throws Exception {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, GET_CHANGE_LOG_TOKEN_QUERY);
+        bundle.putString(APP_PKG_NAME_USED_IN_DATA_ORIGIN, pkgName);
 
         return getFromTestApp(testApp, bundle);
     }
@@ -223,10 +308,13 @@ public class TestUtils {
         final Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setPackage(testApp.getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(INTENT_EXTRA_CALLING_PKG, getContext().getPackageName());
         intent.putExtras(bundleToCreateIntent);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.putExtras(bundleToCreateIntent);
+
+        Thread.sleep(500);
         getContext().startActivity(intent);
         if (!latch.await(POLLING_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
             final String errorMessage =
@@ -304,17 +392,57 @@ public class TestUtils {
 
     public static List<Record> getTestRecords(String packageName) {
         double clientId = Math.random();
+        return getTestRecords(packageName, clientId);
+    }
+
+    public static List<Record> getTestRecords(String packageName, Double clientId) {
         return Arrays.asList(
+                getExerciseSessionRecord(packageName, clientId, /* withRoute= */ true),
                 getStepsRecord(packageName, clientId),
                 getHeartRateRecord(packageName, clientId),
                 getBasalMetabolicRateRecord(packageName, clientId));
     }
 
-    public static List<Record> getTestRecords(String packageName, Double clientId) {
-        return Arrays.asList(
-                getStepsRecord(packageName, clientId),
-                getHeartRateRecord(packageName, clientId),
-                getBasalMetabolicRateRecord(packageName, clientId));
+    public static void deleteTestData() throws InterruptedException {
+        verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .setEndTime(Instant.now().plus(10, ChronoUnit.DAYS))
+                                        .build())
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .addRecordType(StepsRecord.class)
+                        .addRecordType(HeartRateRecord.class)
+                        .addRecordType(BasalMetabolicRateRecord.class)
+                        .build());
+    }
+
+    public static ExerciseSessionRecord getExerciseSessionRecord(
+            String packageName, double clientId, boolean withRoute) {
+        Instant startTime = Instant.now().minusSeconds(3000);
+        Instant endTime = Instant.now();
+        ExerciseSessionRecord.Builder builder =
+                new ExerciseSessionRecord.Builder(
+                                buildSessionMetadata(packageName, clientId),
+                                startTime,
+                                endTime,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
+                        .setEndZoneOffset(ZoneOffset.MAX)
+                        .setStartZoneOffset(ZoneOffset.MIN)
+                        .setNotes("notes")
+                        .setTitle("title");
+
+        if (withRoute) {
+            builder.setRoute(
+                    new ExerciseRoute(
+                            List.of(
+                                    new ExerciseRoute.Location.Builder(startTime, 50., 50.).build(),
+                                    new ExerciseRoute.Location.Builder(
+                                                    startTime.plusSeconds(2), 51., 51.)
+                                            .build())));
+        }
+        return builder.build();
     }
 
     public static StepsRecord getStepsRecord(String packageName, double clientId) {
@@ -561,6 +689,67 @@ public class TestUtils {
         return response.get();
     }
 
+    public static FetchDataOriginsPriorityOrderResponse fetchDataOriginsPriorityOrder(
+            int dataCategory) throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<FetchDataOriginsPriorityOrderResponse> response = new AtomicReference<>();
+        AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
+        service.fetchDataOriginsPriorityOrder(
+                dataCategory,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(FetchDataOriginsPriorityOrderResponse result) {
+                        response.set(result);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        exceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
+                });
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (exceptionAtomicReference.get() != null) {
+            throw exceptionAtomicReference.get();
+        }
+        return response.get();
+    }
+
+    public static void updateDataOriginPriorityOrder(UpdateDataOriginPriorityOrderRequest request)
+            throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<HealthConnectException> exceptionAtomicReference = new AtomicReference<>();
+        service.updateDataOriginPriorityOrder(
+                request,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(Void result) {
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException healthConnectException) {
+                        exceptionAtomicReference.set(healthConnectException);
+                        latch.countDown();
+                    }
+                });
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
+        if (exceptionAtomicReference.get() != null) {
+            throw exceptionAtomicReference.get();
+        }
+    }
+
     public static void deleteAllStagedRemoteData() {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
@@ -570,5 +759,104 @@ public class TestUtils {
                         // TODO(b/241542162): Avoid reflection once TestApi can be called from CTS
                         service.getClass().getMethod("deleteAllStagedRemoteData").invoke(service),
                 "android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA");
+    }
+
+    private static Metadata buildSessionMetadata(String packageName, double clientId) {
+        Device device =
+                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
+        DataOrigin dataOrigin = new DataOrigin.Builder().setPackageName(packageName).build();
+        return new Metadata.Builder()
+                .setDevice(device)
+                .setDataOrigin(dataOrigin)
+                .setClientRecordId(String.valueOf(clientId))
+                .build();
+    }
+
+    public static void grantPermission(String pkgName, String permission) {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+        runWithShellPermissionIdentity(
+                () ->
+                        service.getClass()
+                                .getMethod("grantHealthPermission", String.class, String.class)
+                                .invoke(service, pkgName, permission),
+                MANAGE_HEALTH_PERMISSION);
+    }
+
+    public static void revokePermission(String pkgName, String permission) {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+        runWithShellPermissionIdentity(
+                () ->
+                        service.getClass()
+                                .getMethod(
+                                        "revokeHealthPermission",
+                                        String.class,
+                                        String.class,
+                                        String.class)
+                                .invoke(service, pkgName, permission, null),
+                MANAGE_HEALTH_PERMISSION);
+    }
+
+    public static void revokeHealthPermissions(String packageName) {
+        runWithShellPermissionIdentity(() -> revokeHealthPermissionsPrivileged(packageName));
+    }
+
+    private static void revokeHealthPermissionsPrivileged(String packageName)
+            throws PackageManager.NameNotFoundException {
+        final Context targetContext = InstrumentationRegistry.getTargetContext();
+        final PackageManager packageManager = targetContext.getPackageManager();
+        final UserHandle user = targetContext.getUser();
+
+        final PackageInfo packageInfo =
+                packageManager.getPackageInfo(
+                        packageName,
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+
+        final String[] permissions = packageInfo.requestedPermissions;
+        if (permissions == null) {
+            return;
+        }
+
+        for (String permission : permissions) {
+            if (permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
+                packageManager.revokeRuntimePermission(packageName, permission, user);
+            }
+        }
+    }
+
+    public static List<String> getGrantedHealthPermissions(String pkgName) {
+        final PackageInfo pi = getAppPackageInfo(pkgName);
+        final String[] requestedPermissions = pi.requestedPermissions;
+        final int[] requestedPermissionsFlags = pi.requestedPermissionsFlags;
+
+        if (requestedPermissions == null) {
+            return List.of();
+        }
+
+        final List<String> permissions = new ArrayList<>();
+
+        for (int i = 0; i < requestedPermissions.length; i++) {
+            if ((requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
+                if (requestedPermissions[i].startsWith(HEALTH_PERMISSION_PREFIX)) {
+                    permissions.add(requestedPermissions[i]);
+                }
+            }
+        }
+
+        return permissions;
+    }
+
+    private static PackageInfo getAppPackageInfo(String pkgName) {
+        final Context targetContext = InstrumentationRegistry.getTargetContext();
+        return runWithShellPermissionIdentity(
+                () ->
+                        targetContext
+                                .getPackageManager()
+                                .getPackageInfo(
+                                        pkgName,
+                                        PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
     }
 }

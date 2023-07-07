@@ -40,9 +40,7 @@ import com.android.server.healthconnect.permission.HealthConnectPermissionHelper
 import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTracker;
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -79,12 +77,15 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectManager.getHealthPermissions(context),
                         permissionIntentTracker,
                         firstGrantTimeManager);
-        mPermissionPackageChangesOrchestrator =
-                new PermissionPackageChangesOrchestrator(
-                        permissionIntentTracker, firstGrantTimeManager, permissionHelper);
-        mUserManager = context.getSystemService(UserManager.class);
         mCurrentForegroundUser = context.getUser();
         mContext = context;
+        mPermissionPackageChangesOrchestrator =
+                new PermissionPackageChangesOrchestrator(
+                        permissionIntentTracker,
+                        firstGrantTimeManager,
+                        permissionHelper,
+                        mCurrentForegroundUser);
+        mUserManager = context.getSystemService(UserManager.class);
         mTransactionManager =
                 TransactionManager.getInstance(
                         new HealthConnectUserContext(mContext, mCurrentForegroundUser));
@@ -126,13 +127,20 @@ public class HealthConnectManagerService extends SystemService {
         HealthConnectDeviceConfigManager.getInitialisedInstance().updateRateLimiterValues();
     }
 
+    /**
+     * NOTE: Don't put any code that uses DB in onUserSwitching, such code should be part of
+     * switchToSetupForUser which is only called once DB is in usable state.
+     */
     @Override
     public void onUserSwitching(@Nullable TargetUser from, @NonNull TargetUser to) {
+        if (from != null && mUserManager.isUserUnlocked(from.getUserHandle())) {
+            // We need to cancel any pending timers for the foreground user before it goes into the
+            // background.
+            mHealthConnectService.cancelBackupRestoreTimeouts();
+        }
+
         HealthConnectThreadScheduler.shutdownThreadPools();
-        AppInfoHelper.getInstance().clearCache();
-        DeviceInfoHelper.getInstance().clearCache();
-        HealthDataCategoryPriorityHelper.getInstance().clearCache();
-        PreferenceHelper.getInstance().clearCache();
+        DatabaseHelper.clearAllCache();
         mTransactionManager.onUserSwitching();
         RateLimiter.clearCache();
         HealthConnectThreadScheduler.resetThreadPools();
@@ -179,12 +187,9 @@ public class HealthConnectManagerService extends SystemService {
                 new HealthConnectUserContext(mContext, mCurrentForegroundUser));
         mHealthConnectService.onUserSwitching(mCurrentForegroundUser);
         mMigrationBroadcastScheduler.setUserId(mCurrentForegroundUser.getIdentifier());
-        mMigrationUiStateManager =
-                new MigrationUiStateManager(
-                        mContext,
-                        mCurrentForegroundUser,
-                        MigrationStateManager.getInitialisedInstance(),
-                        mMigrationNotificationSender);
+        mMigrationUiStateManager.setUserHandle(mCurrentForegroundUser);
+        mPermissionPackageChangesOrchestrator.setUserHandle(mCurrentForegroundUser);
+
         HealthConnectDailyJobs.cancelAllJobs(mContext);
 
         HealthConnectThreadScheduler.scheduleInternalTask(

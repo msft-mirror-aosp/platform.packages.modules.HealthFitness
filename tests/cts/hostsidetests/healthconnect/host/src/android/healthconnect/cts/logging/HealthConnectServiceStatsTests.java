@@ -16,6 +16,8 @@
 
 package android.healthconnect.cts.logging;
 
+import static android.healthconnect.cts.logging.HostSideTestsUtils.isHardwareSupported;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.cts.statsdatom.lib.ConfigUtils;
@@ -44,6 +46,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         assertThat(mCtsBuild).isNotNull();
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
@@ -62,6 +67,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testInsertRecords() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectInsertRecords");
         assertThat(data.size()).isAtLeast(2);
@@ -77,6 +85,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testInsertRecordsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectInsertRecordsError");
         assertThat(data.size()).isAtLeast(2);
@@ -92,6 +103,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testUpdateRecords() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectUpdateRecords");
 
@@ -108,6 +122,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testUpdateRecordsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectUpdateRecordsError");
 
@@ -124,6 +141,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testDeleteRecords() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectDeleteRecords");
         assertThat(data.size()).isAtLeast(3);
@@ -145,6 +165,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testDeleteRecordsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectDeleteRecordsError");
         assertThat(data.size()).isAtLeast(3);
@@ -160,6 +183,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testReadRecords() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectReadRecords");
         assertThat(data.size()).isAtLeast(3);
@@ -175,6 +201,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testReadRecordsError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectReadRecordsError");
         assertThat(data.size()).isAtLeast(2);
@@ -189,6 +218,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testChangeLogTokenRequest() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectGetChangeLogToken");
         assertThat(data.size()).isAtLeast(2);
@@ -204,6 +236,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testChangeLogTokenRequestError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectGetChangeLogTokenError");
         assertThat(data.size()).isAtLeast(2);
@@ -219,6 +254,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testChangeLogsRequest() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectGetChangeLogs");
         assertThat(data.size()).isAtLeast(5);
@@ -234,6 +272,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testChangeLogsRequestError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectGetChangeLogsError");
         assertThat(data.size()).isAtLeast(2);
@@ -248,6 +289,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testAggregatedDataRequest() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectAggregatedData");
         assertThat(data.size()).isAtLeast(2);
@@ -263,6 +307,9 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
     }
 
     public void testAggregatedDataRequestError() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         List<StatsLog.EventMetricData> data =
                 uploadAtomConfigAndTriggerTest("testHealthConnectAggregatedDataError");
         assertThat(data.size()).isAtLeast(2);

@@ -28,6 +28,8 @@ import android.os.Binder;
 import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -61,6 +63,10 @@ public final class MigrationNotificationSender {
     /** Sends a notification to the current user based on the notification type. */
     public void sendNotification(
             @MigrationNotificationType int notificationType, @NonNull UserHandle userHandle) {
+        if (!HealthConnectDeviceConfigManager.getInitialisedInstance()
+                .areMigrationNotificationsEnabled()) {
+            return;
+        }
         createNotificationChannel(userHandle);
         try {
             Notification notification =
@@ -108,7 +114,7 @@ public final class MigrationNotificationSender {
             // We use the same (tag, id)
             notificationManager.cancel(NOTIFICATION_TAG, FIXED_NOTIFICATION_ID);
         } catch (Throwable e) {
-            Log.w(TAG, "Unable to send system notification", e);
+            Log.w(TAG, "Unable to cancel system notification", e);
         } finally {
             Binder.restoreCallingIdentity(callingId);
         }
@@ -138,6 +144,8 @@ public final class MigrationNotificationSender {
         try {
             notificationManager.createNotificationChannelGroup(group);
             notificationManager.createNotificationChannel(notificationChannel);
+        } catch (Throwable e) {
+            Log.w(TAG, "Unable to create notification channel", e);
         } finally {
             Binder.restoreCallingIdentity(callingId);
         }
