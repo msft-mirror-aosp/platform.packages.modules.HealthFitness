@@ -49,7 +49,6 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,13 +68,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class BasalMetabolicRateRecordTest {
     private static final String TAG = "BasalMetabolicRateRecordTest";
-
-    @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
-        TestUtils.deleteAllStagedRemoteData();
-    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -956,6 +948,46 @@ public class BasalMetabolicRateRecordTest {
         new BasalMetabolicRateRecord.Builder(
                         new Metadata.Builder().build(), Instant.now(), Power.fromWatts(484.26))
                 .build();
+    }
+
+    @Test
+    public void testAggregate_withDifferentTimeZone() throws Exception {
+        Instant instant = Instant.now().minus(1, ChronoUnit.DAYS);
+        List<Record> records =
+                List.of(
+                        getBasalMetabolicRateRecord(
+                                20.0, instant.plus(20, ChronoUnit.MINUTES), ZoneOffset.ofHours(2)),
+                        getBasalMetabolicRateRecord(
+                                30.0, instant.plus(10, ChronoUnit.MINUTES), ZoneOffset.ofHours(3)),
+                        getBasalMetabolicRateRecord(
+                                40.0, instant.plus(30, ChronoUnit.MINUTES), ZoneOffset.ofHours(1)));
+        AggregateRecordsResponse<Energy> oldResponse =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Energy>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(BASAL_CALORIES_TOTAL)
+                                .build(),
+                        records);
+        assertThat(oldResponse.getZoneOffset(BASAL_CALORIES_TOTAL))
+                .isEqualTo(ZoneOffset.ofHours(3));
+        List<Record> recordNew =
+                Arrays.asList(getBasalMetabolicRateRecord(50.0, instant, ZoneOffset.ofHours(5)));
+        AggregateRecordsResponse<Energy> newResponse =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Energy>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(BASAL_CALORIES_TOTAL)
+                                .build(),
+                        recordNew);
+        assertThat(newResponse.get(BASAL_CALORIES_TOTAL)).isNotNull();
+        assertThat(newResponse.getZoneOffset(BASAL_CALORIES_TOTAL))
+                .isEqualTo(ZoneOffset.ofHours(5));
     }
 
     BasalMetabolicRateRecord getBasalMetabolicRateRecord_update(

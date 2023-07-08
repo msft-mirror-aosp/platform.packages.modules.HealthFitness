@@ -51,7 +51,6 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -72,13 +71,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class WeightRecordTest {
     private static final String TAG = "WeightRecordTest";
-
-    @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
-        TestUtils.deleteAllStagedRemoteData();
-    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -243,6 +235,60 @@ public class WeightRecordTest {
         for (DataOrigin itr : dataOrigins) {
             assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAggregation_zeroDuration_throwsException() throws Exception {
+        TestUtils.getAggregateResponseGroupByDuration(
+                new AggregateRecordsRequest.Builder<Mass>(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.ofEpochMilli(0))
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .addAggregationType(WEIGHT_AVG)
+                        .build(),
+                Duration.ZERO);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAggregation_zeroPeriod_throwsException() throws Exception {
+        TestUtils.getAggregateResponseGroupByPeriod(
+                new AggregateRecordsRequest.Builder<Mass>(
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(
+                                                LocalDateTime.now(ZoneOffset.UTC).minusDays(1))
+                                        .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
+                                        .build())
+                        .addAggregationType(WEIGHT_AVG)
+                        .build(),
+                Period.ZERO);
+    }
+
+    @Test(expected = HealthConnectException.class)
+    public void testAggregationPeriod_lotsOfGroups_throwsException() throws Exception {
+        TestUtils.getAggregateResponseGroupByPeriod(
+                new AggregateRecordsRequest.Builder<Mass>(
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(
+                                                LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
+                                        .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
+                                        .build())
+                        .addAggregationType(WEIGHT_AVG)
+                        .build(),
+                Period.ofDays(1));
+    }
+
+    @Test(expected = HealthConnectException.class)
+    public void testAggregation_hugeNumberOfGroups_throwsException() throws Exception {
+        TestUtils.getAggregateResponseGroupByDuration(
+                new AggregateRecordsRequest.Builder<Mass>(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.ofEpochMilli(0))
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .addAggregationType(WEIGHT_AVG)
+                        .build(),
+                Duration.ofSeconds(1));
     }
 
     @Test
@@ -563,6 +609,15 @@ public class WeightRecordTest {
             groupBoundary = groupBoundary.plus(1, ChronoUnit.DAYS);
             assertThat(responses.get(i).getEndTime().getDayOfYear())
                     .isEqualTo(groupBoundary.getDayOfYear());
+            assertThat(responses.get(i).getDataOrigins(WEIGHT_MIN)).hasSize(1);
+            assertThat(
+                            responses
+                                    .get(i)
+                                    .getDataOrigins(WEIGHT_MIN)
+                                    .iterator()
+                                    .next()
+                                    .getPackageName())
+                    .isEqualTo(ApplicationProvider.getApplicationContext().getPackageName());
         }
 
         tearDown();
@@ -605,6 +660,15 @@ public class WeightRecordTest {
             groupBoundary = groupBoundary.plus(1, ChronoUnit.DAYS);
             assertThat(responses.get(i).getEndTime().getEpochSecond())
                     .isEqualTo(groupBoundary.getEpochSecond());
+            assertThat(responses.get(i).getDataOrigins(WEIGHT_MAX)).hasSize(1);
+            assertThat(
+                            responses
+                                    .get(i)
+                                    .getDataOrigins(WEIGHT_MAX)
+                                    .iterator()
+                                    .next()
+                                    .getPackageName())
+                    .isEqualTo(ApplicationProvider.getApplicationContext().getPackageName());
         }
 
         tearDown();

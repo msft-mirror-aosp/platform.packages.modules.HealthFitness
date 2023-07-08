@@ -32,7 +32,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.TestUtils.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.TestUtils.getRecordById;
-import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
@@ -41,8 +40,6 @@ import static com.google.common.truth.Truth.assertThat;
 import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectDataState;
@@ -50,19 +47,16 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
-import android.health.connect.datatypes.BodyFatRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
-import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
@@ -72,12 +66,10 @@ import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
-import android.os.FileUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.platform.test.annotations.AppModeFull;
 import android.util.ArrayMap;
-import android.util.ArraySet;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -92,10 +84,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.time.Instant;
@@ -139,13 +129,6 @@ public class HealthConnectManagerTest {
                         .addDataOrigin(
                                 new DataOrigin.Builder().setPackageName(APP_PACKAGE_NAME).build())
                         .build());
-    }
-
-    @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
-        TestUtils.deleteAllStagedRemoteData();
     }
 
     @After
@@ -223,9 +206,10 @@ public class HealthConnectManagerTest {
         AtomicReference<HealthConnectException> responseException = new AtomicReference<>();
 
         // Insert a sample record of each data type.
-        List<Record> insertRecords = TestUtils.insertRecords(TestUtils.getTestRecords());
+        List<Record> insertRecords = TestUtils.insertRecords(getTestRecords());
 
         // read inserted records and verify that the data is same as inserted.
+        assertThat(insertRecords).containsExactlyElementsIn(readMultipleRecordTypes(insertRecords));
 
         // Generate a second set of records that will be used to perform the update operation.
         List<Record> updateRecords = getTestRecords();
@@ -262,12 +246,10 @@ public class HealthConnectManagerTest {
 
         // assert the inserted data has been modified per the updateRecords.
         assertThat(latch.await(3, TimeUnit.SECONDS)).isEqualTo(true);
+        assertThat(responseException.get()).isNull();
 
         // assert the inserted data has been modified by reading the data.
-        // TODO(b/260181009): Modify and complete Tests for Update API in HealthConnectManagerTest
-        //  using read API
-
-        assertThat(responseException.get()).isNull();
+        assertThat(updateRecords).containsExactlyElementsIn(readMultipleRecordTypes(updateRecords));
     }
 
     /**
@@ -294,10 +276,10 @@ public class HealthConnectManagerTest {
         AtomicReference<HealthConnectException> responseException = new AtomicReference<>();
 
         // Insert a sample record of each data type.
-        List<Record> insertRecords = TestUtils.insertRecords(TestUtils.getTestRecords());
+        List<Record> insertRecords = TestUtils.insertRecords(getTestRecords());
 
         // read inserted records and verify that the data is same as inserted.
-
+        assertThat(insertRecords).containsExactlyElementsIn(readMultipleRecordTypes(insertRecords));
         // Generate a second set of records that will be used to perform the update operation.
         List<Record> updateRecords = getTestRecords();
 
@@ -338,8 +320,7 @@ public class HealthConnectManagerTest {
         assertThat(latch.await(/* timeout */ 3, TimeUnit.SECONDS)).isEqualTo(true);
 
         // assert the inserted data has not been modified by reading the data.
-        // TODO(b/260181009): Modify and complete Tests for Update API in HealthConnectManagerTest
-        //  using read API
+        assertThat(insertRecords).containsExactlyElementsIn(readMultipleRecordTypes(insertRecords));
 
         // verify that the testcase failed due to invalid argument exception.
         assertThat(responseException.get()).isNotNull();
@@ -370,10 +351,10 @@ public class HealthConnectManagerTest {
         AtomicReference<Exception> responseException = new AtomicReference<>();
 
         // Insert a sample record of each data type.
-        List<Record> insertRecords = TestUtils.insertRecords(TestUtils.getTestRecords());
+        List<Record> insertRecords = TestUtils.insertRecords(getTestRecords());
 
         // read inserted records and verify that the data is same as inserted.
-
+        assertThat(insertRecords).containsExactlyElementsIn(readMultipleRecordTypes(insertRecords));
         // Generate a second set of records that will be used to perform the update operation.
         List<Record> updateRecords = getTestRecords();
 
@@ -422,8 +403,7 @@ public class HealthConnectManagerTest {
         assertThat(latch.await(/* timeout */ 3, TimeUnit.SECONDS)).isEqualTo(true);
 
         // assert the inserted data has not been modified by reading the data.
-        // TODO(b/260181009): Modify and complete Tests for Update API in HealthConnectManagerTest
-        //  using read API
+        assertThat(insertRecords).containsExactlyElementsIn(readMultipleRecordTypes(insertRecords));
 
         // verify that the testcase failed due to invalid argument exception.
         assertThat(responseException.get()).isNotNull();
@@ -1824,80 +1804,6 @@ public class HealthConnectManagerTest {
         verifyRecordTypeResponse(response, expectedResponseMap);
     }
 
-    // This test uses a db created using DATABASE_VERSION 7 (Last bumped on 2023-03-17T17:23:29Z).
-    // The health db is sitting directly in the CTS app and is staged directly with the HC service.
-    // And then the records from this staged db are merged.
-    // Ideally this db should stay good forever, as the newer versions of HC code are guaranteed to
-    // work with the older versions of the health db.
-    // However, if for some reason there's any issue, please try by creating another db (probably
-    // using a newer version of HF module) and replacing the db in the cts app's resources.
-    @Test
-    public void testMergeStagedData_withEmptyHealthDb_mergesAllData() throws Exception {
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        assertThat(service).isNotNull();
-
-        // Step 0: reset everything as some cts tests leave stuff behind.
-        TestUtils.verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
-        deleteAllStagedRemoteData();
-
-        List<BodyFatRecord> bodyFatRecordsRead =
-                TestUtils.readRecords(
-                        new ReadRecordsRequestUsingFilters.Builder<>(BodyFatRecord.class).build());
-        List<HeightRecord> heightRecordsRead =
-                TestUtils.readRecords(
-                        new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
-
-        assertThat(bodyFatRecordsRead).isEmpty();
-        assertThat(heightRecordsRead).isEmpty();
-
-        // Step 1: prepare the backup data for restore.
-        prepareDataForRestore();
-
-        // Step 2: Restore the db and the grant times.
-        restoreBackupData();
-        Thread.sleep(TimeUnit.SECONDS.toMillis(10)); // give some time for merge to finish.
-
-        // Step 3: Assert that the restored db (with the service) has the records from the db with
-        // the cts app.
-        heightRecordsRead =
-                TestUtils.readRecords(
-                        new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
-        assertThat(heightRecordsRead.size()).isEqualTo(2);
-        bodyFatRecordsRead =
-                TestUtils.readRecords(
-                        new ReadRecordsRequestUsingFilters.Builder<>(BodyFatRecord.class).build());
-        assertThat(bodyFatRecordsRead.size()).isEqualTo(1);
-
-        File backupDataDir = getBackupDataDir();
-        SQLiteDatabase db =
-                SQLiteDatabase.openDatabase(
-                        new File(backupDataDir, "healthconnect.db"),
-                        new SQLiteDatabase.OpenParams.Builder().build());
-        Cursor cursor = db.rawQuery("select * from height_record_table", null);
-        ArraySet<Double> heights = new ArraySet<>();
-        while (cursor.moveToNext()) {
-            heights.add(cursor.getDouble(cursor.getColumnIndex("height")));
-        }
-
-        cursor = db.rawQuery("select * from body_fat_record_table", null);
-        ArraySet<Double> bodyFats = new ArraySet<>();
-        while (cursor.moveToNext()) {
-            bodyFats.add(cursor.getDouble(cursor.getColumnIndex("percentage")));
-        }
-
-        for (var heightRecordRead : heightRecordsRead) {
-            assertThat(heights).contains(heightRecordRead.getHeight().getInMeters());
-        }
-
-        for (var bodyFatRecordRead : bodyFatRecordsRead) {
-            assertThat(bodyFats).contains(bodyFatRecordRead.getPercentage().getValue());
-        }
-
-        TestUtils.verifyDeleteRecords(new DeleteUsingFiltersRequest.Builder().build());
-        deleteAllStagedRemoteData();
-    }
-
     private boolean isEmptyContributingPackagesForAll(
             Map<Class<? extends Record>, RecordTypeInfoResponse> response) {
         // If all the responses have empty lists in their contributing packages then we
@@ -1922,71 +1828,6 @@ public class HealthConnectManagerTest {
             // TODO(b/241542162): Avoid using reflection as a workaround once test apis can be
             //  run in CTS tests.
             service.getClass().getMethod("deleteAllStagedRemoteData").invoke(service);
-        } finally {
-            InstrumentationRegistry.getInstrumentation()
-                    .getUiAutomation()
-                    .dropShellPermissionIdentity();
-        }
-    }
-
-    private File getBackupDataDir() {
-        Context context = ApplicationProvider.getApplicationContext();
-        File backupDataDir = new File(context.getFilesDir(), "backup_data");
-        backupDataDir.mkdirs();
-        return backupDataDir;
-    }
-
-    private void prepareDataForRestore() throws Exception {
-        Context context = ApplicationProvider.getApplicationContext();
-        File backupDataDir = getBackupDataDir();
-        try (InputStream in = context.getResources().openRawResource(R.raw.healthconnect);
-             FileOutputStream out =
-                     new FileOutputStream(new File(backupDataDir, "healthconnect.db"))) {
-            FileUtils.copy(in, out);
-            out.getFD().sync();
-        }
-        try (InputStream in = context.getResources()
-                .openRawResource(R.raw.health_permissions_first_grant_times);
-             FileOutputStream out =
-                     new FileOutputStream(
-                             new File(backupDataDir,
-                                     "health-permissions-first-grant-times.xml"))) {
-            FileUtils.copy(in, out);
-            out.getFD().sync();
-        }
-    }
-
-    private void restoreBackupData() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
-        assertThat(service).isNotNull();
-
-        try {
-            File[] filesToRestore = getBackupDataDir().listFiles();
-
-            Map<String, ParcelFileDescriptor> pfdsByFileName = new ArrayMap<>();
-            for (var file : filesToRestore) {
-                pfdsByFileName.put(file.getName(), ParcelFileDescriptor.open(file, MODE_READ_ONLY));
-            }
-
-            InstrumentationRegistry.getInstrumentation()
-                    .getUiAutomation()
-                    .adoptShellPermissionIdentity(
-                            "android.permission.STAGE_HEALTH_CONNECT_REMOTE_DATA");
-            service.stageAllHealthConnectRemoteData(
-                    pfdsByFileName,
-                    Executors.newSingleThreadExecutor(),
-                    new OutcomeReceiver<>() {
-                        @Override
-                        public void onResult(Void result) {
-                            latch.countDown();
-                        }
-
-                        @Override
-                        public void onError(@NonNull StageRemoteDataException error) {}
-                    });
-            assertThat(latch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
         } finally {
             InstrumentationRegistry.getInstrumentation()
                     .getUiAutomation()
@@ -2062,6 +1903,38 @@ public class HealthConnectManagerTest {
             default:
                 throw new IllegalStateException("Invalid record type.");
         }
+    }
+
+    private static List<Record> readMultipleRecordTypes(List<Record> insertedRecords)
+            throws InterruptedException {
+        List<Record> readRecords = new ArrayList<>();
+        for (Record record : insertedRecords) {
+            switch (record.getRecordType()) {
+                case RECORD_TYPE_STEPS:
+                    readRecords.addAll(
+                            TestUtils.readRecords(
+                                    new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
+                                            .addId(record.getMetadata().getId())
+                                            .build()));
+                    break;
+                case RECORD_TYPE_HEART_RATE:
+                    readRecords.addAll(
+                            TestUtils.readRecords(
+                                    new ReadRecordsRequestUsingIds.Builder<>(HeartRateRecord.class)
+                                            .addId(record.getMetadata().getId())
+                                            .build()));
+                    break;
+                case RECORD_TYPE_BASAL_METABOLIC_RATE:
+                    readRecords.addAll(
+                            TestUtils.readRecords(
+                                    new ReadRecordsRequestUsingIds.Builder<>(
+                                                    BasalMetabolicRateRecord.class)
+                                            .addId(record.getMetadata().getId())
+                                            .build()));
+                    break;
+            }
+        }
+        return readRecords;
     }
 
     private StepsRecord getStepsRecord(String clientRecordId, String packageName) {
