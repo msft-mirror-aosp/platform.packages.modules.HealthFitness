@@ -25,6 +25,8 @@ import android.os.Process;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.server.healthconnect.storage.TestUtils;
+
 import com.google.common.truth.Truth;
 
 import org.junit.Before;
