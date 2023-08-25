@@ -32,11 +32,23 @@ import java.util.Objects;
  *
  * @hide
  */
-public class AggregateParams {
+public final class AggregateParams {
     private final String mTableName;
 
-    // Column used for time filtering. Start time for interval records.
+    /**
+     * Physical time column name (i.e. {@link
+     * com.android.server.healthconnect.storage.datatypehelpers.RecordHelper#getStartTimeColumnName()}).
+     *
+     * <p>This is used to compare against start date access when local time is used, when local time
+     * is NOT used, this has the same value as {@link #mTimeColumnName}.
+     *
+     * <p>Same as {@link #mTimeColumnName}, this is start time for interval records.
+     */
+    private String mPhysicalTimeColumnName;
+
+    /** Column used for time filtering. Start time for interval records. */
     private String mTimeColumnName;
+
     private final List<String> mColumnsToFetch;
     private SqlJoin mJoin;
 
@@ -48,21 +60,8 @@ public class AggregateParams {
 
     private PriorityAggregationExtraParams mPriorityAggregationExtraParams;
 
-    public AggregateParams(String tableName, List<String> columnsToFetch, String timeColumnName) {
-        this(tableName, columnsToFetch, timeColumnName, null);
-    }
-
     public AggregateParams(String tableName, List<String> columnsToFetch) {
-        this(tableName, columnsToFetch, null, null);
-    }
-
-    public AggregateParams(
-            String tableName,
-            List<String> columnsToFetch,
-            String timeColumnName,
-            Class<?> priorityColumnDataType) {
-        // We ignore constructor time column parameter as it's set separately.
-        this(tableName, columnsToFetch, priorityColumnDataType);
+        this(tableName, columnsToFetch, null);
     }
 
     public AggregateParams(
@@ -88,6 +87,10 @@ public class AggregateParams {
         return mTimeColumnName;
     }
 
+    public String getPhysicalTimeColumnName() {
+        return mPhysicalTimeColumnName;
+    }
+
     public String getExtraTimeColumnName() {
         return mExtraTimeColumnName;
     }
@@ -111,6 +114,10 @@ public class AggregateParams {
         return this;
     }
 
+    public void setPhysicalTimeColumnName(String physicalTimeColumnName) {
+        this.mPhysicalTimeColumnName = physicalTimeColumnName;
+    }
+
     /** Appends additional columns to fetch. */
     public AggregateParams appendAdditionalColumns(List<String> additionColumns) {
         mColumnsToFetch.addAll(additionColumns);
@@ -129,7 +136,6 @@ public class AggregateParams {
         return mPriorityAggregationExtraParams;
     }
 
-    /** Sets params for priority aggregation. */
     public AggregateParams setExtraTimeColumn(String extraTimeColumn) {
         mExtraTimeColumnName = extraTimeColumn;
         return this;
@@ -191,6 +197,5 @@ public class AggregateParams {
         public String getColumnToAggregateName() {
             return mColumnToAggregateName;
         }
-
     }
 }

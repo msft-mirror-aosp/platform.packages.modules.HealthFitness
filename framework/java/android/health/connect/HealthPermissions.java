@@ -99,12 +99,38 @@ public final class HealthPermissions {
             "android.permission.MANAGE_HEALTH_DATA";
 
     /**
+     * Allows an application to launch client onboarding activities responsible for connecting to
+     * Health Connect. This permission can only be held by the system. Client apps that choose to
+     * export an onboarding activity must guard it with this permission so that only the system can
+     * launch it.
+     *
+     * <p>See {@link HealthConnectManager#ACTION_SHOW_ONBOARDING} for the corresponding intent used
+     * by the system to launch onboarding activities.
+     *
+     * <p>Protection level: signature.
+     *
+     * @hide
+     */
+    public static final String START_ONBOARDING = "android.permission.health.START_ONBOARDING";
+
+    /**
      * Used for runtime permissions which grant access to Health Connect data.
      *
      * @hide
      */
     @SystemApi
     public static final String HEALTH_PERMISSION_GROUP = "android.permission-group.HEALTH";
+
+    /**
+     * Allows an application to read health data (of any type) in background.
+     *
+     * <p>Protection level: dangerous.
+     *
+     * @hide
+     */
+    public static final String READ_HEALTH_DATA_IN_BACKGROUND =
+            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
+
     /**
      * Allows an application to read the user's active calories burned data.
      *

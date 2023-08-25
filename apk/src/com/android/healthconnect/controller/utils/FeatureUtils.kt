@@ -7,11 +7,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 interface FeatureUtils {
     fun isSessionTypesEnabled(): Boolean
     fun isExerciseRouteEnabled(): Boolean
     fun isEntryPointsEnabled(): Boolean
+    fun isNewAppPriorityEnabled(): Boolean
+    fun isNewInformationArchitectureEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -21,6 +24,10 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         private const val PROPERTY_EXERCISE_ROUTE_ENABLED = "exercise_routes_enable"
         private const val PROPERTY_SESSIONS_TYPE_ENABLED = "session_types_enable"
         private const val PROPERTY_ENTRY_POINTS_ENABLED = "entry_points_enable"
+        private const val PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED =
+                "aggregation_source_controls_enable"
+        private const val PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED =
+                "new_information_architecture_enable"
     }
 
     private val lock = Any()
@@ -40,6 +47,23 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     private var isEntryPointsEnabled =
         DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_ENTRY_POINTS_ENABLED, true)
+
+    private var isNewAppPriorityEnabled =
+            DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED, true)
+    private var isNewInformationArchitectureEnabled =
+            DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
+
+    override fun isNewAppPriorityEnabled(): Boolean {
+        synchronized(lock) {
+            return isNewAppPriorityEnabled
+        }
+    }
+
+    override fun isNewInformationArchitectureEnabled(): Boolean {
+        synchronized(lock) {
+            return isNewInformationArchitectureEnabled
+        }
+    }
 
     override fun isSessionTypesEnabled(): Boolean {
         synchronized(lock) {
@@ -75,6 +99,12 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                     PROPERTY_ENTRY_POINTS_ENABLED ->
                         isEntryPointsEnabled =
                             properties.getBoolean(PROPERTY_ENTRY_POINTS_ENABLED, true)
+                    PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED ->
+                        isNewAppPriorityEnabled =
+                                properties.getBoolean(PROPERTY_AGGREGATION_SOURCE_CONTROL_ENABLED, true)
+                    PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED ->
+                        isNewInformationArchitectureEnabled =
+                                properties.getBoolean(PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
                 }
             }
         }
@@ -85,6 +115,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 @InstallIn(SingletonComponent::class)
 class FeaturesModule {
     @Provides
+    @Singleton
     fun providesFeatureUtils(@ApplicationContext context: Context): FeatureUtils {
         return FeatureUtilsImpl(context)
     }
