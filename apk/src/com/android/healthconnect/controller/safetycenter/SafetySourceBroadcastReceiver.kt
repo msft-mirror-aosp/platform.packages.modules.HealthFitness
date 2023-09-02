@@ -17,16 +17,17 @@
 package com.android.healthconnect.controller.safetycenter
 
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
+import android.content.pm.PackageManager
 import android.safetycenter.SafetyCenterManager
 import android.safetycenter.SafetyCenterManager.ACTION_REFRESH_SAFETY_SOURCES
 import android.safetycenter.SafetyCenterManager.EXTRA_REFRESH_SAFETY_SOURCE_IDS
 import android.safetycenter.SafetyEvent
 import android.safetycenter.SafetyEvent.SAFETY_EVENT_TYPE_DEVICE_REBOOTED
 import android.safetycenter.SafetyEvent.SAFETY_EVENT_TYPE_REFRESH_REQUESTED
-import android.util.Log
 import com.android.healthconnect.controller.safetycenter.HealthConnectSafetySource.Companion.HEALTH_CONNECT_SOURCE_ID
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,12 +39,11 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
     @Inject lateinit var safetyCenterManagerWrapper: SafetyCenterManagerWrapper
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d(TAG, "onReceive() called with: context = $context, intent = $intent")
         super.onReceive(context, intent)
+        tryEnableLegacySettingsEntryPoint(context)
         if (!safetyCenterManagerWrapper.isEnabled(context)) {
             return
         }
-        Log.i(TAG, "onReceive: ${intent.action}")
         when (intent.action) {
             ACTION_BOOT_COMPLETED -> refreshAllSafetySources(context)
             ACTION_REFRESH_SAFETY_SOURCES -> {
@@ -51,7 +51,6 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
                 val refreshBroadcastId =
                     intent.getStringExtra(
                         SafetyCenterManager.EXTRA_REFRESH_SAFETY_SOURCES_BROADCAST_ID)
-                Log.i(TAG, "onReceive: $sourceIdsExtra \n $refreshBroadcastId")
                 if (sourceIdsExtra != null &&
                     sourceIdsExtra.isNotEmpty() &&
                     refreshBroadcastId != null) {
@@ -66,6 +65,36 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
             else -> return
         }
     }
+    
+    private fun tryEnableLegacySettingsEntryPoint(context: Context) {
+        val legacySettingsEntryPointComponent =
+            ComponentName(context.packageName, LEGACY_SETTINGS_ACTIVITY_ALIAS)
+
+        val componentState =
+            if (shouldEnableLegacySettingsEntryPoint(context)) {
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+            } else {
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+            }
+
+        context.packageManager.setComponentEnabledSetting(
+            legacySettingsEntryPointComponent, componentState, 0)
+    }
+
+    private fun shouldEnableLegacySettingsEntryPoint(context: Context): Boolean {
+        return !safetyCenterManagerWrapper.isEnabled(context) && isHardwareSupported(context)
+    }
+
+    private fun isHardwareSupported(context: Context): Boolean {
+        // These UI tests are not optimised for Watches, TVs, Auto;
+        // IoT devices do not have a UI to run these UI tests
+        val pm: PackageManager = context.packageManager
+        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+                !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+    }
+
 
     private fun refreshSafetySources(
         context: Context,
@@ -83,6 +112,7 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
     }
 
     companion object {
-        private const val TAG = "SafetySourceBroadcastRe"
+        private const val LEGACY_SETTINGS_ACTIVITY_ALIAS =
+            "com.android.healthconnect.controller.LegacySettingsEntryPoint"
     }
 }
