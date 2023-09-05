@@ -16,14 +16,17 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.flattenLongList;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import static java.util.Objects.requireNonNull;
 
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
@@ -31,14 +34,16 @@ import android.health.connect.HealthDataCategory;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.modules.utils.testing.ExtendedMockitoRule;
+import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
@@ -87,10 +92,13 @@ public class HealthDataCategoryPriorityHelperTest {
                 .thenReturn(APP_ID_PRIORITY_ORDER_COLUMN_INDEX);
 
         mHealthDataCategoryPriorityHelper = HealthDataCategoryPriorityHelper.getInstance();
+        // Clear data in case the singleton is already initialised.
+        mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);
     }
 
     @After
     public void tearDown() throws Exception {
+        TestUtils.waitForAllScheduledTasksToComplete();
         mHealthDataCategoryPriorityHelper.clearData(mTransactionManager);
     }
 
@@ -112,8 +120,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mCursor.getInt(eq(HEALTH_DATA_CATEGORY_COLUMN_INDEX)))
                 .thenReturn(HealthDataCategory.BODY_MEASUREMENTS);
         when(mCursor.getString(eq(APP_ID_PRIORITY_ORDER_COLUMN_INDEX)))
-                .thenReturn(
-                        StorageUtils.flattenLongList(List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2)));
+                .thenReturn(flattenLongList(List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2)));
         when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
 
         mHealthDataCategoryPriorityHelper.setPriorityOrder(
@@ -132,8 +139,7 @@ public class HealthDataCategoryPriorityHelperTest {
         when(mCursor.getInt(eq(HEALTH_DATA_CATEGORY_COLUMN_INDEX)))
                 .thenReturn(HealthDataCategory.BODY_MEASUREMENTS);
         when(mCursor.getString(eq(APP_ID_PRIORITY_ORDER_COLUMN_INDEX)))
-                .thenReturn(
-                        StorageUtils.flattenLongList(List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2)));
+                .thenReturn(flattenLongList(List.of(APP_PACKAGE_ID, APP_PACKAGE_ID_2)));
         when(mAppInfoHelper.getAppInfoIds(eq(newPriorityOrder))).thenReturn(newPriorityOrderId);
 
         mHealthDataCategoryPriorityHelper.setPriorityOrder(
@@ -161,7 +167,7 @@ public class HealthDataCategoryPriorityHelperTest {
                 .thenReturn(HealthDataCategory.BODY_MEASUREMENTS);
         when(mCursor.getString(eq(APP_ID_PRIORITY_ORDER_COLUMN_INDEX)))
                 .thenReturn(
-                        StorageUtils.flattenLongList(
+                        flattenLongList(
                                 List.of(
                                         APP_PACKAGE_ID,
                                         APP_PACKAGE_ID_2,
@@ -177,19 +183,42 @@ public class HealthDataCategoryPriorityHelperTest {
     }
 
     private void verifyPriorityUpdate(List<Long> priorityOrder) {
-        verify(mTransactionManager, times(1))
-                .insertOrReplace(
-                        argThat(
-                                request ->
-                                        request.getContentValues()
-                                                .getAsString(APP_ID_PRIORITY_ORDER_COLUMN_NAME)
-                                                .equalsIgnoreCase(
-                                                        StorageUtils.flattenLongList(
-                                                                priorityOrder))));
+        verify(mTransactionManager).insertOrReplace(argThat(new RequestMatcher(priorityOrder)));
 
         assertThat(
                         mHealthDataCategoryPriorityHelper.getAppIdPriorityOrder(
                                 HealthDataCategory.BODY_MEASUREMENTS))
                 .isEqualTo(priorityOrder);
+    }
+
+    private static final class RequestMatcher implements ArgumentMatcher<UpsertTableRequest> {
+
+        private final List<Long> mPriorityOrder;
+        private UpsertTableRequest mRequest;
+
+        RequestMatcher(List<Long> priorityOrder) {
+            mPriorityOrder = priorityOrder;
+        }
+
+        @Override
+        public boolean matches(UpsertTableRequest request) {
+            mRequest = request;
+            return requireNonNull(
+                            request.getContentValues()
+                                    .getAsString(APP_ID_PRIORITY_ORDER_COLUMN_NAME))
+                    .equalsIgnoreCase(flattenLongList(mPriorityOrder));
+        }
+
+        @Override
+        public String toString() {
+            return "Expected Priority Order = ["
+                    + flattenLongList(mPriorityOrder)
+                    + "]"
+                    + ", Actual Priority Order = ["
+                    + requireNonNull(
+                            mRequest.getContentValues()
+                                    .getAsString(APP_ID_PRIORITY_ORDER_COLUMN_NAME))
+                    + "]";
+        }
     }
 }
