@@ -55,6 +55,32 @@ class AppDataFragmentTest {
     fun setup() {
         hiltRule.inject()
         val context = InstrumentationRegistry.getInstrumentation().context
+        whenever(appDataViewModel.appInfo).then {
+            MutableLiveData(
+                AppMetadata(
+                    TEST_APP_PACKAGE_NAME,
+                    TEST_APP_NAME,
+                    context.getDrawable(R.drawable.health_connect_logo)))
+        }
+    }
+
+    @Test
+    fun allDataFragment_noData_noDataMessageDisplayed() {
+        whenever(appDataViewModel.appData).then {
+            MutableLiveData(AppDataViewModel.AppDataState.WithData(listOf()))
+        }
+        launchFragment<AppDataFragment>(
+            bundleOf(
+                Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
+                Constants.EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(withText("No data")).check(matches(isDisplayed()))
+        onView(withText("Data from apps with access to Health Connect will show here"))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun appDataFragment_dataPresent_populatedDataTypesDisplayed() {
         whenever(appDataViewModel.appData).then {
             MutableLiveData(
                 AppDataViewModel.AppDataState.WithData(
@@ -72,17 +98,6 @@ class AppDataFragmentTest {
                                 HealthPermissionType.MENSTRUATION,
                                 HealthPermissionType.SEXUAL_ACTIVITY)))))
         }
-        whenever(appDataViewModel.appInfo).then {
-            MutableLiveData(
-                AppMetadata(
-                    TEST_APP_PACKAGE_NAME,
-                    TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)))
-        }
-    }
-
-    @Test
-    fun appDataFragment_isDisplayed() {
         launchFragment<AppDataFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,

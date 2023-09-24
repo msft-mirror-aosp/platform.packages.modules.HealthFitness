@@ -18,7 +18,9 @@ package com.android.healthconnect.controller.data.appdata
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
@@ -27,7 +29,9 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.NoDataPreference
 import com.android.settingslib.widget.AppHeaderPreference
+import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment to display data in Health Connect written by a given app. */
@@ -36,6 +40,7 @@ open class AppDataFragment : Hilt_AppDataFragment() {
 
     companion object {
         private const val TAG = "AppDataFragmentTag"
+        const val PERMISSION_TYPE_KEY = "permission_type_key"
     }
 
     init {
@@ -105,6 +110,14 @@ open class AppDataFragment : Hilt_AppDataFragment() {
             permissionTypesPerCategoryList
                 .filter { it.data.isNotEmpty() }
                 .sortedBy { getString(it.category.uppercaseTitle()) }
+
+        if (populatedCategories.isEmpty()) {
+            preferenceScreen.addPreference(NoDataPreference(requireContext()))
+            preferenceScreen.addPreference(
+                FooterPreference(requireContext()).also { it.setTitle(R.string.no_data_footer) })
+            return
+        }
+
         populatedCategories.forEach { permissionTypesPerCategory ->
             val category = permissionTypesPerCategory.category
             val categoryIcon = category.icon(requireContext())
@@ -124,20 +137,18 @@ open class AppDataFragment : Hilt_AppDataFragment() {
                             it.setTitle(
                                 HealthPermissionStrings.fromPermissionType(permissionType)
                                     .uppercaseLabel)
-                            // TODO(b/281811925): Add in upcoming cl.
-                            // it.logName = AppDataElement.PERMISSION_TYPE_BUTTON
-                            //                            it.setOnPreferenceClickListener {
-                            //                                findNavController()
-                            //                                    .navigate(
-                            //
-                            // R.id.action_appData_to_appEntries,
-                            //                                        bundleOf(EXTRA_PACKAGE_NAME to
-                            // packageName, Constants.EXTRA_APP_NAME to appName,
-                            //
-                            // HealthPermissionTypesFragment.PERMISSION_TYPE_KEY to permissionType
-                            //                                        ))
-                            //                                true
-                            //                            }
+                            it.setOnPreferenceClickListener {
+                                // TODO(b/281811925): Add in upcoming cl.
+                                // it.logName = AppDataElement.PERMISSION_TYPE_BUTTON
+                                findNavController()
+                                    .navigate(
+                                        R.id.action_appData_to_appEntries,
+                                        bundleOf(
+                                            EXTRA_PACKAGE_NAME to packageName,
+                                            Constants.EXTRA_APP_NAME to appName,
+                                            PERMISSION_TYPE_KEY to permissionType))
+                                true
+                            }
                         })
                 }
         }
