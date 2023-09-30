@@ -85,7 +85,7 @@ class AppEntriesFragmentTest {
 
     @Test
     fun appEntriesInit_showsDateNavigationPreference() {
-        Mockito.`when`(viewModel.appEntries).thenReturn(MutableLiveData(With(emptyList())))
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
         launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -94,7 +94,7 @@ class AppEntriesFragmentTest {
 
     @Test
     fun appEntriesInit_noData_showsNoData() {
-        Mockito.`when`(viewModel.appEntries).thenReturn(MutableLiveData(Empty))
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
         launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -103,7 +103,7 @@ class AppEntriesFragmentTest {
 
     @Test
     fun appEntriesInit_error_showsNoData() {
-        Mockito.`when`(viewModel.appEntries).thenReturn(MutableLiveData(LoadingFailed))
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
         launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -112,7 +112,7 @@ class AppEntriesFragmentTest {
 
     @Test
     fun appEntriesInit_loading_showsLoading() {
-        Mockito.`when`(viewModel.appEntries).thenReturn(MutableLiveData(Loading))
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
         launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -121,7 +121,7 @@ class AppEntriesFragmentTest {
 
     @Test
     fun appEntriesInit_withData_showsListOfEntries() {
-        Mockito.`when`(viewModel.appEntries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
         launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
@@ -133,7 +133,7 @@ class AppEntriesFragmentTest {
 
     @Test
     fun appEntries_withData_notShowingDeleteAction() {
-        Mockito.`when`(viewModel.appEntries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
         launchFragment<AppEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
