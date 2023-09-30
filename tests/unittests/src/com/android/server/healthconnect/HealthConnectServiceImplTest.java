@@ -82,8 +82,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 /** Unit test class for {@link HealthConnectServiceImpl} */
 @RunWith(AndroidJUnit4.class)
@@ -153,6 +155,7 @@ public class HealthConnectServiceImplTest {
                     .build();
 
     @Mock private TransactionManager mTransactionManager;
+    @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
     @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private MigrationCleaner mMigrationCleaner;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -170,20 +173,24 @@ public class HealthConnectServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
-                .thenReturn(mAppOpsManagerLocal);
         when(UserHandle.of(anyInt())).thenCallRealMethod();
         mUserHandle = UserHandle.of(UserHandle.myUserId());
         when(mServiceContext.getPackageManager()).thenReturn(mPackageManager);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
 
+        mContext =
+                new HealthConnectUserContext(
+                        InstrumentationRegistry.getInstrumentation().getContext(), mUserHandle);
+        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
+        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
+        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
+                .thenReturn(mAppOpsManagerLocal);
+
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
+                        mDeviceConfigManager,
                         mHealthConnectPermissionHelper,
                         mMigrationCleaner,
                         mFirstGrantTimeManager,
@@ -193,13 +200,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws TimeoutException {
+        TestUtils.waitForAllScheduledTasksToComplete();
         deleteDir(mMockDataDirectory);
         clearInvocations(mPreferenceHelper);
     }
 
     @Test
-    public void testInstatiated_attachesMigrationCleanerToMigrationStateManager() {
+    public void testInstantiated_attachesMigrationCleanerToMigrationStateManager() {
         verify(mMigrationCleaner).attachTo(mMigrationStateManager);
     }
 
@@ -492,10 +500,16 @@ public class HealthConnectServiceImplTest {
                 if (file.isDirectory()) {
                     deleteDir(file);
                 } else {
-                    file.delete();
+                    assertThat(file.delete()).isTrue();
                 }
             }
         }
-        assertThat(dir.delete()).isTrue();
+        assertWithMessage(
+                        "Directory "
+                                + dir.getAbsolutePath()
+                                + " is not empty, Files present = "
+                                + Arrays.toString(dir.list()))
+                .that(dir.delete())
+                .isTrue();
     }
 }
