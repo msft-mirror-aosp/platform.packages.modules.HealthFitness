@@ -45,7 +45,6 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.shared.Constants
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
@@ -59,7 +58,6 @@ import javax.inject.Inject
 class AppEntriesFragment : Hilt_AppEntriesFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
-    private val pageName = PageName.DATA_ENTRIES_PAGE
 
     private var packageName: String = ""
     private var appName: String = ""
@@ -104,7 +102,7 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        logger.setPageId(pageName)
+        // TODO(b/291249677): Log pagename.
 
         if (requireArguments().containsKey(EXTRA_PACKAGE_NAME) &&
             requireArguments().getString(EXTRA_PACKAGE_NAME) != null) {
@@ -133,7 +131,6 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                 else -> false
             }
         }
-        logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
         noDataView = view.findViewById(R.id.no_data_view)
@@ -209,12 +206,11 @@ class AppEntriesFragment : Hilt_AppEntriesFragment() {
                 dateNavigationView.getPeriod())
         }
 
-        logger.setPageId(pageName)
-        logger.logPageImpression()
+        // TODO(b/291249677): Log pagename.
     }
 
     private fun observeEntriesUpdates() {
-        entriesViewModel.appEntries.observe(viewLifecycleOwner) { state ->
+        entriesViewModel.entries.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Loading -> {
                     loadingView.isVisible = true
