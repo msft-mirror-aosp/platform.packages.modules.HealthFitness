@@ -323,11 +323,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         final List<RecordInternal<?>> recordInternals = recordsParcel.getRecords();
                         builder.setNumberOfRecords(recordInternals.size());
                         throwExceptionIfDataSyncInProgress();
-                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
-                                recordInternals, attributionSource);
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, builder);
+                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
+                                recordInternals, attributionSource);
                         Trace.traceBegin(TRACE_TAG_INSERT, TAG_INSERT);
                         UpsertTransactionRequest insertRequest =
                                 new UpsertTransactionRequest(
@@ -438,13 +438,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         attributionSource.getPackageName()
                                                 + "must be in foreground to call aggregate method");
                             }
-                            mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
-                                    recordTypesToTest, attributionSource);
                             tryAcquireApiCallQuota(
                                     uid,
                                     RateLimiter.QuotaCategory.QUOTA_CATEGORY_READ,
                                     isInForeground,
                                     builder);
+                            mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
+                                    recordTypesToTest, attributionSource);
                         }
                         callback.onResult(
                                 new AggregateTransactionRequest(
@@ -518,6 +518,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             // If requesting app has only write permission allowed but no read
                             // permission for the record type or if app is not in foreground then
                             // allow to read its own records.
+                            tryAcquireApiCallQuota(
+                                    uid,
+                                    QuotaCategory.QUOTA_CATEGORY_READ,
+                                    isInForeground,
+                                    builder);
                             enforceSelfRead.set(
                                     mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
                                                     request.getRecordType(), attributionSource)
@@ -529,12 +534,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 + attributionSource.getPackageName()
                                                 + ":"
                                                 + enforceSelfRead.get());
-                            }
-                            tryAcquireApiCallQuota(
-                                    uid,
-                                    QuotaCategory.QUOTA_CATEGORY_READ,
-                                    isInForeground,
-                                    builder);
                         }
                         final Map<String, Boolean> extraReadPermsToGrantState =
                                 Collections.unmodifiableMap(
@@ -706,11 +705,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         final List<RecordInternal<?>> recordInternals = recordsParcel.getRecords();
                         builder.setNumberOfRecords(recordInternals.size());
                         throwExceptionIfDataSyncInProgress();
-                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
-                                recordInternals, attributionSource);
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, builder);
+                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
+                                recordInternals, attributionSource);
                         UpsertTransactionRequest request =
                                 new UpsertTransactionRequest(
                                         attributionSource.getPackageName(),
@@ -860,8 +859,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
                                 ChangeLogsRequestHelper.getRequest(
                                         attributionSource.getPackageName(), token.getToken());
-                        mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
-                                changeLogsTokenRequest.getRecordTypes(), attributionSource);
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         if (!isInForeground) {
                             throwSecurityException(
@@ -870,6 +867,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         }
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, builder);
+                        mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
+                                changeLogsTokenRequest.getRecordTypes(), attributionSource);
                         Instant startDateInstant =
                                 mPermissionHelper.getHealthDataStartDateAccess(
                                         attributionSource.getPackageName(), userHandle);
@@ -984,13 +983,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 Collections.singletonList(attributionSource.getPackageName()));
 
                         if (!holdsDataManagementPermission) {
-                            mDataPermissionEnforcer.enforceRecordIdsWritePermissions(
-                                    recordTypeIdsToDelete, attributionSource);
                             tryAcquireApiCallQuota(
                                     uid,
                                     QuotaCategory.QUOTA_CATEGORY_WRITE,
                                     mAppOpsManagerLocal.isUidInForeground(uid),
                                     builder);
+                            mDataPermissionEnforcer.enforceRecordIdsWritePermissions(
+                                    recordTypeIdsToDelete, attributionSource);
                         }
 
                         deleteUsingFiltersInternal(
@@ -1651,7 +1650,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull StageRemoteDataRequest stageRemoteDataRequest,
             @NonNull UserHandle userHandle) {
         mContext.enforceCallingPermission(HEALTH_CONNECT_BACKUP_INTER_AGENT_PERMISSION, null);
-        mBackupRestore.getAllDataForBackup(stageRemoteDataRequest, userHandle);
+        final long token = Binder.clearCallingIdentity();
+        try {
+            mBackupRestore.getAllDataForBackup(stageRemoteDataRequest, userHandle);
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
     }
 
     /**
