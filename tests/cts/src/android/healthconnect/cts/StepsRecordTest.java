@@ -18,9 +18,14 @@ package android.healthconnect.cts;
 
 import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
-import static android.healthconnect.cts.TestUtils.isHardwareAutomotive;
+import static android.healthconnect.cts.utils.TestUtils.isHardwareAutomotive;
+import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static java.time.ZoneOffset.UTC;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
@@ -32,6 +37,7 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -42,8 +48,8 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
-import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
@@ -241,12 +247,12 @@ public class StepsRecordTest {
         List<Record> recordList =
                 Arrays.asList(getStepsRecord_minusDays(1), getStepsRecord_minusDays(2));
         TestUtils.insertRecords(recordList);
-        Pair<List<StepsRecord>, Long> newStepsRecords =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> response =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setPageSize(1)
                                 .build());
-        assertThat(newStepsRecords.first.size()).isEqualTo(1);
+        assertThat(response.getRecords()).hasSize(1);
     }
 
     @Test
@@ -308,20 +314,21 @@ public class StepsRecordTest {
         assertThat(requestUsingFilters.isAscending()).isTrue();
         assertThat(requestUsingFilters.getPageSize()).isEqualTo(1);
         assertThat(requestUsingFilters.getTimeRangeFilter()).isNull();
-        Pair<List<StepsRecord>, Long> oldStepsRecord =
-                TestUtils.readRecordsWithPagination(requestUsingFilters);
-        assertThat(oldStepsRecord.first.size()).isEqualTo(1);
+        ReadRecordsResponse<StepsRecord> oldStepsRecord =
+                readRecordsWithPagination(requestUsingFilters);
+        assertThat(oldStepsRecord.getRecords()).hasSize(1);
         ReadRecordsRequestUsingFilters<StepsRecord> requestUsingFiltersNew =
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                         .setPageSize(1)
-                        .setPageToken(oldStepsRecord.second)
+                        .setPageToken(oldStepsRecord.getNextPageToken())
                         .build();
         assertThat(requestUsingFiltersNew.getPageSize()).isEqualTo(1);
-        assertThat(requestUsingFiltersNew.getPageToken()).isEqualTo(oldStepsRecord.second);
+        assertThat(requestUsingFiltersNew.getPageToken())
+                .isEqualTo(oldStepsRecord.getNextPageToken());
         assertThat(requestUsingFiltersNew.getTimeRangeFilter()).isNull();
-        Pair<List<StepsRecord>, Long> newStepsRecords =
-                TestUtils.readRecordsWithPagination(requestUsingFiltersNew);
-        assertThat(newStepsRecords.first.size()).isEqualTo(1);
+        ReadRecordsResponse<StepsRecord> newStepsRecords =
+                readRecordsWithPagination(requestUsingFiltersNew);
+        assertThat(newStepsRecords.getRecords()).hasSize(1);
     }
 
     @Test
@@ -333,22 +340,21 @@ public class StepsRecordTest {
                         getStepsRecord_minusDays(3),
                         getStepsRecord_minusDays(4));
         TestUtils.insertRecords(recordList);
-        Pair<List<StepsRecord>, Long> oldStepsRecord =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> page1 =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setPageSize(1)
                                 .setAscending(false)
                                 .build());
-        assertThat(oldStepsRecord.first.size()).isEqualTo(1);
-        Pair<List<StepsRecord>, Long> newStepsRecords =
-                TestUtils.readRecordsWithPagination(
+        assertThat(page1.getRecords()).hasSize(1);
+        ReadRecordsResponse<StepsRecord> page2 =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setPageSize(1)
-                                .setPageToken(oldStepsRecord.second)
+                                .setPageToken(page1.getNextPageToken())
                                 .build());
-        assertThat(newStepsRecords.first.size()).isEqualTo(1);
-        assertThat(newStepsRecords.second).isNotEqualTo(oldStepsRecord.second);
-        assertThat(newStepsRecords.second).isLessThan(oldStepsRecord.second);
+        assertThat(page2.getRecords()).hasSize(1);
+        assertThat(page2.getNextPageToken()).isNotEqualTo(page1.getNextPageToken());
     }
 
     @Test
@@ -356,22 +362,19 @@ public class StepsRecordTest {
         List<Record> recordList =
                 Arrays.asList(TestUtils.getStepsRecord(), TestUtils.getStepsRecord());
         TestUtils.insertRecords(recordList);
-        Pair<List<StepsRecord>, Long> oldStepsRecord =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> prevPage =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
-        Pair<List<StepsRecord>, Long> newStepsRecord;
-        while (oldStepsRecord.second != -1) {
-            newStepsRecord =
-                    TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> nextPage;
+        while (prevPage.getNextPageToken() != -1) {
+            nextPage =
+                    readRecordsWithPagination(
                             new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                                    .setPageToken(oldStepsRecord.second)
+                                    .setPageToken(prevPage.getNextPageToken())
                                     .build());
-            if (newStepsRecord.second != -1) {
-                assertThat(newStepsRecord.second).isGreaterThan(oldStepsRecord.second);
-            }
-            oldStepsRecord = newStepsRecord;
+            prevPage = nextPage;
         }
-        assertThat(oldStepsRecord.second).isEqualTo(-1);
+        assertThat(prevPage.getNextPageToken()).isEqualTo(-1);
     }
 
     @Test
@@ -384,21 +387,21 @@ public class StepsRecordTest {
                         getStepsRecord_minusDays(3),
                         getStepsRecord_minusDays(4));
         TestUtils.insertRecords(recordList);
-        Pair<List<StepsRecord>, Long> oldStepsRecord =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> oldStepsRecord =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setPageSize(1)
                                 .setAscending(false)
                                 .build());
-        assertThat(oldStepsRecord.first.size()).isEqualTo(1);
+        assertThat(oldStepsRecord.getRecords()).hasSize(1);
         try {
             ReadRecordsRequestUsingFilters<StepsRecord> requestUsingFilters =
                     new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                             .setPageSize(1)
-                            .setPageToken(oldStepsRecord.second)
+                            .setPageToken(oldStepsRecord.getNextPageToken())
                             .setAscending(true)
                             .build();
-            TestUtils.readRecordsWithPagination(requestUsingFilters);
+            readRecordsWithPagination(requestUsingFilters);
             Assert.fail(
                     "IllegalStateException  expected when both page token and page order is set");
         } catch (Exception exception) {
@@ -416,21 +419,21 @@ public class StepsRecordTest {
                         getStepsRecord_minusDays(3),
                         getStepsRecord_minusDays(4));
         TestUtils.insertRecords(recordList);
-        Pair<List<StepsRecord>, Long> oldStepsRecord =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> oldStepsRecord =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setPageSize(1)
                                 .setAscending(false)
                                 .build());
-        assertThat(oldStepsRecord.first.size()).isEqualTo(1);
+        assertThat(oldStepsRecord.getRecords()).hasSize(1);
         try {
             ReadRecordsRequestUsingFilters<StepsRecord> requestUsingFilters =
                     new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                             .setPageSize(1)
-                            .setPageToken(oldStepsRecord.second)
+                            .setPageToken(oldStepsRecord.getNextPageToken())
                             .setAscending(false)
                             .build();
-            TestUtils.readRecordsWithPagination(requestUsingFilters);
+            readRecordsWithPagination(requestUsingFilters);
             Assert.fail(
                     "IllegalStateException  expected when both page token and page order is set");
         } catch (Exception exception) {
@@ -523,33 +526,33 @@ public class StepsRecordTest {
                                 ZoneOffset.MIN,
                                 70));
         TestUtils.insertRecords(testRecord);
-        Pair<List<StepsRecord>, Long> newStepsRecords =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<StepsRecord> newStepsRecords =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setTimeRangeFilter(filter)
                                 .setPageSize(1)
                                 .build());
-        assertThat(newStepsRecords.first.size()).isEqualTo(1);
-        assertThat(newStepsRecords.first.get(0).getCount()).isEqualTo(70);
+        assertThat(newStepsRecords.getRecords()).hasSize(1);
+        assertThat(newStepsRecords.getRecords().get(0).getCount()).isEqualTo(70);
         newStepsRecords =
-                TestUtils.readRecordsWithPagination(
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setTimeRangeFilter(filter)
                                 .setPageSize(1)
-                                .setPageToken(newStepsRecords.second)
+                                .setPageToken(newStepsRecords.getNextPageToken())
                                 .build());
-        assertThat(newStepsRecords.first.size()).isEqualTo(1);
-        assertThat(newStepsRecords.first.get(0).getCount()).isEqualTo(50);
+        assertThat(newStepsRecords.getRecords()).hasSize(1);
+        assertThat(newStepsRecords.getRecords().get(0).getCount()).isEqualTo(50);
         newStepsRecords =
-                TestUtils.readRecordsWithPagination(
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setTimeRangeFilter(filter)
                                 .setPageSize(1)
-                                .setPageToken(newStepsRecords.second)
+                                .setPageToken(newStepsRecords.getNextPageToken())
                                 .build());
-        assertThat(newStepsRecords.first.size()).isEqualTo(1);
-        assertThat(newStepsRecords.first.get(0).getCount()).isEqualTo(20);
-        assertThat(newStepsRecords.second).isEqualTo(-1);
+        assertThat(newStepsRecords.getRecords()).hasSize(1);
+        assertThat(newStepsRecords.getRecords().get(0).getCount()).isEqualTo(20);
+        assertThat(newStepsRecords.getNextPageToken()).isEqualTo(-1);
     }
 
     @Test
@@ -796,10 +799,10 @@ public class StepsRecordTest {
         List<Record> record =
                 Arrays.asList(
                         new StepsRecord.Builder(
-                                new Metadata.Builder().build(),
-                                start,
-                                start.plus(1, ChronoUnit.HOURS),
-                                600)
+                                        new Metadata.Builder().build(),
+                                        start,
+                                        start.plus(1, HOURS),
+                                        600)
                                 .build());
         AggregateRecordsRequest<Long> request =
                 new AggregateRecordsRequest.Builder<Long>(
@@ -872,14 +875,14 @@ public class StepsRecordTest {
         Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
         Instant end = Instant.now();
         for (int i = 0; i < 10; i++) {
-            Instant st = start.plus(i, ChronoUnit.HOURS);
+            Instant st = start.plus(i, HOURS);
             List<Record> records =
                     Arrays.asList(
                             new StepsRecord.Builder(
-                                    new Metadata.Builder().build(),
-                                    st,
-                                    st.plus(1, ChronoUnit.HOURS),
-                                    1000)
+                                            new Metadata.Builder().build(),
+                                            st,
+                                            st.plus(1, HOURS),
+                                            1000)
                                     .build());
             TestUtils.insertRecords(records);
             Thread.sleep(100);
@@ -918,12 +921,12 @@ public class StepsRecordTest {
         List<AggregateRecordsGroupedByDurationResponse<Long>> responses =
                 TestUtils.getAggregateResponseGroupByDuration(
                         new AggregateRecordsRequest.Builder<Long>(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(end.minus(24, ChronoUnit.HOURS))
-                                        .setEndTime(
-                                                end.minus(22, ChronoUnit.HOURS)
-                                                        .minus(30, ChronoUnit.MINUTES))
-                                        .build())
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(end.minus(24, HOURS))
+                                                .setEndTime(
+                                                        end.minus(22, HOURS)
+                                                                .minus(30, ChronoUnit.MINUTES))
+                                                .build())
                                 .addAggregationType(STEPS_COUNT_TOTAL)
                                 .build(),
                         Duration.ofHours(1));
@@ -1159,6 +1162,75 @@ public class StepsRecordTest {
         testAggregationLocalTimeOffset(ZoneOffset.ofHours(4));
     }
 
+    @Test
+    public void testAggregateGroupByMonthPeriod_slicedCorrectly() throws Exception {
+        Instant startTime = Instant.now().minus(40, DAYS);
+        LocalDateTime startLocalTime =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime.toEpochMilli()), UTC);
+        Instant endTime = startTime.plus(35, DAYS);
+        LocalDateTime endLocalTime =
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(endTime.toEpochMilli()), UTC);
+        Instant bucketBoundary = startLocalTime.plusMonths(1).toInstant(UTC);
+        int stepsCount1 = 123;
+        int stepsCount2 = 456;
+        int stepsCount3 = 789;
+        int stepsCount4 = 951;
+
+        // CTS tests only have permission to read data from past 30 days
+        StepsRecord month1Steps1 =
+                getStepsRecord(
+                        Instant.now(),
+                        stepsCount1,
+                        /* daysPast= */ 30,
+                        /* durationHours= */ 1,
+                        UTC);
+        StepsRecord month1Steps2 =
+                getStepsRecord(
+                        bucketBoundary.minus(1, HOURS),
+                        stepsCount2,
+                        /* daysPast= */ 0,
+                        /* durationHours= */ 1,
+                        UTC);
+        StepsRecord month2Steps1 =
+                getStepsRecord(
+                        bucketBoundary,
+                        stepsCount3,
+                        /* daysPast= */ 0,
+                        /* durationHours= */ 1,
+                        UTC);
+        StepsRecord month2Steps2 =
+                getStepsRecord(
+                        endTime.minus(1, HOURS),
+                        stepsCount4,
+                        /* daysPast= */ 0,
+                        /* durationHours= */ 1,
+                        UTC);
+        TestUtils.insertRecords(
+                Arrays.asList(month1Steps1, month1Steps2, month2Steps1, month2Steps2));
+
+        // Due to the Parcel implementation, we have to set local time at UTC zone
+        AggregateRecordsRequest<Long> request =
+                new AggregateRecordsRequest.Builder<Long>(
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(startLocalTime)
+                                        .setEndTime(endLocalTime)
+                                        .build())
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        List<AggregateRecordsGroupedByPeriodResponse<Long>> aggregateResponse =
+                TestUtils.getAggregateResponseGroupByPeriod(request, Period.ofMonths(1));
+
+        assertThat(aggregateResponse.size()).isEqualTo(2);
+        assertThat(aggregateResponse.get(0).getStartTime()).isEqualTo(startLocalTime);
+        assertThat(aggregateResponse.get(0).getEndTime()).isEqualTo(startLocalTime.plusMonths(1));
+        assertThat(aggregateResponse.get(0).get(STEPS_COUNT_TOTAL))
+                .isEqualTo(stepsCount1 + stepsCount2);
+        assertThat(aggregateResponse.get(1).getStartTime()).isEqualTo(startLocalTime.plusMonths(1));
+        assertThat(aggregateResponse.get(1).getEndTime()).isEqualTo(endLocalTime);
+        assertThat(aggregateResponse.get(1).get(STEPS_COUNT_TOTAL))
+                .isEqualTo(stepsCount3 + stepsCount4);
+    }
+
     private void testAggregationLocalTimeOffset(ZoneOffset offset) throws InterruptedException {
         LocalDateTime endTimeLocal = LocalDateTime.now(offset);
         LocalDateTime startTimeLocal = endTimeLocal.minusDays(4);
@@ -1308,12 +1380,11 @@ public class StepsRecordTest {
         TestUtils.insertRecords(
                 List.of(
                         getStepsRecord(instant, 10, 5, 1, ZoneOffset.ofHours(2)),
-                        getStepsRecord(
-                                instant.plus(3, ChronoUnit.HOURS), 10, 5, 13, ZoneOffset.UTC),
+                        getStepsRecord(instant.plus(3, HOURS), 10, 5, 13, ZoneOffset.UTC),
                         getStepsRecord(instant, 20, 4, 1, ZoneOffset.ofHours(3)),
-                        getStepsRecord(instant.plus(4, ChronoUnit.HOURS), 10, 4, 3, ZoneOffset.UTC),
+                        getStepsRecord(instant.plus(4, HOURS), 10, 4, 3, ZoneOffset.UTC),
                         getStepsRecord(instant, 30, 3, 1, ZoneOffset.ofHours(5)),
-                        getStepsRecord(instant.plus(5, ChronoUnit.HOURS), 10, 3, 3, ZoneOffset.UTC),
+                        getStepsRecord(instant.plus(5, HOURS), 10, 3, 3, ZoneOffset.UTC),
                         getStepsRecord(instant, 10, 2, 1, ZoneOffset.ofHours(2)),
                         getStepsRecord(instant, 40, 1, 1, ZoneOffset.UTC)));
         List<AggregateRecordsGroupedByDurationResponse<Long>> responses =
@@ -1465,8 +1536,7 @@ public class StepsRecordTest {
                 new StepsRecord.Builder(
                         new Metadata.Builder().build(),
                         time.minus(daysPast, ChronoUnit.DAYS),
-                        time.minus(daysPast, ChronoUnit.DAYS)
-                                .plus(durationInHours, ChronoUnit.HOURS),
+                        time.minus(daysPast, ChronoUnit.DAYS).plus(durationInHours, HOURS),
                         count);
         if (offset != null) {
             builder.setStartZoneOffset(offset).setEndZoneOffset(offset);
