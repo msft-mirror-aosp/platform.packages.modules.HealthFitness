@@ -15,26 +15,31 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import android.content.Context
-import android.health.connect.HealthConnectManager
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import org.junit.Assert.assertThrows
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
 class HealthPermissionTest {
 
-    private lateinit var context: Context
+    @get:Rule val hiltRule = HiltAndroidRule(this)
+
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Before
     fun setup() {
-        context = InstrumentationRegistry.getInstrumentation().context
+        hiltRule.inject()
     }
 
     @Test
@@ -51,8 +56,8 @@ class HealthPermissionTest {
 
     @Test
     fun fromPermissionString_canParseAllHealthPermissions() {
-        val allPermissions = HealthConnectManager.getHealthPermissions(context)
-        allPermissions.forEach { permissionString ->
+        val allPermissions = healthPermissionReader.getHealthPermissions()
+        for (permissionString in allPermissions) {
             assertThat(fromPermissionString(permissionString).toString())
                 .isEqualTo(permissionString)
         }

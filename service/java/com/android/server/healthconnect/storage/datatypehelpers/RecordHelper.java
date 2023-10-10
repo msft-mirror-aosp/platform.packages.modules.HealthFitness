@@ -57,6 +57,8 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
+import com.android.server.healthconnect.storage.utils.PageTokenUtil;
+import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
@@ -389,15 +391,14 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Returns List of Internal records from the cursor */
-    @SuppressWarnings("unchecked")
     public List<RecordInternal<?>> getInternalRecords(Cursor cursor, int requestSize) {
-        return getInternalRecords(cursor, requestSize, null);
+        return getInternalRecords(cursor, requestSize, /* packageNamesByAppIds= */ null);
     }
 
     /** Returns List of Internal records from the cursor */
     @SuppressWarnings("unchecked")
     public List<RecordInternal<?>> getInternalRecords(
-            Cursor cursor, int requestSize, Map<Long, String> packageNamesByAppIds) {
+            Cursor cursor, int requestSize, @Nullable Map<Long, String> packageNamesByAppIds) {
         Trace.traceBegin(TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetInternalRecords"));
         List<RecordInternal<?>> recordInternalList = new ArrayList<>();
 
@@ -425,8 +426,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 long deviceInfoId = getCursorLong(cursor, DEVICE_INFO_ID_COLUMN_NAME);
                 DeviceInfoHelper.getInstance().populateRecordWithValue(deviceInfoId, record);
                 long appInfoId = getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
-                AppInfoHelper.getInstance()
-                        .populateRecordWithValue(appInfoId, record, packageNamesByAppIds);
+                String packageName =
+                        packageNamesByAppIds != null
+                                ? packageNamesByAppIds.get(appInfoId)
+                                : AppInfoHelper.getInstance().getPackageName(appInfoId);
+                record.setPackageName(packageName);
                 populateRecordValue(cursor, record);
 
                 prevStartTime = currentStartTime;
@@ -630,15 +634,14 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             WhereClauses clauses =
                     new WhereClauses().addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appIds);
 
-            if (request.getPageToken() != DEFAULT_LONG) {
-                // Since pageToken passed contains detail of sort order. Actual token value for read
-                // is calculated back from the requested pageToken based on sort order.
-                if (request.isAscending()) {
-                    clauses.addWhereGreaterThanOrEqualClause(
-                            getStartTimeColumnName(), request.getPageToken() / 2);
+            PageTokenWrapper pageToken =
+                    PageTokenUtil.decode(request.getPageToken(), request.isAscending());
+            if (pageToken.isTimestampSet()) {
+                long timestamp = pageToken.timeMillis();
+                if (pageToken.isAscending()) {
+                    clauses.addWhereGreaterThanOrEqualClause(getStartTimeColumnName(), timestamp);
                 } else {
-                    clauses.addWhereLessThanOrEqualClause(
-                            getStartTimeColumnName(), (request.getPageToken() - 1) / 2);
+                    clauses.addWhereLessThanOrEqualClause(getStartTimeColumnName(), timestamp);
                 }
             }
 
@@ -684,11 +687,13 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     abstract String getZoneOffsetColumnName();
 
     private OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
-        OrderByClause orderByClause = new OrderByClause();
-        if (request.getRecordIdFiltersParcel() == null) {
-            orderByClause.addOrderByClause(getStartTimeColumnName(), request.isAscending());
+        if (request.getRecordIdFiltersParcel() != null) {
+            return new OrderByClause();
         }
-        return orderByClause;
+        PageTokenWrapper pageToken =
+                PageTokenUtil.decode(request.getPageToken(), request.isAscending());
+        return new OrderByClause()
+                .addOrderByClause(getStartTimeColumnName(), pageToken.isAscending());
     }
 
     @NonNull
