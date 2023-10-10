@@ -44,13 +44,50 @@ android_test {
         "cts-wm-util",
 	"modules-utils-build",
         "testng",
+        "cts-healthconnect-utils",
     ],
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     sdk_version: "module_current",
     data: [
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
     ],
+}
+
+android_test {
+    name: "CtsHealthFitnessBackupRestoreTestCases",
+    defaults: ["cts_defaults"],
+    libs: [
+        "android.test.runner",
+        "android.test.base",
+        "framework-healthfitness",
+        "framework-configinfrastructure",
+        "framework-sdkextensions"
+    ],
+    srcs: [
+        "src/android/healthconnect/cts/backuprestore/*.java"
+    ],
+    // Tag this module as a cts test artifact
+    test_suites: [
+        "cts",
+        "general-tests",
+        "mts-healthfitness",
+    ],
+    static_libs: [
+        "compatibility-device-util-axt",
+        "androidx.test.rules",
+        "androidx.test.ext.truth",
+        "compatibility-device-util-axt",
+        "ctstestrunner-axt",
+        "cts-wm-util",
+        "modules-utils-build",
+        "cts-healthconnect-utils",
+        "testng",
+    ],
+    min_sdk_version: "34",
+    sdk_version: "module_current",
+    test_config:"AndroidTestBackupRestore.xml",
+    manifest: "AndroidManifestBackupRestore.xml",
 }
 
 android_test {
@@ -63,7 +100,6 @@ android_test {
     ],
     srcs: [
         "src/android/healthconnect/cts/nopermission/*.java",
-        "src/android/healthconnect/cts/TestUtils.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [
@@ -78,8 +114,9 @@ android_test {
         "ctstestrunner-axt",
         "cts-wm-util",
         "testng",
+        "cts-healthconnect-utils",
     ],
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     sdk_version: "module_current",
     test_config:"AndroidTestNoPermission.xml",
     manifest: "AndroidManifestNoPermission.xml",
@@ -97,7 +134,6 @@ android_test {
     ],
     srcs: [
         "src/android/healthconnect/cts/ratelimiter/*.java",
-        "src/android/healthconnect/cts/TestUtils.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [
@@ -113,8 +149,9 @@ android_test {
         "cts-wm-util",
 	"modules-utils-build",
         "testng",
+        "cts-healthconnect-utils",
     ],
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     sdk_version: "module_current",
     test_config:"AndroidTestRateLimiter.xml",
     manifest: "AndroidManifestRateLimiter.xml",
@@ -132,7 +169,6 @@ android_test {
         ":healthfitness-cts-testapp-srcs",
         ":healthfitness-cts-testapp2-srcs",
         "src/android/healthconnect/cts/ui/**/*.kt",
-        "src/android/healthconnect/cts/TestUtils.java",
         "src/com/android/cts/install/lib/*.java",
     ],
     // Tag this module as a cts test artifact
@@ -149,9 +185,10 @@ android_test {
         "cts-wm-util",
         "testng",
         "cts-healthconnect-lib",
-        "cts-install-lib"
+        "cts-install-lib",
+        "cts-healthconnect-utils",
     ],
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     sdk_version: "module_current",
     test_config:"AndroidTestUI.xml",
     manifest: "AndroidManifestUI.xml",
@@ -174,7 +211,6 @@ android_test {
     ],
     srcs: [
         "src/android/healthconnect/cts/showmigrationinfointent/ShowMigrationInfoIntentAbsentTest.java",
-        "src/android/healthconnect/cts/TestUtils.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [
@@ -190,8 +226,9 @@ android_test {
         "cts-wm-util",
 	"modules-utils-build",
         "testng",
+        "cts-healthconnect-utils",
     ],
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     sdk_version: "module_current",
     test_config:"AndroidTestShowMigrationInfoIntentAbsent.xml",
     manifest: "AndroidManifestShowMigrationInfoIntentAbsent.xml",

@@ -42,6 +42,7 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.units.Velocity;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -421,16 +422,14 @@ public class SpeedRecordTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateSpeedRecord_invalidSampleTime() {
+        Instant startTime = Instant.now();
+        Instant endTime = startTime.plusMillis(100);
         SpeedRecord.SpeedRecordSample speedRecord =
                 new SpeedRecord.SpeedRecordSample(
-                        Velocity.fromMetersPerSecond(10.0), Instant.now().plusMillis(100));
+                        Velocity.fromMetersPerSecond(10.0), endTime.plusMillis(1));
         ArrayList<SpeedRecord.SpeedRecordSample> speedRecords = new ArrayList<>();
         speedRecords.add(speedRecord);
-        new SpeedRecord.Builder(
-                        new Metadata.Builder().build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(99),
-                        speedRecords)
+        new SpeedRecord.Builder(new Metadata.Builder().build(), startTime, endTime, speedRecords)
                 .build();
     }
 
