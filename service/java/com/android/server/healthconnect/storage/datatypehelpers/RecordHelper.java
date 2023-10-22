@@ -347,7 +347,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Returns ReadTableRequest for {@code uuids} */
-    public ReadTableRequest getReadTableRequest(List<UUID> uuids, long startDateAccess) {
+    public ReadTableRequest getReadTableRequest(
+            String packageName,
+            List<UUID> uuids,
+            long startDateAccess,
+            Map<String, Boolean> extraPermsState) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
@@ -357,7 +361,9 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 .addWhereLaterThanTimeClause(
                                         getStartTimeColumnName(), startDateAccess))
                 .setRecordHelper(this)
-                .setExtraReadRequests(getExtraDataReadRequests(uuids, startDateAccess));
+                .setExtraReadRequests(
+                        getExtraDataReadRequests(
+                                packageName, uuids, startDateAccess, extraPermsState));
     }
 
     /**
@@ -376,7 +382,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Returns list if ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
      * change logs read requests.
      */
-    List<ReadTableRequest> getExtraDataReadRequests(List<UUID> uuids, long startDateAccess) {
+    List<ReadTableRequest> getExtraDataReadRequests(
+            String packageName,
+            List<UUID> uuids,
+            long startDateAccess,
+            Map<String, Boolean> extraPermsState) {
         return Collections.emptyList();
     }
 
@@ -630,9 +640,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return null;
     }
 
-    private int getLimitSize(ReadRecordsRequestParcel request) {
+    private static int getLimitSize(ReadRecordsRequestParcel request) {
+        // Querying extra records on top of page size
+        // + 1: if number of records queried is more than pageSize we know there are more records
+        //      available to return for the next read.
         if (request.getRecordIdFiltersParcel() == null) {
-            return request.getPageSize();
+            return request.getPageSize() + 1;
         } else {
             return MAXIMUM_PAGE_SIZE;
         }
