@@ -1046,10 +1046,7 @@ public final class BackupRestore {
             TransactionManager.getInitialisedInstance()
                     .insertAll(upsertTransactionRequest.getUpsertRequests());
 
-            token = DEFAULT_LONG;
-            if (recordsToMergeAndToken.second != DEFAULT_LONG) {
-                token = recordsToMergeAndToken.second * 2;
-            }
+            token = recordsToMergeAndToken.second;
         } while (token != DEFAULT_LONG);
 
         // Once all the records of this type have been merged we can delete the table.
@@ -1086,27 +1083,23 @@ public final class BackupRestore {
                 new ReadTransactionRequest(
                         null,
                         readRecordsRequest.toReadRecordsRequestParcel(),
-                        DEFAULT_LONG /* startDateAccess */,
+                        DEFAULT_LONG /* startDateAccessMillis */,
                         false,
                         extraReadPermsMapping);
 
         List<RecordInternal<?>> recordInternalList;
-        long token = DEFAULT_LONG;
+        long token;
         ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
         try (Cursor cursor = read(readTableRequest)) {
-            recordInternalList =
-                    recordHelper.getInternalRecordsPage(
+            Pair<List<RecordInternal<?>>, Long> readResult =
+                    recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
                             readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
+                            requireNonNull(readTransactionRequest.getPageToken()),
                             mStagedPackageNamesByAppIds);
-            String startTimeColumnName = recordHelper.getStartTimeColumnName();
-
+            recordInternalList = readResult.first;
+            token = readResult.second;
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
-
-            // Get the token for the next read request.
-            if (cursor.moveToNext()) {
-                token = getCursorLong(cursor, startTimeColumnName);
-            }
         }
         return Pair.create(recordInternalList, token);
     }

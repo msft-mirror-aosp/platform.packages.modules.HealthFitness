@@ -144,8 +144,6 @@ import com.android.server.healthconnect.storage.request.AggregateTransactionRequ
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.PageTokenUtil;
-import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.io.IOException;
@@ -181,6 +179,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private static final String TAG_GRANT_PERMISSION = "HealthConnectGrantReadPermissions";
     private static final String TAG_READ_PERMISSION = "HealthConnectReadPermission";
     private static final String TAG_READ_PERMISSION_FLAGS = "HealthConnectReadPermissionFlags";
+    private static final String TAG_MAKE_PERMISSIONS_REQUESTABLE =
+            "HealthConnectMakePermissionsRequestable";
     private static final String TAG_INSERT_SUBTASKS = "HealthConnectInsertSubtasks";
 
     private static final String TAG_DELETE_SUBTASKS = "HealthConnectDeleteSubtasks";
@@ -190,6 +190,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private static final int TRACE_TAG_GRANT_PERMISSION = TAG_GRANT_PERMISSION.hashCode();
     private static final int TRACE_TAG_READ_PERMISSION = TAG_READ_PERMISSION.hashCode();
     private static final int TRACE_TAG_READ_PERMISSION_FLAGS = TAG_READ_PERMISSION_FLAGS.hashCode();
+    private static final int TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE =
+            TAG_MAKE_PERMISSIONS_REQUESTABLE.hashCode();
     private static final int TRACE_TAG_INSERT_SUBTASKS = TAG_INSERT_SUBTASKS.hashCode();
     private static final int TRACE_TAG_DELETE_SUBTASKS = TAG_DELETE_SUBTASKS.hashCode();
     private static final int TRACE_TAG_READ_SUBTASKS = TAG_READ_SUBTASKS.hashCode();
@@ -302,6 +304,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
         Trace.traceEnd(TRACE_TAG_READ_PERMISSION_FLAGS);
         return response;
+    }
+
+    @Override
+    public void makeHealthPermissionsRequestable(
+            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+        checkParamsNonNull(packageName, user);
+        throwIllegalStateExceptionIfDataSyncInProgress();
+
+        Trace.traceBegin(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE, TAG_MAKE_PERMISSIONS_REQUESTABLE);
+
+        mPermissionHelper.makeHealthPermissionsRequestable(packageName, user, permissions);
+
+        Trace.traceEnd(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE);
     }
 
     @Override
@@ -643,29 +658,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             }
 
                             List<RecordInternal<?>> records;
-                            long pageToken = DEFAULT_LONG;
+                            long pageToken;
                             if (request.getRecordIdFiltersParcel() != null) {
                                 records =
                                         mTransactionManager.readRecordsByIds(
                                                 readTransactionRequest);
+                                pageToken = DEFAULT_LONG;
                             } else {
                                 Pair<List<RecordInternal<?>>, Long> readRecordsResponse =
-                                        mTransactionManager.readRecordsAndNextRecordStartTime(
+                                        mTransactionManager.readRecordsAndPageToken(
                                                 readTransactionRequest);
                                 records = readRecordsResponse.first;
-                                long timestamp = readRecordsResponse.second;
-                                if (timestamp != DEFAULT_LONG) {
-                                    boolean isAscending =
-                                            PageTokenUtil.decode(
-                                                            request.getPageToken(),
-                                                            request.isAscending())
-                                                    .isAscending();
-
-                                    PageTokenWrapper wrapper =
-                                            PageTokenWrapper.of(
-                                                    isAscending, timestamp, /* offset= */ 0);
-                                    pageToken = PageTokenUtil.encode(wrapper);
-                                }
+                                pageToken = readRecordsResponse.second;
                             }
                             logger.setNumberOfRecords(records.size());
 
