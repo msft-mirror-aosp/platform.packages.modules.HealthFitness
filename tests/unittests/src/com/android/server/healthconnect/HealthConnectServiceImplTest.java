@@ -110,6 +110,8 @@ public class HealthConnectServiceImplTest {
                     "revokeHealthPermission",
                     "revokeAllHealthPermissions",
                     "getGrantedHealthPermissions",
+                    "getHealthPermissionsFlags",
+                    "makeHealthPermissionsRequestable",
                     "getHistoricalAccessStartDateInMilliseconds",
                     "insertRecords",
                     "aggregateRecords",
@@ -155,6 +157,7 @@ public class HealthConnectServiceImplTest {
                     .build();
 
     @Mock private TransactionManager mTransactionManager;
+    @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
     @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private MigrationCleaner mMigrationCleaner;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -189,6 +192,7 @@ public class HealthConnectServiceImplTest {
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
+                        mDeviceConfigManager,
                         mHealthConnectPermissionHelper,
                         mMigrationCleaner,
                         mFirstGrantTimeManager,
