@@ -17,15 +17,17 @@
 package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 
+import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
+
+import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.content.Context;
@@ -61,7 +63,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -255,18 +256,24 @@ public final class TransactionManager {
      * Reads the records {@link RecordInternal} stored in the HealthConnect database.
      *
      * @param request a read request.
+     * @throws IllegalArgumentException if the {@link ReadTransactionRequest} contains pagination
+     *     information, which should use {@link #readRecordsAndPageToken(ReadTransactionRequest)}
+     *     instead.
      * @return List of records read {@link RecordInternal} from table based on ids.
      */
     public List<RecordInternal<?>> readRecordsByIds(@NonNull ReadTransactionRequest request)
             throws SQLiteException {
+        // TODO(b/308158714): Make this build time check once we have different classes.
+        checkArgument(
+                request.getPageToken() == null && request.getPageSize().isEmpty(),
+                "Expect read by id request, but request contains pagination info.");
         List<RecordInternal<?>> recordInternals = new ArrayList<>();
         for (ReadTableRequest readTableRequest : request.getReadRequests()) {
             RecordHelper<?> helper = readTableRequest.getRecordHelper();
-            Objects.requireNonNull(helper);
+            requireNonNull(helper);
             if (helper.isRecordOperationsEnabled()) {
                 try (Cursor cursor = read(readTableRequest)) {
-                    List<RecordInternal<?>> internalRecords =
-                            helper.getInternalRecords(cursor, MAXIMUM_PAGE_SIZE);
+                    List<RecordInternal<?>> internalRecords = helper.getInternalRecords(cursor);
                     populateInternalRecordsWithExtraData(internalRecords, readTableRequest);
                     recordInternals.addAll(internalRecords);
                 }
@@ -277,35 +284,44 @@ public final class TransactionManager {
 
     /**
      * Reads the records {@link RecordInternal} stored in the HealthConnect database and returns the
-     * start time of the next record as part of next page token.
+     * next page token.
      *
      * @param request a read request. Only one {@link ReadTableRequest} is expected in the {@link
      *     ReadTransactionRequest request}.
-     * @return Pair containing records list read {@link RecordInternal} from the table and a
-     *     timestamp for pagination
+     * @throws IllegalArgumentException if the {@link ReadTransactionRequest} doesn't contain
+     *     pagination information, which should use {@link
+     *     #readRecordsByIds(ReadTransactionRequest)} instead.
+     * @return Pair containing records list read {@link RecordInternal} from the table and a page
+     *     token for pagination.
      */
-    public Pair<List<RecordInternal<?>>, Long> readRecordsAndNextRecordStartTime(
+    public Pair<List<RecordInternal<?>>, Long> readRecordsAndPageToken(
             @NonNull ReadTransactionRequest request) throws SQLiteException {
+        // TODO(b/308158714): Make this build time check once we have different classes.
+        checkArgument(
+                request.getPageToken() != null && request.getPageSize().isPresent(),
+                "Expect read by filter request, but request doesn't contain pagination info.");
         ReadTableRequest readTableRequest = getOnlyElement(request.getReadRequests());
         List<RecordInternal<?>> recordInternalList;
-        long timestamp = DEFAULT_LONG;
         RecordHelper<?> helper = readTableRequest.getRecordHelper();
-        Objects.requireNonNull(helper);
+        requireNonNull(helper);
         if (!helper.isRecordOperationsEnabled()) {
             recordInternalList = new ArrayList<>(0);
-            return Pair.create(recordInternalList, timestamp);
+            return Pair.create(recordInternalList, DEFAULT_LONG);
         }
 
+        long pageToken;
         try (Cursor cursor = read(readTableRequest)) {
-            recordInternalList = helper.getInternalRecords(cursor, readTableRequest.getPageSize());
-            String startTimeColumnName = helper.getStartTimeColumnName();
-
+            Pair<List<RecordInternal<?>>, Long> readResult =
+                    helper.getNextInternalRecordsPageAndToken(
+                            cursor,
+                            request.getPageSize().orElse(DEFAULT_PAGE_SIZE),
+                            // pageToken is never null for read by filter requests
+                            requireNonNull(request.getPageToken()));
+            recordInternalList = readResult.first;
+            pageToken = readResult.second;
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
-            if (cursor.moveToNext()) {
-                timestamp = getCursorLong(cursor, startTimeColumnName);
-            }
         }
-        return Pair.create(recordInternalList, timestamp);
+        return Pair.create(recordInternalList, pageToken);
     }
 
     /**
@@ -387,7 +403,7 @@ public final class TransactionManager {
      * @return Number of entries in the given table
      */
     public long getNumberOfEntriesInTheTable(@NonNull String tableName) {
-        Objects.requireNonNull(tableName);
+        requireNonNull(tableName);
         return DatabaseUtils.queryNumEntries(getReadableDb(), tableName);
     }
 
@@ -398,7 +414,7 @@ public final class TransactionManager {
      * @return Size of the database
      */
     public long getDatabaseSize(@NonNull Context context) {
-        Objects.requireNonNull(context);
+        requireNonNull(context);
         return context.getDatabasePath(getReadableDb().getPath()).length();
     }
 
@@ -477,7 +493,7 @@ public final class TransactionManager {
      * make sure that either all its operation succeed or fail in a single run.
      */
     public void deleteWithoutChangeLogs(@NonNull List<DeleteTableRequest> deleteTableRequests) {
-        Objects.requireNonNull(deleteTableRequests);
+        requireNonNull(deleteTableRequests);
         final SQLiteDatabase db = getWritableDb();
         db.beginTransaction();
         try {
@@ -745,7 +761,7 @@ public final class TransactionManager {
 
     @NonNull
     public static TransactionManager getInitialisedInstance() {
-        Objects.requireNonNull(sTransactionManager);
+        requireNonNull(sTransactionManager);
 
         return sTransactionManager;
     }

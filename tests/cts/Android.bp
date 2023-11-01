@@ -28,6 +28,7 @@ android_test {
     ],
     srcs: [
         ":healthfitness-cts-testapp-srcs",
+        ":healthfitness-permissions-testapp-srcs",
         "src/android/healthconnect/cts/*.java",
     ],
     // Tag this module as a cts test artifact
@@ -42,7 +43,7 @@ android_test {
         "compatibility-device-util-axt",
         "ctstestrunner-axt",
         "cts-wm-util",
-	"modules-utils-build",
+        "modules-utils-build",
         "testng",
         "cts-healthconnect-utils",
     ],
@@ -51,43 +52,8 @@ android_test {
     data: [
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
+        ":HealthFitnessPermsTestApp",
     ],
-}
-
-android_test {
-    name: "CtsHealthFitnessBackupRestoreTestCases",
-    defaults: ["cts_defaults"],
-    libs: [
-        "android.test.runner",
-        "android.test.base",
-        "framework-healthfitness",
-        "framework-configinfrastructure",
-        "framework-sdkextensions"
-    ],
-    srcs: [
-        "src/android/healthconnect/cts/backuprestore/*.java"
-    ],
-    // Tag this module as a cts test artifact
-    test_suites: [
-        "cts",
-        "general-tests",
-        "mts-healthfitness",
-    ],
-    static_libs: [
-        "compatibility-device-util-axt",
-        "androidx.test.rules",
-        "androidx.test.ext.truth",
-        "compatibility-device-util-axt",
-        "ctstestrunner-axt",
-        "cts-wm-util",
-        "modules-utils-build",
-        "cts-healthconnect-utils",
-        "testng",
-    ],
-    min_sdk_version: "34",
-    sdk_version: "module_current",
-    test_config:"AndroidTestBackupRestore.xml",
-    manifest: "AndroidManifestBackupRestore.xml",
 }
 
 android_test {

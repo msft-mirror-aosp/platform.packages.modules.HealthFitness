@@ -789,6 +789,9 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Kapag nagbigay ka na ng mga pahintulot sa app na mag-write ng data na <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, lalabas dito ang mga source."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Paano gumagana ang mga source at pagbibigay ng priyoridad"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Magdagdag ng app"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"I-edit ang mga source ng app"</string>
+    <!-- no translation found for default_app_summary (6183876151011837062) -->
+    <skip />
     <string name="app_data_title" msgid="6499967982291000837">"Data ng app"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Lalabas ang data mula sa mga app na may access sa Health Connect dito"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Araw"</string>
@@ -798,8 +801,6 @@
     <string name="last_week_header" msgid="5194448963146719382">"Nakaraang linggo"</string>
     <string name="this_month_header" msgid="2452395268894677189">"Ngayong buwan"</string>
     <string name="last_month_header" msgid="1359164797239191253">"Nakaraang buwan"</string>
-    <!-- no translation found for tab_entries (3402700951602029493) -->
-    <skip />
-    <!-- no translation found for tab_access (7818197975407243701) -->
-    <skip />
+    <string name="tab_entries" msgid="3402700951602029493">"Mga Entry"</string>
+    <string name="tab_access" msgid="7818197975407243701">"Access"</string>
 </resources>
