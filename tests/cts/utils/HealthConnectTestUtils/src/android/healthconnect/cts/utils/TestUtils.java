@@ -31,9 +31,11 @@ import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_ACTIVEL
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
 
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
+import static com.android.compatibility.common.util.SystemUtil.runShellCommand;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -42,6 +44,7 @@ import static java.util.Objects.requireNonNull;
 
 import android.app.UiAutomation;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
@@ -120,6 +123,8 @@ import android.health.connect.datatypes.WheelchairPushesRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.migration.MigrationException;
+import android.healthconnect.test.app.TestAppReceiver;
+import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.os.UserHandle;
@@ -130,6 +135,7 @@ import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.compatibility.common.util.SystemUtil;
 import com.android.cts.install.lib.TestApp;
 
 import java.io.BufferedReader;
@@ -164,6 +170,8 @@ import java.util.stream.Collectors;
 public final class TestUtils {
     public static final String MANAGE_HEALTH_PERMISSIONS =
             HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
+    public static final String READ_EXERCISE_ROUTE_PERMISSION =
+            "android.permission.health.READ_EXERCISE_ROUTE";
     private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
     public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
     public static final Instant SESSION_START_TIME = Instant.now().minus(10, ChronoUnit.DAYS);
@@ -171,6 +179,10 @@ public final class TestUtils {
             Instant.now().minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
     private static final String TAG = "HCTestUtils";
     private static final int TIMEOUT_SECONDS = 5;
+
+    private static final String PKG_TEST_APP = "android.healthconnect.test.app";
+    private static final String TEST_APP_RECEIVER =
+            PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
 
     public static boolean isHardwareAutomotive() {
         return hasSystemFeature(AUTOMOTIVE_FEATURE);
@@ -460,7 +472,7 @@ public final class TestUtils {
 
     public static ExerciseSessionRecord getExerciseSessionRecord(
             String packageName, double clientId, boolean withRoute) {
-        Instant startTime = Instant.now().minusSeconds(3000);
+        Instant startTime = Instant.now().minusSeconds(3000).truncatedTo(ChronoUnit.MILLIS);
         Instant endTime = Instant.now();
         ExerciseSessionRecord.Builder builder =
                 new ExerciseSessionRecord.Builder(
@@ -1336,6 +1348,27 @@ public final class TestUtils {
     @NonNull
     private static HealthConnectManager getHealthConnectManager(Context context) {
         return requireNonNull(context.getSystemService(HealthConnectManager.class));
+    }
+
+    public static String getDeviceConfigValue(String key) {
+        return SystemUtil.runShellCommand("device_config get health_fitness " + key);
+    }
+
+    public static void setDeviceConfigValue(String key, String value) {
+        SystemUtil.runShellCommand("device_config put health_fitness " + key + " " + value);
+    }
+
+    public static void sendCommandToTestAppReceiver(Context context, String action) {
+        sendCommandToTestAppReceiver(context, action, /*extras=*/ null);
+    }
+
+    public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
+        final Intent intent = new Intent(action).setClassName(PKG_TEST_APP, TEST_APP_RECEIVER);
+        intent.putExtra(EXTRA_SENDER_PACKAGE_NAME, context.getPackageName());
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
+        context.sendBroadcast(intent);
     }
 
     public static final class RecordAndIdentifier {
