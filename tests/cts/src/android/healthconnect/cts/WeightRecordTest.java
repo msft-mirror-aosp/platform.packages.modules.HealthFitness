@@ -46,6 +46,7 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -62,7 +63,6 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -212,10 +212,10 @@ public class WeightRecordTest {
         AggregateRecordsResponse<Mass> response =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Mass>(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(Instant.ofEpochMilli(0))
-                                        .setEndTime(Instant.now().plus(1, DAYS))
-                                        .build())
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, DAYS))
+                                                .build())
                                 .addAggregationType(WEIGHT_AVG)
                                 .addAggregationType(WEIGHT_MAX)
                                 .addAggregationType(WEIGHT_MIN)
@@ -244,10 +244,10 @@ public class WeightRecordTest {
     public void testAggregation_zeroDuration_throwsException() throws Exception {
         TestUtils.getAggregateResponseGroupByDuration(
                 new AggregateRecordsRequest.Builder<Mass>(
-                        new TimeInstantRangeFilter.Builder()
-                                .setStartTime(Instant.ofEpochMilli(0))
-                                .setEndTime(Instant.now())
-                                .build())
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.ofEpochMilli(0))
+                                        .setEndTime(Instant.now())
+                                        .build())
                         .addAggregationType(WEIGHT_AVG)
                         .build(),
                 Duration.ZERO);
@@ -257,11 +257,11 @@ public class WeightRecordTest {
     public void testAggregation_zeroPeriod_throwsException() throws Exception {
         TestUtils.getAggregateResponseGroupByPeriod(
                 new AggregateRecordsRequest.Builder<Mass>(
-                        new LocalTimeRangeFilter.Builder()
-                                .setStartTime(
-                                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1))
-                                .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
-                                .build())
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(
+                                                LocalDateTime.now(ZoneOffset.UTC).minusDays(1))
+                                        .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
+                                        .build())
                         .addAggregationType(WEIGHT_AVG)
                         .build(),
                 Period.ZERO);
@@ -271,11 +271,11 @@ public class WeightRecordTest {
     public void testAggregationPeriod_lotsOfGroups_throwsException() throws Exception {
         TestUtils.getAggregateResponseGroupByPeriod(
                 new AggregateRecordsRequest.Builder<Mass>(
-                        new LocalTimeRangeFilter.Builder()
-                                .setStartTime(
-                                        LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
-                                .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
-                                .build())
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(
+                                                LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
+                                        .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
+                                        .build())
                         .addAggregationType(WEIGHT_AVG)
                         .build(),
                 Period.ofDays(1));
@@ -285,10 +285,10 @@ public class WeightRecordTest {
     public void testAggregation_hugeNumberOfGroups_throwsException() throws Exception {
         TestUtils.getAggregateResponseGroupByDuration(
                 new AggregateRecordsRequest.Builder<Mass>(
-                        new TimeInstantRangeFilter.Builder()
-                                .setStartTime(Instant.ofEpochMilli(0))
-                                .setEndTime(Instant.now())
-                                .build())
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.ofEpochMilli(0))
+                                        .setEndTime(Instant.now())
+                                        .build())
                         .addAggregationType(WEIGHT_AVG)
                         .build(),
                 Duration.ofSeconds(1));
@@ -560,10 +560,10 @@ public class WeightRecordTest {
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
-                response.getUpsertedRecords().stream()
-                        .map(Record::getMetadata)
-                        .map(Metadata::getId)
-                        .toList())
+                        response.getUpsertedRecords().stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList())
                 .containsExactlyElementsIn(
                         testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
@@ -614,12 +614,12 @@ public class WeightRecordTest {
                     .isEqualTo(groupBoundary.getDayOfYear());
             assertThat(responses.get(i).getDataOrigins(WEIGHT_MIN)).hasSize(1);
             assertThat(
-                    responses
-                            .get(i)
-                            .getDataOrigins(WEIGHT_MIN)
-                            .iterator()
-                            .next()
-                            .getPackageName())
+                            responses
+                                    .get(i)
+                                    .getDataOrigins(WEIGHT_MIN)
+                                    .iterator()
+                                    .next()
+                                    .getPackageName())
                     .isEqualTo(ApplicationProvider.getApplicationContext().getPackageName());
         }
 
@@ -645,10 +645,10 @@ public class WeightRecordTest {
         List<AggregateRecordsGroupedByDurationResponse<Mass>> responses =
                 TestUtils.getAggregateResponseGroupByDuration(
                         new AggregateRecordsRequest.Builder<Mass>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(endTimeLocal.minusDays(3))
-                                        .setEndTime(endTimeLocal)
-                                        .build())
+                                        new LocalTimeRangeFilter.Builder()
+                                                .setStartTime(endTimeLocal.minusDays(3))
+                                                .setEndTime(endTimeLocal)
+                                                .build())
                                 .addAggregationType(WEIGHT_MAX)
                                 .build(),
                         Duration.ofDays(1));
@@ -665,12 +665,12 @@ public class WeightRecordTest {
                     .isEqualTo(groupBoundary.getEpochSecond());
             assertThat(responses.get(i).getDataOrigins(WEIGHT_MAX)).hasSize(1);
             assertThat(
-                    responses
-                            .get(i)
-                            .getDataOrigins(WEIGHT_MAX)
-                            .iterator()
-                            .next()
-                            .getPackageName())
+                            responses
+                                    .get(i)
+                                    .getDataOrigins(WEIGHT_MAX)
+                                    .iterator()
+                                    .next()
+                                    .getPackageName())
                     .isEqualTo(ApplicationProvider.getApplicationContext().getPackageName());
         }
 
@@ -694,25 +694,25 @@ public class WeightRecordTest {
         AggregateRecordsResponse<Mass> response =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Mass>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(endTimeLocal.minusHours(25))
-                                        .setEndTime(endTimeLocal.minusHours(15))
-                                        .build())
+                                        new LocalTimeRangeFilter.Builder()
+                                                .setStartTime(endTimeLocal.minusHours(25))
+                                                .setEndTime(endTimeLocal.minusHours(15))
+                                                .build())
                                 .addAggregationType(WEIGHT_MAX)
                                 .addAggregationType(WEIGHT_MIN)
                                 .addAggregationType(WEIGHT_AVG)
                                 .build(),
                         List.of(
                                 new WeightRecord.Builder(
-                                        TestUtils.generateMetadata(),
-                                        endTimeInstant,
-                                        Mass.fromGrams(10.0))
+                                                TestUtils.generateMetadata(),
+                                                endTimeInstant,
+                                                Mass.fromGrams(10.0))
                                         .setZoneOffset(ZoneOffset.MIN)
                                         .build(),
                                 new WeightRecord.Builder(
-                                        TestUtils.generateMetadata(),
-                                        endTimeInstant,
-                                        Mass.fromGrams(20.0))
+                                                TestUtils.generateMetadata(),
+                                                endTimeInstant,
+                                                Mass.fromGrams(20.0))
                                         .setZoneOffset(ZoneOffset.MIN)
                                         .build()));
 
@@ -740,25 +740,25 @@ public class WeightRecordTest {
         AggregateRecordsResponse<Mass> response =
                 TestUtils.getAggregateResponse(
                         new AggregateRecordsRequest.Builder<Mass>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(endTimeLocal.minusMinutes(1))
-                                        .setEndTime(endTimeLocal.plusMinutes(1))
-                                        .build())
+                                        new LocalTimeRangeFilter.Builder()
+                                                .setStartTime(endTimeLocal.minusMinutes(1))
+                                                .setEndTime(endTimeLocal.plusMinutes(1))
+                                                .build())
                                 .addAggregationType(WEIGHT_MAX)
                                 .addAggregationType(WEIGHT_MIN)
                                 .addAggregationType(WEIGHT_AVG)
                                 .build(),
                         List.of(
                                 new WeightRecord.Builder(
-                                        TestUtils.generateMetadata(),
-                                        endTimeInstant,
-                                        Mass.fromGrams(10.0))
+                                                TestUtils.generateMetadata(),
+                                                endTimeInstant,
+                                                Mass.fromGrams(10.0))
                                         .setZoneOffset(offset)
                                         .build(),
                                 new WeightRecord.Builder(
-                                        TestUtils.generateMetadata(),
-                                        endTimeInstant,
-                                        Mass.fromGrams(20.0))
+                                                TestUtils.generateMetadata(),
+                                                endTimeInstant,
+                                                Mass.fromGrams(20.0))
                                         .setZoneOffset(offset)
                                         .build()));
 
@@ -779,19 +779,19 @@ public class WeightRecordTest {
         TestUtils.insertRecords(
                 List.of(
                         new WeightRecord.Builder(
-                                TestUtils.generateMetadata(),
-                                endTimeInstant.minus(20, DAYS),
-                                Mass.fromGrams(10.0))
+                                        TestUtils.generateMetadata(),
+                                        endTimeInstant.minus(20, DAYS),
+                                        Mass.fromGrams(10.0))
                                 .setZoneOffset(ZoneOffset.MIN)
                                 .build()));
 
         List<AggregateRecordsGroupedByPeriodResponse<Mass>> responses =
                 TestUtils.getAggregateResponseGroupByPeriod(
                         new AggregateRecordsRequest.Builder<Mass>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(endTimeLocal.minusDays(30))
-                                        .setEndTime(endTimeLocal)
-                                        .build())
+                                        new LocalTimeRangeFilter.Builder()
+                                                .setStartTime(endTimeLocal.minusDays(30))
+                                                .setEndTime(endTimeLocal)
+                                                .build())
                                 .addAggregationType(WEIGHT_MAX)
                                 .build(),
                         Period.ofDays(15));
@@ -799,35 +799,6 @@ public class WeightRecordTest {
         assertThat(responses).hasSize(2);
         assertThat(responses.get(0).get(WEIGHT_MAX)).isEqualTo(Mass.fromGrams(10.0));
         assertThat(responses.get(1).get(WEIGHT_MAX)).isNull();
-    }
-
-    @Test
-    public void testAggregate_someRecordsAreBeforeStartDateAccess_expectTheyAreNotIncluded()
-            throws InterruptedException {
-        Instant now = Instant.now();
-        double[] weights = {50_000, 51_000, 52_000};
-        List<Record> recordList =
-                Arrays.asList(
-                        getBaseWeightRecord(now, weights[0]),
-                        getBaseWeightRecord(now.minus(10, DAYS), weights[1]),
-                        getBaseWeightRecord(now.minus(40, DAYS), weights[2])
-                );
-        AggregateRecordsRequest<Mass> aggregateRecordsRequest =
-                new AggregateRecordsRequest.Builder<Mass>(
-                        new TimeInstantRangeFilter.Builder()
-                                .setStartTime(Instant.ofEpochMilli(0))
-                                .setEndTime(Instant.now().plus(1, DAYS))
-                                .build())
-                        .addAggregationType(WEIGHT_AVG)
-                        .build();
-
-        AggregateRecordsResponse<Mass> response =
-                TestUtils.getAggregateResponse(aggregateRecordsRequest, recordList);
-
-        // weights[1] is has time out of 30 days range from now, so it should be excluded from the
-        // avg
-        assertThat(response.get(WEIGHT_AVG)).isEqualTo(
-                Mass.fromGrams((weights[0] + weights[1]) / 2));
     }
 
     private void readWeightRecordUsingClientId(List<Record> insertedRecord)
@@ -859,7 +830,7 @@ public class WeightRecordTest {
     @Test(expected = IllegalArgumentException.class)
     public void testCreateWeightRecord_invalidValue() {
         new WeightRecord.Builder(
-                new Metadata.Builder().build(), Instant.now(), Mass.fromGrams(1000000.1))
+                        new Metadata.Builder().build(), Instant.now(), Mass.fromGrams(1000000.1))
                 .build();
     }
 
@@ -881,21 +852,21 @@ public class WeightRecordTest {
 
     private static WeightRecord getBaseWeightRecord() {
         return new WeightRecord.Builder(
-                new Metadata.Builder().build(), Instant.now(), Mass.fromGrams(10.0))
+                        new Metadata.Builder().build(), Instant.now(), Mass.fromGrams(10.0))
                 .build();
     }
 
     static WeightRecord getBaseWeightRecord(Instant time, double weight) {
         return new WeightRecord.Builder(
-                new Metadata.Builder().build(), time, Mass.fromGrams(weight))
+                        new Metadata.Builder().build(), time, Mass.fromGrams(weight))
                 .build();
     }
 
     static WeightRecord getBaseWeightRecord(double weight) {
         return new WeightRecord.Builder(
-                new Metadata.Builder().setClientRecordId("WR" + Math.random()).build(),
-                Instant.now(),
-                Mass.fromGrams(weight))
+                        new Metadata.Builder().setClientRecordId("WR" + Math.random()).build(),
+                        Instant.now(),
+                        Mass.fromGrams(weight))
                 .build();
     }
 

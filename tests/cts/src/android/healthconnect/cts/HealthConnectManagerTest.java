@@ -30,12 +30,15 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
-import static android.healthconnect.cts.TestUtils.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.TestUtils.getRecordById;
+import static android.healthconnect.cts.utils.TestUtils.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.TestUtils.getRecordById;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.Manifest;
 import android.app.UiAutomation;
@@ -47,7 +50,10 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.ReadRecordsRequest;
+import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -66,6 +72,7 @@ import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
+import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.platform.test.annotations.AppModeFull;
@@ -160,7 +167,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testIsHealthPermission_forHealthPermission_returnsTrue() throws Exception {
+    public void testIsHealthPermission_forHealthPermission_returnsTrue() {
         Context context = ApplicationProvider.getApplicationContext();
         assertThat(isHealthPermission(context, HealthPermissions.READ_ACTIVE_CALORIES_BURNED))
                 .isTrue();
@@ -169,7 +176,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testIsHealthPermission_forNonHealthGroupPermission_returnsFalse() throws Exception {
+    public void testIsHealthPermission_forNonHealthGroupPermission_returnsFalse() {
         Context context = ApplicationProvider.getApplicationContext();
         assertThat(isHealthPermission(context, HealthPermissions.MANAGE_HEALTH_PERMISSIONS))
                 .isFalse();
@@ -192,12 +199,7 @@ public class HealthConnectManagerTest {
      * <p>Insert a sample record of each dataType, update them and check by reading them.
      */
     @Test
-    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
-            throws InterruptedException,
-                    InvocationTargetException,
-                    InstantiationException,
-                    IllegalAccessException,
-                    NoSuchMethodException {
+    public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully() throws Exception {
 
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
@@ -262,12 +264,7 @@ public class HealthConnectManagerTest {
      * valid inputs) should not be modified either.
      */
     @Test
-    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase()
-            throws InterruptedException,
-                    InvocationTargetException,
-                    InstantiationException,
-                    IllegalAccessException,
-                    NoSuchMethodException {
+    public void testUpdateRecords_invalidInputRecords_noChangeInDataBase() throws Exception {
 
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
@@ -338,11 +335,7 @@ public class HealthConnectManagerTest {
      */
     @Test
     public void testUpdateRecords_recordWithInvalidPackageName_noChangeInDataBase()
-            throws InterruptedException,
-                    InvocationTargetException,
-                    InstantiationException,
-                    IllegalAccessException,
-                    NoSuchMethodException {
+            throws Exception {
 
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
@@ -629,6 +622,93 @@ public class HealthConnectManagerTest {
         assertThat(records).hasSize(2);
         assertThat(getRecordById(records, id1).getProtein()).isEqualTo(protein1);
         assertThat(getRecordById(records, id2).getProtein()).isEqualTo(protein2);
+    }
+
+    @Test
+    public void testReadRecords_readByIdMaxPageSizeExceeded_throws() {
+        int maxPageSize = 5000;
+        ReadRecordsRequestUsingIds.Builder<StepsRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class);
+        for (int i = 0; i < maxPageSize; i++) {
+            request.addClientRecordId("client.id" + i);
+        }
+        Throwable thrown =
+                assertThrows(IllegalArgumentException.class, () -> request.addId("extra_id"));
+        assertThat(thrown.getMessage()).contains("Maximum allowed pageSize is 5000");
+        thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> request.addClientRecordId("extra_client_id"));
+        assertThat(thrown.getMessage()).contains("Maximum allowed pageSize is 5000");
+    }
+
+    @Test
+    public void testReadRecords_readByFilterMaxPageSizeExceeded_throws() {
+        int maxPageSize = 5000;
+        ReadRecordsRequestUsingFilters.Builder<StepsRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class);
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class, () -> request.setPageSize(maxPageSize + 1));
+        assertThat(thrown.getMessage()).contains("Maximum allowed pageSize is 5000");
+    }
+
+    @Test
+    public void testReadRecords_multiplePagesSameStartTimeRecords_paginatedCorrectly()
+            throws Exception {
+        Instant startTime = Instant.now().minus(1, ChronoUnit.DAYS);
+
+        insertRecords(
+                List.of(
+                        getStepsRecord(
+                                "client.id1",
+                                "package.name",
+                                /* count= */ 100,
+                                startTime,
+                                startTime.plusSeconds(500)),
+                        getStepsRecord(
+                                "client.id2",
+                                "package.name",
+                                /* count= */ 100,
+                                startTime,
+                                startTime.plusSeconds(200)),
+                        getStepsRecord(
+                                "client.id3",
+                                "package.name",
+                                /* count= */ 100,
+                                startTime,
+                                startTime.plusSeconds(400)),
+                        getStepsRecord(
+                                "client.id4",
+                                "package.name",
+                                /* count= */ 100,
+                                startTime,
+                                startTime.plusSeconds(300))));
+
+        ReadRecordsRequest<StepsRecord> request1 =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .setPageSize(2)
+                        .setAscending(false)
+                        .build();
+        ReadRecordsResponse<StepsRecord> result1 = TestUtils.readRecordsWithPagination(request1);
+        assertThat(result1.getRecords()).hasSize(2);
+        assertThat(result1.getRecords().get(0).getMetadata().getClientRecordId())
+                .isEqualTo("client.id1");
+        assertThat(result1.getRecords().get(1).getMetadata().getClientRecordId())
+                .isEqualTo("client.id2");
+
+        ReadRecordsRequest<StepsRecord> request2 =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
+                        .setPageSize(2)
+                        .setPageToken(result1.getNextPageToken())
+                        .build();
+        ReadRecordsResponse<StepsRecord> result2 = TestUtils.readRecordsWithPagination(request2);
+        assertThat(result2.getRecords()).hasSize(2);
+        assertThat(result2.getRecords().get(0).getMetadata().getClientRecordId())
+                .isEqualTo("client.id3");
+        assertThat(result2.getRecords().get(1).getMetadata().getClientRecordId())
+                .isEqualTo("client.id4");
+        assertThat(result2.getNextPageToken()).isEqualTo(-1);
     }
 
     @Test
@@ -1439,7 +1519,8 @@ public class HealthConnectManagerTest {
                         @Override
                         public void onError(@NonNull HealthConnectException e) {
                             returnedException.set(e);
-                            latch.countDown();}
+                            latch.countDown();
+                        }
                     });
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -48,9 +48,13 @@ fun getBasalMetabolicRateRecord(calories: Long): BasalMetabolicRateRecord {
 }
 
 fun getMetaData(): Metadata {
+    return getMetaData(TEST_APP_PACKAGE_NAME)
+}
+
+fun getMetaData(packageName: String): Metadata {
     val device: Device =
         Device.Builder().setManufacturer("google").setModel("Pixel4a").setType(2).build()
-    val dataOrigin = DataOrigin.Builder().setPackageName(TEST_APP_PACKAGE_NAME).build()
+    val dataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
     return Metadata.Builder()
         .setId("test_id")
         .setDevice(device)
@@ -59,10 +63,14 @@ fun getMetaData(): Metadata {
         .build()
 }
 
+fun getDataOrigin(packageName: String): DataOrigin =
+    DataOrigin.Builder().setPackageName(packageName).build()
+
 // region apps
 
 const val TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app"
 const val TEST_APP_PACKAGE_NAME_2 = "android.healthconnect.controller.test.app2"
+const val TEST_APP_PACKAGE_NAME_3 = "package.name.3"
 const val UNSUPPORTED_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app3"
 const val TEST_APP_NAME = "Health Connect test app"
 const val TEST_APP_NAME_2 = "Health Connect test app 2"
