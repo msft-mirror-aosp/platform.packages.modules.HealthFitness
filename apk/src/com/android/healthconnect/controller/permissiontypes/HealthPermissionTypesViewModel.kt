@@ -68,6 +68,7 @@ constructor(
     val priorityList: LiveData<PriorityListState>
         get() = _priorityList
 
+
     /** Provides a list of apps with data in [HealthPermissionTypesFragment]. */
     val appsWithData: LiveData<AppsWithDataFragmentState>
         get() = _appsWithData
@@ -94,13 +95,6 @@ constructor(
 
     fun setEditedPriorityList(newList: List<AppMetadata>) {
         _editedPriorityList.postValue(newList)
-    }
-
-    fun setEditedAppSources(newList: List<AppMetadata>, category: Int) {
-        _editedPriorityList.postValue(newList)
-        viewModelScope.launch {
-            updatePriorityListUseCase.invoke(newList.map { it.packageName }, category)
-        }
     }
 
     fun setCategoryLabel(label: String) {
@@ -159,6 +153,7 @@ constructor(
 
     fun updatePriorityList(category: @HealthDataCategoryInt Int, newPriorityList: List<String>) {
         _priorityList.postValue(PriorityListState.Loading)
+
         viewModelScope.launch {
             updatePriorityListUseCase.invoke(newPriorityList, category)
             val appMetadataList: List<AppMetadata> =

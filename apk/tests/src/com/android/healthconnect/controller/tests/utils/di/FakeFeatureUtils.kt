@@ -12,9 +12,11 @@ class FakeFeatureUtils : FeatureUtils {
 
     private var isSessionTypesEnabled = true
     private var isExerciseRoutesEnabled = true
+    private var isExerciseRoutesReadAllEnabled = true
     private var isEntryPointsEnabled = true
     private var isNewAppPriorityEnabled = false
     private var isNewInformationArchitectureEnabled = false
+    private var isBackgroundReadEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
@@ -22,6 +24,10 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsExerciseRoutesEnabled(boolean: Boolean) {
         isExerciseRoutesEnabled = boolean
+    }
+
+    fun setIsExerciseRoutesReadAllEnabled(boolean: Boolean) {
+        isExerciseRoutesReadAllEnabled = boolean
     }
 
     fun setIsEntryPointsEnabled(boolean: Boolean) {
@@ -34,6 +40,10 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsNewInformationArchitectureEnabled(boolean: Boolean) {
         isNewInformationArchitectureEnabled = boolean
+    }
+
+    fun setIsBackgroundReadEnabled(isBackgroundReadEnabled: Boolean) {
+        this.isBackgroundReadEnabled = isBackgroundReadEnabled
     }
 
     override fun isNewAppPriorityEnabled(): Boolean {
@@ -52,16 +62,21 @@ class FakeFeatureUtils : FeatureUtils {
         return isExerciseRoutesEnabled
     }
 
+    override fun isExerciseRouteReadAllEnabled(): Boolean {
+        return isExerciseRoutesReadAllEnabled
+    }
+
     override fun isEntryPointsEnabled(): Boolean {
         return isEntryPointsEnabled
     }
 
+    override fun isBackgroundReadEnabled(): Boolean {
+        return isBackgroundReadEnabled
+    }
 }
 
 @Module
 @TestInstallIn(components = [SingletonComponent::class], replaces = [FeaturesModule::class])
 object FakeFeaturesUtilsModule {
-    @Provides
-    @Singleton
-    fun providesFeaturesUtils() : FeatureUtils =  FakeFeatureUtils()
+    @Provides @Singleton fun providesFeaturesUtils(): FeatureUtils = FakeFeatureUtils()
 }
