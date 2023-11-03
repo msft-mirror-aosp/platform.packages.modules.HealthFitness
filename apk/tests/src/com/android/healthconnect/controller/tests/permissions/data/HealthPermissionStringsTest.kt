@@ -13,23 +13,28 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import android.content.Context
-import android.health.connect.HealthConnectManager
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
 class HealthPermissionStringsTest {
 
-    private lateinit var context: Context
+    @get:Rule val hiltRule = HiltAndroidRule(this)
+
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Before
     fun setup() {
-        context = InstrumentationRegistry.getInstrumentation().context
+        hiltRule.inject()
     }
 
     @Test
@@ -41,7 +46,7 @@ class HealthPermissionStringsTest {
 
     @Test
     fun allHealthPermissionsHaveStrings() {
-        val allPermissions = HealthConnectManager.getHealthPermissions(context)
+        val allPermissions = healthPermissionReader.getHealthPermissions()
         for (permission in allPermissions) {
             val type = HealthPermission.fromPermissionString(permission).healthPermissionType
             assertThat(HealthPermissionStrings.fromPermissionType(type)).isNotNull()

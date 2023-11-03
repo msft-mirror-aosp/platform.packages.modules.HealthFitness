@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import static java.util.Objects.requireNonNull;
 
@@ -98,6 +99,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      * <p>TO HAVE THREAD SAFETY DON'T USE THESE VARIABLES DIRECTLY, INSTEAD USE ITS GETTER
      */
     private volatile ConcurrentHashMap<Long, String> mIdPackageNameMap;
+
     /**
      * Map to store application package-name -> AppInfo mapping (such as packageName -> appName,
      * icon, rowId in the DB etc.)
@@ -195,25 +197,13 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     /**
-     * Populates record with package name
-     *
-     * @param appInfoId rowId from {@code application_info_table }
-     * @param record The record to be populated with package name
-     * @param idPackageNameMap the map from which to get the package name
-     */
-    public void populateRecordWithValue(
-            long appInfoId, @NonNull RecordInternal<?> record, Map<Long, String> idPackageNameMap) {
-        if (idPackageNameMap != null) {
-            record.setPackageName(idPackageNameMap.get(appInfoId));
-            return;
-        }
-        record.setPackageName(getIdPackageNameMap().get(appInfoId));
-    }
-
-    /**
      * @return id of {@code packageName} or {@link Constants#DEFAULT_LONG} if the id is not found
      */
     public long getAppInfoId(String packageName) {
+        if (packageName == null) {
+            return DEFAULT_LONG;
+        }
+
         AppInfoInternal appInfo = getAppInfoMap().getOrDefault(packageName, null);
 
         if (appInfo == null) {
@@ -258,7 +248,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         List<String> packageNames = new ArrayList<>();
         packageIds.forEach(
                 (packageId) -> {
-                    String packageName = getIdPackageNameMap().get(packageId);
+                    String packageName = getPackageName(packageId);
                     requireNonNull(packageName);
 
                     packageNames.add(packageName);
@@ -536,7 +526,7 @@ public final class AppInfoHelper extends DatabaseHelper {
             Set<Integer> recordTypesUsed) {
         appInfo.setRecordTypesUsed(recordTypesUsed);
         // create upsert table request to modify app info table, keyed by packages name.
-        WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses();
+        WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses(AND);
         whereClauseForAppInfoTableUpdate.addWhereEqualsClause(
                 PACKAGE_COLUMN_NAME, appInfo.getPackageName());
         UpsertTableRequest upsertRequestForAppInfoUpdate =
