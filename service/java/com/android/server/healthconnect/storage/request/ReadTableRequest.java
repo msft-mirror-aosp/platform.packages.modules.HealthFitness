@@ -16,10 +16,9 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
-
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.LIMIT_SIZE;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -49,11 +48,10 @@ public class ReadTableRequest {
     private RecordHelper<?> mRecordHelper;
     private List<String> mColumnNames;
     private SqlJoin mJoinClause;
-    private WhereClauses mWhereClauses = new WhereClauses();
+    private WhereClauses mWhereClauses = new WhereClauses(AND);
     private boolean mDistinct = false;
     private OrderByClause mOrderByClause = new OrderByClause();
     private String mLimitClause = "";
-    private int mPageSize = DEFAULT_PAGE_SIZE;
     private List<ReadTableRequest> mExtraReadRequests;
     private List<ReadTableRequest> mUnionReadRequests;
 
@@ -172,18 +170,9 @@ public class ReadTableRequest {
 
     /** Sets LIMIT size for the read query */
     @NonNull
-    public ReadTableRequest setLimit(int pageSize) {
-        mPageSize = pageSize;
-        // We set limit size to requested pageSize + 1,so that if number of records queried is more
-        // than pageSize we know there are more records available to return for the next read.
-        pageSize += 1;
-        mLimitClause = LIMIT_SIZE + pageSize;
+    public ReadTableRequest setLimit(int limit) {
+        mLimitClause = LIMIT_SIZE + limit;
         return this;
-    }
-
-    /** Returns page size of the read request */
-    public int getPageSize() {
-        return mPageSize;
     }
 
     private String getColumnsToFetch() {

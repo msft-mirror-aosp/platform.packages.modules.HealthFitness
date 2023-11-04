@@ -15,13 +15,39 @@
  */
 package com.android.healthconnect.controller.tests.utils.di
 
+import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
+import android.health.connect.datatypes.Record
+import com.android.healthconnect.controller.data.access.AppAccessState
+import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
+import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
+import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregationsUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadDataEntriesUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadMenstruationDataUseCase
+import com.android.healthconnect.controller.data.entries.api.ILoadSleepDataUseCase
+import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
+import com.android.healthconnect.controller.data.entries.api.LoadDataEntriesInput
+import com.android.healthconnect.controller.data.entries.api.LoadMenstruationDataInput
+import com.android.healthconnect.controller.datasources.AggregationCardInfo
+import com.android.healthconnect.controller.datasources.api.ILoadMostRecentAggregationsUseCase
+import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriorityListUseCase
+import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
+import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
+import com.android.healthconnect.controller.shared.HealthDataCategoryInt
+import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
+import com.android.healthconnect.controller.utils.toLocalDate
+import java.time.LocalDate
 
 class FakeRecentAccessUseCase : ILoadRecentAccessUseCase {
     private var list: List<AccessLog> = emptyList()
+
     fun updateList(list: List<AccessLog>) {
         this.list = list
     }
@@ -40,5 +66,240 @@ class FakeHealthPermissionAppsUseCase : ILoadHealthPermissionApps {
 
     override suspend fun invoke(): List<ConnectedAppMetadata> {
         return list
+    }
+}
+
+class FakeLoadDataEntriesUseCase : ILoadDataEntriesUseCase {
+    private var list: List<FormattedEntry> = emptyList()
+
+    fun updateList(list: List<FormattedEntry>) {
+        this.list = list
+    }
+
+    override suspend fun invoke(input: LoadDataEntriesInput): UseCaseResults<List<FormattedEntry>> {
+        return UseCaseResults.Success(list)
+    }
+
+    override suspend fun execute(input: LoadDataEntriesInput): List<FormattedEntry> {
+        return list
+    }
+}
+
+class FakeLoadMenstruationDataUseCase : ILoadMenstruationDataUseCase {
+    private var list: List<FormattedEntry> = emptyList()
+
+    fun updateList(list: List<FormattedEntry>) {
+        this.list = list
+    }
+
+    override suspend fun invoke(
+        input: LoadMenstruationDataInput
+    ): UseCaseResults<List<FormattedEntry>> {
+        return UseCaseResults.Success(list)
+    }
+
+    override suspend fun execute(input: LoadMenstruationDataInput): List<FormattedEntry> {
+        return list
+    }
+}
+
+class FakeLoadDataAggregationsUseCase : ILoadDataAggregationsUseCase {
+    private var aggregation: FormattedEntry.FormattedAggregation =
+        FormattedEntry.FormattedAggregation("100 steps", "100 steps", "Test App")
+
+    private var aggregations: List<FormattedEntry.FormattedAggregation> = listOf(aggregation)
+    private var invocationCount = 0
+    private var shouldReturnFailed = false
+
+    fun updateAggregation(aggregation: FormattedEntry.FormattedAggregation) {
+        this.aggregations = listOf(aggregation)
+    }
+
+    /** Used for subsequent invocations when we need different responses */
+    fun updateAggregationResponses(aggregations: List<FormattedEntry.FormattedAggregation>) {
+        this.aggregations = aggregations
+    }
+
+    fun updateErrorResponse() {
+        this.shouldReturnFailed = true
+    }
+
+    override suspend fun invoke(
+        input: LoadAggregationInput
+    ): UseCaseResults<FormattedEntry.FormattedAggregation> {
+        return if (invocationCount >= this.aggregations.size) {
+            UseCaseResults.Failed(
+                IllegalStateException(
+                    "AggregationResponsesSize = ${this.aggregations.size}, " +
+                        "invocationCount = $invocationCount. Please update aggregation responses before invoking."))
+        } else if (shouldReturnFailed) {
+            UseCaseResults.Failed(IllegalStateException("Custom failure"))
+        } else {
+            val result = UseCaseResults.Success(aggregations[invocationCount])
+            invocationCount += 1
+            result
+        }
+    }
+
+    override suspend fun execute(input: LoadAggregationInput): FormattedEntry.FormattedAggregation {
+        return aggregation
+    }
+
+    fun reset() {
+        this.invocationCount = 0
+        this.aggregations = listOf(aggregation)
+        this.shouldReturnFailed = false
+    }
+}
+
+class FakeLoadMostRecentAggregationsUseCase : ILoadMostRecentAggregationsUseCase {
+
+    private var mostRecentAggregations = listOf<AggregationCardInfo>()
+
+    override suspend fun invoke(
+        healthDataCategory: @HealthDataCategoryInt Int
+    ): UseCaseResults<List<AggregationCardInfo>> {
+        return UseCaseResults.Success(mostRecentAggregations)
+    }
+
+    fun updateMostRecentAggregations(aggregations: List<AggregationCardInfo>) {
+        this.mostRecentAggregations = aggregations
+    }
+
+    fun reset() {
+        this.mostRecentAggregations = listOf()
+    }
+}
+
+class FakeLoadPotentialPriorityListUseCase : ILoadPotentialPriorityListUseCase {
+
+    private var potentialPriorityList = listOf<AppMetadata>()
+
+    override suspend fun invoke(
+        category: @HealthDataCategoryInt Int
+    ): UseCaseResults<List<AppMetadata>> {
+        return UseCaseResults.Success(potentialPriorityList)
+    }
+
+    fun updatePotentialPriorityList(potentialList: List<AppMetadata>) {
+        this.potentialPriorityList = potentialList
+    }
+
+    fun reset() {
+        this.potentialPriorityList = listOf()
+    }
+}
+
+class FakeLoadPriorityListUseCase : ILoadPriorityListUseCase {
+
+    private var priorityList = listOf<AppMetadata>()
+
+    override suspend fun invoke(
+        input: @HealthDataCategoryInt Int
+    ): UseCaseResults<List<AppMetadata>> {
+        return UseCaseResults.Success(priorityList)
+    }
+
+    override suspend fun execute(input: Int): List<AppMetadata> {
+        return priorityList
+    }
+
+    fun updatePriorityList(priorityList: List<AppMetadata>) {
+        this.priorityList = priorityList
+    }
+
+    fun reset() {
+        this.priorityList = listOf()
+    }
+}
+
+class FakeUpdatePriorityListUseCase : IUpdatePriorityListUseCase {
+
+    var priorityList = listOf<String>()
+    var category = HealthDataCategory.UNKNOWN
+
+    override suspend fun invoke(priorityList: List<String>, category: Int) {
+        this.priorityList = priorityList
+        this.category = category
+    }
+
+    fun reset() {
+        this.priorityList = listOf()
+        this.category = HealthDataCategory.UNKNOWN
+    }
+}
+
+class FakeLoadSleepDataUseCase : ILoadSleepDataUseCase {
+
+    private var sleepDataMap: MutableMap<LocalDate, List<Record>> = mutableMapOf()
+
+    fun updateSleepData(date: LocalDate, recordsList: List<Record>) {
+        sleepDataMap[date] = recordsList
+    }
+
+    override suspend fun invoke(input: LoadDataEntriesInput): UseCaseResults<List<Record>> {
+        val result = sleepDataMap.getOrDefault(input.displayedStartTime.toLocalDate(), listOf())
+        return UseCaseResults.Success(result)
+    }
+
+    override suspend fun execute(input: LoadDataEntriesInput): List<Record> {
+        return sleepDataMap.getOrDefault(input.displayedStartTime.toLocalDate(), listOf())
+    }
+
+    fun reset() {
+        this.sleepDataMap = mutableMapOf()
+    }
+}
+
+class FakeLoadAccessUseCase : ILoadAccessUseCase {
+
+    private var appDataMap: Map<AppAccessState, List<AppMetadata>> = mutableMapOf()
+
+    override suspend fun invoke(
+        permissionType: HealthPermissionType
+    ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> {
+        return UseCaseResults.Success(appDataMap)
+    }
+
+    fun updateMap(map: Map<AppAccessState, List<AppMetadata>>) {
+        appDataMap = map
+    }
+
+    fun reset() {
+        this.appDataMap = mutableMapOf()
+    }
+}
+
+class FakeLoadPermissionTypeContributorAppsUseCase : ILoadPermissionTypeContributorAppsUseCase {
+
+    private var contributorApps: List<AppMetadata> = listOf()
+
+    override suspend fun invoke(permissionType: HealthPermissionType): List<AppMetadata> {
+        return contributorApps
+    }
+
+    fun updateList(list: List<AppMetadata>) {
+        contributorApps = list
+    }
+
+    fun reset() {
+        this.contributorApps = listOf()
+    }
+}
+
+class FakeGetGrantedHealthPermissionsUseCase : IGetGrantedHealthPermissionsUseCase {
+
+    private var permissionsPerApp: MutableMap<String, List<String>> = mutableMapOf()
+
+    override fun invoke(packageName: String): List<String> {
+        return permissionsPerApp.getOrDefault(packageName, listOf())
+    }
+
+    fun updateData(packageName: String, permissions: List<String>) {
+        permissionsPerApp[packageName] = permissions
+    }
+
+    fun reset() {
+        this.permissionsPerApp = mutableMapOf()
     }
 }

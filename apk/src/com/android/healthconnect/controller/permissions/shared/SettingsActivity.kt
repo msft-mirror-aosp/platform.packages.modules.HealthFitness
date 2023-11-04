@@ -64,23 +64,25 @@ class SettingsActivity : Hilt_SettingsActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setTitle(R.string.permgrouplab_health)
+
+        if (maybeRedirectToOnboardingActivity(this) && savedInstanceState == null) {
+            openOnboardingActivity.launch(1)
+        }
     }
 
     override fun onStart() {
         super.onStart()
 
-        if (maybeRedirectToOnboardingActivity(this)) {
-            openOnboardingActivity.launch(1)
+        if (intent.hasExtra(EXTRA_PACKAGE_NAME)) {
+            val packageName = intent.getStringExtra(
+                EXTRA_PACKAGE_NAME)!!
+
+            viewModel.shouldNavigateToFragment.observe(this) { shouldNavigate ->
+                maybeNavigateToFragment(shouldNavigate)
+            }
+
+            viewModel.loadShouldNavigateToFragment(packageName)
         }
-
-        val packageName = intent.getStringExtra(
-            EXTRA_PACKAGE_NAME)!!
-
-        viewModel.shouldNavigateToFragment.observe(this) { shouldNavigate ->
-            maybeNavigateToFragment(shouldNavigate)
-        }
-
-        viewModel.loadShouldNavigateToFragment(packageName)
 
     }
 
