@@ -122,6 +122,7 @@ import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.WheelchairPushesRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
+import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationException;
 import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
@@ -811,6 +812,14 @@ public final class TestUtils {
         receiver.verifyNoExceptionOrThrow();
     }
 
+    public static void writeMigrationData(List<MigrationEntity> entities)
+            throws InterruptedException {
+        MigrationReceiver receiver = new MigrationReceiver();
+        getHealthConnectManager()
+                .writeMigrationData(entities, Executors.newSingleThreadExecutor(), receiver);
+        receiver.verifyNoExceptionOrThrow();
+    }
+
     public static void finishMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().finishMigration(Executors.newSingleThreadExecutor(), receiver);
@@ -1368,7 +1377,7 @@ public final class TestUtils {
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action) {
-        sendCommandToTestAppReceiver(context, action, /*extras=*/ null);
+        sendCommandToTestAppReceiver(context, action, /* extras= */ null);
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
