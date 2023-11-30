@@ -41,7 +41,9 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.logging.DataSourcesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
 import com.android.settingslib.widget.FooterPreference
@@ -69,8 +71,7 @@ class DataSourcesFragment :
     }
 
     init {
-        // TODO (b/292270118) update to correct name
-        //        this.setPageName(PageName.MANAGE_DATA_PAGE)
+        this.setPageName(PageName.DATA_SOURCES_PAGE)
     }
 
     @Inject lateinit var logger: HealthConnectLogger
@@ -116,16 +117,24 @@ class DataSourcesFragment :
         dataSourcesCategoriesStrings =
             dataSourcesCategories.map { category -> getString(category.uppercaseTitle()) }
 
-        setupSpinnerPreference()
-    }
+        if (requireArguments().containsKey(CATEGORY_KEY)) {
+            // Only require this from the HealthPermissionTypes screen
+            // When navigating here from the Manage Data screen we pass Unknown
+            // so that going back and forth to this screen does not restrict users to just one
+            // category
+            val argCategory = requireArguments().getInt(CATEGORY_KEY)
+            if (argCategory != HealthDataCategory.UNKNOWN) {
+                currentCategorySelection = argCategory
+                dataSourcesViewModel.setCurrentSelection(currentCategorySelection)
+            }
+        }
 
-    override fun onResume() {
-        super.onResume()
-        dataSourcesViewModel.loadData(currentCategorySelection)
+        setupSpinnerPreference()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setLoading(true)
         val currentStringSelection = spinnerPreference.selectedItem
         currentCategorySelection =
             dataSourcesCategories[dataSourcesCategoriesStrings.indexOf(currentStringSelection)]
@@ -154,7 +163,7 @@ class DataSourcesFragment :
                 if (priorityList.isEmpty() && potentialAppSources.isEmpty()) {
                     addEmptyState()
                 } else {
-                    updateMenu(priorityList.size > 1)
+                    updateMenu(priorityList.size > 1 && !dataSourcesViewModel.isEditMode)
                     updateAppSourcesSection(priorityList, potentialAppSources)
                     updateDataTotalsSection(cardInfos)
                 }
@@ -177,6 +186,11 @@ class DataSourcesFragment :
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        dataSourcesViewModel.loadData(currentCategorySelection)
+    }
+
     private fun updateMenu(shouldShowEditButton: Boolean) {
         if (shouldShowEditButton) {
             setupMenu(R.menu.data_sources, viewLifecycleOwner, logger, onEditMenuItemSelected)
@@ -186,6 +200,7 @@ class DataSourcesFragment :
     }
 
     private fun editPriorityList() {
+        dataSourcesViewModel.isEditMode = true
         updateMenu(shouldShowEditButton = false)
         appSourcesPreferenceGroup?.removePreferenceRecursively(ADD_AN_APP_PREFERENCE_KEY)
         val appSourcesPreference =
@@ -199,6 +214,7 @@ class DataSourcesFragment :
             ?.toggleEditMode(false)
         updateMenu(dataSourcesViewModel.getEditedPriorityList().size > 1)
         updateAddApp(dataSourcesViewModel.getEditedPotentialAppSources().isNotEmpty())
+        dataSourcesViewModel.isEditMode = false
     }
 
     /** Updates the priority list preference. */
@@ -218,9 +234,12 @@ class DataSourcesFragment :
                     dataSourcesViewModel,
                     currentCategorySelection,
                     this)
-                .also { it.key = APP_SOURCES_PREFERENCE_KEY })
+                .also {
+                    it.key = APP_SOURCES_PREFERENCE_KEY
+                    it.setEditMode(dataSourcesViewModel.isEditMode)
+                })
 
-        updateAddApp(potentialAppSources.isNotEmpty())
+        updateAddApp(potentialAppSources.isNotEmpty() && !dataSourcesViewModel.isEditMode)
         nonEmptyFooterPreference?.isVisible = true
     }
 
@@ -241,6 +260,7 @@ class DataSourcesFragment :
             HealthPreference(requireContext()).also {
                 it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.addIcon)
                 it.title = getString(R.string.data_sources_add_app)
+                it.logName = DataSourcesElement.ADD_AN_APP_BUTTON
                 it.key = ADD_AN_APP_PREFERENCE_KEY
                 it.order = 100 // Arbitrary number to ensure the button is added at the end of the
                 // priority list
@@ -285,8 +305,8 @@ class DataSourcesFragment :
                 dataTotalsPreferenceGroup?.isVisible = false
             } else {
                 dataTotalsPreferenceGroup?.isVisible = true
-                cardContainerPreference?.setLoading(false)
                 cardContainerPreference?.setAggregationCardInfo(cardInfos)
+                cardContainerPreference?.setLoading(false)
             }
         }
     }
@@ -354,6 +374,8 @@ class DataSourcesFragment :
                     position: Int,
                     id: Long
                 ) {
+                    logger.logInteraction(DataSourcesElement.DATA_TYPE_SPINNER)
+
                     val currentCategory = dataSourcesCategories[position]
                     currentCategorySelection = dataSourcesCategories[position]
 
@@ -369,5 +391,6 @@ class DataSourcesFragment :
             dataSourcesCategories.indexOf(dataSourcesViewModel.getCurrentSelection()))
 
         preferenceScreen.addPreference(spinnerPreference)
+        logger.logImpression(DataSourcesElement.DATA_TYPE_SPINNER)
     }
 }

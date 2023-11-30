@@ -16,7 +16,7 @@
 package com.android.healthconnect.controller.tests.datasources
 
 import android.health.connect.HealthDataCategory
-import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
@@ -28,6 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
 import com.android.healthconnect.controller.datasources.DataSourcesFragment
@@ -50,6 +51,8 @@ import com.android.healthconnect.controller.tests.utils.di.FakeAppUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -65,6 +68,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @UninstallModules(AppUtilsModule::class)
 @HiltAndroidTest
@@ -75,6 +82,7 @@ class DataSourcesFragmentTest {
     @BindValue
     val dataSourcesViewModel: DataSourcesViewModel = Mockito.mock(DataSourcesViewModel::class.java)
     @BindValue val appUtils: AppUtils = FakeAppUtils()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock<HealthConnectLogger>()
 
     @Before
     fun setup() {
@@ -88,6 +96,7 @@ class DataSourcesFragmentTest {
     @After
     fun tearDown() {
         (appUtils as FakeAppUtils).reset()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -104,7 +113,7 @@ class DataSourcesFragmentTest {
         whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
             MutableLiveData(AggregationCardsState.WithData(true, listOf()))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
         onIdle()
 
         onView(withText("Activity")).check(matches(isDisplayed()))
@@ -133,6 +142,9 @@ class DataSourcesFragmentTest {
                         allOf(
                             hasDescendant(withText("2")),
                             hasDescendant(withText(TEST_APP_NAME_2))))))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.DATA_SOURCES_PAGE)
+        verify(healthConnectLogger, atLeast(1)).logPageImpression()
     }
 
     @Test
@@ -167,7 +179,7 @@ class DataSourcesFragmentTest {
                                 "1234 steps", "1234 steps", "TestApp"),
                             Instant.parse("2022-10-19T07:06:05.432Z")))))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("Data totals")).check(matches(isDisplayed()))
@@ -231,7 +243,7 @@ class DataSourcesFragmentTest {
                                 "1234 steps", "1234 steps", "TestApp"),
                             Instant.parse("2020-10-19T07:06:05.432Z")))))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
         onView(withText("Data totals")).check(matches(isDisplayed()))
         onView(withText("1234 steps")).check(matches(isDisplayed()))
         onView(withText("October 19, 2020")).check(matches(isDisplayed()))
@@ -272,7 +284,7 @@ class DataSourcesFragmentTest {
                             Instant.parse("2022-10-19T08:05:00.00Z")))))
         }
 
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.SLEEP))
 
         onView(withText("Sleep")).check(matches(isDisplayed()))
         onView(withText("Data totals")).check(matches(isDisplayed()))
@@ -339,7 +351,7 @@ class DataSourcesFragmentTest {
                             Instant.parse("2020-10-19T08:05:00.00Z")))))
         }
 
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.SLEEP))
 
         onView(withText("Sleep")).check(matches(isDisplayed()))
         onView(withText("Data totals")).check(matches(isDisplayed()))
@@ -406,7 +418,7 @@ class DataSourcesFragmentTest {
                             Instant.parse("2021-01-01T08:05:00.00Z")))))
         }
 
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.SLEEP))
 
         onView(withText("Sleep")).check(matches(isDisplayed()))
         onView(withText("Data totals")).check(matches(isDisplayed()))
@@ -450,7 +462,7 @@ class DataSourcesFragmentTest {
         whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
             MutableLiveData(AggregationCardsState.WithData(true, listOf()))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("No app sources")).check(matches(isDisplayed()))
@@ -477,7 +489,7 @@ class DataSourcesFragmentTest {
         whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
             MutableLiveData(AggregationCardsState.WithData(true, listOf()))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
         onIdle()
 
         onView(withText("Activity")).check(matches(isDisplayed()))
@@ -523,7 +535,7 @@ class DataSourcesFragmentTest {
             MutableLiveData(AggregationCardsState.WithData(true, listOf()))
         }
         (appUtils as FakeAppUtils).setDefaultApp(TEST_APP_PACKAGE_NAME)
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
         onIdle()
 
         onView(withText("Activity")).check(matches(isDisplayed()))
@@ -574,7 +586,7 @@ class DataSourcesFragmentTest {
         whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
             MutableLiveData(AggregationCardsState.Loading(false))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
 
         onView(withId(R.id.progress_indicator)).check(matches(isDisplayed()))
     }
@@ -594,7 +606,7 @@ class DataSourcesFragmentTest {
         whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
             MutableLiveData(AggregationCardsState.WithData(true, listOf()))
         }
-        launchFragment<DataSourcesFragment>(Bundle())
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
         onIdle()
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
