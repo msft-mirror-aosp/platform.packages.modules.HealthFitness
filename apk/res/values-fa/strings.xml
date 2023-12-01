@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"هیچ‌کدام"</string>
     <string name="entry_details_title" msgid="590184849040247850">"جزئیات ورود"</string>
     <string name="backup_title" msgid="211503191266235085">"پشتیبان‌گیری"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"منابع داده و اولویت"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"منابع داده و اولویت"</string>
     <string name="set_units_title" msgid="2657822539603758029">"تنظیم واحدها"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"دسترسی اخیر"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"هیچ برنامه‌ای اخیراً به Health Connect دسترسی نداشته است"</string>
@@ -99,8 +99,8 @@
     <string name="distance_lowercase_label" msgid="2287154001209381379">"مسافت"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"خواندن داده مسافت"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"نوشتن داده مسافت"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"ارتفاع صعودکرده"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"ارتفاع صعودکرده"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"ارتفاع صعودشده"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"ارتفاع صعودشده"</string>
     <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"خواندن داده ارتفاع صعودشده"</string>
     <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"نوشتن داده ارتفاع صعودشده"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"طبقات پیموده‌شده"</string>
@@ -790,8 +790,7 @@
     <string name="data_sources_help_link" msgid="7740264923634947915">"نحوه عملکرد منابع و اولویت‌بندی"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"افزودن برنامه"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"ویرایش منابع برنامه"</string>
-    <!-- no translation found for default_app_summary (6183876151011837062) -->
-    <skip />
+    <string name="default_app_summary" msgid="6183876151011837062">"پیش‌فرض دستگاه"</string>
     <string name="app_data_title" msgid="6499967982291000837">"داده‌های برنامه"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"داده‌ها از برنامه‌هایی که به Health Connect دسترسی دارند اینجا نشان داده خواهد شد"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"روز"</string>
