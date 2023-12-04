@@ -62,7 +62,7 @@ public final class ReadRecordsRequestUsingFilters<T extends Record> extends Read
         mDataOrigins = dataOrigins;
         mPageSize = pageSize;
         if (pageToken != DEFAULT_LONG) {
-            mAscending = pageToken % 2 == 0 ? true : false;
+            mAscending = pageToken % 2 == 0;
         } else {
             mAscending = ascending;
         }
