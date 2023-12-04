@@ -35,11 +35,11 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAG
 
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
-import static com.android.compatibility.common.util.SystemUtil.runShellCommand;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 import android.app.UiAutomation;
@@ -61,6 +61,7 @@ import android.health.connect.HealthPermissionCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.ReadRecordsRequest;
+import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordIdFilter;
@@ -122,6 +123,7 @@ import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.WheelchairPushesRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
+import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationException;
 import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
@@ -219,15 +221,24 @@ public final class TestUtils {
      * @param records records to insert
      * @return inserted records
      */
-    public static List<Record> insertRecords(List<Record> records) throws InterruptedException {
+    public static List<Record> insertRecords(List<? extends Record> records)
+            throws InterruptedException {
         return insertRecords(records, ApplicationProvider.getApplicationContext());
     }
 
-    public static List<Record> insertRecords(List<Record> records, Context context)
+    /**
+     * Inserts records to the database.
+     *
+     * @param records records to insert.
+     * @param context a {@link Context} to obtain {@link HealthConnectManager}.
+     * @return inserted records.
+     */
+    public static List<Record> insertRecords(List<? extends Record> records, Context context)
             throws InterruptedException {
         HealthConnectReceiver<InsertRecordsResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .insertRecords(records, Executors.newSingleThreadExecutor(), receiver);
+                .insertRecords(
+                        unmodifiableList(records), Executors.newSingleThreadExecutor(), receiver);
         List<Record> returnedRecords = receiver.getResponse().getRecords();
         assertThat(returnedRecords).hasSize(records.size());
         return returnedRecords;
@@ -658,6 +669,28 @@ public final class TestUtils {
                 .isNotEmpty();
     }
 
+    /** Reads all records in the DB for a given {@code recordClass}. */
+    public static <T extends Record> List<T> readAllRecords(Class<T> recordClass)
+            throws InterruptedException {
+        List<T> records = new ArrayList<>();
+        ReadRecordsResponse<T> readRecordsResponse =
+                readRecordsWithPagination(
+                        new ReadRecordsRequestUsingFilters.Builder<>(recordClass).build());
+        while (true) {
+            records.addAll(readRecordsResponse.getRecords());
+            long pageToken = readRecordsResponse.getNextPageToken();
+            if (pageToken == -1) {
+                break;
+            }
+            readRecordsResponse =
+                    readRecordsWithPagination(
+                            new ReadRecordsRequestUsingFilters.Builder<>(recordClass)
+                                    .setPageToken(pageToken)
+                                    .build());
+        }
+        return records;
+    }
+
     public static <T extends Record> ReadRecordsResponse<T> readRecordsWithPagination(
             ReadRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<ReadRecordsResponse<T>> receiver = new HealthConnectReceiver<>();
@@ -717,7 +750,8 @@ public final class TestUtils {
         receiver.verifyNoExceptionOrThrow();
     }
 
-    public static void deleteRecords(List<Record> records) throws InterruptedException {
+    /** Helper function to delete records from the DB using HealthConnectManager. */
+    public static void deleteRecords(List<? extends Record> records) throws InterruptedException {
         List<RecordIdFilter> recordIdFilters =
                 records.stream()
                         .map(
@@ -799,6 +833,14 @@ public final class TestUtils {
     public static void startMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().startMigration(Executors.newSingleThreadExecutor(), receiver);
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    public static void writeMigrationData(List<MigrationEntity> entities)
+            throws InterruptedException {
+        MigrationReceiver receiver = new MigrationReceiver();
+        getHealthConnectManager()
+                .writeMigrationData(entities, Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -1359,7 +1401,7 @@ public final class TestUtils {
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action) {
-        sendCommandToTestAppReceiver(context, action, /*extras=*/ null);
+        sendCommandToTestAppReceiver(context, action, /* extras= */ null);
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
