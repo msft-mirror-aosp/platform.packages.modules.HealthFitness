@@ -16,7 +16,7 @@
 
 package android.healthconnect.cts.logging;
 
-import static android.healthconnect.cts.logging.HostSideTestsUtils.isHardwareSupported;
+import static android.healthconnect.cts.HostSideTestUtil.isHardwareSupported;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -51,6 +51,9 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
     private static final String DAILY_LOG_TESTS_ACTIVITY = ".DailyLogsTests";
     private static final String HEALTH_CONNECT_SERVICE_LOG_TESTS_ACTIVITY =
             ".HealthConnectServiceLogsTests";
+    public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
+    public static final String NAMESPACE_HEALTH_FITNESS = "health_fitness";
+    private String mRateLimiterFeatureFlagDefaultValue;
     private IBuildInfo mCtsBuild;
     private Instant mTestStartTime;
     private Instant mTestStartTimeOnDevice;
@@ -63,6 +66,8 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         super.setUp();
         assertThat(mCtsBuild).isNotNull();
         assertThat(isHardwareSupported(getDevice())).isTrue();
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        setupRateLimitingFeatureFlag();
         mTestStartTime = Instant.now();
         mTestStartTimeOnDevice = Instant.ofEpochMilli(getDevice().getDeviceDate());
         ConfigUtils.removeConfig(getDevice());
@@ -74,6 +79,8 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
 
     @Override
     protected void tearDown() throws Exception {
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        restoreRateLimitingFeatureFlag();
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
         clearData();
@@ -115,8 +122,7 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
                 new int[] {ApiExtensionAtoms.HEALTH_CONNECT_STORAGE_STATS_FIELD_NUMBER});
 
         List<StatsLog.EventMetricData> data =
-                getEventMetricDataList(
-                        /* testName= */ "testHealthConnectDatabaseStats", NUMBER_OF_RETRIES);
+                getEventMetricDataList("testInsertRecordsSucceed", NUMBER_OF_RETRIES);
         assertThat(data.size()).isAtLeast(1);
         HealthConnectStorageStats atom =
                 data.get(0).getAtom().getExtension(ApiExtensionAtoms.healthConnectStorageStats);
@@ -352,5 +358,29 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
                                 + mTestStartTimeOnDevice.plusMillis(timeDiff).toEpochMilli()
                                 + " --user_should_confirm_time false --elapsed_realtime 0");
         getDevice().executeShellCommand("am broadcast -a android.intent.action.TIME_SET");
+    }
+
+    private void setupRateLimitingFeatureFlag() throws Exception {
+        // Store default value of the flag on device for teardown.
+        mRateLimiterFeatureFlagDefaultValue =
+                DeviceUtils.getDeviceConfigFeature(
+                        getDevice(), NAMESPACE_HEALTH_FITNESS, ENABLE_RATE_LIMITER_FLAG);
+
+        DeviceUtils.putDeviceConfigFeature(
+                getDevice(), NAMESPACE_HEALTH_FITNESS, ENABLE_RATE_LIMITER_FLAG, "false");
+    }
+
+    private void restoreRateLimitingFeatureFlag() throws Exception {
+        if (mRateLimiterFeatureFlagDefaultValue == null
+                || mRateLimiterFeatureFlagDefaultValue.equals("null")) {
+            DeviceUtils.deleteDeviceConfigFeature(
+                    getDevice(), NAMESPACE_HEALTH_FITNESS, ENABLE_RATE_LIMITER_FLAG);
+        } else {
+            DeviceUtils.putDeviceConfigFeature(
+                    getDevice(),
+                    NAMESPACE_HEALTH_FITNESS,
+                    ENABLE_RATE_LIMITER_FLAG,
+                    mRateLimiterFeatureFlagDefaultValue);
+        }
     }
 }
