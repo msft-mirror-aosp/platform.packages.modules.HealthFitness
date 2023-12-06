@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ஏதுமில்லை"</string>
     <string name="entry_details_title" msgid="590184849040247850">"உள்ளீட்டு விவரங்கள்"</string>
     <string name="backup_title" msgid="211503191266235085">"காப்புப் பிரதி எடு"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"தரவு மூலங்களும் முன்னுரிமையும்"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"தரவு மூலங்களும் முன்னுரிமையும்"</string>
     <string name="set_units_title" msgid="2657822539603758029">"அலகுகளை அமை"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"சமீபத்திய அணுகல்"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"சமீபத்தில் Health Connect ஆப்ஸை எந்த ஆப்ஸும் அணுகவில்லை"</string>
@@ -790,8 +790,7 @@
     <string name="data_sources_help_link" msgid="7740264923634947915">"மூலங்களும் முன்னுரிமையும் செயல்படும் விதம்"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"ஆப்ஸைச் சேர்த்தல்"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"ஆப்ஸ் ஆதாரங்களை மாற்றுதல்"</string>
-    <!-- no translation found for default_app_summary (6183876151011837062) -->
-    <skip />
+    <string name="default_app_summary" msgid="6183876151011837062">"சாதனத்தின் இயல்புநிலை"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ஆப்ஸ் தரவு"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Health Connectடுக்கான அணுகல் உள்ள ஆப்ஸின் தரவு இங்கே காட்டப்படும்"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"நாள்"</string>
