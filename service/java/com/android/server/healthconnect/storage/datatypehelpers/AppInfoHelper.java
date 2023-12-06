@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import static java.util.Objects.requireNonNull;
 
@@ -98,6 +99,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      * <p>TO HAVE THREAD SAFETY DON'T USE THESE VARIABLES DIRECTLY, INSTEAD USE ITS GETTER
      */
     private volatile ConcurrentHashMap<Long, String> mIdPackageNameMap;
+
     /**
      * Map to store application package-name -> AppInfo mapping (such as packageName -> appName,
      * icon, rowId in the DB etc.)
@@ -198,6 +200,10 @@ public final class AppInfoHelper extends DatabaseHelper {
      * @return id of {@code packageName} or {@link Constants#DEFAULT_LONG} if the id is not found
      */
     public long getAppInfoId(String packageName) {
+        if (packageName == null) {
+            return DEFAULT_LONG;
+        }
+
         AppInfoInternal appInfo = getAppInfoMap().getOrDefault(packageName, null);
 
         if (appInfo == null) {
@@ -520,7 +526,7 @@ public final class AppInfoHelper extends DatabaseHelper {
             Set<Integer> recordTypesUsed) {
         appInfo.setRecordTypesUsed(recordTypesUsed);
         // create upsert table request to modify app info table, keyed by packages name.
-        WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses();
+        WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses(AND);
         whereClauseForAppInfoTableUpdate.addWhereEqualsClause(
                 PACKAGE_COLUMN_NAME, appInfo.getPackageName());
         UpsertTableRequest upsertRequestForAppInfoUpdate =

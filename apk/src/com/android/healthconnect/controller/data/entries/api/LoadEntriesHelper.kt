@@ -31,10 +31,12 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.toPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
+import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.toLocalDate
+import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.Duration
 import java.time.Instant
@@ -63,6 +65,9 @@ constructor(
         private const val TAG = "LoadDataUseCaseHelper"
     }
 
+    /**
+     * Returns a list of records from a data type sorted in descending order of their start time.
+     */
     suspend fun readDataType(
         data: Class<out Record>,
         timeFilterRange: TimeInstantRangeFilter,
@@ -77,6 +82,17 @@ constructor(
                 .records
                 .sortedByDescending { record -> getStartTime(record) }
         return records
+    }
+
+    /** Returns a list of records from an input sorted in descending order of their start time. */
+    suspend fun readRecords(input: LoadDataEntriesInput): List<Record> {
+        val timeFilterRange =
+            getTimeFilter(input.displayedStartTime, input.period, endTimeExclusive = true)
+        val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(input.permissionType)
+
+        return dataTypes
+            .map { dataType -> readDataType(dataType, timeFilterRange, input.packageName) }
+            .flatten()
     }
 
     /**
@@ -171,6 +187,7 @@ constructor(
         period: DateNavigationPeriod,
         endTimeExclusive: Boolean
     ): TimeInstantRangeFilter {
+
         val start =
             startTime
                 .atZone(ZoneId.systemDefault())
@@ -181,10 +198,16 @@ constructor(
         if (endTimeExclusive) {
             end = end.minus(Duration.ofMillis(1))
         }
+
         return TimeInstantRangeFilter.Builder().setStartTime(start).setEndTime(end).build()
     }
 
-    private fun buildReadRecordsRequestUsingFilters(
+    fun getTimeFilter(startTime: Instant, endTime: Instant): TimeInstantRangeFilter {
+        return TimeInstantRangeFilter.Builder().setStartTime(startTime).setEndTime(endTime).build()
+    }
+
+    @VisibleForTesting
+    fun buildReadRecordsRequestUsingFilters(
         data: Class<out Record>,
         timeFilterRange: TimeInstantRangeFilter,
         packageName: String?

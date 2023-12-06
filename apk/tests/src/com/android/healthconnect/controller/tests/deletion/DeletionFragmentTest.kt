@@ -31,8 +31,10 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.ChosenRange
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
+import com.android.healthconnect.controller.deletion.DeletionConstants.START_INACTIVE_APP_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionParameters
+import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -49,6 +51,7 @@ import org.junit.Test
 import org.mockito.Mockito
 
 @HiltAndroidTest
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class DeletionFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -212,6 +215,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete all data from the last 24 hours?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -237,6 +246,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete all data from the last 7 days?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -266,6 +281,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete all data from the last 30 days?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -291,6 +312,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete all data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -321,6 +348,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete activity data from the last 24 hours?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -346,6 +379,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete activity data from the last 7 days?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -376,6 +415,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete activity data from the last 30 days?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -401,6 +446,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete activity data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -433,6 +484,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete blood glucose data from the last 24 hours?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -460,6 +517,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete blood glucose data from the last 7 days?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -492,6 +555,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete blood glucose data from the last 30 days?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -519,6 +588,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete blood glucose data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -550,6 +625,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete $TEST_APP_NAME data from the last 24 hours?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -576,6 +657,12 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete $TEST_APP_NAME data from the last 7 days?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -607,6 +694,12 @@ class DeletionFragmentTest {
         onView(withText("Permanently delete $TEST_APP_NAME data from the last 30 days?"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -633,6 +726,43 @@ class DeletionFragmentTest {
         onView(withText("Next")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteInActiveAppData_confirmationDialog_showsCorrectText() {
+        val deletionTypeAppData =
+            DeletionType.DeletionTypeAppData(
+                packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME)
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionType = deletionTypeAppData,
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_INACTIVE_APP_DELETION_EVENT,
+                    bundleOf(DELETION_TYPE to deletionTypeAppData))
+        }
+
+        onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
     }
@@ -665,9 +795,27 @@ class DeletionFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
         onView(withText("Go back")).inRoot(isDialog()).perform(click())
 
         onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "This permanently deletes all data added to Health\u00A0Connect in the chosen" +
+                        " time period"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Delete last 24 hours")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 7 days")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete last 30 days")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Delete all data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Next")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -692,7 +840,13 @@ class DeletionFragmentTest {
 
         onView(
                 withText(
-                    "Connected apps will no longer be able to access this data from Health Connect"))
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
@@ -728,8 +882,174 @@ class DeletionFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
 
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
         onView(withText("Cancel")).inRoot(isDialog()).perform(click())
 
         onView(withText("Permanently delete all data from all time?")).check(doesNotExist())
+    }
+
+    @Test
+    fun deleteFragment_progressIndicatorStartedState_progressIndicatorShown() {
+        val deletionTypeAllData = DeletionType.DeletionTypeAllData()
+
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionState = DeletionState.STATE_PROGRESS_INDICATOR_STARTED,
+                    deletionType = deletionTypeAllData,
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+        }
+
+        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Permanently delete all data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(withText("Delete")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Deleting your data")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteFragment_progressIndicatorCanEndState_progressIndicatorDisappears() {
+        val deletionTypeAllData = DeletionType.DeletionTypeAllData()
+
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionState = DeletionState.STATE_PROGRESS_INDICATOR_CAN_END,
+                    deletionType = deletionTypeAllData,
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+        }
+
+        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Permanently delete all data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(withText("Delete")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Deleting your data")).check(doesNotExist())
+    }
+
+    @Test
+    fun deleteFragment_deletionSuccessfulState_successMessageShown() {
+        val deletionTypeAllData = DeletionType.DeletionTypeAllData()
+
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionState = DeletionState.STATE_DELETION_SUCCESSFUL,
+                    deletionType = deletionTypeAllData,
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+        }
+
+        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Permanently delete all data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(withText("Delete")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Deleting your data")).inRoot(isDialog()).check(doesNotExist())
+        onView(withText("Data deleted")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("This data is no longer stored in Health\u00A0Connect."))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun deleteFragment_deletionFailedState_failureMessageShown() {
+        val deletionTypeAllData = DeletionType.DeletionTypeAllData()
+
+        Mockito.`when`(viewModel.deletionParameters).then {
+            MutableLiveData(
+                DeletionParameters(
+                    deletionState = DeletionState.STATE_DELETION_FAILED,
+                    deletionType = deletionTypeAllData,
+                    chosenRange = ChosenRange.DELETE_RANGE_ALL_DATA))
+        }
+
+        launchFragment<DeletionFragment>(Bundle()) {
+            (this as DeletionFragment)
+                .parentFragmentManager
+                .setFragmentResult(
+                    START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionTypeAllData))
+        }
+
+        onView(withId(R.id.radio_button_all)).inRoot(isDialog()).perform(click())
+
+        onView(withText("Next")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Permanently delete all data from all time?"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(
+                withText(
+                    "Connected apps will no longer be able to access this data from Health\u00A0Connect"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+
+        onView(withText("Delete")).inRoot(isDialog()).perform(click())
+
+        onView(withText("Deleting your data")).inRoot(isDialog()).check(doesNotExist())
+        onView(withText("Couldn't delete data")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Something went wrong and Health\u00A0Connect couldn't delete your data"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 }
