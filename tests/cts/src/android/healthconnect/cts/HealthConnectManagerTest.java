@@ -721,7 +721,7 @@ public class HealthConnectManagerTest {
     public void testAggregation_stepsCountTotal_acrossDST_works() throws Exception {
         ZoneOffset utcPlusOne = ZoneOffset.ofTotalSeconds(UTC.getTotalSeconds() + 3600);
 
-        Instant midNight = Instant.now().truncatedTo(DAYS);
+        Instant midNight = Instant.now().truncatedTo(DAYS).minus(1, DAYS);
 
         Instant t0057 = midNight.plus(57, MINUTES);
         Instant t0058 = midNight.plus(58, MINUTES);
@@ -738,12 +738,12 @@ public class HealthConnectManagerTest {
                         getStepsRecord(t0059, utcPlusOne, t0100, UTC, 16), // 1:59-1:00 in test
                         getStepsRecord(t0300, UTC, t0400, UTC, 250));
         TestUtils.insertRecords(records);
-        LocalDateTime startOfToday = LocalDateTime.now(UTC).truncatedTo(DAYS);
+        LocalDateTime startOfYesterday = LocalDateTime.now(UTC).truncatedTo(DAYS).minus(1, DAYS);
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Long>(
                                 new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(startOfToday.plus(1, HOURS))
-                                        .setEndTime(startOfToday.plus(4, HOURS))
+                                        .setStartTime(startOfYesterday.plus(1, HOURS))
+                                        .setEndTime(startOfYesterday.plus(4, HOURS))
                                         .build())
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
