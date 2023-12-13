@@ -16,16 +16,22 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static android.health.connect.Constants.DEFAULT_INT;
+
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.utils.PageTokenUtil;
+import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -36,41 +42,77 @@ import java.util.UUID;
  *
  * @hide
  */
+// TODO(b/308158714): Separate two types of requests: read by id and read by filter.
 public class ReadTransactionRequest {
     public static final String TYPE_NOT_PRESENT_PACKAGE_NAME = "package_name";
     private final List<ReadTableRequest> mReadTableRequests;
+    @Nullable // page token is null for read by id requests
+    private final PageTokenWrapper mPageToken;
+    private final int mPageSize;
 
     public ReadTransactionRequest(
-            String packageName,
+            String callingPackageName,
             ReadRecordsRequestParcel request,
-            long startDateAccess,
+            long startDateAccessMillis,
             boolean enforceSelfRead,
-            Map<String, Boolean> extraReadPermsMapping) {
+            Map<String, Boolean> extraPermsState) {
         RecordHelper<?> recordHelper =
                 RecordHelperProvider.getInstance().getRecordHelper(request.getRecordType());
         mReadTableRequests =
                 Collections.singletonList(
                         recordHelper.getReadTableRequest(
                                 request,
-                                packageName,
+                                callingPackageName,
                                 enforceSelfRead,
-                                startDateAccess,
-                                extraReadPermsMapping));
+                                startDateAccessMillis,
+                                extraPermsState));
+        if (request.getRecordIdFiltersParcel() == null) {
+            mPageToken = PageTokenUtil.decode(request.getPageToken(), request.isAscending());
+            mPageSize = request.getPageSize();
+        } else {
+            mPageSize = DEFAULT_INT;
+            mPageToken = null;
+        }
     }
 
     public ReadTransactionRequest(
-            Map<Integer, List<UUID>> recordTypeToUuids, long startDateAccess) {
+            String packageName,
+            Map<Integer, List<UUID>> recordTypeToUuids,
+            long startDateAccess,
+            Map<String, Boolean> extraPermsState) {
         mReadTableRequests = new ArrayList<>();
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
                         mReadTableRequests.add(
                                 RecordHelperProvider.getInstance()
                                         .getRecordHelper(recordType)
-                                        .getReadTableRequest(uuids, startDateAccess)));
+                                        .getReadTableRequest(
+                                                packageName,
+                                                uuids,
+                                                startDateAccess,
+                                                extraPermsState)));
+        mPageSize = DEFAULT_INT;
+        mPageToken = null;
     }
 
     @NonNull
     public List<ReadTableRequest> getReadRequests() {
         return mReadTableRequests;
+    }
+
+    @Nullable
+    public PageTokenWrapper getPageToken() {
+        return mPageToken;
+    }
+
+    /**
+     * Returns optional of page size in the {@link android.health.connect.ReadRecordsRequest}
+     * refined by this {@link ReadTransactionRequest}.
+     *
+     * <p>For {@link android.health.connect.ReadRecordsRequestUsingIds} requests, page size is
+     * {@code Optional.empty}.
+     */
+    public Optional<Integer> getPageSize() {
+        return mPageSize == DEFAULT_INT ? Optional.empty() : Optional.of(mPageSize);
     }
 }

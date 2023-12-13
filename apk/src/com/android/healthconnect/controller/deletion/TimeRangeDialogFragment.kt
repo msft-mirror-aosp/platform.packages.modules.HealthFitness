@@ -35,6 +35,7 @@ import java.time.Instant
 import javax.inject.Inject
 
 /** A {@link DialogFragment} for choosing the deletion time range. */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(DialogFragment::class)
 class TimeRangeDialogFragment : Hilt_TimeRangeDialogFragment() {
 
@@ -49,8 +50,8 @@ class TimeRangeDialogFragment : Hilt_TimeRangeDialogFragment() {
 
         return AlertDialogBuilder(this)
             .setLogName(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER)
-            .setTitle(R.string.time_range_title)
-            .setIcon(R.attr.deletionSettingsIcon)
+            .setCustomTitle(R.string.time_range_title)
+            .setCustomIcon(R.attr.deletionSettingsIcon)
             .setView(view)
             .setNegativeButton(
                 android.R.string.cancel,

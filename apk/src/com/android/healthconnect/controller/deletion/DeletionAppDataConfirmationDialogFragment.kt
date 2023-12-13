@@ -32,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint(DialogFragment::class)
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 class DeletionAppDataConfirmationDialogFragment : Hilt_DeletionAppDataConfirmationDialogFragment() {
 
     private val viewModel: DeletionViewModel by activityViewModels()
@@ -55,9 +56,9 @@ class DeletionAppDataConfirmationDialogFragment : Hilt_DeletionAppDataConfirmati
             AlertDialogBuilder(this)
                 .setLogName(
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
-                .setTitle(getString(R.string.confirming_question_app_data_all, appName))
+                .setCustomTitle(getString(R.string.confirming_question_app_data_all, appName))
                 .setView(view)
-                .setIcon(R.attr.deleteIcon)
+                .setCustomIcon(R.attr.deleteIcon)
                 .setPositiveButton(
                     R.string.confirming_question_delete_button,
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON) {

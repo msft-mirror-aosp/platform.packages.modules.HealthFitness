@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -101,7 +102,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
         WhereClauses whereClause =
-                new WhereClauses()
+                new WhereClauses(AND)
                         .addWhereGreaterThanClause(PRIMARY_COLUMN_NAME, String.valueOf(token));
         if (!changeLogTokenRequest.getRecordTypes().isEmpty()) {
             whereClause.addWhereInIntsClause(
@@ -115,12 +116,12 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                             .getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
         }
 
-        // In setLimit(pagesize) method size will be set to pageSize + 1,so that if number of
-        // records returned is more than pageSize we know there are more records available to return
-        // for the next read.
+        // We set limit size to requested pageSize plus extra 1 record so that if number of records
+        // queried is more than pageSize we know there are more records available to return for the
+        // next read.
         int pageSize = changeLogsRequest.getPageSize();
         final ReadTableRequest readTableRequest =
-                new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize);
+                new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize + 1);
 
         Map<Integer, ChangeLogs> operationToChangeLogMap = new ArrayMap<>();
         TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
@@ -221,6 +222,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         @OperationType.OperationTypes private final int mOperationType;
         private final String mPackageName;
         private final long mChangeLogTimeStamp;
+
         /**
          * Creates a change logs object used to add a new change log for {@code operationType} for
          * {@code packageName} logged at time {@code timeStamp }
@@ -238,6 +240,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             mPackageName = packageName;
             mChangeLogTimeStamp = timeStamp;
         }
+
         /**
          * Creates a change logs object used to add a new change log for {@code operationType}
          * logged at time {@code timeStamp }
