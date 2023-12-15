@@ -107,6 +107,7 @@ public class StepsCadenceRecordHelper
         contentValues.put(EPOCH_MILLIS_COLUMN_NAME, stepsCadenceRecord.getEpochMillis());
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
@@ -122,6 +123,7 @@ public class StepsCadenceRecordHelper
         }
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         switch (aggregateRequest.getAggregationTypeIdentifier()) {
@@ -129,9 +131,7 @@ public class StepsCadenceRecordHelper
             case STEPS_CADENCE_RECORD_RATE_MIN:
             case STEPS_CADENCE_RECORD_RATE_MAX:
                 return new AggregateParams(
-                                SERIES_TABLE_NAME,
-                                Collections.singletonList(RATE_COLUMN_NAME),
-                                START_TIME_COLUMN_NAME)
+                                SERIES_TABLE_NAME, Collections.singletonList(RATE_COLUMN_NAME))
                         .setJoin(
                                 new SqlJoin(
                                         SERIES_TABLE_NAME,

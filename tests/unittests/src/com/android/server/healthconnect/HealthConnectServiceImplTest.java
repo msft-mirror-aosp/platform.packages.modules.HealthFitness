@@ -58,7 +58,7 @@ import android.util.ArrayMap;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.LocalManagerRegistry;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -72,19 +72,20 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.MockitoSession;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 /** Unit test class for {@link HealthConnectServiceImpl} */
 @RunWith(AndroidJUnit4.class)
@@ -109,6 +110,8 @@ public class HealthConnectServiceImplTest {
                     "revokeHealthPermission",
                     "revokeAllHealthPermissions",
                     "getGrantedHealthPermissions",
+                    "getHealthPermissionsFlags",
+                    "makeHealthPermissionsRequestable",
                     "getHistoricalAccessStartDateInMilliseconds",
                     "insertRecords",
                     "aggregateRecords",
@@ -143,7 +146,18 @@ public class HealthConnectServiceImplTest {
                     "insertMinDataMigrationSdkExtensionVersion",
                     "asBinder");
 
+    @Rule
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(Environment.class)
+                    .mockStatic(PreferenceHelper.class)
+                    .mockStatic(LocalManagerRegistry.class)
+                    .mockStatic(UserHandle.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
     @Mock private TransactionManager mTransactionManager;
+    @Mock private HealthConnectDeviceConfigManager mDeviceConfigManager;
     @Mock private HealthConnectPermissionHelper mHealthConnectPermissionHelper;
     @Mock private MigrationCleaner mMigrationCleaner;
     @Mock private FirstGrantTimeManager mFirstGrantTimeManager;
@@ -156,35 +170,29 @@ public class HealthConnectServiceImplTest {
     @Mock IMigrationCallback mCallback;
     private Context mContext;
     private HealthConnectServiceImpl mHealthConnectService;
-    private MockitoSession mStaticMockSession;
     private UserHandle mUserHandle;
     private File mMockDataDirectory;
 
     @Before
     public void setUp() throws Exception {
-        mStaticMockSession =
-                ExtendedMockito.mockitoSession()
-                        .mockStatic(Environment.class)
-                        .mockStatic(PreferenceHelper.class)
-                        .mockStatic(LocalManagerRegistry.class)
-                        .mockStatic(UserHandle.class)
-                        .strictness(Strictness.LENIENT)
-                        .startMocking();
-        MockitoAnnotations.initMocks(this);
-        mContext = InstrumentationRegistry.getInstrumentation().getContext();
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
-        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
-                .thenReturn(mAppOpsManagerLocal);
         when(UserHandle.of(anyInt())).thenCallRealMethod();
         mUserHandle = UserHandle.of(UserHandle.myUserId());
         when(mServiceContext.getPackageManager()).thenReturn(mPackageManager);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
 
+        mContext =
+                new HealthConnectUserContext(
+                        InstrumentationRegistry.getInstrumentation().getContext(), mUserHandle);
+        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
+        when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
+        when(LocalManagerRegistry.getManager(AppOpsManagerLocal.class))
+                .thenReturn(mAppOpsManagerLocal);
+
         mHealthConnectService =
                 new HealthConnectServiceImpl(
                         mTransactionManager,
+                        mDeviceConfigManager,
                         mHealthConnectPermissionHelper,
                         mMigrationCleaner,
                         mFirstGrantTimeManager,
@@ -194,14 +202,14 @@ public class HealthConnectServiceImplTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws TimeoutException {
+        TestUtils.waitForAllScheduledTasksToComplete();
         deleteDir(mMockDataDirectory);
         clearInvocations(mPreferenceHelper);
-        mStaticMockSession.finishMocking();
     }
 
     @Test
-    public void testInstatiated_attachesMigrationCleanerToMigrationStateManager() {
+    public void testInstantiated_attachesMigrationCleanerToMigrationStateManager() {
         verify(mMigrationCleaner).attachTo(mMigrationStateManager);
     }
 
@@ -494,10 +502,16 @@ public class HealthConnectServiceImplTest {
                 if (file.isDirectory()) {
                     deleteDir(file);
                 } else {
-                    file.delete();
+                    assertThat(file.delete()).isTrue();
                 }
             }
         }
-        assertThat(dir.delete()).isTrue();
+        assertWithMessage(
+                        "Directory "
+                                + dir.getAbsolutePath()
+                                + " is not empty, Files present = "
+                                + Arrays.toString(dir.list()))
+                .that(dir.delete())
+                .isTrue();
     }
 }

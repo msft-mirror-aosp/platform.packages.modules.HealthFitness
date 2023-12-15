@@ -31,7 +31,10 @@ import android.health.connect.datatypes.AggregationType;
 import android.util.ArrayMap;
 import android.util.Slog;
 
+import androidx.annotation.Nullable;
+
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.storage.request.AggregateParams;
 
 import java.time.ZoneOffset;
@@ -143,11 +146,13 @@ public class PriorityRecordsAggregator {
         }
 
         while (mLatestPopulatedStart <= expansionBorder && cursor.moveToNext()) {
-            AggregationRecordData data = readNewDataAndAddToBuffer(cursor);
-            mLatestPopulatedStart = data.getStartTime();
+            AggregationRecordData data = readNewDataAndMaybeAddToBuffer(cursor);
+            if (data != null) {
+                mLatestPopulatedStart = data.getStartTime();
 
-            if (Constants.DEBUG) {
-                Slog.d(TAG, "Updated buffer with : " + data);
+                if (Constants.DEBUG) {
+                    Slog.d(TAG, "Updated buffer with : " + data);
+                }
             }
         }
 
@@ -162,8 +167,11 @@ public class PriorityRecordsAggregator {
                     new AggregationTimestamp(AggregationTimestamp.GROUP_BORDER, groupSplit));
         }
 
-        if (cursor.moveToNext()) {
-            readNewDataAndAddToBuffer(cursor);
+        while (cursor.moveToNext()) {
+            AggregationRecordData data = readNewDataAndMaybeAddToBuffer(cursor);
+            if (data != null) {
+                break;
+            }
         }
 
         if (Constants.DEBUG) {
@@ -171,8 +179,24 @@ public class PriorityRecordsAggregator {
         }
     }
 
-    private AggregationRecordData readNewDataAndAddToBuffer(Cursor cursor) {
+    @Nullable
+    private AggregationRecordData readNewDataAndMaybeAddToBuffer(Cursor cursor) {
         AggregationRecordData data = readNewData(cursor);
+        int priority = data.getPriority();
+
+        if (HealthConnectDeviceConfigManager.getInitialisedInstance()
+                        .isAggregationSourceControlsEnabled()
+                && priority == Integer.MIN_VALUE) {
+            return null;
+        }
+
+        // TODO(b/313924267): workaround for b/308467442, should be remove once we have a long term
+        // solution
+        if (data.getStartTime() > data.getEndTime()) {
+            // skip records with start time > end time to keep the algorithm functional
+            return null;
+        }
+
         mTimestampsBuffer.add(data.getStartTimestamp());
         mTimestampsBuffer.add(data.getEndTimestamp());
         return data;
@@ -186,11 +210,13 @@ public class PriorityRecordsAggregator {
     }
 
     /** Returns result for the given group */
+    @SuppressWarnings("NullAway")
     public Double getResultForGroup(Integer groupNumber) {
         return mGroupToAggregationResult.get(groupNumber);
     }
 
     /** Returns start time zone offset for the given group */
+    @SuppressWarnings("NullAway")
     public ZoneOffset getZoneOffsetForGroup(Integer groupNumber) {
         return mGroupToFirstZoneOffset.get(groupNumber);
     }

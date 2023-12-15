@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -39,6 +38,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.OrderByClause;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -59,6 +59,8 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
+
+    @SuppressWarnings("NullAway.Init")
     private static volatile AccessLogsHelper sAccessLogsHelper;
 
     private AccessLogsHelper() {}
@@ -97,6 +99,30 @@ public final class AccessLogsHelper extends DatabaseHelper {
         return accessLogsList;
     }
 
+    /**
+     * Returns the timestamp of the latest access log and {@link Long.MIN_VALUE} if there is no
+     * access log.
+     */
+    public long getLatestAccessLogTimeStamp() {
+
+        final ReadTableRequest readTableRequest =
+                new ReadTableRequest(TABLE_NAME)
+                        .setOrderBy(
+                                new OrderByClause()
+                                        .addOrderByClause(ACCESS_TIME_COLUMN_NAME, false))
+                        .setLimit(1);
+
+        long mostRecentAccessTime = Long.MIN_VALUE;
+        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+            while (cursor.moveToNext()) {
+                long accessTime = getCursorLong(cursor, ACCESS_TIME_COLUMN_NAME);
+                mostRecentAccessTime = Math.max(mostRecentAccessTime, accessTime);
+            }
+        }
+        return mostRecentAccessTime;
+    }
+
     /** Adds an entry in to the access logs table for every insert or read operation request */
     public void addAccessLog(
             String packageName,
@@ -129,7 +155,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     public DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
-                        TIME_COLUMN_NAME,
+                        ACCESS_TIME_COLUMN_NAME,
                         Instant.EPOCH.toEpochMilli(),
                         Instant.now()
                                 .minus(DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
