@@ -90,6 +90,7 @@ public final class BloodPressureRecordHelper
         contentValues.put(BODY_POSITION_COLUMN_NAME, bloodPressureRecord.getBodyPosition());
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
@@ -111,6 +112,7 @@ public final class BloodPressureRecordHelper
         return new AggregateResult<>(aggregateValue).setZoneOffset(getZoneOffset(results));
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         List<String> columnNames;
@@ -128,7 +130,7 @@ public final class BloodPressureRecordHelper
             default:
                 return null;
         }
-        return new AggregateParams(BLOOD_PRESSURE_RECORD_TABLE_NAME, columnNames, TIME_COLUMN_NAME);
+        return new AggregateParams(BLOOD_PRESSURE_RECORD_TABLE_NAME, columnNames);
     }
 
     @Override

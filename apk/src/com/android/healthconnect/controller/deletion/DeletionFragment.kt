@@ -51,6 +51,7 @@ import java.time.Instant
  * ```
  * } </pre>
  */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(Fragment::class)
 class DeletionFragment : Hilt_DeletionFragment() {
 
@@ -152,7 +153,8 @@ class DeletionFragment : Hilt_DeletionFragment() {
         }
     }
 
-    private fun showAppDeleteConfirmationDialog() {
+    private fun showAppDeleteConfirmationDialog(isInactiveApp: Boolean = false) {
+        viewModel.isInactiveApp = isInactiveApp
         DeletionAppDataConfirmationDialogFragment()
             .show(childFragmentManager, DeletionAppDataConfirmationDialogFragment.TAG)
     }
@@ -178,7 +180,7 @@ class DeletionFragment : Hilt_DeletionFragment() {
 
     private fun showFirstDialog(deletionType: DeletionType, isInactiveApp: Boolean) {
         if (isInactiveApp) {
-            showAppDeleteConfirmationDialog()
+            showAppDeleteConfirmationDialog(isInactiveApp)
         } else {
             when (deletionType) {
                 is DeletionType.DeleteDataEntry -> showConfirmationDialog()

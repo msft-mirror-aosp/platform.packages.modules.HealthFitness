@@ -113,6 +113,7 @@ public class CyclingPedalingCadenceRecordHelper
         contentValues.put(EPOCH_MILLIS_COLUMN_NAME, cyclingPedalingCadenceRecord.getEpochMillis());
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     public final AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
@@ -129,6 +130,7 @@ public class CyclingPedalingCadenceRecordHelper
         }
     }
 
+    @SuppressWarnings("NullAway")
     @Override
     final AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         switch (aggregateRequest.getAggregationTypeIdentifier()) {
@@ -137,8 +139,7 @@ public class CyclingPedalingCadenceRecordHelper
             case CYCLING_PEDALING_CADENCE_RECORD_RPM_AVG:
                 return new AggregateParams(
                                 SERIES_TABLE_NAME,
-                                Collections.singletonList(REVOLUTIONS_PER_MINUTE_COLUMN_NAME),
-                                START_TIME_COLUMN_NAME)
+                                Collections.singletonList(REVOLUTIONS_PER_MINUTE_COLUMN_NAME))
                         .setJoin(
                                 new SqlJoin(
                                         SERIES_TABLE_NAME,

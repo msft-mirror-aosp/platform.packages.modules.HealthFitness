@@ -82,6 +82,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     }
 
     /** Get the date when the first health permission was granted. */
+    @SuppressWarnings("NullAway")
     @Nullable
     public Instant getFirstGrantTime(@NonNull String packageName, @NonNull UserHandle user)
             throws IllegalArgumentException {
@@ -145,7 +146,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         initAndValidateUserStateIfNeedLocked(user);
 
         if (!checkSupportPermissionsUsageIntent(packageNames, user)) {
-            logIfInDebugMode("Can find health intent declaration in ", packageNames[0]);
+            logIfInDebugMode("Cannot find health intent declaration in ", packageNames[0]);
             return;
         }
 
@@ -164,7 +165,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                     // already take care of merging permissions.
                     if (!MigrationStateManager.getInitialisedInstance().isMigrationInProgress()) {
                         HealthConnectThreadScheduler.scheduleInternalTask(
-                                () -> removeAppFromPriorityList(packageNames));
+                                () -> removeAppsFromPriorityList(packageNames));
                     }
                 } else {
                     // An app got new health permission, set current time as it's first grant
@@ -255,6 +256,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         }
     }
 
+    @SuppressWarnings("NullAway")
     @GuardedBy("mGrantTimeLock")
     private Instant getGrantTimeReadLocked(Integer uid) {
         mGrantTimeLock.readLock().lock();
@@ -282,6 +284,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         }
     }
 
+    @SuppressWarnings("NullAway")
     @GuardedBy("mGrantTimeLock")
     private boolean tryUpdateGrantTimeFromStagedDataLocked(UserHandle user, Integer uid) {
         UserGrantTimeState backupState = mDatastore.readForUser(user, DATA_TYPE_STAGED);
@@ -592,6 +595,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                     packageNameToGrantTime, sharedUserToGrantTime, CURRENT_VERSION);
         }
 
+        @SuppressWarnings("NullAway")
         @NonNull
         UserGrantTimeState extractUserBackupGrantTimeState(@NonNull UserHandle user) {
             Map<String, Instant> sharedUserToGrantTime = new ArrayMap<>();
@@ -650,9 +654,10 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         }
     }
 
-    private void removeAppFromPriorityList(String[] packageNames) {
+    private void removeAppsFromPriorityList(String[] packageNames) {
         for (String packageName : packageNames) {
-            HealthDataCategoryPriorityHelper.getInstance().removeAppFromPriorityList(packageName);
+            HealthDataCategoryPriorityHelper.getInstance()
+                    .maybeRemoveAppWithoutWritePermissionsFromPriorityList(packageName);
         }
     }
 

@@ -18,6 +18,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.android.healthconnect.controller">
 
+    <permission
+        android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
+        android:label="@string/background_read_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
     <!-- Read permissions for activities -->
     <!-- Allows an application to read calories burnt.
          <p>Protection level: dangerous
@@ -43,6 +49,12 @@
     <permission
         android:name="android.permission.health.READ_EXERCISE"
         android:label="@string/exercise_read_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <permission
+        android:name="android.permission.health.READ_EXERCISE_ROUTES_ALL"
+        android:label="@string/exercise_routes_all_read_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 

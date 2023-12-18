@@ -88,6 +88,7 @@ import android.os.Binder;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
 
 import java.lang.annotation.Retention;
@@ -250,6 +251,7 @@ public class HealthConnectManager {
     @SystemApi
     public static final String ACTION_HEALTH_CONNECT_MIGRATION_READY =
             "android.health.connect.action.HEALTH_CONNECT_MIGRATION_READY";
+
     /**
      * Unknown download state considered to be the default download state.
      *
@@ -258,6 +260,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_STATE_UNKNOWN = 0;
+
     /**
      * Indicates that the download has started.
      *
@@ -266,6 +269,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_STARTED = 1;
+
     /**
      * Indicates that the download is being retried.
      *
@@ -274,6 +278,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_RETRY = 2;
+
     /**
      * Indicates that the download has failed.
      *
@@ -282,6 +287,7 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_FAILED = 3;
+
     /**
      * Indicates that the download has completed.
      *
@@ -290,6 +296,24 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
+
+    /**
+     * Activity action: Launch activity exported by client application that handles onboarding to
+     * Health Connect.
+     *
+     * <p>Health Connect will invoke this intent whenever the user attempts to connect an app that
+     * has exported an activity that responds to this intent. The launched activity is responsible
+     * for making permission requests and any other prerequisites for connecting to Health Connect.
+     *
+     * <p class="note">Applications exporting an activity that is launched by this intent must also
+     * guard it with {@link HealthPermissions#START_ONBOARDING} so that only the system can launch
+     * it.
+     *
+     * @hide
+     */
+    @SdkConstant(SdkConstant.SdkConstantType.ACTIVITY_INTENT_ACTION)
+    public static final String ACTION_SHOW_ONBOARDING =
+            "android.health.connect.action.SHOW_ONBOARDING";
 
     private static final String TAG = "HealthConnectManager";
     private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
@@ -372,6 +396,58 @@ public class HealthConnectManager {
     public List<String> getGrantedHealthPermissions(@NonNull String packageName) {
         try {
             return mService.getGrantedHealthPermissions(packageName, mContext.getUser());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns permission flags for the given package name and Health permissions.
+     *
+     * <p>This is equivalent to calling {@link PackageManager#getPermissionFlags(String, String,
+     * UserHandle)} for each provided permission except it throws an exception for non-Health or
+     * undeclared permissions. Flag masks listed in {@link PackageManager#MASK_PERMISSION_FLAGS_ALL}
+     * can be used to check the flag values.
+     *
+     * <p>Returned flags for invalid, non-Health or undeclared permissions are equal to zero.
+     *
+     * @return a map which contains all requested permissions as keys and corresponding flags as
+     *     values.
+     * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
+     *     Health permissions or not declared by the app.
+     * @throws NullPointerException if any of the arguments is {@code null}.
+     * @throws SecurityException if the caller doesn't possess {@code
+     *     android.permission.MANAGE_HEALTH_PERMISSIONS}.
+     * @hide
+     */
+    @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
+    @UserHandleAware
+    public Map<String, Integer> getHealthPermissionsFlags(
+            @NonNull String packageName, @NonNull List<String> permissions) {
+        try {
+            return mService.getHealthPermissionsFlags(packageName, mContext.getUser(), permissions);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Allow provided permissions to be requested again if they previously were denied multiple
+     * times by the users.
+     *
+     * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
+     *     Health permissions or not declared by the app.
+     * @throws NullPointerException if any of the arguments is {@code null}.
+     * @throws SecurityException if the caller doesn't possess {@code
+     *     android.permission.MANAGE_HEALTH_PERMISSIONS}.
+     * @hide
+     */
+    @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
+    @UserHandleAware
+    public void makeHealthPermissionsRequestable(
+            @NonNull String packageName, @NonNull List<String> permissions) {
+        try {
+            mService.makeHealthPermissionsRequestable(packageName, mContext.getUser(), permissions);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

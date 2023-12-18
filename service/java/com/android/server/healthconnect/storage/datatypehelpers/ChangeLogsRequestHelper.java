@@ -26,6 +26,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorIntegerList;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorStringList;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -63,6 +64,8 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
     private static final String PACKAGE_NAME_COLUMN_NAME = "package_name";
     private static final String ROW_ID_CHANGE_LOGS_TABLE_COLUMN_NAME = "row_id_change_logs_table";
     private static final String TIME_COLUMN_NAME = "time";
+
+    @SuppressWarnings("NullAway.Init")
     private static volatile ChangeLogsRequestHelper sChangeLogsRequestHelper;
 
     private ChangeLogsRequestHelper() {}
@@ -141,7 +144,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         ReadTableRequest readTableRequest =
                 new ReadTableRequest(TABLE_NAME)
                         .setWhereClause(
-                                new WhereClauses()
+                                new WhereClauses(AND)
                                         .addWhereEqualsClause(PRIMARY_COLUMN_NAME, token)
                                         .addWhereEqualsClause(
                                                 PACKAGE_NAME_COLUMN_NAME, packageName));

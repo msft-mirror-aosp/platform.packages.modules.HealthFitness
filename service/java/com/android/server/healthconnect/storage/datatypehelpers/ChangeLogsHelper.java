@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -69,6 +70,8 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
+
+    @SuppressWarnings("NullAway.Init")
     private static volatile ChangeLogsHelper sChangeLogsHelper;
 
     private ChangeLogsHelper() {}
@@ -101,7 +104,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
         WhereClauses whereClause =
-                new WhereClauses()
+                new WhereClauses(AND)
                         .addWhereGreaterThanClause(PRIMARY_COLUMN_NAME, String.valueOf(token));
         if (!changeLogTokenRequest.getRecordTypes().isEmpty()) {
             whereClause.addWhereInIntsClause(
@@ -115,12 +118,12 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                             .getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
         }
 
-        // In setLimit(pagesize) method size will be set to pageSize + 1,so that if number of
-        // records returned is more than pageSize we know there are more records available to return
-        // for the next read.
+        // We set limit size to requested pageSize plus extra 1 record so that if number of records
+        // queried is more than pageSize we know there are more records available to return for the
+        // next read.
         int pageSize = changeLogsRequest.getPageSize();
         final ReadTableRequest readTableRequest =
-                new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize);
+                new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize + 1);
 
         Map<Integer, ChangeLogs> operationToChangeLogMap = new ArrayMap<>();
         TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
@@ -151,6 +154,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         return TransactionManager.getInitialisedInstance().getLastRowIdFor(TABLE_NAME);
     }
 
+    @SuppressWarnings("NullAway")
     private int addChangeLogs(Cursor cursor, Map<Integer, ChangeLogs> changeLogs) {
         @RecordTypeIdentifier.RecordType
         int recordType = getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME);
@@ -221,6 +225,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         @OperationType.OperationTypes private final int mOperationType;
         private final String mPackageName;
         private final long mChangeLogTimeStamp;
+
         /**
          * Creates a change logs object used to add a new change log for {@code operationType} for
          * {@code packageName} logged at time {@code timeStamp }
@@ -238,6 +243,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             mPackageName = packageName;
             mChangeLogTimeStamp = timeStamp;
         }
+
         /**
          * Creates a change logs object used to add a new change log for {@code operationType}
          * logged at time {@code timeStamp }
@@ -246,6 +252,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
          *     or delete.
          * @param timeStamp Time when the change log is added.
          */
+        @SuppressWarnings("NullAway")
         public ChangeLogs(@OperationType.OperationTypes int operationType, long timeStamp) {
             mOperationType = operationType;
             mChangeLogTimeStamp = timeStamp;
@@ -277,6 +284,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         }
 
         /** Function to add an uuid corresponding to given pair of @recordType and @appId */
+        @SuppressWarnings("NullAway")
         public void addUUID(
                 @RecordTypeIdentifier.RecordType int recordType,
                 @NonNull long appId,
@@ -313,6 +321,8 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             return requests;
         }
 
+        /** Adds {@code uuids} to {@link ChangeLogs}. */
+        @SuppressWarnings("NullAway")
         public ChangeLogs addUUIDs(
                 @RecordTypeIdentifier.RecordType int recordType,
                 @NonNull long appId,

@@ -68,6 +68,7 @@ constructor(
     val priorityList: LiveData<PriorityListState>
         get() = _priorityList
 
+
     /** Provides a list of apps with data in [HealthPermissionTypesFragment]. */
     val appsWithData: LiveData<AppsWithDataFragmentState>
         get() = _appsWithData
@@ -152,6 +153,7 @@ constructor(
 
     fun updatePriorityList(category: @HealthDataCategoryInt Int, newPriorityList: List<String>) {
         _priorityList.postValue(PriorityListState.Loading)
+
         viewModelScope.launch {
             updatePriorityListUseCase.invoke(newPriorityList, category)
             val appMetadataList: List<AppMetadata> =
