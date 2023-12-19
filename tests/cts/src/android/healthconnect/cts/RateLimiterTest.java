@@ -60,7 +60,17 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class RateLimiterTest {
     private static final String TAG = "RateLimiterTest";
-    private static final int MAX_FOREGROUND_CALL_15M = 1000;
+
+    // Write limit that must exceed the quota
+    private static final int MAX_FOREGROUND_WRITE_CALL_15M = 1000;
+
+    // TODO: b/316582061 - this can be improved further to prevent possible failures in the future
+    // The lowest read quota limit across all module versions
+    private static final int LOW_FOREGROUND_READ_CALL_15M = 1000;
+
+    // The highest read quota limit across all module versions
+    private static final int HIGH_FOREGROUND_READ_CALL_15M = 2000;
+
     private static final Duration WINDOW_15M = Duration.ofMinutes(15);
     public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
     private final UiAutomation mUiAutomation =
@@ -87,13 +97,14 @@ public class RateLimiterTest {
 
     @Test
     public void testTryAcquireApiCallQuota_writeCallsInLimit() throws InterruptedException {
-        tryAcquireCallQuotaNTimesForWrite(MAX_FOREGROUND_CALL_15M);
+        tryAcquireCallQuotaNTimesForWrite(MAX_FOREGROUND_WRITE_CALL_15M);
     }
 
     @Test
     public void testTryAcquireApiCallQuota_readCallsInLimit() throws InterruptedException {
         List<Record> testRecord = List.of(StepsRecordTest.getCompleteStepsRecord());
-        tryAcquireCallQuotaNTimesForRead(testRecord, TestUtils.insertRecords(testRecord));
+        tryAcquireCallQuotaNTimesForRead(
+                testRecord, TestUtils.insertRecords(testRecord), LOW_FOREGROUND_READ_CALL_15M);
     }
 
     @Test
@@ -128,10 +139,10 @@ public class RateLimiterTest {
 
     private void exceedWriteQuota() throws InterruptedException {
         Instant startTime = Instant.now();
-        tryAcquireCallQuotaNTimesForWrite(MAX_FOREGROUND_CALL_15M);
+        tryAcquireCallQuotaNTimesForWrite(MAX_FOREGROUND_WRITE_CALL_15M);
         Instant endTime = Instant.now();
         float quotaAcquired =
-                getQuotaAcquired(startTime, endTime, WINDOW_15M, MAX_FOREGROUND_CALL_15M);
+                getQuotaAcquired(startTime, endTime, WINDOW_15M, MAX_FOREGROUND_WRITE_CALL_15M);
         List<Record> testRecord = List.of(StepsRecordTest.getCompleteStepsRecord());
         while (quotaAcquired > 1) {
             TestUtils.insertRecords(testRecord);
@@ -152,10 +163,12 @@ public class RateLimiterTest {
         Instant startTime = Instant.now();
         List<Record> testRecord = Arrays.asList(StepsRecordTest.getCompleteStepsRecord());
         List<Record> insertedRecords = TestUtils.insertRecords(testRecord);
-        tryAcquireCallQuotaNTimesForRead(testRecord, insertedRecords);
+        tryAcquireCallQuotaNTimesForRead(
+                testRecord, insertedRecords, HIGH_FOREGROUND_READ_CALL_15M);
         Instant endTime = Instant.now();
+
         float quotaAcquired =
-                getQuotaAcquired(startTime, endTime, WINDOW_15M, MAX_FOREGROUND_CALL_15M);
+                getQuotaAcquired(startTime, endTime, WINDOW_15M, HIGH_FOREGROUND_READ_CALL_15M);
         while (quotaAcquired > 1) {
             readStepsRecordUsingIds(insertedRecords);
             quotaAcquired--;
@@ -178,14 +191,15 @@ public class RateLimiterTest {
      * ChangeLogToken, ChangeLog, Read, and Aggregate APIs.
      */
     private void tryAcquireCallQuotaNTimesForRead(
-            List<Record> testRecord, List<Record> insertedRecords) throws InterruptedException {
+            List<Record> testRecord, List<Record> insertedRecords, int times)
+            throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         // 200 calls.
         for (int i = 0; i < 100; i++) {
             getChangeLog(context);
         }
 
-        for (int i = 0; i < MAX_FOREGROUND_CALL_15M - 300; i++) {
+        for (int i = 0; i < times - 300; i++) {
             readStepsRecordUsingIds(insertedRecords);
         }
 
