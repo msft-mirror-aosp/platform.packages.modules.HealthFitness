@@ -13,100 +13,176 @@
  */
 package com.android.healthconnect.controller.datasources.api
 
-import android.health.connect.HealthConnectManager
-import androidx.core.os.asOutcomeReceiver
-import com.android.healthconnect.controller.dataentries.LoadAggregationInput
-import com.android.healthconnect.controller.dataentries.LoadDataAggregationsUseCase
+import android.health.connect.HealthDataCategory
+import com.android.healthconnect.controller.data.entries.api.ILoadDataAggregationsUseCase
+import com.android.healthconnect.controller.data.entries.api.LoadAggregationInput
+import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.datasources.AggregationCardInfo
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.service.IoDispatcher
-import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
+import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
+import com.android.healthconnect.controller.utils.toInstantAtStartOfDay
+import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 @Singleton
 class LoadMostRecentAggregationsUseCase
 @Inject
 constructor(
-        private val healthConnectManager: HealthConnectManager,
-        private val loadDataAggregationsUseCase: LoadDataAggregationsUseCase,
-        @IoDispatcher private val dispatcher: CoroutineDispatcher,
-){
+    private val loadDataAggregationsUseCase: ILoadDataAggregationsUseCase,
+    private val loadLastDateWithPriorityDataUseCase: ILoadLastDateWithPriorityDataUseCase,
+    private val sleepSessionHelper: ISleepSessionHelper,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+) : ILoadMostRecentAggregationsUseCase {
+
     /**
-     * Invoked only for the Activity category to provide [AggregationDataCard]s info
+     * Provides the most recent [AggregationDataCard]s info for Activity or Sleep.
+     *
+     * The latest aggregation always belongs to apps on the priority list. Apps not on the priority
+     * list do not contribute to aggregations or the last displayed date.
      */
-    suspend operator fun invoke(): UseCaseResults<List<AggregationCardInfo>> =
-            withContext(dispatcher) {
-                try {
-                    val resultsList = mutableListOf<AggregationCardInfo>()
-                    val stepsRecordTypes = HealthPermissionToDatatypeMapper.getDataTypes(HealthPermissionType.STEPS)
-                    val datesWithStepsData = suspendCancellableCoroutine {  continuation ->
-                        healthConnectManager.queryActivityDates(stepsRecordTypes,
-                                Runnable::run, continuation.asOutcomeReceiver())
+    override suspend operator fun invoke(
+        healthDataCategory: @HealthDataCategoryInt Int
+    ): UseCaseResults<List<AggregationCardInfo>> =
+        withContext(dispatcher) {
+            try {
+                val resultsList = mutableListOf<AggregationCardInfo>()
+                if (healthDataCategory == HealthDataCategory.ACTIVITY) {
+                    val activityPermissionTypesWithAggregations =
+                        listOf(
+                            HealthPermissionType.STEPS,
+                            HealthPermissionType.DISTANCE,
+                            HealthPermissionType.TOTAL_CALORIES_BURNED)
+
+                    activityPermissionTypesWithAggregations.forEach { permissionType ->
+                        val lastDateWithData: LocalDate?
+                        when (val lastDateWithDataResult =
+                            loadLastDateWithPriorityDataUseCase.invoke(permissionType)) {
+                            is UseCaseResults.Success -> {
+                                lastDateWithData = lastDateWithDataResult.data
+                            }
+                            is UseCaseResults.Failed -> {
+                                return@withContext UseCaseResults.Failed(
+                                    lastDateWithDataResult.exception)
+                            }
+                        }
+
+                        val cardInfo =
+                            getLastAvailableActivityAggregation(lastDateWithData, permissionType)
+                        cardInfo?.let { resultsList.add(it) }
+                    }
+                } else if (healthDataCategory == HealthDataCategory.SLEEP) {
+
+                    val lastDateWithSleepData: LocalDate?
+                    when (val lastDateWithSleepDataResult =
+                        loadLastDateWithPriorityDataUseCase.invoke(HealthPermissionType.SLEEP)) {
+                        is UseCaseResults.Success -> {
+                            lastDateWithSleepData = lastDateWithSleepDataResult.data
+                        }
+                        is UseCaseResults.Failed -> {
+                            return@withContext UseCaseResults.Failed(
+                                lastDateWithSleepDataResult.exception)
+                        }
                     }
 
-                    if (datesWithStepsData.isNotEmpty()) {
-                        val stepsCardInfo = getLastAvailableAggregation(datesWithStepsData, HealthPermissionType.STEPS)
-                        stepsCardInfo?.let { resultsList.add(it) }
-                    }
-
-                    val distanceRecordTypes = HealthPermissionToDatatypeMapper.getDataTypes(HealthPermissionType.DISTANCE)
-                    val datesWithDistanceData = suspendCancellableCoroutine {  continuation ->
-                        healthConnectManager.queryActivityDates(distanceRecordTypes,
-                                Runnable::run, continuation.asOutcomeReceiver())
-                    }
-
-                    if (datesWithDistanceData.isNotEmpty()) {
-                        val distanceCardInfo = getLastAvailableAggregation(datesWithDistanceData, HealthPermissionType.DISTANCE)
-                        distanceCardInfo?.let { resultsList.add(it) }
-                    }
-
-                    val caloriesRecordTypes = HealthPermissionToDatatypeMapper.getDataTypes(HealthPermissionType.TOTAL_CALORIES_BURNED)
-                    val datesWithCaloriesData = suspendCancellableCoroutine {  continuation ->
-                        healthConnectManager.queryActivityDates(caloriesRecordTypes,
-                                Runnable::run, continuation.asOutcomeReceiver())
-                    }
-
-                    if (datesWithCaloriesData.isNotEmpty()) {
-                        val caloriesCardInfo = getLastAvailableAggregation(datesWithCaloriesData, HealthPermissionType.TOTAL_CALORIES_BURNED)
-                        caloriesCardInfo?.let { resultsList.add(it) }
-                    }
-
-                    UseCaseResults.Success(resultsList.toList())
-
-                } catch (e: Exception) {
-                    UseCaseResults.Failed(e)
+                    val sleepCardInfo = getLastAvailableSleepAggregation(lastDateWithSleepData)
+                    sleepCardInfo?.let { resultsList.add(it) }
                 }
-            }
 
-    private suspend fun getLastAvailableAggregation(
-            datesWithData: List<LocalDate>,
-            healthPermissionType: HealthPermissionType): AggregationCardInfo? {
+                UseCaseResults.Success(resultsList.toList())
+            } catch (e: Exception) {
+                UseCaseResults.Failed(e)
+            }
+        }
+
+    private suspend fun getLastAvailableActivityAggregation(
+        lastDateWithData: LocalDate?,
+        healthPermissionType: HealthPermissionType
+    ): AggregationCardInfo? {
+        if (lastDateWithData == null) {
+            return null
+        }
+
         // Get aggregate for last day
-        val lastDate = datesWithData.maxOf { it }
-        val lastDateInstant = lastDate.atStartOfDay(ZoneId.systemDefault()).toInstant()
+        val lastDateInstant = lastDateWithData.toInstantAtStartOfDay()
 
         // call for aggregate
-        val input = LoadAggregationInput(healthPermissionType, lastDateInstant)
+        val input =
+            LoadAggregationInput.PeriodAggregation(
+                permissionType = healthPermissionType,
+                packageName = null,
+                displayedStartTime = lastDateInstant,
+                period = DateNavigationPeriod.PERIOD_DAY,
+                showDataOrigin = false)
 
         return when (val useCaseResult = loadDataAggregationsUseCase.invoke(input)) {
             is UseCaseResults.Success -> {
                 // use this aggregation value to construct the card
-                AggregationCardInfo(
-                        healthPermissionType,
-                        useCaseResult.data,
-                        lastDateInstant)
+                AggregationCardInfo(healthPermissionType, useCaseResult.data, lastDateInstant)
             }
             is UseCaseResults.Failed -> {
-                // Something went wrong here, so return nothing
-                null
+                throw useCaseResult.exception
             }
         }
     }
+
+    private suspend fun getLastAvailableSleepAggregation(
+        lastDateWithData: LocalDate?
+    ): AggregationCardInfo? {
+        if (lastDateWithData == null) {
+            return null
+        }
+
+        when (val result = sleepSessionHelper.clusterSleepSessions(lastDateWithData)) {
+            is UseCaseResults.Success -> {
+                result.data?.let { pair ->
+                    return computeSleepAggregation(pair.first, pair.second)
+                }
+            }
+            is UseCaseResults.Failed -> {
+                throw result.exception
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * Returns an [AggregationCardInfo] representing the total sleep time from a list of sleep
+     * sessions starting on a particular day.
+     */
+    private suspend fun computeSleepAggregation(
+        minStartTime: Instant,
+        maxEndTime: Instant
+    ): AggregationCardInfo {
+        val aggregationInput =
+            LoadAggregationInput.CustomAggregation(
+                permissionType = HealthPermissionType.SLEEP,
+                packageName = null,
+                startTime = minStartTime,
+                endTime = maxEndTime,
+                showDataOrigin = false)
+
+        return when (val useCaseResult = loadDataAggregationsUseCase.invoke(aggregationInput)) {
+            is UseCaseResults.Success -> {
+                // use this aggregation value to construct the card
+                AggregationCardInfo(
+                    HealthPermissionType.SLEEP, useCaseResult.data, minStartTime, maxEndTime)
+            }
+            is UseCaseResults.Failed -> {
+                throw useCaseResult.exception
+            }
+        }
+    }
+}
+
+interface ILoadMostRecentAggregationsUseCase {
+    suspend fun invoke(
+        healthDataCategory: @HealthDataCategoryInt Int
+    ): UseCaseResults<List<AggregationCardInfo>>
 }

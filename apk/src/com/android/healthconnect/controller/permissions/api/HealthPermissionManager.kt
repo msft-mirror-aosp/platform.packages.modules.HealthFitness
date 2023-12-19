@@ -24,6 +24,8 @@ interface HealthPermissionManager {
 
     fun getHealthPermissionsFlags(packageName: String, permissions: List<String>): Map<String, Int>
 
+    fun makeHealthPermissionsRequestable(packageName: String, permissions: List<String>)
+
     fun grantHealthPermission(packageName: String, permissionName: String)
 
     fun revokeHealthPermission(packageName: String, permissionName: String)

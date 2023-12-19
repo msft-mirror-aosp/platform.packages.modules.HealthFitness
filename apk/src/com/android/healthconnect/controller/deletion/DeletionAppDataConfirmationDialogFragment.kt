@@ -19,6 +19,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -26,6 +27,7 @@ import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.DeletionConstants.CONFIRMATION_EVENT
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.logging.DeletionDialogConfirmationElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,26 +41,40 @@ class DeletionAppDataConfirmationDialogFragment : Hilt_DeletionAppDataConfirmati
     @Inject lateinit var logger: HealthConnectLogger
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        var isInactiveApp = viewModel.isInactiveApp
+
         val view: View = layoutInflater.inflate(R.layout.dialog_message_with_checkbox, null)
+        val iconView = view.findViewById(R.id.dialog_icon) as ImageView
+        val title = view.findViewById(R.id.dialog_title) as TextView
         val message = view.findViewById(R.id.dialog_message) as TextView
         val checkBox = view.findViewById(R.id.dialog_checkbox) as CheckBox
 
         val appName = viewModel.deletionParameters.value?.getAppName()
+        val iconDrawable = AttributeResolver.getNullableDrawable(view.context, R.attr.deleteIcon)
+        iconDrawable?.let {
+            iconView.setImageDrawable(it)
+            iconView.visibility = View.VISIBLE
+        }
+        title.text = getString(R.string.confirming_question_app_data_all, appName)
         message.text = getString(R.string.confirming_question_message)
-        checkBox.text = getString(R.string.confirming_question_app_remove_all_permissions, appName)
-        checkBox.setOnCheckedChangeListener { _, _ ->
-            logger.logInteraction(
-                DeletionDialogConfirmationElement
-                    .DELETION_DIALOG_CONFIRMATION_REMOVE_APP_PERMISSIONS_BUTTON)
+        if (isInactiveApp) {
+            checkBox.visibility = View.GONE
+        } else {
+            checkBox.visibility = View.VISIBLE
+            checkBox.text =
+                getString(R.string.confirming_question_app_remove_all_permissions, appName)
+            checkBox.setOnCheckedChangeListener { _, _ ->
+                logger.logInteraction(
+                    DeletionDialogConfirmationElement
+                        .DELETION_DIALOG_CONFIRMATION_REMOVE_APP_PERMISSIONS_BUTTON)
+            }
         }
 
         val alertDialogBuilder =
             AlertDialogBuilder(this)
                 .setLogName(
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
-                .setTitle(getString(R.string.confirming_question_app_data_all, appName))
                 .setView(view)
-                .setIcon(R.attr.deleteIcon)
                 .setPositiveButton(
                     R.string.confirming_question_delete_button,
                     DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON) {

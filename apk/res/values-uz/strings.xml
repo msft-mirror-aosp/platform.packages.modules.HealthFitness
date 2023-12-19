@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Hech biri"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Qayd tafsilotlari"</string>
     <string name="backup_title" msgid="211503191266235085">"Zaxiralash"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"Axborot manbalari va tartiblanishi"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Axborot manbalari va tartiblanishi"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Birliklarni belgilash"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Oxirgi kirish"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Yaqin orada hech qanday ilova Health Connect ilovasiga ulanmagan"</string>
@@ -789,6 +789,8 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Ilovaga <xliff:g id="CATEGORY_NAME">%1$s</xliff:g> axborotini yozish ruxsatini berishingiz bilan manbalar shu yerda chiqadi."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Manbalar qanday tartiblanishi haqida"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Ilova kiriting"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"Ilova manbalarini tahrirlash"</string>
+    <string name="default_app_summary" msgid="6183876151011837062">"Qurilma standarti"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Ilovaga tegishli maʼlumotlar"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Health Connect xizmatiga ruxsati bor ilovalar axboroti shu yerda chiqadi"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Kun"</string>

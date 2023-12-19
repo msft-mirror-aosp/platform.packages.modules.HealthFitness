@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Aucune"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Détails de l\'entrée"</string>
     <string name="backup_title" msgid="211503191266235085">"Sauvegarde"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"Priorité des sources de données"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Sources de données et priorité"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Définir des unités"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Accès récent"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Aucune appli n\'a accédé à Santé Connect récemment"</string>
@@ -789,6 +789,8 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Une fois que vous aurez accordé des autorisations d\'application pour écrire des données <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, des sources s\'afficheront ici."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Fonctionnement de la priorisation des sources"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Ajouter une application"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"Modifier les sources d\'application"</string>
+    <string name="default_app_summary" msgid="6183876151011837062">"Paramètre par défaut"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Données d\'application"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Les données issues des applications ayant accès à Santé Connect s\'afficheront ici."</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Jour"</string>

@@ -16,13 +16,14 @@
 
 package android.healthconnect.cts.logging;
 
-import static android.healthconnect.cts.logging.HostSideTestsUtils.isHardwareSupported;
+import static android.healthconnect.cts.HostSideTestUtil.isHardwareSupported;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.cts.statsdatom.lib.ConfigUtils;
 import android.cts.statsdatom.lib.DeviceUtils;
 import android.cts.statsdatom.lib.ReportUtils;
+import android.healthconnect.cts.HostSideTestUtil;
 import android.healthfitness.api.ApiMethod;
 import android.healthfitness.api.ApiStatus;
 import android.healthfitness.api.ForegroundState;
@@ -50,6 +51,8 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         if (!isHardwareSupported(getDevice())) {
             return;
         }
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        HostSideTestUtil.setupRateLimitingFeatureFlag(getDevice());
         assertThat(mCtsBuild).isNotNull();
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
@@ -57,6 +60,8 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
 
     @Override
     protected void tearDown() throws Exception {
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        HostSideTestUtil.restoreRateLimitingFeatureFlag(getDevice());
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
         super.tearDown();

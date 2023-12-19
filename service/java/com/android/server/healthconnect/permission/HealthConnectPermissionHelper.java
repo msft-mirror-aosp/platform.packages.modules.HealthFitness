@@ -98,7 +98,7 @@ public final class HealthConnectPermissionHelper {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(permissionName);
         enforceManageHealthPermissions(/* message= */ "grantHealthPermission");
-        enforceValidPermission(permissionName);
+        enforceValidHealthPermission(permissionName);
         UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
         enforceValidPackage(packageName, checkedUser);
         enforceSupportPermissionsUsageIntent(packageName, checkedUser);
@@ -127,7 +127,7 @@ public final class HealthConnectPermissionHelper {
         Objects.requireNonNull(packageName);
         Objects.requireNonNull(permissionName);
         enforceManageHealthPermissions(/* message= */ "revokeHealthPermission");
-        enforceValidPermission(permissionName);
+        enforceValidHealthPermission(permissionName);
         UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
         enforceValidPackage(packageName, checkedUser);
         final long token = Binder.clearCallingIdentity();
@@ -163,6 +163,7 @@ public final class HealthConnectPermissionHelper {
     }
 
     /** See {@link HealthConnectManager#revokeAllHealthPermissions}. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void revokeAllHealthPermissions(
             @NonNull String packageName, @Nullable String reason, @NonNull UserHandle user) {
         Objects.requireNonNull(packageName);
@@ -214,6 +215,26 @@ public final class HealthConnectPermissionHelper {
         }
     }
 
+    /** See {@link HealthConnectManager#makeHealthPermissionsRequestable(String, List)}. */
+    public void makeHealthPermissionsRequestable(
+            @NonNull String packageName,
+            @NonNull UserHandle user,
+            @NonNull List<String> permissions) {
+        Objects.requireNonNull(packageName);
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(permissions);
+
+        enforceManageHealthPermissions(/* message= */ "makeHealthPermissionsRequestable");
+        UserHandle checkedUser = UserHandle.of(handleIncomingUser(user.getIdentifier()));
+        enforceValidPackage(packageName, checkedUser);
+        final long token = Binder.clearCallingIdentity();
+        try {
+            makeHealthPermissionsRequestableUnchecked(packageName, checkedUser, permissions);
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
+    }
+
     /**
      * Returns {@code true} if there is at least one granted permission for the provided {@code
      * packageName}, {@code false} otherwise.
@@ -248,6 +269,7 @@ public final class HealthConnectPermissionHelper {
      * throws {@link IllegalAccessException} if health permission is in an incorrect state where
      * first grant time can't be fetched.
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public Instant getHealthDataStartDateAccessOrThrow(String packageName, UserHandle user) {
         Instant startDateAccess = getHealthDataStartDateAccess(packageName, user);
@@ -321,28 +343,30 @@ public final class HealthConnectPermissionHelper {
             @NonNull String packageName,
             @NonNull UserHandle user,
             @NonNull List<String> permissions) {
-        PackageInfo packageInfo =
-                getPackageInfoUnchecked(
-                        packageName,
-                        user,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+        enforceValidHealthPermissions(packageName, user, permissions);
 
-        Set<String> requestedPermissions = new ArraySet<>(packageInfo.requestedPermissions);
         Map<String, Integer> result = new ArrayMap<>();
 
         for (String permission : permissions) {
-            if (!requestedPermissions.contains(permission)) {
-                throw new IllegalArgumentException(
-                        "undeclared permission " + permission + " for package " + packageName);
-            }
-
-            enforceValidPermission(permission);
-
             result.put(
                     permission, mPackageManager.getPermissionFlags(permission, packageName, user));
         }
 
         return result;
+    }
+
+    private void makeHealthPermissionsRequestableUnchecked(
+            @NonNull String packageName,
+            @NonNull UserHandle user,
+            @NonNull List<String> permissions) {
+        enforceValidHealthPermissions(packageName, user, permissions);
+
+        int flagMask = PackageManager.FLAG_PERMISSION_USER_FIXED;
+
+        for (String permission : permissions) {
+            mPackageManager.updatePermissionFlags(
+                    permission, packageName, flagMask, /* flagValues= */ 0, user);
+        }
     }
 
     private void revokeAllHealthPermissionsUnchecked(
@@ -361,7 +385,7 @@ public final class HealthConnectPermissionHelper {
         }
     }
 
-    private void enforceValidPermission(String permissionName) {
+    private void enforceValidHealthPermission(String permissionName) {
         if (!mHealthPermissions.contains(permissionName)) {
             throw new IllegalArgumentException("invalid health permission");
         }
@@ -429,5 +453,25 @@ public final class HealthConnectPermissionHelper {
                         + "), or with "
                         + INTERACT_ACROSS_USERS_FULL
                         + " permission");
+    }
+
+    private void enforceValidHealthPermissions(
+            String packageName, UserHandle user, List<String> permissions) {
+        PackageInfo packageInfo =
+                getPackageInfoUnchecked(
+                        packageName,
+                        user,
+                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+
+        Set<String> requestedPermissions = new ArraySet<>(packageInfo.requestedPermissions);
+
+        for (String permission : permissions) {
+            if (!requestedPermissions.contains(permission)) {
+                throw new IllegalArgumentException(
+                        "undeclared permission " + permission + " for package " + packageName);
+            }
+
+            enforceValidHealthPermission(permission);
+        }
     }
 }

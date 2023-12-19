@@ -210,6 +210,7 @@ public final class BackupRestore {
 
     private volatile UserHandle mCurrentForegroundUser;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public BackupRestore(
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
@@ -357,6 +358,7 @@ public final class BackupRestore {
         var backupFilesByFileNames = getBackupFilesByFileNames(userHandle);
         pfdsByFileName.forEach(
                 (fileName, pfd) -> {
+                    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
                     Path sourceFilePath = backupFilesByFileNames.get(fileName).toPath();
                     try (FileOutputStream outputStream =
                             new FileOutputStream(pfd.getFileDescriptor())) {
@@ -397,6 +399,7 @@ public final class BackupRestore {
     }
 
     /** Deletes all the staged data and resets all the states. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
@@ -988,6 +991,7 @@ public final class BackupRestore {
                 mCurrentForegroundUser, userGrantTimeState);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void mergeDatabase() {
         synchronized (mMergingLock) {
             if (!mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
@@ -1046,10 +1050,7 @@ public final class BackupRestore {
             TransactionManager.getInitialisedInstance()
                     .insertAll(upsertTransactionRequest.getUpsertRequests());
 
-            token = DEFAULT_LONG;
-            if (recordsToMergeAndToken.second != DEFAULT_LONG) {
-                token = recordsToMergeAndToken.second * 2;
-            }
+            token = recordsToMergeAndToken.second;
         } while (token != DEFAULT_LONG);
 
         // Once all the records of this type have been merged we can delete the table.
@@ -1057,6 +1058,7 @@ public final class BackupRestore {
         // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
         // final query.
         Slog.d(TAG, "Deleting table for: " + recordTypeClass);
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         DeleteTableRequest deleteTableRequest =
                 recordHelper.getDeleteTableRequest(
                         null /* packageFilters */,
@@ -1082,31 +1084,28 @@ public final class BackupRestore {
 
         // Working with startDateAccess of -1 as we don't want to have time based filtering in the
         // query.
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         ReadTransactionRequest readTransactionRequest =
                 new ReadTransactionRequest(
                         null,
                         readRecordsRequest.toReadRecordsRequestParcel(),
-                        DEFAULT_LONG /* startDateAccess */,
+                        DEFAULT_LONG /* startDateAccessMillis */,
                         false,
                         extraReadPermsMapping);
 
         List<RecordInternal<?>> recordInternalList;
-        long token = DEFAULT_LONG;
+        long token;
         ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
         try (Cursor cursor = read(readTableRequest)) {
-            recordInternalList =
-                    recordHelper.getInternalRecordsPage(
+            Pair<List<RecordInternal<?>>, Long> readResult =
+                    recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
                             readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
+                            requireNonNull(readTransactionRequest.getPageToken()),
                             mStagedPackageNamesByAppIds);
-            String startTimeColumnName = recordHelper.getStartTimeColumnName();
-
+            recordInternalList = readResult.first;
+            token = readResult.second;
             populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
-
-            // Get the token for the next read request.
-            if (cursor.moveToNext()) {
-                token = getCursorLong(cursor, startTimeColumnName);
-            }
         }
         return Pair.create(recordInternalList, token);
     }
@@ -1210,6 +1209,7 @@ public final class BackupRestore {
         public static final String EXTRA_JOB_NAME_KEY = "job_name";
         private static final int BACKUP_RESTORE_JOB_ID = 1000;
 
+        @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
         static volatile BackupRestore sBackupRestore;
 
         @Override

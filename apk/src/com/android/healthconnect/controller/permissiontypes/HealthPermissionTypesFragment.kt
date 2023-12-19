@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.permissiontypes
 
+import android.health.connect.HealthDataCategory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -47,6 +48,7 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionTypesElement
@@ -76,6 +78,7 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
     }
 
     @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var featureUtils: FeatureUtils
 
     @HealthDataCategoryInt private var category: Int = 0
 
@@ -174,43 +177,83 @@ open class HealthPermissionTypesFragment : Hilt_HealthPermissionTypesFragment() 
             }
         }
 
-        viewModel.priorityList.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is HealthPermissionTypesViewModel.PriorityListState.Loading -> {
-                    mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
-                }
-                is HealthPermissionTypesViewModel.PriorityListState.LoadingFailed -> {
-                    mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
-                }
-                is HealthPermissionTypesViewModel.PriorityListState.WithData -> {
-                    updatePriorityButton(state.priorityList)
+        if (!featureUtils.isNewAppPriorityEnabled()) {
+            viewModel.priorityList.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    is HealthPermissionTypesViewModel.PriorityListState.Loading -> {
+                        mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
+                    }
+                    is HealthPermissionTypesViewModel.PriorityListState.LoadingFailed -> {
+                        mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
+                    }
+                    is HealthPermissionTypesViewModel.PriorityListState.WithData -> {
+                        updateOldPriorityButton(state.priorityList)
+                    }
                 }
             }
+        } else {
+            // Add the new priority list button
+            updateNewPriorityButton()
         }
     }
 
-    private fun updatePriorityButton(priorityList: List<AppMetadata>) {
+    private fun updateNewPriorityButton() {
         mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
-        if (priorityList.size > 1) {
-            val appPriorityButton =
-                HealthPreference(requireContext()).also {
-                    it.title = resources.getString(R.string.app_priority_button)
-                    it.icon =
-                        AttributeResolver.getDrawable(requireContext(), R.attr.appPriorityIcon)
-                    it.logName = PermissionTypesElement.SET_APP_PRIORITY_BUTTON
-                    it.summary = priorityList.first().appName
-                    it.key = APP_PRIORITY_BUTTON
-                    it.order = 4
-                    it.setOnPreferenceClickListener {
-                        viewModel.setEditedPriorityList(priorityList)
-                        viewModel.setCategoryLabel(getString(category.lowercaseTitle()))
-                        PriorityListDialogFragment()
-                            .show(childFragmentManager, PriorityListDialogFragment.TAG)
-                        true
-                    }
-                }
-            mManageDataCategory?.addPreference(appPriorityButton)
+
+        // Only display the priority button for Activity and Sleep categories
+        if (category !in setOf(HealthDataCategory.ACTIVITY, HealthDataCategory.SLEEP)) {
+            return
         }
+
+        val newPriorityButton =
+            HealthPreference(requireContext()).also {
+                it.title = resources.getString(R.string.data_sources_and_priority_title)
+                it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.appPriorityIcon)
+                it.logName = PermissionTypesElement.DATA_SOURCES_AND_PRIORITY_BUTTON
+                it.key = APP_PRIORITY_BUTTON
+                it.order = 4
+                it.setOnPreferenceClickListener {
+                    // Navigate to the data sources fragment
+                    findNavController()
+                        .navigate(
+                            R.id.action_healthPermissionTypes_to_dataSourcesAndPriority,
+                            bundleOf(CATEGORY_KEY to category))
+                    true
+                }
+            }
+
+        mManageDataCategory?.addPreference(newPriorityButton)
+    }
+
+    private fun updateOldPriorityButton(priorityList: List<AppMetadata>) {
+        mManageDataCategory?.removePreferenceRecursively(APP_PRIORITY_BUTTON)
+
+        // Only display the priority button for Activity and Sleep categories
+        if (category !in setOf(HealthDataCategory.ACTIVITY, HealthDataCategory.SLEEP)) {
+            return
+        }
+
+        if (priorityList.size < 2) {
+            return
+        }
+
+        val appPriorityButton =
+            HealthPreference(requireContext()).also {
+                it.title = resources.getString(R.string.app_priority_button)
+                it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.appPriorityIcon)
+                it.logName = PermissionTypesElement.SET_APP_PRIORITY_BUTTON
+                it.summary = priorityList.first().appName
+                it.key = APP_PRIORITY_BUTTON
+                it.order = 4
+                it.setOnPreferenceClickListener {
+                    viewModel.setEditedPriorityList(priorityList)
+                    viewModel.setCategoryLabel(getString(category.lowercaseTitle()))
+                    PriorityListDialogFragment()
+                        .show(childFragmentManager, PriorityListDialogFragment.TAG)
+                    true
+                }
+            }
+        mManageDataCategory?.addPreference(appPriorityButton)
     }
 
     private fun updatePermissionTypesList(permissionTypeList: List<HealthPermissionType>) {

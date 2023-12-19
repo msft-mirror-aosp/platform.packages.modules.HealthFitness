@@ -28,6 +28,7 @@ android_test {
     ],
     srcs: [
         ":healthfitness-cts-testapp-srcs",
+        ":healthfitness-permissions-testapp-srcs",
         "src/android/healthconnect/cts/*.java",
     ],
     // Tag this module as a cts test artifact
@@ -35,6 +36,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
@@ -42,7 +44,7 @@ android_test {
         "compatibility-device-util-axt",
         "ctstestrunner-axt",
         "cts-wm-util",
-	"modules-utils-build",
+        "modules-utils-build",
         "testng",
         "cts-healthconnect-utils",
     ],
@@ -51,6 +53,7 @@ android_test {
     data: [
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
+        ":HealthFitnessPermsTestApp",
     ],
 }
 
@@ -70,6 +73,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
@@ -104,6 +108,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
@@ -140,6 +145,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",
@@ -181,6 +187,7 @@ android_test {
         "cts",
         "general-tests",
         "mts-healthfitness",
+        "mcts-healthfitness",
     ],
     static_libs: [
         "androidx.test.rules",

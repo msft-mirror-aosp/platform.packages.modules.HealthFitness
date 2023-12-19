@@ -19,6 +19,8 @@ package com.android.server.healthconnect.permission;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 
+import static java.util.stream.Collectors.toMap;
+
 import android.annotation.NonNull;
 import android.content.AttributionSource;
 import android.content.Context;
@@ -38,6 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Helper class to force caller of data apis to hold api required permissions.
@@ -97,6 +100,26 @@ public class DataPermissionEnforcer {
             } catch (SecurityException writeSecurityException) {
                 throw readSecurityException;
             }
+        }
+        return enforceSelfRead;
+    }
+
+    // TODO(b/312952346): Consider refactoring how permission enforcement is done within
+    // HealthConnectServiceImpl. This goes beyond just this method.
+    /**
+     * Enforces that the caller has either read or write permissions for all the given recordTypes,
+     * and returns {@code true} if the caller is allowed to read only records written by itself,
+     * false otherwise.
+     *
+     * @throws SecurityException if the app has neither read nor write permissions for any of the
+     *     specified record types.
+     */
+    public boolean enforceReadAccessAndGetEnforceSelfRead(
+            List<Integer> recordTypes, AttributionSource attributionSource) {
+        boolean enforceSelfRead = false;
+        for (int recordTypeId : recordTypes) {
+            enforceSelfRead |=
+                    enforceReadAccessAndGetEnforceSelfRead(recordTypeId, attributionSource);
         }
         return enforceSelfRead;
     }
@@ -170,18 +193,16 @@ public class DataPermissionEnforcer {
      * doesn't have corresponding permission.
      */
     public Map<String, Boolean> collectExtraReadPermissionToStateMapping(
-            int recordTypeId, AttributionSource attributionSource) {
-        RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordTypeId);
-        if (recordHelper.getExtraReadPermissions().isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        Map<String, Boolean> mapping = new ArrayMap<>();
-        for (String permissionName : recordHelper.getExtraReadPermissions()) {
-            mapping.put(permissionName, isPermissionGranted(permissionName, attributionSource));
-        }
-        return mapping;
+            Set<Integer> recordTypeIds, AttributionSource attributionSource) {
+        RecordHelperProvider recordHelperProvider = RecordHelperProvider.getInstance();
+        return recordTypeIds.stream()
+                .map(recordHelperProvider::getRecordHelper)
+                .flatMap(recordHelper -> recordHelper.getExtraReadPermissions().stream())
+                .distinct()
+                .collect(
+                        toMap(
+                                Function.identity(),
+                                permission -> isPermissionGranted(permission, attributionSource)));
     }
 
     public Map<String, Boolean> collectExtraWritePermissionStateMapping(

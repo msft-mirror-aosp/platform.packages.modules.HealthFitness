@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Tidak ada"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detail entri"</string>
     <string name="backup_title" msgid="211503191266235085">"Pencadangan"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"Prioritas &amp; sumber data"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioritas dan sumber data"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Tetapkan unit"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Akses terbaru"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Tidak ada aplikasi yang baru-baru ini mengakses Health Connect"</string>
@@ -509,7 +509,7 @@
     <string name="sleep_stage_out_of_bed" msgid="522297068981578046">"beranjak dari tempat tidur"</string>
     <string name="sleep_stage_rem" msgid="1694477904067543104">"tidur REM"</string>
     <string name="sleep_stage_light" msgid="1070117964678317880">"tidur ringan"</string>
-    <string name="sleep_stage_deep" msgid="3134557407657258364">"tidur nyenyak"</string>
+    <string name="sleep_stage_deep" msgid="3134557407657258364">"fase tidur dalam"</string>
     <string name="sleep_stage_unknown" msgid="8664190491902295991">"tidak diketahui"</string>
     <string name="minute_duration" msgid="9035288227090160206">"<xliff:g id="MINUTE">%1$s</xliff:g> m"</string>
     <string name="hour_minute_duration_short" msgid="6862483734123680444">"<xliff:g id="HOUR">%1$s</xliff:g> j <xliff:g id="MIN">%2$s</xliff:g> m"</string>
@@ -789,6 +789,8 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Setelah Anda memberi aplikasi izin untuk menulis data <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, sumber akan muncul di sini."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Cara kerja sumber &amp; prioritas"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Tambahkan aplikasi"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"Edit sumber aplikasi"</string>
+    <string name="default_app_summary" msgid="6183876151011837062">"Default perangkat"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Data aplikasi"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Data dari aplikasi yang memiliki akses ke Health Connect akan muncul di sini"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Hari"</string>

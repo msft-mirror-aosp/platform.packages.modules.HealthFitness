@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"არცერთი"</string>
     <string name="entry_details_title" msgid="590184849040247850">"შესვლის დეტალები"</string>
     <string name="backup_title" msgid="211503191266235085">"სარეზერვო ასლის შექმნა"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"მონაცემთა წყაროები და პრიორიტეტი"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"მონაცემთა წყაროები და პრიორიტეტები"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ერთეულების დაყენება"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"ბოლო წვდომა"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"არცერთ აპს არ ჰქონდა წვდომა Health Connect-თან"</string>
@@ -789,6 +789,8 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"მას შემდეგ, რაც მიანიჭებთ აპს <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>-ის მონაცემების ჩაწერის ნებართვას, წყაროები აქ გამოჩნდება."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"როგორ მუშაობს წყაროები და პრიორიტეტები"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"დაამატეთ აპი"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"აპების წყაროების რედაქტირება"</string>
+    <string name="default_app_summary" msgid="6183876151011837062">"მოწყობილობის ნაგულისხმევი"</string>
     <string name="app_data_title" msgid="6499967982291000837">"აპის მონაცემები"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"მონაცემები იმ აპებიდან, რომლებსაც Health Connect-ზე აქვს წვდომა, აქ გამოჩნდება"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"დღე"</string>

@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.request;
 
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.LIMIT_SIZE;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -47,13 +48,14 @@ public class ReadTableRequest {
     private RecordHelper<?> mRecordHelper;
     private List<String> mColumnNames;
     private SqlJoin mJoinClause;
-    private WhereClauses mWhereClauses = new WhereClauses();
+    private WhereClauses mWhereClauses = new WhereClauses(AND);
     private boolean mDistinct = false;
     private OrderByClause mOrderByClause = new OrderByClause();
     private String mLimitClause = "";
     private List<ReadTableRequest> mExtraReadRequests;
     private List<ReadTableRequest> mUnionReadRequests;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public ReadTableRequest(@NonNull String tableName) {
         Objects.requireNonNull(tableName);
 
@@ -169,11 +171,8 @@ public class ReadTableRequest {
 
     /** Sets LIMIT size for the read query */
     @NonNull
-    public ReadTableRequest setLimit(int pageSize) {
-        // We set limit size to requested pageSize + 1,so that if number of records queried is more
-        // than pageSize we know there are more records available to return for the next read.
-        pageSize += 1;
-        mLimitClause = LIMIT_SIZE + pageSize;
+    public ReadTableRequest setLimit(int limit) {
+        mLimitClause = LIMIT_SIZE + limit;
         return this;
     }
 
@@ -185,6 +184,8 @@ public class ReadTableRequest {
         return String.join(DELIMITER, mColumnNames);
     }
 
+    /** Sets union read requests. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ReadTableRequest setUnionReadRequests(
             @Nullable List<ReadTableRequest> unionReadRequests) {
         mUnionReadRequests = unionReadRequests;

@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ništa"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalji unosa"</string>
     <string name="backup_title" msgid="211503191266235085">"Sigurnosna kopija"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"Izvori podataka i prioritet"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Izvori podataka i prioritet"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Postavite jedinice"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Nedavni pristup"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Nijedna aplikacija nije nedavno pristupila Health Connectu"</string>
@@ -789,6 +789,8 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Nakon što dodate odobrenja za aplikaciju da zapisuje podatke iz kategorije <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, izvori će se prikazivati ovdje."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Kako funkcioniraju izvori i dodjeljivanje prioriteta"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Dodaj aplikaciju"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"Uredi izvore aplikacija"</string>
+    <string name="default_app_summary" msgid="6183876151011837062">"Zadana postavka uređaja"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Podaci aplikacije"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Ovdje će se prikazivati podaci iz aplikacija s pristupom Health Connectu"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Dan"</string>

@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ಯಾವುದೂ ಅಲ್ಲ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ಪ್ರವೇಶದ ವಿವರಗಳು"</string>
     <string name="backup_title" msgid="211503191266235085">"ಬ್ಯಾಕಪ್"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"ಡೇಟಾ ಮೂಲಗಳು ಮತ್ತು ಆದ್ಯತೆ"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ಡೇಟಾ ಮೂಲಗಳು ಮತ್ತು ಆದ್ಯತೆ"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ಯೂನಿಟ್‌ಗಳನ್ನು ಸೆಟ್ ಮಾಡಿ"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"ಇತ್ತೀಚಿನ ಆ್ಯಕ್ಸೆಸ್"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"ಯಾವುದೇ ಆ್ಯಪ್‌ಗಳು ಇತ್ತೀಚೆಗೆ Health Connect ಅನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿಲ್ಲ"</string>
@@ -704,7 +704,7 @@
     <string name="deletion_started_done_button" msgid="1232018689825054257">"ಮುಗಿದಿದೆ"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"ಆ್ಯಪ್ ಆದ್ಯತೆಯನ್ನು ಸೆಟ್ ಮಾಡಿ"</string>
     <string name="priority_dialog_message" msgid="6971250365335018184">"ಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಆ್ಯಪ್ <xliff:g id="DATA_TYPE">%s</xliff:g> ಡೇಟಾವನ್ನು ಸೇರಿಸಿದರೆ, ಈ ಪಟ್ಟಿಯ ಮೇಲ್ಭಾಗದಲ್ಲಿರುವ ಆ್ಯಪ್‌ಗೆ Health Connect ಆದ್ಯತೆ ನೀಡುತ್ತದೆ. ಆ್ಯಪ್‌ಗಳನ್ನು ಮರುಕ್ರಮಗೊಳಿಸಲು ಅವುಗಳನ್ನು ಡ್ರ್ಯಾಗ್ ಮಾಡಿ."</string>
-    <string name="priority_dialog_positive_button" msgid="2503570694373675092">"ಉಳಿಸಿ"</string>
+    <string name="priority_dialog_positive_button" msgid="2503570694373675092">"ಸೇವ್ ಮಾಡಿ"</string>
     <string name="action_drag_label_move_up" msgid="4221641798253080966">"ಮೇಲಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"ಕೆಳಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"ಮೇಲಕ್ಕೆ ಸರಿಸಿ"</string>
@@ -789,6 +789,8 @@
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"ನೀವು <xliff:g id="CATEGORY_NAME">%1$s</xliff:g> ಡೇಟಾವನ್ನು ರೈಟ್ ಮಾಡಲು ಆ್ಯಪ್‌ಗೆ ಅನುಮತಿಗಳನ್ನು ನೀಡಿದ ನಂತರ, ಮೂಲಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"ಮೂಲಗಳು ಮತ್ತು ಆದ್ಯತೆ ನೀಡುವಿಕೆ ಹೇಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"ಆ್ಯಪ್ ಒಂದನ್ನು ಸೇರಿಸಿ"</string>
+    <string name="edit_data_sources" msgid="79641360876849547">"ಆ್ಯಪ್ ಮೂಲಗಳನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
+    <string name="default_app_summary" msgid="6183876151011837062">"ಸಾಧನದ ಡೀಫಾಲ್ಟ್"</string>
     <string name="app_data_title" msgid="6499967982291000837">"ಆ್ಯಪ್ ಡೇಟಾ"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Health Connect ಗೆ ಆ್ಯಕ್ಸೆಸ್ ಹೊಂದಿರುವ ಆ್ಯಪ್‌ಗಳ ಡೇಟಾವನ್ನು ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"ದಿನ"</string>

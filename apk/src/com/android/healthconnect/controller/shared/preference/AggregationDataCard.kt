@@ -28,7 +28,9 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.toLocalTime
 import java.time.Instant
+import java.time.LocalTime
 
 /** A custom card to display the latest available data aggregations. */
 class AggregationDataCard
@@ -52,12 +54,10 @@ constructor(
 
         cardIcon.background = fromHealthPermissionType(cardInfo.healthPermissionType).icon(context)
         cardTitle.text = cardInfo.aggregation.aggregation
-        val totalDate = cardInfo.date
-        if (isLessThanOneYearAgo(totalDate)) {
-            cardDate.text = dateFormatter.formatShortDate(totalDate)
-        } else {
-            cardDate.text = dateFormatter.formatLongDate(totalDate)
-        }
+
+        val totalStartDate = cardInfo.startDate
+        val totalEndDate = cardInfo.endDate
+        cardDate.text = formatDateText(totalStartDate, totalEndDate)
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(titleAndDateContainer)
@@ -120,6 +120,31 @@ constructor(
                 .atStartOfDay(timeSource.deviceZoneOffset())
                 .toInstant()
         return instant.isAfter(oneYearAgo)
+    }
+
+    private fun formatDateText(startDate: Instant, endDate: Instant?): String {
+        return if (endDate != null) {
+            var localEndDate: Instant = endDate
+
+            // If endDate is midnight, add one millisecond so that DateUtils
+            // correctly formats it as a separate date.
+            if (endDate.toLocalTime() == LocalTime.MIDNIGHT) {
+                localEndDate = endDate.plusMillis(1)
+            }
+            // display date range
+            if (isLessThanOneYearAgo(startDate) && isLessThanOneYearAgo(localEndDate)) {
+                dateFormatter.formatDateRangeWithoutYear(startDate, localEndDate)
+            } else {
+                dateFormatter.formatDateRangeWithYear(startDate, localEndDate)
+            }
+        } else {
+            // display only one date
+            if (isLessThanOneYearAgo(startDate)) {
+                dateFormatter.formatShortDate(startDate)
+            } else {
+                dateFormatter.formatLongDate(startDate)
+            }
+        }
     }
 
     enum class CardTypeEnum {

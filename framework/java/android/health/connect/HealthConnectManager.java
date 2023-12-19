@@ -317,7 +317,10 @@ public class HealthConnectManager {
 
     private static final String TAG = "HealthConnectManager";
     private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile Set<String> sHealthPermissions;
+
     private final Context mContext;
     private final IHealthConnectService mService;
     private final InternalExternalRecordConverter mInternalExternalRecordConverter;
@@ -356,6 +359,7 @@ public class HealthConnectManager {
      *
      * @hide
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
     @UserHandleAware
     public void revokeHealthPermission(
@@ -375,6 +379,7 @@ public class HealthConnectManager {
      *
      * @hide
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
     @UserHandleAware
     public void revokeAllHealthPermissions(@NonNull String packageName, @Nullable String reason) {
@@ -426,6 +431,28 @@ public class HealthConnectManager {
             @NonNull String packageName, @NonNull List<String> permissions) {
         try {
             return mService.getHealthPermissionsFlags(packageName, mContext.getUser(), permissions);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Allow provided permissions to be requested again if they previously were denied multiple
+     * times by the users.
+     *
+     * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
+     *     Health permissions or not declared by the app.
+     * @throws NullPointerException if any of the arguments is {@code null}.
+     * @throws SecurityException if the caller doesn't possess {@code
+     *     android.permission.MANAGE_HEALTH_PERMISSIONS}.
+     * @hide
+     */
+    @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
+    @UserHandleAware
+    public void makeHealthPermissionsRequestable(
+            @NonNull String packageName, @NonNull List<String> permissions) {
+        try {
+            mService.makeHealthPermissionsRequestable(packageName, mContext.getUser(), permissions);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
