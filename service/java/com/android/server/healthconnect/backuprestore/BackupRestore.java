@@ -34,6 +34,7 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UN
 
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_USER_ID;
+import static com.android.server.healthconnect.storage.utils.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
@@ -90,6 +91,7 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.utils.FilesUtil;
 import com.android.server.healthconnect.utils.RunnableWithThrowable;
@@ -210,7 +212,7 @@ public final class BackupRestore {
 
     private volatile UserHandle mCurrentForegroundUser;
 
-    @SuppressWarnings("NullAway.Init")
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public BackupRestore(
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
@@ -358,7 +360,7 @@ public final class BackupRestore {
         var backupFilesByFileNames = getBackupFilesByFileNames(userHandle);
         pfdsByFileName.forEach(
                 (fileName, pfd) -> {
-                    @SuppressWarnings("NullAway")
+                    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
                     Path sourceFilePath = backupFilesByFileNames.get(fileName).toPath();
                     try (FileOutputStream outputStream =
                             new FileOutputStream(pfd.getFileDescriptor())) {
@@ -399,7 +401,7 @@ public final class BackupRestore {
     }
 
     /** Deletes all the staged data and resets all the states. */
-    @SuppressWarnings("NullAway")
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
@@ -991,7 +993,7 @@ public final class BackupRestore {
                 mCurrentForegroundUser, userGrantTimeState);
     }
 
-    @SuppressWarnings("NullAway")
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void mergeDatabase() {
         synchronized (mMergingLock) {
             if (!mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
@@ -1029,7 +1031,7 @@ public final class BackupRestore {
                 RecordHelperProvider.getInstance().getRecordHelper(recordType);
         // Read all the records of the given type from the staged db and insert them into the
         // existing healthconnect db.
-        long token = DEFAULT_LONG;
+        PageTokenWrapper token = EMPTY_PAGE_TOKEN;
         do {
             var recordsToMergeAndToken = getRecordsToMerge(recordTypeClass, token, recordHelper);
             if (recordsToMergeAndToken.first.isEmpty()) {
@@ -1051,14 +1053,14 @@ public final class BackupRestore {
                     .insertAll(upsertTransactionRequest.getUpsertRequests());
 
             token = recordsToMergeAndToken.second;
-        } while (token != DEFAULT_LONG);
+        } while (!token.isEmpty());
 
         // Once all the records of this type have been merged we can delete the table.
 
         // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
         // final query.
         Slog.d(TAG, "Deleting table for: " + recordTypeClass);
-        @SuppressWarnings("NullAway")
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         DeleteTableRequest deleteTableRequest =
                 recordHelper.getDeleteTableRequest(
                         null /* packageFilters */,
@@ -1068,12 +1070,12 @@ public final class BackupRestore {
         getStagedDatabase().getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
 
-    private <T extends Record> Pair<List<RecordInternal<?>>, Long> getRecordsToMerge(
-            Class<T> recordTypeClass, long requestToken, RecordHelper<?> recordHelper) {
+    private <T extends Record> Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
+            Class<T> recordTypeClass, PageTokenWrapper requestToken, RecordHelper<?> recordHelper) {
         ReadRecordsRequestUsingFilters<T> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
                         .setPageSize(2000)
-                        .setPageToken(requestToken)
+                        .setPageToken(requestToken.encode())
                         .build();
 
         Map<String, Boolean> extraReadPermsMapping = new ArrayMap<>();
@@ -1084,7 +1086,7 @@ public final class BackupRestore {
 
         // Working with startDateAccess of -1 as we don't want to have time based filtering in the
         // query.
-        @SuppressWarnings("NullAway")
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         ReadTransactionRequest readTransactionRequest =
                 new ReadTransactionRequest(
                         null,
@@ -1094,10 +1096,10 @@ public final class BackupRestore {
                         extraReadPermsMapping);
 
         List<RecordInternal<?>> recordInternalList;
-        long token;
+        PageTokenWrapper token;
         ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
         try (Cursor cursor = read(readTableRequest)) {
-            Pair<List<RecordInternal<?>>, Long> readResult =
+            Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
                             readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
@@ -1209,7 +1211,7 @@ public final class BackupRestore {
         public static final String EXTRA_JOB_NAME_KEY = "job_name";
         private static final int BACKUP_RESTORE_JOB_ID = 1000;
 
-        @SuppressWarnings("NullAway.Init")
+        @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
         static volatile BackupRestore sBackupRestore;
 
         @Override
