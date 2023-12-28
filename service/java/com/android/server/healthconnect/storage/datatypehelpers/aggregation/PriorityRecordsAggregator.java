@@ -190,6 +190,13 @@ public class PriorityRecordsAggregator {
             return null;
         }
 
+        // TODO(b/313924267): workaround for b/308467442, should be remove once we have a long term
+        // solution
+        if (data.getStartTime() > data.getEndTime()) {
+            // skip records with start time > end time to keep the algorithm functional
+            return null;
+        }
+
         mTimestampsBuffer.add(data.getStartTimestamp());
         mTimestampsBuffer.add(data.getEndTimestamp());
         return data;
@@ -203,11 +210,13 @@ public class PriorityRecordsAggregator {
     }
 
     /** Returns result for the given group */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public Double getResultForGroup(Integer groupNumber) {
         return mGroupToAggregationResult.get(groupNumber);
     }
 
     /** Returns start time zone offset for the given group */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ZoneOffset getZoneOffsetForGroup(Integer groupNumber) {
         return mGroupToFirstZoneOffset.get(groupNumber);
     }

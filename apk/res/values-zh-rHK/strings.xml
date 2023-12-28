@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"無"</string>
     <string name="entry_details_title" msgid="590184849040247850">"項目詳情"</string>
     <string name="backup_title" msgid="211503191266235085">"備份"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"資料來源和優先次序"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"資料來源和優先次序"</string>
     <string name="set_units_title" msgid="2657822539603758029">"設定單位"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"近期存取記錄"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"最近沒有應用程式存取 Health Connect"</string>
@@ -45,6 +45,7 @@
     <string name="write_data_access_label" msgid="7955988316773000250">"寫入：%s"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理權限"</string>
+    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"時間：%s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活動"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活動"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身體測量數據"</string>
