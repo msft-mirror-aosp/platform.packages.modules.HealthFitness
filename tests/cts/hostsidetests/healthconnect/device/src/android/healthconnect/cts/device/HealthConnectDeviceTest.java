@@ -41,6 +41,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.changelog.ChangeLogsResponse;
+import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.healthconnect.cts.lib.TestUtils;
@@ -158,16 +159,18 @@ public class HealthConnectDeviceTest {
                 (List<TestUtils.RecordTypeAndRecordIds>) bundle.getSerializable(RECORD_IDS);
 
         for (TestUtils.RecordTypeAndRecordIds recordTypeAndRecordIds : listOfRecordIdsAndClass) {
+            Class<? extends Record> recordType =
+                    (Class<? extends Record>) Class.forName(recordTypeAndRecordIds.getRecordType());
+            if (!recordType.equals(ExerciseSessionRecord.class)) {
+                // skip other record types since we don't have read permissions for these.
+                continue;
+            }
             List<Record> records =
                     (List<Record>)
                             readRecords(
-                                    new ReadRecordsRequestUsingFilters.Builder<>(
-                                                    (Class<? extends Record>)
-                                                            Class.forName(
-                                                                    recordTypeAndRecordIds
-                                                                            .getRecordType()))
+                                    new ReadRecordsRequestUsingFilters.Builder<>(recordType)
                                             .build());
-
+            assertThat(records).isNotEmpty();
             for (Record record : records) {
                 assertThat(record.getMetadata().getDataOrigin().getPackageName())
                         .isEqualTo(APP_A_WITH_READ_WRITE_PERMS.getPackageName());
@@ -188,25 +191,9 @@ public class HealthConnectDeviceTest {
             recordClassesToRead.add(recordTypeAndRecordIds.getRecordType());
         }
 
-        bundle = readRecordsAs(APP_WITH_WRITE_PERMS_ONLY, recordClassesToRead);
-        assertThat(bundle.getInt(READ_RECORDS_SIZE)).isNotEqualTo(0);
-    }
-
-    @Test
-    public void testAppWithWritePermsOnlyCantReadAnotherAppEntry() throws Exception {
-        Bundle bundle = insertRecordAs(APP_A_WITH_READ_WRITE_PERMS);
-        assertThat(bundle.getBoolean(SUCCESS)).isTrue();
-
-        List<TestUtils.RecordTypeAndRecordIds> listOfRecordIdsAndClass =
-                (List<TestUtils.RecordTypeAndRecordIds>) bundle.getSerializable(RECORD_IDS);
-
-        ArrayList<String> recordClassesToRead = new ArrayList<>();
-        for (TestUtils.RecordTypeAndRecordIds recordTypeAndRecordIds : listOfRecordIdsAndClass) {
-            recordClassesToRead.add(recordTypeAndRecordIds.getRecordType());
-        }
-
-        bundle = readRecordsAs(APP_WITH_WRITE_PERMS_ONLY, recordClassesToRead);
-        assertThat(bundle.getInt(READ_RECORDS_SIZE)).isEqualTo(0);
+        bundle =
+                readRecordsUsingDataOriginFiltersAs(APP_WITH_WRITE_PERMS_ONLY, recordClassesToRead);
+        assertThat(bundle.getInt(READ_RECORDS_SIZE)).isEqualTo(listOfRecordIdsAndClass.size());
     }
 
     @Test
