@@ -170,9 +170,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @VisibleForTesting public static final boolean BACKGROUND_READ_DEFAULT_FLAG_VALUE = false;
 
     @VisibleForTesting
-    public static final boolean ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE = false;
+    public static final boolean ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE = true;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static HealthConnectDeviceConfigManager sDeviceConfigManager;
+
     private final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
     private static final String HEALTH_FITNESS_NAMESPACE = DeviceConfig.NAMESPACE_HEALTH_FITNESS;
 
@@ -282,11 +284,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     BACKGROUND_READ_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
-    private boolean mAggregationSourceControlsEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG,
-                    ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE);
+    private boolean mAggregationSourceControlsEnabled = true;
 
     @NonNull
     @VisibleForTesting(visibility = VisibleForTesting.Visibility.PACKAGE)
@@ -704,10 +702,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                         BACKGROUND_READ_DEFAULT_FLAG_VALUE);
                         break;
                     case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
-                        mAggregationSourceControlsEnabled =
-                                properties.getBoolean(
-                                        ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG,
-                                        ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE);
+                        mAggregationSourceControlsEnabled = true;
                 }
             } finally {
                 mLock.writeLock().unlock();

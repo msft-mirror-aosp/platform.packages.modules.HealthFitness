@@ -108,9 +108,16 @@ constructor(
                 date.isAfter(today.minusMonths(1)) && !date.isAfter(today)
             }
 
-        if (recentDates.isEmpty()) return null
-
-        val minDate = recentDates.min()
+        // Activity dates are not kept during B&R, so it's possible to have data
+        // even without activity dates.
+        val minDate: LocalDate =
+            if (recentDates.isEmpty()) {
+                // Either there are no dates, or this is a fresh device out of D2D
+                // Check if there is any data in the past month anyway
+                today.minusMonths(1)
+            } else {
+                recentDates.min()
+            }
 
         // Query the data entries from this last month in one single API call
         val input =
@@ -121,7 +128,7 @@ constructor(
                 period = DateNavigationPeriod.PERIOD_MONTH,
                 showDataOrigin = false)
 
-        val entryRecords = loadEntriesHelper.readRecords(input)
+        val entryRecords = loadEntriesHelper.readLastRecord(input)
 
         if (entryRecords.isNotEmpty()) {
             // The records are returned in descending order by startTime
