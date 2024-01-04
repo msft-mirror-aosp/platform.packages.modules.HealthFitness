@@ -64,6 +64,7 @@ public class UpsertTableRequest {
         this(table, contentValues, Collections.emptyList());
     }
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public UpsertTableRequest(
             @NonNull String table,
             @NonNull ContentValues contentValues,
@@ -91,6 +92,7 @@ public class UpsertTableRequest {
      * Use this if you want to add row_id of the parent table to all the child entries in {@code
      * parentCol}
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public UpsertTableRequest setParentColumnForChildTables(@Nullable String parentCol) {
         mParentCol = parentCol;
