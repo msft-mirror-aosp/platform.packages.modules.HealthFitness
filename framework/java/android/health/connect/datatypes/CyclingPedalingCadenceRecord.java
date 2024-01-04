@@ -16,6 +16,7 @@
 package android.health.connect.datatypes;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.validation.ValidationUtils;
 import android.health.connect.internal.datatypes.CyclingPedalingCadenceRecordInternal;
@@ -169,7 +170,7 @@ public final class CyclingPedalingCadenceRecord extends IntervalRecord {
          * @return {@code true} if this object is the same as the obj
          */
         @Override
-        public boolean equals(@NonNull Object object) {
+        public boolean equals(@Nullable Object object) {
             if (super.equals(object) && object instanceof CyclingPedalingCadenceRecordSample) {
                 CyclingPedalingCadenceRecordSample other =
                         (CyclingPedalingCadenceRecordSample) object;
@@ -293,8 +294,9 @@ public final class CyclingPedalingCadenceRecord extends IntervalRecord {
      * @param object the reference object with which to compare.
      * @return {@code true} if this object is the same as the obj
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
-    public boolean equals(@NonNull Object object) {
+    public boolean equals(@Nullable Object object) {
         if (super.equals(object)) {
             CyclingPedalingCadenceRecord other = (CyclingPedalingCadenceRecord) object;
             if (getSamples().size() != other.getSamples().size()) return false;

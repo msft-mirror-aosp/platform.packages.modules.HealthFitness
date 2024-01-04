@@ -20,11 +20,11 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToLastPosition
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -75,6 +75,7 @@ class ConnectedAppsFragmentTest {
     fun setup() {
         hiltRule.inject()
         whenever(viewModel.disconnectAllState).then { MutableLiveData(NotStarted) }
+        whenever(viewModel.alertDialogActive).then { MutableLiveData(false) }
     }
 
     @Test
@@ -92,7 +93,6 @@ class ConnectedAppsFragmentTest {
     fun test_deniedApps() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = DENIED))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
-
         launchFragment<ConnectedAppsFragment>(Bundle())
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
@@ -107,6 +107,25 @@ class ConnectedAppsFragmentTest {
         launchFragment<ConnectedAppsFragment>(Bundle())
 
         onView(withText(R.string.disconnect_all_apps)).check(matches(isEnabled()))
+    }
+
+    @Test
+    fun allowedApps_confirmationDialogDisplayed_dialogDoesNotDisAppearWhenActivityRestarts() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = ALLOWED))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        whenever(viewModel.alertDialogActive).then { MutableLiveData(true) }
+
+        val scenario = launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("Remove access for all apps?"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+
+        scenario.recreate()
+
+        onView(withText("Remove access for all apps?"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -135,7 +154,6 @@ class ConnectedAppsFragmentTest {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = DENIED))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
         whenever(viewModel.disconnectAllState).then { MutableLiveData(Updated) }
-
         launchFragment<ConnectedAppsFragment>(Bundle())
 
         onView(withText(R.string.loading)).check(doesNotExist())
@@ -153,14 +171,16 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
-    fun test_appPermissionsWithNoConnectedApps_isDisplayedCorrectly() {
+    fun testWithNoApps_bothFeedbackAndPlayStoreAvailable_bothShouldBeDisplayedInThingsToTryOptions() {
         val connectApp = listOf<ConnectedAppMetadata>()
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+        deviceInfoUtils.setSendFeedbackAvailability(true)
 
         launchFragment<ConnectedAppsFragment>(Bundle())
 
         onView(withText("You don't currently have any compatible apps installed"))
-            .perform(ViewActions.scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Things to try")).perform(scrollTo()).check(matches(isDisplayed()))
         onView(withText("Check for updates")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -174,15 +194,26 @@ class ConnectedAppsFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Send feedback")).perform(scrollTo()).check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Tell us which health & fitness apps you'd like to work with Health\u00A0Connect"))
-            .perform(scrollTo())
+    }
+
+    @Test
+    fun testWithNoApps_bothFeedbackAndPlayStoreAreNotAvailable_thingsToTryOptionsShouldNotBeDisplayed() {
+        val connectApp = listOf<ConnectedAppMetadata>()
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+        deviceInfoUtils.setSendFeedbackAvailability(false)
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("You don't currently have any compatible apps installed"))
             .check(matches(isDisplayed()))
-        onView(withText("Allowed access")).check(doesNotExist())
-        onView(withText("Not allowed access")).check(doesNotExist())
-        onView(withText("No apps denied")).check(doesNotExist())
-        onView(withText("Settings & help")).check(doesNotExist())
+        onView(withText("Things to try")).check(doesNotExist())
+        onView(withText("Check for updates")).check(doesNotExist())
+        onView(withText("Make sure installed apps are up-to-date")).check(doesNotExist())
+        onView(withText("See all compatible apps")).check(doesNotExist())
+        onView(withText("Find apps on Google\u00A0Play")).check(doesNotExist())
+        onView(withText("Send feedback")).check(doesNotExist())
     }
 
     @Test
@@ -203,18 +234,6 @@ class ConnectedAppsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         onView(withText("Inactive apps")).check(doesNotExist())
-    }
-
-    @Test
-    fun withNoApps_showsEmptyState() {
-        whenever(viewModel.connectedApps).then {
-            MutableLiveData(emptyList<ConnectedAppMetadata>())
-        }
-        launchFragment<ConnectedAppsFragment>(Bundle())
-
-        onView(withText("Send feedback")).check(matches(isDisplayed()))
-        onView(withText("See all compatible apps")).check(matches(isDisplayed()))
-        onView(withText("Check for updates")).check(matches(isDisplayed()))
     }
 
     @Test

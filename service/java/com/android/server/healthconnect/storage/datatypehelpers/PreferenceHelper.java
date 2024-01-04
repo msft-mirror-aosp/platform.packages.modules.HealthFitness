@@ -45,16 +45,21 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @hide
  */
-public final class PreferenceHelper extends DatabaseHelper {
+// TODO(b/303023796): Make this final.
+public class PreferenceHelper extends DatabaseHelper {
     private static final String TABLE_NAME = "preference_table";
     private static final String KEY_COLUMN_NAME = "key";
     public static final List<Pair<String, Integer>> UNIQUE_COLUMN_INFO =
             Collections.singletonList(new Pair<>(KEY_COLUMN_NAME, TYPE_STRING));
     private static final String VALUE_COLUMN_NAME = "value";
-    private static volatile PreferenceHelper sPreferenceHelper;
-    private volatile ConcurrentHashMap<String, String> mPreferences;
 
-    private PreferenceHelper() {}
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
+    private static volatile PreferenceHelper sPreferenceHelper;
+
+    protected volatile ConcurrentHashMap<String, String> mPreferences;
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
+    protected PreferenceHelper() {}
 
     /** Note: Overrides existing preference (if it exists) with the new value */
     public synchronized void insertOrReplacePreference(String key, String value) {
@@ -97,6 +102,7 @@ public final class PreferenceHelper extends DatabaseHelper {
         return getPreferences().get(key);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public synchronized void clearCache() {
         mPreferences = null;
@@ -112,7 +118,7 @@ public final class PreferenceHelper extends DatabaseHelper {
         populatePreferences();
     }
 
-    private Map<String, String> getPreferences() {
+    protected Map<String, String> getPreferences() {
         if (mPreferences == null) {
             populatePreferences();
         }

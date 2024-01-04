@@ -107,7 +107,8 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () ->
                                 HealthDataCategoryPriorityHelper.getInstance()
-                                        .removeAppFromPriorityList(packageName));
+                                        .maybeRemoveAppWithoutWritePermissionsFromPriorityList(
+                                                packageName));
             }
         } else if (isHealthIntentRemoved) {
             // Revoke all health permissions as we don't grant health permissions if permissions
@@ -121,8 +122,17 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
                                 + userHandle);
             }
 
-            mPermissionHelper.revokeAllHealthPermissions(
-                    packageName, "Health permissions usage activity has been removed.", userHandle);
+            try {
+                mPermissionHelper.revokeAllHealthPermissions(
+                        packageName,
+                        "Health permissions usage activity has been removed.",
+                        userHandle);
+            } catch (IllegalArgumentException ex) {
+                // Catch IllegalArgumentException to fix a crash (b/24679220) due to race condition
+                // in case this `revokeAllHealthPermissions()` method is called right after the
+                // client app is uninstalled.
+                Slog.e(TAG, "Revoking all health permissions failed", ex);
+            }
         }
     }
 
@@ -140,11 +150,13 @@ public class PermissionPackageChangesOrchestrator extends BroadcastReceiver {
         return filter;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private String getPackageName(Intent intent) {
         Uri uri = intent.getData();
         return uri != null ? uri.getSchemeSpecificPart() : null;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private UserHandle getUserHandle(Intent intent) {
         final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
         if (uid >= 0) {
