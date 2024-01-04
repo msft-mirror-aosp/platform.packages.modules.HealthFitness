@@ -50,6 +50,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLogsResponseParcel;
@@ -698,11 +699,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 readTransactionRequest);
                                 pageToken = DEFAULT_LONG;
                             } else {
-                                Pair<List<RecordInternal<?>>, Long> readRecordsResponse =
-                                        mTransactionManager.readRecordsAndPageToken(
-                                                readTransactionRequest);
+                                Pair<List<RecordInternal<?>>, PageTokenWrapper>
+                                        readRecordsResponse =
+                                                mTransactionManager.readRecordsAndPageToken(
+                                                        readTransactionRequest);
                                 records = readRecordsResponse.first;
-                                pageToken = readRecordsResponse.second;
+                                pageToken = readRecordsResponse.second.encode();
                             }
                             logger.setNumberOfRecords(records.size());
 
