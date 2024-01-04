@@ -56,6 +56,7 @@ public final class WheelchairPushesRecordHelper
         return WHEELCHAIR_PUSHES_RECORD_TABLE_NAME;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         switch (aggregateRequest.getAggregationTypeIdentifier()) {
