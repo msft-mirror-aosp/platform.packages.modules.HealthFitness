@@ -51,6 +51,7 @@
     <string name="write_data_access_label" description="Label used to indicate that app performed write (insertion, deletion or update) access to specified data types (as opposed to reading the data), as in 'Write: Steps, Heart rate'. [CHAR_LIMIT=NONE]">Write: %s</string>
     <string name="data_type_separator" description="Separator (comma and whitespace in English) for a potentially long list of data type names listed in data access entry, as in 'Write: Steps, Distance, Calories'. [CHAR_LIMIT=NONE]">,\u0020</string>
     <string name="manage_permissions" description="Text for floating action button that takes users from Recent Access apps to the App permissions screen [CHAR LIMIT=40]">Manage permissions</string>
+    <string name="recent_access_time_content_descritption" description="Content description for time section of recent access preference providing better context for accessibility talk back. [CHAR_LIMIT=NONE]">Time: %s</string>
     <!--endregion-->
 
     <!--region Data categories  -->
@@ -949,6 +950,8 @@
     <string name="action_drag_label_move_down" description="Label for an accessibility action that moves an app down in the ordered app priority list [CHAR LIMIT=50]">Move down</string>
     <string name="action_drag_label_move_top" description="Label for an accessibility action that moves an app to the top of the ordered app priority list [CHAR LIMIT=50]">Move to top</string>
     <string name="action_drag_label_move_bottom" description="Label for an accessibility action that moves an app to the bottom of the ordered app priority list [CHAR LIMIT=50]">Move to bottom</string>
+    <string name="reorder_button_content_description" description="Content description of a button for accessibility that is used to reorder selected app in the app priority list [CHAR LIMIT=50]">Button to reorder <xliff:g id="selected_app" example="Test app">%s</xliff:g> in the priority list</string>
+    <string name="remove_button_content_description" description="Content description of a button for accessibility that is used to remove selected app from the app priority list [CHAR LIMIT=50]">Button to remove <xliff:g id="selected_app" example="Test app">%s</xliff:g> from the priority list</string>
     <!--  endregion-->
 
     <!--  region Search Indexable-->
