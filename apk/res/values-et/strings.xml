@@ -45,6 +45,7 @@
     <string name="write_data_access_label" msgid="7955988316773000250">"Kirjutamine: %s"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Lubade haldamine"</string>
+    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Aeg: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Tegevus"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"tegevus"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Keha mõõtmisandmed"</string>
@@ -683,7 +684,7 @@
     <string name="check_for_updates_description" msgid="1347667778199095160">"Veenduge, et installitud rakendused oleksid ajakohased"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Vaadake kõiki ühilduvaid rakendusi"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Otsige rakendusi Google Playst"</string>
-    <string name="send_feedback" msgid="7756927746070096780">"Tagasiside saatmine"</string>
+    <string name="send_feedback" msgid="7756927746070096780">"Saatke tagasisidet"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Öelge meile, milliseid tervise- ja treeningurakendusi soovite Health Connectiga kasutada"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play pood"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Automaatne kustutamine"</string>
