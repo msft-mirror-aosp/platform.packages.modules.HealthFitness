@@ -31,6 +31,7 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UNKNOWN;
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_USER_ID;
@@ -54,6 +55,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager.DataDownloadState;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.datatypes.Record;
@@ -1029,7 +1031,7 @@ public final class BackupRestore {
                 RecordHelperProvider.getInstance().getRecordHelper(recordType);
         // Read all the records of the given type from the staged db and insert them into the
         // existing healthconnect db.
-        long token = DEFAULT_LONG;
+        PageTokenWrapper token = EMPTY_PAGE_TOKEN;
         do {
             var recordsToMergeAndToken = getRecordsToMerge(recordTypeClass, token, recordHelper);
             if (recordsToMergeAndToken.first.isEmpty()) {
@@ -1051,7 +1053,7 @@ public final class BackupRestore {
                     .insertAll(upsertTransactionRequest.getUpsertRequests());
 
             token = recordsToMergeAndToken.second;
-        } while (token != DEFAULT_LONG);
+        } while (!token.isEmpty());
 
         // Once all the records of this type have been merged we can delete the table.
 
@@ -1068,12 +1070,12 @@ public final class BackupRestore {
         getStagedDatabase().getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
 
-    private <T extends Record> Pair<List<RecordInternal<?>>, Long> getRecordsToMerge(
-            Class<T> recordTypeClass, long requestToken, RecordHelper<?> recordHelper) {
+    private <T extends Record> Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
+            Class<T> recordTypeClass, PageTokenWrapper requestToken, RecordHelper<?> recordHelper) {
         ReadRecordsRequestUsingFilters<T> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
                         .setPageSize(2000)
-                        .setPageToken(requestToken)
+                        .setPageToken(requestToken.encode())
                         .build();
 
         Map<String, Boolean> extraReadPermsMapping = new ArrayMap<>();
@@ -1094,10 +1096,10 @@ public final class BackupRestore {
                         extraReadPermsMapping);
 
         List<RecordInternal<?>> recordInternalList;
-        long token;
+        PageTokenWrapper token;
         ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
         try (Cursor cursor = read(readTableRequest)) {
-            Pair<List<RecordInternal<?>>, Long> readResult =
+            Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
                             readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),

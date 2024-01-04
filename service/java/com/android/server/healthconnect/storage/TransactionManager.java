@@ -16,10 +16,10 @@
 
 package com.android.server.healthconnect.storage;
 
-import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
@@ -38,6 +38,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.UserHandle;
 import android.util.Pair;
@@ -298,7 +299,7 @@ public final class TransactionManager {
      * @return Pair containing records list read {@link RecordInternal} from the table and a page
      *     token for pagination.
      */
-    public Pair<List<RecordInternal<?>>, Long> readRecordsAndPageToken(
+    public Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsAndPageToken(
             @NonNull ReadTransactionRequest request) throws SQLiteException {
         // TODO(b/308158714): Make this build time check once we have different classes.
         checkArgument(
@@ -310,12 +311,12 @@ public final class TransactionManager {
         requireNonNull(helper);
         if (!helper.isRecordOperationsEnabled()) {
             recordInternalList = new ArrayList<>(0);
-            return Pair.create(recordInternalList, DEFAULT_LONG);
+            return Pair.create(recordInternalList, EMPTY_PAGE_TOKEN);
         }
 
-        long pageToken;
+        PageTokenWrapper pageToken;
         try (Cursor cursor = read(readTableRequest)) {
-            Pair<List<RecordInternal<?>>, Long> readResult =
+            Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     helper.getNextInternalRecordsPageAndToken(
                             cursor,
                             request.getPageSize().orElse(DEFAULT_PAGE_SIZE),
