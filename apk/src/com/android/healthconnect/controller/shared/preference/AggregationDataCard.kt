@@ -28,7 +28,9 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.toLocalTime
 import java.time.Instant
+import java.time.LocalTime
 
 /** A custom card to display the latest available data aggregations. */
 class AggregationDataCard
@@ -52,6 +54,7 @@ constructor(
 
         cardIcon.background = fromHealthPermissionType(cardInfo.healthPermissionType).icon(context)
         cardTitle.text = cardInfo.aggregation.aggregation
+        cardTitle.contentDescription = cardInfo.aggregation.aggregationA11y
 
         val totalStartDate = cardInfo.startDate
         val totalEndDate = cardInfo.endDate
@@ -97,13 +100,29 @@ constructor(
                 ConstraintSet.BOTTOM,
                 ConstraintSet.PARENT_ID,
                 ConstraintSet.BOTTOM)
+            constraintSet.connect(
+                R.id.card_title_number, ConstraintSet.END, R.id.card_date, ConstraintSet.START)
 
+            constraintSet.connect(
+                R.id.card_date, ConstraintSet.START, R.id.card_title_number, ConstraintSet.END)
             constraintSet.connect(
                 R.id.card_date, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
             constraintSet.connect(
                 R.id.card_date, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
             constraintSet.connect(
                 R.id.card_date, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+
+            constraintSet.createHorizontalChain(
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.LEFT,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.RIGHT,
+                intArrayOf(R.id.card_title_number, R.id.card_date),
+                null,
+                ConstraintSet.CHAIN_SPREAD_INSIDE)
+
+            constraintSet.constrainedWidth(R.id.card_title_number, true)
+            constraintSet.constrainedWidth(R.id.card_date, true)
         }
 
         constraintSet.applyTo(titleAndDateContainer)
@@ -122,11 +141,18 @@ constructor(
 
     private fun formatDateText(startDate: Instant, endDate: Instant?): String {
         return if (endDate != null) {
+            var localEndDate: Instant = endDate
+
+            // If endDate is midnight, add one millisecond so that DateUtils
+            // correctly formats it as a separate date.
+            if (endDate.toLocalTime() == LocalTime.MIDNIGHT) {
+                localEndDate = endDate.plusMillis(1)
+            }
             // display date range
-            if (isLessThanOneYearAgo(startDate) && isLessThanOneYearAgo(endDate)) {
-                dateFormatter.formatDateRangeWithoutYear(startDate, endDate)
+            if (isLessThanOneYearAgo(startDate) && isLessThanOneYearAgo(localEndDate)) {
+                dateFormatter.formatDateRangeWithoutYear(startDate, localEndDate)
             } else {
-                dateFormatter.formatDateRangeWithYear(startDate, endDate)
+                dateFormatter.formatDateRangeWithYear(startDate, localEndDate)
             }
         } else {
             // display only one date

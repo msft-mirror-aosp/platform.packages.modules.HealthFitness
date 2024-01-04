@@ -77,6 +77,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
 
     public static final String INACTIVE_APPS_ADDED = "inactive_apps_added";
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile HealthDataCategoryPriorityHelper sHealthDataCategoryPriorityHelper;
 
     /**
@@ -85,6 +86,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      */
     private volatile ConcurrentHashMap<Integer, List<Long>> mHealthDataCategoryToAppIdPriorityMap;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private HealthDataCategoryPriorityHelper() {}
 
     /**
@@ -103,6 +105,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * <p>Inactive apps are added at the bottom of the priority list even if they are the default
      * app.
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public synchronized void appendToPriorityList(
             @NonNull String packageName,
             @HealthDataCategory.Type int dataCategory,
@@ -171,6 +174,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * <p>If the new aggregation source control flag is off, apps that don't have write permissions
      * are removed regardless of whether they hold data in that category.
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public synchronized void updateHealthDataPriority(
             @NonNull String[] packageNames, @NonNull UserHandle user, @NonNull Context context) {
         Objects.requireNonNull(packageNames);
@@ -287,6 +291,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         super.clearData(transactionManager);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public synchronized void clearCache() {
         mHealthDataCategoryToAppIdPriorityMap = null;
@@ -401,11 +406,11 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                 HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isAggregationSourceControlsEnabled();
         // Candidates to be added to the priority list
-        Map<Integer, Set<Long>> dataCategoryToAppIdMapHavingPermission =
+        Map<Integer, List<Long>> dataCategoryToAppIdMapHavingPermission =
                 getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
                         .collect(
                                 Collectors.toMap(
-                                        Map.Entry::getKey, e -> new HashSet<>(e.getValue())));
+                                        Map.Entry::getKey, e -> new ArrayList<>(e.getValue())));
         // Candidates to be removed from the priority list
         Map<Integer, Set<Long>> dataCategoryToAppIdMapWithoutPermission =
                 getHealthDataCategoryToAppIdPriorityMap().entrySet().stream()
@@ -421,10 +426,11 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             long appInfoId = appInfoHelper.getOrInsertAppInfoId(packageInfo.packageName, context);
 
             for (int dataCategory : dataCategoriesWithWritePermissionsForThisPackage) {
-                Set<Long> appIdsHavingPermission =
+                List<Long> appIdsHavingPermission =
                         dataCategoryToAppIdMapHavingPermission.getOrDefault(
-                                dataCategory, new HashSet<>());
-                if (appIdsHavingPermission.add(appInfoId)) {
+                                dataCategory, new ArrayList<>());
+                if (!appIdsHavingPermission.contains(appInfoId)
+                        && appIdsHavingPermission.add(appInfoId)) {
                     dataCategoryToAppIdMapHavingPermission.put(
                             dataCategory, appIdsHavingPermission);
                 }
@@ -501,6 +507,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * aggregation source control, the packages are not removed if they still have data in these
      * categories.
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private synchronized void maybeRemoveAppsFromPriorityList(
             Map<Integer, Set<Long>> dataCategoryToAppIdsWithoutPermissions) {
         for (int dataCategory : dataCategoryToAppIdsWithoutPermissions.keySet()) {
@@ -512,7 +519,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     }
 
     private synchronized void updateTableWithNewPriorityList(
-            Map<Integer, Set<Long>> healthDataCategoryToAppIdPriorityMap) {
+            Map<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap) {
         for (int dataCategory : healthDataCategoryToAppIdPriorityMap.keySet()) {
             List<Long> appInfoIdList =
                     List.copyOf(healthDataCategoryToAppIdPriorityMap.get(dataCategory));

@@ -31,6 +31,7 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.toPeriod
 import com.android.healthconnect.controller.dataentries.formatters.shared.HealthDataEntryFormatter
+import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMapper
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.SystemTimeSource
 import com.android.healthconnect.controller.utils.TimeSource
@@ -64,12 +65,19 @@ constructor(
         private const val TAG = "LoadDataUseCaseHelper"
     }
 
+    /**
+     * Returns a list of records from a data type sorted in descending order of their start time.
+     */
     suspend fun readDataType(
         data: Class<out Record>,
         timeFilterRange: TimeInstantRangeFilter,
-        packageName: String?
+        packageName: String?,
+        ascending: Boolean = true,
+        pageSize: Int = 1000
     ): List<Record> {
-        val filter = buildReadRecordsRequestUsingFilters(data, timeFilterRange, packageName)
+        val filter =
+            buildReadRecordsRequestUsingFilters(
+                data, timeFilterRange, packageName, ascending, pageSize)
         val records =
             suspendCancellableCoroutine<ReadRecordsResponse<*>> { continuation ->
                     healthConnectManager.readRecords(
@@ -78,6 +86,31 @@ constructor(
                 .records
                 .sortedByDescending { record -> getStartTime(record) }
         return records
+    }
+
+    /** Returns a list of records from an input sorted in descending order of their start time. */
+    suspend fun readRecords(input: LoadDataEntriesInput): List<Record> {
+        val timeFilterRange =
+            getTimeFilter(input.displayedStartTime, input.period, endTimeExclusive = true)
+        val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(input.permissionType)
+
+        return dataTypes
+            .map { dataType -> readDataType(dataType, timeFilterRange, input.packageName) }
+            .flatten()
+    }
+
+    /** Returns a list containing the most recent record from the specified input. */
+    suspend fun readLastRecord(input: LoadDataEntriesInput): List<Record> {
+        val timeFilterRange =
+            getTimeFilter(input.displayedStartTime, input.period, endTimeExclusive = true)
+        val dataTypes = HealthPermissionToDatatypeMapper.getDataTypes(input.permissionType)
+
+        return dataTypes
+            .map { dataType ->
+                readDataType(
+                    dataType, timeFilterRange, input.packageName, ascending = false, pageSize = 1)
+            }
+            .flatten()
     }
 
     /**
@@ -172,6 +205,7 @@ constructor(
         period: DateNavigationPeriod,
         endTimeExclusive: Boolean
     ): TimeInstantRangeFilter {
+
         val start =
             startTime
                 .atZone(ZoneId.systemDefault())
@@ -182,6 +216,7 @@ constructor(
         if (endTimeExclusive) {
             end = end.minus(Duration.ofMillis(1))
         }
+
         return TimeInstantRangeFilter.Builder().setStartTime(start).setEndTime(end).build()
     }
 
@@ -193,10 +228,15 @@ constructor(
     fun buildReadRecordsRequestUsingFilters(
         data: Class<out Record>,
         timeFilterRange: TimeInstantRangeFilter,
-        packageName: String?
+        packageName: String?,
+        ascending: Boolean = true,
+        pageSize: Int = 1000
     ): ReadRecordsRequestUsingFilters<out Record> {
         val filter =
-            ReadRecordsRequestUsingFilters.Builder(data).setTimeRangeFilter(timeFilterRange)
+            ReadRecordsRequestUsingFilters.Builder(data)
+                .setAscending(ascending)
+                .setPageSize(pageSize)
+                .setTimeRangeFilter(timeFilterRange)
         if (packageName != null) {
             filter.addDataOrigins(DataOrigin.Builder().setPackageName(packageName).build()).build()
         }

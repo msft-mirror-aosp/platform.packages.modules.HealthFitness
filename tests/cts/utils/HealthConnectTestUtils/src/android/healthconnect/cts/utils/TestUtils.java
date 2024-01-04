@@ -35,11 +35,11 @@ import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAG
 
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
-import static com.android.compatibility.common.util.SystemUtil.runShellCommand;
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 import android.app.UiAutomation;
@@ -61,6 +61,7 @@ import android.health.connect.HealthPermissionCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.ReadRecordsRequest;
+import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordIdFilter;
@@ -122,6 +123,7 @@ import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.WheelchairPushesRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
+import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationException;
 import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
@@ -219,15 +221,24 @@ public final class TestUtils {
      * @param records records to insert
      * @return inserted records
      */
-    public static List<Record> insertRecords(List<Record> records) throws InterruptedException {
+    public static List<Record> insertRecords(List<? extends Record> records)
+            throws InterruptedException {
         return insertRecords(records, ApplicationProvider.getApplicationContext());
     }
 
-    public static List<Record> insertRecords(List<Record> records, Context context)
+    /**
+     * Inserts records to the database.
+     *
+     * @param records records to insert.
+     * @param context a {@link Context} to obtain {@link HealthConnectManager}.
+     * @return inserted records.
+     */
+    public static List<Record> insertRecords(List<? extends Record> records, Context context)
             throws InterruptedException {
         HealthConnectReceiver<InsertRecordsResponse> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .insertRecords(records, Executors.newSingleThreadExecutor(), receiver);
+                .insertRecords(
+                        unmodifiableList(records), Executors.newSingleThreadExecutor(), receiver);
         List<Record> returnedRecords = receiver.getResponse().getRecords();
         assertThat(returnedRecords).hasSize(records.size());
         return returnedRecords;
@@ -658,6 +669,28 @@ public final class TestUtils {
                 .isNotEmpty();
     }
 
+    /** Reads all records in the DB for a given {@code recordClass}. */
+    public static <T extends Record> List<T> readAllRecords(Class<T> recordClass)
+            throws InterruptedException {
+        List<T> records = new ArrayList<>();
+        ReadRecordsResponse<T> readRecordsResponse =
+                readRecordsWithPagination(
+                        new ReadRecordsRequestUsingFilters.Builder<>(recordClass).build());
+        while (true) {
+            records.addAll(readRecordsResponse.getRecords());
+            long pageToken = readRecordsResponse.getNextPageToken();
+            if (pageToken == -1) {
+                break;
+            }
+            readRecordsResponse =
+                    readRecordsWithPagination(
+                            new ReadRecordsRequestUsingFilters.Builder<>(recordClass)
+                                    .setPageToken(pageToken)
+                                    .build());
+        }
+        return records;
+    }
+
     public static <T extends Record> ReadRecordsResponse<T> readRecordsWithPagination(
             ReadRecordsRequest<T> request) throws InterruptedException {
         HealthConnectReceiver<ReadRecordsResponse<T>> receiver = new HealthConnectReceiver<>();
@@ -717,7 +750,8 @@ public final class TestUtils {
         receiver.verifyNoExceptionOrThrow();
     }
 
-    public static void deleteRecords(List<Record> records) throws InterruptedException {
+    /** Helper function to delete records from the DB using HealthConnectManager. */
+    public static void deleteRecords(List<? extends Record> records) throws InterruptedException {
         List<RecordIdFilter> recordIdFilters =
                 records.stream()
                         .map(
@@ -799,6 +833,14 @@ public final class TestUtils {
     public static void startMigration() throws InterruptedException {
         MigrationReceiver receiver = new MigrationReceiver();
         getHealthConnectManager().startMigration(Executors.newSingleThreadExecutor(), receiver);
+        receiver.verifyNoExceptionOrThrow();
+    }
+
+    public static void writeMigrationData(List<MigrationEntity> entities)
+            throws InterruptedException {
+        MigrationReceiver receiver = new MigrationReceiver();
+        getHealthConnectManager()
+                .writeMigrationData(entities, Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -1359,7 +1401,7 @@ public final class TestUtils {
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action) {
-        sendCommandToTestAppReceiver(context, action, /*extras=*/ null);
+        sendCommandToTestAppReceiver(context, action, /* extras= */ null);
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
@@ -1369,6 +1411,157 @@ public final class TestUtils {
             intent.putExtras(extras);
         }
         context.sendBroadcast(intent);
+    }
+
+    /** Sets up the priority list for aggregation tests. */
+    public static void setupAggregation(String packageName, int dataCategory)
+            throws InterruptedException {
+        insertRecordsForPriority(packageName);
+
+        // Add the packageName inserting the records to the priority list manually
+        // Since CTS tests get their permissions granted at install time and skip
+        // the Health Connect APIs that would otherwise add the packageName to the priority list
+
+        updatePriorityWithManageHealthDataPermission(dataCategory, Arrays.asList(packageName));
+        FetchDataOriginsPriorityOrderResponse newPriority =
+                getPriorityWithManageHealthDataPermission(dataCategory);
+        List<String> newPriorityString =
+                newPriority.getDataOriginsPriorityOrder().stream()
+                        .map(DataOrigin::getPackageName)
+                        .toList();
+        assertThat(newPriorityString.size()).isEqualTo(1);
+        assertThat(newPriorityString.get(0)).isEqualTo(packageName);
+    }
+
+    /** Inserts a record that does not support aggregation to enable the priority list. */
+    public static void insertRecordsForPriority(String packageName) throws InterruptedException {
+        // Insert records that do not support aggregation so that the AppInfoTable is initialised
+        MenstruationPeriodRecord recordToInsert =
+                new MenstruationPeriodRecord.Builder(
+                                new Metadata.Builder()
+                                        .setDataOrigin(
+                                                new DataOrigin.Builder()
+                                                        .setPackageName(packageName)
+                                                        .build())
+                                        .build(),
+                                Instant.now(),
+                                Instant.now().plusMillis(1000))
+                        .build();
+        insertRecords(Arrays.asList(recordToInsert));
+    }
+
+    /** Updates the priority list after getting the MANAGE_HEALTH_DATA permission. */
+    public static void updatePriorityWithManageHealthDataPermission(
+            int permissionCategory, List<String> packageNames) throws InterruptedException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        try {
+            updatePriority(permissionCategory, packageNames);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
+    /** Updates the priority list without getting the MANAGE_HEALTH_DATA permission. */
+    public static void updatePriority(int permissionCategory, List<String> packageNames)
+            throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        List<DataOrigin> dataOrigins =
+                packageNames.stream()
+                        .map(
+                                (packageName) ->
+                                        new DataOrigin.Builder()
+                                                .setPackageName(packageName)
+                                                .build())
+                        .collect(Collectors.toList());
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
+                new AtomicReference<>();
+        UpdateDataOriginPriorityOrderRequest updateDataOriginPriorityOrderRequest =
+                new UpdateDataOriginPriorityOrderRequest(dataOrigins, permissionCategory);
+        service.updateDataOriginPriorityOrder(
+                updateDataOriginPriorityOrderRequest,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(Void result) {
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        healthConnectExceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
+                });
+        assertThat(updateDataOriginPriorityOrderRequest.getDataCategory())
+                .isEqualTo(permissionCategory);
+        assertThat(updateDataOriginPriorityOrderRequest.getDataOriginInOrder()).isNotNull();
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (healthConnectExceptionAtomicReference.get() != null) {
+            throw healthConnectExceptionAtomicReference.get();
+        }
+    }
+
+    /** Gets the priority list after getting the MANAGE_HEALTH_DATA permission. */
+    public static FetchDataOriginsPriorityOrderResponse getPriorityWithManageHealthDataPermission(
+            int permissionCategory) throws InterruptedException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        FetchDataOriginsPriorityOrderResponse response;
+
+        try {
+            response = getPriority(permissionCategory);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+
+        return response;
+    }
+
+    /** Gets the priority list without requesting the MANAGE_HEALTH_DATA permission. */
+    public static FetchDataOriginsPriorityOrderResponse getPriority(int permissionCategory)
+            throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        AtomicReference<FetchDataOriginsPriorityOrderResponse> response = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
+                new AtomicReference<>();
+        service.fetchDataOriginsPriorityOrder(
+                permissionCategory,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(FetchDataOriginsPriorityOrderResponse result) {
+                        response.set(result);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        healthConnectExceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
+                });
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (healthConnectExceptionAtomicReference.get() != null) {
+            throw healthConnectExceptionAtomicReference.get();
+        }
+
+        return response.get();
     }
 
     public static final class RecordAndIdentifier {

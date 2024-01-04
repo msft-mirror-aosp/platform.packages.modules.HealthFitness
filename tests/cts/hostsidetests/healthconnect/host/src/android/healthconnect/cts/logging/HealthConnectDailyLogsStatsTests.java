@@ -16,7 +16,7 @@
 
 package android.healthconnect.cts.logging;
 
-import static android.healthconnect.cts.logging.HostSideTestsUtils.isHardwareSupported;
+import static android.healthconnect.cts.HostSideTestUtil.isHardwareSupported;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -24,6 +24,7 @@ import android.cts.statsdatom.lib.AtomTestUtils;
 import android.cts.statsdatom.lib.ConfigUtils;
 import android.cts.statsdatom.lib.DeviceUtils;
 import android.cts.statsdatom.lib.ReportUtils;
+import android.healthconnect.cts.HostSideTestUtil;
 
 import com.android.os.StatsLog;
 import com.android.os.healthfitness.api.ApiExtensionAtoms;
@@ -63,6 +64,8 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         super.setUp();
         assertThat(mCtsBuild).isNotNull();
         assertThat(isHardwareSupported(getDevice())).isTrue();
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        HostSideTestUtil.setupRateLimitingFeatureFlag(getDevice());
         mTestStartTime = Instant.now();
         mTestStartTimeOnDevice = Instant.ofEpochMilli(getDevice().getDeviceDate());
         ConfigUtils.removeConfig(getDevice());
@@ -74,6 +77,8 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
 
     @Override
     protected void tearDown() throws Exception {
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        HostSideTestUtil.restoreRateLimitingFeatureFlag(getDevice());
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
         clearData();
@@ -115,8 +120,7 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
                 new int[] {ApiExtensionAtoms.HEALTH_CONNECT_STORAGE_STATS_FIELD_NUMBER});
 
         List<StatsLog.EventMetricData> data =
-                getEventMetricDataList(
-                        /* testName= */ "testHealthConnectDatabaseStats", NUMBER_OF_RETRIES);
+                getEventMetricDataList("testInsertRecordsSucceed", NUMBER_OF_RETRIES);
         assertThat(data.size()).isAtLeast(1);
         HealthConnectStorageStats atom =
                 data.get(0).getAtom().getExtension(ApiExtensionAtoms.healthConnectStorageStats);

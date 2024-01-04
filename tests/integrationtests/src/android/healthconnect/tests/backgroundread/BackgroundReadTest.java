@@ -88,17 +88,15 @@ public class BackgroundReadTest {
     }
 
     @Test
-    public void testReadRecords_inBackgroundWithoutPermission_cantReadRecordsForOtherApp() {
+    public void testReadRecords_inBackgroundWithoutPermission_cantReadRecordsForOtherApp()
+            throws Exception {
         revokeBackgroundReadPermissionForTestApp();
         insertRecords();
 
         sendCommandToTestAppReceiver(mContext, ACTION_READ_RECORDS_FOR_OTHER_APP);
 
-        final Bundle result = TestReceiver.getResult();
-        assertThat(result).isNotNull();
-
-        // Other apps' data is simply not returned when reading in background
-        assertThat(result.getInt(EXTRA_RECORD_COUNT)).isEqualTo(0);
+        assertThat(TestReceiver.getResult()).isNull();
+        assertThat(TestReceiver.getErrorCode()).isEqualTo(ERROR_SECURITY);
     }
 
     @Test
@@ -132,7 +130,7 @@ public class BackgroundReadTest {
     }
 
     @Test
-    public void testAggregate_inBackgroundWithoutPermission_securityError() {
+    public void testAggregate_inBackgroundWithoutPermission_securityError() throws Exception {
         revokeBackgroundReadPermissionForTestApp();
 
         sendCommandToTestAppReceiver(mContext, ACTION_AGGREGATE);
@@ -150,7 +148,7 @@ public class BackgroundReadTest {
     }
 
     @Test
-    public void testGetChangeLogs_inBackgroundWithoutPermission_securityError() {
+    public void testGetChangeLogs_inBackgroundWithoutPermission_securityError() throws Exception {
         revokeBackgroundReadPermissionForTestApp();
 
         final Bundle extras = new Bundle();
@@ -161,7 +159,7 @@ public class BackgroundReadTest {
     }
 
     @Test
-    public void testGetChangeLogs_inBackgroundWithPermission_success() {
+    public void testGetChangeLogs_inBackgroundWithPermission_success() throws Exception {
         revokeBackgroundReadPermissionForTestApp();
         sendCommandToTestAppReceiver(mContext, ACTION_GET_CHANGE_LOG_TOKEN);
         final String token = requireNonNull(TestReceiver.getResult()).getString(EXTRA_TOKEN);
@@ -181,11 +179,14 @@ public class BackgroundReadTest {
                                 PKG_TEST_APP, READ_HEALTH_DATA_IN_BACKGROUND, mContext.getUser()));
     }
 
-    private void revokeBackgroundReadPermissionForTestApp() {
+    private void revokeBackgroundReadPermissionForTestApp() throws InterruptedException {
         runWithShellPermissionIdentity(
                 () ->
                         mPackageManager.revokeRuntimePermission(
                                 PKG_TEST_APP, READ_HEALTH_DATA_IN_BACKGROUND, mContext.getUser()));
+
+        // Wait a bit for the process to be killed
+        Thread.sleep(500);
     }
 
     private void assertSecurityError() {

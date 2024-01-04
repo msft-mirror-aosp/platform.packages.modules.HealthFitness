@@ -33,7 +33,7 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Lutho"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Imininingwane yokungena"</string>
     <string name="backup_title" msgid="211503191266235085">"Yenza isipele"</string>
-    <string name="data_sources_and_priority_title" msgid="3871795785418187899">"Imithombo yedatha nokubalulekile"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Imithombo yedatha kanye nokubalulekile"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Setha amayunithi"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Ukufinyelela kwakamuva"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Awekho ama-app asanda kufinyelela ku-Health Connect"</string>
@@ -45,6 +45,7 @@
     <string name="write_data_access_label" msgid="7955988316773000250">"Bhala: %s"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Lawula izimvume"</string>
+    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Isikhathi: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Umsebenzi"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"umsebenzi"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Ukulinganisela umzimba"</string>
@@ -790,8 +791,7 @@
     <string name="data_sources_help_link" msgid="7740264923634947915">"Indlela imithombo nomsebenzi wokwenza kube okubalulekile"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Faka i-app"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Hlela izinsiza ze-app"</string>
-    <!-- no translation found for default_app_summary (6183876151011837062) -->
-    <skip />
+    <string name="default_app_summary" msgid="6183876151011837062">"Idivayisi ezenzakalelayo"</string>
     <string name="app_data_title" msgid="6499967982291000837">"Idatha ye-app"</string>
     <string name="no_data_footer" msgid="4777297654713673100">"Idatha ekuma-app akwazi ukufinyelela ku-Health Connect izovela lapha"</string>
     <string name="date_picker_day" msgid="3076687507968958991">"Usuku"</string>
