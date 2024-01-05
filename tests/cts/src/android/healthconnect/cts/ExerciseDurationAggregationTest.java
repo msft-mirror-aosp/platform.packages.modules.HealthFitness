@@ -25,6 +25,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.ExerciseSegment;
@@ -33,6 +34,7 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.ExerciseSessionType;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -65,6 +67,13 @@ public class ExerciseDurationAggregationTest {
                     .addAggregationType(EXERCISE_DURATION_TOTAL)
                     .build();
 
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Before
+    public void setUp() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
+    }
+
     @After
     public void tearDown() throws InterruptedException {
         TestUtils.verifyDeleteRecords(
@@ -77,6 +86,7 @@ public class ExerciseDurationAggregationTest {
 
     @Test
     public void testSimpleAggregation_oneSession_returnsItsDuration() throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 TestUtils.generateMetadata(),
@@ -100,6 +110,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testSimpleAggregation_oneSessionStartEarlierThanWindow_returnsOverlapDuration()
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 TestUtils.generateMetadata(),
@@ -121,6 +132,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testSimpleAggregation_oneSessionBiggerThanWindow_returnsOverlapDuration()
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 TestUtils.generateMetadata(),
@@ -142,6 +154,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testSimpleAggregation_oneSessionWithRest_returnsDurationMinusRest()
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         ExerciseSegment restSegment =
                 new ExerciseSegment.Builder(
                                 SESSION_START_TIME,
@@ -182,6 +195,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testAggregationByDuration_oneSession_returnsSplitDurationIntoGroups()
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = SESSION_START_TIME.plus(10, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
@@ -213,6 +227,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testAggregation_oneSessionLocalTimeFilter_findsSessionWithMinOffset()
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, ZoneOffset.UTC);
 
@@ -244,6 +259,7 @@ public class ExerciseDurationAggregationTest {
     @Test
     public void testAggregation_oneSessionLocalTimeFilterExcludeSegment_substractsExcludeInterval()
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = SESSION_START_TIME.plus(1, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
