@@ -25,7 +25,6 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -66,7 +65,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class DistanceRecordTest {
     private static final String TAG = "DistanceRecordTest";
-    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
     public void setUp() {
@@ -340,7 +338,6 @@ public class DistanceRecordTest {
 
     @Test
     public void testAggregation_DistanceTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(
                         DistanceRecordTest.getBaseDistanceRecord(1, 74.0),
@@ -587,7 +584,6 @@ public class DistanceRecordTest {
 
     @Test
     public void testAggregation_DistanceTotal_AtOverlapStartAndEndTime() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(
                         getBaseDistanceRecordWithSameStartAndEndTime(74.0, Instant.now()),

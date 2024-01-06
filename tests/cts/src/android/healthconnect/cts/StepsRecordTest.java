@@ -29,7 +29,6 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -73,7 +72,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class StepsRecordTest {
     private static final String TAG = "StepsRecordTest";
-    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
     public void setUp() {
@@ -676,7 +674,6 @@ public class StepsRecordTest {
 
     @Test
     public void testAggregation_StepsCountTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(getStepsRecord(1000, 1, 1), getStepsRecord(1000, 2, 1));
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
@@ -758,7 +755,6 @@ public class StepsRecordTest {
     @Test
     public void testAggregation_recordStartsBeforeAggWindow_returnsRescaledStepsCountInResult()
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
         List<Record> record =
                 Arrays.asList(
@@ -785,7 +781,6 @@ public class StepsRecordTest {
 
     @Test
     public void testStepsCountAggregation_groupByDurationWithInstantFilter() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant end = Instant.now();
         Instant start = end.minus(5, ChronoUnit.DAYS);
         List<Record> records =
@@ -811,7 +806,6 @@ public class StepsRecordTest {
 
     @Test
     public void testStepsCountAggregation_groupByDuration() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant end = Instant.now();
         Instant start = end.minus(3, ChronoUnit.DAYS);
         insertStepsRecordWithDelay(1000, 3);
@@ -838,7 +832,6 @@ public class StepsRecordTest {
     @Test
     public void testAggregation_insertForEveryHour_returnsAggregateForHourAndHalfHours()
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
         Instant end = Instant.now();
         for (int i = 0; i < 10; i++) {
@@ -882,7 +875,6 @@ public class StepsRecordTest {
     @Test
     public void testAggregation_groupByDurationInstant_halfSizeGroupResultIsCorrect()
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant end = Instant.now();
         TestUtils.insertRecords(List.of(getStepsRecord(end, 100, 1, 2)));
 
@@ -905,7 +897,6 @@ public class StepsRecordTest {
 
     @Test
     public void testAggregation_StepsCountTotal_withDuplicateEntry() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(getStepsRecord(1000, 1, 1), getStepsRecord(1000, 2, 1));
         AggregateRecordsResponse<Long> oldResponse =
@@ -1123,7 +1114,6 @@ public class StepsRecordTest {
     }
 
     private void testAggregationLocalTimeOffset(ZoneOffset offset) throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         LocalDateTime endTimeLocal = LocalDateTime.now(offset);
         LocalDateTime startTimeLocal = endTimeLocal.minusDays(4);
         Instant endTimeInstant = endTimeLocal.toInstant(offset);
@@ -1158,7 +1148,6 @@ public class StepsRecordTest {
     @Test
     public void testAggregatePeriod_withLocalDateTime_halfSizeGroupResultIsCorrect()
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant end = Instant.now();
         // Insert steps from -48 hours to -12 hours, 36 hours session
         TestUtils.insertRecords(List.of(getStepsRecord(end, 2160, 2, 36, ZoneOffset.UTC)));
@@ -1184,7 +1173,6 @@ public class StepsRecordTest {
 
     @Test
     public void testAggregateLocalFilter_minOffsetRecord() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         LocalDateTime endTimeLocal = LocalDateTime.now(ZoneOffset.UTC);
         Instant endTimeInstant = Instant.now();
 
@@ -1229,7 +1217,6 @@ public class StepsRecordTest {
 
     private void testAggregateDurationWithLocalTimeForZoneOffset(ZoneOffset offset)
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, offset);
         LocalDateTime startTimeLocal = endTimeLocal.minusDays(4);
