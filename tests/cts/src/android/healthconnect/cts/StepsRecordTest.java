@@ -22,6 +22,8 @@ import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPaginatio
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -48,6 +50,7 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
@@ -57,6 +60,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -78,6 +82,11 @@ import java.util.UUID;
 public class StepsRecordTest {
     private static final String TAG = "StepsRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -603,6 +612,25 @@ public class StepsRecordTest {
         for (Record record : records) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
         }
+    }
+
+    @Test
+    public void testDeleteStepsRecords_usingInvalidId() throws InterruptedException {
+        List<RecordIdFilter> recordIds =
+                Collections.singletonList(RecordIdFilter.fromId(StepsRecord.class, "foo"));
+        HealthConnectException e =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> TestUtils.verifyDeleteRecords(recordIds));
+        assertThat(e.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void testDeleteStepsRecord_usingUnknownId() throws InterruptedException {
+        List<RecordIdFilter> recordIds =
+                Collections.singletonList(
+                        RecordIdFilter.fromId(StepsRecord.class, UUID.randomUUID().toString()));
+        TestUtils.verifyDeleteRecords(recordIds);
     }
 
     @Test

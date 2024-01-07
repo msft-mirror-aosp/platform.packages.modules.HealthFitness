@@ -54,6 +54,7 @@ constructor(
 
         cardIcon.background = fromHealthPermissionType(cardInfo.healthPermissionType).icon(context)
         cardTitle.text = cardInfo.aggregation.aggregation
+        cardTitle.contentDescription = cardInfo.aggregation.aggregationA11y
 
         val totalStartDate = cardInfo.startDate
         val totalEndDate = cardInfo.endDate
@@ -110,6 +111,18 @@ constructor(
                 R.id.card_date, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
             constraintSet.connect(
                 R.id.card_date, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+
+            constraintSet.createHorizontalChain(
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.LEFT,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.RIGHT,
+                intArrayOf(R.id.card_title_number, R.id.card_date),
+                null,
+                ConstraintSet.CHAIN_SPREAD_INSIDE)
+
+            constraintSet.constrainedWidth(R.id.card_title_number, true)
+            constraintSet.constrainedWidth(R.id.card_date, true)
         }
 
         constraintSet.applyTo(titleAndDateContainer)
