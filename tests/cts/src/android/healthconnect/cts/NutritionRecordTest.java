@@ -65,7 +65,6 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -105,7 +104,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class NutritionRecordTest {
     private static final String TAG = "NutritionRecordTest";
-    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
     public void setUp() {
@@ -421,7 +419,6 @@ public class NutritionRecordTest {
 
     @Test
     public void testAggregation_NutritionValuesTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.NUTRITION);
         List<Record> records =
                 Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord());
         AggregateRecordsResponse<Mass> oldResponse =
@@ -541,7 +538,6 @@ public class NutritionRecordTest {
 
     @Test
     public void testAggregation_NutritionEnergyValuesTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.NUTRITION);
         List<Record> records = Arrays.asList(getCompleteNutritionRecord());
         AggregateRecordsResponse<Energy> oldResponse =
                 TestUtils.getAggregateResponse(

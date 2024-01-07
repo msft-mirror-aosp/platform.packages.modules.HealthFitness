@@ -24,7 +24,6 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -64,7 +63,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class TotalCaloriesBurnedRecordTest {
     private static final String TAG = "TotalCaloriesBurnedRecordTest";
-    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
     public void setUp() {
@@ -481,7 +479,6 @@ public class TotalCaloriesBurnedRecordTest {
 
     @Test
     public void testAggregation_totalCaloriesBurnt() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -540,7 +537,6 @@ public class TotalCaloriesBurnedRecordTest {
 
     @Test
     public void testAggregation_totalCaloriesBurnt_activeCalories() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -571,7 +567,6 @@ public class TotalCaloriesBurnedRecordTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         TestUtils.getAggregateResponseGroupByPeriod(
@@ -592,7 +587,6 @@ public class TotalCaloriesBurnedRecordTest {
     @Test
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy_duration()
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -639,7 +633,6 @@ public class TotalCaloriesBurnedRecordTest {
     @Test
     public void testAggregation_groupByDurationLocalFilter_shiftRecordsAndFilterWithOffset()
             throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         ZoneOffset offset = ZoneOffset.ofHours(-1);

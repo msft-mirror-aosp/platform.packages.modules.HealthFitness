@@ -29,7 +29,6 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -72,7 +71,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class HeartRateRecordTest {
     private static final String TAG = "HeartRateRecordTest";
-    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
     public void setUp() {
@@ -492,7 +490,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_timeRange_all() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         List<Record> records =
                 Arrays.asList(
                         getBaseHeartRateRecord(71),
@@ -538,7 +535,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_timeRange_not_present() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         List<Record> records =
                 Arrays.asList(
                         TestUtils.getHeartRateRecord(71),
@@ -566,7 +562,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_withDataOrigin_correct() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         Context context = ApplicationProvider.getApplicationContext();
         List<Record> records =
                 Arrays.asList(
@@ -605,7 +600,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_withDataOrigin_incorrect() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         List<Record> records =
                 Arrays.asList(
                         TestUtils.getHeartRateRecord(71),
@@ -635,7 +629,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_groupBy_Duration() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         Instant start = Instant.now().minusMillis(500);
         Instant end = Instant.now().plusMillis(2500);
         insertHeartRateRecordsWithDelay(1000, 3);
@@ -673,7 +666,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_groupByDuration() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         Instant start = Instant.now().minus(3, ChronoUnit.DAYS);
         Instant end = start.plus(3, ChronoUnit.DAYS);
         insertHeartRateRecordsInPastDays(4);
@@ -739,7 +731,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testHeartAggregation_measurement_count() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         List<Record> records =
                 Arrays.asList(
                         getBaseHeartRateRecord(71),
@@ -893,7 +884,6 @@ public class HeartRateRecordTest {
 
     @Test
     public void testAggregateLocalFilter_minOffsetRecord() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         LocalDateTime endTimeLocal = LocalDateTime.now(ZoneOffset.UTC);
         Instant endTimeInstant = Instant.now();
 
