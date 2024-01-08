@@ -124,9 +124,11 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             .setIcon(R.attr.disconnectAllIcon)
             .setTitle(R.string.permissions_disconnect_all_dialog_title)
             .setMessage(R.string.permissions_disconnect_all_dialog_message)
-            .setNegativeButton(
+            .setNeutralButton(
                 android.R.string.cancel,
-                DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON)
+                DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CANCEL_BUTTON) { _, _ ->
+                    viewModel.setAlertDialogStatus(false)
+                }
             .setPositiveButton(
                 R.string.permissions_disconnect_all_dialog_disconnect,
                 DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_REMOVE_ALL_BUTTON) { _, _
@@ -198,7 +200,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     getRemoveAccessForAllAppsPreference().apply {
                         isEnabled = allowedApps.isNotEmpty()
                         setOnPreferenceClickListener {
-                            openRemoveAllAppsAccessDialog(activeApps)
+                            viewModel.setAlertDialogStatus(true)
                             true
                         }
                     })
@@ -211,6 +213,12 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 updateAllowedApps(allowedApps)
                 updateDeniedApps(notAllowedApps)
                 updateInactiveApps(connectedAppsGroup[INACTIVE].orEmpty())
+
+                viewModel.alertDialogActive.observe(viewLifecycleOwner) { state ->
+                    if (state) {
+                        openRemoveAllAppsAccessDialog(activeApps)
+                    }
+                }
             }
         }
     }
@@ -375,10 +383,17 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private fun setUpEmptyState() {
         mTopIntro?.title = getString(R.string.connected_apps_empty_list_section_title)
-        mThingsToTryCategory?.isVisible = true
-        mThingsToTryCategory?.addPreference(getCheckForUpdatesPreference())
-        mThingsToTryCategory?.addPreference(getSeeAllCompatibleAppsPreference())
-        mThingsToTryCategory?.addPreference(getSendFeedbackPreference())
+        if (deviceInfoUtils.isPlayStoreAvailable(requireContext()) ||
+            deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
+            mThingsToTryCategory?.isVisible = true
+        }
+        if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
+            mThingsToTryCategory?.addPreference(getCheckForUpdatesPreference())
+            mThingsToTryCategory?.addPreference(getSeeAllCompatibleAppsPreference())
+        }
+        if (deviceInfoUtils.isSendFeedbackAvailable(requireContext())) {
+            mThingsToTryCategory?.addPreference(getSendFeedbackPreference())
+        }
         setAppAndSettingsCategoriesVisibility(false)
     }
 

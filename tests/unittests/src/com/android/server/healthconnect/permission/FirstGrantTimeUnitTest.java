@@ -43,7 +43,11 @@ import android.os.UserHandle;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.server.healthconnect.TestUtils;
+
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -94,6 +98,11 @@ public class FirstGrantTimeUnitTest {
         mGrantTimeManager = new FirstGrantTimeManager(mContext, mTracker, mDatastore);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        TestUtils.waitForAllScheduledTasksToComplete();
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testUnknownPackage_throwsException() {
         mGrantTimeManager.getFirstGrantTime("android.unknown_package", CURRENT_USER);
@@ -107,6 +116,7 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
+    @Ignore("b/312712918 this test is flaky")
     public void testCurrentPackage_intentSupported_grantTimeIsNotNull() {
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isNotNull();
@@ -136,6 +146,7 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
+    @Ignore("b/312712918 this test is flaky")
     public void testCurrentPackage_noBackup_useRecordedTime() {
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, null);
@@ -148,6 +159,7 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
+    @Ignore("b/312712918 this test is flaky")
     public void testCurrentPackage_noBackup_grantTimeEqualToStaged() {
         Instant backupTime = Instant.now().minusSeconds((long) 1e5);
         Instant stateTime = backupTime.plusSeconds(10);

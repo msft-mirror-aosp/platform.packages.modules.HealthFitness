@@ -79,6 +79,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @hide
  */
 public final class MigrationStateManager {
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     @GuardedBy("sInstanceLock")
     private static MigrationStateManager sMigrationStateManager;
 
@@ -94,6 +95,7 @@ public final class MigrationStateManager {
     private volatile MigrationBroadcastScheduler mMigrationBroadcastScheduler;
     private int mUserId;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private MigrationStateManager(@UserIdInt int userId) {
         mUserId = userId;
     }
@@ -130,11 +132,15 @@ public final class MigrationStateManager {
         }
     }
 
-    /** Clears all registered {@link StateChangedListener}. Used in testing. */
+    /**
+     * Clears the initialized instance such that {@link #initializeInstance} will create a new
+     * instance, for use in tests.
+     */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @VisibleForTesting
-    void clearListeners() {
-        synchronized (mLock) {
-            mStateChangedListeners.clear();
+    public static void resetInitializedInstanceForTest() {
+        synchronized (sInstanceLock) {
+            sMigrationStateManager = null;
         }
     }
 
@@ -609,6 +615,7 @@ public final class MigrationStateManager {
         }
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     String getAllowedStateTimeout() {
         String allowedStateStartTime =
                 PreferenceHelper.getInstance().getPreference(ALLOWED_STATE_START_TIME_KEY);

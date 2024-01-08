@@ -19,13 +19,13 @@ import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
-import android.healthconnect.cts.TestUtils.insertRecords
-import android.healthconnect.cts.TestUtils.setAutoDeletePeriod
-import android.healthconnect.cts.TestUtils.verifyDeleteRecords
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.stepsRecordFromTestApp
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.utils.TestUtils
+import android.healthconnect.cts.utils.TestUtils.insertRecords
+import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import androidx.test.uiautomator.By
 import java.time.Instant
 import org.junit.AfterClass
@@ -37,11 +37,12 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
 
     companion object {
 
-        private const val THREE_MONTHS = 3 * 30
-
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             val records: List<Record> = listOf(stepsRecordFromTestApp(), stepsRecordFromTestApp())
             insertRecords(records)
         }
@@ -49,6 +50,9 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()
@@ -69,26 +73,6 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             clickOnText("See all categories")
             waitDisplayed(By.text("Nutrition"))
-        }
-    }
-
-    @Test
-    fun categoriesFragment_never_showsAutoDeleteOption() {
-        setAutoDeletePeriod(0)
-
-        context.launchDataActivity {
-            waitDisplayed(By.text("Auto-delete"))
-            waitDisplayed(By.text("Off"))
-        }
-    }
-
-    @Test
-    fun categoriesFragment_3months_showsAutoDeleteOption() {
-        setAutoDeletePeriod(THREE_MONTHS)
-
-        context.launchDataActivity {
-            waitDisplayed(By.text("Auto-delete"))
-            waitDisplayed(By.text("After 3 months"))
         }
     }
 

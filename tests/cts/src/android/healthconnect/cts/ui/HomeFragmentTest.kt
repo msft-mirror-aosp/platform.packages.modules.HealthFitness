@@ -16,17 +16,17 @@
 package android.healthconnect.cts.ui
 
 import android.health.connect.TimeInstantRangeFilter
-import android.health.connect.datatypes.BasalMetabolicRateRecord
-import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.StepsRecord
-import android.healthconnect.cts.TestUtils.verifyDeleteRecords
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.lib.TestUtils.insertRecordAs
+import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.utils.TestUtils
+import android.healthconnect.cts.utils.TestUtils.getEmptyMetadata
+import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import androidx.test.uiautomator.By
-import com.android.cts.install.lib.TestApp
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -36,41 +36,28 @@ class HomeFragmentTest : HealthConnectBaseTest() {
 
     companion object {
 
-        private const val TAG = "HomeFragmentTest"
-
-        private const val VERSION_CODE: Long = 1
-
-        private val APP_A_WITH_READ_WRITE_PERMS: TestApp =
-            TestApp(
-                "TestAppA",
-                "android.healthconnect.cts.testapp.readWritePerms.A",
-                VERSION_CODE,
-                false,
-                "CtsHealthConnectTestAppA.apk")
+        private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A")
 
         @JvmStatic
         @BeforeClass
         fun setup() {
-            insertRecordAs(APP_A_WITH_READ_WRITE_PERMS)
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
+            val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+            APP_A_WITH_READ_WRITE_PERMS.insertRecords(
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build())
         }
 
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
-                TimeInstantRangeFilter.Builder()
-                    .setStartTime(Instant.EPOCH)
-                    .setEndTime(Instant.now())
-                    .build())
-            verifyDeleteRecords(
-                HeartRateRecord::class.java,
-                TimeInstantRangeFilter.Builder()
-                    .setStartTime(Instant.EPOCH)
-                    .setEndTime(Instant.now())
-                    .build())
-            verifyDeleteRecords(
-                BasalMetabolicRateRecord::class.java,
                 TimeInstantRangeFilter.Builder()
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
@@ -84,7 +71,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             clickOnText("App permissions")
 
             waitDisplayed(By.text("Allowed access"))
-            // TODO(b/265789268): Fix flaky "DNot allowed access" not found.
+            // TODO(b/265789268): Fix flaky "Not allowed access" not found.
             // waitDisplayed(By.text("Not allowed access"))
         }
     }
@@ -96,9 +83,19 @@ class HomeFragmentTest : HealthConnectBaseTest() {
 
             waitDisplayed(By.text("Browse data"))
             waitDisplayed(By.text("Manage data"))
-            waitDisplayed(By.text("Auto-delete"))
 
             waitDisplayed(By.text("Delete all data"))
+        }
+    }
+
+    @Test
+    fun homeFragment_openManageData() {
+        context.launchMainActivity {
+            clickOnText("Manage data")
+
+            waitDisplayed(By.text("Auto-delete"))
+            waitDisplayed(By.text("Data sources and priority"))
+            waitDisplayed(By.text("Set units"))
         }
     }
 

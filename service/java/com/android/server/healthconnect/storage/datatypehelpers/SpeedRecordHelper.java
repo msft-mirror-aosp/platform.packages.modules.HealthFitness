@@ -99,6 +99,7 @@ public class SpeedRecordHelper
         record.setSamples(speedRecordSampleSet);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType) {
@@ -114,6 +115,7 @@ public class SpeedRecordHelper
         }
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         switch (aggregateRequest.getAggregationTypeIdentifier()) {
@@ -121,9 +123,7 @@ public class SpeedRecordHelper
             case SPEED_RECORD_SPEED_MIN:
             case SPEED_RECORD_SPEED_AVG:
                 return new AggregateParams(
-                                SERIES_TABLE_NAME,
-                                Collections.singletonList(SPEED_COLUMN_NAME),
-                                START_TIME_COLUMN_NAME)
+                                SERIES_TABLE_NAME, Collections.singletonList(SPEED_COLUMN_NAME))
                         .setJoin(
                                 new SqlJoin(
                                         SERIES_TABLE_NAME,

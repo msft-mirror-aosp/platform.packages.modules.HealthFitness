@@ -19,6 +19,7 @@ package com.android.server.healthconnect;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
@@ -39,25 +40,36 @@ import android.permission.PermissionManager;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.SystemService;
 import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import com.google.common.truth.Truth;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.MockitoSession;
 import org.mockito.quality.Strictness;
 
 public class HealthConnectManagerServiceTest {
+
     private static final String HEALTH_CONNECT_DAILY_JOB_NAMESPACE = "HEALTH_CONNECT_DAILY_JOB";
     private static final String ANDROID_SERVER_PACKAGE_NAME = "com.android.server";
+
+    @Rule
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(PreferenceHelper.class)
+                    .mockStatic(BackupRestore.BackupRestoreJobService.class)
+                    .mockStatic(HealthDataCategoryPriorityHelper.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
     @Mock Context mContext;
     @Mock private SystemService.TargetUser mMockTargetUser;
     @Mock private JobScheduler mJobScheduler;
@@ -66,19 +78,11 @@ public class HealthConnectManagerServiceTest {
     @Mock private PermissionManager mPermissionManager;
     @Mock private AppOpsManagerLocal mAppOpsManagerLocal;
     @Mock private PreferenceHelper mPreferenceHelper;
-    private MockitoSession mStaticMockSession;
+    @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private HealthConnectManagerService mHealthConnectManagerService;
 
     @Before
     public void setUp() throws PackageManager.NameNotFoundException {
-        mStaticMockSession =
-                ExtendedMockito.mockitoSession()
-                        .mockStatic(PreferenceHelper.class)
-                        .mockStatic(BackupRestore.BackupRestoreJobService.class)
-                        .strictness(Strictness.LENIENT)
-                        .startMocking();
-        MockitoAnnotations.initMocks(this);
-
         InstrumentationRegistry.getInstrumentation()
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
@@ -118,13 +122,12 @@ public class HealthConnectManagerServiceTest {
         when(mMockTargetUser.getUserHandle()).thenReturn(UserHandle.CURRENT);
         when(mContext.getApplicationContext()).thenReturn(mContext);
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
-
+        when(HealthDataCategoryPriorityHelper.getInstance())
+                .thenReturn(mHealthDataCategoryPriorityHelper);
+        doNothing()
+                .when(mHealthDataCategoryPriorityHelper)
+                .maybeAddInactiveAppsToPriorityList(mContext);
         mHealthConnectManagerService = new HealthConnectManagerService(mContext);
-    }
-
-    @After
-    public void tearDown() {
-        mStaticMockSession.finishMocking();
     }
 
     @Test
@@ -150,7 +153,7 @@ public class HealthConnectManagerServiceTest {
         verify(mJobScheduler, times(1)).cancelAll();
         verify(mJobScheduler, timeout(5000).times(1)).schedule(any());
         ExtendedMockito.verify(
-                () ->
-                        BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mContext)));
+                () -> BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mContext)));
+        verify(mHealthDataCategoryPriorityHelper).maybeAddInactiveAppsToPriorityList(any());
     }
 }

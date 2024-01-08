@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -55,6 +56,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
     private static final String TABLE_NAME = "activity_date_table";
     private static final String EPOCH_DAYS_COLUMN_NAME = "epoch_days";
     private static final String RECORD_TYPE_ID_COLUMN_NAME = "record_type_id";
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile ActivityDateHelper sActivityDateHelper;
 
     private ActivityDateHelper() {}
@@ -98,7 +101,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
         return readDates(
                 new ReadTableRequest(TABLE_NAME)
                         .setWhereClause(
-                                new WhereClauses()
+                                new WhereClauses(AND)
                                         .addWhereInIntsClause(
                                                 RECORD_TYPE_ID_COLUMN_NAME, recordTypeIds))
                         .setColumnNames(List.of(EPOCH_DAYS_COLUMN_NAME))

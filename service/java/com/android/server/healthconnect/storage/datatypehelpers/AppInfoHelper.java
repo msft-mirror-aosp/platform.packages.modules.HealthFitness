@@ -27,6 +27,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_N
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import static java.util.Objects.requireNonNull;
 
@@ -90,6 +91,8 @@ public final class AppInfoHelper extends DatabaseHelper {
     private static final String TAG = "HealthConnectAppInfoHelper";
     private static final String RECORD_TYPES_USED_COLUMN_NAME = "record_types_used";
     private static final int COMPRESS_FACTOR = 100;
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile AppInfoHelper sAppInfoHelper;
 
     /**
@@ -98,6 +101,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      * <p>TO HAVE THREAD SAFETY DON'T USE THESE VARIABLES DIRECTLY, INSTEAD USE ITS GETTER
      */
     private volatile ConcurrentHashMap<Long, String> mIdPackageNameMap;
+
     /**
      * Map to store application package-name -> AppInfo mapping (such as packageName -> appName,
      * icon, rowId in the DB etc.)
@@ -106,8 +110,10 @@ public final class AppInfoHelper extends DatabaseHelper {
      */
     private volatile ConcurrentHashMap<String, AppInfoInternal> mAppInfoMap;
 
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private AppInfoHelper() {}
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public synchronized void clearCache() {
         mAppInfoMap = null;
@@ -170,6 +176,7 @@ public final class AppInfoHelper extends DatabaseHelper {
             boolean onlyUpdate) {
         if (!isAppInstalled(context, packageName)) {
             // using pre-existing value of recordTypesUsed.
+            @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
             var recordTypesUsed =
                     containsAppInfo(packageName)
                             ? mAppInfoMap.get(packageName).getRecordTypesUsed()
@@ -195,25 +202,13 @@ public final class AppInfoHelper extends DatabaseHelper {
     }
 
     /**
-     * Populates record with package name
-     *
-     * @param appInfoId rowId from {@code application_info_table }
-     * @param record The record to be populated with package name
-     * @param idPackageNameMap the map from which to get the package name
-     */
-    public void populateRecordWithValue(
-            long appInfoId, @NonNull RecordInternal<?> record, Map<Long, String> idPackageNameMap) {
-        if (idPackageNameMap != null) {
-            record.setPackageName(idPackageNameMap.get(appInfoId));
-            return;
-        }
-        record.setPackageName(getIdPackageNameMap().get(appInfoId));
-    }
-
-    /**
      * @return id of {@code packageName} or {@link Constants#DEFAULT_LONG} if the id is not found
      */
     public long getAppInfoId(String packageName) {
+        if (packageName == null) {
+            return DEFAULT_LONG;
+        }
+
         AppInfoInternal appInfo = getAppInfoMap().getOrDefault(packageName, null);
 
         if (appInfo == null) {
@@ -244,6 +239,8 @@ public final class AppInfoHelper extends DatabaseHelper {
         return result;
     }
 
+    /** Gets the package name corresponding to the {@code packageId}. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public String getPackageName(long packageId) {
         return getIdPackageNameMap().get(packageId);
@@ -258,7 +255,7 @@ public final class AppInfoHelper extends DatabaseHelper {
         List<String> packageNames = new ArrayList<>();
         packageIds.forEach(
                 (packageId) -> {
-                    String packageName = getIdPackageNameMap().get(packageId);
+                    String packageName = getPackageName(packageId);
                     requireNonNull(packageName);
 
                     packageNames.add(packageName);
@@ -434,6 +431,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      * This method updates recordTypesUsed for all packages and hence is a heavy operation. This
      * method is used during AutoDeleteService and is run once per day.
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @SuppressLint("LongLogTag")
     private synchronized void syncAppInfoMapRecordTypesUsed(
             @NonNull Map<Integer, HashSet<String>> recordTypeToContributingPackagesMap) {
@@ -490,6 +488,7 @@ public final class AppInfoHelper extends DatabaseHelper {
      * Checks and deletes record types in app info table for which the package is no longer
      * contributing data. This is done after delete records operation has been performed.
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @SuppressLint("LongLogTag")
     private synchronized void deleteRecordTypesForPackagesIfRequiredInternal(
             Set<Integer> recordTypesToBeDeleted,
@@ -536,7 +535,7 @@ public final class AppInfoHelper extends DatabaseHelper {
             Set<Integer> recordTypesUsed) {
         appInfo.setRecordTypesUsed(recordTypesUsed);
         // create upsert table request to modify app info table, keyed by packages name.
-        WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses();
+        WhereClauses whereClauseForAppInfoTableUpdate = new WhereClauses(AND);
         whereClauseForAppInfoTableUpdate.addWhereEqualsClause(
                 PACKAGE_COLUMN_NAME, appInfo.getPackageName());
         UpsertTableRequest upsertRequestForAppInfoUpdate =

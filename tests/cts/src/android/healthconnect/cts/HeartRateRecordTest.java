@@ -20,6 +20,7 @@ import static android.health.connect.datatypes.HeartRateRecord.BPM_AVG;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
 import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENTS_COUNT;
+import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,9 +30,11 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -43,14 +46,17 @@ import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
-import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -71,6 +77,11 @@ import java.util.UUID;
 public class HeartRateRecordTest {
     private static final String TAG = "HeartRateRecordTest";
 
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
     @After
     public void tearDown() throws InterruptedException {
         TestUtils.verifyDeleteRecords(
@@ -79,6 +90,13 @@ public class HeartRateRecordTest {
                         .setStartTime(Instant.EPOCH)
                         .setEndTime(Instant.now())
                         .build());
+        TestUtils.deleteAllStagedRemoteData();
+    }
+
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Before
+    public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -216,12 +234,12 @@ public class HeartRateRecordTest {
                         TestUtils.getHeartRateRecord(72, Instant.now().minus(1, ChronoUnit.DAYS)),
                         TestUtils.getHeartRateRecord(72, Instant.now().minus(2, ChronoUnit.DAYS)));
         TestUtils.insertRecords(recordList);
-        Pair<List<HeartRateRecord>, Long> newHeartRecords =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<HeartRateRecord> newHeartRecords =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeartRateRecord.class)
                                 .setPageSize(1)
                                 .build());
-        assertThat(newHeartRecords.first.size()).isEqualTo(1);
+        assertThat(newHeartRecords.getRecords()).hasSize(1);
     }
 
     @Test
@@ -233,21 +251,22 @@ public class HeartRateRecordTest {
                         TestUtils.getHeartRateRecord(72, Instant.now().minusMillis(3000)),
                         TestUtils.getHeartRateRecord(72, Instant.now().minusMillis(4000)));
         TestUtils.insertRecords(recordList);
-        Pair<List<HeartRateRecord>, Long> oldHeartRecords =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<HeartRateRecord> oldHeartRecords =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeartRateRecord.class)
                                 .setPageSize(1)
                                 .setAscending(true)
                                 .build());
-        assertThat(oldHeartRecords.first.size()).isEqualTo(1);
-        Pair<List<HeartRateRecord>, Long> newHeartRecords =
-                TestUtils.readRecordsWithPagination(
+        assertThat(oldHeartRecords.getRecords()).hasSize(1);
+        ReadRecordsResponse<HeartRateRecord> newHeartRecords =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeartRateRecord.class)
                                 .setPageSize(2)
-                                .setPageToken(oldHeartRecords.second)
+                                .setPageToken(oldHeartRecords.getNextPageToken())
                                 .build());
-        assertThat(newHeartRecords.first.size()).isEqualTo(2);
-        assertThat(newHeartRecords.second).isNotEqualTo(oldHeartRecords.second);
+        assertThat(newHeartRecords.getRecords()).hasSize(2);
+        assertThat(newHeartRecords.getNextPageToken())
+                .isNotEqualTo(oldHeartRecords.getNextPageToken());
     }
 
     @Test
@@ -255,23 +274,20 @@ public class HeartRateRecordTest {
         List<Record> recordList =
                 Arrays.asList(TestUtils.getHeartRateRecord(), TestUtils.getHeartRateRecord());
         TestUtils.insertRecords(recordList);
-        Pair<List<HeartRateRecord>, Long> oldHeartRecords =
-                TestUtils.readRecordsWithPagination(
+        ReadRecordsResponse<HeartRateRecord> oldHeartRecords =
+                readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeartRateRecord.class)
                                 .build());
-        Pair<List<HeartRateRecord>, Long> newHeartRecords;
-        while (oldHeartRecords.second != -1) {
+        ReadRecordsResponse<HeartRateRecord> newHeartRecords;
+        while (oldHeartRecords.getNextPageToken() != -1) {
             newHeartRecords =
-                    TestUtils.readRecordsWithPagination(
+                    readRecordsWithPagination(
                             new ReadRecordsRequestUsingFilters.Builder<>(HeartRateRecord.class)
-                                    .setPageToken(oldHeartRecords.second)
+                                    .setPageToken(oldHeartRecords.getNextPageToken())
                                     .build());
-            if (newHeartRecords.second != -1) {
-                assertThat(newHeartRecords.second).isGreaterThan(oldHeartRecords.second);
-            }
             oldHeartRecords = newHeartRecords;
         }
-        assertThat(oldHeartRecords.second).isEqualTo(-1);
+        assertThat(oldHeartRecords.getNextPageToken()).isEqualTo(-1);
     }
 
     @Test
@@ -482,6 +498,7 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_timeRange_all() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
         List<Record> records =
                 Arrays.asList(
                         getBaseHeartRateRecord(71),
@@ -527,6 +544,8 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_timeRange_not_present() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
         List<Record> records =
                 Arrays.asList(
                         TestUtils.getHeartRateRecord(71),
@@ -554,6 +573,8 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_withDataOrigin_correct() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
         Context context = ApplicationProvider.getApplicationContext();
         List<Record> records =
                 Arrays.asList(
@@ -592,6 +613,8 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_withDataOrigin_incorrect() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
         List<Record> records =
                 Arrays.asList(
                         TestUtils.getHeartRateRecord(71),
@@ -621,9 +644,21 @@ public class HeartRateRecordTest {
 
     @Test
     public void testBpmAggregation_groupBy_Duration() throws Exception {
-        Instant start = Instant.now().minusMillis(500);
-        Instant end = Instant.now().plusMillis(2500);
-        insertHeartRateRecordsWithDelay(1000, 3);
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
+        Instant end = Instant.now();
+        Instant start = end.minusSeconds(3);
+        for (Instant instant = start.plusMillis(500);
+                instant.isBefore(end);
+                instant = instant.plusSeconds(1)) {
+            List<Record> records =
+                    Arrays.asList(
+                            getBaseHeartRateRecord(71, instant, /* offset= */ null),
+                            getBaseHeartRateRecord(72, instant.plusMillis(1), /* offset= */ null),
+                            getBaseHeartRateRecord(73, instant.plusMillis(2), /* offset= */ null));
+            TestUtils.insertRecords(records);
+        }
+
         List<AggregateRecordsGroupedByDurationResponse<Long>> responses =
                 TestUtils.getAggregateResponseGroupByDuration(
                         new AggregateRecordsRequest.Builder<Long>(
@@ -636,7 +671,8 @@ public class HeartRateRecordTest {
                                 .addAggregationType(BPM_AVG)
                                 .build(),
                         Duration.ofSeconds(1));
-        assertThat(responses.size()).isEqualTo(3);
+
+        assertThat(responses).hasSize(3);
         for (AggregateRecordsGroupedByDurationResponse<Long> response : responses) {
             assertThat(response.get(BPM_MAX)).isNotNull();
             assertThat(response.get(BPM_MAX)).isEqualTo(73);
@@ -652,12 +688,13 @@ public class HeartRateRecordTest {
                     .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
             assertThat(response.getStartTime()).isNotNull();
             assertThat(response.getEndTime()).isNotNull();
-            start = start.plus(1, ChronoUnit.SECONDS);
         }
     }
 
     @Test
     public void testBpmAggregation_groupByDuration() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
         Instant start = Instant.now().minus(3, ChronoUnit.DAYS);
         Instant end = start.plus(3, ChronoUnit.DAYS);
         insertHeartRateRecordsInPastDays(4);
@@ -723,6 +760,8 @@ public class HeartRateRecordTest {
 
     @Test
     public void testHeartAggregation_measurement_count() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
         List<Record> records =
                 Arrays.asList(
                         getBaseHeartRateRecord(71),
@@ -876,6 +915,8 @@ public class HeartRateRecordTest {
 
     @Test
     public void testAggregateLocalFilter_minOffsetRecord() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
+
         LocalDateTime endTimeLocal = LocalDateTime.now(ZoneOffset.UTC);
         Instant endTimeInstant = Instant.now();
 
@@ -974,20 +1015,6 @@ public class HeartRateRecordTest {
         assertThat(result.containsAll(insertedRecords)).isTrue();
     }
 
-    private void insertHeartRateRecordsWithDelay(long delayInMillis, int times)
-            throws InterruptedException {
-        for (int i = 0; i < times; i++) {
-            List<Record> records =
-                    Arrays.asList(
-                            getBaseHeartRateRecord(71),
-                            getBaseHeartRateRecord(72),
-                            getBaseHeartRateRecord(73));
-
-            TestUtils.insertRecords(records);
-            Thread.sleep(delayInMillis);
-        }
-    }
-
     private void insertHeartRateRecordsInPastDays(int numDays) throws InterruptedException {
         for (int i = numDays; i > 0; i--) {
             List<Record> records =
@@ -1071,18 +1098,16 @@ public class HeartRateRecordTest {
         testMetadataBuilder.setClientRecordId("HRR" + Math.random());
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
+        Instant start = Instant.now();
         HeartRateRecord.HeartRateSample heartRateRecord =
-                new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));
+                new HeartRateRecord.HeartRateSample(10, start.plusMillis(100));
 
         ArrayList<HeartRateRecord.HeartRateSample> heartRateRecords = new ArrayList<>();
         heartRateRecords.add(heartRateRecord);
         heartRateRecords.add(heartRateRecord);
 
         return new HeartRateRecord.Builder(
-                        testMetadataBuilder.build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(500),
-                        heartRateRecords)
+                        testMetadataBuilder.build(), start, start.plusMillis(500), heartRateRecords)
                 .build();
     }
 }

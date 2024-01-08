@@ -16,18 +16,24 @@
 
 package android.healthconnect.tests.permissions;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 /**
  * Integration tests for {@link HealthConnectManager} Permission-related APIs.
@@ -46,6 +52,11 @@ public class HealthConnectWithoutManagePermissionsTest {
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {
@@ -88,5 +99,23 @@ public class HealthConnectWithoutManagePermissionsTest {
         fail(
                 "Expected SecurityException due to not holding"
                         + "android.permission.MANAGE_HEALTH_PERMISSIONS.");
+    }
+
+    @Test
+    public void testGetHealthPermissionsFlags_noManageHealthPermissions_throwsSecurityException() {
+        assertThrows(
+                SecurityException.class,
+                () ->
+                        mHealthConnectManager.getHealthPermissionsFlags(
+                                DEFAULT_APP_PACKAGE, List.of()));
+    }
+
+    @Test
+    public void testMakeHealthPermissionsRequestable_noManageHealthPermissions_securityException() {
+        assertThrows(
+                SecurityException.class,
+                () ->
+                        mHealthConnectManager.makeHealthPermissionsRequestable(
+                                DEFAULT_APP_PACKAGE, List.of()));
     }
 }
