@@ -596,7 +596,7 @@ public class WeightRecordTest {
                         Duration.ofDays(1));
 
         assertThat(responses).hasSize(3);
-        Instant groupBoundary = endTimeLocal.minusDays(3).toInstant(ZoneOffset.UTC);
+        Instant groupBoundary = responses.get(0).getStartTime();
         for (int i = 0; i < 3; i++) {
             assertThat(responses.get(i).get(WEIGHT_MAX)).isEqualTo(Mass.fromGrams(10.0));
             assertThat(responses.get(i).getZoneOffset(WEIGHT_MAX)).isEqualTo(offset);

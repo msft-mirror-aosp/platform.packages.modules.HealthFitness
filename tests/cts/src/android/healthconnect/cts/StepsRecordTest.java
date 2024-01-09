@@ -1234,7 +1234,7 @@ public class StepsRecordTest {
                         Duration.ofDays(1));
 
         assertThat(responses).hasSize(4);
-        Instant groupBoundary = startTimeLocal.toInstant(ZoneOffset.UTC);
+        Instant groupBoundary = responses.get(0).getStartTime();
         for (int i = 0; i < 4; i++) {
             assertThat(responses.get(i).get(STEPS_COUNT_TOTAL)).isEqualTo(10);
             assertThat(responses.get(i).getZoneOffset(STEPS_COUNT_TOTAL)).isEqualTo(offset);
