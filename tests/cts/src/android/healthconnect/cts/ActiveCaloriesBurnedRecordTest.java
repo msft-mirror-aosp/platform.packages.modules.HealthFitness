@@ -25,6 +25,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -39,6 +40,7 @@ import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
@@ -47,6 +49,8 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,6 +68,17 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class ActiveCaloriesBurnedRecordTest {
     private static final String TAG = "ActiveCaloriesBurnedRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
+    @Before
+    public void setUp() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -318,6 +333,7 @@ public class ActiveCaloriesBurnedRecordTest {
 
     @Test
     public void testAggregation_ActiveCaloriesBurntTotal() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(
                         ActiveCaloriesBurnedRecordTest.getBaseActiveCaloriesBurnedRecord(74.0, 1),

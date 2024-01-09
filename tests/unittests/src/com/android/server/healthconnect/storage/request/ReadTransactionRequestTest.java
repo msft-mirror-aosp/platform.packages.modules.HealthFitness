@@ -20,6 +20,7 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -30,8 +31,6 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
-import com.android.server.healthconnect.storage.utils.PageTokenUtil;
-import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -77,7 +76,7 @@ public class ReadTransactionRequestTest {
         PageTokenWrapper expectedToken = PageTokenWrapper.of(true, 9876, 2);
         ReadRecordsRequestUsingFilters<StepsRecord> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                        .setPageToken(PageTokenUtil.encode(expectedToken))
+                        .setPageToken(expectedToken.encode())
                         .setPageSize(500)
                         .build();
         ReadTransactionRequest request =
