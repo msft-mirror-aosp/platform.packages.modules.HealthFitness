@@ -119,7 +119,6 @@ public class ExerciseDurationAggregationTest {
     public void testSimpleAggregation_oneSessionStartEarlierThanWindow_returnsOverlapDuration()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 TestUtils.generateMetadata(),
@@ -165,7 +164,7 @@ public class ExerciseDurationAggregationTest {
     public void testSimpleAggregation_oneSessionWithRest_returnsDurationMinusRest()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
+        
         ExerciseSegment restSegment =
                 new ExerciseSegment.Builder(
                                 SESSION_START_TIME,
@@ -207,7 +206,6 @@ public class ExerciseDurationAggregationTest {
     public void testAggregationByDuration_oneSession_returnsSplitDurationIntoGroups()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Instant endTime = SESSION_START_TIME.plus(10, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
@@ -240,7 +238,6 @@ public class ExerciseDurationAggregationTest {
     public void testAggregation_oneSessionLocalTimeFilter_findsSessionWithMinOffset()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, ZoneOffset.UTC);
 
@@ -273,7 +270,6 @@ public class ExerciseDurationAggregationTest {
     public void testAggregation_oneSessionLocalTimeFilterExcludeSegment_substractsExcludeInterval()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Instant endTime = SESSION_START_TIME.plus(1, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
