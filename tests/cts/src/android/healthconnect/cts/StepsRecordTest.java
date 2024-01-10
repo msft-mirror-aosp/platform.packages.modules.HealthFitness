@@ -706,7 +706,7 @@ public class StepsRecordTest {
     }
 
     @Test
-    public void testAggregation_stepsCountTotal() throws Exception {
+    public void testAggregation_StepsCountTotal() throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(getStepsRecord(1000, 1, 1), getStepsRecord(1000, 2, 1));
