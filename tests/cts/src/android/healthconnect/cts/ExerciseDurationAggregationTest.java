@@ -32,10 +32,12 @@ import android.health.connect.datatypes.ExerciseSegment;
 import android.health.connect.datatypes.ExerciseSegmentType;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.ExerciseSessionType;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -69,6 +71,11 @@ public class ExerciseDurationAggregationTest {
                     .build();
 
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -112,7 +119,6 @@ public class ExerciseDurationAggregationTest {
     public void testSimpleAggregation_oneSessionStartEarlierThanWindow_returnsOverlapDuration()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
                                 TestUtils.generateMetadata(),
@@ -200,7 +206,6 @@ public class ExerciseDurationAggregationTest {
     public void testAggregationByDuration_oneSession_returnsSplitDurationIntoGroups()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Instant endTime = SESSION_START_TIME.plus(10, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(
@@ -233,7 +238,6 @@ public class ExerciseDurationAggregationTest {
     public void testAggregation_oneSessionLocalTimeFilter_findsSessionWithMinOffset()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, ZoneOffset.UTC);
 
@@ -266,7 +270,6 @@ public class ExerciseDurationAggregationTest {
     public void testAggregation_oneSessionLocalTimeFilterExcludeSegment_substractsExcludeInterval()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Instant endTime = SESSION_START_TIME.plus(1, ChronoUnit.HOURS);
         ExerciseSessionRecord session =
                 new ExerciseSessionRecord.Builder(

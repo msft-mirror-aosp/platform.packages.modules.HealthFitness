@@ -39,6 +39,7 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -47,6 +48,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,6 +68,11 @@ import java.util.UUID;
 public class TotalCaloriesBurnedRecordTest {
     private static final String TAG = "TotalCaloriesBurnedRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -572,7 +579,6 @@ public class TotalCaloriesBurnedRecordTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy() throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         TestUtils.getAggregateResponseGroupByPeriod(
@@ -594,7 +600,6 @@ public class TotalCaloriesBurnedRecordTest {
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy_duration()
             throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -642,7 +647,6 @@ public class TotalCaloriesBurnedRecordTest {
     public void testAggregation_groupByDurationLocalFilter_shiftRecordsAndFilterWithOffset()
             throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         ZoneOffset offset = ZoneOffset.ofHours(-1);
