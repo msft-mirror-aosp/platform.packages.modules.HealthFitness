@@ -19,6 +19,7 @@ package android.healthconnect.cts;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_AVG;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MAX;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MIN;
+import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -27,6 +28,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -42,6 +44,7 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.units.Velocity;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
@@ -50,6 +53,8 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,6 +73,17 @@ import java.util.UUID;
 public class SpeedRecordTest {
 
     private static final String TAG = "SpeedRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
+    @Before
+    public void setUp() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -345,6 +361,7 @@ public class SpeedRecordTest {
     @Test
     public void testSpeedAggregation_getAggregationFromThreerecords_aggResponsesAreCorrect()
             throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(
                         buildRecordForSpeed(120, 100),
@@ -544,6 +561,33 @@ public class SpeedRecordTest {
         readSpeedRecordUsingIds(insertedRecords);
     }
 
+    @Test
+    public void insertRecords_withDuplicatedClientRecordId_readNoDuplicates() throws Exception {
+        int distinctRecordCount = 10;
+        List<SpeedRecord> records = new ArrayList<>();
+        Instant now = Instant.now();
+        for (int i = 0; i < distinctRecordCount; i++) {
+            SpeedRecord record =
+                    buildRecordForSpeed(
+                            /* speed= */ 10,
+                            /* millisFromStart= */ 0,
+                            /* startTime= */ now.minusMillis(i + 1),
+                            /* endTime= */ now.minusMillis(i),
+                            /* clientRecordId= */ "client_id_" + i);
+
+            records.add(record);
+            records.add(record); // Add each record twice
+        }
+
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
+        assertThat(insertedRecords.size()).isEqualTo(records.size());
+
+        List<Record> distinctRecords = distinctByUuid(insertedRecords);
+        assertThat(distinctRecords.size()).isEqualTo(distinctRecordCount);
+
+        readSpeedRecordUsingIds(distinctRecords);
+    }
+
     SpeedRecord getSpeedRecord_update(Record record, String id, String clientRecordId) {
         Metadata metadata = record.getMetadata();
         Metadata metadataWithId =
@@ -591,6 +635,20 @@ public class SpeedRecordTest {
     }
 
     private static SpeedRecord buildRecordForSpeed(double speed, long millisFromStart) {
+        return buildRecordForSpeed(
+                speed,
+                millisFromStart,
+                /* startTime= */ Instant.now(),
+                /* endTime= */ Instant.now().plusMillis(1000),
+                /* clientRecordId= */ "SPR" + Math.random());
+    }
+
+    private static SpeedRecord buildRecordForSpeed(
+            double speed,
+            long millisFromStart,
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId) {
 
         Device device =
                 new Device.Builder()
@@ -602,23 +660,19 @@ public class SpeedRecordTest {
                 new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        testMetadataBuilder.setClientRecordId("SPR" + Math.random());
+        testMetadataBuilder.setClientRecordId(clientRecordId);
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         SpeedRecord.SpeedRecordSample speedRecord =
                 new SpeedRecord.SpeedRecordSample(
-                        Velocity.fromMetersPerSecond(speed),
-                        Instant.now().plusMillis(millisFromStart));
+                        Velocity.fromMetersPerSecond(speed), startTime.plusMillis(millisFromStart));
 
         ArrayList<SpeedRecord.SpeedRecordSample> speedRecords = new ArrayList<>();
         speedRecords.add(speedRecord);
         speedRecords.add(speedRecord);
 
         return new SpeedRecord.Builder(
-                        testMetadataBuilder.build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
-                        speedRecords)
+                        testMetadataBuilder.build(), startTime, endTime, speedRecords)
                 .build();
     }
 }

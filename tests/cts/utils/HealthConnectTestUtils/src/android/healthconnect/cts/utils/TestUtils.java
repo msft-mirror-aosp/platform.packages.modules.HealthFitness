@@ -138,7 +138,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.compatibility.common.util.SystemUtil;
-import com.android.cts.install.lib.TestApp;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -150,6 +149,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -162,12 +162,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class TestUtils {
     public static final String MANAGE_HEALTH_PERMISSIONS =
@@ -266,15 +270,29 @@ public final class TestUtils {
         return recordTypeAndRecordIdsList;
     }
 
+    /**
+     * Returns all records from the `records` list in their original order, but distinct by UUID.
+     */
+    public static <T extends Record> List<T> distinctByUuid(List<T> records) {
+        return records.stream().filter(distinctByUuid()).toList();
+    }
+
+    private static Predicate<? super Record> distinctByUuid() {
+        Set<String> seen = ConcurrentHashMap.newKeySet();
+        return record -> seen.add(record.getMetadata().getId());
+    }
+
     public static void updateRecords(List<Record> records) throws InterruptedException {
         updateRecords(records, ApplicationProvider.getApplicationContext());
     }
 
-    public static void updateRecords(List<Record> records, Context context)
+    /** Synchronously updates records in HC. */
+    public static void updateRecords(List<? extends Record> records, Context context)
             throws InterruptedException {
         HealthConnectReceiver<Void> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
-                .updateRecords(records, Executors.newSingleThreadExecutor(), receiver);
+                .updateRecords(
+                        unmodifiableList(records), Executors.newSingleThreadExecutor(), receiver);
         receiver.verifyNoExceptionOrThrow();
     }
 
@@ -316,11 +334,6 @@ public final class TestUtils {
                 getHeartRateRecord(),
                 getBasalMetabolicRateRecord(),
                 buildExerciseSession());
-    }
-
-    public static List<Record> getTestRecords(String packageName) {
-        double clientId = Math.random();
-        return getTestRecords(packageName, clientId);
     }
 
     public static List<Record> getTestRecords(String packageName, Double clientId) {
@@ -943,7 +956,17 @@ public final class TestUtils {
                 .build();
     }
 
+    /** Creates and returns a {@link StepsRecord} with default arguments. */
     public static StepsRecord getCompleteStepsRecord() {
+        return getCompleteStepsRecord(
+                Instant.now(),
+                Instant.now().plusMillis(1000),
+                /* clientRecordId= */ "SR" + Math.random());
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            Instant startTime, Instant endTime, String clientRecordId) {
         Device device =
                 new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
         DataOrigin dataOrigin =
@@ -951,13 +974,11 @@ public final class TestUtils {
 
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        testMetadataBuilder.setClientRecordId("SR" + Math.random());
+        testMetadataBuilder.setClientRecordId(clientRecordId);
         testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
         Metadata testMetaData = testMetadataBuilder.build();
         assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);
-        return new StepsRecord.Builder(
-                        testMetaData, Instant.now(), Instant.now().plusMillis(1000), 10)
-                .build();
+        return new StepsRecord.Builder(testMetaData, startTime, endTime, 10).build();
     }
 
     public static StepsRecord getStepsRecord_update(
@@ -1349,13 +1370,14 @@ public final class TestUtils {
                         .build());
     }
 
-    public static void revokeAndThenGrantHealthPermissions(TestApp testApp) {
-        List<String> healthPerms = getGrantedHealthPermissions(testApp.getPackageName());
+    /** Revokes all granted Health permissions and re-grants them back. */
+    public static void revokeAndThenGrantHealthPermissions(String packageName) {
+        List<String> healthPerms = getGrantedHealthPermissions(packageName);
 
-        revokeHealthPermissions(testApp.getPackageName());
+        revokeHealthPermissions(packageName);
 
         for (String perm : healthPerms) {
-            grantPermission(testApp.getPackageName(), perm);
+            grantPermission(packageName, perm);
         }
     }
 
@@ -1411,6 +1433,240 @@ public final class TestUtils {
             intent.putExtras(extras);
         }
         context.sendBroadcast(intent);
+    }
+
+    /** Sets up the priority list for aggregation tests. */
+    public static void setupAggregation(String packageName, int dataCategory)
+            throws InterruptedException {
+        insertRecordsForPriority(packageName);
+
+        // Add the packageName inserting the records to the priority list manually
+        // Since CTS tests get their permissions granted at install time and skip
+        // the Health Connect APIs that would otherwise add the packageName to the priority list
+
+        updatePriorityWithManageHealthDataPermission(dataCategory, Arrays.asList(packageName));
+        FetchDataOriginsPriorityOrderResponse newPriority =
+                getPriorityWithManageHealthDataPermission(dataCategory);
+        List<String> newPriorityString =
+                newPriority.getDataOriginsPriorityOrder().stream()
+                        .map(DataOrigin::getPackageName)
+                        .toList();
+        assertThat(newPriorityString.size()).isEqualTo(1);
+        assertThat(newPriorityString.get(0)).isEqualTo(packageName);
+    }
+
+    /** Inserts a record that does not support aggregation to enable the priority list. */
+    public static void insertRecordsForPriority(String packageName) throws InterruptedException {
+        // Insert records that do not support aggregation so that the AppInfoTable is initialised
+        MenstruationPeriodRecord recordToInsert =
+                new MenstruationPeriodRecord.Builder(
+                                new Metadata.Builder()
+                                        .setDataOrigin(
+                                                new DataOrigin.Builder()
+                                                        .setPackageName(packageName)
+                                                        .build())
+                                        .build(),
+                                Instant.now(),
+                                Instant.now().plusMillis(1000))
+                        .build();
+        insertRecords(Arrays.asList(recordToInsert));
+    }
+
+    /** Updates the priority list after getting the MANAGE_HEALTH_DATA permission. */
+    public static void updatePriorityWithManageHealthDataPermission(
+            int permissionCategory, List<String> packageNames) throws InterruptedException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        try {
+            updatePriority(permissionCategory, packageNames);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+    }
+
+    /** Updates the priority list without getting the MANAGE_HEALTH_DATA permission. */
+    public static void updatePriority(int permissionCategory, List<String> packageNames)
+            throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        List<DataOrigin> dataOrigins =
+                packageNames.stream()
+                        .map(
+                                (packageName) ->
+                                        new DataOrigin.Builder()
+                                                .setPackageName(packageName)
+                                                .build())
+                        .collect(Collectors.toList());
+
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
+                new AtomicReference<>();
+        UpdateDataOriginPriorityOrderRequest updateDataOriginPriorityOrderRequest =
+                new UpdateDataOriginPriorityOrderRequest(dataOrigins, permissionCategory);
+        service.updateDataOriginPriorityOrder(
+                updateDataOriginPriorityOrderRequest,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(Void result) {
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        healthConnectExceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
+                });
+        assertThat(updateDataOriginPriorityOrderRequest.getDataCategory())
+                .isEqualTo(permissionCategory);
+        assertThat(updateDataOriginPriorityOrderRequest.getDataOriginInOrder()).isNotNull();
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (healthConnectExceptionAtomicReference.get() != null) {
+            throw healthConnectExceptionAtomicReference.get();
+        }
+    }
+
+    public static boolean isHardwareSupported() {
+        return isHardwareSupported(ApplicationProvider.getApplicationContext());
+    }
+
+    /** returns true if the hardware is supported by HealthConnect. */
+    public static boolean isHardwareSupported(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
+    }
+
+    /** Gets the priority list after getting the MANAGE_HEALTH_DATA permission. */
+    public static FetchDataOriginsPriorityOrderResponse getPriorityWithManageHealthDataPermission(
+            int permissionCategory) throws InterruptedException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        FetchDataOriginsPriorityOrderResponse response;
+
+        try {
+            response = getPriority(permissionCategory);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+
+        return response;
+    }
+
+    /** Gets the priority list without requesting the MANAGE_HEALTH_DATA permission. */
+    public static FetchDataOriginsPriorityOrderResponse getPriority(int permissionCategory)
+            throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        AtomicReference<FetchDataOriginsPriorityOrderResponse> response = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
+                new AtomicReference<>();
+        service.fetchDataOriginsPriorityOrder(
+                permissionCategory,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(FetchDataOriginsPriorityOrderResponse result) {
+                        response.set(result);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        healthConnectExceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
+                });
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (healthConnectExceptionAtomicReference.get() != null) {
+            throw healthConnectExceptionAtomicReference.get();
+        }
+
+        return response.get();
+    }
+
+    /** Zips given id and records lists to create a list of {@link RecordIdFilter}. */
+    public static List<RecordIdFilter> getRecordIdFilters(
+            List<String> recordIds, List<Record> records) {
+        return IntStream.range(0, recordIds.size())
+                .mapToObj(
+                        i -> {
+                            Class<? extends Record> recordClass = records.get(i).getClass();
+                            String id = recordIds.get(i);
+                            return RecordIdFilter.fromId(recordClass, id);
+                        })
+                .toList();
+    }
+
+    public static Metadata getEmptyMetadata() {
+        return new Metadata.Builder().build();
+    }
+
+    /** Creates a {@link Metadata} with the given record id. */
+    public static Metadata getMetadataForId(String id) {
+        return new Metadata.Builder().setId(id).build();
+    }
+
+    /** Creates a {@link Metadata} with the given record id and data origin. */
+    public static Metadata getMetadataForId(String id, DataOrigin dataOrigin) {
+        return new Metadata.Builder().setId(id).setDataOrigin(dataOrigin).build();
+    }
+
+    /** Creates a {@link Metadata} with the given client record id. */
+    public static Metadata getMetadataForClientId(String clientId) {
+        return new Metadata.Builder().setClientRecordId(clientId).build();
+    }
+
+    /** Creates a {@link Metadata} with the given client record id and data origin. */
+    public static Metadata getMetadataForClientId(String clientId, DataOrigin dataOrigin) {
+        return new Metadata.Builder().setClientRecordId(clientId).setDataOrigin(dataOrigin).build();
+    }
+
+    /** Creates a {@link Metadata} with the given data origin. */
+    public static Metadata getMetadata(DataOrigin dataOrigin) {
+        return new Metadata.Builder().setDataOrigin(dataOrigin).build();
+    }
+
+    /** Creates a {@link DataOrigin} with the given package name. */
+    public static DataOrigin getDataOrigin(String packageName) {
+        return new DataOrigin.Builder().setPackageName(packageName).build();
+    }
+
+    /** Creates a list of {@link DataOrigin} from a list of package names. */
+    public static List<DataOrigin> getDataOrigins(String... packageNames) {
+        return Arrays.stream(packageNames).map(TestUtils::getDataOrigin).toList();
+    }
+
+    /** Creates a {@link ExerciseRoute.Location}. */
+    public static ExerciseRoute.Location getLocation(
+            Instant time, double latitude, double longitude) {
+        return new ExerciseRoute.Location.Builder(time, latitude, longitude).build();
+    }
+
+    /** Creates a {@link ExerciseRoute} with given locations. */
+    public static ExerciseRoute getExerciseRoute(ExerciseRoute.Location... locations) {
+        return new ExerciseRoute(Arrays.asList(locations));
+    }
+
+    /** Creates an {@link Instant} representing the given local time yesterday at UTC. */
+    public static Instant yesterdayAt(String localTime) {
+        return LocalTime.parse(localTime)
+                .atDate(LocalDate.now().minusDays(1))
+                .toInstant(ZoneOffset.UTC);
     }
 
     public static final class RecordAndIdentifier {

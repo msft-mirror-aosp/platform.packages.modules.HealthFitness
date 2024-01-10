@@ -55,6 +55,7 @@ import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequest;
@@ -79,6 +80,7 @@ import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
@@ -94,6 +96,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -124,6 +127,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HealthConnectManagerTest {
     private static final String TAG = "HealthConnectManagerTest";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void before() throws InterruptedException {
@@ -367,7 +375,8 @@ public class HealthConnectManagerTest {
             if (updateRecords.get(itr).getRecordType() == RECORD_TYPE_STEPS) {
                 updateRecords.set(
                         itr,
-                        getStepsRecord(/*clientRecordId=*/ null, /*packageName=*/ "abc.xyz.pqr"));
+                        getStepsRecord(
+                                /* clientRecordId= */ null, /* packageName= */ "abc.xyz.pqr"));
             }
         }
 
@@ -421,9 +430,9 @@ public class HealthConnectManagerTest {
         final Instant startTime2 = startTime1.minusMillis(100L);
 
         TestUtils.insertRecordAndGetId(
-                getStepsRecord(clientId, /*packageName=*/ "", count1, startTime1, endTime1));
+                getStepsRecord(clientId, /* packageName= */ "", count1, startTime1, endTime1));
         TestUtils.insertRecordAndGetId(
-                getStepsRecord(clientId, /*packageName=*/ "", count2, startTime2, endTime2));
+                getStepsRecord(clientId, /* packageName= */ "", count2, startTime2, endTime2));
 
         final List<StepsRecord> records =
                 TestUtils.readRecords(
@@ -446,16 +455,16 @@ public class HealthConnectManagerTest {
         final String id1 =
                 TestUtils.insertRecordAndGetId(
                         getStepsRecord(
-                                /*clientRecordId=*/ null,
-                                /*packageName=*/ "",
+                                /* clientRecordId= */ null,
+                                /* packageName= */ "",
                                 count1,
                                 startTime,
                                 endTime));
         final String id2 =
                 TestUtils.insertRecordAndGetId(
                         getStepsRecord(
-                                /*clientRecordId=*/ null,
-                                /*packageName=*/ "",
+                                /* clientRecordId= */ null,
+                                /* packageName= */ "",
                                 count2,
                                 startTime,
                                 endTime));
@@ -482,11 +491,19 @@ public class HealthConnectManagerTest {
         final String id1 =
                 TestUtils.insertRecordAndGetId(
                         getStepsRecord(
-                                "stepsClientId1", /*packageName=*/ "", count1, startTime, endTime));
+                                "stepsClientId1",
+                                /* packageName= */ "",
+                                count1,
+                                startTime,
+                                endTime));
         final String id2 =
                 TestUtils.insertRecordAndGetId(
                         getStepsRecord(
-                                "stepsClientId2", /*packageName=*/ "", count2, startTime, endTime));
+                                "stepsClientId2",
+                                /* packageName= */ "",
+                                count2,
+                                startTime,
+                                endTime));
 
         final List<StepsRecord> records =
                 TestUtils.readRecords(
@@ -530,10 +547,10 @@ public class HealthConnectManagerTest {
 
         final String id1 =
                 TestUtils.insertRecordAndGetId(
-                        getBasalMetabolicRateRecord(/*clientRecordId=*/ null, bmr1, time));
+                        getBasalMetabolicRateRecord(/* clientRecordId= */ null, bmr1, time));
         final String id2 =
                 TestUtils.insertRecordAndGetId(
-                        getBasalMetabolicRateRecord(/*clientRecordId=*/ null, bmr2, time));
+                        getBasalMetabolicRateRecord(/* clientRecordId= */ null, bmr2, time));
 
         final List<BasalMetabolicRateRecord> records =
                 TestUtils.readRecords(
@@ -556,11 +573,11 @@ public class HealthConnectManagerTest {
         final String id1 =
                 TestUtils.insertRecordAndGetId(
                         getBasalMetabolicRateRecord(
-                                /*clientRecordId=*/ "bmrClientId1", bmr1, time));
+                                /* clientRecordId= */ "bmrClientId1", bmr1, time));
         final String id2 =
                 TestUtils.insertRecordAndGetId(
                         getBasalMetabolicRateRecord(
-                                /*clientRecordId=*/ "bmrClientId2", bmr2, time));
+                                /* clientRecordId= */ "bmrClientId2", bmr2, time));
 
         final List<BasalMetabolicRateRecord> records =
                 TestUtils.readRecords(
@@ -585,10 +602,12 @@ public class HealthConnectManagerTest {
 
         final String id1 =
                 TestUtils.insertRecordAndGetId(
-                        getHydrationRecord(/*clientRecordId=*/ null, startTime, endTime, volume1));
+                        getHydrationRecord(
+                                /* clientRecordId= */ null, startTime, endTime, volume1));
         final String id2 =
                 TestUtils.insertRecordAndGetId(
-                        getHydrationRecord(/*clientRecordId=*/ null, startTime, endTime, volume2));
+                        getHydrationRecord(
+                                /* clientRecordId= */ null, startTime, endTime, volume2));
 
         final List<HydrationRecord> records =
                 TestUtils.readRecords(
@@ -613,10 +632,12 @@ public class HealthConnectManagerTest {
 
         final String id1 =
                 TestUtils.insertRecordAndGetId(
-                        getNutritionRecord(/*clientRecordId=*/ null, startTime, endTime, protein1));
+                        getNutritionRecord(
+                                /* clientRecordId= */ null, startTime, endTime, protein1));
         final String id2 =
                 TestUtils.insertRecordAndGetId(
-                        getNutritionRecord(/*clientRecordId=*/ null, startTime, endTime, protein2));
+                        getNutritionRecord(
+                                /* clientRecordId= */ null, startTime, endTime, protein2));
 
         final List<NutritionRecord> records =
                 TestUtils.readRecords(
@@ -721,7 +742,7 @@ public class HealthConnectManagerTest {
     public void testAggregation_stepsCountTotal_acrossDST_works() throws Exception {
         ZoneOffset utcPlusOne = ZoneOffset.ofTotalSeconds(UTC.getTotalSeconds() + 3600);
 
-        Instant midNight = Instant.now().truncatedTo(DAYS);
+        Instant midNight = Instant.now().truncatedTo(DAYS).minus(1, DAYS);
 
         Instant t0057 = midNight.plus(57, MINUTES);
         Instant t0058 = midNight.plus(58, MINUTES);
@@ -737,13 +758,14 @@ public class HealthConnectManagerTest {
                         // this will be removed by the workaround
                         getStepsRecord(t0059, utcPlusOne, t0100, UTC, 16), // 1:59-1:00 in test
                         getStepsRecord(t0300, UTC, t0400, UTC, 250));
+        TestUtils.setupAggregation(APP_PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         TestUtils.insertRecords(records);
-        LocalDateTime startOfToday = LocalDateTime.now(UTC).truncatedTo(DAYS);
+        LocalDateTime startOfYesterday = LocalDateTime.now(UTC).truncatedTo(DAYS).minus(1, DAYS);
         AggregateRecordsRequest<Long> aggregateRecordsRequest =
                 new AggregateRecordsRequest.Builder<Long>(
                                 new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(startOfToday.plus(1, HOURS))
-                                        .setEndTime(startOfToday.plus(4, HOURS))
+                                        .setStartTime(startOfYesterday.plus(1, HOURS))
+                                        .setEndTime(startOfYesterday.plus(4, HOURS))
                                         .build())
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
@@ -758,13 +780,24 @@ public class HealthConnectManagerTest {
         List<AggregateRecordsGroupedByDurationResponse<Long>> groupByResponse =
                 TestUtils.getAggregateResponseGroupByDuration(
                         aggregateRecordsRequest, Duration.ofHours(1));
+
         assertThat(groupByResponse.get(0).getStartTime()).isEqualTo(midNight);
         assertThat(groupByResponse.get(0).getEndTime()).isEqualTo(t0100);
         assertThat(groupByResponse.get(0).getZoneOffset(STEPS_COUNT_TOTAL)).isEqualTo(utcPlusOne);
         assertThat(groupByResponse.get(0).get(STEPS_COUNT_TOTAL)).isEqualTo(12);
-        assertThat(groupByResponse.get(1).getStartTime()).isEqualTo(t0100.plus(1, HOURS));
-        assertThat(groupByResponse.get(1).getEndTime()).isEqualTo(t0300);
+
+        // When no data falls in a given bucket, zone offset will be null and we use system default
+        // zone to set bucket start and end time
+        LocalDateTime localStart = t0100.atZone(utcPlusOne).toLocalDateTime();
+        LocalDateTime localEnd = localStart.plus(1, HOURS);
+        ZoneOffset startZone = ZoneOffset.systemDefault().getRules().getOffset(localStart);
+        Instant start = localStart.atZone(startZone).toInstant();
+        ZoneOffset endZone = ZoneOffset.systemDefault().getRules().getOffset(localEnd);
+        Instant end = localEnd.atZone(endZone).toInstant();
+        assertThat(groupByResponse.get(1).getStartTime()).isEqualTo(start);
+        assertThat(groupByResponse.get(1).getEndTime()).isEqualTo(end);
         assertThat(groupByResponse.get(1).getZoneOffset(STEPS_COUNT_TOTAL)).isNull();
+
         assertThat(groupByResponse.get(2).getStartTime()).isEqualTo(t0300);
         assertThat(groupByResponse.get(2).getEndTime()).isEqualTo(t0400);
         assertThat(groupByResponse.get(2).getZoneOffset(STEPS_COUNT_TOTAL)).isEqualTo(UTC);
@@ -1039,17 +1072,17 @@ public class HealthConnectManagerTest {
         assertThat(observedExceptionsByFileName.get()).isNotNull();
         assertThat(observedExceptionsByFileName.get().size()).isEqualTo(1);
         assertThat(
-                observedExceptionsByFileName.get().entrySet().stream()
-                        .findFirst()
-                        .get()
-                        .getKey())
+                        observedExceptionsByFileName.get().entrySet().stream()
+                                .findFirst()
+                                .get()
+                                .getKey())
                 .isEqualTo("");
         assertThat(
-                observedExceptionsByFileName.get().entrySet().stream()
-                        .findFirst()
-                        .get()
-                        .getValue()
-                        .getErrorCode())
+                        observedExceptionsByFileName.get().entrySet().stream()
+                                .findFirst()
+                                .get()
+                                .getValue()
+                                .getErrorCode())
                 .isEqualTo(HealthConnectException.ERROR_SECURITY);
 
         deleteAllStagedRemoteData();
@@ -1563,8 +1596,7 @@ public class HealthConnectManagerTest {
     public void testGetHealthConnectDataState_withoutPermission_returnsSecurityException()
             throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        AtomicReference<HealthConnectException> returnedException =
-                new AtomicReference<>();
+        AtomicReference<HealthConnectException> returnedException = new AtomicReference<>();
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
         assertThat(service).isNotNull();
@@ -2001,7 +2033,7 @@ public class HealthConnectManagerTest {
 
     private static List<Record> getTestRecords() {
         return Arrays.asList(
-                getStepsRecord(/*clientRecordId=*/ null, /*packageName=*/ ""),
+                getStepsRecord(/* clientRecordId= */ null, /* packageName= */ ""),
                 getHeartRateRecord(),
                 getBasalMetabolicRateRecord());
     }
@@ -2081,7 +2113,7 @@ public class HealthConnectManagerTest {
         return getStepsRecord(
                 clientRecordId,
                 packageName,
-                /*count=*/ 10,
+                /* count= */ 10,
                 Instant.now(),
                 Instant.now().plusMillis(1000));
     }
@@ -2140,7 +2172,7 @@ public class HealthConnectManagerTest {
 
     private static BasalMetabolicRateRecord getBasalMetabolicRateRecord() {
         return getBasalMetabolicRateRecord(
-                /*clientRecordId=*/ null, /*bmr=*/ Power.fromWatts(100.0), Instant.now());
+                /* clientRecordId= */ null, /* bmr= */ Power.fromWatts(100.0), Instant.now());
     }
 
     private static BasalMetabolicRateRecord getBasalMetabolicRateRecord(
@@ -2195,7 +2227,7 @@ public class HealthConnectManagerTest {
     }
 
     private static DataOrigin getDataOrigin() {
-        return getDataOrigin(/*packageName=*/ "");
+        return getDataOrigin(/* packageName= */ "");
     }
 
     private static DataOrigin getDataOrigin(String packageName) {

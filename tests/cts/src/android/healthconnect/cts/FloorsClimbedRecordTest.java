@@ -25,6 +25,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -37,6 +38,7 @@ import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.FloorsClimbedRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -44,6 +46,8 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -59,6 +63,17 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class FloorsClimbedRecordTest {
     private static final String TAG = "FloorsClimbedRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
+    @Before
+    public void setUp() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -207,6 +222,7 @@ public class FloorsClimbedRecordTest {
 
     @Test
     public void testTotalAggregation_oneRecord_returnsItsTotal() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records = Arrays.asList(getBaseFloorsClimbedRecord(1));
         AggregateRecordsResponse<Double> response =
                 TestUtils.getAggregateResponse(
@@ -224,6 +240,7 @@ public class FloorsClimbedRecordTest {
 
     @Test
     public void testAggregation_FloorsClimbedTotal() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(getBaseFloorsClimbedRecord(1), getBaseFloorsClimbedRecord(2));
         AggregateRecordsResponse<Double> oldResponse =
