@@ -579,7 +579,6 @@ public class TotalCaloriesBurnedRecordTest {
     @Test(expected = UnsupportedOperationException.class)
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy() throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         TestUtils.getAggregateResponseGroupByPeriod(
@@ -601,7 +600,6 @@ public class TotalCaloriesBurnedRecordTest {
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy_duration()
             throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -649,7 +647,6 @@ public class TotalCaloriesBurnedRecordTest {
     public void testAggregation_groupByDurationLocalFilter_shiftRecordsAndFilterWithOffset()
             throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         ZoneOffset offset = ZoneOffset.ofHours(-1);

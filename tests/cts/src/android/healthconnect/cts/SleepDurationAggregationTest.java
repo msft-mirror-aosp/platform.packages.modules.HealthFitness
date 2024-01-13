@@ -99,7 +99,6 @@ public class SleepDurationAggregationTest {
     public void testSimpleAggregation_oneSessionWithAwake_returnsDurationMinusAwake()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
-
         SleepSessionRecord.Stage awakeStage =
                 new SleepSessionRecord.Stage(
                         SESSION_START_TIME,
@@ -146,7 +145,6 @@ public class SleepDurationAggregationTest {
     public void testAggregationByDuration_oneSession_returnsSplitDurationIntoGroups()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
-
         Instant endTime = SESSION_START_TIME.plus(10, ChronoUnit.HOURS);
         SleepSessionRecord session =
                 new SleepSessionRecord.Builder(
