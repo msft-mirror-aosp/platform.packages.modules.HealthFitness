@@ -109,6 +109,7 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class NutritionRecordTest {
     private static final String TAG = "NutritionRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     private List<AggregationType<Mass>> mMassAggregateTypesList =
             Arrays.asList(
@@ -152,8 +153,6 @@ public class NutritionRecordTest {
                     VITAMIN_E_TOTAL,
                     VITAMIN_K_TOTAL,
                     ZINC_TOTAL);
-
-    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -553,7 +552,6 @@ public class NutritionRecordTest {
     @Test
     public void testAggregation_NutritionEnergyValuesTotal() throws Exception {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.NUTRITION);
-
         List<Record> records = Arrays.asList(getCompleteNutritionRecord());
         AggregateRecordsResponse<Energy> oldResponse =
                 TestUtils.getAggregateResponse(
