@@ -479,8 +479,8 @@
     <!-- region Data entries -->
     <string name="data_entry_header_with_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
     <string name="data_entry_header_without_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g></string>
-    <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry</string>
-    <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry</string>
+    <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry <xliff:g id="entry_to_delete" example="1000 steps">%s</xliff:g></string>
+    <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry <xliff:g id="entry_to_delete" example="1000 steps">%s</xliff:g></string>
     <string name="aggregation_total" description="Description before the total value. For instance, Total: 1000 steps. [CHAR LIMIT=50]">Total: <xliff:g id="total_value" example="1000 steps">%s</xliff:g></string>
 
     <string name="watt_format" description="Power value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 W} other {# W}}</string>
@@ -950,8 +950,9 @@
     <string name="action_drag_label_move_down" description="Label for an accessibility action that moves an app down in the ordered app priority list [CHAR LIMIT=50]">Move down</string>
     <string name="action_drag_label_move_top" description="Label for an accessibility action that moves an app to the top of the ordered app priority list [CHAR LIMIT=50]">Move to top</string>
     <string name="action_drag_label_move_bottom" description="Label for an accessibility action that moves an app to the bottom of the ordered app priority list [CHAR LIMIT=50]">Move to bottom</string>
-    <string name="reorder_button_content_description" description="Content description of a button for accessibility that is used to reorder selected app in the app priority list [CHAR LIMIT=50]">Button to reorder <xliff:g id="selected_app" example="Test app">%s</xliff:g> in the priority list</string>
+    <string name="reorder_button_content_description" description="Content description of a button for accessibility that is used to reorder selected app in the app priority list [CHAR LIMIT=50]">Button to reorder <xliff:g id="selected_app" example="Test app">%s</xliff:g> in the priority list, double tap and drag to reorder</string>
     <string name="remove_button_content_description" description="Content description of a button for accessibility that is used to remove selected app from the app priority list [CHAR LIMIT=50]">Button to remove <xliff:g id="selected_app" example="Test app">%s</xliff:g> from the priority list</string>
+    <string name="reorder_button_action_description" description="Action description of a button for accessibility that is used to reorder selected app from the app priority list [CHAR LIMIT=50]">Double tap and drag to reorder</string>
     <!--  endregion-->
 
     <!--  region Search Indexable-->

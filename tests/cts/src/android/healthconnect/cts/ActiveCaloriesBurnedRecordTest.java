@@ -70,6 +70,11 @@ public class ActiveCaloriesBurnedRecordTest {
     private static final String TAG = "ActiveCaloriesBurnedRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
     @Before
     public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();

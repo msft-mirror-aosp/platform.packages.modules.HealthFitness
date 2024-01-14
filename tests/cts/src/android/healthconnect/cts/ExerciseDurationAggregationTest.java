@@ -164,7 +164,7 @@ public class ExerciseDurationAggregationTest {
     public void testSimpleAggregation_oneSessionWithRest_returnsDurationMinusRest()
             throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        
+
         ExerciseSegment restSegment =
                 new ExerciseSegment.Builder(
                                 SESSION_START_TIME,
