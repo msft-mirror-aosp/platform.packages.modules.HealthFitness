@@ -75,6 +75,8 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Need andmed hõlmavad teavet, nagu aktiveerimisaeg, treeningu tüüp, ringid, kordused, seansid või ujumise tõmbed"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Need andmed hõlmavad teavet, nagu unefaasid ja uneseansid"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Kuva kõik kanded"</string>
+    <!-- no translation found for selected_date_view_action_description (6237240886988225664) -->
+    <skip />
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Kustuta need andmed"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"juurdepääs teie terviseandmetele"</string>
@@ -240,6 +242,14 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"pulss puhkamisel"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Puhkamisaegse pulsi lugemine"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Puhkamisaegse pulsi kirjutamine"</string>
+    <!-- no translation found for skin_temperature_uppercase_label (4880306019368461268) -->
+    <skip />
+    <!-- no translation found for skin_temperature_lowercase_label (7456421703641980581) -->
+    <skip />
+    <!-- no translation found for skin_temperature_read_content_description (1896127631429717621) -->
+    <skip />
+    <!-- no translation found for skin_temperature_write_content_description (6448587289116206085) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Luba rakendusel „<xliff:g id="APP_NAME">%1$s</xliff:g>“ lugeda"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Luba rakendusel „<xliff:g id="APP_NAME">%1$s</xliff:g>“ kirjutada"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Tühista"</string>
@@ -347,8 +357,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Health Connecti andmete kustutamine"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Health Connecti andmete kustutamine"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Andmete kustutamine"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Kustutage andmesisestus"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Kustuta sisestus"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Andmesisestuse <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> kustutamine"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Sisestuse <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> kustutamine"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Kokku: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 vatt}other{# vatti}}"</string>
@@ -684,7 +694,7 @@
     <string name="check_for_updates_description" msgid="1347667778199095160">"Veenduge, et installitud rakendused oleksid ajakohased"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Vaadake kõiki ühilduvaid rakendusi"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Otsige rakendusi Google Playst"</string>
-    <string name="send_feedback" msgid="7756927746070096780">"Tagasiside saatmine"</string>
+    <string name="send_feedback" msgid="7756927746070096780">"Saatke tagasisidet"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Öelge meile, milliseid tervise- ja treeningurakendusi soovite Health Connectiga kasutada"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play pood"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Automaatne kustutamine"</string>
@@ -710,6 +720,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Teisalda alla"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Teisalda esimeseks"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Teisalda viimaseks"</string>
+    <string name="reorder_button_content_description" msgid="3104832018446653623">"Nupp rakenduse <xliff:g id="SELECTED_APP">%s</xliff:g> ümberjärjestamiseks prioriteediloendis, topeltpuudutage ja lohistage järjestuse muutmiseks"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"Nupp rakenduse <xliff:g id="SELECTED_APP">%s</xliff:g> eemaldamiseks prioriteediloendist"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Topeltpuudutage ja lohistage järjestuse muutmiseks"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"treening, heaolu"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"load"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, terviseandmed, terviseandmete kategooriad, juurdepääs andmetele, tegevused, keha mõõtmisandmed, tsükli jälgimine, toitumine, uni, tervisenäitajad"</string>

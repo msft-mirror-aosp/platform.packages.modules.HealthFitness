@@ -50,6 +50,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLogsResponseParcel;
@@ -144,7 +145,6 @@ import com.android.server.healthconnect.storage.request.AggregateTransactionRequ
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.io.IOException;
@@ -607,10 +607,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         boolean enforceSelfRead = false;
 
-                        if (!holdsDataManagementPermission) {
-                            final boolean isInForeground =
-                                    mAppOpsManagerLocal.isUidInForeground(uid);
+                        final boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
 
+                        if (!holdsDataManagementPermission) {
                             logger.setCallerForegroundState(isInForeground);
 
                             tryAcquireApiCallQuota(
@@ -651,12 +650,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 + enforceSelfRead);
                             }
                         }
-                        final Map<String, Boolean> extraReadPermsToGrantState =
-                                Collections.unmodifiableMap(
-                                        mDataPermissionEnforcer
-                                                .collectExtraReadPermissionToStateMapping(
-                                                        Set.of(request.getRecordType()),
-                                                        attributionSource));
+                        final Set<String> grantedExtraReadPermissions =
+                                mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
+                                        Set.of(request.getRecordType()), attributionSource);
 
                         Trace.traceBegin(TRACE_TAG_READ, TAG_READ);
                         try {
@@ -683,7 +679,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             request,
                                             startDateAccessEpochMilli,
                                             enforceSelfRead,
-                                            extraReadPermsToGrantState);
+                                            grantedExtraReadPermissions,
+                                            isInForeground);
                             // throw an exception if read requested is not for a single record type
                             // i.e. size of read table request is not equal to 1.
                             if (readTransactionRequest.getReadRequests().size() != 1) {
@@ -1030,8 +1027,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 ChangeLogsHelper.getRecordTypeToInsertedUuids(
                                         changeLogsResponse.getChangeLogsMap());
 
-                        Map<String, Boolean> extraReadPermsToGrantState =
-                                mDataPermissionEnforcer.collectExtraReadPermissionToStateMapping(
+                        Set<String> grantedExtraReadPermissions =
+                                mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
                                         recordTypeToInsertedUuids.keySet(), attributionSource);
 
                         List<RecordInternal<?>> recordInternals =
@@ -1040,7 +1037,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 callerPackageName,
                                                 recordTypeToInsertedUuids,
                                                 startDateAccessEpochMilli,
-                                                extraReadPermsToGrantState));
+                                                grantedExtraReadPermissions,
+                                                isInForeground));
 
                         List<DeletedLog> deletedLogs =
                                 ChangeLogsHelper.getDeletedLogs(

@@ -30,6 +30,11 @@ android_test {
         ":healthfitness-cts-testapp-srcs",
         ":healthfitness-permissions-testapp-srcs",
         "src/android/healthconnect/cts/*.java",
+        "src/android/healthconnect/cts/aggregation/*.java",
+        "src/android/healthconnect/cts/changelogs/*.java",
+        "src/android/healthconnect/cts/datatypes/**/*.java",
+        "src/android/healthconnect/cts/migration/*.java",
+        "src/android/healthconnect/cts/readdata/*.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [
@@ -116,7 +121,7 @@ android_test {
         "compatibility-device-util-axt",
         "ctstestrunner-axt",
         "cts-wm-util",
-	"modules-utils-build",
+        "modules-utils-build",
         "testng",
         "cts-healthconnect-utils",
     ],
@@ -166,7 +171,8 @@ android_test {
             ":HealthFitnessCtsTestApp",
             ":HealthFitnessCtsTestApp2",
             ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
-            ":CtsHealthConnectTestAppBWithNormalReadWritePermission"
+            ":CtsHealthConnectTestAppBWithNormalReadWritePermission",
+            ":CtsExerciseRouteTestRouteReaderWriterApp",
         ],
 }
 

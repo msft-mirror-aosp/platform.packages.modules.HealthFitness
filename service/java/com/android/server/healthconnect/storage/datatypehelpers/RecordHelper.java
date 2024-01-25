@@ -20,10 +20,10 @@ import static android.health.connect.Constants.DEFAULT_INT;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTransactionRequest.TYPE_NOT_PRESENT_PACKAGE_NAME;
-import static com.android.server.healthconnect.storage.utils.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
@@ -43,6 +43,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.AggregateResult;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.AggregationType;
@@ -62,7 +63,6 @@ import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
-import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
@@ -76,6 +76,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -334,19 +335,27 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             ReadRecordsRequestParcel request,
             String callingPackageName,
             boolean enforceSelfRead,
-            long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            long startDateAccessMillis,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
                         getReadTableWhereClause(
-                                request, callingPackageName, enforceSelfRead, startDateAccess))
+                                request,
+                                callingPackageName,
+                                enforceSelfRead,
+                                startDateAccessMillis))
                 .setOrderBy(getOrderByClause(request))
                 .setLimit(getLimitSize(request))
                 .setRecordHelper(this)
                 .setExtraReadRequests(
                         getExtraDataReadRequests(
-                                request, callingPackageName, startDateAccess, extraPermsState));
+                                request,
+                                callingPackageName,
+                                startDateAccessMillis,
+                                grantedExtraReadPermissions,
+                                isInForeground));
     }
 
     /**
@@ -372,11 +381,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Returns ReadTableRequest for {@code uuids} */
-    public ReadTableRequest getReadTableRequest(
+    public final ReadTableRequest getReadTableRequest(
             String packageName,
             List<UUID> uuids,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
@@ -388,7 +398,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setRecordHelper(this)
                 .setExtraReadRequests(
                         getExtraDataReadRequests(
-                                packageName, uuids, startDateAccess, extraPermsState));
+                                packageName,
+                                uuids,
+                                startDateAccess,
+                                grantedExtraReadPermissions,
+                                isInForeground));
     }
 
     /**
@@ -399,19 +413,21 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             ReadRecordsRequestParcel request,
             String packageName,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return Collections.emptyList();
     }
 
     /**
-     * Returns list if ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
+     * Returns a list of ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
      * change logs read requests.
      */
     List<ReadTableRequest> getExtraDataReadRequests(
             String packageName,
             List<UUID> uuids,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return Collections.emptyList();
     }
 
@@ -698,7 +714,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             long startDateAccessMillis) {
         AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         long callingAppInfoId = appInfoHelper.getAppInfoId(callingPackageName);
-
         RecordIdFiltersParcel recordIdFiltersParcel = request.getRecordIdFiltersParcel();
         if (recordIdFiltersParcel == null) {
             List<Long> appInfoIds =
