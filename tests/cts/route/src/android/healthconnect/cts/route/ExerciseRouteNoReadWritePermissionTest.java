@@ -24,13 +24,13 @@ import static android.healthconnect.cts.route.ExerciseRouteTestHelper.getExercis
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.getExerciseSessionWithRoute;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.getExerciseSessionWithoutRoute;
 import static android.healthconnect.cts.route.ExerciseRouteTestHelper.readAllExerciseSessionRecordsPrivileged;
-import static android.healthconnect.cts.utils.TestUtils.READ_EXERCISE_ROUTES_ALL;
+import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
+import static android.healthconnect.cts.utils.DataFactory.getMetadataForClientId;
+import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
+import static android.healthconnect.cts.utils.PermissionHelper.READ_EXERCISE_ROUTES;
+import static android.healthconnect.cts.utils.PermissionHelper.runWithRevokedPermissions;
 import static android.healthconnect.cts.utils.TestUtils.connectAppsWithGrantedPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
-import static android.healthconnect.cts.utils.TestUtils.getEmptyMetadata;
-import static android.healthconnect.cts.utils.TestUtils.getMetadataForClientId;
-import static android.healthconnect.cts.utils.TestUtils.getMetadataForId;
-import static android.healthconnect.cts.utils.TestUtils.runWithRevokedPermissions;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -79,7 +79,7 @@ public class ExerciseRouteNoReadWritePermissionTest {
                 assertThrows(
                         HealthConnectException.class,
                         () ->
-                                TestUtils.runWithRevokedPermissions(
+                                runWithRevokedPermissions(
                                         () -> ROUTE_WRITER_APP.insertRecords(otherAppSession),
                                         ROUTE_WRITER_APP.getPackageName(),
                                         WRITE_EXERCISE_ROUTE));
@@ -96,7 +96,7 @@ public class ExerciseRouteNoReadWritePermissionTest {
         ExerciseSessionRecord updatedSessionWithoutRoute =
                 getExerciseSessionWithoutRoute(getMetadataForClientId("client id"));
 
-        TestUtils.runWithRevokedPermissions(
+        runWithRevokedPermissions(
                 () -> ROUTE_WRITER_APP.insertRecords(updatedSessionWithoutRoute),
                 ROUTE_WRITER_APP.getPackageName(),
                 WRITE_EXERCISE_ROUTE);
@@ -120,7 +120,7 @@ public class ExerciseRouteNoReadWritePermissionTest {
                 assertThrows(
                         HealthConnectException.class,
                         () ->
-                                TestUtils.runWithRevokedPermissions(
+                                runWithRevokedPermissions(
                                         () ->
                                                 ROUTE_WRITER_APP.insertRecords(
                                                         sessionWithUpdatedRoute),
@@ -147,7 +147,7 @@ public class ExerciseRouteNoReadWritePermissionTest {
                 assertThrows(
                         HealthConnectException.class,
                         () ->
-                                TestUtils.runWithRevokedPermissions(
+                                runWithRevokedPermissions(
                                         () -> ROUTE_WRITER_APP.insertRecords(sessionWithAddedRoute),
                                         ROUTE_WRITER_APP.getPackageName(),
                                         WRITE_EXERCISE_ROUTE));
@@ -235,14 +235,14 @@ public class ExerciseRouteNoReadWritePermissionTest {
         ROUTES_READER_WRITER_APP.insertRecords(sessionWithRoute);
 
         List<ExerciseSessionRecord> records =
-                TestUtils.runWithRevokedPermissions(
+                runWithRevokedPermissions(
                         () ->
                                 ROUTES_READER_WRITER_APP.readRecords(
                                         new ReadRecordsRequestUsingFilters.Builder<>(
                                                         ExerciseSessionRecord.class)
                                                 .build()),
                         ROUTES_READER_WRITER_APP.getPackageName(),
-                        READ_EXERCISE_ROUTES_ALL,
+                        READ_EXERCISE_ROUTES,
                         WRITE_EXERCISE_ROUTE);
 
         assertThat(records).hasSize(1);
@@ -257,7 +257,7 @@ public class ExerciseRouteNoReadWritePermissionTest {
         String sessionId = ROUTES_READER_WRITER_APP.insertRecords(sessionWithRoute).get(0);
 
         List<ExerciseSessionRecord> records =
-                TestUtils.runWithRevokedPermissions(
+                runWithRevokedPermissions(
                         () ->
                                 ROUTES_READER_WRITER_APP.readRecords(
                                         new ReadRecordsRequestUsingIds.Builder<>(
@@ -265,7 +265,7 @@ public class ExerciseRouteNoReadWritePermissionTest {
                                                 .addId(sessionId)
                                                 .build()),
                         ROUTES_READER_WRITER_APP.getPackageName(),
-                        READ_EXERCISE_ROUTES_ALL,
+                        READ_EXERCISE_ROUTES,
                         WRITE_EXERCISE_ROUTE);
 
         assertThat(records).hasSize(1);
@@ -285,12 +285,12 @@ public class ExerciseRouteNoReadWritePermissionTest {
         ROUTES_READER_WRITER_APP.insertRecords(sessionWithRoute);
 
         ChangeLogsResponse response =
-                TestUtils.runWithRevokedPermissions(
+                runWithRevokedPermissions(
                         () ->
                                 ROUTES_READER_WRITER_APP.getChangeLogs(
                                         new ChangeLogsRequest.Builder(token).build()),
                         ROUTES_READER_WRITER_APP.getPackageName(),
-                        READ_EXERCISE_ROUTES_ALL,
+                        READ_EXERCISE_ROUTES,
                         WRITE_EXERCISE_ROUTE);
 
         List<ExerciseSessionRecord> records =
