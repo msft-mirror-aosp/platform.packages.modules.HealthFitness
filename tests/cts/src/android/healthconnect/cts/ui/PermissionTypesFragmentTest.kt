@@ -23,6 +23,7 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import androidx.test.uiautomator.By
@@ -44,18 +45,22 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             val record =
-                StepsRecord.Builder(TestUtils.getEmptyMetadata(), now.minusSeconds(30), now, 43)
-                    .build()
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(record)
-
             APP_B_WITH_READ_WRITE_PERMS.insertRecords(record)
         }
 
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()

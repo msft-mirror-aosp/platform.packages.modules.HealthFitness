@@ -18,6 +18,8 @@ package android.healthconnect.cts.nopermission;
 
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
+import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
+import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,12 +31,14 @@ import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,9 +56,15 @@ import java.util.List;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectManagerNoPermissionsGrantedTest {
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
     @Test
     public void testInsertNotAllowed() throws InterruptedException {
-        for (Record testRecord : TestUtils.getTestRecords()) {
+        for (Record testRecord : getTestRecords()) {
             try {
                 TestUtils.insertRecords(Collections.singletonList(testRecord));
                 Assert.fail("Insert must be not allowed without right HC permission");
@@ -67,7 +77,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
 
     @Test
     public void testUpdateNotAllowed() throws InterruptedException {
-        for (Record testRecord : TestUtils.getTestRecords()) {
+        for (Record testRecord : getTestRecords()) {
             try {
                 TestUtils.updateRecords(Collections.singletonList(testRecord));
                 Assert.fail("Update must be not allowed without right HC permission");
@@ -80,7 +90,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
 
     @Test
     public void testDeleteUsingIdNotAllowed() throws InterruptedException {
-        for (Record testRecord : TestUtils.getTestRecords()) {
+        for (Record testRecord : getTestRecords()) {
             try {
                 TestUtils.deleteRecords(Collections.singletonList(testRecord));
                 Assert.fail("Delete using ids must be not allowed without right HC permission");
@@ -93,7 +103,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
 
     @Test
     public void testDeleteUsingFilterNotAllowed() throws InterruptedException {
-        for (Record testRecord : TestUtils.getTestRecords()) {
+        for (Record testRecord : getTestRecords()) {
             try {
                 TestUtils.verifyDeleteRecords(
                         testRecord.getClass(),
@@ -111,7 +121,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
 
     @Test
     public void testChangeLogsTokenNotAllowed() throws InterruptedException {
-        for (Record testRecord : TestUtils.getTestRecords()) {
+        for (Record testRecord : getTestRecords()) {
             try {
                 TestUtils.getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
@@ -128,7 +138,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
 
     @Test
     public void testReadNotAllowed() throws InterruptedException {
-        for (Record testRecord : TestUtils.getTestRecords()) {
+        for (Record testRecord : getTestRecords()) {
             try {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(testRecord.getClass())
@@ -146,9 +156,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         try {
             List<Record> records =
                     Arrays.asList(
-                            TestUtils.getHeartRateRecord(71),
-                            TestUtils.getHeartRateRecord(72),
-                            TestUtils.getHeartRateRecord(73));
+                            getHeartRateRecord(71), getHeartRateRecord(72), getHeartRateRecord(73));
             TestUtils.getAggregateResponse(
                     new AggregateRecordsRequest.Builder<Long>(
                                     new TimeInstantRangeFilter.Builder()
