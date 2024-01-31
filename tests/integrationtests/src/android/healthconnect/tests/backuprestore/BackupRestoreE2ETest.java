@@ -16,14 +16,14 @@
 
 package android.healthconnect.tests.backuprestore;
 
+import static android.healthconnect.cts.utils.PermissionHelper.getHealthDataHistoricalAccessStartDate;
+import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissionsWithDelay;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getHealthConnectDataRestoreState;
-import static android.healthconnect.cts.utils.TestUtils.getHealthDataHistoricalAccessStartDate;
-import static android.healthconnect.cts.utils.TestUtils.grantPermission;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
-import static android.healthconnect.cts.utils.TestUtils.revokeAllPermissions;
-import static android.healthconnect.cts.utils.TestUtils.revokeAllPermissionsWithDelay;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.android.compatibility.common.util.BackupUtils.LOCAL_TRANSPORT_TOKEN;
@@ -43,6 +43,7 @@ import android.health.connect.datatypes.IntervalRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.utils.TestUtils;
 import android.os.ParcelFileDescriptor;
 import android.os.UserHandle;
 import android.platform.test.annotations.AppModeFull;
@@ -98,6 +99,9 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        if (!TestUtils.isHardwareSupported()) {
+            return;
+        }
         mBackupRestoreApkPackageName = getBackupRestoreApkPackageName();
         // enable backup on the test device
         mBackupUtils.enableBackup(true);
@@ -117,6 +121,9 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
 
     public void testBackupThenRestore_over2000Records_expectDataIsRestoredCorrectly()
             throws Exception {
+        if (!TestUtils.isHardwareSupported()) {
+            return;
+        }
         int numOfRecords = 2050;
         List<Record> insertedRecords =
                 insertRecordsWithChunking(
@@ -137,6 +144,9 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
     public void
             testPermissionsControllerIsRestoredBeforeHCRestore_expectGrantTimeIsRestoredCorrectly()
                     throws Exception {
+        if (!TestUtils.isHardwareSupported()) {
+            return;
+        }
         // revoke all permissions for both test apps to remove all stored grant time as setup step
         revokeAllPermissionsWithDelay(TEST_APP_1_PACKAGE_NAME, "");
         revokeAllPermissionsWithDelay(TEST_APP_2_PACKAGE_NAME, "");
