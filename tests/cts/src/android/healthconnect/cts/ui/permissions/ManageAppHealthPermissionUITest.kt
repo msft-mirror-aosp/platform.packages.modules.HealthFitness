@@ -17,12 +17,10 @@
 package android.healthconnect.cts.ui.permissions
 
 import android.content.pm.PackageManager
-import android.health.connect.HealthPermissions
 import android.health.connect.HealthPermissions.READ_HEIGHT
 import android.health.connect.HealthPermissions.WRITE_BODY_FAT
 import android.health.connect.HealthPermissions.WRITE_HEIGHT
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
-import android.healthconnect.cts.lib.UiTestUtils
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
@@ -33,9 +31,7 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
 import com.google.common.truth.Truth.assertThat
-import java.lang.Exception
 import org.junit.After
-import org.junit.Ignore
 import org.junit.Test
 
 class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
@@ -104,20 +100,20 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             clickOnText("Allow all")
             waitDisplayed(By.text("Remove all permissions?"))
             waitDisplayed(
-                    By.text("Also delete Health Connect cts test app data from Health Connect"))
+                By.text("Also delete Health Connect cts test app data from Health Connect"))
         }
     }
 
     @Throws(Exception::class)
     private fun assertPermNotGrantedForApp(packageName: String, permName: String) {
         assertThat(context.packageManager.checkPermission(permName, packageName))
-                .isEqualTo(PackageManager.PERMISSION_DENIED)
+            .isEqualTo(PackageManager.PERMISSION_DENIED)
     }
 
     @Throws(Exception::class)
     private fun assertPermGrantedForApp(packageName: String, permName: String) {
         assertThat(context.packageManager.checkPermission(permName, packageName))
-                .isEqualTo(PackageManager.PERMISSION_GRANTED)
+            .isEqualTo(PackageManager.PERMISSION_GRANTED)
     }
 
     private fun navigateToManageAppPermissions() {
@@ -129,11 +125,9 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
 
     @After
     fun tearDown() {
-        revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
-        revokePermissionViaPackageManager(
-                context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
-        revokePermissionViaPackageManager(
-                context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         navigateBackToHomeScreen()
     }
 }

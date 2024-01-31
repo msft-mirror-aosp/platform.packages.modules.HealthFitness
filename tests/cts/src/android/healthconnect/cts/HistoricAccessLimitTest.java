@@ -27,6 +27,7 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,6 +54,11 @@ public class HistoricAccessLimitTest {
     private Instant mNow;
 
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {
@@ -258,13 +265,7 @@ public class HistoricAccessLimitTest {
     }
 
     private String insertStepsRecordViaTestApp(Instant startTime, Instant endTime, long value) {
-        Bundle bundle = new Bundle();
-        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
-        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
-        bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {value});
-        TestReceiver.reset();
-        sendCommandToTestAppReceiver(mContext, ACTION_INSERT_STEPS_RECORDS, bundle);
-        return TestReceiver.getResult().getStringArrayList(EXTRA_RECORD_IDS).get(0);
+        return TestUtils.insertStepsRecordViaTestApp(mContext, startTime, endTime, value).get(0);
     }
 
     private String insertWeightRecordViaTestApp(Instant startTime, long value) {
