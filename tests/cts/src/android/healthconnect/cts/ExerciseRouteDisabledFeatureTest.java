@@ -16,6 +16,8 @@
 
 package android.healthconnect.cts;
 
+import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.app.UiAutomation;
@@ -23,6 +25,7 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.provider.DeviceConfig;
 
@@ -32,6 +35,7 @@ import com.android.modules.utils.build.SdkLevel;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -39,6 +43,11 @@ import java.util.List;
 public class ExerciseRouteDisabledFeatureTest {
     private final UiAutomation mUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws InterruptedException {
@@ -49,7 +58,7 @@ public class ExerciseRouteDisabledFeatureTest {
     public void testWriteRoute_insertWithDisableFeature_throwsException()
             throws InterruptedException {
         setExerciseRouteFeatureEnabledFlag(false);
-        List<Record> records = List.of(TestUtils.buildExerciseSession());
+        List<Record> records = List.of(buildExerciseSession());
         try {
             TestUtils.insertRecords(records);
             Assert.fail("Writing route when flag is disabled should not be allowed");
@@ -61,7 +70,7 @@ public class ExerciseRouteDisabledFeatureTest {
 
     @Test
     public void testReadRoute_insertAndRead_routeIsNotAvailable() throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession());
+        List<Record> records = List.of(buildExerciseSession());
         TestUtils.insertRecords(records);
         setExerciseRouteFeatureEnabledFlag(false);
         ExerciseSessionRecord insertedRecord = (ExerciseSessionRecord) records.get(0);
