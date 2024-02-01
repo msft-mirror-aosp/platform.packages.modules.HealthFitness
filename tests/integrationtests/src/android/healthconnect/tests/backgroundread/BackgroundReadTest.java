@@ -42,8 +42,10 @@ import android.health.connect.InsertRecordsResponse;
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestReceiver;
-import android.healthconnect.test.app.BlockingOutcomeReceiver;
+import android.healthconnect.cts.utils.TestUtils;
+import android.healthconnect.test.app.DefaultOutcomeReceiver;
 import android.os.Bundle;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -51,6 +53,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -68,6 +71,11 @@ public class BackgroundReadTest {
     private PackageManager mPackageManager;
     private HealthConnectManager mManager;
     private String mInitialFeatureFlagValue;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {
@@ -112,16 +120,16 @@ public class BackgroundReadTest {
     }
 
     private void insertRecords() {
-        final BlockingOutcomeReceiver<InsertRecordsResponse> outcomeReceiver =
-                new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcomeReceiver =
+                new DefaultOutcomeReceiver<>();
 
         mManager.insertRecords(
                 List.of(
                         new ActiveCaloriesBurnedRecord.Builder(
-                                        new Metadata.Builder().build(),
-                                        Instant.now().minusSeconds(60),
-                                        Instant.now(),
-                                        Energy.fromCalories(100.0))
+                                new Metadata.Builder().build(),
+                                Instant.now().minusSeconds(60),
+                                Instant.now(),
+                                Energy.fromCalories(100.0))
                                 .build()),
                 Executors.newSingleThreadExecutor(),
                 outcomeReceiver);
