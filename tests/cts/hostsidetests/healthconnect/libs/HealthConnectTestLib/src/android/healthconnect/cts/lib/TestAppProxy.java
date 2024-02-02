@@ -21,16 +21,19 @@ import static android.healthconnect.cts.lib.BundleHelper.QUERY_TYPE;
 
 import static androidx.test.InstrumentationRegistry.getContext;
 
+import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.ProxyActivity;
 import android.os.Bundle;
 
 import com.android.cts.install.lib.TestApp;
@@ -121,6 +124,14 @@ public class TestAppProxy {
         return BundleHelper.toReadRecordsResponse(responseBundle);
     }
 
+    /** Read records from HC on behalf of the app. */
+    public <T extends Record> List<T> readRecords(ReadRecordsRequestUsingIds<T> request)
+            throws Exception {
+        Bundle requestBundle = BundleHelper.fromReadRecordsRequestUsingIds(request);
+        Bundle responseBundle = getFromTestApp(requestBundle);
+        return BundleHelper.toReadRecordsResponse(responseBundle);
+    }
+
     /** Gets changelogs from HC on behalf of the app. */
     public ChangeLogsResponse getChangeLogs(ChangeLogsRequest request) throws Exception {
         Bundle requestBundle = BundleHelper.fromChangeLogsRequest(request);
@@ -133,6 +144,35 @@ public class TestAppProxy {
         Bundle requestBundle = BundleHelper.fromChangeLogTokenRequest(request);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toChangeLogTokenResponse(responseBundle);
+    }
+
+    /** Starts an activity on behalf of the app and returns the result. */
+    public Instrumentation.ActivityResult startActivityForResult(Intent intent) throws Exception {
+        return startActivityForResult(intent, () -> {});
+    }
+
+    /**
+     * Starts an activity on behalf of the app, executes the runnable and returns the result.
+     *
+     * <p>The corresponding test app must have the following activity declared in the Manifest.
+     *
+     * <pre>{@code
+     * <activity android:name="android.healthconnect.cts.utils.ProxyActivity"
+     *           android:exported="true">
+     *   <intent-filter>
+     *      <action android:name="android.healthconnect.cts.ACTION_START_ACTIVITY_FOR_RESULT"/>
+     *      <category android:name="android.intent.category.DEFAULT"/>
+     *   </intent-filter>
+     * </activity>
+     * }</pre>
+     */
+    public Instrumentation.ActivityResult startActivityForResult(Intent intent, Runnable runnable)
+            throws Exception {
+        Intent testAppIntent = new Intent(ProxyActivity.PROXY_ACTIVITY_ACTION);
+        testAppIntent.setPackage(mPackageName);
+        testAppIntent.putExtra(Intent.EXTRA_INTENT, intent);
+
+        return ProxyActivity.launchActivityForResult(testAppIntent, runnable);
     }
 
     private Bundle getFromTestApp(Bundle bundleToCreateIntent) throws Exception {
