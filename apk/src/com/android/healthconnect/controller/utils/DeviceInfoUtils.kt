@@ -3,7 +3,9 @@ package com.android.healthconnect.controller.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.UserManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
@@ -19,6 +21,9 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
 interface DeviceInfoUtils {
+
+    fun isHealthConnectAvailable(context: Context): Boolean
+
     fun isSendFeedbackAvailable(context: Context): Boolean
 
     fun isPlayStoreAvailable(context: Context): Boolean
@@ -81,6 +86,22 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
             return true
         }
         return false
+    }
+
+    override fun isHealthConnectAvailable(context: Context): Boolean {
+        return isHardwareSupported(context) && !isProfile(context)
+    }
+
+    private fun isHardwareSupported(context: Context): Boolean {
+        val pm: PackageManager = context.packageManager
+        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+    }
+
+    private fun isProfile(context: Context): Boolean {
+        return (context.getSystemService(Context.USER_SERVICE) as UserManager).isProfile
     }
 }
 
