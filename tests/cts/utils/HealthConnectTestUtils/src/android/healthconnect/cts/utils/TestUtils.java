@@ -442,6 +442,12 @@ public final class TestUtils {
         verifyDeleteRecords(recordIdFilters);
     }
 
+    /** Helper function to delete records from the DB, using HealthConnectManager. */
+    public static void deleteRecordsByIdFilter(List<RecordIdFilter> recordIdFilters)
+            throws InterruptedException {
+        verifyDeleteRecords(recordIdFilters);
+    }
+
     public static List<AccessLog> queryAccessLogs() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);

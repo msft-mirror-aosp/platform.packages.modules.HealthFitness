@@ -126,6 +126,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                             + user.getIdentifier()
                             + " not found.");
         }
+        initAndValidateUserStateIfNeedLocked(user);
 
         mGrantTimeLock.writeLock().lock();
         try {
