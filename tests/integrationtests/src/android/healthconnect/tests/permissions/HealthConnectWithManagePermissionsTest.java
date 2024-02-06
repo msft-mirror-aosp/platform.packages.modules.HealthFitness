@@ -35,6 +35,7 @@ import android.health.connect.HealthPermissions;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.healthconnect.tests.IntegrationTestUtils;
+import android.os.Build;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
@@ -126,11 +127,21 @@ public class HealthConnectWithManagePermissionsTest {
         assertPermGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
     }
 
-    @Test(expected = SecurityException.class)
-    public void testGrantHealthPermission_appHasPermissionNotDeclared_throwsSecurityException()
+    @Test
+    public void testGrantHealthPermission_appHasPermissionNotDeclared_notGranted()
             throws Exception {
-        grantHealthPermission(DEFAULT_APP_PACKAGE, UNDECLARED_PERM);
-        fail("Expected SecurityException due permission not being declared by target app.");
+        try {
+            grantHealthPermission(DEFAULT_APP_PACKAGE, UNDECLARED_PERM);
+        } catch (SecurityException e) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // 1) On V and above, this situation should not result in an exception
+                // 2) On U, it may result in an exception prior to b/322033581.
+                // This test currently ensures that if it throws on V (thus going against (1)),
+                // we will propagate the exception to fail the test, as expected.
+                throw e;
+            }
+        }
+        assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, UNDECLARED_PERM);
     }
 
     @Test(expected = IllegalArgumentException.class)
