@@ -56,7 +56,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     companion object {
         private const val READ_ROUTES_ALL_FEATURE_FLAG = "exercise_routes_read_all_enable"
         private val ROUTE_READER_WRITER_APP =
-            TestAppProxy.forPackageName("android.healthconnect.cts.route.testapp.readerWriter")
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A")
 
         @JvmStatic
         @AfterClass
@@ -85,7 +85,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val result =
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow all routes"))
-                scrollDownTo(By.text("Don't allow"))
                 clickOnText("Allow this route")
             }
 
@@ -108,7 +107,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val result =
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow this route"))
-                scrollDownTo(By.text("Don't allow"))
                 clickOnText("Allow all routes")
             }
 
@@ -132,7 +130,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow all routes"))
                 waitDisplayed(By.text("Allow this route"))
-                scrollDownTo(By.text("Don't allow"))
                 clickOnText("Don't allow")
             }
 
@@ -232,7 +229,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
                 ROUTE_READER_WRITER_APP.getPackageName(), HealthPermissions.WRITE_EXERCISE_ROUTE) {
                     ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                         waitDisplayed(By.text("Allow this route"))
-                        scrollDownTo(By.text("Don't allow"))
                         clickOnText("Allow all routes")
                     }
                 }

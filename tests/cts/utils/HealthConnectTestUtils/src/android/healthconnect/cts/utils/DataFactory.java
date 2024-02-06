@@ -266,6 +266,11 @@ public final class DataFactory {
                 .build();
     }
 
+    public static StepsRecord getStepsRecord(
+            int steps, Instant start, Instant end, String clientId) {
+        return new StepsRecord.Builder(getMetadataForClientId(clientId), start, end, steps).build();
+    }
+
     public static StepsRecord getStepsRecord(String id) {
         return new StepsRecord.Builder(
                         generateMetadata(id), Instant.now(), Instant.now().plusMillis(1000), 10)
@@ -283,6 +288,12 @@ public final class DataFactory {
     /** Creates and returns a {@link StepsRecord} with the specified arguments. */
     public static StepsRecord getCompleteStepsRecord(
             Instant startTime, Instant endTime, String clientRecordId) {
+        return getCompleteStepsRecord(startTime, endTime, clientRecordId, /* count= */ 10);
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            Instant startTime, Instant endTime, String clientRecordId, int count) {
         Device device =
                 new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
         DataOrigin dataOrigin =
@@ -294,7 +305,7 @@ public final class DataFactory {
         testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
         Metadata testMetaData = testMetadataBuilder.build();
         assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);
-        return new StepsRecord.Builder(testMetaData, startTime, endTime, 10).build();
+        return new StepsRecord.Builder(testMetaData, startTime, endTime, count).build();
     }
 
     public static StepsRecord getUpdatedStepsRecord(
@@ -317,11 +328,19 @@ public final class DataFactory {
     }
 
     public static DistanceRecord getDistanceRecord() {
+        return getDistanceRecord(10.0, Instant.now(), Instant.now().plusMillis(1000));
+    }
+
+    public static DistanceRecord getDistanceRecord(double distance, Instant start, Instant end) {
         return new DistanceRecord.Builder(
-                        getEmptyMetadata(),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
-                        Length.fromMeters(10.0))
+                        getEmptyMetadata(), start, end, Length.fromMeters(distance))
+                .build();
+    }
+
+    public static DistanceRecord getDistanceRecord(
+            double distance, Instant start, Instant end, String clientId) {
+        return new DistanceRecord.Builder(
+                        getMetadataForClientId(clientId), start, end, Length.fromMeters(distance))
                 .build();
     }
 

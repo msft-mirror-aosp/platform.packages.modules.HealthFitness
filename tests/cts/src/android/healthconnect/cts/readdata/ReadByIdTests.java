@@ -17,7 +17,6 @@
 package android.healthconnect.cts.readdata;
 
 import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
-import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
 import static android.healthconnect.cts.utils.TestUtils.getReadRecordsResponse;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -37,6 +36,8 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -50,33 +51,14 @@ public class ReadByIdTests {
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
-    @Test
-    public void readDataByBothIdAndClientId_expectCorrectOrder() throws Exception {
-        String clientId = "mySteps";
-        String clientId2 = "mySteps2";
-        List<Record> records =
-                insertRecords(
-                        List.of(
-                                getStepsRecord(100),
-                                getStepsRecord(80, clientId),
-                                getStepsRecord(90, clientId2)));
-        String uuid = records.get(0).getMetadata().getId();
+    @Before
+    public void setup() {
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
-        ReadRecordsRequestUsingIds<StepsRecord> request =
-                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class)
-                        .addClientRecordId(clientId2)
-                        .addId(uuid)
-                        .addClientRecordId(clientId)
-                        .build();
-
-        List<StepsRecord> recordsReadBack = TestUtils.readRecords(request);
-        assertThat(recordsReadBack).hasSize(3);
-        assertThat(recordsReadBack.get(0).getMetadata().getClientRecordId()).isEqualTo(clientId2);
-        assertThat(recordsReadBack.get(0).getCount()).isEqualTo(90);
-        assertThat(recordsReadBack.get(1).getMetadata().getId()).isEqualTo(uuid);
-        assertThat(recordsReadBack.get(1).getCount()).isEqualTo(100);
-        assertThat(recordsReadBack.get(2).getMetadata().getClientRecordId()).isEqualTo(clientId);
-        assertThat(recordsReadBack.get(2).getCount()).isEqualTo(80);
+    @After
+    public void tearDown() {
+        TestUtils.deleteAllStagedRemoteData();
     }
 
     @Test
