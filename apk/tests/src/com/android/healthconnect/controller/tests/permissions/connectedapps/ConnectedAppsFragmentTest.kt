@@ -20,6 +20,7 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -39,8 +40,11 @@ import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.INACTIVE
+import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.NEEDS_UPDATE
+import com.android.healthconnect.controller.tests.utils.OLD_TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
+import com.android.healthconnect.controller.tests.utils.TEST_APP_3
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
@@ -48,15 +52,23 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.NavigationUtils
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
+import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 
 @UninstallModules(DeviceInfoUtilsModule::class)
 @HiltAndroidTest
@@ -70,12 +82,19 @@ class ConnectedAppsFragmentTest {
     val viewModel: ConnectedAppsViewModel = Mockito.mock(ConnectedAppsViewModel::class.java)
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
 
     @Before
     fun setup() {
+        MockitoAnnotations.initMocks(this)
         hiltRule.inject()
         whenever(viewModel.disconnectAllState).then { MutableLiveData(NotStarted) }
         whenever(viewModel.alertDialogActive).then { MutableLiveData(false) }
+    }
+
+    @After
+    fun tearDown() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).reset()
     }
 
     @Test
@@ -266,5 +285,77 @@ class ConnectedAppsFragmentTest {
         launchFragment<ConnectedAppsFragment>(Bundle())
 
         onView(withText("Help & feedback")).check(doesNotExist())
+    }
+
+    @Test
+    fun appNeedsUpdatingElements_shownWhenOldAppWithDataInstalled() {
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(TEST_APP, status = ALLOWED),
+                ConnectedAppMetadata(TEST_APP_2, status = DENIED),
+                ConnectedAppMetadata(OLD_TEST_APP, status = NEEDS_UPDATE))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText("App update needed")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Old permissions test app needs to be updated to " +
+                        "continue syncing with Health Connect"))
+            .check(matches(isDisplayed()))
+        onView(withText("Learn more")).check(matches(isDisplayed()))
+        onView(withText("Check for updates")).check(matches(isDisplayed()))
+        onView(withText("Needs updating")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Old permissions test app"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun appNeedsUpdateBanner_multipleOldApps_playStoreNotAvailable_showsCorrectly() {
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(TEST_APP, status = ALLOWED),
+                ConnectedAppMetadata(TEST_APP_2, status = DENIED),
+                ConnectedAppMetadata(OLD_TEST_APP, status = NEEDS_UPDATE),
+                ConnectedAppMetadata(TEST_APP_3, status = NEEDS_UPDATE))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+        onView(withText("App update needed")).check(matches(isDisplayed()))
+        onView(withText("Some apps need to be updated to continue syncing with Health Connect"))
+            .check(matches(isDisplayed()))
+        onView(withText("Learn more")).check(matches(isDisplayed()))
+        onView(withText("Check for updates")).check(matches(not(isDisplayed())))
+
+        onView(withText("Learn more")).perform(click())
+        assertThat(deviceInfoUtils.helpCenterInvoked).isTrue()
+    }
+
+    @Test
+    fun appNeedsUpdateBanner_navigatesToPlayStoreWhenAvailable() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(TEST_APP, status = ALLOWED),
+                ConnectedAppMetadata(TEST_APP_2, status = DENIED),
+                ConnectedAppMetadata(OLD_TEST_APP, status = NEEDS_UPDATE),
+                ConnectedAppMetadata(TEST_APP_3, status = NEEDS_UPDATE))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+        onView(withText("App update needed")).check(matches(isDisplayed()))
+        onView(withText("Some apps need to be updated to continue syncing with Health Connect"))
+            .check(matches(isDisplayed()))
+        onView(withText("Learn more")).check(matches(isDisplayed()))
+        onView(withText("Check for updates")).check(matches(isDisplayed()))
+
+        onView(withText("Check for updates")).perform(click())
+        verify(navigationUtils).navigate(any(), eq(R.id.action_connected_apps_to_updated_apps))
     }
 }

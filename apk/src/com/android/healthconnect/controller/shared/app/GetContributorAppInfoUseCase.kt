@@ -57,12 +57,12 @@ constructor(
     private val healthConnectManager: HealthConnectManager,
     @ApplicationContext private val context: Context,
     @IoDispatcher private val dispatcher: CoroutineDispatcher
-) {
+) : IGetContributorAppInfoUseCase {
     companion object {
         private const val TAG = "GetContributorAppInfo"
     }
 
-    suspend fun invoke(): Map<String, AppMetadata> =
+    override suspend fun invoke(): Map<String, AppMetadata> =
         withContext(dispatcher) {
             try {
                 val appInfoList =
@@ -81,7 +81,8 @@ constructor(
     private fun toAppMetadata(appInfo: AppInfo): AppMetadata {
         return AppMetadata(
             packageName = appInfo.packageName,
-            appName = appInfo.name
+            appName =
+                appInfo.name
                     ?: appInfo.packageName, // default to package name if appInfo name is null
             icon = getIcon(appInfo.icon))
     }
@@ -89,4 +90,8 @@ constructor(
     private fun getIcon(bitmap: Bitmap?): Drawable? {
         return bitmap?.let { BitmapDrawable(context.resources, it) }
     }
+}
+
+interface IGetContributorAppInfoUseCase {
+    suspend operator fun invoke(): Map<String, AppMetadata>
 }
