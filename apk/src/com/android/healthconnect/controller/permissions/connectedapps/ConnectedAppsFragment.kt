@@ -15,11 +15,13 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps
 
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -35,6 +37,7 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
+import com.android.healthconnect.controller.migration.AppUpdateRequiredFragment
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState
 import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.APP_INTEGRATION_REQUEST_BUCKET_ID
@@ -43,13 +46,16 @@ import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.INACTIVE
+import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.NEEDS_UPDATE
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
 import com.android.healthconnect.controller.shared.preference.BannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.AppStoreUtils
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAllAppsDialogElement
@@ -72,8 +78,11 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         const val ALLOWED_APPS_CATEGORY = "allowed_apps"
         private const val NOT_ALLOWED_APPS = "not_allowed_apps"
         private const val INACTIVE_APPS = "inactive_apps"
+        private const val NEED_UPDATE_APPS = "need_update_apps"
         private const val THINGS_TO_TRY = "things_to_try_app_permissions_screen"
         private const val SETTINGS_AND_HELP = "settings_and_help"
+        private const val APP_UPDATE_NEEDED_BANNER_SEEN = "app_update_banner_seen"
+        private const val BANNER_PREFERENCE_KEY = "banner_preference"
     }
 
     init {
@@ -81,8 +90,10 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
-
+    @Inject lateinit var appStoreUtils: AppStoreUtils
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var navigationUtils: NavigationUtils
+
     private val viewModel: ConnectedAppsViewModel by viewModels()
     private lateinit var searchMenuItem: MenuItem
     private lateinit var removeAllAppsDialog: AlertDialog
@@ -97,6 +108,10 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private val mNotAllowedAppsCategory: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(NOT_ALLOWED_APPS)
+    }
+
+    private val mNeedUpdateAppsCategory: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(NEED_UPDATE_APPS)
     }
 
     private val mInactiveAppsCategory: PreferenceGroup? by lazy {
@@ -198,6 +213,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 val connectedAppsGroup = connectedApps.groupBy { it.status }
                 val allowedApps = connectedAppsGroup[ALLOWED].orEmpty()
                 val notAllowedApps = connectedAppsGroup[DENIED].orEmpty()
+                val needUpdateApps = connectedAppsGroup[NEEDS_UPDATE].orEmpty()
                 val activeApps: MutableList<ConnectedAppMetadata> = allowedApps.toMutableList()
                 activeApps.addAll(notAllowedApps)
                 createRemoveAllAppsAccessDialog(activeApps)
@@ -219,6 +235,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 updateAllowedApps(allowedApps)
                 updateDeniedApps(notAllowedApps)
                 updateInactiveApps(connectedAppsGroup[INACTIVE].orEmpty())
+                updateNeedUpdateApps(needUpdateApps)
 
                 viewModel.alertDialogActive.observe(viewLifecycleOwner) { state ->
                     if (state) {
@@ -253,6 +270,40 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                         }
                     }
                 mInactiveAppsCategory?.addPreference(inactiveAppPreference)
+            }
+        }
+    }
+
+    private fun updateNeedUpdateApps(appsList: List<ConnectedAppMetadata>) {
+        if (appsList.isEmpty()) {
+            mNeedUpdateAppsCategory?.isVisible = false
+        } else {
+            mNeedUpdateAppsCategory?.isVisible = true
+            appsList.forEach { app ->
+                val packageName =
+                    getString(
+                        resources.getIdentifier(
+                            AppUpdateRequiredFragment.HC_PACKAGE_NAME_CONFIG_NAME, null, null))
+
+                val intent = appStoreUtils.getAppStoreLink(packageName)
+                if (intent == null) {
+                    mNeedUpdateAppsCategory?.addPreference(
+                        getAppPreference(app).also { it.isSelectable = false })
+                } else {
+                    mNeedUpdateAppsCategory?.addPreference(
+                        getAppPreference(app) { navigationUtils.startActivity(this, intent) })
+                }
+            }
+
+            val sharedPreference =
+                requireActivity()
+                    .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+            val bannerSeen = sharedPreference.getBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, false)
+
+            if (!bannerSeen) {
+                val banner = getAppUpdateNeededBanner(appsList)
+                preferenceScreen.removePreferenceRecursively(BANNER_PREFERENCE_KEY)
+                preferenceScreen.addPreference(banner)
             }
         }
     }
@@ -376,18 +427,49 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     // TODO (b/275602235) Use this banner to indicate one or more apps need updating to work with
     // Android U
-    private fun getAppUpdateNeededBanner(): BannerPreference {
+    private fun getAppUpdateNeededBanner(appsList: List<ConnectedAppMetadata>): BannerPreference {
         return BannerPreference(requireContext()).also { banner ->
-            banner.setButton(resources.getString(R.string.app_update_needed_banner_button))
+            banner.setPrimaryButton(resources.getString(R.string.app_update_needed_banner_button))
+            banner.setSecondaryButton(
+                resources.getString(R.string.app_update_needed_banner_learn_more_button))
             banner.title = resources.getString(R.string.app_update_needed_banner_title)
-            banner.summary =
-                resources.getString(R.string.app_update_needed_banner_description_multiple)
+
+            if (appsList.size > 1) {
+                banner.summary =
+                    resources.getString(R.string.app_update_needed_banner_description_multiple)
+            } else {
+                banner.summary =
+                    resources.getString(
+                        R.string.app_update_needed_banner_description_single,
+                        appsList[0].appMetadata.appName)
+            }
+
+            banner.key = BANNER_PREFERENCE_KEY
             banner.setIcon(R.drawable.ic_apps_outage)
-            banner.setButtonOnClickListener {
-                // TODO (b/275602235) navigate to play store
+            banner.order = 1
+            if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
+                banner.setPrimaryButtonOnClickListener {
+                    navigationUtils.navigate(this, R.id.action_connected_apps_to_updated_apps)
+                    true
+                }
+            } else {
+                banner.setPrimaryButtonVisibility(GONE)
+            }
+
+            banner.setSecondaryButtonOnClickListener {
+                deviceInfoUtils.openHCGetStartedLink(requireActivity())
             }
             banner.setIsDismissable(true)
-            banner.setDismissAction { preferenceScreen.removePreference(banner) }
+            banner.setDismissAction {
+                val sharedPreference =
+                    requireActivity()
+                        .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                sharedPreference.edit().apply {
+                    putBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, true)
+                    apply()
+                }
+                preferenceScreen.removePreference(banner)
+            }
         }
     }
 
@@ -410,6 +492,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private fun setAppAndSettingsCategoriesVisibility(isVisible: Boolean) {
         mInactiveAppsCategory?.isVisible = isVisible
         mAllowedAppsCategory?.isVisible = isVisible
+        mNeedUpdateAppsCategory?.isVisible = isVisible
         mNotAllowedAppsCategory?.isVisible = isVisible
         mSettingsAndHelpCategory?.isVisible = isVisible
     }
@@ -418,6 +501,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         mThingsToTryCategory?.removeAll()
         mAllowedAppsCategory?.removeAll()
         mNotAllowedAppsCategory?.removeAll()
+        mNeedUpdateAppsCategory?.removeAll()
         mInactiveAppsCategory?.removeAll()
         mSettingsAndHelpCategory?.removeAll()
     }
