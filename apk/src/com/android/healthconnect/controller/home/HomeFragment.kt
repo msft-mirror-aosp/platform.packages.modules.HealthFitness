@@ -218,12 +218,12 @@ class HomeFragment : Hilt_HomeFragment() {
 
     private fun getMigrationBanner(): BannerPreference {
         return BannerPreference(requireContext()).also {
-            it.setButton(resources.getString(R.string.resume_migration_banner_button))
+            it.setPrimaryButton(resources.getString(R.string.resume_migration_banner_button))
             it.title = resources.getString(R.string.resume_migration_banner_title)
             it.key = MIGRATION_BANNER_PREFERENCE_KEY
             it.summary = migrationBannerSummary
             it.setIcon(R.drawable.ic_settings_alert)
-            it.setButtonOnClickListener {
+            it.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_migrationActivity)
             }
             it.order = 1

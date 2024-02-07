@@ -338,6 +338,8 @@ public class HealthConnectManager {
      * hold the permission, a {@link java.lang.SecurityException} is thrown. If the package or
      * permission is invalid, a {@link java.lang.IllegalArgumentException} is thrown.
      *
+     * <p><b>Note:</b> This API sets {@code PackageManager.FLAG_PERMISSION_USER_SET}.
+     *
      * @hide
      */
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
@@ -356,6 +358,10 @@ public class HealthConnectManager {
      * application. If the application is not allowed to hold the permission, a {@link
      * java.lang.SecurityException} is thrown. If the package or permission is invalid, a {@link
      * java.lang.IllegalArgumentException} is thrown.
+     *
+     * <p><b>Note:</b> This API sets {@code PackageManager.FLAG_PERMISSION_USER_SET} or {@code
+     * PackageManager.FLAG_PERMISSION_USER_FIXED} based on the number of revocations of a particular
+     * permission for a package.
      *
      * @hide
      */
