@@ -44,6 +44,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -70,6 +71,7 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     @Inject lateinit var featureUtils: FeatureUtils
+    @Inject lateinit var timeSource: TimeSource
 
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
@@ -267,8 +269,8 @@ class HomeFragment : Hilt_HomeFragment() {
         } else {
             recentAppsList.forEach { recentApp ->
                 val newRecentAccessPreference =
-                    RecentAccessPreference(requireContext(), recentApp, false).also { newPreference
-                        ->
+                    RecentAccessPreference(requireContext(), recentApp, timeSource, false).also {
+                        newPreference ->
                         if (!recentApp.isInactive) {
                             newPreference.setOnPreferenceClickListener {
                                 findNavController()
