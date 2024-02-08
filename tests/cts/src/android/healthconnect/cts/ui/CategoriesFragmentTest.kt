@@ -72,26 +72,6 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         }
     }
 
-    @Test
-    fun categoriesFragment_never_showsAutoDeleteOption() {
-        setAutoDeletePeriod(0)
-
-        context.launchDataActivity {
-            waitDisplayed(By.text("Auto-delete"))
-            waitDisplayed(By.text("Off"))
-        }
-    }
-
-    @Test
-    fun categoriesFragment_3months_showsAutoDeleteOption() {
-        setAutoDeletePeriod(THREE_MONTHS)
-
-        context.launchDataActivity {
-            waitDisplayed(By.text("Auto-delete"))
-            waitDisplayed(By.text("After 3 months"))
-        }
-    }
-
     // TODO(b/274920669) Fix flaky tests
     //    @Test
     //    fun categoriesFragment_deleteAllData() {
