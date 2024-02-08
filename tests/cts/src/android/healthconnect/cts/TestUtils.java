@@ -44,6 +44,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
@@ -141,6 +142,8 @@ import java.util.stream.Collectors;
 
 public class TestUtils {
     public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+    public static final String MANAGE_HEALTH_PERMISSIONS =
+            HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
     public static final Instant SESSION_START_TIME = Instant.now().minus(10, ChronoUnit.DAYS);
     public static final Instant SESSION_END_TIME =
             Instant.now().minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
@@ -1299,6 +1302,136 @@ public class TestUtils {
                 BasalMetabolicRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+    }
+
+    /** Sets up the priority list for aggregation tests. */
+    public static void setupAggregation(String packageName, int permissionCategory)
+            throws InterruptedException {
+        insertRecordsForPriority(packageName);
+
+        // Add the packageName inserting the records to the priority list manually
+        // Since CTS tests get their permissions granted at install time and skip
+        // the Health Connect APIs that would otherwise add the packageName to the priority list
+        updatePriorityViaPermissionsApi(permissionCategory, packageName);
+        FetchDataOriginsPriorityOrderResponse newPriority =
+                getPriorityWithManageHealthDataPermission(permissionCategory);
+        List<String> newPriorityString =
+                newPriority.getDataOriginsPriorityOrder().stream()
+                        .map(DataOrigin::getPackageName)
+                        .toList();
+        assertThat(newPriorityString.size()).isEqualTo(1);
+        assertThat(newPriorityString.get(0)).isEqualTo(packageName);
+    }
+
+    /** Inserts a record that does not support aggregation to enable the priority list. */
+    public static void insertRecordsForPriority(String packageName) throws InterruptedException {
+        // Insert records that do not support aggregation so that the AppInfoTable is initialised
+        MenstruationPeriodRecord recordToInsert =
+                new MenstruationPeriodRecord.Builder(
+                                new Metadata.Builder()
+                                        .setDataOrigin(
+                                                new DataOrigin.Builder()
+                                                        .setPackageName(packageName)
+                                                        .build())
+                                        .build(),
+                                Instant.now(),
+                                Instant.now().plusMillis(1000))
+                        .build();
+        insertRecords(Arrays.asList(recordToInsert));
+    }
+
+    /**
+     * Updates the priority list for this permissionCategory by granting one write permission to the
+     * packageNames.
+     */
+    public static void updatePriorityViaPermissionsApi(int permissionCategory, String packageName) {
+        String permissionToGrant;
+        if (permissionCategory == ACTIVITY) {
+            permissionToGrant = HealthPermissions.WRITE_STEPS;
+        } else if (permissionCategory == BODY_MEASUREMENTS) {
+            permissionToGrant = HealthPermissions.WRITE_HEIGHT;
+        } else if (permissionCategory == CYCLE_TRACKING) {
+            permissionToGrant = HealthPermissions.WRITE_MENSTRUATION;
+        } else if (permissionCategory == NUTRITION) {
+            permissionToGrant = HealthPermissions.WRITE_NUTRITION;
+        } else if (permissionCategory == SLEEP) {
+            permissionToGrant = HealthPermissions.WRITE_SLEEP;
+        } else {
+            permissionToGrant = HealthPermissions.WRITE_HEART_RATE;
+        }
+        grantPermission(packageName, permissionToGrant);
+    }
+
+    /** Grants permission via the Health Connect API. */
+    public static void grantPermission(String pkgName, String permission) {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        runWithShellPermissionIdentity(
+                () ->
+                        service.getClass()
+                                .getMethod("grantHealthPermission", String.class, String.class)
+                                .invoke(service, pkgName, permission),
+                MANAGE_HEALTH_PERMISSIONS);
+    }
+
+    /** Gets MANAGE_HEALTH_DATA permission and then gets the priority list. */
+    public static FetchDataOriginsPriorityOrderResponse getPriorityWithManageHealthDataPermission(
+            int permissionCategory) throws InterruptedException {
+        UiAutomation uiAutomation =
+                androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+                        .getUiAutomation();
+
+        uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
+        FetchDataOriginsPriorityOrderResponse response;
+
+        try {
+            response = getPriority(permissionCategory);
+        } finally {
+            uiAutomation.dropShellPermissionIdentity();
+        }
+
+        return response;
+    }
+
+    /**
+     * Gets the priority list.
+     *
+     * <p>Fails if a caller doesn't have the MANAGE_HEALTH_DATA permission.
+     */
+    public static FetchDataOriginsPriorityOrderResponse getPriority(int permissionCategory)
+            throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        HealthConnectManager service = context.getSystemService(HealthConnectManager.class);
+        assertThat(service).isNotNull();
+
+        AtomicReference<FetchDataOriginsPriorityOrderResponse> response = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<HealthConnectException> healthConnectExceptionAtomicReference =
+                new AtomicReference<>();
+        service.fetchDataOriginsPriorityOrder(
+                permissionCategory,
+                Executors.newSingleThreadExecutor(),
+                new OutcomeReceiver<>() {
+                    @Override
+                    public void onResult(FetchDataOriginsPriorityOrderResponse result) {
+                        response.set(result);
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(HealthConnectException exception) {
+                        healthConnectExceptionAtomicReference.set(exception);
+                        latch.countDown();
+                    }
+                });
+        assertThat(latch.await(3, TimeUnit.SECONDS)).isTrue();
+        if (healthConnectExceptionAtomicReference.get() != null) {
+            throw healthConnectExceptionAtomicReference.get();
+        }
+
+        return response.get();
     }
 
     static final class RecordAndIdentifier {
