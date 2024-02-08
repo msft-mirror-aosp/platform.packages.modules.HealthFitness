@@ -29,6 +29,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -72,6 +73,7 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class WeightRecordTest {
     private static final String TAG = "WeightRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
     public void setUp() {
@@ -208,6 +210,7 @@ public class WeightRecordTest {
 
     @Test
     public void testAggregation_weight() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
         Context context = ApplicationProvider.getApplicationContext();
         List<Record> records =
                 Arrays.asList(
@@ -536,6 +539,7 @@ public class WeightRecordTest {
     }
 
     void testAggregatePeriodForZoneOffset(ZoneOffset offset) throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, offset);
         insertThreeWeightRecordsWithZoneOffset(endTime, offset);
@@ -580,6 +584,7 @@ public class WeightRecordTest {
 
     private void testDurationLocalTimeAggregationZoneOffset(ZoneOffset offset)
             throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
         Instant endTime = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTime, offset);
         insertThreeWeightRecordsWithZoneOffset(endTime, offset);
@@ -621,6 +626,7 @@ public class WeightRecordTest {
 
     @Test
     public void testAggregateLocalFilter_minOffsetRecord() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
         LocalDateTime endTimeLocal = LocalDateTime.now(ZoneOffset.UTC);
         Instant endTimeInstant = Instant.now();
 
@@ -667,6 +673,7 @@ public class WeightRecordTest {
     }
 
     private void testOffset(ZoneOffset offset) throws InterruptedException {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
         Instant endTimeInstant = Instant.now();
         LocalDateTime endTimeLocal = LocalDateTime.ofInstant(endTimeInstant, offset);
 
@@ -707,6 +714,7 @@ public class WeightRecordTest {
 
     @Test
     public void testAggregateLocalFilter_daysPeriod() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
         LocalDateTime endTimeLocal = LocalDateTime.now(ZoneOffset.UTC);
         Instant endTimeInstant = Instant.now();
         TestUtils.insertRecords(

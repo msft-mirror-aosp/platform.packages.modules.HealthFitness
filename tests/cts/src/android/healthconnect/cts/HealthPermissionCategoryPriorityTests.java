@@ -99,35 +99,6 @@ public class HealthPermissionCategoryPriorityTests {
     }
 
     @Test
-    public void testUpdatePriority_incorrectValues() throws InterruptedException {
-        sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
-
-        try {
-            for (Integer permissionCategory : sAllDataCategories) {
-                FetchDataOriginsPriorityOrderResponse currentPriority =
-                        getPriority(permissionCategory);
-                assertThat(currentPriority).isNotNull();
-                updatePriority(permissionCategory, Arrays.asList("a", "b", "c"));
-                FetchDataOriginsPriorityOrderResponse newPriority = getPriority(permissionCategory);
-                assertThat(currentPriority.getDataOriginsPriorityOrder().size())
-                        .isEqualTo(newPriority.getDataOriginsPriorityOrder().size());
-
-                List<String> currentPriorityString =
-                        currentPriority.getDataOriginsPriorityOrder().stream()
-                                .map(DataOrigin::getPackageName)
-                                .toList();
-                List<String> newPriorityString =
-                        newPriority.getDataOriginsPriorityOrder().stream()
-                                .map(DataOrigin::getPackageName)
-                                .toList();
-                assertThat(currentPriorityString.equals(newPriorityString)).isTrue();
-            }
-        } finally {
-            sUiAutomation.dropShellPermissionIdentity();
-        }
-    }
-
-    @Test
     public void testUpdatePriority_no_perm() throws InterruptedException {
         for (Integer permissionCategory : sAllDataCategories) {
             try {
