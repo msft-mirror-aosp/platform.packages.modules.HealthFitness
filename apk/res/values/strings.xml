@@ -365,6 +365,7 @@
     <string name="connected_apps_text" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Control which apps can access data stored in Health&#160;Connect. Tap an app to review the data it can read or write.</string>
     <string name="connected_apps_section_title" description="Title of section containing all the connected apps [CHAR_LIMIT=40]">Allowed access</string>
     <string name="not_connected_apps_section_title" description="Title of section containing all the not-connected apps [CHAR_LIMIT=40]">Not allowed access</string>
+    <string name="needs_updating_apps_section_title" description="Title of section containing all the apps that need updating in order to work with Health Connect [CHAR_LIMIT=40]">Needs updating</string>
     <string name="settings_and_help_header" description="Title shown for the section of settings and help [CHAR_LIMIT=70]">Settings &amp; help</string>
     <string name="disconnect_all_apps" description="Button text for removing access to health and fitness data for all apps [CHAR_LIMIT=40]">Remove access for all apps</string>
     <string name="manage_permissions_read_header" description="Header for list of permissions an app is allowed read access to [CHAR_LIMIT=40]">Allowed to read</string>
@@ -1062,9 +1063,10 @@
 
     <!-- region App update needed banner -->
     <string name="app_update_needed_banner_title" description="Title of banner prompting the user to update an app which is not currently working on this Android version.">App update needed</string>
-    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be up-to-date in order to keep working with Health&#160;Connect</string>
-    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be up-to-date in order to keep working with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be updated to continue syncing with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be updated to continue syncing with Health&#160;Connect</string>
     <string name="app_update_needed_banner_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Check for updates</string>
+    <string name="app_update_needed_banner_learn_more_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Learn more</string>
     <!--  endregion -->
 
     <!-- region Migration pending permissions dialog -->
