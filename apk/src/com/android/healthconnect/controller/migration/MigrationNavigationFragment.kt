@@ -7,6 +7,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,7 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPreference =
-            requireActivity().getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+            requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
 
         migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
             when (migrationState) {
@@ -63,7 +64,6 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
             }
             MigrationState.COMPLETE_IDLE,
             MigrationState.COMPLETE -> {
-                markMigrationComplete()
                 navigateToHomeFragment()
             }
             else -> {
@@ -94,12 +94,5 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
 
     private fun navigateToHomeFragment() {
         navigationUtils.navigate(this, R.id.action_migrationNavigationFragment_to_homeFragment)
-    }
-
-    private fun markMigrationComplete() {
-        sharedPreference.edit().apply {
-            putBoolean(MigrationActivity.MIGRATION_COMPLETE_KEY, true)
-            apply()
-        }
     }
 }

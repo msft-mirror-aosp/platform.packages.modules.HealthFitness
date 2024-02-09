@@ -158,8 +158,6 @@ public class HealthPermissionCategory {
 
     /**
      * Permission category for {SkinTemperature}
-     *
-     * @hide
      */
     @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
     public static final int SKIN_TEMPERATURE = 39;

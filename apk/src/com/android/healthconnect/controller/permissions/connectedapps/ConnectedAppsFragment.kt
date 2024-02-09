@@ -37,11 +37,12 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
-import com.android.healthconnect.controller.migration.AppUpdateRequiredFragment
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.APP_INTEGRATION_REQUEST_BUCKET_ID
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
+import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_BANNER_SEEN
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -81,7 +82,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         private const val NEED_UPDATE_APPS = "need_update_apps"
         private const val THINGS_TO_TRY = "things_to_try_app_permissions_screen"
         private const val SETTINGS_AND_HELP = "settings_and_help"
-        private const val APP_UPDATE_NEEDED_BANNER_SEEN = "app_update_banner_seen"
         private const val BANNER_PREFERENCE_KEY = "banner_preference"
     }
 
@@ -280,12 +280,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         } else {
             mNeedUpdateAppsCategory?.isVisible = true
             appsList.forEach { app ->
-                val packageName =
-                    getString(
-                        resources.getIdentifier(
-                            AppUpdateRequiredFragment.HC_PACKAGE_NAME_CONFIG_NAME, null, null))
-
-                val intent = appStoreUtils.getAppStoreLink(packageName)
+                val intent = appStoreUtils.getAppStoreLink(app.appMetadata.packageName)
                 if (intent == null) {
                     mNeedUpdateAppsCategory?.addPreference(
                         getAppPreference(app).also { it.isSelectable = false })
@@ -296,8 +291,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             }
 
             val sharedPreference =
-                requireActivity()
-                    .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
             val bannerSeen = sharedPreference.getBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, false)
 
             if (!bannerSeen) {
@@ -425,8 +419,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         }
     }
 
-    // TODO (b/275602235) Use this banner to indicate one or more apps need updating to work with
-    // Android U
     private fun getAppUpdateNeededBanner(appsList: List<ConnectedAppMetadata>): BannerPreference {
         return BannerPreference(requireContext()).also { banner ->
             banner.setPrimaryButton(resources.getString(R.string.app_update_needed_banner_button))
@@ -463,7 +455,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             banner.setDismissAction {
                 val sharedPreference =
                     requireActivity()
-                        .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                        .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
                 sharedPreference.edit().apply {
                     putBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, true)
                     apply()

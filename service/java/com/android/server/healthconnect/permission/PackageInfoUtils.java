@@ -29,8 +29,6 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 
-import com.android.internal.annotations.VisibleForTesting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +60,6 @@ public class PackageInfoUtils {
         }
 
         return sPackageInfoUtils;
-    }
-
-    @VisibleForTesting
-    public static synchronized void setInstanceForTest(PackageInfoUtils instance) {
-        sPackageInfoUtils = instance;
     }
 
     @NonNull
