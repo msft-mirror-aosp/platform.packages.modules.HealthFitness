@@ -22,14 +22,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.shared.Constants.ONBOARDING_SHOWN_PREF_KEY
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.OnboardingElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -39,8 +39,6 @@ class OnboardingActivity : Hilt_OnboardingActivity() {
 
     /** Companion object for OnboardingActivity. */
     companion object {
-        @VisibleForTesting const val USER_ACTIVITY_TRACKER = "USER_ACTIVITY_TRACKER"
-        @VisibleForTesting const val ONBOARDING_SHOWN_PREF_KEY = "ONBOARDING_SHOWN_PREF_KEY"
         private const val TARGET_ACTIVITY_INTENT = "ONBOARDING_TARGET_ACTIVITY_INTENT"
 
         fun shouldRedirectToOnboardingActivity(activity: Activity): Boolean {

@@ -39,7 +39,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME

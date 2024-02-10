@@ -38,6 +38,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.Instant
 import java.time.ZoneId
 import java.util.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,12 +53,19 @@ class RecentAccessFragmentTest {
     val viewModel: RecentAccessViewModel = Mockito.mock(RecentAccessViewModel::class.java)
     private lateinit var context: Context
 
+    @BindValue val timeSource = TestTimeSource
+
     @Before
     fun setup() {
         hiltRule.inject()
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.US)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+    }
+
+    @After
+    fun teardown() {
+        timeSource.reset()
     }
 
     @Test
@@ -91,6 +99,8 @@ class RecentAccessFragmentTest {
                     mutableSetOf(
                         HealthDataCategory.ACTIVITY.uppercaseTitle(),
                         HealthDataCategory.VITALS.uppercaseTitle()))
+
+        timeSource.setIs24Hour(true)
 
         whenever(viewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(
@@ -155,5 +165,36 @@ class RecentAccessFragmentTest {
         onView(withText(TEST_APP_NAME_2)).perform(click())
 
         onView(withText(TEST_APP_NAME_2)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun test_RecentAccessFragment_display12HourFormatCorrectly() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+
+        timeSource.setIs24Hour(false)
+
+        whenever(viewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+
+        launchFragment<RecentAccessFragment>(Bundle())
+        onView(withText("Today")).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText("6:40 PM")).check(matches(isDisplayed()))
+        onView(withText("Read: Nutrition, Sleep")).check(matches(isDisplayed()))
+        onView(withText("Write: Activity, Vitals")).check(matches(isDisplayed()))
     }
 }

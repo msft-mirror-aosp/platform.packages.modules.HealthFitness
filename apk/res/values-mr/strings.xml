@@ -96,8 +96,7 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"व्यायामाचा मार्ग"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"व्यायामाचा मार्ग लिहा"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"व्यायामाशी संबंधित मार्ग रीड करा"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"व्यायामाचे मार्ग रीड करा"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"अंतराशी संबंधित डेटा"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"अंतराशी संबंधित डेटा"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"अंतराशी संबंधित डेटा रीड करा"</string>
@@ -269,6 +268,8 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"कोणती अ‍ॅप्स Health Connect मध्‍ये स्टोअर केलेला डेटा अ‍ॅक्सेस करू शकतात ते नियंत्रित करा. अ‍ॅप रीड किंवा राइट करू शकेल अशा डेटाचे पुनरावलोकन करण्यासाठी ॲपवर टॅप करा."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"अ‍ॅक्सेसला अनुमती दिलेली आहे"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"अ‍ॅक्सेसला अनुमती दिलेली नाही"</string>
+    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
+    <skip />
     <string name="settings_and_help_header" msgid="5749710693017621168">"सेटिंग्ज आणि मदत"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"सर्व अ‍ॅप्सचा अ‍ॅक्सेस काढून टाका"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"रीड करण्याची अनुमती आहे"</string>
@@ -716,8 +717,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"खाली हलवा"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"सर्वात वरती हलवा"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"तळाशी हलवा"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"प्राधान्य सूचीमध्ये <xliff:g id="SELECTED_APP">%s</xliff:g> ड्रॅग करण्याचे आणि पुन्हा क्रमाने लावण्याचे बटण"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"प्राधान्य सूचीमधून <xliff:g id="SELECTED_APP">%s</xliff:g> काढून टाकण्यासाठीचे बटण"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"परत क्रमाने लावण्यासाठी दोनदा टॅप करून ड्रॅग करा"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"फिटनेस, स्वास्थ्य"</string>
@@ -736,12 +736,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"फक्त तुम्ही तुमच्या व्यायामाचे मार्ग अ‍ॅक्सेस करण्याची अनुमती दिलेली अ‍ॅप्स"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"मला अ‍ॅक्सेस कसा व्यवस्थापित करता येईल?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"तुम्ही Health Connect सेटिंग्जमध्ये व्यायामाच्या मार्गांसाठी अ‍ॅप अ‍ॅक्सेस व्यवस्थापित करू शकता"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"या मार्गाला अनुमती द्या"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"सर्व मार्गांना अनुमती द्या"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"अनुमती देऊ नका"</string>
     <string name="back_button" msgid="780519527385993407">"मागे जा"</string>
     <string name="loading" msgid="2526615755685950317">"लोड करत आहे…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"इंटिग्रेशन प्रगतीपथावर आहे"</string>
@@ -777,9 +774,13 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect चे इंटिग्रेशन पुन्हा सुरू करा"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"तुमचा डेटा ठेवण्यासाठी, ही <xliff:g id="TIME_NEEDED">%1$s</xliff:g> मध्ये पूर्ण करा"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"अ‍ॅप अपडेट करणे आवश्यक आहे"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect सह काम करत राहण्यासाठी <xliff:g id="APP_NAME">%1$s</xliff:g> अप-टू-डेट असणे आवश्यक आहे"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect सह काम करत राहण्यासाठी काही ॲप्स अप-टू-डेट असणे आवश्यक आहे"</string>
+    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
+    <skip />
+    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
+    <skip />
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"अपडेट तपासा"</string>
+    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
+    <skip />
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect चे इंटिग्रेशन"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect हे तुमच्या Android सिस्टीमसह इंटिग्रेट केले जाण्यासाठी तयार आहे. तुम्ही <xliff:g id="APP_NAME">%1$s</xliff:g> ला ॲक्सेस दिल्यास, इंटिग्रेशन पूर्ण होईपर्यंत काही वैशिष्ट्ये काम करणार नाहीत."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect हे तुमच्या Android सिस्टीमसह इंटिग्रेट केले जाण्यासाठी तयार आहे. तुम्ही आता अ‍ॅप्सना ॲक्सेस दिल्यास, इंटिग्रेशन पूर्ण होईपर्यंत काही वैशिष्ट्ये काम करणार नाहीत."</string>

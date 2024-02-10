@@ -268,6 +268,8 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Bepaal welke apps toegang hebben tot gegevens die zijn opgeslagen in Health Connect. Tik op een app om de gegevens te bekijken die de app kan lezen of schrijven."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Toegang toegestaan"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Toegang niet toegestaan"</string>
+    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
+    <skip />
     <string name="settings_and_help_header" msgid="5749710693017621168">"Instellingen en hulp"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Toegang verwijderen voor alle apps"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Toestemming om te lezen"</string>
@@ -772,9 +774,13 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Integratie van Health Connect hervatten"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Als je je gegevens wilt behouden, moet je dit binnen <xliff:g id="TIME_NEEDED">%1$s</xliff:g> afronden."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"App-update nodig"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> moet worden geüpdatet om te blijven werken met Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Sommige apps moeten worden geüpdatet om te blijven werken met Health Connect"</string>
+    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
+    <skip />
+    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
+    <skip />
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Checken op updates"</string>
+    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
+    <skip />
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-integratie"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect is klaar voor integratie met je Android-systeem. Als je <xliff:g id="APP_NAME">%1$s</xliff:g> nu toegang geeft, werken sommige functies misschien pas nadat de integratie is afgerond."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect is klaar voor integratie met je Android-systeem. Als je apps nu toegang geeft, werken sommige functies misschien pas nadat de integratie is afgerond."</string>
