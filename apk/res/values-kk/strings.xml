@@ -269,6 +269,8 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect қолданбасында сақталған деректерді қандай қолданбалардың пайдалана алатынын таңдай аласыз. Қолданба оқи немесе жаза алатын деректерді көру үшін оны түртіңіз."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Рұқсат берілгендер"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Рұқсат берілмегендер"</string>
+    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
+    <skip />
     <string name="settings_and_help_header" msgid="5749710693017621168">"Параметрлер және анықтама"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Барлық қолданбаның рұқсатын өшіру"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Оқуға рұқсаты бар"</string>
@@ -777,9 +779,13 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect-ті біріктіру процесін жалғастырыңыз"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Деректерді сақтап қалу үшін процесті <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ішінде аяқтаңыз."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Қолданбаның жаңа нұсқасын орнату қажет"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect-пен жұмыс істей беруі үшін <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасының ең жаңа нұсқасын орнату қажет."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect-пен жұмыс істей беруі үшін кейбір қолданбалардың ең жаңа нұсқасын орнату қажет."</string>
+    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
+    <skip />
+    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
+    <skip />
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Жаңартулардың бар-жоғын тексеру"</string>
+    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
+    <skip />
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-ті біріктіру"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect қолданбасы Android жүйесімен біріктіруге дайын. <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына қазір пайдалану рұқсатын берсеңіз, кейбір функциялар біріктіру процесі аяқталғанша істемей тұруы мүмкін."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect қолданбасы Android жүйесімен біріктіруге дайын. Қолданбаларға қазір пайдалану рұқсатын берсеңіз, кейбір функциялар біріктіру процесі аяқталғанша істемей тұруы мүмкін."</string>

@@ -268,6 +268,8 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"ヘルスコネクトに保存されているデータにアクセスできるアプリの管理を行えます。アプリをタップすると、そのアプリが読み取り / 書き込みを行えるデータが表示されます。"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"アクセスが許可されているアプリ"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"アクセスが許可されていないアプリ"</string>
+    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
+    <skip />
     <string name="settings_and_help_header" msgid="5749710693017621168">"設定とヘルプ"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"すべてのアプリに対してアクセス権を削除する"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"読み取りの許可"</string>
@@ -772,9 +774,13 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"ヘルスコネクトの統合を再開してください"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"データを保持するため、<xliff:g id="TIME_NEEDED">%1$s</xliff:g>以内に統合を完了してください。"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"アプリの更新が必要です"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"ヘルスコネクトと引き続き連携するには <xliff:g id="APP_NAME">%1$s</xliff:g> を更新する必要があります"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"ヘルスコネクトと引き続き連携するには更新が必要なアプリがあります"</string>
+    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
+    <skip />
+    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
+    <skip />
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"アップデートを確認"</string>
+    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
+    <skip />
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"ヘルスコネクトの統合"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"ヘルスコネクトを Android システムと統合する準備ができました。<xliff:g id="APP_NAME">%1$s</xliff:g> に今すぐアクセス権を付与しても、統合が完了するまで一部の機能が動作しないことがあります。"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"ヘルスコネクトを Android システムと統合する準備ができました。アプリに今すぐアクセス権を付与しても、統合が完了するまで一部の機能が動作しないことがあります。"</string>

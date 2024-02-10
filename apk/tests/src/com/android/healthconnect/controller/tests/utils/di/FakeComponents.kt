@@ -38,11 +38,13 @@ import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListU
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.shared.app.IGetContributorAppInfoUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import java.time.Instant
 import java.time.LocalDate
@@ -388,5 +390,38 @@ class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUse
         lastDateWithPriorityDataMap.clear()
         exceptionMessage = ""
         forceFail = false
+    }
+}
+
+class FakeGetContributorAppInfoUseCase : IGetContributorAppInfoUseCase {
+
+    private var appInfoMap: Map<String, AppMetadata> = emptyMap()
+
+    fun setAppInfo(appInfoMap: Map<String, AppMetadata>) {
+        this.appInfoMap = appInfoMap
+    }
+
+    override suspend fun invoke(): Map<String, AppMetadata> {
+        return appInfoMap
+    }
+
+    fun reset() {
+        this.appInfoMap = emptyMap()
+    }
+}
+
+class FakeQueryRecentAccessLogsUseCase : IQueryRecentAccessLogsUseCase {
+    private var recentAccessMap: Map<String, Instant> = emptyMap()
+
+    fun recentAccessMap(recentAccessMap: Map<String, Instant>) {
+        this.recentAccessMap = recentAccessMap
+    }
+
+    override suspend fun invoke(): Map<String, Instant> {
+        return recentAccessMap
+    }
+
+    fun reset() {
+        this.recentAccessMap = emptyMap()
     }
 }

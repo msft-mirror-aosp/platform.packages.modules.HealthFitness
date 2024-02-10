@@ -29,12 +29,17 @@ class BannerPreference constructor(context: Context) : Preference(context) {
     private lateinit var bannerIcon: ImageView
     private lateinit var bannerTitle: TextView
     private lateinit var bannerMessage: TextView
-    private lateinit var bannerButton: Button
+    private lateinit var bannerPrimaryButton: Button
+    private lateinit var bannerSecondaryButton: Button
 
     private var dismissButton: ImageView? = null
 
-    private var buttonText: String? = null
-    private var buttonAction: OnClickListener? = null
+    private var buttonPrimaryText: String? = null
+    private var buttonPrimaryAction: OnClickListener? = null
+    private var buttonSecondaryText: String? = null
+    private var buttonSecondaryAction: OnClickListener? = null
+    private var buttonPrimaryVisibility = View.VISIBLE
+    private var buttonSecondaryVisibility = View.VISIBLE
     private var isDismissable = false
     private var dismissAction: OnClickListener? = null
 
@@ -43,12 +48,28 @@ class BannerPreference constructor(context: Context) : Preference(context) {
         isSelectable = false
     }
 
-    fun setButton(buttonText: String) {
-        this.buttonText = buttonText
+    fun setPrimaryButton(buttonText: String) {
+        this.buttonPrimaryText = buttonText
     }
 
-    fun setButtonOnClickListener(onClickListener: OnClickListener?) {
-        this.buttonAction = onClickListener
+    fun setPrimaryButtonOnClickListener(onClickListener: OnClickListener?) {
+        this.buttonPrimaryAction = onClickListener
+    }
+
+    fun setPrimaryButtonVisibility(visibility: Int) {
+        this.buttonPrimaryVisibility = visibility
+    }
+
+    fun setSecondaryButton(buttonText: String) {
+        this.buttonSecondaryText = buttonText
+    }
+
+    fun setSecondaryButtonOnClickListener(onClickListener: OnClickListener?) {
+        this.buttonSecondaryAction = onClickListener
+    }
+
+    fun setSecondaryButtonVisibility(visibility: Int) {
+        this.buttonSecondaryVisibility = visibility
     }
 
     fun setIsDismissable(isDismissable: Boolean) {
@@ -64,18 +85,28 @@ class BannerPreference constructor(context: Context) : Preference(context) {
         bannerIcon = holder.findViewById(R.id.banner_icon) as ImageView
         bannerTitle = holder.findViewById(R.id.banner_title) as TextView
         bannerMessage = holder.findViewById(R.id.banner_message) as TextView
-        bannerButton = holder.findViewById(R.id.banner_button) as Button
+        bannerPrimaryButton = holder.findViewById(R.id.banner_primary_button) as Button
+        bannerSecondaryButton = holder.findViewById(R.id.banner_secondary_button) as Button
 
         bannerTitle.text = title
         bannerMessage.text = summary
         bannerIcon.background = icon
 
         // set button text and visibility
-        buttonText?.let {
-            bannerButton.text = it
-            bannerButton.visibility = View.VISIBLE
-            bannerButton.setOnClickListener(buttonAction)
+        buttonPrimaryText?.let {
+            bannerPrimaryButton.text = it
+            bannerPrimaryButton.visibility = View.VISIBLE
+            bannerPrimaryButton.setOnClickListener(buttonPrimaryAction)
         }
+
+        buttonSecondaryText?.let {
+            bannerSecondaryButton.text = it
+            bannerSecondaryButton.visibility = View.VISIBLE
+            bannerSecondaryButton.setOnClickListener(buttonSecondaryAction)
+        }
+
+        bannerPrimaryButton.visibility = buttonPrimaryVisibility
+        bannerSecondaryButton.visibility = buttonSecondaryVisibility
 
         if (isDismissable) {
             dismissButton = holder.findViewById(R.id.dismiss_button) as ImageView

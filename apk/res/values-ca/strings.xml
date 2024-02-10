@@ -268,6 +268,8 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Controla quines aplicacions poden accedir a les dades emmagatzemades a Salut connectada. Toca una aplicació per consultar quines dades pot llegir o escriure."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Accés permès"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Accés no permès"</string>
+    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
+    <skip />
     <string name="settings_and_help_header" msgid="5749710693017621168">"Configuració i ajuda"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Suprimeix l\'accés a totes les apps"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Amb permís de lectura"</string>
@@ -772,9 +774,13 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reprèn la integració de Salut connectada"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Per conservar les teves dades, completa la integració en <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Cal actualitzar l\'aplicació"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"L\'aplicació <xliff:g id="APP_NAME">%1$s</xliff:g> ha d\'estar actualitzada per seguir funcionant amb Salut connectada"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Algunes aplicacions han d\'estar actualitzades per seguir funcionant amb Salut connectada"</string>
+    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
+    <skip />
+    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
+    <skip />
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Cerca actualitzacions"</string>
+    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
+    <skip />
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integració de Salut connectada"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Salut connectada està a punt per integrar-se amb el sistema Android. Si ara dones accés a <xliff:g id="APP_NAME">%1$s</xliff:g>, és possible que algunes funcions no funcionin fins que es completi la integració."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Salut connectada està a punt per integrar-se amb el sistema Android. Si ara dones accés a les aplicacions, és possible que algunes funcions no funcionin fins que es completi la integració."</string>

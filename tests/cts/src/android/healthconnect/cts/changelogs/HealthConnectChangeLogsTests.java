@@ -24,6 +24,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.RecordIdFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
@@ -178,29 +179,51 @@ public class HealthConnectChangeLogsTests {
     }
 
     @Test
-    public void testChangeLogs_insertAndDelete_default() throws InterruptedException {
+    public void testChangeLogs_insertAndDeleteDataById_returnsDeleteChangeLogOnly()
+            throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
                 TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
         ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
+        assertThat(response.getUpsertedRecords()).isEmpty();
 
-        List<Record> testRecord = getTestRecords();
-        TestUtils.insertRecords(testRecord);
-        TestUtils.deleteRecords(testRecord);
+        List<Record> testRecords = TestUtils.insertRecords(getTestRecords());
+        TestUtils.deleteRecords(testRecords);
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
-        assertThat(response.getDeletedLogs().size()).isEqualTo(testRecord.size());
+        assertThat(response.getUpsertedRecords()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecords.size());
         List<ChangeLogsResponse.DeletedLog> deletedLogs = response.getDeletedLogs();
-        ChangeLogsResponse.DeletedLog deletedLog =
-                new ChangeLogsResponse.DeletedLog("abc", Instant.now().toEpochMilli());
-        assertThat(deletedLogs).doesNotContain(deletedLog);
-        for (ChangeLogsResponse.DeletedLog log : deletedLogs) {
-            assertThat(log.getDeletedRecordId()).isNotNull();
-            assertThat(log.getDeletedTime()).isNotNull();
-            assertThat(log.getDeletedRecordId()).isNotEqualTo(deletedLog.getDeletedRecordId());
-        }
+
+        List<String> deletedLogIds =
+                deletedLogs.stream()
+                        .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                        .toList();
+        List<String> testRecordIds =
+                testRecords.stream().map(record -> record.getMetadata().getId()).toList();
+
+        assertThat(deletedLogIds).containsExactlyElementsIn(testRecordIds);
+    }
+
+    @Test
+    public void testChangeLogs_insertAndDeleteByClientId_returnsDeleteChangeLogOnly()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+
+        String insertedRecordId =
+                TestUtils.insertRecordAndGetId(getStepsRecord(/* steps = */ 10, "stepsId"));
+        TestUtils.deleteRecordsByIdFilter(
+                Collections.singletonList(
+                        RecordIdFilter.fromClientRecordId(StepsRecord.class, "stepsId")));
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+
+        assertThat(response.getUpsertedRecords()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(1);
+        String deletedRecordId = response.getDeletedLogs().get(0).getDeletedRecordId();
+        assertThat(deletedRecordId).isEqualTo(insertedRecordId);
     }
 
     @Test
@@ -310,6 +333,109 @@ public class HealthConnectChangeLogsTests {
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void testChangeLogs_insertAndUpdateById_returnsUpdateChangeLogOnly()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+
+        Metadata insertedRecordMetadata =
+                TestUtils.insertRecords(
+                                Collections.singletonList(
+                                        getStepsRecord(
+                                                /* steps = */ 10, new Metadata.Builder().build())))
+                        .get(0)
+                        .getMetadata();
+        assertThat(insertedRecordMetadata.getClientRecordId()).isNull();
+        TestUtils.updateRecords(
+                Collections.singletonList(
+                        getStepsRecord(/* steps = */ 123, insertedRecordMetadata)));
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+
+        assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
+        StepsRecord upsertedStepsRecord = (StepsRecord) response.getUpsertedRecords().get(0);
+        assertThat(upsertedStepsRecord.getMetadata().getId())
+                .isEqualTo(insertedRecordMetadata.getId());
+        assertThat(upsertedStepsRecord.getCount()).isEqualTo(123);
+        assertThat(response.getDeletedLogs().size()).isEqualTo(0);
+    }
+
+    @Test
+    public void testChangeLogs_insertAndUpdateByClientId_returnsUpdateChangeLogOnly()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+
+        TestUtils.insertRecords(
+                Collections.singletonList(getStepsRecord(/* steps = */ 10, "stepsId")));
+        TestUtils.updateRecords(
+                Collections.singletonList(getStepsRecord(/* steps = */ 123, "stepsId")));
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+
+        assertThat(response.getUpsertedRecords()).hasSize(1);
+        StepsRecord upsertedStepsRecord = (StepsRecord) response.getUpsertedRecords().get(0);
+        assertThat(upsertedStepsRecord.getMetadata().getClientRecordId()).isEqualTo("stepsId");
+        assertThat(upsertedStepsRecord.getCount()).isEqualTo(123);
+        assertThat(response.getDeletedLogs()).isEmpty();
+    }
+
+    @Test
+    public void testChangeLogs_insertUpdateAndDeleteById_returnsDeleteChangeLogOnly()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+
+        Metadata insertedRecordMetadata =
+                TestUtils.insertRecords(
+                                Collections.singletonList(
+                                        getStepsRecord(
+                                                /* steps = */ 10, new Metadata.Builder().build())))
+                        .get(0)
+                        .getMetadata();
+        assertThat(insertedRecordMetadata.getClientRecordId()).isNull();
+        TestUtils.updateRecords(
+                Collections.singletonList(
+                        getStepsRecord(/* steps = */ 123, insertedRecordMetadata)));
+        TestUtils.deleteRecords(
+                Collections.singletonList(
+                        getStepsRecord(/* steps = */ 123, insertedRecordMetadata)));
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+
+        assertThat(response.getUpsertedRecords()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(1);
+        String deletedRecordId = response.getDeletedLogs().get(0).getDeletedRecordId();
+        assertThat(deletedRecordId).isEqualTo(insertedRecordMetadata.getId());
+    }
+
+    @Test
+    public void testChangeLogs_insertUpdateAndDeleteByClientId_returnsDeleteChangeLogOnly()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+        ChangeLogsRequest changeLogsRequest =
+                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
+
+        String insertedRecordId =
+                TestUtils.insertRecordAndGetId(getStepsRecord(/* steps = */ 10, "stepsId"));
+        TestUtils.updateRecords(
+                Collections.singletonList(getStepsRecord(/* steps = */ 123, "stepsId")));
+        TestUtils.deleteRecordsByIdFilter(
+                Collections.singletonList(
+                        RecordIdFilter.fromClientRecordId(StepsRecord.class, "stepsId")));
+        ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
+
+        assertThat(response.getUpsertedRecords()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(1);
+        String deletedRecordId = response.getDeletedLogs().get(0).getDeletedRecordId();
+        assertThat(deletedRecordId).isEqualTo(insertedRecordId);
     }
 
     @Test

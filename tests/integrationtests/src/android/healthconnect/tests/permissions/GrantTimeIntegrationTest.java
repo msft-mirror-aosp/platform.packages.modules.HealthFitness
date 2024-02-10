@@ -145,6 +145,19 @@ public class GrantTimeIntegrationTest {
     }
 
     @Test
+    public void testGrantHealthPermission_notAllPermissionsRevoked_returnsTheSameTime()
+            throws Exception {
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        Instant grantTime = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
+        Instant grantTime2 = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
+        assertThat(grantTime).isEqualTo(grantTime2);
+        revokePermissionWithDelay(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        Instant grantTime3 = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
+        assertThat(grantTime3).isEqualTo(grantTime);
+    }
+
+    @Test
     public void testGrantHealthPermission_permissionGrantedAndRevoked_resetGrantTime()
             throws Exception {
         grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
