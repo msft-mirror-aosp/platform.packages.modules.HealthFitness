@@ -879,8 +879,6 @@
     <!-- region units -->
     <string name="units_cancel" description="Label for button to cancel changing units. [CHAR_LIMIT=20]">Cancel</string>
     <string name="units_title" description="Title on a screen allowing users to go to display units (weight/height/temperature etc) in the app[CHAR_LIMIT=50]">Units</string>
-    <string name="set_units_label" description="Label in the drop down menu, allowing users to go to display units (weight/height/temperature etc) in the app [CHAR_LIMIT=50]">Set data units</string>
-
     <string name="distance_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Distance</string>
     <string name="height_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Height</string>
     <string name="weight_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Weight</string>
@@ -1001,12 +999,6 @@
     <!--  endregion -->
 
     <!-- region Migration -->
-
-    <string name="module_update_needed_seen" description="Label used as key to track if user has seen the Module Update Needed migration screen" translatable="false">Module Update Seen</string>
-    <string name="app_update_needed_seen" description="Label used as key to track if user has seen the App Update Needed migration screen" translatable="false">App Update Seen</string>
-    <string name="whats_new_dialog_seen" description="Label used as key to track if user has seen the What's new migration dialog" translatable="false">Whats New Seen</string>
-    <string name="migration_not_complete_dialog_seen" description="Label used as key to track if user has seen the Migration not complete dialog" translatable="false">Migration Not Complete Seen</string>
-
     <!-- region In progress -->
     <string name="migration_in_progress_screen_title" description="Title of screen shown when migration is in progress">Integration in progress</string>
     <string name="migration_in_progress_screen_integration_details" description="Detail information shown when migration is in progress">Health&#160;Connect is being integrated with the Android system.\n\nIt may take some time while your data and permissions are being transferred.</string>

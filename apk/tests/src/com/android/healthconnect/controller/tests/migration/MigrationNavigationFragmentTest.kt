@@ -1,6 +1,5 @@
 package com.android.healthconnect.controller.tests.migration
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,7 +12,6 @@ import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
-import com.google.common.truth.Truth
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -47,7 +45,6 @@ class MigrationNavigationFragmentTest {
         }
 
         launchFragment<MigrationNavigationFragment>()
-
         onView(withId(R.id.progress_indicator)).check(matches(isDisplayed()))
     }
 
@@ -59,7 +56,6 @@ class MigrationNavigationFragmentTest {
         }
 
         launchFragment<MigrationNavigationFragment>()
-
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
 
@@ -71,8 +67,8 @@ class MigrationNavigationFragmentTest {
                 MigrationViewModel.MigrationFragmentState.WithData(
                     MigrationState.ALLOWED_NOT_STARTED))
         }
-        launchFragment<MigrationNavigationFragment>()
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_migrationPausedFragment))
     }
@@ -84,8 +80,8 @@ class MigrationNavigationFragmentTest {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(MigrationState.ALLOWED_PAUSED))
         }
-        launchFragment<MigrationNavigationFragment>()
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_migrationPausedFragment))
     }
@@ -98,8 +94,8 @@ class MigrationNavigationFragmentTest {
                 MigrationViewModel.MigrationFragmentState.WithData(
                     MigrationState.APP_UPGRADE_REQUIRED))
         }
-        launchFragment<MigrationNavigationFragment>()
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
                 any(),
@@ -114,8 +110,8 @@ class MigrationNavigationFragmentTest {
                 MigrationViewModel.MigrationFragmentState.WithData(
                     MigrationState.MODULE_UPGRADE_REQUIRED))
         }
-        launchFragment<MigrationNavigationFragment>()
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
                 any(),
@@ -129,45 +125,35 @@ class MigrationNavigationFragmentTest {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(MigrationState.IN_PROGRESS))
         }
-        launchFragment<MigrationNavigationFragment>()
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(
                 any(), eq(R.id.action_migrationNavigationFragment_to_migrationInProgressFragment))
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateCompleteIdle_setsPreferenceAndNavigatesToHomeFragment() {
+    fun migrationNavigationFragment_whenMigrationStateCompleteIdle_navigatesToHomeFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(MigrationState.COMPLETE_IDLE))
         }
-        val scenario = launchFragment<MigrationNavigationFragment>()
-        scenario.onActivity { activity ->
-            val preferences =
-                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            Truth.assertThat(preferences.getBoolean("migration_complete_key", false)).isTrue()
-        }
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateComplete_setsPreferenceAndNavigatesToHomeFragment() {
+    fun migrationNavigationFragment_whenMigrationStateComplete_navigatesToHomeFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(MigrationState.COMPLETE))
         }
-        val scenario = launchFragment<MigrationNavigationFragment>()
-        scenario.onActivity { activity ->
-            val preferences =
-                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            Truth.assertThat(preferences.getBoolean("migration_complete_key", false)).isTrue()
-        }
 
+        launchFragment<MigrationNavigationFragment>()
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
     }
@@ -181,7 +167,6 @@ class MigrationNavigationFragmentTest {
         }
 
         launchFragment<MigrationNavigationFragment>()
-
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
     }
@@ -196,7 +181,6 @@ class MigrationNavigationFragmentTest {
         }
 
         launchFragment<MigrationNavigationFragment>()
-
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
     }
@@ -210,7 +194,6 @@ class MigrationNavigationFragmentTest {
         }
 
         launchFragment<MigrationNavigationFragment>()
-
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
     }

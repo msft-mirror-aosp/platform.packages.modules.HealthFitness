@@ -30,8 +30,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.shared.Constants
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger

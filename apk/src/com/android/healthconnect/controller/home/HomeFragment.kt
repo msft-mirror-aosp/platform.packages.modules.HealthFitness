@@ -31,11 +31,13 @@ import com.android.healthconnect.controller.dataentries.formatters.DurationForma
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationState
-import com.android.healthconnect.controller.permissions.shared.Constants
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessPreference
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
+import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.Constants.MIGRATION_NOT_COMPLETE_DIALOG_SEEN
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
@@ -193,10 +195,8 @@ class HomeFragment : Hilt_HomeFragment() {
 
     private fun maybeShowMigrationNotCompleteDialog() {
         val sharedPreference =
-            requireActivity().getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-        val dialogSeen =
-            sharedPreference.getBoolean(
-                getString(R.string.migration_not_complete_dialog_seen), false)
+            requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+        val dialogSeen = sharedPreference.getBoolean(MIGRATION_NOT_COMPLETE_DIALOG_SEEN, false)
 
         if (!dialogSeen) {
             AlertDialogBuilder(this)
@@ -209,7 +209,7 @@ class HomeFragment : Hilt_HomeFragment() {
                         _,
                         _ ->
                         sharedPreference.edit().apply {
-                            putBoolean(getString(R.string.migration_not_complete_dialog_seen), true)
+                            putBoolean(MIGRATION_NOT_COMPLETE_DIALOG_SEEN, true)
                             apply()
                         }
                     }
