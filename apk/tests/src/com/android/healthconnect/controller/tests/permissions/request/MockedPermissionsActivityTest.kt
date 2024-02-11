@@ -58,8 +58,6 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.WithData
 import com.android.healthconnect.controller.migration.api.MigrationState
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.ONBOARDING_SHOWN_PREF_KEY
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.PermissionState
@@ -68,6 +66,7 @@ import com.android.healthconnect.controller.permissions.request.RequestPermissio
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -114,11 +113,7 @@ class MockedPermissionsActivityTest {
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData(WithData(MigrationState.IDLE))
         }
-        val sharedPreference =
-            context.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean(ONBOARDING_SHOWN_PREF_KEY, true)
-        editor.apply()
+        showOnboarding(context, false)
     }
 
     @Test

@@ -23,8 +23,12 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.MigrationPausedFragment.Companion.INTEGRATION_PAUSED_SEEN_KEY
 import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_SEEN
+import com.android.healthconnect.controller.shared.Constants.INTEGRATION_PAUSED_SEEN_KEY
+import com.android.healthconnect.controller.shared.Constants.MODULE_UPDATE_NEEDED_SEEN
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.Constants.WHATS_NEW_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,14 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MigrationActivity : Hilt_MigrationActivity() {
 
     companion object {
-        const val MIGRATION_COMPLETE_KEY = "migration_complete_key"
         const val MIGRATION_ACTIVITY_INTENT = "android.health.connect.action.MIGRATION"
-
-        private fun isMigrationComplete(activity: Activity): Boolean {
-            val sharedPreference =
-                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            return sharedPreference.getBoolean(MIGRATION_COMPLETE_KEY, false)
-        }
 
         fun maybeRedirectToMigrationActivity(
             activity: Activity,
@@ -48,12 +45,10 @@ class MigrationActivity : Hilt_MigrationActivity() {
         ): Boolean {
 
             val sharedPreference =
-                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                activity.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
 
             if (migrationState == MigrationState.MODULE_UPGRADE_REQUIRED) {
-                val moduleUpdateSeen =
-                    sharedPreference.getBoolean(
-                        activity.getString(R.string.module_update_needed_seen), false)
+                val moduleUpdateSeen = sharedPreference.getBoolean(MODULE_UPDATE_NEEDED_SEEN, false)
 
                 if (!moduleUpdateSeen) {
                     activity.startActivity(createMigrationActivityIntent(activity))
@@ -61,9 +56,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
                     return true
                 }
             } else if (migrationState == MigrationState.APP_UPGRADE_REQUIRED) {
-                val appUpdateSeen =
-                    sharedPreference.getBoolean(
-                        activity.getString(R.string.app_update_needed_seen), false)
+                val appUpdateSeen = sharedPreference.getBoolean(APP_UPDATE_NEEDED_SEEN, false)
 
                 if (!appUpdateSeen) {
                     activity.startActivity(createMigrationActivityIntent(activity))
@@ -135,10 +128,8 @@ class MigrationActivity : Hilt_MigrationActivity() {
             negativeButtonAction: DialogInterface.OnClickListener? = null
         ) {
             val sharedPreference =
-                context.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            val dialogSeen =
-                sharedPreference.getBoolean(
-                    context.getString(R.string.whats_new_dialog_seen), false)
+                context.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+            val dialogSeen = sharedPreference.getBoolean(WHATS_NEW_DIALOG_SEEN, false)
 
             if (!dialogSeen) {
                 AlertDialogBuilder(context)
@@ -152,7 +143,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
                             unusedDialogInterface,
                             unusedInt ->
                             sharedPreference.edit().apply {
-                                putBoolean(context.getString(R.string.whats_new_dialog_seen), true)
+                                putBoolean(WHATS_NEW_DIALOG_SEEN, true)
                                 apply()
                             }
                             negativeButtonAction?.onClick(unusedDialogInterface, unusedInt)

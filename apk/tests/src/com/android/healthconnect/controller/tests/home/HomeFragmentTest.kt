@@ -39,6 +39,7 @@ import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
+import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
@@ -47,15 +48,16 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.Mockito
 import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mockito
 
 @HiltAndroidTest
 class HomeFragmentTest {
@@ -74,8 +76,9 @@ class HomeFragmentTest {
     @BindValue
     val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
 
-    @Inject
-    lateinit var fakeFeatureUtils: FeatureUtils
+    @BindValue val timeSource = TestTimeSource
+
+    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @Before
     fun setup() {
@@ -87,6 +90,11 @@ class HomeFragmentTest {
             MutableLiveData(WithData(MigrationState.IDLE))
         }
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
+    }
+
+    @After
+    fun teardown() {
+        timeSource.reset()
     }
 
     @Test
@@ -104,6 +112,8 @@ class HomeFragmentTest {
                     mutableSetOf(
                         HealthDataCategory.SLEEP.uppercaseTitle(),
                         HealthDataCategory.NUTRITION.uppercaseTitle()))
+
+        timeSource.setIs24Hour(true)
 
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
@@ -126,6 +136,40 @@ class HomeFragmentTest {
         onView(withText("Recent access")).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText("18:40")).check(matches(isDisplayed()))
+        onView(withText("See all recent access")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun test_HomeFragment_withRecentAccessApps_in12HourFormat() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                isInactive = false,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+
+        timeSource.setIs24Hour(false)
+
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(listOf<ConnectedAppMetadata>())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        onView(withText("Recent access")).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText("6:40 PM")).check(matches(isDisplayed()))
         onView(withText("See all recent access")).check(matches(isDisplayed()))
     }
 
@@ -175,7 +219,6 @@ class HomeFragmentTest {
         onView(withText("1 app has access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(doesNotExist())
-
     }
 
     @Test
@@ -200,7 +243,6 @@ class HomeFragmentTest {
         onView(withText("1 of 2 apps have access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(doesNotExist())
-
     }
 
     @Test
@@ -211,16 +253,16 @@ class HomeFragmentTest {
         }
         whenever(homeFragmentViewModel.connectedApps).then {
             MutableLiveData(
-                    listOf(
-                            ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                            ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
         }
         launchFragment<HomeFragment>(Bundle())
 
         onView(
                 withText(
-                        "Manage the health and fitness data on your phone, and control which apps can access it"))
-                .check(matches(isDisplayed()))
+                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+            .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
@@ -228,7 +270,7 @@ class HomeFragmentTest {
 
         onView(withText("Recent access")).check(matches(isDisplayed()))
         onView(withText("No apps recently accessed Health\u00A0Connect"))
-                .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -239,16 +281,16 @@ class HomeFragmentTest {
         }
         whenever(homeFragmentViewModel.connectedApps).then {
             MutableLiveData(
-                    listOf(
-                            ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
-                            ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
         }
         launchFragment<HomeFragment>(Bundle())
 
         onView(
                 withText(
-                        "Manage the health and fitness data on your phone, and control which apps can access it"))
-                .check(matches(isDisplayed()))
+                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+            .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
         onView(withText("Data and access")).check(matches(isDisplayed()))
@@ -256,8 +298,6 @@ class HomeFragmentTest {
 
         onView(withText("Recent access")).check(matches(isDisplayed()))
         onView(withText("No apps recently accessed Health\u00A0Connect"))
-                .check(matches(isDisplayed()))
+            .check(matches(isDisplayed()))
     }
-
 }
-

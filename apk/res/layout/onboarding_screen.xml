@@ -41,6 +41,7 @@
 
             <Button
                 android:id="@+id/go_back_button"
+                android:minHeight="@dimen/button_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
@@ -59,6 +60,7 @@
                 android:id="@+id/get_started_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/button_size"
                 android:layout_gravity="end|center_vertical"
                 android:text="@string/onboarding_get_started_button_text"
                 style="@style/Widget.HealthConnect.DialogButton.Full" />

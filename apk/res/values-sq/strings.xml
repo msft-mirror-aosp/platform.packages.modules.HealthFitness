@@ -96,8 +96,7 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"itinerari i stërvitjes"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Të shkruajë itinerarin e stërvitjes"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lexo itinerarin e stërvitjes"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lexo itineraret e stërvitjeve"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distanca"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distanca"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Të lexojë të dhënat për distancën"</string>
@@ -269,6 +268,8 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrollo se cilat aplikacione mund të kenë qasje te të dhënat e ruajtura në Health Connect. Trokit një aplikacion për të rishikuar të dhënat që ai mund të lexojë ose të shkruajë."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Qasja lejohet"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Qasja nuk lejohet"</string>
+    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
+    <skip />
     <string name="settings_and_help_header" msgid="5749710693017621168">"Cilësimet dhe ndihma"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Hiq qasjen për të gjitha aplikacionet"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"I lejohet të lexojë"</string>
@@ -716,8 +717,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Zhvendos poshtë"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Zhvendos në krye"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Zhvendos në fund"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Butoni për të zvarritur dhe rirenditur <xliff:g id="SELECTED_APP">%s</xliff:g> në listën e përparësive"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Butoni për të hequr \"<xliff:g id="SELECTED_APP">%s</xliff:g>\" nga lista e përparësisë"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Trokit dy herë dhe zvarrit për të ndryshuar renditjen"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"fitnesi, mirëqenia"</string>
@@ -736,12 +736,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Vetëm aplikacionet që ti lejon të kenë qasje tek itineraret e stërvitjes"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Si mund ta menaxhoj qasjen?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Mund ta menaxhosh qasjen e aplikacionit tek itineraret e stërvitjes te cilësimet e Health Connect"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"Lejo këtë itinerar"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Lejo të gjitha itineraret"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Mos lejo"</string>
     <string name="back_button" msgid="780519527385993407">"Prapa"</string>
     <string name="loading" msgid="2526615755685950317">"Po ngarkohet…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrimi në proces"</string>
@@ -777,9 +774,13 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Rifillo integrimin e Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Për të ruajtur të dhënat e tua, kryeje këtë brenda <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Nevojitet përditësimi i aplikacioneve"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> duhet të jetë i përditësuar që të vazhdojë të funksionojë me Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Disa aplikacione duhet të jenë të përditësuara që të vazhdojnë të funksionojnë me Health Connect"</string>
+    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
+    <skip />
+    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
+    <skip />
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Kontrollo për përditësime"</string>
+    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
+    <skip />
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integrimi i Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect është gati për t\'u integruar me sistemin tënd Android. Nëse i jep tani qasje <xliff:g id="APP_NAME">%1$s</xliff:g>, disa veçori mund të mos funksionojnë derisa të përfundojë integrimi."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect është gati për t\'u integruar me sistemin tënd Android. Nëse u jep aplikacioneve qasje tani, disa veçori mund të mos funksionojnë derisa të përfundojë integrimi."</string>
