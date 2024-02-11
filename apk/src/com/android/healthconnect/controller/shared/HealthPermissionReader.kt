@@ -63,7 +63,7 @@ constructor(
             )
     }
 
-    suspend fun getAppsWithHealthPermissions(): List<String> {
+    fun getAppsWithHealthPermissions(): List<String> {
         return try {
             val appsWithDeclaredIntent =
                 context.packageManager
@@ -78,7 +78,31 @@ constructor(
         }
     }
 
-    suspend fun getDeclaredPermissions(packageName: String): List<HealthPermission> {
+    /**
+     * Identifies apps that have the old permissions declared - they need to update before
+     * continuing to sync with Health Connect.
+     */
+    fun getAppsWithOldHealthPermissions(): List<String> {
+        return try {
+            val oldPermissionsRationale = "androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE"
+            val oldPermissionsMetaDataKey = "health_permissions"
+            val intent = Intent(oldPermissionsRationale)
+            val resolveInfoList =
+                context.packageManager
+                    .queryIntentActivities(intent, PackageManager.GET_META_DATA)
+                    .filter { resolveInfo -> resolveInfo.activityInfo != null }
+                    .filter { resolveInfo -> resolveInfo.activityInfo.metaData != null }
+                    .filter { resolveInfo ->
+                        resolveInfo.activityInfo.metaData.getInt(oldPermissionsMetaDataKey) != -1
+                    }
+
+            resolveInfoList.map { it.activityInfo.packageName }.distinct()
+        } catch (e: NameNotFoundException) {
+            emptyList()
+        }
+    }
+
+    fun getDeclaredPermissions(packageName: String): List<HealthPermission> {
         return try {
             val appInfo =
                 context.packageManager.getPackageInfo(

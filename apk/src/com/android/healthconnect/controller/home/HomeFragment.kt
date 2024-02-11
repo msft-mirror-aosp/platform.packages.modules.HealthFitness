@@ -31,11 +31,13 @@ import com.android.healthconnect.controller.dataentries.formatters.DurationForma
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationState
-import com.android.healthconnect.controller.permissions.shared.Constants
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessPreference
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
+import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.shared.Constants.MIGRATION_NOT_COMPLETE_DIALOG_SEEN
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
@@ -44,6 +46,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -70,6 +73,7 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     @Inject lateinit var featureUtils: FeatureUtils
+    @Inject lateinit var timeSource: TimeSource
 
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
@@ -191,10 +195,8 @@ class HomeFragment : Hilt_HomeFragment() {
 
     private fun maybeShowMigrationNotCompleteDialog() {
         val sharedPreference =
-            requireActivity().getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-        val dialogSeen =
-            sharedPreference.getBoolean(
-                getString(R.string.migration_not_complete_dialog_seen), false)
+            requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+        val dialogSeen = sharedPreference.getBoolean(MIGRATION_NOT_COMPLETE_DIALOG_SEEN, false)
 
         if (!dialogSeen) {
             AlertDialogBuilder(this)
@@ -207,7 +209,7 @@ class HomeFragment : Hilt_HomeFragment() {
                         _,
                         _ ->
                         sharedPreference.edit().apply {
-                            putBoolean(getString(R.string.migration_not_complete_dialog_seen), true)
+                            putBoolean(MIGRATION_NOT_COMPLETE_DIALOG_SEEN, true)
                             apply()
                         }
                     }
@@ -218,12 +220,12 @@ class HomeFragment : Hilt_HomeFragment() {
 
     private fun getMigrationBanner(): BannerPreference {
         return BannerPreference(requireContext()).also {
-            it.setButton(resources.getString(R.string.resume_migration_banner_button))
+            it.setPrimaryButton(resources.getString(R.string.resume_migration_banner_button))
             it.title = resources.getString(R.string.resume_migration_banner_title)
             it.key = MIGRATION_BANNER_PREFERENCE_KEY
             it.summary = migrationBannerSummary
             it.setIcon(R.drawable.ic_settings_alert)
-            it.setButtonOnClickListener {
+            it.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_migrationActivity)
             }
             it.order = 1
@@ -267,8 +269,8 @@ class HomeFragment : Hilt_HomeFragment() {
         } else {
             recentAppsList.forEach { recentApp ->
                 val newRecentAccessPreference =
-                    RecentAccessPreference(requireContext(), recentApp, false).also { newPreference
-                        ->
+                    RecentAccessPreference(requireContext(), recentApp, timeSource, false).also {
+                        newPreference ->
                         if (!recentApp.isInactive) {
                             newPreference.setOnPreferenceClickListener {
                                 findNavController()

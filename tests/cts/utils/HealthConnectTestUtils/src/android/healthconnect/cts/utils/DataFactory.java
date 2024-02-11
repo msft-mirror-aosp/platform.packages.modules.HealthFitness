@@ -252,17 +252,17 @@ public final class DataFactory {
     }
 
     public static StepsRecord getStepsRecord(int steps) {
-        return new StepsRecord.Builder(
-                        generateMetadata(), Instant.now(), Instant.now().plusMillis(1000), steps)
-                .build();
+        return getStepsRecord(steps, generateMetadata());
     }
 
     public static StepsRecord getStepsRecord(int steps, String clientId) {
+        return getStepsRecord(steps, getMetadataForClientId(clientId));
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified metadata. */
+    public static StepsRecord getStepsRecord(int steps, Metadata metadata) {
         return new StepsRecord.Builder(
-                        getMetadataForClientId(clientId),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
-                        steps)
+                        metadata, Instant.now(), Instant.now().plusMillis(1000), steps)
                 .build();
     }
 

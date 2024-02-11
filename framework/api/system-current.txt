@@ -117,6 +117,7 @@ package android.health.connect {
     field public static final int RESPIRATORY_RATE = 32; // 0x20
     field public static final int RESTING_HEART_RATE = 34; // 0x22
     field public static final int SEXUAL_ACTIVITY = 22; // 0x16
+    field @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public static final int SKIN_TEMPERATURE = 39; // 0x27
     field public static final int SLEEP = 25; // 0x19
     field public static final int SPEED = 37; // 0x25
     field public static final int STEPS = 6; // 0x6
@@ -204,6 +205,7 @@ package android.health.connect.datatypes {
     field public static final int RECORD_TYPE_RESPIRATORY_RATE = 31; // 0x1f
     field public static final int RECORD_TYPE_RESTING_HEART_RATE = 33; // 0x21
     field public static final int RECORD_TYPE_SEXUAL_ACTIVITY = 28; // 0x1c
+    field @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public static final int RECORD_TYPE_SKIN_TEMPERATURE = 39; // 0x27
     field public static final int RECORD_TYPE_SLEEP_SESSION = 38; // 0x26
     field public static final int RECORD_TYPE_SPEED = 14; // 0xe
     field public static final int RECORD_TYPE_STEPS = 1; // 0x1

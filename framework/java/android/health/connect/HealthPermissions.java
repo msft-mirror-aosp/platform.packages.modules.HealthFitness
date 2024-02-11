@@ -434,8 +434,6 @@ public final class HealthPermissions {
      * Allows an application to read the user's skin temperature data.
      *
      * <p>Protection level: dangerous.
-     *
-     * @hide
      */
     @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
     public static final String READ_SKIN_TEMPERATURE =
@@ -719,8 +717,6 @@ public final class HealthPermissions {
      * Allows an application to write the user's skin temperature data.
      *
      * <p>Protection level: dangerous.
-     *
-     * @hide
      */
     @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
     public static final String WRITE_SKIN_TEMPERATURE =
