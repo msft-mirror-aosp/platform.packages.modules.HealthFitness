@@ -17,12 +17,12 @@
 package android.healthconnect.cts.ui.permissions
 
 import android.content.pm.PackageManager
-import android.health.connect.HealthPermissions
 import android.health.connect.HealthPermissions.READ_HEIGHT
 import android.health.connect.HealthPermissions.WRITE_BODY_FAT
 import android.health.connect.HealthPermissions.WRITE_HEIGHT
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
+import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.navigateBackToHomeScreen
@@ -31,9 +31,7 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import androidx.test.uiautomator.By
 import com.google.common.truth.Truth.assertThat
-import java.lang.Exception
 import org.junit.After
-import org.junit.Ignore
 import org.junit.Test
 
 class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
@@ -48,20 +46,19 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     @Test
-    @Ignore("TODO(b/265789268): Fix flake")
     fun grantPermission_updatesAppPermissions() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         context.launchMainActivity {
             navigateToManageAppPermissions()
+
             clickOnText("Body fat")
+            clickOnContentDescription("Navigate up")
 
             assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         }
     }
 
     @Test
-    @Ignore(
-        "TODO(b/265789268): Fix flaky assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)")
     fun revokePermission_updatesAppPermissions() {
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         context.launchMainActivity {
@@ -69,22 +66,24 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
             assertPermGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
 
             clickOnText("Body fat")
+            clickOnContentDescription("Navigate up")
 
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         }
     }
 
     @Test
-    @Ignore(
-        "TODO(b/265789268): Fix flaky assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEIGHT)")
     fun revokeAllPermissions_revokesAllAppPermissions() {
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
+
         context.launchMainActivity {
             navigateToManageAppPermissions()
             clickOnText("Allow all")
             waitDisplayed(By.text("Remove all permissions?"))
             clickOnText("Remove all")
+            clickOnContentDescription("Navigate up")
 
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, READ_HEIGHT)
             assertPermNotGrantedForApp(TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
@@ -92,7 +91,6 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
     }
 
     @Test
-    @Ignore("TODO(b/265789268): Fix flaky cannot find 'Remove all permissions?' view")
     fun revokeAllPermissions_allowsUserToDeleteAppData() {
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
@@ -127,9 +125,9 @@ class ManageAppHealthPermissionUITest : HealthConnectBaseTest() {
 
     @After
     fun tearDown() {
-        revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
-        revokePermissionViaPackageManager(
-            context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_HEIGHT)
+        grantPermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, WRITE_BODY_FAT)
         navigateBackToHomeScreen()
     }
 }

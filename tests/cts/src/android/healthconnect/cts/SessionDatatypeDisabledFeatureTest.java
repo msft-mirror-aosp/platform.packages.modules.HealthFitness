@@ -16,6 +16,9 @@
 
 package android.healthconnect.cts;
 
+import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
+import static android.healthconnect.cts.utils.DataFactory.buildSleepSession;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.app.UiAutomation;
@@ -25,6 +28,8 @@ import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 import android.provider.DeviceConfig;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -33,20 +38,13 @@ import com.android.modules.utils.build.SdkLevel;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Instant;
 import java.util.List;
 
 public class SessionDatatypeDisabledFeatureTest {
-    @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
-        TestUtils.deleteAllStagedRemoteData();
-    }
-
     private final UiAutomation mUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
 
@@ -55,6 +53,11 @@ public class SessionDatatypeDisabledFeatureTest {
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
                     .build();
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws InterruptedException {
@@ -67,7 +70,7 @@ public class SessionDatatypeDisabledFeatureTest {
     public void testWriteExerciseSession_insertWithDisableFeature_throwsException()
             throws InterruptedException {
         setSessionDatatypesFeatureEnabledFlag(false);
-        List<Record> records = List.of(TestUtils.buildExerciseSession());
+        List<Record> records = List.of(buildExerciseSession());
         try {
             TestUtils.insertRecords(records);
             Assert.fail("Writing exercise session when flag is disabled should not be allowed");
@@ -80,7 +83,7 @@ public class SessionDatatypeDisabledFeatureTest {
     @Test
     public void testReadExerciseSession_insertAndRead_sessionIsNotAvailable()
             throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession());
+        List<Record> records = List.of(buildExerciseSession());
         TestUtils.insertRecords(records);
         setSessionDatatypesFeatureEnabledFlag(false);
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
@@ -94,7 +97,7 @@ public class SessionDatatypeDisabledFeatureTest {
     public void testWriteSleepSession_insertWithDisableFeature_throwsException()
             throws InterruptedException {
         setSessionDatatypesFeatureEnabledFlag(false);
-        List<Record> records = List.of(TestUtils.buildSleepSession());
+        List<Record> records = List.of(buildSleepSession());
         try {
             TestUtils.insertRecords(records);
             Assert.fail("Writing sleep session when flag is disabled should not be allowed");
@@ -107,7 +110,7 @@ public class SessionDatatypeDisabledFeatureTest {
     @Test
     public void testReadSleepSession_insertAndRead_sessionIsNotAvailable()
             throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildSleepSession());
+        List<Record> records = List.of(buildSleepSession());
         TestUtils.insertRecords(records);
         setSessionDatatypesFeatureEnabledFlag(false);
 

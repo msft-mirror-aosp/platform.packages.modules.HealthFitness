@@ -33,19 +33,29 @@ android_library {
     name: "HealthConnectBackupRestoreLibrary",
     srcs: [":healthConnectBackupRestore-sources"],
     sdk_version: "module_current",
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     libs: [
         "framework-annotations-lib",
         "framework-healthfitness.impl",
     ],
     apex_available: ["com.android.healthfitness"],
+    errorprone: {
+        extra_check_modules: [
+           "//external/nullaway:nullaway_plugin"
+        ],
+        javacflags: [
+            "-Xep:NullAway:ERROR",
+            "-XepOpt:NullAway:AnnotatedPackages=com.android.health.connect.backuprestore",
+            "-XepOpt:NullAway:KnownInitializers=android.app.backup.BackupAgent.onCreate",
+        ],
+    },
 }
 
 android_app {
     name: "HealthConnectBackupRestore",
     defaults: ["platform_app_defaults"],
     sdk_version: "module_current",
-    min_sdk_version: "UpsideDownCake",
+    min_sdk_version: "34",
     updatable: true,
     certificate: ":com.android.health.connect.backuprestore.certificate",
     additional_manifests: [

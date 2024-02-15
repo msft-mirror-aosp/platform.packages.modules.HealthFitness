@@ -18,7 +18,9 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.request.ReadTransactionRequest.TYPE_NOT_PRESENT_PACKAGE_NAME;
@@ -33,13 +35,17 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getDedupeByteBuffer;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.supportsPriority;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.OR;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.AggregateResult;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
+import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -70,8 +76,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Parent class for all the helper classes for all the records
@@ -128,34 +134,55 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      */
     public final AggregateTableRequest getAggregateTableRequest(
             AggregationType<?> aggregationType,
-            List<String> packageFilter,
+            String callingPackage,
+            List<String> packageFilters,
             long startTime,
             long endTime,
+            long startDateAccess,
             boolean useLocalTime) {
+        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         AggregateParams params = getAggregateParams(aggregationType);
-        params.setTimeColumnName(
-                useLocalTime ? getLocalStartTimeColumnName() : getStartTimeColumnName());
-        params.setExtraTimeColumn(
-                useLocalTime ? getLocalEndTimeColumnName() : getEndTimeColumnName());
+        String physicalTimeColumnName = getStartTimeColumnName();
+        String startTimeColumnName =
+                useLocalTime ? getLocalStartTimeColumnName() : physicalTimeColumnName;
+        String endTimeColumnName =
+                useLocalTime ? getLocalEndTimeColumnName() : getEndTimeColumnName();
+        params.setTimeColumnName(startTimeColumnName);
+        params.setExtraTimeColumn(endTimeColumnName);
         params.setOffsetColumnToFetch(getZoneOffsetColumnName());
 
         if (supportsPriority(mRecordIdentifier, aggregationType.getAggregateOperationType())) {
             List<String> columns =
                     Arrays.asList(
-                            getStartTimeColumnName(),
+                            physicalTimeColumnName,
                             END_TIME_COLUMN_NAME,
                             APP_INFO_ID_COLUMN_NAME,
                             LAST_MODIFIED_TIME_COLUMN_NAME);
             params.appendAdditionalColumns(columns);
         }
         if (StorageUtils.isDerivedType(mRecordIdentifier)) {
-            params.appendAdditionalColumns(Collections.singletonList(getStartTimeColumnName()));
+            params.appendAdditionalColumns(Collections.singletonList(physicalTimeColumnName));
         }
 
-        return new AggregateTableRequest(params, aggregationType, this, useLocalTime)
-                .setPackageFilter(
-                        AppInfoHelper.getInstance().getAppInfoIds(packageFilter),
-                        APP_INFO_ID_COLUMN_NAME)
+        WhereClauses whereClauses = new WhereClauses(AND);
+        // filters by package names
+        whereClauses.addWhereInLongsClause(
+                APP_INFO_ID_COLUMN_NAME, appInfoHelper.getAppInfoIds(packageFilters));
+        // filter by start date access
+        whereClauses.addNestedWhereClauses(
+                getFilterByStartAccessDateWhereClauses(
+                        appInfoHelper.getAppInfoId(callingPackage), startDateAccess));
+        // start/end time filter
+        whereClauses.addWhereLessThanClause(startTimeColumnName, endTime);
+        if (endTimeColumnName != null) {
+            // for IntervalRecord, filters by overlapping
+            whereClauses.addWhereGreaterThanOrEqualClause(endTimeColumnName, startTime);
+        } else {
+            // for InstantRecord, filters by whether time falls into [startTime, endTime)
+            whereClauses.addWhereGreaterThanOrEqualClause(startTimeColumnName, startTime);
+        }
+
+        return new AggregateTableRequest(params, aggregationType, this, whereClauses, useLocalTime)
                 .setTimeFilter(startTime, endTime);
     }
 
@@ -164,6 +191,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *
      * @return {@link AggregateResult} for {@link AggregationType}
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public AggregateResult<?> getAggregateResult(
             Cursor cursor, AggregationType<?> aggregationType) {
         return null;
@@ -175,6 +203,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      *
      * @return {@link AggregateResult} for {@link AggregationType}
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public AggregateResult<?> getAggregateResult(
             Cursor results, AggregationType<?> aggregationType, double total) {
         return null;
@@ -183,6 +212,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /**
      * Used to calculate and get aggregate results for data types that support derived aggregates
      */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public double[] deriveAggregate(Cursor cursor, AggregateTableRequest request) {
         return null;
     }
@@ -206,6 +236,8 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setGeneratedColumnInfo(getGeneratedColumnInfo());
     }
 
+    /** Gets {@link UpsertTableRequest} from {@code recordInternal}. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
         return getUpsertTableRequest(recordInternal, null);
     }
@@ -298,27 +330,32 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         }
     }
 
-    /**
-     * Returns ReadSingleTableRequest for {@code request} and package name {@code packageName}
-     *
-     */
+    /** Returns ReadSingleTableRequest for {@code request} and package name {@code packageName} */
     public ReadTableRequest getReadTableRequest(
             ReadRecordsRequestParcel request,
-            String packageName,
+            String callingPackageName,
             boolean enforceSelfRead,
-            long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            long startDateAccessMillis,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
                         getReadTableWhereClause(
-                                request, packageName, enforceSelfRead, startDateAccess))
+                                request,
+                                callingPackageName,
+                                enforceSelfRead,
+                                startDateAccessMillis))
                 .setOrderBy(getOrderByClause(request))
                 .setLimit(getLimitSize(request))
                 .setRecordHelper(this)
                 .setExtraReadRequests(
                         getExtraDataReadRequests(
-                                request, packageName, startDateAccess, extraPermsState));
+                                request,
+                                callingPackageName,
+                                startDateAccessMillis,
+                                grantedExtraReadPermissions,
+                                isInForeground));
     }
 
     /**
@@ -344,17 +381,28 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Returns ReadTableRequest for {@code uuids} */
-    public ReadTableRequest getReadTableRequest(List<UUID> uuids, long startDateAccess) {
+    public final ReadTableRequest getReadTableRequest(
+            String packageName,
+            List<UUID> uuids,
+            long startDateAccess,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
-                        new WhereClauses()
+                        new WhereClauses(AND)
                                 .addWhereInClauseWithoutQuotes(
                                         UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
                                 .addWhereLaterThanTimeClause(
                                         getStartTimeColumnName(), startDateAccess))
                 .setRecordHelper(this)
-                .setExtraReadRequests(getExtraDataReadRequests(uuids, startDateAccess));
+                .setExtraReadRequests(
+                        getExtraDataReadRequests(
+                                packageName,
+                                uuids,
+                                startDateAccess,
+                                grantedExtraReadPermissions,
+                                isInForeground));
     }
 
     /**
@@ -365,15 +413,21 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             ReadRecordsRequestParcel request,
             String packageName,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return Collections.emptyList();
     }
 
     /**
-     * Returns list if ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
+     * Returns a list of ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
      * change logs read requests.
      */
-    List<ReadTableRequest> getExtraDataReadRequests(List<UUID> uuids, long startDateAccess) {
+    List<ReadTableRequest> getExtraDataReadRequests(
+            String packageName,
+            List<UUID> uuids,
+            long startDateAccess,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return Collections.emptyList();
     }
 
@@ -387,113 +441,148 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setDistinctClause(true);
     }
 
-    /** Returns List of Internal records from the cursor */
-    @SuppressWarnings("unchecked")
-    public List<RecordInternal<?>> getInternalRecords(Cursor cursor, int requestSize) {
-        return getInternalRecords(cursor, requestSize, null);
-    }
-
-    /** Returns List of Internal records from the cursor */
-    @SuppressWarnings("unchecked")
-    public List<RecordInternal<?>> getInternalRecords(
-            Cursor cursor, int requestSize, Map<Long, String> packageNamesByAppIds) {
+    /**
+     * Returns List of Internal records from the cursor. If the cursor contains more than {@link
+     * MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link IllegalArgumentException}.
+     */
+    public List<RecordInternal<?>> getInternalRecords(Cursor cursor) {
+        if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
+            throw new IllegalArgumentException(
+                    "Too many records in the cursor. Max allowed: " + MAXIMUM_ALLOWED_CURSOR_COUNT);
+        }
         Trace.traceBegin(TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetInternalRecords"));
+
         List<RecordInternal<?>> recordInternalList = new ArrayList<>();
-
-        int count = 0;
-        long prevStartTime = DEFAULT_LONG;
-        long currentStartTime = DEFAULT_LONG;
-        int tempCount = 0;
-        List<RecordInternal<?>> tempList = new ArrayList<>();
         while (cursor.moveToNext()) {
-            try {
-                T record =
-                        (T)
-                                RecordMapper.getInstance()
-                                        .getRecordIdToInternalRecordClassMap()
-                                        .get(getRecordIdentifier())
-                                        .getConstructor()
-                                        .newInstance();
-                record.setUuid(getCursorUUID(cursor, UUID_COLUMN_NAME));
-                record.setLastModifiedTime(getCursorLong(cursor, LAST_MODIFIED_TIME_COLUMN_NAME));
-                record.setClientRecordId(getCursorString(cursor, CLIENT_RECORD_ID_COLUMN_NAME));
-                record.setClientRecordVersion(
-                        getCursorLong(cursor, CLIENT_RECORD_VERSION_COLUMN_NAME));
-                record.setRecordingMethod(getCursorInt(cursor, RECORDING_METHOD_COLUMN_NAME));
-                record.setRowId(getCursorInt(cursor, PRIMARY_COLUMN_NAME));
-                long deviceInfoId = getCursorLong(cursor, DEVICE_INFO_ID_COLUMN_NAME);
-                DeviceInfoHelper.getInstance().populateRecordWithValue(deviceInfoId, record);
-                long appInfoId = getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
-                AppInfoHelper.getInstance()
-                        .populateRecordWithValue(appInfoId, record, packageNamesByAppIds);
-                populateRecordValue(cursor, record);
+            recordInternalList.add(getRecord(cursor, /* packageNamesByAppIds= */ null));
+        }
 
-                prevStartTime = currentStartTime;
-                currentStartTime = getCursorLong(cursor, getStartTimeColumnName());
-                if (prevStartTime == DEFAULT_LONG || prevStartTime == currentStartTime) {
-                    // Fetch and add records with same startTime to tempList
-                    tempList.add(record);
-                    tempCount++;
-                } else {
-                    if (count == 0) {
-                        // items in tempList having startTime same as the first record from cursor
-                        // is added to final list.
-                        // This makes sure that we return at least 1 record if the count of
-                        // records with startTime same as second record exceeds requestSize.
-                        recordInternalList.addAll(tempList);
-                        count = tempCount;
-                        tempList.clear();
-                        tempCount = 0;
-                        if (count >= requestSize) {
-                            // startTime of current record should be fetched for pageToken
-                            cursor.moveToPrevious();
-                            break;
-                        }
-                        tempList.add(record);
-                        tempCount = 1;
-                    } else if (tempCount + count <= requestSize) {
-                        // Makes sure after adding records in tempList with same starTime
-                        // the count does not exceed requestSize
-                        recordInternalList.addAll(tempList);
-                        count += tempCount;
-                        tempList.clear();
-                        tempCount = 0;
-                        if (count >= requestSize) {
-                            // After adding records if count is equal to requestSize then startTime
-                            // of current fetched record should be the next page token.
-                            cursor.moveToPrevious();
-                            break;
-                        }
-                        tempList.add(record);
-                        tempCount = 1;
-                    } else {
-                        // If adding records in tempList makes count > requestSize, then ignore temp
-                        // list and startTime of records in temp list should be the next page token.
-                        tempList.clear();
-                        int lastposition = cursor.getPosition();
-                        cursor.moveToPosition(lastposition - 2);
-                        break;
-                    }
-                }
-            } catch (InstantiationException
-                    | IllegalAccessException
-                    | NoSuchMethodException
-                    | InvocationTargetException exception) {
-                throw new IllegalArgumentException(exception);
-            }
-        }
-        if (!tempList.isEmpty()) {
-            if (tempCount + count <= requestSize) {
-                // If reached end of cursor while fetching records then add it to final list
-                recordInternalList.addAll(tempList);
-            } else {
-                // If reached end of cursor while fetching and adding it will exceed requestSize
-                // then ignore them,startTime of the last record will be pageToken for next read.
-                cursor.moveToPosition(cursor.getCount() - 2);
-            }
-        }
         Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
         return recordInternalList;
+    }
+
+    /**
+     * Returns a list of Internal records from the cursor up to the requested size, with pagination
+     * handled.
+     *
+     * @see #getNextInternalRecordsPageAndToken(Cursor, int, PageTokenWrapper, Map)
+     */
+    public Pair<List<RecordInternal<?>>, PageTokenWrapper> getNextInternalRecordsPageAndToken(
+            Cursor cursor, int requestSize, PageTokenWrapper pageToken) {
+        return getNextInternalRecordsPageAndToken(
+                cursor, requestSize, pageToken, /* packageNamesByAppIds= */ null);
+    }
+
+    /**
+     * Returns List of Internal records from the cursor up to the requested size, with pagination
+     * handled.
+     *
+     * <p>Note that the cursor limit is set to {@code requestSize + offset + 1},
+     * <li>+ offset: {@code offset} records has already been returned in previous page(s). See
+     *     go/hc-page-token for details.
+     * <li>+ 1: if number of records queried is more than pageSize we know there are more records
+     *     available to return for the next read.
+     *
+     *     <p>Note that the cursor may contain more records that we need to return. Cursor limit set
+     *     to sum of the following:
+     * <li>offset: {@code offset} records have already been returned in previous page(s), and should
+     *     be skipped from this current page. In rare occasions (e.g. records deleted in between two
+     *     reads), there are less than {@code offset} records, an empty list is returned, with no
+     *     page token.
+     * <li>requestSize: {@code requestSize} records to return in the response.
+     * <li>one extra record: If there are more records than (offset+requestSize), a page token is
+     *     returned for the next page. If not, then a default token is returned.
+     *
+     * @see #getLimitSize(ReadRecordsRequestParcel)
+     */
+    public Pair<List<RecordInternal<?>>, PageTokenWrapper> getNextInternalRecordsPageAndToken(
+            Cursor cursor,
+            int requestSize,
+            PageTokenWrapper prevPageToken,
+            @Nullable Map<Long, String> packageNamesByAppIds) {
+        Trace.traceBegin(
+                TRACE_TAG_RECORD_HELPER,
+                TAG_RECORD_HELPER.concat("getNextInternalRecordsPageAndToken"));
+
+        // Ignore <offset> records of the same start time, because it was returned in previous
+        // page(s).
+        // If the offset is greater than number of records in the cursor, it'll move to the last
+        // index and will not enter the while loop below.
+        long prevStartTime;
+        long currentStartTime = DEFAULT_LONG;
+        for (int i = 0; i < prevPageToken.offset(); i++) {
+            if (!cursor.moveToNext()) {
+                break;
+            }
+            prevStartTime = currentStartTime;
+            currentStartTime = getCursorLong(cursor, getStartTimeColumnName());
+            if (prevStartTime != DEFAULT_LONG && prevStartTime != currentStartTime) {
+                // The current record should not be skipped
+                cursor.moveToPrevious();
+                break;
+            }
+        }
+
+        currentStartTime = DEFAULT_LONG;
+        int offset = 0;
+        List<RecordInternal<?>> recordInternalList = new ArrayList<>();
+        PageTokenWrapper nextPageToken = EMPTY_PAGE_TOKEN;
+        while (cursor.moveToNext()) {
+            prevStartTime = currentStartTime;
+            currentStartTime = getCursorLong(cursor, getStartTimeColumnName());
+            if (currentStartTime != prevStartTime) {
+                offset = 0;
+            }
+
+            if (recordInternalList.size() >= requestSize) {
+                nextPageToken =
+                        PageTokenWrapper.of(prevPageToken.isAscending(), currentStartTime, offset);
+                break;
+            } else {
+                T record = getRecord(cursor, packageNamesByAppIds);
+                recordInternalList.add(record);
+                offset++;
+            }
+        }
+
+        Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
+        return Pair.create(recordInternalList, nextPageToken);
+    }
+
+    @SuppressWarnings("unchecked") // uncheck cast to T
+    private T getRecord(Cursor cursor, @Nullable Map<Long, String> packageNamesByAppIds) {
+        try {
+            @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+            T record =
+                    (T)
+                            RecordMapper.getInstance()
+                                    .getRecordIdToInternalRecordClassMap()
+                                    .get(getRecordIdentifier())
+                                    .getConstructor()
+                                    .newInstance();
+            record.setUuid(getCursorUUID(cursor, UUID_COLUMN_NAME));
+            record.setLastModifiedTime(getCursorLong(cursor, LAST_MODIFIED_TIME_COLUMN_NAME));
+            record.setClientRecordId(getCursorString(cursor, CLIENT_RECORD_ID_COLUMN_NAME));
+            record.setClientRecordVersion(getCursorLong(cursor, CLIENT_RECORD_VERSION_COLUMN_NAME));
+            record.setRecordingMethod(getCursorInt(cursor, RECORDING_METHOD_COLUMN_NAME));
+            record.setRowId(getCursorInt(cursor, PRIMARY_COLUMN_NAME));
+            long deviceInfoId = getCursorLong(cursor, DEVICE_INFO_ID_COLUMN_NAME);
+            DeviceInfoHelper.getInstance().populateRecordWithValue(deviceInfoId, record);
+            long appInfoId = getCursorLong(cursor, APP_INFO_ID_COLUMN_NAME);
+            String packageName =
+                    packageNamesByAppIds != null
+                            ? packageNamesByAppIds.get(appInfoId)
+                            : AppInfoHelper.getInstance().getPackageName(appInfoId);
+            record.setPackageName(packageName);
+            populateRecordValue(cursor, record);
+
+            return record;
+        } catch (InstantiationException
+                | IllegalAccessException
+                | NoSuchMethodException
+                | InvocationTargetException exception) {
+            throw new IllegalArgumentException(exception);
+        }
     }
 
     /** Returns is the read of this record type is enabled */
@@ -538,10 +627,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     public abstract String getLocalStartTimeColumnName();
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public String getLocalEndTimeColumnName() {
         return null;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public String getEndTimeColumnName() {
         return null;
     }
@@ -563,6 +654,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     abstract String getMainTableName();
 
     /** Returns the information required to perform aggregate operation. */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         return null;
     }
@@ -595,99 +687,143 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     SqlJoin getJoinForReadRequest() {
         return null;
     }
 
-    private int getLimitSize(ReadRecordsRequestParcel request) {
+    private static int getLimitSize(ReadRecordsRequestParcel request) {
+        // Querying extra records on top of page size
+        // + pageOffset: <pageOffset> records has already been returned in previous page(s). See
+        //               go/hc-page-token for details.
+        // + 1: if number of records queried is more than pageSize we know there are more records
+        //      available to return for the next read.
         if (request.getRecordIdFiltersParcel() == null) {
-            return request.getPageSize();
+            int pageOffset =
+                    PageTokenWrapper.from(request.getPageToken(), request.isAscending()).offset();
+            return request.getPageSize() + pageOffset + 1;
         } else {
             return MAXIMUM_PAGE_SIZE;
         }
     }
 
-    WhereClauses getReadTableWhereClause(
+    final WhereClauses getReadTableWhereClause(
             ReadRecordsRequestParcel request,
-            String packageName,
+            String callingPackageName,
             boolean enforceSelfRead,
-            long startDateAccess) {
-        if (request.getRecordIdFiltersParcel() == null) {
-            List<Long> appIds =
-                    AppInfoHelper.getInstance().getAppInfoIds(request.getPackageFilters()).stream()
+            long startDateAccessMillis) {
+        AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
+        long callingAppInfoId = appInfoHelper.getAppInfoId(callingPackageName);
+        RecordIdFiltersParcel recordIdFiltersParcel = request.getRecordIdFiltersParcel();
+        if (recordIdFiltersParcel == null) {
+            List<Long> appInfoIds =
+                    appInfoHelper.getAppInfoIds(request.getPackageFilters()).stream()
                             .distinct()
-                            .collect(Collectors.toList());
+                            .toList();
             if (enforceSelfRead) {
-                appIds =
-                        AppInfoHelper.getInstance()
-                                .getAppInfoIds(Collections.singletonList(packageName));
+                appInfoIds = Collections.singletonList(callingAppInfoId);
             }
-            if (appIds.size() == 1 && appIds.get(0) == DEFAULT_INT) {
+            if (appInfoIds.size() == 1 && appInfoIds.get(0) == DEFAULT_INT) {
                 throw new TypeNotPresentException(TYPE_NOT_PRESENT_PACKAGE_NAME, new Throwable());
             }
 
-            WhereClauses clauses =
-                    new WhereClauses().addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appIds);
+            WhereClauses clauses = new WhereClauses(AND);
 
-            if (request.getPageToken() != DEFAULT_LONG) {
-                // Since pageToken passed contains detail of sort order. Actual token value for read
-                // is calculated back from the requested pageToken based on sort order.
-                if (request.isAscending()) {
-                    clauses.addWhereGreaterThanOrEqualClause(
-                            getStartTimeColumnName(), request.getPageToken() / 2);
+            // package names filter
+            clauses.addWhereInLongsClause(APP_INFO_ID_COLUMN_NAME, appInfoIds);
+
+            // page token filter
+            PageTokenWrapper pageToken =
+                    PageTokenWrapper.from(request.getPageToken(), request.isAscending());
+            if (pageToken.isTimestampSet()) {
+                long timestamp = pageToken.timeMillis();
+                if (pageToken.isAscending()) {
+                    clauses.addWhereGreaterThanOrEqualClause(getStartTimeColumnName(), timestamp);
                 } else {
-                    clauses.addWhereLessThanOrEqualClause(
-                            getStartTimeColumnName(), (request.getPageToken() - 1) / 2);
+                    clauses.addWhereLessThanOrEqualClause(getStartTimeColumnName(), timestamp);
                 }
             }
 
-            if (request.usesLocalTimeFilter()) {
-                clauses.addWhereGreaterThanOrEqualClause(getStartTimeColumnName(), startDateAccess);
-                clauses.addWhereBetweenClause(
-                        getLocalStartTimeColumnName(),
-                        request.getStartTime(),
-                        request.getEndTime());
-            } else {
-                clauses.addWhereBetweenTimeClause(
-                        getStartTimeColumnName(), startDateAccess, request.getEndTime());
+            // start/end time filter
+            String timeColumnName =
+                    request.usesLocalTimeFilter()
+                            ? getLocalStartTimeColumnName()
+                            : getStartTimeColumnName();
+            long startTimeMillis = request.getStartTime();
+            long endTimeMillis = request.getEndTime();
+            if (startTimeMillis != DEFAULT_LONG) {
+                clauses.addWhereGreaterThanOrEqualClause(timeColumnName, startTimeMillis);
             }
+            if (endTimeMillis != DEFAULT_LONG) {
+                clauses.addWhereLessThanClause(timeColumnName, endTimeMillis);
+            }
+
+            // start date access
+            clauses.addNestedWhereClauses(
+                    getFilterByStartAccessDateWhereClauses(
+                            callingAppInfoId, startDateAccessMillis));
 
             return clauses;
         }
 
         // Since for now we don't support mixing IDs and filters, we need to look for IDs now
         List<UUID> ids =
-                request.getRecordIdFiltersParcel().getRecordIdFilters().stream()
+                recordIdFiltersParcel.getRecordIdFilters().stream()
                         .map(
                                 (recordIdFilter) ->
-                                        StorageUtils.getUUIDFor(recordIdFilter, packageName))
-                        .collect(Collectors.toList());
-        WhereClauses whereClauses =
-                new WhereClauses()
+                                        StorageUtils.getUUIDFor(recordIdFilter, callingPackageName))
+                        .toList();
+        WhereClauses filterByIdsWhereClauses =
+                new WhereClauses(AND)
                         .addWhereInClauseWithoutQuotes(
                                 UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids));
 
         if (enforceSelfRead) {
-            long id = AppInfoHelper.getInstance().getAppInfoId(packageName);
-            if (id == DEFAULT_LONG) {
+            if (callingAppInfoId == DEFAULT_LONG) {
                 throw new TypeNotPresentException(TYPE_NOT_PRESENT_PACKAGE_NAME, new Throwable());
             }
-            whereClauses.addWhereInLongsClause(
-                    APP_INFO_ID_COLUMN_NAME, Collections.singletonList(id));
-            return whereClauses.addWhereLaterThanTimeClause(
-                    getStartTimeColumnName(), startDateAccess);
+            // if self read is enforced, startDateAccess must not be applied.
+            return filterByIdsWhereClauses.addWhereInLongsClause(
+                    APP_INFO_ID_COLUMN_NAME, Collections.singletonList(callingAppInfoId));
+        } else {
+            return filterByIdsWhereClauses.addNestedWhereClauses(
+                    getFilterByStartAccessDateWhereClauses(
+                            callingAppInfoId, startDateAccessMillis));
         }
-        return whereClauses;
+    }
+
+    /**
+     * Returns a {@link WhereClauses} that takes in to account start date access date & reading own
+     * data.
+     */
+    private WhereClauses getFilterByStartAccessDateWhereClauses(
+            long callingAppInfoId, long startDateAccessMillis) {
+        WhereClauses resultWhereClauses = new WhereClauses(OR);
+
+        // if the data point belongs to the calling app, then we should not enforce startDateAccess
+        resultWhereClauses.addWhereEqualsClause(
+                APP_INFO_ID_COLUMN_NAME, String.valueOf(callingAppInfoId));
+
+        // Otherwise, we should enforce startDateAccess. Also we must use physical time column
+        // regardless whether local time filter is used or not.
+        String physicalTimeColumn = getStartTimeColumnName();
+        resultWhereClauses.addWhereGreaterThanOrEqualClause(
+                physicalTimeColumn, startDateAccessMillis);
+
+        return resultWhereClauses;
     }
 
     abstract String getZoneOffsetColumnName();
 
     private OrderByClause getOrderByClause(ReadRecordsRequestParcel request) {
-        OrderByClause orderByClause = new OrderByClause();
-        if (request.getRecordIdFiltersParcel() == null) {
-            orderByClause.addOrderByClause(getStartTimeColumnName(), request.isAscending());
+        if (request.getRecordIdFiltersParcel() != null) {
+            return new OrderByClause();
         }
-        return orderByClause;
+        PageTokenWrapper pageToken =
+                PageTokenWrapper.from(request.getPageToken(), request.isAscending());
+        return new OrderByClause()
+                .addOrderByClause(getStartTimeColumnName(), pageToken.isAscending())
+                .addOrderByClause(PRIMARY_COLUMN_NAME, /* isAscending= */ true);
     }
 
     @NonNull

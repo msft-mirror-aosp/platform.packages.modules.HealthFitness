@@ -43,13 +43,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.MigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
-import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationState
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -166,7 +164,7 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
     }
 
     private fun getNoAppsPreference(@StringRes res: Int): Preference {
-        return Preference(context).also {
+        return Preference(requireContext()).also {
             it.setTitle(res)
             it.isSelectable = false
         }

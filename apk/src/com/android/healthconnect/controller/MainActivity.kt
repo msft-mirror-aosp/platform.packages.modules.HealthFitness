@@ -16,40 +16,32 @@
 package com.android.healthconnect.controller
 
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
-import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 
 /** Entry point activity for Health Connect. */
 @AndroidEntryPoint(CollapsingToolbarBaseActivity::class)
 class MainActivity : Hilt_MainActivity() {
+
     @Inject lateinit var logger: HealthConnectLogger
+
     private val migrationViewModel: MigrationViewModel by viewModels()
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setTitle(R.string.app_label)
 
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
-            return
-        }
-
-        if (maybeRedirectToOnboardingActivity(this, intent)) {
-            return
-        }
-
-        val currentMigrationState = runBlocking { migrationViewModel.getCurrentMigrationUiState() }
+        val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
 
         if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
             return
@@ -64,7 +56,7 @@ class MainActivity : Hilt_MainActivity() {
 
     override fun onResume() {
         super.onResume()
-        val currentMigrationState = runBlocking { migrationViewModel.getCurrentMigrationUiState() }
+        val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
 
         if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
             return
@@ -83,6 +75,7 @@ class MainActivity : Hilt_MainActivity() {
         if (!navController.popBackStack()) {
             finish()
         }
+
         return true
     }
 

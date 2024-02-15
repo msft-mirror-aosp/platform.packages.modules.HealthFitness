@@ -21,7 +21,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.dataentries.FormattedEntry.ExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
 import com.android.healthconnect.controller.shared.RoundView
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
@@ -75,13 +75,20 @@ class ExerciseSessionItemViewBinder(
             mapView.setRoute(data.route)
         }
 
+        deleteButton.contentDescription =
+            view.resources.getString(
+                R.string.data_point_action_content_description, data.headerA11y)
         deleteButton.setOnClickListener {
             logger.logInteraction(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
             onDeleteEntryClicked?.onDeleteEntry(data.uuid, data.dataType, index)
         }
-        container.setOnClickListener {
-            logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
-            onItemClickedListener?.onItemClicked(data.uuid, index)
+        if (showSecondAction) {
+            container.setOnClickListener {
+                logger.logInteraction(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+                onItemClickedListener?.onItemClicked(data.uuid, index)
+            }
+        } else {
+            container.isClickable = false
         }
     }
 }

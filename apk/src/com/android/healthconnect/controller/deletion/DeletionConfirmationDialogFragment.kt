@@ -34,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
  * A deletion {@link DialogFragment} asking confirmation from user for deleting data from from the
  * time range chosen on the previous dialog.
  */
+@Deprecated("This won't be used once the NEW_INFORMATION_ARCHITECTURE feature is enabled.")
 @AndroidEntryPoint(DialogFragment::class)
 class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragment() {
 
@@ -61,7 +62,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                     }
 
         if (viewModel.showTimeRangeDialogFragment) {
-            alertDialogBuilder.setNegativeButton(
+            alertDialogBuilder.setNeutralButton(
                 R.string.confirming_question_go_back_button,
                 DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_GO_BACK_BUTTON) {
                     _,
@@ -69,7 +70,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                     setFragmentResult(GO_BACK_EVENT, Bundle())
                 }
         } else {
-            alertDialogBuilder.setNegativeButton(
+            alertDialogBuilder.setNeutralButton(
                 android.R.string.cancel,
                 DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CANCEL_BUTTON) { _, _
                     ->

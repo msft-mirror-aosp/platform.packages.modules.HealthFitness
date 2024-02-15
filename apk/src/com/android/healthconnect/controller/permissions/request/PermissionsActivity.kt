@@ -18,7 +18,7 @@
 
 package com.android.healthconnect.controller.permissions.request
 
-import android.app.Activity
+import android.app.Activity.*
 import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.content.pm.PackageManager
@@ -27,6 +27,7 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
@@ -35,10 +36,12 @@ import com.android.healthconnect.controller.migration.MigrationActivity.Companio
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationState
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
+import com.android.healthconnect.controller.onboarding.OnboardingActivity
+import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.increaseViewTouchTargetSize
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -55,26 +58,46 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
-    private val viewModel: RequestPermissionViewModel by viewModels()
-    private val migrationViewModel: MigrationViewModel by viewModels()
+
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+
+    private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
+
+    private val migrationViewModel: MigrationViewModel by viewModels()
+
+    private val openOnboardingActivity =
+        registerForActivityResult(StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_CANCELED) {
+                finish()
+            }
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_permissions)
+        // Handles unsupported devices and user profiles.
+        if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
+            Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
+            finish()
+            return
+        }
 
         if (!intent.hasExtra(EXTRA_PACKAGE_NAME)) {
             Log.e(TAG, "Invalid Intent Extras, finishing")
             finish()
+            return
         }
 
         if (maybeRedirectIntoTwoPaneSettings(this)) {
             return
         }
 
-        if (maybeRedirectToOnboardingActivity(this, intent)) {
-            return
+        setContentView(R.layout.activity_permissions)
+
+        if (savedInstanceState == null && shouldRedirectToOnboardingActivity(this)) {
+            openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
         }
 
         val rationalIntentDeclared =
@@ -84,10 +107,10 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
             finish()
         }
 
-        viewModel.init(getPackageNameExtra(), getPermissionStrings())
-        viewModel.permissionsList.observe(this) { notGrantedPermissions ->
+        requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
+        requestPermissionsViewModel.permissionsList.observe(this) { notGrantedPermissions ->
             if (notGrantedPermissions.isEmpty()) {
-                handleResults(viewModel.request(getPackageNameExtra()))
+                handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
             }
         }
         migrationViewModel.migrationState.observe(this) { migrationState ->
@@ -122,8 +145,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
         cancelButton.setOnClickListener {
             logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
-            viewModel.updatePermissions(false)
-            handleResults(viewModel.request(getPackageNameExtra()))
+            requestPermissionsViewModel.updatePermissions(false)
+            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
         }
     }
 
@@ -134,12 +157,12 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         val parentView = allowButton.parent.parent as View
         increaseViewTouchTargetSize(this, allowButton, parentView)
 
-        viewModel.grantedPermissions.observe(this) { grantedPermissions ->
+        requestPermissionsViewModel.grantedPermissions.observe(this) { grantedPermissions ->
             allowButton.isEnabled = grantedPermissions.isNotEmpty()
         }
         allowButton.setOnClickListener {
             logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-            handleResults(viewModel.request(getPackageNameExtra()))
+            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
         }
     }
 
@@ -150,7 +173,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     this,
                     getString(
                         R.string.migration_in_progress_permissions_dialog_content,
-                        viewModel.appMetadata.value?.appName)) { _, _ ->
+                        requestPermissionsViewModel.appMetadata.value?.appName)) { _, _ ->
                         finish()
                     }
             }
@@ -162,11 +185,11 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     this,
                     getString(
                         R.string.migration_pending_permissions_dialog_content,
-                        viewModel.appMetadata.value?.appName),
+                        requestPermissionsViewModel.appMetadata.value?.appName),
                     null,
                 ) { _, _ ->
-                    viewModel.updatePermissions(false)
-                    handleResults(viewModel.request(getPackageNameExtra()))
+                    requestPermissionsViewModel.updatePermissions(false)
+                    handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
                     finish()
                 }
             }
@@ -193,7 +216,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         val result = Intent()
         result.putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, getPermissionStrings())
         result.putExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS, grants)
-        setResult(Activity.RESULT_OK, result)
+        setResult(RESULT_OK, result)
         finish()
     }
 

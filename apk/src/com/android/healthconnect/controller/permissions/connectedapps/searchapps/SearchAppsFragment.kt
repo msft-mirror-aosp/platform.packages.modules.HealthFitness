@@ -34,7 +34,7 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -59,20 +59,20 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     private var searchView: SearchView? = null
     private val viewModel: ConnectedAppsViewModel by viewModels()
 
-    private val allowedAppsCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(ALLOWED_APPS_CATEGORY)
+    private val allowedAppsCategory: PreferenceGroup by lazy {
+        preferenceScreen.findPreference(ALLOWED_APPS_CATEGORY)!!
     }
-    private val notAllowedAppsCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(NOT_ALLOWED_APPS)
+    private val notAllowedAppsCategory: PreferenceGroup by lazy {
+        preferenceScreen.findPreference(NOT_ALLOWED_APPS)!!
     }
-    private val inactiveAppsPreference: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(INACTIVE_APPS)
+    private val inactiveAppsPreference: PreferenceGroup by lazy {
+        preferenceScreen.findPreference(INACTIVE_APPS)!!
     }
-    private val emptySearchResultsPreference: NoSearchResultPreference? by lazy {
-        preferenceScreen.findPreference(EMPTY_SEARCH_RESULT)
+    private val emptySearchResultsPreference: NoSearchResultPreference by lazy {
+        preferenceScreen.findPreference(EMPTY_SEARCH_RESULT)!!
     }
-    private val topIntroPreference: TopIntroPreference? by lazy {
-        preferenceScreen.findPreference(TOP_INTRO_PREF)
+    private val topIntroPreference: TopIntroPreference by lazy {
+        preferenceScreen.findPreference(TOP_INTRO_PREF)!!
     }
 
     private val menuProvider =
@@ -212,10 +212,12 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     }
 
     private fun hideTitleFromCollapsingToolbarLayout() {
-        activity?.findViewById<AppBarLayout>(R.id.app_bar)?.setExpanded(false)
+        activity?.findViewById<AppBarLayout>(
+            com.android.settingslib.collapsingtoolbar.R.id.app_bar)?.setExpanded(false)
     }
 
     private fun showTitleFromCollapsingToolbarLayout() {
-        activity?.findViewById<AppBarLayout>(R.id.app_bar)?.setExpanded(true)
+        activity?.findViewById<AppBarLayout>(
+            com.android.settingslib.collapsingtoolbar.R.id.app_bar)?.setExpanded(true)
     }
 }

@@ -17,15 +17,12 @@ package com.android.healthconnect.controller.shared.preference
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.preference.PreferenceViewHolder
-import com.android.healthconnect.controller.R
+import android.widget.CompoundButton.OnCheckedChangeListener
 import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
-import com.android.settingslib.widget.MainSwitchBar
 import com.android.settingslib.widget.MainSwitchPreference
-import com.android.settingslib.widget.OnMainSwitchChangeListener
 import dagger.hilt.android.EntryPointAccessors
 
 /** A [MainSwitchPreference] that allows logging. */
@@ -36,16 +33,15 @@ constructor(context: Context, attrs: AttributeSet? = null) : MainSwitchPreferenc
     private var logger: HealthConnectLogger
     var logNameActive: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
     var logNameInactive: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
-    private var loggingSwitchListener: OnMainSwitchChangeListener
-    private var mainSwitchBar: MainSwitchBar? = null
+    private var loggingSwitchListener: OnCheckedChangeListener
 
     init {
         val hiltEntryPoint =
             EntryPointAccessors.fromApplication(
                 context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
         logger = hiltEntryPoint.logger()
-        loggingSwitchListener = OnMainSwitchChangeListener { preference, newValue ->
-            if (preference.isPressed) {
+        loggingSwitchListener = OnCheckedChangeListener { buttonView, newValue ->
+            if (buttonView.isPressed) {
                 if (newValue) {
                     logger.logInteraction(
                         logNameInactive,
@@ -69,18 +65,5 @@ constructor(context: Context, attrs: AttributeSet? = null) : MainSwitchPreferenc
         } else {
             logger.logImpression(logNameInactive)
         }
-    }
-
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
-        super.onBindViewHolder(holder)
-        this.mainSwitchBar = holder?.findViewById(R.id.settingslib_main_switch_bar) as MainSwitchBar
-    }
-
-    // Whether this switch preference is currently focused by a11y readers
-    fun isAccessibilityFocused(): Boolean {
-        mainSwitchBar?.isAccessibilityFocused?.let {
-            return it
-        }
-        return false
     }
 }

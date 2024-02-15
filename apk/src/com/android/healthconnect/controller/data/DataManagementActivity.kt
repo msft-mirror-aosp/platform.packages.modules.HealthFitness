@@ -21,38 +21,34 @@ package com.android.healthconnect.controller.data
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.MigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationState
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.maybeRedirectToOnboardingActivity
-import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 /** Entry point activity for Health Connect Data Management controllers. */
 @AndroidEntryPoint(CollapsingToolbarBaseActivity::class)
 class DataManagementActivity : Hilt_DataManagementActivity() {
+
+    @Inject lateinit var featureUtils: FeatureUtils
+
     private val migrationViewModel: MigrationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_management)
-
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
-            return
+        if (featureUtils.isNewInformationArchitectureEnabled()) {
+            updateNavGraphToNewIA()
         }
 
-        if (maybeRedirectToOnboardingActivity(this, intent)) {
-            return
-        }
-
-        val currentMigrationState = runBlocking { migrationViewModel.getCurrentMigrationUiState() }
-
+        val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
         if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
             return
         }
@@ -71,6 +67,16 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
         }
     }
 
+    private fun updateNavGraphToNewIA() {
+        val navRes = R.navigation.data_nav_graph_new_ia
+        val finalHost = NavHostFragment.create(navRes)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.nav_host_fragment, finalHost)
+            .setPrimaryNavigationFragment(finalHost)
+            .commit()
+    }
+
     override fun onStart() {
         super.onStart()
         findNavController(R.id.nav_host_fragment)
@@ -79,9 +85,9 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
 
     override fun onResume() {
         super.onResume()
-        val currentMigrationState = runBlocking { migrationViewModel.getCurrentMigrationUiState() }
+        val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
 
-        if (MigrationActivity.maybeRedirectToMigrationActivity(this, currentMigrationState)) {
+        if (maybeRedirectToMigrationActivity(this, currentMigrationState)) {
             return
         }
     }

@@ -55,6 +55,7 @@
     <uses-permission android:name="android.permission.health.WRITE_OXYGEN_SATURATION"/>
     <uses-permission android:name="android.permission.health.WRITE_RESPIRATORY_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_RESTING_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.WRITE_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.WRITE_NUTRITION"/>
     <uses-permission android:name="android.permission.health.WRITE_TOTAL_CALORIES_BURNED"/>
 
@@ -91,12 +92,13 @@
     <uses-permission android:name="android.permission.health.READ_OXYGEN_SATURATION"/>
     <uses-permission android:name="android.permission.health.READ_RESPIRATORY_RATE"/>
     <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.READ_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.READ_NUTRITION"/>
     <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
 
 
     <application android:label="CtsHealthConnectTestAppBWithNormalReadWritePermission">
-        <activity android:name="android.healthconnect.cts.testhelper.HealthConnectTestHelper"
+        <activity android:name="android.healthconnect.cts.testhelper.TestAppActivity"
                   android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -107,5 +109,7 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name="android.healthconnect.cts.testhelper.TestAppReceiver"
+            android:exported="true"/>
     </application>
 </manifest>

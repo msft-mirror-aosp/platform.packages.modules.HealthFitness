@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
+import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES;
 import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
 import static android.health.connect.datatypes.AggregationType.AggregationTypeIdentifier.EXERCISE_SESSION_DURATION_TOTAL;
 
@@ -34,6 +35,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getIntegerAndConvertToBoolean;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
@@ -70,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -89,6 +92,10 @@ public final class ExerciseSessionRecordHelper
     private static final String EXERCISE_TYPE_COLUMN_NAME = "exercise_type";
     private static final String TITLE_COLUMN_NAME = "title";
     private static final String HAS_ROUTE_COLUMN_NAME = "has_route";
+
+    private static final int ROUTE_READ_ACCESS_TYPE_NONE = 0;
+    private static final int ROUTE_READ_ACCESS_TYPE_OWN = 1;
+    private static final int ROUTE_READ_ACCESS_TYPE_ALL = 2;
 
     public ExerciseSessionRecordHelper() {
         super(RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION);
@@ -132,6 +139,7 @@ public final class ExerciseSessionRecordHelper
         }
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     AggregateParams getAggregateParams(AggregationType<?> aggregateRequest) {
         List<String> sessionColumns = new ArrayList<>(super.getPriorityAggregationColumnNames());
@@ -243,27 +251,23 @@ public final class ExerciseSessionRecordHelper
     List<ReadTableRequest> getExtraDataReadRequests(
             ReadRecordsRequestParcel request,
             String packageName,
-            long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
-        if (!isExerciseRouteFeatureEnabled()) {
+            long startDateAccessMillis,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
+        int routeAccessType =
+                getExerciseRouteReadAccessType(
+                        packageName, grantedExtraReadPermissions, isInForeground);
+
+        if (routeAccessType == ROUTE_READ_ACCESS_TYPE_NONE) {
             return Collections.emptyList();
         }
 
-        boolean canReadAnyRoute = extraPermsState.get(READ_EXERCISE_ROUTE);
-        if (!canReadAnyRoute
-                && AppInfoHelper.getInstance().getAppInfoId(packageName) == DEFAULT_LONG) {
-            // If the package doesn't have app info and cannot read any route,
-            // then no route is accessible for it.
-            return Collections.emptyList();
-        }
+        boolean enforceSelfRead = routeAccessType == ROUTE_READ_ACCESS_TYPE_OWN;
 
-        WhereClauses whereClause =
+        WhereClauses sessionsWithAccessibleRouteClause =
                 getReadTableWhereClause(
-                        request,
-                        packageName,
-                        /* enforceSelfRead= */ !canReadAnyRoute,
-                        startDateAccess);
-        return List.of(getRouteReadRequest(whereClause));
+                        request, packageName, enforceSelfRead, startDateAccessMillis);
+        return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
     }
 
     @Override
@@ -304,7 +308,7 @@ public final class ExerciseSessionRecordHelper
     /** Returns permissions required to read extra record data. */
     @Override
     public List<String> getExtraReadPermissions() {
-        return Collections.singletonList(READ_EXERCISE_ROUTE);
+        return List.of(READ_EXERCISE_ROUTE, READ_EXERCISE_ROUTES);
     }
 
     public List<String> getExtraWritePermissions() {
@@ -315,17 +319,33 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    List<ReadTableRequest> getExtraDataReadRequests(List<UUID> uuids, long startDateAccess) {
-        if (!isExerciseRouteFeatureEnabled()) {
+    List<ReadTableRequest> getExtraDataReadRequests(
+            String packageName,
+            List<UUID> uuids,
+            long startDateAccess,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
+        int routeAccessType =
+                getExerciseRouteReadAccessType(
+                        packageName, grantedExtraReadPermissions, isInForeground);
+
+        if (routeAccessType == ROUTE_READ_ACCESS_TYPE_NONE) {
             return Collections.emptyList();
         }
 
-        WhereClauses whereClause =
-                new WhereClauses()
+        WhereClauses sessionsWithAccessibleRouteClause =
+                new WhereClauses(AND)
                         .addWhereInClauseWithoutQuotes(
-                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids));
-        whereClause.addWhereLaterThanTimeClause(getStartTimeColumnName(), startDateAccess);
-        return List.of(getRouteReadRequest(whereClause));
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
+                        .addWhereLaterThanTimeClause(getStartTimeColumnName(), startDateAccess);
+
+        if (routeAccessType == ROUTE_READ_ACCESS_TYPE_OWN) {
+            long appId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+            sessionsWithAccessibleRouteClause.addWhereInLongsClause(
+                    APP_INFO_ID_COLUMN_NAME, List.of(appId));
+        }
+
+        return List.of(getRouteReadRequest(sessionsWithAccessibleRouteClause));
     }
 
     @Override
@@ -351,6 +371,12 @@ public final class ExerciseSessionRecordHelper
         return isRecordOperationsEnabled()
                 && HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isExerciseRouteFeatureEnabled();
+    }
+
+    private boolean isReadExerciseRouteAllFeatureEnabled() {
+        return isExerciseRouteFeatureEnabled()
+                && HealthConnectDeviceConfigManager.getInitialisedInstance()
+                        .isExerciseRoutesReadAllFeatureEnabled();
     }
 
     @Override
@@ -403,9 +429,37 @@ public final class ExerciseSessionRecordHelper
         sessionsIdsRequest.setColumnNames(List.of(PRIMARY_COLUMN_NAME));
         sessionsIdsRequest.setWhereClause(clauseToFilterSessionIds);
 
-        WhereClauses inClause = new WhereClauses();
+        WhereClauses inClause = new WhereClauses(AND);
         inClause.addWhereInSQLRequestClause(PARENT_KEY_COLUMN_NAME, sessionsIdsRequest);
         routeReadRequest.setWhereClause(inClause);
         return routeReadRequest;
+    }
+
+    // TODO(b/319821477): disallow reading own routes without any granted ER permission.
+    private int getExerciseRouteReadAccessType(
+            String packageName, Set<String> grantedExtraReadPermissions, boolean isInForeground) {
+        if (!isExerciseRouteFeatureEnabled()) {
+            return ROUTE_READ_ACCESS_TYPE_NONE;
+        }
+
+        boolean isController = grantedExtraReadPermissions.contains(READ_EXERCISE_ROUTE);
+
+        if (isController) {
+            // HC UI Controller has access to all routes.
+            return ROUTE_READ_ACCESS_TYPE_ALL;
+        }
+
+        long appId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+
+        if (appId == DEFAULT_LONG) {
+            return ROUTE_READ_ACCESS_TYPE_NONE;
+        }
+
+        boolean canReadAllRoutes =
+                isInForeground
+                        && isReadExerciseRouteAllFeatureEnabled()
+                        && grantedExtraReadPermissions.contains(READ_EXERCISE_ROUTES);
+
+        return canReadAllRoutes ? ROUTE_READ_ACCESS_TYPE_ALL : ROUTE_READ_ACCESS_TYPE_OWN;
     }
 }

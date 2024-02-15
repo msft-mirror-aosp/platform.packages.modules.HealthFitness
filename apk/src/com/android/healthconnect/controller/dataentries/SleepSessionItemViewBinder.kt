@@ -22,7 +22,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.dataentries.FormattedEntry.SleepSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -71,9 +71,16 @@ class SleepSessionItemViewBinder(
             logger.logInteraction(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
             onDeleteEntryListenerClicked?.onDeleteEntry(data.uuid, data.dataType, index)
         }
-        container.setOnClickListener {
-            logger.logInteraction(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
-            onItemClickedListener?.onItemClicked(data.uuid, index)
+        deleteButton.contentDescription =
+            view.resources.getString(
+                R.string.data_point_action_content_description, data.headerA11y)
+        if (showSecondAction) {
+            container.setOnClickListener {
+                logger.logInteraction(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
+                onItemClickedListener?.onItemClicked(data.uuid, index)
+            }
+        } else {
+            container.isClickable = false
         }
     }
 }

@@ -16,6 +16,7 @@
 
 package android.health.connect.datatypes;
 
+import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.SystemApi;
 
@@ -337,15 +338,18 @@ public final class RecordTypeIdentifier {
     public static final int RECORD_TYPE_EXERCISE_SESSION = 37;
 
     /**
-     * Captures user sleep session. Each session requires start and end time and a list of {@link
-     * SleepSessionRecord.Stage}.
+     * Captures the user's sleep length and its stages. Each record represents a time interval for a
+     * full sleep session.
      *
-     * <p>Each {@link SleepSessionRecord.Stage} interval should be between the start time and the
-     * end time of the session. Stages within one session must not overlap.
+     * <p>All {@link SleepSessionRecord.Stage} time intervals should fall within the sleep session
+     * interval. Time intervals for stages don't need to be continuous but shouldn't overlap.
      *
      * @see SleepSessionRecord
      */
     public static final int RECORD_TYPE_SLEEP_SESSION = 38;
+
+    @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
+    public static final int RECORD_TYPE_SKIN_TEMPERATURE = 39;
 
     /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
@@ -393,7 +397,8 @@ public final class RecordTypeIdentifier {
                     RECORD_TYPE_HEART_RATE_VARIABILITY_RMSSD,
                     RECORD_TYPE_MENSTRUATION_PERIOD,
                     RECORD_TYPE_INTERMENSTRUAL_BLEEDING,
-                    RECORD_TYPE_SLEEP_SESSION);
+                    RECORD_TYPE_SLEEP_SESSION,
+                    RECORD_TYPE_SKIN_TEMPERATURE);
 
     private RecordTypeIdentifier() {}
 
@@ -437,7 +442,8 @@ public final class RecordTypeIdentifier {
         RECORD_TYPE_HEART_RATE_VARIABILITY_RMSSD,
         RECORD_TYPE_MENSTRUATION_PERIOD,
         RECORD_TYPE_INTERMENSTRUAL_BLEEDING,
-        RECORD_TYPE_SLEEP_SESSION
+        RECORD_TYPE_SLEEP_SESSION,
+        RECORD_TYPE_SKIN_TEMPERATURE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface RecordType {}

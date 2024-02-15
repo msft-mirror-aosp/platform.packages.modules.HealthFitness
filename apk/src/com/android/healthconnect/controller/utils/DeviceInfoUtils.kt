@@ -3,9 +3,9 @@ package com.android.healthconnect.controller.utils
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.UserManager
 import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
@@ -21,68 +21,43 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
 interface DeviceInfoUtils {
-    fun isSendFeedbackAvailable(context: Context): Boolean
 
-    fun getFeedbackReporterPackage(context: Context): String?
+    fun isHealthConnectAvailable(context: Context): Boolean
+
+    fun isSendFeedbackAvailable(context: Context): Boolean
 
     fun isPlayStoreAvailable(context: Context): Boolean
 
     fun openHCGetStartedLink(activity: FragmentActivity)
 
     fun openSendFeedbackActivity(activity: FragmentActivity)
+
+    fun isIntentHandlerAvailable(context: Context, intent: Intent): Boolean
 }
 
 class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
 
     companion object {
         private val TAG = "DeviceInfoUtils"
-        private val FEEDBACK_REPORTER = "com.google.android.gms"
     }
 
     override fun isSendFeedbackAvailable(context: Context): Boolean {
-        return !TextUtils.isEmpty(getFeedbackReporterPackage(context))
-    }
-
-    override fun getFeedbackReporterPackage(context: Context): String? {
-        // Check to ensure the feedback reporter is on system image, and feedback reporter is
-        // configured to listen to the intent. Otherwise, don't show the "send feedback" preference.
-        val intent = Intent(Intent.ACTION_BUG_REPORT)
-        val pm = context.packageManager
-        val resolvedPackages = pm.queryIntentActivities(intent, PackageManager.GET_RESOLVED_FILTER)
-        for (info in resolvedPackages) {
-            if (info.activityInfo != null) {
-                if (!TextUtils.isEmpty(info.activityInfo.packageName)) {
-                    try {
-                        val ai = pm.getApplicationInfo(info.activityInfo.packageName, 0)
-                        if (ai.flags and ApplicationInfo.FLAG_SYSTEM != 0) {
-                            // Package is on the system image
-                            if (TextUtils.equals(
-                                info.activityInfo.packageName, FEEDBACK_REPORTER)) {
-                                return FEEDBACK_REPORTER
-                            }
-                        }
-                    } catch (e: PackageManager.NameNotFoundException) {
-                        // No need to do anything here.
-                    }
-                }
-            }
-        }
-        return null
+        return isIntentHandlerAvailable(context, Intent(Intent.ACTION_BUG_REPORT))
     }
 
     override fun isPlayStoreAvailable(context: Context): Boolean {
-        val playStorePackageName = context.resources?.getString(R.string.playstore_package_name)
+        val playStorePackageName = context.resources?.getString(R.string.playstore_collection_url)
+        val vendingPackageName = context.resources?.getString(R.string.playstore_package_name)
         if (TextUtils.isEmpty(playStorePackageName) || playStorePackageName == null) {
             // Package name not configured. Return.
             return false
         }
-        val pm = context.packageManager
-        return try {
-            pm?.getApplicationInfo(playStorePackageName, 0)
-            true
-        } catch (e: PackageManager.NameNotFoundException) {
-            false
-        }
+        return isIntentHandlerAvailable(
+            context,
+            Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(playStorePackageName)
+                setPackage(vendingPackageName)
+            })
     }
 
     override fun openHCGetStartedLink(activity: FragmentActivity) {
@@ -103,6 +78,30 @@ class DeviceInfoUtilsImpl @Inject constructor() : DeviceInfoUtils {
         val intent = Intent(Intent.ACTION_BUG_REPORT)
         intent.putExtra("category_tag", USER_INITIATED_FEEDBACK_BUCKET_ID)
         activity.startActivityForResult(intent, FEEDBACK_INTENT_RESULT_CODE)
+    }
+
+    override fun isIntentHandlerAvailable(context: Context, intent: Intent): Boolean {
+        val packageManager = context.packageManager
+        if (intent.resolveActivity(packageManager) != null) {
+            return true
+        }
+        return false
+    }
+
+    override fun isHealthConnectAvailable(context: Context): Boolean {
+        return isHardwareSupported(context) && !isProfile(context)
+    }
+
+    private fun isHardwareSupported(context: Context): Boolean {
+        val pm: PackageManager = context.packageManager
+        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+    }
+
+    private fun isProfile(context: Context): Boolean {
+        return (context.getSystemService(Context.USER_SERVICE) as UserManager).isProfile
     }
 }
 

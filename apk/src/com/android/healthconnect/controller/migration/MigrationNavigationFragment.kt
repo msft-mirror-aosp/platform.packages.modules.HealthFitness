@@ -3,34 +3,33 @@ package com.android.healthconnect.controller.migration
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.NavigationUtils
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
 
+    @Inject lateinit var navigationUtils: NavigationUtils
+
     private val migrationViewModel: MigrationViewModel by viewModels()
     private lateinit var sharedPreference: SharedPreferences
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_migration_navigation, container, false)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
+        setPreferencesFromResource(R.xml.empty_preference_screen, rootKey)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPreference =
-            requireActivity().getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+            requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
 
         migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
             when (migrationState) {
@@ -65,7 +64,6 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
             }
             MigrationState.COMPLETE_IDLE,
             MigrationState.COMPLETE -> {
-                markMigrationComplete()
                 navigateToHomeFragment()
             }
             else -> {
@@ -75,34 +73,26 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
     }
 
     private fun showInProgressFragment() {
-        findNavController()
-            .navigate(R.id.action_migrationNavigationFragment_to_migrationInProgressFragment)
+        navigationUtils.navigate(
+            this, R.id.action_migrationNavigationFragment_to_migrationInProgressFragment)
     }
 
     private fun showAppUpdateRequiredFragment() {
-        findNavController()
-            .navigate(R.id.action_migrationNavigationFragment_to_migrationAppUpdateNeededFragment)
+        navigationUtils.navigate(
+            this, R.id.action_migrationNavigationFragment_to_migrationAppUpdateNeededFragment)
     }
 
     private fun showModuleUpdateRequiredFragment() {
-        findNavController()
-            .navigate(
-                R.id.action_migrationNavigationFragment_to_migrationModuleUpdateNeededFragment)
+        navigationUtils.navigate(
+            this, R.id.action_migrationNavigationFragment_to_migrationModuleUpdateNeededFragment)
     }
 
     private fun showMigrationPausedFragment() {
-        findNavController()
-            .navigate(R.id.action_migrationNavigationFragment_to_migrationPausedFragment)
+        navigationUtils.navigate(
+            this, R.id.action_migrationNavigationFragment_to_migrationPausedFragment)
     }
 
     private fun navigateToHomeFragment() {
-        findNavController().navigate(R.id.action_migrationNavigationFragment_to_homeFragment)
-    }
-
-    private fun markMigrationComplete() {
-        sharedPreference.edit().apply {
-            putBoolean(MigrationActivity.MIGRATION_COMPLETE_KEY, true)
-            apply()
-        }
+        navigationUtils.navigate(this, R.id.action_migrationNavigationFragment_to_homeFragment)
     }
 }

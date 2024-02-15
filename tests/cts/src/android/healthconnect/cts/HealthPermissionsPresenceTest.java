@@ -45,6 +45,7 @@ import static android.health.connect.HealthPermissions.READ_POWER;
 import static android.health.connect.HealthPermissions.READ_RESPIRATORY_RATE;
 import static android.health.connect.HealthPermissions.READ_RESTING_HEART_RATE;
 import static android.health.connect.HealthPermissions.READ_SEXUAL_ACTIVITY;
+import static android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE;
 import static android.health.connect.HealthPermissions.READ_SLEEP;
 import static android.health.connect.HealthPermissions.READ_SPEED;
 import static android.health.connect.HealthPermissions.READ_STEPS;
@@ -81,6 +82,7 @@ import static android.health.connect.HealthPermissions.WRITE_POWER;
 import static android.health.connect.HealthPermissions.WRITE_RESPIRATORY_RATE;
 import static android.health.connect.HealthPermissions.WRITE_RESTING_HEART_RATE;
 import static android.health.connect.HealthPermissions.WRITE_SEXUAL_ACTIVITY;
+import static android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE;
 import static android.health.connect.HealthPermissions.WRITE_SLEEP;
 import static android.health.connect.HealthPermissions.WRITE_SPEED;
 import static android.health.connect.HealthPermissions.WRITE_STEPS;
@@ -113,6 +115,8 @@ import java.util.Set;
 public class HealthPermissionsPresenceTest {
     private static final Set<String> HEALTH_PERMISSIONS =
             Set.of(
+                    // TODO(b/299897306): Replace with a constant when it is exposed
+                    "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND",
                     READ_ACTIVE_CALORIES_BURNED,
                     READ_DISTANCE,
                     READ_ELEVATION_GAINED,
@@ -148,6 +152,7 @@ public class HealthPermissionsPresenceTest {
                     READ_RESPIRATORY_RATE,
                     READ_RESTING_HEART_RATE,
                     READ_INTERMENSTRUAL_BLEEDING,
+                    READ_SKIN_TEMPERATURE,
                     WRITE_ACTIVE_CALORIES_BURNED,
                     WRITE_DISTANCE,
                     WRITE_ELEVATION_GAINED,
@@ -183,6 +188,7 @@ public class HealthPermissionsPresenceTest {
                     WRITE_OXYGEN_SATURATION,
                     WRITE_RESPIRATORY_RATE,
                     WRITE_RESTING_HEART_RATE,
+                    WRITE_SKIN_TEMPERATURE,
                     WRITE_INTERMENSTRUAL_BLEEDING);
 
     private PackageManager mPackageManager;

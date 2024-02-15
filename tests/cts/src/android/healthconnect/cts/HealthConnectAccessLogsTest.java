@@ -16,19 +16,30 @@
 
 package android.healthconnect.cts;
 
+import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
+import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.Context;
+import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
+import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,10 +50,27 @@ import java.util.List;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectAccessLogsTest {
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
+    @After
+    public void tearDown() throws InterruptedException {
+        Context context = ApplicationProvider.getApplicationContext();
+        String packageName = context.getPackageName();
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addDataOrigin(new DataOrigin.Builder().setPackageName(packageName).build())
+                        .build());
+        TestUtils.deleteAllStagedRemoteData();
+    }
+
     @Test
     public void testAccessLogs_read_singleRecordType() throws InterruptedException {
         List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
-        List<Record> testRecord = Collections.singletonList(TestUtils.getStepsRecord());
+        List<Record> testRecord = Collections.singletonList(getStepsRecord());
         TestUtils.insertRecords(testRecord);
         TestUtils.readRecords(
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
@@ -61,7 +89,7 @@ public class HealthConnectAccessLogsTest {
     @Test
     public void testAccessLogs_read_multipleRecordTypes() throws InterruptedException {
         List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
-        List<Record> testRecord = TestUtils.getTestRecords();
+        List<Record> testRecord = getTestRecords();
         TestUtils.insertRecords(testRecord);
         TestUtils.readRecords(
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
@@ -79,7 +107,7 @@ public class HealthConnectAccessLogsTest {
     @Test
     public void testAccessLogs_afterInsert() throws InterruptedException {
         List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
-        List<Record> testRecord = TestUtils.getTestRecords();
+        List<Record> testRecord = getTestRecords();
         TestUtils.insertRecords(testRecord);
         // Wait for some time before fetching access logs as they are updated in the background.
         Thread.sleep(500);

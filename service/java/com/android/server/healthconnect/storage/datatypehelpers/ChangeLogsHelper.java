@@ -27,11 +27,11 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse.DeletedLog;
@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-public final class ChangeLogsHelper {
+public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String APP_ID_COLUMN_NAME = "app_id";
@@ -70,6 +70,8 @@ public final class ChangeLogsHelper {
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile ChangeLogsHelper sChangeLogsHelper;
 
     private ChangeLogsHelper() {}
@@ -91,8 +93,10 @@ public final class ChangeLogsHelper {
                 .createIndexOn(APP_ID_COLUMN_NAME);
     }
 
-    // Called on DB update.
-    public void onUpgrade(int oldVersion, int newVersion, @NonNull SQLiteDatabase db) {}
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
+    }
 
     /** Returns change logs post the time when {@code changeLogTokenRequest} was generated */
     public ChangeLogsResponse getChangeLogs(
@@ -100,7 +104,7 @@ public final class ChangeLogsHelper {
             ChangeLogsRequest changeLogsRequest) {
         long token = changeLogTokenRequest.getRowIdChangeLogs();
         WhereClauses whereClause =
-                new WhereClauses()
+                new WhereClauses(AND)
                         .addWhereGreaterThanClause(PRIMARY_COLUMN_NAME, String.valueOf(token));
         if (!changeLogTokenRequest.getRecordTypes().isEmpty()) {
             whereClause.addWhereInIntsClause(
@@ -114,12 +118,12 @@ public final class ChangeLogsHelper {
                             .getAppInfoIds(changeLogTokenRequest.getPackageNamesToFilter()));
         }
 
-        // In setLimit(pagesize) method size will be set to pageSize + 1,so that if number of
-        // records returned is more than pageSize we know there are more records available to return
-        // for the next read.
+        // We set limit size to requested pageSize plus extra 1 record so that if number of records
+        // queried is more than pageSize we know there are more records available to return for the
+        // next read.
         int pageSize = changeLogsRequest.getPageSize();
         final ReadTableRequest readTableRequest =
-                new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize);
+                new ReadTableRequest(TABLE_NAME).setWhereClause(whereClause).setLimit(pageSize + 1);
 
         Map<Integer, ChangeLogs> operationToChangeLogMap = new ArrayMap<>();
         TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
@@ -150,6 +154,7 @@ public final class ChangeLogsHelper {
         return TransactionManager.getInitialisedInstance().getLastRowIdFor(TABLE_NAME);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private int addChangeLogs(Cursor cursor, Map<Integer, ChangeLogs> changeLogs) {
         @RecordTypeIdentifier.RecordType
         int recordType = getCursorInt(cursor, RECORD_TYPE_COLUMN_NAME);
@@ -165,7 +170,7 @@ public final class ChangeLogsHelper {
     }
 
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    protected List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
         columnInfo.add(new Pair<>(RECORD_TYPE_COLUMN_NAME, INTEGER));
@@ -220,6 +225,7 @@ public final class ChangeLogsHelper {
         @OperationType.OperationTypes private final int mOperationType;
         private final String mPackageName;
         private final long mChangeLogTimeStamp;
+
         /**
          * Creates a change logs object used to add a new change log for {@code operationType} for
          * {@code packageName} logged at time {@code timeStamp }
@@ -237,6 +243,7 @@ public final class ChangeLogsHelper {
             mPackageName = packageName;
             mChangeLogTimeStamp = timeStamp;
         }
+
         /**
          * Creates a change logs object used to add a new change log for {@code operationType}
          * logged at time {@code timeStamp }
@@ -245,6 +252,7 @@ public final class ChangeLogsHelper {
          *     or delete.
          * @param timeStamp Time when the change log is added.
          */
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public ChangeLogs(@OperationType.OperationTypes int operationType, long timeStamp) {
             mOperationType = operationType;
             mChangeLogTimeStamp = timeStamp;
@@ -276,6 +284,7 @@ public final class ChangeLogsHelper {
         }
 
         /** Function to add an uuid corresponding to given pair of @recordType and @appId */
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public void addUUID(
                 @RecordTypeIdentifier.RecordType int recordType,
                 @NonNull long appId,
@@ -312,6 +321,8 @@ public final class ChangeLogsHelper {
             return requests;
         }
 
+        /** Adds {@code uuids} to {@link ChangeLogs}. */
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public ChangeLogs addUUIDs(
                 @RecordTypeIdentifier.RecordType int recordType,
                 @NonNull long appId,

@@ -16,21 +16,25 @@
 package android.healthconnect.cts.lib
 
 import android.Manifest
+import android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS
 import android.content.Context
+import android.content.pm.PackageManager.PERMISSION_DENIED
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.health.connect.datatypes.*
 import android.health.connect.datatypes.units.Length
 import android.os.SystemClock
 import android.util.Log
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.BySelector
+import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.StaleObjectException
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
+import androidx.test.uiautomator.Until
 import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
 import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
 import com.android.compatibility.common.util.UiAutomatorUtils2.waitFindObject
 import com.android.compatibility.common.util.UiAutomatorUtils2.waitFindObjectOrNull
-import java.lang.Exception
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeoutException
@@ -66,6 +70,18 @@ object UiTestUtils {
             uiObjectAction(waitFindObject(selector, it.toMillis()))
             true
         }
+    }
+
+    fun scrollDownTo(selector: BySelector) {
+        waitFindObject(By.scrollable(true)).scrollUntil(Direction.DOWN, Until.findObject(selector))
+    }
+
+    fun scrollDownToAndClick(selector: BySelector) {
+        getUiDevice()
+            .findObject(By.scrollable(true))
+            .scrollUntil(Direction.DOWN, Until.findObject(selector))
+            .click()
+        getUiDevice().waitForIdle()
     }
 
     fun skipOnboardingIfAppears() {
@@ -276,17 +292,22 @@ object UiTestUtils {
     }
 
     fun grantPermissionViaPackageManager(context: Context, packageName: String, permName: String) {
+        val pm = context.packageManager
+        if (pm.checkPermission(permName, packageName) == PERMISSION_GRANTED) {
+            return
+        }
         runWithShellPermissionIdentity(
-            { context.packageManager.grantRuntimePermission(packageName, permName, context.user) },
+            { pm.grantRuntimePermission(packageName, permName, context.user) },
             Manifest.permission.GRANT_RUNTIME_PERMISSIONS)
     }
 
     fun revokePermissionViaPackageManager(context: Context, packageName: String, permName: String) {
+        val pm = context.packageManager
+        if (pm.checkPermission(permName, packageName) == PERMISSION_DENIED) {
+            return
+        }
         runWithShellPermissionIdentity(
-            {
-                context.packageManager.revokeRuntimePermission(
-                    packageName, permName, context.user, /* reason= */ "")
-            },
-            Manifest.permission.REVOKE_RUNTIME_PERMISSIONS)
+            { pm.revokeRuntimePermission(packageName, permName, context.user, /* reason= */ "") },
+            REVOKE_RUNTIME_PERMISSIONS)
     }
 }

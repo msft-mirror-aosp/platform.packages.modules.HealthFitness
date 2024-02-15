@@ -16,20 +16,27 @@
 
 package com.android.server.healthconnect;
 
+import static org.mockito.Mockito.when;
+
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Process;
 
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import com.android.server.healthconnect.storage.TestUtils;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.truth.Truth;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
+@RunWith(AndroidJUnit4.class)
 public class HealthConnectThreadSchedulerTest {
     private ThreadPoolExecutor mInternalTaskScheduler;
     private ThreadPoolExecutor mControllerTaskScheduler;
@@ -41,8 +48,15 @@ public class HealthConnectThreadSchedulerTest {
     private long mBackgroundTaskSchedulerCompletedJobs;
     private Context mContext;
 
+    @Mock private Context mMockContext;
+    @Mock private ActivityManager mActivityManager;
+
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        HealthConnectThreadScheduler.resetThreadPools();
+
         mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
         mInternalTaskSchedulerCompletedJobs = mInternalTaskScheduler.getCompletedTaskCount();
         mControllerTaskScheduler = HealthConnectThreadScheduler.sControllerExecutor;
@@ -80,12 +94,42 @@ public class HealthConnectThreadSchedulerTest {
                         throw new RuntimeException();
                     }
                 });
+
+        when(mMockContext.getSystemService(ActivityManager.class)).thenReturn(mActivityManager);
+        ActivityManager.RunningAppProcessInfo runningAppProcessInfo =
+                new ActivityManager.RunningAppProcessInfo();
+        runningAppProcessInfo.uid = Process.myUid();
+        runningAppProcessInfo.importance =
+                ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+        when(mActivityManager.getRunningAppProcesses()).thenReturn(List.of(runningAppProcessInfo));
+
+        HealthConnectThreadScheduler.schedule(mMockContext, () -> {}, Process.myUid(), false);
+        TestUtils.waitForTaskToFinishSuccessfully(
+                () -> {
+                    if (mForegroundTaskScheduler.getCompletedTaskCount()
+                            != mForegroundTaskSchedulerCompletedJobs + 1) {
+                        throw new RuntimeException();
+                    }
+                });
+    }
+
+    @Test
+    public void testHealthConnectScheduler_runningAppProcessNull() throws Exception {
+        when(mMockContext.getSystemService(ActivityManager.class)).thenReturn(mActivityManager);
+        when(mActivityManager.getRunningAppProcesses()).thenReturn(null);
+
+        HealthConnectThreadScheduler.scheduleInternalTask(() -> {});
+        TestUtils.waitForTaskToFinishSuccessfully(
+                () -> {
+                    if (mInternalTaskScheduler.getCompletedTaskCount()
+                            != mInternalTaskSchedulerCompletedJobs + 1) {
+                        throw new RuntimeException();
+                    }
+                });
     }
 
     @Test
     public void testHealthConnectSchedulerClear() {
-        HealthConnectThreadScheduler.resetThreadPools();
-        setUp();
         Truth.assertThat(mInternalTaskSchedulerCompletedJobs).isEqualTo(0);
         Truth.assertThat(mControllerTaskSchedulerCompletedJobs).isEqualTo(0);
         Truth.assertThat(mForegroundTaskSchedulerCompletedJobs).isEqualTo(0);

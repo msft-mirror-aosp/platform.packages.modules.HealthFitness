@@ -34,10 +34,18 @@
       "name": "CtsHealthConnectControllerTestCases"
     },
     {
+      "name": "HealthFitnessIntegrationBackupRestoreTests"
+    },
+    {
       "name": "HealthFitnessIntegrationTests"
     },
     {
-      "name": "HealthFitnessUnitTests"
+      "name": "HealthFitnessUnitTests",
+       "options": [
+                {
+                    "exclude-filter": "org.junit.Ignore"
+                }
+        ]
     },
     {
       "name": "HealthConnectBackupRestoreUnitTests"
@@ -47,6 +55,12 @@
     },
     {
       "name": "CtsHealthConnectHostSideDeviceTestCases"
+    },
+    {
+      "name": "CtsExerciseRouteTestCases"
+    },
+    {
+      "name": "CtsHealthFitnessShowMigrationInfoIntentAbsentTests"
     }
   ]
 }

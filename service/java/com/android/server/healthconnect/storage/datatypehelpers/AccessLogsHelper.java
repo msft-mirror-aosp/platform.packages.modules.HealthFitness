@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.InstantRecordHelper.TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.DELIMITER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER_NOT_NULL;
@@ -29,7 +28,6 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLog.OperationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -40,6 +38,7 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.OrderByClause;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -52,7 +51,7 @@ import java.util.stream.Collectors;
  *
  * @hide
  */
-public final class AccessLogsHelper {
+public final class AccessLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "access_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String APP_ID_COLUMN_NAME = "app_id";
@@ -60,6 +59,8 @@ public final class AccessLogsHelper {
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final int NUM_COLS = 5;
     private static final int DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS = 7;
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile AccessLogsHelper sAccessLogsHelper;
 
     private AccessLogsHelper() {}
@@ -98,6 +99,30 @@ public final class AccessLogsHelper {
         return accessLogsList;
     }
 
+    /**
+     * Returns the timestamp of the latest access log and {@link Long.MIN_VALUE} if there is no
+     * access log.
+     */
+    public long getLatestAccessLogTimeStamp() {
+
+        final ReadTableRequest readTableRequest =
+                new ReadTableRequest(TABLE_NAME)
+                        .setOrderBy(
+                                new OrderByClause()
+                                        .addOrderByClause(ACCESS_TIME_COLUMN_NAME, false))
+                        .setLimit(1);
+
+        long mostRecentAccessTime = Long.MIN_VALUE;
+        final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
+        try (Cursor cursor = transactionManager.read(readTableRequest)) {
+            while (cursor.moveToNext()) {
+                long accessTime = getCursorLong(cursor, ACCESS_TIME_COLUMN_NAME);
+                mostRecentAccessTime = Math.max(mostRecentAccessTime, accessTime);
+            }
+        }
+        return mostRecentAccessTime;
+    }
+
     /** Adds an entry in to the access logs table for every insert or read operation request */
     public void addAccessLog(
             String packageName,
@@ -130,15 +155,16 @@ public final class AccessLogsHelper {
     public DeleteTableRequest getDeleteRequestForAutoDelete() {
         return new DeleteTableRequest(TABLE_NAME)
                 .setTimeFilter(
-                        TIME_COLUMN_NAME,
+                        ACCESS_TIME_COLUMN_NAME,
                         Instant.EPOCH.toEpochMilli(),
                         Instant.now()
                                 .minus(DEFAULT_ACCESS_LOG_TIME_PERIOD_IN_DAYS, ChronoUnit.DAYS)
                                 .toEpochMilli());
     }
 
+    @Override
     @NonNull
-    private List<Pair<String, String>> getColumnInfo() {
+    public List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
         columnInfo.add(new Pair<>(APP_ID_COLUMN_NAME, INTEGER_NOT_NULL));
@@ -149,7 +175,10 @@ public final class AccessLogsHelper {
         return columnInfo;
     }
 
-    public void onUpgrade(int oldVersion, int newVersion, SQLiteDatabase db) {}
+    @Override
+    protected String getMainTableName() {
+        return TABLE_NAME;
+    }
 
     public static synchronized AccessLogsHelper getInstance() {
         if (sAccessLogsHelper == null) {

@@ -29,7 +29,9 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDia
 import com.android.healthconnect.controller.autodelete.AutoDeleteConfirmationDialogFragment.Companion.OLD_AUTO_DELETE_RANGE_BUNDLE
 import com.android.healthconnect.controller.autodelete.AutoDeleteRangePickerPreference.Companion.AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
 import com.android.healthconnect.controller.autodelete.AutoDeleteRangePickerPreference.Companion.SET_TO_NEVER_EVENT
+import com.android.healthconnect.controller.shared.preference.HeaderPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +45,7 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
         private const val AUTO_DELETE_SECTION = "auto_delete_section"
         private const val HEADER = "header"
     }
+
     init {
         this.setPageName(PageName.AUTO_DELETE_PAGE)
     }
@@ -95,7 +98,14 @@ class AutoDeleteFragment : Hilt_AutoDeleteFragment() {
         }
 
         mHeaderSection?.removeAll()
-        mHeaderSection?.addPreference(HeaderPreference(requireContext(), requireActivity()))
+        mHeaderSection?.addPreference(
+            HeaderPreference(requireContext()).also {
+                it.setHeaderText(getString(R.string.auto_delete_header))
+                it.setHeaderLinkText(getString(R.string.auto_delete_learn_more))
+                it.setHeaderLinkAction {
+                    DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
+                }
+            })
 
         childFragmentManager.setFragmentResultListener(SET_TO_NEVER_EVENT, this) { _, _ ->
             viewModel.updateAutoDeleteRange(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER)

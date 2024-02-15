@@ -23,6 +23,7 @@ import static android.health.connect.Constants.READ;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.GET_CHANGES;
@@ -49,6 +50,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.accesslog.AccessLogsResponseParcel;
@@ -93,7 +95,6 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
-import android.health.connect.internal.datatypes.utils.RecordTypePermissionCategoryMapper;
 import android.health.connect.migration.HealthConnectMigrationUiState;
 import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.migration.MigrationException;
@@ -111,7 +112,6 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
-import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Slog;
@@ -136,6 +136,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
@@ -150,6 +151,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -157,7 +159,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -178,6 +180,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private static final String TAG_READ = "HealthConnectRead";
     private static final String TAG_GRANT_PERMISSION = "HealthConnectGrantReadPermissions";
     private static final String TAG_READ_PERMISSION = "HealthConnectReadPermission";
+    private static final String TAG_READ_PERMISSION_FLAGS = "HealthConnectReadPermissionFlags";
+    private static final String TAG_MAKE_PERMISSIONS_REQUESTABLE =
+            "HealthConnectMakePermissionsRequestable";
     private static final String TAG_INSERT_SUBTASKS = "HealthConnectInsertSubtasks";
 
     private static final String TAG_DELETE_SUBTASKS = "HealthConnectDeleteSubtasks";
@@ -186,11 +191,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private static final int TRACE_TAG_READ = TAG_READ.hashCode();
     private static final int TRACE_TAG_GRANT_PERMISSION = TAG_GRANT_PERMISSION.hashCode();
     private static final int TRACE_TAG_READ_PERMISSION = TAG_READ_PERMISSION.hashCode();
+    private static final int TRACE_TAG_READ_PERMISSION_FLAGS = TAG_READ_PERMISSION_FLAGS.hashCode();
+    private static final int TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE =
+            TAG_MAKE_PERMISSIONS_REQUESTABLE.hashCode();
     private static final int TRACE_TAG_INSERT_SUBTASKS = TAG_INSERT_SUBTASKS.hashCode();
     private static final int TRACE_TAG_DELETE_SUBTASKS = TAG_DELETE_SUBTASKS.hashCode();
     private static final int TRACE_TAG_READ_SUBTASKS = TAG_READ_SUBTASKS.hashCode();
 
     private final TransactionManager mTransactionManager;
+    private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final Context mContext;
@@ -208,6 +217,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     HealthConnectServiceImpl(
             TransactionManager transactionManager,
+            HealthConnectDeviceConfigManager deviceConfigManager,
             HealthConnectPermissionHelper permissionHelper,
             MigrationCleaner migrationCleaner,
             FirstGrantTimeManager firstGrantTimeManager,
@@ -215,13 +225,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             MigrationUiStateManager migrationUiStateManager,
             Context context) {
         mTransactionManager = transactionManager;
+        mDeviceConfigManager = deviceConfigManager;
         mPermissionHelper = permissionHelper;
         mFirstGrantTimeManager = firstGrantTimeManager;
         mContext = context;
         mCurrentForegroundUser = context.getUser();
         mPermissionManager = mContext.getSystemService(PermissionManager.class);
         mMigrationStateManager = migrationStateManager;
-        mDataPermissionEnforcer = new DataPermissionEnforcer(mPermissionManager, mContext);
+        mDataPermissionEnforcer =
+                new DataPermissionEnforcer(mPermissionManager, mContext, deviceConfigManager);
         mAppOpsManagerLocal = LocalManagerRegistry.getManager(AppOpsManagerLocal.class);
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
@@ -233,11 +245,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void onUserSwitching(UserHandle currentForegroundUser) {
         mCurrentForegroundUser = currentForegroundUser;
         mBackupRestore.setupForUser(currentForegroundUser);
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    HealthDataCategoryPriorityHelper.getInstance()
+                            .maybeAddInactiveAppsToPriorityList(mContext);
+                });
     }
 
     @Override
     public void grantHealthPermission(
             @NonNull String packageName, @NonNull String permissionName, @NonNull UserHandle user) {
+        checkParamsNonNull(packageName, permissionName, user);
+
         throwIllegalStateExceptionIfDataSyncInProgress();
         Trace.traceBegin(TRACE_TAG_GRANT_PERMISSION, TAG_GRANT_PERMISSION);
         mPermissionHelper.grantHealthPermission(packageName, permissionName, user);
@@ -250,6 +269,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull String permissionName,
             @Nullable String reason,
             @NonNull UserHandle user) {
+        checkParamsNonNull(packageName, permissionName, user);
+
         throwIllegalStateExceptionIfDataSyncInProgress();
         mPermissionHelper.revokeHealthPermission(packageName, permissionName, reason, user);
     }
@@ -257,6 +278,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void revokeAllHealthPermissions(
             @NonNull String packageName, @Nullable String reason, @NonNull UserHandle user) {
+        checkParamsNonNull(packageName, user);
+
         throwIllegalStateExceptionIfDataSyncInProgress();
         mPermissionHelper.revokeAllHealthPermissions(packageName, reason, user);
     }
@@ -264,6 +287,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public List<String> getGrantedHealthPermissions(
             @NonNull String packageName, @NonNull UserHandle user) {
+        checkParamsNonNull(packageName, user);
+
         throwIllegalStateExceptionIfDataSyncInProgress();
         Trace.traceBegin(TRACE_TAG_READ_PERMISSION, TAG_READ_PERMISSION);
         List<String> grantedPermissions =
@@ -273,8 +298,38 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
+    public Map<String, Integer> getHealthPermissionsFlags(
+            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+        checkParamsNonNull(packageName, user);
+        throwIllegalStateExceptionIfDataSyncInProgress();
+
+        Trace.traceBegin(TRACE_TAG_READ_PERMISSION_FLAGS, TAG_READ_PERMISSION_FLAGS);
+
+        Map<String, Integer> response =
+                mPermissionHelper.getHealthPermissionsFlags(packageName, user, permissions);
+
+        Trace.traceEnd(TRACE_TAG_READ_PERMISSION_FLAGS);
+        return response;
+    }
+
+    @Override
+    public void makeHealthPermissionsRequestable(
+            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+        checkParamsNonNull(packageName, user);
+        throwIllegalStateExceptionIfDataSyncInProgress();
+
+        Trace.traceBegin(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE, TAG_MAKE_PERMISSIONS_REQUESTABLE);
+
+        mPermissionHelper.makeHealthPermissionsRequestable(packageName, user, permissions);
+
+        Trace.traceEnd(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE);
+    }
+
+    @Override
     public long getHistoricalAccessStartDateInMilliseconds(
             @NonNull String packageName, @NonNull UserHandle userHandle) {
+        checkParamsNonNull(packageName, userHandle);
+
         throwIllegalStateExceptionIfDataSyncInProgress();
         Instant date = mPermissionHelper.getHealthDataStartDateAccess(packageName, userHandle);
         if (date == null) {
@@ -299,10 +354,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull RecordsParcel recordsParcel,
             @NonNull IInsertRecordsResponseCallback callback) {
+        checkParamsNonNull(attributionSource, recordsParcel, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        final HealthConnectServiceLogger.Builder builder =
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, INSERT_DATA)
                         .setPackageName(attributionSource.getPackageName());
 
@@ -321,13 +378,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 recordsParcel.getRecordsSize(),
                                 recordsParcel.getRecordsChunkSize());
                         final List<RecordInternal<?>> recordInternals = recordsParcel.getRecords();
-                        builder.setNumberOfRecords(recordInternals.size());
+                        logger.setNumberOfRecords(recordInternals.size());
                         throwExceptionIfDataSyncInProgress();
-                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
-                                recordInternals, attributionSource);
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
-                                uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, builder);
+                                uid,
+                                QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                isInForeground,
+                                logger,
+                                recordsParcel.getRecordsChunkSize());
+                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
+                                recordInternals, attributionSource);
                         Trace.traceBegin(TRACE_TAG_INSERT, TAG_INSERT);
                         UpsertTransactionRequest insertRequest =
                                 new UpsertTransactionRequest(
@@ -339,26 +400,25 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 .collectExtraWritePermissionStateMapping(
                                                         recordInternals, attributionSource));
                         List<String> uuids = mTransactionManager.insertAll(insertRequest);
-                        tryAndReturnResult(callback, uuids, builder);
+                        tryAndReturnResult(callback, uuids, logger);
 
                         HealthConnectThreadScheduler.scheduleInternalTask(
                                 () -> postInsertTasks(attributionSource, recordsParcel));
 
-                        finishDataDeliveryWriteRecords(recordInternals, attributionSource);
                         logRecordTypeSpecificUpsertMetrics(
                                 recordInternals, attributionSource.getPackageName());
-                        builder.setDataTypesFromRecordInternals(recordInternals);
+                        logger.setDataTypesFromRecordInternals(recordInternals);
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -366,12 +426,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
                     } finally {
                         Trace.traceEnd(TRACE_TAG_INSERT);
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -404,13 +464,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     public void aggregateRecords(
             @NonNull AttributionSource attributionSource,
-            AggregateDataRequestParcel request,
-            IAggregateRecordsResponseCallback callback) {
+            @NonNull AggregateDataRequestParcel request,
+            @NonNull IAggregateRecordsResponseCallback callback) {
+        checkParamsNonNull(attributionSource, request, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
-        final HealthConnectServiceLogger.Builder builder =
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(
                                 holdsDataManagementPermission, READ_AGGREGATED_DATA)
                         .setPackageName(attributionSource.getPackageName());
@@ -421,7 +483,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         enforceIsForegroundUser(userHandle);
                         verifyPackageNameFromUid(uid, attributionSource);
-                        builder.setNumberOfRecords(request.getAggregateIds().length);
+                        logger.setNumberOfRecords(request.getAggregateIds().length);
                         throwExceptionIfDataSyncInProgress();
                         List<Integer> recordTypesToTest = new ArrayList<>();
                         for (int aggregateId : request.getAggregateIds()) {
@@ -431,39 +493,65 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             .getApplicableRecordTypeIds());
                         }
 
+                        long startDateAccess;
+                        // TODO(b/309776578): Consider making background reads possible for
+                        // aggregations when only using own data
                         if (!holdsDataManagementPermission) {
                             boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                            logger.setCallerForegroundState(isInForeground);
+
                             if (!isInForeground) {
-                                throwSecurityException(
-                                        attributionSource.getPackageName()
+                                mDataPermissionEnforcer.enforceBackgroundReadRestrictions(
+                                        uid,
+                                        pid,
+                                        /* errorMessage= */ attributionSource.getPackageName()
                                                 + "must be in foreground to call aggregate method");
                             }
-                            mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
-                                    recordTypesToTest, attributionSource);
                             tryAcquireApiCallQuota(
                                     uid,
                                     RateLimiter.QuotaCategory.QUOTA_CATEGORY_READ,
                                     isInForeground,
-                                    builder);
+                                    logger);
+                            boolean enforceSelfRead =
+                                    mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
+                                            recordTypesToTest, attributionSource);
+                            startDateAccess =
+                                    mPermissionHelper
+                                            .getHealthDataStartDateAccessOrThrow(
+                                                    attributionSource.getPackageName(), userHandle)
+                                            .toEpochMilli();
+                            maybeEnforceOnlyCallingPackageDataRequested(
+                                    request.getPackageFilters(),
+                                    attributionSource.getPackageName(),
+                                    enforceSelfRead,
+                                    "aggregationTypes: "
+                                            + Arrays.stream(request.getAggregateIds())
+                                                    .mapToObj(
+                                                            AggregationTypeIdMapper.getInstance()
+                                                                    ::getAggregationTypeFor)
+                                                    .collect(Collectors.toList()));
+                        } else {
+                            startDateAccess = request.getStartTime();
                         }
                         callback.onResult(
                                 new AggregateTransactionRequest(
-                                                attributionSource.getPackageName(), request)
+                                                attributionSource.getPackageName(),
+                                                request,
+                                                startDateAccess)
                                         .getAggregateDataResponseParcel());
-                        finishDataDeliveryRead(recordTypesToTest, attributionSource);
-                        builder.setDataTypesFromRecordTypes(recordTypesToTest)
+                        logger.setDataTypesFromRecordTypes(recordTypesToTest)
                                 .setHealthDataServiceApiStatusSuccess();
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -471,11 +559,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
                     } finally {
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -497,13 +585,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull ReadRecordsRequestParcel request,
             @NonNull IReadRecordsResponseCallback callback) {
+        checkParamsNonNull(attributionSource, request, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
-        final HealthConnectServiceLogger.Builder builder =
+        final String callingPackageName =
+                Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, READ_DATA)
-                        .setPackageName(attributionSource.getPackageName());
+                        .setPackageName(callingPackageName);
 
         HealthConnectThreadScheduler.schedule(
                 mContext,
@@ -512,107 +604,132 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         verifyPackageNameFromUid(uid, attributionSource);
                         throwExceptionIfDataSyncInProgress();
-                        AtomicBoolean enforceSelfRead = new AtomicBoolean();
+
+                        boolean enforceSelfRead = false;
+
+                        final boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+
                         if (!holdsDataManagementPermission) {
-                            boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
-                            // If requesting app has only write permission allowed but no read
-                            // permission for the record type or if app is not in foreground then
-                            // allow to read its own records.
-                            enforceSelfRead.set(
-                                    mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
-                                                    request.getRecordType(), attributionSource)
-                                            || !isInForeground);
+                            logger.setCallerForegroundState(isInForeground);
+
+                            tryAcquireApiCallQuota(
+                                    uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+
+                            if (mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
+                                    request.getRecordType(), attributionSource)) {
+                                // If read permission is missing but write permission is granted,
+                                // then enforce self read
+                                enforceSelfRead = true;
+                            } else if (!isInForeground) {
+                                // If Background Read feature is disabled
+                                // or READ_HEALTH_DATA_IN_BACKGROUND permission is not granted,
+                                // then enforce self read
+                                enforceSelfRead = isOnlySelfReadInBackgroundAllowed(uid, pid);
+                            }
+                            if (request.getRecordIdFiltersParcel() == null) {
+                                // Only enforce requested packages if this is a
+                                // ReadRecordsByRequest using filters. Reading by IDs does not have
+                                // data origins specified.
+                                // TODO(b/309778116): Consider throwing an error when reading by Id
+                                maybeEnforceOnlyCallingPackageDataRequested(
+                                        request.getPackageFilters(),
+                                        callingPackageName,
+                                        enforceSelfRead,
+                                        "recordType: "
+                                                + RecordMapper.getInstance()
+                                                        .getRecordIdToExternalRecordClassMap()
+                                                        .get(request.getRecordType()));
+                            }
+
                             if (Constants.DEBUG) {
                                 Slog.d(
                                         TAG,
                                         "Enforce self read for package "
-                                                + attributionSource.getPackageName()
+                                                + callingPackageName
                                                 + ":"
-                                                + enforceSelfRead.get());
+                                                + enforceSelfRead);
                             }
-                            tryAcquireApiCallQuota(
-                                    uid,
-                                    QuotaCategory.QUOTA_CATEGORY_READ,
-                                    isInForeground,
-                                    builder);
                         }
-                        final Map<String, Boolean> extraReadPermsToGrantState =
-                                Collections.unmodifiableMap(
-                                        mDataPermissionEnforcer
-                                                .collectExtraReadPermissionToStateMapping(
-                                                        request.getRecordType(),
-                                                        attributionSource));
+                        final Set<String> grantedExtraReadPermissions =
+                                mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
+                                        Set.of(request.getRecordType()), attributionSource);
 
                         Trace.traceBegin(TRACE_TAG_READ, TAG_READ);
                         try {
-                            long startDateAccess = request.getStartTime();
+                            long startDateAccessEpochMilli = request.getStartTime();
                             if (!holdsDataManagementPermission) {
-                                Instant startInstant =
-                                        mPermissionHelper.getHealthDataStartDateAccess(
-                                                attributionSource.getPackageName(), userHandle);
-                                if (startInstant == null) {
-                                    throwExceptionIncorrectPermissionState();
-                                }
+                                Instant startDateAccessInstant =
+                                        mPermissionHelper.getHealthDataStartDateAccessOrThrow(
+                                                callingPackageName, userHandle);
 
                                 // Always set the startDateAccess for local time filter, as for
                                 // local date time we use it in conjunction with the time filter
                                 // start-time
                                 if (request.usesLocalTimeFilter()
-                                        || startInstant.toEpochMilli() > startDateAccess) {
-                                    startDateAccess = startInstant.toEpochMilli();
+                                        || startDateAccessInstant.toEpochMilli()
+                                                > startDateAccessEpochMilli) {
+                                    startDateAccessEpochMilli =
+                                            startDateAccessInstant.toEpochMilli();
                                 }
                             }
-                            Pair<List<RecordInternal<?>>, Long> readRecordsResponse =
-                                    mTransactionManager.readRecordsAndGetNextToken(
-                                            new ReadTransactionRequest(
-                                                    attributionSource.getPackageName(),
-                                                    request,
-                                                    startDateAccess,
-                                                    enforceSelfRead.get(),
-                                                    extraReadPermsToGrantState));
-                            builder.setNumberOfRecords(readRecordsResponse.first.size());
-                            long pageToken =
-                                    request.getRecordIdFiltersParcel() == null
-                                            ? readRecordsResponse.second
-                                            : DEFAULT_LONG;
-                            if (pageToken != DEFAULT_LONG) {
-                                // pagetoken is used here to store sorting order of the result.
-                                // An even pagetoken indicate ascending and Odd page token indicate
-                                // descending sort order. This detail from page token will be used
-                                // in next read request to have same sort order.
-                                pageToken =
-                                        request.isAscending() ? pageToken * 2 : pageToken * 2 + 1;
+
+                            ReadTransactionRequest readTransactionRequest =
+                                    new ReadTransactionRequest(
+                                            callingPackageName,
+                                            request,
+                                            startDateAccessEpochMilli,
+                                            enforceSelfRead,
+                                            grantedExtraReadPermissions,
+                                            isInForeground);
+                            // throw an exception if read requested is not for a single record type
+                            // i.e. size of read table request is not equal to 1.
+                            if (readTransactionRequest.getReadRequests().size() != 1) {
+                                throw new IllegalArgumentException(
+                                        "Read requested is not for a single record type");
                             }
+
+                            List<RecordInternal<?>> records;
+                            long pageToken;
+                            if (request.getRecordIdFiltersParcel() != null) {
+                                records =
+                                        mTransactionManager.readRecordsByIds(
+                                                readTransactionRequest);
+                                pageToken = DEFAULT_LONG;
+                            } else {
+                                Pair<List<RecordInternal<?>>, PageTokenWrapper>
+                                        readRecordsResponse =
+                                                mTransactionManager.readRecordsAndPageToken(
+                                                        readTransactionRequest);
+                                records = readRecordsResponse.first;
+                                pageToken = readRecordsResponse.second.encode();
+                            }
+                            logger.setNumberOfRecords(records.size());
 
                             if (Constants.DEBUG) {
                                 Slog.d(TAG, "pageToken: " + pageToken);
                             }
 
-                            final String packageName = attributionSource.getPackageName();
                             final List<Integer> recordTypes =
                                     Collections.singletonList(request.getRecordType());
                             // Calls from controller APK should not be recorded in access logs
                             // If an app is reading only its own data then it is not recorded in
                             // access logs.
                             boolean requiresLogging =
-                                    !holdsDataManagementPermission && !enforceSelfRead.get();
+                                    !holdsDataManagementPermission && !enforceSelfRead;
                             if (requiresLogging) {
                                 Trace.traceBegin(
                                         TRACE_TAG_READ_SUBTASKS, TAG_READ.concat("AddAccessLog"));
                                 AccessLogsHelper.getInstance()
-                                        .addAccessLog(packageName, recordTypes, READ);
+                                        .addAccessLog(callingPackageName, recordTypes, READ);
                                 Trace.traceEnd(TRACE_TAG_READ_SUBTASKS);
                             }
                             callback.onResult(
                                     new ReadRecordsResponseParcel(
-                                            new RecordsParcel(readRecordsResponse.first),
-                                            pageToken));
-                            finishDataDeliveryRead(request.getRecordType(), attributionSource);
+                                            new RecordsParcel(records), pageToken));
                             if (requiresLogging) {
-                                logRecordTypeSpecificReadMetrics(
-                                        readRecordsResponse.first, packageName);
+                                logRecordTypeSpecificReadMetrics(records, callingPackageName);
                             }
-                            builder.setDataTypesFromRecordInternals(readRecordsResponse.first)
+                            logger.setDataTypesFromRecordInternals(records)
                                     .setHealthDataServiceApiStatusSuccess();
                         } catch (TypeNotPresentException exception) {
                             // All the requested package names are not present, so simply
@@ -620,37 +737,34 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             if (ReadTransactionRequest.TYPE_NOT_PRESENT_PACKAGE_NAME.equals(
                                     exception.typeName())) {
                                 if (Constants.DEBUG) {
-                                    Slog.d(
-                                            TAG,
-                                            "No app info recorded for "
-                                                    + attributionSource.getPackageName());
+                                    Slog.d(TAG, "No app info recorded for " + callingPackageName);
                                 }
                                 callback.onResult(
                                         new ReadRecordsResponseParcel(
                                                 new RecordsParcel(new ArrayList<>()),
                                                 DEFAULT_LONG));
-                                builder.setHealthDataServiceApiStatusSuccess();
+                                logger.setHealthDataServiceApiStatusSuccess();
                             } else {
-                                builder.setHealthDataServiceApiStatusError(
+                                logger.setHealthDataServiceApiStatusError(
                                         HealthConnectException.ERROR_UNKNOWN);
                                 throw exception;
                             }
                         }
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
                         tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -658,16 +772,31 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", e);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
                     } finally {
                         Trace.traceEnd(TRACE_TAG_READ);
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
                 holdsDataManagementPermission);
+    }
+
+    private void maybeEnforceOnlyCallingPackageDataRequested(
+            List<String> packageFilters,
+            String callingPackageName,
+            boolean enforceSelfRead,
+            String entityFailureMessage) {
+        if (enforceSelfRead
+                && (packageFilters.size() != 1
+                        || !packageFilters.get(0).equals(callingPackageName))) {
+            throwSecurityException(
+                    "Caller does not have permission to read data for the following ("
+                            + entityFailureMessage
+                            + ") from other applications.");
+        }
     }
 
     /**
@@ -683,10 +812,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull RecordsParcel recordsParcel,
             @NonNull IEmptyResponseCallback callback) {
+        checkParamsNonNull(attributionSource, recordsParcel, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        final HealthConnectServiceLogger.Builder builder =
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, UPDATE_DATA)
                         .setPackageName(attributionSource.getPackageName());
         HealthConnectThreadScheduler.schedule(
@@ -704,13 +835,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 recordsParcel.getRecordsSize(),
                                 recordsParcel.getRecordsChunkSize());
                         final List<RecordInternal<?>> recordInternals = recordsParcel.getRecords();
-                        builder.setNumberOfRecords(recordInternals.size());
+                        logger.setNumberOfRecords(recordInternals.size());
                         throwExceptionIfDataSyncInProgress();
-                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
-                                recordInternals, attributionSource);
                         boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
                         tryAcquireApiCallQuota(
-                                uid, QuotaCategory.QUOTA_CATEGORY_WRITE, isInForeground, builder);
+                                uid,
+                                QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                isInForeground,
+                                logger,
+                                recordsParcel.getRecordsChunkSize());
+                        mDataPermissionEnforcer.enforceRecordsWritePermissions(
+                                recordInternals, attributionSource);
                         UpsertTransactionRequest request =
                                 new UpsertTransactionRequest(
                                         attributionSource.getPackageName(),
@@ -721,11 +856,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 .collectExtraWritePermissionStateMapping(
                                                         recordInternals, attributionSource));
                         mTransactionManager.updateAll(request);
-                        tryAndReturnResult(callback, builder);
-                        finishDataDeliveryWriteRecords(recordInternals, attributionSource);
+                        tryAndReturnResult(callback, logger);
                         logRecordTypeSpecificUpsertMetrics(
                                 recordInternals, attributionSource.getPackageName());
-                        builder.setDataTypesFromRecordInternals(recordInternals);
+                        logger.setDataTypesFromRecordInternals(recordInternals);
                         // Update activity dates table
                         HealthConnectThreadScheduler.scheduleInternalTask(
                                 () ->
@@ -735,15 +869,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                                 .map(RecordInternal::getRecordType)
                                                                 .toList()));
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SqlException: ", sqLiteException);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
 
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
@@ -752,7 +886,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -760,12 +894,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
 
                         Slog.e(TAG, "Exception: ", e);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
                     } finally {
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -780,9 +914,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull ChangeLogTokenRequest request,
             @NonNull IGetChangeLogTokenCallback callback) {
+        checkParamsNonNull(attributionSource, request, callback);
+
         final int uid = Binder.getCallingUid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        final HealthConnectServiceLogger.Builder builder =
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, GET_CHANGES_TOKEN)
                         .setPackageName(attributionSource.getPackageName());
         HealthConnectThreadScheduler.schedule(
@@ -795,7 +931,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 uid,
                                 QuotaCategory.QUOTA_CATEGORY_READ,
                                 mAppOpsManagerLocal.isUidInForeground(uid),
-                                builder);
+                                logger);
                         throwExceptionIfDataSyncInProgress();
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 request.getRecordTypesList(), attributionSource);
@@ -805,18 +941,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 .getToken(
                                                         attributionSource.getPackageName(),
                                                         request)));
-                        builder.setHealthDataServiceApiStatusSuccess();
+                        logger.setHealthDataServiceApiStatusSuccess();
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -824,11 +960,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception e) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
-                    }
-                    {
-                        builder.build().log();
+                    } finally {
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -842,13 +977,17 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getChangeLogs(
             @NonNull AttributionSource attributionSource,
-            @NonNull ChangeLogsRequest token,
-            IChangeLogsResponseCallback callback) {
+            @NonNull ChangeLogsRequest request,
+            @NonNull IChangeLogsResponseCallback callback) {
+        checkParamsNonNull(attributionSource, request, callback);
+
         final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
-        final HealthConnectServiceLogger.Builder builder =
+        final String callerPackageName = Objects.requireNonNull(attributionSource.getPackageName());
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(false, GET_CHANGES)
-                        .setPackageName(attributionSource.getPackageName());
+                        .setPackageName(callerPackageName);
 
         HealthConnectThreadScheduler.schedule(
                 mContext,
@@ -857,36 +996,50 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         verifyPackageNameFromUid(uid, attributionSource);
                         throwExceptionIfDataSyncInProgress();
+
+                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                        logger.setCallerForegroundState(isInForeground);
+
+                        if (!isInForeground) {
+                            mDataPermissionEnforcer.enforceBackgroundReadRestrictions(
+                                    uid,
+                                    pid,
+                                    /* errorMessage= */ callerPackageName
+                                            + "must be in foreground to call getChangeLogs method");
+                        }
+
                         ChangeLogsRequestHelper.TokenRequest changeLogsTokenRequest =
                                 ChangeLogsRequestHelper.getRequest(
-                                        attributionSource.getPackageName(), token.getToken());
+                                        callerPackageName, request.getToken());
+                        tryAcquireApiCallQuota(
+                                uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 changeLogsTokenRequest.getRecordTypes(), attributionSource);
-                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
-                        if (!isInForeground) {
-                            throwSecurityException(
-                                    attributionSource.getPackageName()
-                                            + " must be in foreground to read the change logs");
-                        }
-                        tryAcquireApiCallQuota(
-                                uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, builder);
-                        Instant startDateInstant =
-                                mPermissionHelper.getHealthDataStartDateAccess(
-                                        attributionSource.getPackageName(), userHandle);
-                        if (startDateInstant == null) {
-                            throwExceptionIncorrectPermissionState();
-                        }
-                        long startDateAccess = startDateInstant.toEpochMilli();
+                        Instant startDateAccessInstant =
+                                mPermissionHelper.getHealthDataStartDateAccessOrThrow(
+                                        callerPackageName, userHandle);
+                        long startDateAccessEpochMilli = startDateAccessInstant.toEpochMilli();
                         final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
                                 ChangeLogsHelper.getInstance()
-                                        .getChangeLogs(changeLogsTokenRequest, token);
+                                        .getChangeLogs(changeLogsTokenRequest, request);
+
+                        Map<Integer, List<UUID>> recordTypeToInsertedUuids =
+                                ChangeLogsHelper.getRecordTypeToInsertedUuids(
+                                        changeLogsResponse.getChangeLogsMap());
+
+                        Set<String> grantedExtraReadPermissions =
+                                mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
+                                        recordTypeToInsertedUuids.keySet(), attributionSource);
 
                         List<RecordInternal<?>> recordInternals =
-                                mTransactionManager.readRecords(
+                                mTransactionManager.readRecordsByIds(
                                         new ReadTransactionRequest(
-                                                ChangeLogsHelper.getRecordTypeToInsertedUuids(
-                                                        changeLogsResponse.getChangeLogsMap()),
-                                                startDateAccess));
+                                                callerPackageName,
+                                                recordTypeToInsertedUuids,
+                                                startDateAccessEpochMilli,
+                                                grantedExtraReadPermissions,
+                                                isInForeground));
+
                         List<DeletedLog> deletedLogs =
                                 ChangeLogsHelper.getDeletedLogs(
                                         changeLogsResponse.getChangeLogsMap());
@@ -897,13 +1050,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         deletedLogs,
                                         changeLogsResponse.getNextPageToken(),
                                         changeLogsResponse.hasMorePages()));
-                        finishDataDeliveryRead(
-                                changeLogsTokenRequest.getRecordTypes(), attributionSource);
-                        builder.setHealthDataServiceApiStatusSuccess()
+                        logger.setHealthDataServiceApiStatusSuccess()
                                 .setNumberOfRecords(recordInternals.size() + deletedLogs.size())
                                 .setDataTypesFromRecordInternals(recordInternals);
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
@@ -911,20 +1062,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         Slog.e(TAG, "SQLiteException: ", sqLiteException);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (IllegalStateException illegalStateException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "IllegalStateException: ", illegalStateException);
                         tryAndThrowException(callback, illegalStateException, ERROR_INTERNAL);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -932,11 +1083,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", exception);
                         tryAndThrowException(callback, exception, ERROR_INTERNAL);
                     } finally {
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -956,11 +1107,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull DeleteUsingFiltersRequestParcel request,
             @NonNull IEmptyResponseCallback callback) {
+        checkParamsNonNull(attributionSource, request, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
-        final HealthConnectServiceLogger.Builder builder =
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
                         .setPackageName(attributionSource.getPackageName());
 
@@ -984,29 +1137,29 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 Collections.singletonList(attributionSource.getPackageName()));
 
                         if (!holdsDataManagementPermission) {
-                            mDataPermissionEnforcer.enforceRecordIdsWritePermissions(
-                                    recordTypeIdsToDelete, attributionSource);
                             tryAcquireApiCallQuota(
                                     uid,
                                     QuotaCategory.QUOTA_CATEGORY_WRITE,
                                     mAppOpsManagerLocal.isUidInForeground(uid),
-                                    builder);
+                                    logger);
+                            mDataPermissionEnforcer.enforceRecordIdsWritePermissions(
+                                    recordTypeIdsToDelete, attributionSource);
                         }
 
                         deleteUsingFiltersInternal(
                                 attributionSource,
                                 request,
                                 callback,
-                                builder,
+                                logger,
                                 recordTypeIdsToDelete,
                                 uid,
                                 pid);
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
@@ -1014,11 +1167,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -1026,11 +1179,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", exception);
                         tryAndThrowException(callback, exception, ERROR_INTERNAL);
                     } finally {
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -1049,11 +1202,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull DeleteUsingFiltersRequestParcel request,
             @NonNull IEmptyResponseCallback callback) {
+        checkParamsNonNull(attributionSource, request, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
         final boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
-        final HealthConnectServiceLogger.Builder builder =
+        final HealthConnectServiceLogger.Builder logger =
                 new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, DELETE_DATA)
                         .setPackageName(attributionSource.getPackageName());
 
@@ -1077,16 +1232,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 attributionSource,
                                 request,
                                 callback,
-                                builder,
+                                logger,
                                 recordTypeIdsToDelete,
                                 uid,
                                 pid);
                     } catch (SQLiteException sqLiteException) {
-                        builder.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
                         tryAndThrowException(
                                 callback, sqLiteException, HealthConnectException.ERROR_IO);
                     } catch (IllegalArgumentException illegalArgumentException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                         Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
                         tryAndThrowException(
@@ -1094,11 +1249,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 illegalArgumentException,
                                 HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (SecurityException securityException) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
                     } catch (HealthConnectException healthConnectException) {
-                        builder.setHealthDataServiceApiStatusError(
+                        logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(
@@ -1106,11 +1261,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 healthConnectException,
                                 healthConnectException.getErrorCode());
                     } catch (Exception exception) {
-                        builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
                         Slog.e(TAG, "Exception: ", exception);
                         tryAndThrowException(callback, exception, ERROR_INTERNAL);
                     } finally {
-                        builder.build().log();
+                        logger.build().log();
                     }
                 },
                 uid,
@@ -1121,7 +1276,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull AttributionSource attributionSource,
             @NonNull DeleteUsingFiltersRequestParcel request,
             @NonNull IEmptyResponseCallback callback,
-            @NonNull HealthConnectServiceLogger.Builder builder,
+            @NonNull HealthConnectServiceLogger.Builder logger,
             List<Integer> recordTypeIdsToDelete,
             int uid,
             int pid) {
@@ -1134,12 +1289,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         new DeleteTransactionRequest(attributionSource.getPackageName(), request)
                                 .setHasManageHealthDataPermission(
                                         hasDataManagementPermission(uid, pid)));
-        tryAndReturnResult(callback, builder);
-        finishDataDeliveryWrite(recordTypeIdsToDelete, attributionSource);
+        tryAndReturnResult(callback, logger);
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> postDeleteTasks(recordTypeIdsToDelete));
 
-        builder.setNumberOfRecords(numberOfRecordsDeleted)
+        logger.setNumberOfRecords(numberOfRecordsDeleted)
                 .setDataTypesFromRecordTypes(recordTypeIdsToDelete);
     }
 
@@ -1149,6 +1303,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull String packageName,
             @HealthDataCategory.Type int dataCategory,
             @NonNull IGetPriorityResponseCallback callback) {
+        checkParamsNonNull(packageName, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1158,10 +1314,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
                         throwExceptionIfDataSyncInProgress();
+                        HealthDataCategoryPriorityHelper priorityHelper =
+                                HealthDataCategoryPriorityHelper.getInstance();
                         List<DataOrigin> dataOriginInPriorityOrder =
-                                HealthDataCategoryPriorityHelper.getInstance()
-                                        .getPriorityOrder(dataCategory)
-                                        .stream()
+                                priorityHelper.getPriorityOrder(dataCategory, mContext).stream()
                                         .map(
                                                 (name) ->
                                                         new DataOrigin.Builder()
@@ -1198,6 +1354,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull String packageName,
             @NonNull UpdatePriorityRequestParcel updatePriorityRequest,
             @NonNull IEmptyResponseCallback callback) {
+        checkParamsNonNull(packageName, updatePriorityRequest, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1234,7 +1392,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void setRecordRetentionPeriodInDays(
-            int days, @NonNull UserHandle user, IEmptyResponseCallback callback) {
+            int days, @NonNull UserHandle user, @NonNull IEmptyResponseCallback callback) {
+        checkParamsNonNull(user, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1268,6 +1428,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public int getRecordRetentionPeriodInDays(@NonNull UserHandle user) {
+        checkParamsNonNull(user);
+
         enforceIsForegroundUser(getCallingUserHandle());
         throwExceptionIfDataSyncInProgress();
         try {
@@ -1293,6 +1455,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getContributorApplicationsInfo(@NonNull IApplicationInfoResponseCallback callback) {
+        checkParamsNonNull(callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1329,6 +1493,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     /** Retrieves {@link RecordTypeInfoResponse} for each RecordType. */
     @Override
     public void queryAllRecordTypesInfo(@NonNull IRecordTypeInfoResponseCallback callback) {
+        checkParamsNonNull(callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1363,7 +1529,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      * @see HealthConnectManager#queryAccessLogs
      */
     @Override
-    public void queryAccessLogs(@NonNull String packageName, IAccessLogsResponseCallback callback) {
+    public void queryAccessLogs(
+            @NonNull String packageName, @NonNull IAccessLogsResponseCallback callback) {
+        checkParamsNonNull(packageName, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1405,7 +1574,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getActivityDates(
             @NonNull ActivityDatesRequestParcel activityDatesRequestParcel,
-            IActivityDatesResponseCallback callback) {
+            @NonNull IActivityDatesResponseCallback callback) {
+        checkParamsNonNull(activityDatesRequestParcel, callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1442,10 +1613,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
-    // TODO(b/265780725): Update javadocs and ensure that the caller handles SHOW_MIGRATION_INFO
-    // intent.
+    /**
+     * Changes migration state to {@link MIGRATION_STATE_IN_PROGRESS} if the current state allows
+     * migration to be started.
+     *
+     * @param packageName calling package name
+     * @param callback Callback to receive a result or an error encountered while performing this
+     *     operation.
+     */
     @Override
-    public void startMigration(@NonNull String packageName, IMigrationCallback callback) {
+    public void startMigration(@NonNull String packageName, @NonNull IMigrationCallback callback) {
+        checkParamsNonNull(packageName, callback);
+
         int uid = Binder.getCallingUid();
         int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1480,10 +1659,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
-    // TODO(b/265780725): Update javadocs and ensure that the caller handles SHOW_MIGRATION_INFO
-    // intent.
+    /**
+     * Changes migration state to {@link MIGRATION_STATE_COMPLETE} if migration is not already
+     * complete.
+     *
+     * @param packageName calling package name
+     * @param callback Callback to receive a result or an error encountered while performing this
+     *     operation.
+     */
     @Override
-    public void finishMigration(@NonNull String packageName, IMigrationCallback callback) {
+    public void finishMigration(@NonNull String packageName, @NonNull IMigrationCallback callback) {
+        checkParamsNonNull(packageName, callback);
+
         int uid = Binder.getCallingUid();
         int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1503,19 +1690,27 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         callback.onSuccess();
                     } catch (Exception e) {
                         Slog.e(TAG, "Exception: ", e);
-                        // TODO(b/263897830): Verify migration state and send errors properly
                         tryAndThrowException(callback, e, MigrationException.ERROR_INTERNAL, null);
                     }
                 });
     }
 
-    // TODO(b/265780725): Update javadocs and ensure that the caller handles SHOW_MIGRATION_INFO
-    // intent.
+    /**
+     * Write data to module storage. The migration state must be {@link MIGRATION_STATE_IN_PROGRESS}
+     * to be able to write data.
+     *
+     * @param packageName calling package name
+     * @param parcel Migration entity containing the data being migrated.
+     * @param callback Callback to receive a result or an error encountered while performing this
+     *     operation.
+     */
     @Override
     public void writeMigrationData(
             @NonNull String packageName,
-            MigrationEntityParcel parcel,
-            IMigrationCallback callback) {
+            @NonNull MigrationEntityParcel parcel,
+            @NonNull IMigrationCallback callback) {
+        checkParamsNonNull(packageName, parcel, callback);
+
         int uid = Binder.getCallingUid();
         int pid = Binder.getCallingPid();
         UserHandle callingUserHandle = getCallingUserHandle();
@@ -1548,8 +1743,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
+    /**
+     * @param packageName calling package name
+     * @param requiredSdkExtension The minimum sdk extension version for module to be ready for data
+     *     migration from the apk.
+     * @param callback Callback to receive a result or an error encountered while performing this
+     *     operation.
+     */
     public void insertMinDataMigrationSdkExtensionVersion(
-            @NonNull String packageName, int requiredSdkExtension, IMigrationCallback callback) {
+            @NonNull String packageName,
+            int requiredSdkExtension,
+            @NonNull IMigrationCallback callback) {
+        checkParamsNonNull(packageName, callback);
+
         int uid = Binder.getCallingUid();
         int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1584,6 +1790,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull StageRemoteDataRequest stageRemoteDataRequest,
             @NonNull UserHandle userHandle,
             @NonNull IDataStagingFinishedCallback callback) {
+        checkParamsNonNull(stageRemoteDataRequest, userHandle, callback);
+
         Map<String, ParcelFileDescriptor> origPfdsByFileName =
                 stageRemoteDataRequest.getPfdsByFileName();
         Map<String, HealthConnectException> exceptionsByFileName =
@@ -1629,14 +1837,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "Exception encountered while staging", e);
             try {
-                @HealthConnectException.ErrorCode int errorCode =
-                        (e instanceof SecurityException) ? ERROR_SECURITY : ERROR_INTERNAL;
-                exceptionsByFileName.put("", new HealthConnectException(
-                        errorCode,
-                        e.getMessage()));
+                @HealthConnectException.ErrorCode
+                int errorCode = (e instanceof SecurityException) ? ERROR_SECURITY : ERROR_INTERNAL;
+                exceptionsByFileName.put("", new HealthConnectException(errorCode, e.getMessage()));
 
-                callback.onError(
-                        new StageRemoteDataException(exceptionsByFileName));
+                callback.onError(new StageRemoteDataException(exceptionsByFileName));
             } catch (RemoteException remoteException) {
                 Log.e(TAG, "Restore permission response could not be sent to the caller.", e);
             }
@@ -1650,8 +1855,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     public void getAllDataForBackup(
             @NonNull StageRemoteDataRequest stageRemoteDataRequest,
             @NonNull UserHandle userHandle) {
+        checkParamsNonNull(stageRemoteDataRequest, userHandle);
+
         mContext.enforceCallingPermission(HEALTH_CONNECT_BACKUP_INTER_AGENT_PERMISSION, null);
-        mBackupRestore.getAllDataForBackup(stageRemoteDataRequest, userHandle);
+        final long token = Binder.clearCallingIdentity();
+        try {
+            mBackupRestore.getAllDataForBackup(stageRemoteDataRequest, userHandle);
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
     }
 
     /**
@@ -1668,15 +1880,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void deleteAllStagedRemoteData(@NonNull UserHandle userHandle) {
+        checkParamsNonNull(userHandle);
+
         mContext.enforceCallingPermission(
                 DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA_PERMISSION, null);
         mBackupRestore.deleteAndResetEverything(userHandle);
         mMigrationStateManager.clearCaches(mContext);
-        AppInfoHelper.getInstance().clearData(mTransactionManager);
-        ActivityDateHelper.getInstance().clearData(mTransactionManager);
-        MigrationEntityHelper.getInstance().clearData(mTransactionManager);
-        HealthDataCategoryPriorityHelper.getInstance().clearData(mTransactionManager);
-        PriorityMigrationHelper.getInstance().clearData(mTransactionManager);
+        DatabaseHelper.clearAllData(mTransactionManager);
         RateLimiter.clearCache();
         String[] packageNames = mContext.getPackageManager().getPackagesForUid(getCallingUid());
         for (String packageName : packageNames) {
@@ -1700,6 +1910,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
      */
     @Override
     public void getHealthConnectDataState(@NonNull IGetHealthConnectDataStateCallback callback) {
+        checkParamsNonNull(callback);
+
         try {
             mDataPermissionEnforcer.enforceAnyOfPermissions(
                     MANAGE_HEALTH_DATA_PERMISSION, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
@@ -1744,15 +1956,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     });
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "getHealthConnectDataState: Exception encountered", e);
-            @HealthConnectException.ErrorCode int errorCode =
-                    (e instanceof SecurityException) ? ERROR_SECURITY
-                            : ERROR_INTERNAL;
+            @HealthConnectException.ErrorCode
+            int errorCode = (e instanceof SecurityException) ? ERROR_SECURITY : ERROR_INTERNAL;
             try {
                 callback.onError(
                         new HealthConnectExceptionParcel(
-                                new HealthConnectException(
-                                        errorCode,
-                                        e.getMessage())));
+                                new HealthConnectException(errorCode, e.getMessage())));
             } catch (RemoteException remoteException) {
                 Log.e(TAG, "getHealthConnectDataState error could not be sent", e);
             }
@@ -1765,6 +1974,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void getHealthConnectMigrationUiState(
             @NonNull IGetHealthConnectMigrationUiStateCallback callback) {
+        checkParamsNonNull(callback);
+
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
         final UserHandle userHandle = Binder.getCallingUserHandle();
@@ -1828,11 +2039,28 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             int uid,
             @QuotaCategory.Type int quotaCategory,
             boolean isInForeground,
-            HealthConnectServiceLogger.Builder builder) {
+            HealthConnectServiceLogger.Builder logger) {
         try {
             RateLimiter.tryAcquireApiCallQuota(uid, quotaCategory, isInForeground);
         } catch (RateLimiterException rateLimiterException) {
-            builder.setRateLimit(
+            logger.setRateLimit(
+                    rateLimiterException.getRateLimiterQuotaBucket(),
+                    rateLimiterException.getRateLimiterQuotaLimit());
+            throw new HealthConnectException(
+                    rateLimiterException.getErrorCode(), rateLimiterException.getMessage());
+        }
+    }
+
+    private void tryAcquireApiCallQuota(
+            int uid,
+            @QuotaCategory.Type int quotaCategory,
+            boolean isInForeground,
+            HealthConnectServiceLogger.Builder logger,
+            long memoryCost) {
+        try {
+            RateLimiter.tryAcquireApiCallQuota(uid, quotaCategory, isInForeground, memoryCost);
+        } catch (RateLimiterException rateLimiterException) {
+            logger.setRateLimit(
                     rateLimiterException.getRateLimiterQuotaBucket(),
                     rateLimiterException.getRateLimiterQuotaLimit());
             throw new HealthConnectException(
@@ -1993,57 +2221,21 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private boolean hasDataManagementPermission(int uid, int pid) {
-        return mContext.checkPermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid)
-                == PERMISSION_GRANTED;
+        return isPermissionGranted(MANAGE_HEALTH_DATA_PERMISSION, uid, pid);
     }
 
-    private void finishDataDeliveryRead(int recordTypeId, AttributionSource attributionSource) {
-        finishDataDeliveryRead(Collections.singletonList(recordTypeId), attributionSource);
+    /**
+     * Returns true if Background Read feature is disabled or {@link
+     * HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} permission is not granted for the provided
+     * uid and pid, false otherwise.
+     */
+    private boolean isOnlySelfReadInBackgroundAllowed(int uid, int pid) {
+        return !mDeviceConfigManager.isBackgroundReadFeatureEnabled()
+                || !isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND, uid, pid);
     }
 
-    private void finishDataDeliveryRead(
-            List<Integer> recordTypeIds, AttributionSource attributionSource) {
-        Trace.traceBegin(TRACE_TAG_READ_SUBTASKS, TAG_READ.concat("FinishDataDeliveryRead"));
-
-        try {
-            for (Integer recordTypeId : recordTypeIds) {
-                String permissionName =
-                        HealthPermissions.getHealthReadPermission(
-                                RecordTypePermissionCategoryMapper
-                                        .getHealthPermissionCategoryForRecordType(recordTypeId));
-                mPermissionManager.finishDataDelivery(permissionName, attributionSource);
-            }
-        } catch (Exception exception) {
-            // Ignore: HC API has already fulfilled the result, ignore any exception we hit here
-        }
-        Trace.traceEnd(TRACE_TAG_READ_SUBTASKS);
-    }
-
-    private void finishDataDeliveryWriteRecords(
-            List<RecordInternal<?>> recordInternals, AttributionSource attributionSource) {
-        Trace.traceBegin(TRACE_TAG_READ_SUBTASKS, TAG_READ.concat(".FinishDataDeliveryWrite"));
-        Set<Integer> recordTypeIdsToEnforce = new ArraySet<>();
-        for (RecordInternal<?> recordInternal : recordInternals) {
-            recordTypeIdsToEnforce.add(recordInternal.getRecordType());
-        }
-
-        finishDataDeliveryWrite(recordTypeIdsToEnforce.stream().toList(), attributionSource);
-        Trace.traceEnd(TRACE_TAG_READ_SUBTASKS);
-    }
-
-    private void finishDataDeliveryWrite(
-            List<Integer> recordTypeIds, AttributionSource attributionSource) {
-        try {
-            for (Integer recordTypeId : recordTypeIds) {
-                String permissionName =
-                        HealthPermissions.getHealthWritePermission(
-                                RecordTypePermissionCategoryMapper
-                                        .getHealthPermissionCategoryForRecordType(recordTypeId));
-                mPermissionManager.finishDataDelivery(permissionName, attributionSource);
-            }
-        } catch (Exception exception) {
-            // Ignore: HC API has already fulfilled the result, ignore any exception we hit here
-        }
+    private boolean isPermissionGranted(String permission, int uid, int pid) {
+        return mContext.checkPermission(permission, pid, uid) == PERMISSION_GRANTED;
     }
 
     private void enforceBinderUidIsSameAsAttributionSourceUid(
@@ -2053,19 +2245,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         }
     }
 
-    private void throwExceptionIncorrectPermissionState() {
-        throw new IllegalStateException(
-                "Incorrect health permission state, likely"
-                        + " because the calling application's manifest does not specify handling "
-                        + Intent.ACTION_VIEW_PERMISSION_USAGE
-                        + " with "
-                        + HealthConnectManager.CATEGORY_HEALTH_PERMISSIONS);
-    }
-
     private void logRecordTypeSpecificUpsertMetrics(
             @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
-        Objects.requireNonNull(recordInternals);
-        Objects.requireNonNull(packageName);
+        checkParamsNonNull(recordInternals, packageName);
 
         Map<Integer, List<RecordInternal<?>>> recordTypeToRecordInternals =
                 getRecordTypeToListOfRecords(recordInternals);
@@ -2080,8 +2262,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private void logRecordTypeSpecificReadMetrics(
             @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
-        Objects.requireNonNull(recordInternals);
-        Objects.requireNonNull(packageName);
+        checkParamsNonNull(recordInternals, packageName);
 
         Map<Integer, List<RecordInternal<?>>> recordTypeToRecordInternals =
                 getRecordTypeToListOfRecords(recordInternals);
@@ -2136,26 +2317,26 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private static void tryAndReturnResult(
-            IEmptyResponseCallback callback, HealthConnectServiceLogger.Builder builder) {
+            IEmptyResponseCallback callback, HealthConnectServiceLogger.Builder logger) {
         try {
             callback.onResult();
-            builder.setHealthDataServiceApiStatusSuccess();
+            logger.setHealthDataServiceApiStatusSuccess();
         } catch (RemoteException e) {
             Slog.e(TAG, "Remote call failed", e);
-            builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+            logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
         }
     }
 
     private static void tryAndReturnResult(
             IInsertRecordsResponseCallback callback,
             List<String> uuids,
-            HealthConnectServiceLogger.Builder builder) {
+            HealthConnectServiceLogger.Builder logger) {
         try {
             callback.onResult(new InsertRecordsResponseParcel(uuids));
-            builder.setHealthDataServiceApiStatusSuccess();
+            logger.setHealthDataServiceApiStatusSuccess();
         } catch (RemoteException e) {
             Slog.e(TAG, "Remote call failed", e);
-            builder.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+            logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
         }
     }
 
@@ -2312,6 +2493,12 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     new MigrationException(exception.toString(), errorCode, failedEntityId));
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to send result to the callback", e);
+        }
+    }
+
+    private static void checkParamsNonNull(Object... params) {
+        for (Object param : params) {
+            Objects.requireNonNull(param);
         }
     }
 }

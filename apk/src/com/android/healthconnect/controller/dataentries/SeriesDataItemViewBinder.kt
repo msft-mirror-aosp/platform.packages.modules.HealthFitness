@@ -22,7 +22,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.dataentries.FormattedEntry.SeriesDataEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.shared.recyclerview.ViewBinder
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -64,13 +64,22 @@ class SeriesDataItemViewBinder(
         deleteButton.isVisible = showSecondAction
         divider.isVisible = showSecondAction
 
+        deleteButton.contentDescription =
+            view.resources.getString(
+                R.string.data_point_action_content_description, data.headerA11y)
         deleteButton.setOnClickListener {
             logger.logInteraction(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
             onDeleteEntryClicked?.onDeleteEntry(data.uuid, data.dataType, index)
         }
-        container.setOnClickListener {
-            logger.logInteraction(DataEntriesElement.DATA_ENTRY_VIEW)
-            onItemClickedListener?.onItemClicked(data.uuid, index)
+        // if the delete button is not showing, we are in the Entry details screen and this item
+        // should not be clickable
+        if (showSecondAction) {
+            container.setOnClickListener {
+                logger.logInteraction(DataEntriesElement.DATA_ENTRY_VIEW)
+                onItemClickedListener?.onItemClicked(data.uuid, index)
+            }
+        } else {
+            container.isClickable = false
         }
     }
 }

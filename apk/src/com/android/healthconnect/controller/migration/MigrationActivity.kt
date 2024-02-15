@@ -23,8 +23,12 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.MigrationPausedFragment.Companion.INTEGRATION_PAUSED_SEEN_KEY
 import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_SEEN
+import com.android.healthconnect.controller.shared.Constants.INTEGRATION_PAUSED_SEEN_KEY
+import com.android.healthconnect.controller.shared.Constants.MODULE_UPDATE_NEEDED_SEEN
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
+import com.android.healthconnect.controller.shared.Constants.WHATS_NEW_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,14 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MigrationActivity : Hilt_MigrationActivity() {
 
     companion object {
-        const val MIGRATION_COMPLETE_KEY = "migration_complete_key"
         const val MIGRATION_ACTIVITY_INTENT = "android.health.connect.action.MIGRATION"
-
-        private fun isMigrationComplete(activity: Activity): Boolean {
-            val sharedPreference =
-                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            return sharedPreference.getBoolean(MIGRATION_COMPLETE_KEY, false)
-        }
 
         fun maybeRedirectToMigrationActivity(
             activity: Activity,
@@ -48,12 +45,10 @@ class MigrationActivity : Hilt_MigrationActivity() {
         ): Boolean {
 
             val sharedPreference =
-                activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                activity.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
 
             if (migrationState == MigrationState.MODULE_UPGRADE_REQUIRED) {
-                val moduleUpdateSeen =
-                    sharedPreference.getBoolean(
-                        activity.getString(R.string.module_update_needed_seen), false)
+                val moduleUpdateSeen = sharedPreference.getBoolean(MODULE_UPDATE_NEEDED_SEEN, false)
 
                 if (!moduleUpdateSeen) {
                     activity.startActivity(createMigrationActivityIntent(activity))
@@ -61,9 +56,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
                     return true
                 }
             } else if (migrationState == MigrationState.APP_UPGRADE_REQUIRED) {
-                val appUpdateSeen =
-                    sharedPreference.getBoolean(
-                        activity.getString(R.string.app_update_needed_seen), false)
+                val appUpdateSeen = sharedPreference.getBoolean(APP_UPDATE_NEEDED_SEEN, false)
 
                 if (!appUpdateSeen) {
                     activity.startActivity(createMigrationActivityIntent(activity))
@@ -71,24 +64,59 @@ class MigrationActivity : Hilt_MigrationActivity() {
                     return true
                 }
             } else if (migrationState == MigrationState.ALLOWED_PAUSED ||
-                    migrationState == MigrationState.ALLOWED_NOT_STARTED) {
+                migrationState == MigrationState.ALLOWED_NOT_STARTED) {
                 val allowedPausedSeen =
-                        sharedPreference.getBoolean(INTEGRATION_PAUSED_SEEN_KEY, false)
+                    sharedPreference.getBoolean(INTEGRATION_PAUSED_SEEN_KEY, false)
 
                 if (!allowedPausedSeen) {
                     activity.startActivity(createMigrationActivityIntent(activity))
                     activity.finish()
                     return true
                 }
-            }
-
-            else if (migrationState == MigrationState.IN_PROGRESS) {
+            } else if (migrationState == MigrationState.IN_PROGRESS) {
                 activity.startActivity(createMigrationActivityIntent(activity))
                 activity.finish()
                 return true
             }
 
             return false
+        }
+
+        fun maybeShowMigrationDialog(
+            migrationState: MigrationState,
+            activity: FragmentActivity,
+            appName: String
+        ) {
+            when (migrationState) {
+                MigrationState.IN_PROGRESS -> {
+                    val message =
+                        activity.getString(
+                            R.string.migration_in_progress_permissions_dialog_content, appName)
+                    showMigrationInProgressDialog(activity, message) { _, _ -> activity.finish() }
+                }
+                MigrationState.ALLOWED_PAUSED,
+                MigrationState.ALLOWED_NOT_STARTED,
+                MigrationState.APP_UPGRADE_REQUIRED,
+                MigrationState.MODULE_UPGRADE_REQUIRED -> {
+                    val message =
+                        activity.getString(
+                            R.string.migration_pending_permissions_dialog_content, appName)
+                    showMigrationPendingDialog(
+                        activity,
+                        message,
+                        positiveButtonAction = null,
+                        negativeButtonAction = { _, _ ->
+                            activity.startActivity(Intent(MIGRATION_ACTIVITY_INTENT))
+                            activity.finish()
+                        })
+                }
+                MigrationState.COMPLETE -> {
+                    maybeShowWhatsNewDialog(activity)
+                }
+                else -> {
+                    // Show nothing
+                }
+            }
         }
 
         fun showMigrationPendingDialog(
@@ -102,7 +130,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
                 .setTitle(R.string.migration_pending_permissions_dialog_title)
                 .setMessage(message)
                 .setCancelable(false)
-                .setNegativeButton(
+                .setNeutralButton(
                     R.string.migration_pending_permissions_dialog_button_start_integration,
                     MigrationElement.MIGRATION_PENDING_DIALOG_CANCEL_BUTTON,
                     negativeButtonAction)
@@ -132,30 +160,33 @@ class MigrationActivity : Hilt_MigrationActivity() {
                 .show()
         }
 
-        fun maybeShowWhatsNewDialog(context: Context,
-                                    negativeButtonAction: DialogInterface.OnClickListener? = null) {
+        fun maybeShowWhatsNewDialog(
+            context: Context,
+            negativeButtonAction: DialogInterface.OnClickListener? = null
+        ) {
             val sharedPreference =
-                    context.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            val dialogSeen =
-                    sharedPreference.getBoolean(context.getString(R.string.whats_new_dialog_seen), false)
+                context.getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+            val dialogSeen = sharedPreference.getBoolean(WHATS_NEW_DIALOG_SEEN, false)
 
             if (!dialogSeen) {
                 AlertDialogBuilder(context)
-                        .setLogName(MigrationElement.MIGRATION_DONE_DIALOG_CONTAINER)
-                        .setTitle(R.string.migration_whats_new_dialog_title)
-                        .setMessage(R.string.migration_whats_new_dialog_content)
-                        .setCancelable(false)
-                        .setNegativeButton(
-                                R.string.migration_whats_new_dialog_button, MigrationElement.MIGRATION_DONE_DIALOG_BUTTON) {
-                            unusedDialogInterface, unusedInt ->
+                    .setLogName(MigrationElement.MIGRATION_DONE_DIALOG_CONTAINER)
+                    .setTitle(R.string.migration_whats_new_dialog_title)
+                    .setMessage(R.string.migration_whats_new_dialog_content)
+                    .setCancelable(false)
+                    .setNegativeButton(
+                        R.string.migration_whats_new_dialog_button,
+                        MigrationElement.MIGRATION_DONE_DIALOG_BUTTON) {
+                            unusedDialogInterface,
+                            unusedInt ->
                             sharedPreference.edit().apply {
-                                putBoolean(context.getString(R.string.whats_new_dialog_seen), true)
+                                putBoolean(WHATS_NEW_DIALOG_SEEN, true)
                                 apply()
                             }
                             negativeButtonAction?.onClick(unusedDialogInterface, unusedInt)
                         }
-                        .create()
-                        .show()
+                    .create()
+                    .show()
             }
         }
 
@@ -187,9 +218,4 @@ class MigrationActivity : Hilt_MigrationActivity() {
         return true
     }
 
-    override fun onResume() {
-        super.onResume()
-        val navController = findNavController(R.id.nav_host_fragment)
-        navController.setGraph(R.navigation.migration_nav_graph)
-    }
 }
