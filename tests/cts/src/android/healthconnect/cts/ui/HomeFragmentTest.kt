@@ -96,7 +96,6 @@ class HomeFragmentTest : HealthConnectBaseTest() {
 
             waitDisplayed(By.text("Browse data"))
             waitDisplayed(By.text("Manage data"))
-            waitDisplayed(By.text("Auto-delete"))
 
             waitDisplayed(By.text("Delete all data"))
         }

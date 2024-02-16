@@ -88,7 +88,6 @@ class HealthDataCategoriesFragmentTest {
 
         onView(withText("Browse data")).check(matches(isDisplayed()))
         onView(withText("Manage data")).check(matches(isDisplayed()))
-        onView(withText("Auto-delete")).check(matches(isDisplayed()))
         onView(withText("Off")).check(matches(isDisplayed()))
     }
 
@@ -212,50 +211,6 @@ class HealthDataCategoriesFragmentTest {
         launchFragment<HealthDataCategoriesFragment>(Bundle())
 
         onView(withText("See all categories")).check(doesNotExist())
-    }
-
-    @Test
-    fun categoriesFragment_autoDeleteButton_displaysAutoDeleteRangeNever() {
-        whenever(viewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-        whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
-            MutableLiveData(AutoDeleteState.WithData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
-        }
-        launchFragment<HealthDataCategoriesFragment>(Bundle())
-
-        onView(withText("Auto-delete")).check(matches(isDisplayed()))
-        onView(withText("Off")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun categoriesFragment_autoDeleteButton_displaysAutoDeleteRange3Months() {
-        whenever(viewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-        whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
-            MutableLiveData(
-                AutoDeleteState.WithData(AutoDeleteRange.AUTO_DELETE_RANGE_THREE_MONTHS))
-        }
-        launchFragment<HealthDataCategoriesFragment>(Bundle())
-
-        onView(withText("Auto-delete")).check(matches(isDisplayed()))
-        onView(withText("After 3 months")).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun categoriesFragment_autoDeleteButton_displaysAutoDeleteRange18Months() {
-        whenever(viewModel.categoriesData).then {
-            MutableLiveData<CategoriesFragmentState>(WithData(emptyList()))
-        }
-        whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
-            MutableLiveData(
-                AutoDeleteState.WithData(AutoDeleteRange.AUTO_DELETE_RANGE_EIGHTEEN_MONTHS))
-        }
-        launchFragment<HealthDataCategoriesFragment>(Bundle())
-
-        onView(withText("Auto-delete")).check(matches(isDisplayed()))
-        onView(withText("After 18 months")).check(matches(isDisplayed()))
     }
 
     @Test
