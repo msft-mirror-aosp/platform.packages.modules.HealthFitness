@@ -18,8 +18,21 @@ package android.healthconnect.cts.nopermission;
 
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
+import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
+import static android.healthconnect.cts.utils.DataFactory.buildSleepSession;
+import static android.healthconnect.cts.utils.DataFactory.getDistanceRecordWithNonEmptyId;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
-import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
+import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
+import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
+import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -27,6 +40,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.datatypes.DataOrigin;
@@ -66,7 +80,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     public void testInsertNotAllowed() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
-                TestUtils.insertRecords(Collections.singletonList(testRecord));
+                insertRecords(Collections.singletonList(testRecord));
                 Assert.fail("Insert must be not allowed without right HC permission");
             } catch (HealthConnectException healthConnectException) {
                 assertThat(healthConnectException.getErrorCode())
@@ -79,7 +93,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     public void testUpdateNotAllowed() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
-                TestUtils.updateRecords(Collections.singletonList(testRecord));
+                updateRecords(Collections.singletonList(testRecord));
                 Assert.fail("Update must be not allowed without right HC permission");
             } catch (HealthConnectException healthConnectException) {
                 assertThat(healthConnectException.getErrorCode())
@@ -92,7 +106,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     public void testDeleteUsingIdNotAllowed() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
-                TestUtils.deleteRecords(Collections.singletonList(testRecord));
+                deleteRecords(Collections.singletonList(testRecord));
                 Assert.fail("Delete using ids must be not allowed without right HC permission");
             } catch (HealthConnectException healthConnectException) {
                 assertThat(healthConnectException.getErrorCode())
@@ -105,7 +119,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     public void testDeleteUsingFilterNotAllowed() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
-                TestUtils.verifyDeleteRecords(
+                verifyDeleteRecords(
                         testRecord.getClass(),
                         new TimeInstantRangeFilter.Builder()
                                 .setStartTime(Instant.now())
@@ -123,7 +137,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     public void testChangeLogsTokenNotAllowed() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
-                TestUtils.getChangeLogToken(
+                getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
                                 .addRecordType(testRecord.getClass())
                                 .build());
@@ -137,13 +151,50 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testReadNotAllowed() throws InterruptedException {
+    public void testReadByFiltersNotAllowed() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
-                TestUtils.readRecords(
+                readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(testRecord.getClass())
                                 .build());
-                Assert.fail("Read records must be not allowed without right HC permission");
+                Assert.fail(
+                        "Read records by filters must be not allowed without right HC permission");
+            } catch (HealthConnectException healthConnectException) {
+                assertThat(healthConnectException.getErrorCode())
+                        .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            }
+        }
+    }
+
+    @Test
+    public void testReadByRecordIdsNotAllowed() throws InterruptedException {
+        for (Record testRecord : getTestRecords()) {
+            try {
+                readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(testRecord.getClass())
+                                .addId("id")
+                                .build());
+                Assert.fail(
+                        "Read records by record ids must be not allowed without right HC "
+                                + "permission");
+            } catch (HealthConnectException healthConnectException) {
+                assertThat(healthConnectException.getErrorCode())
+                        .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            }
+        }
+    }
+
+    @Test
+    public void testReadByClientIdsNotAllowed() throws InterruptedException {
+        for (Record testRecord : getTestRecords()) {
+            try {
+                readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(testRecord.getClass())
+                                .addClientRecordId("client_id")
+                                .build());
+                Assert.fail(
+                        "Read records by client ids must be not allowed without right HC "
+                                + "permission");
             } catch (HealthConnectException healthConnectException) {
                 assertThat(healthConnectException.getErrorCode())
                         .isEqualTo(HealthConnectException.ERROR_SECURITY);
@@ -157,7 +208,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
             List<Record> records =
                     Arrays.asList(
                             getHeartRateRecord(71), getHeartRateRecord(72), getHeartRateRecord(73));
-            TestUtils.getAggregateResponse(
+            getAggregateResponse(
                     new AggregateRecordsRequest.Builder<Long>(
                                     new TimeInstantRangeFilter.Builder()
                                             .setStartTime(Instant.ofEpochMilli(0))
@@ -181,7 +232,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         try {
             Instant start = Instant.now().minusMillis(500);
             Instant end = Instant.now().plusMillis(2500);
-            TestUtils.getAggregateResponseGroupByDuration(
+            getAggregateResponseGroupByDuration(
                     new AggregateRecordsRequest.Builder<Long>(
                                     new TimeInstantRangeFilter.Builder()
                                             .setStartTime(start)
@@ -205,7 +256,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         try {
             Instant start = Instant.now().minus(3, ChronoUnit.DAYS);
             Instant end = start.plus(3, ChronoUnit.DAYS);
-            TestUtils.getAggregateResponseGroupByPeriod(
+            getAggregateResponseGroupByPeriod(
                     new AggregateRecordsRequest.Builder<Long>(
                                     new LocalTimeRangeFilter.Builder()
                                             .setStartTime(
@@ -223,5 +274,15 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
             assertThat(healthConnectException.getErrorCode())
                     .isEqualTo(HealthConnectException.ERROR_SECURITY);
         }
+    }
+
+    private static List<Record> getTestRecords() {
+        return Arrays.asList(
+                getStepsRecord(),
+                getHeartRateRecord(),
+                buildSleepSession(),
+                getDistanceRecordWithNonEmptyId(),
+                getTotalCaloriesBurnedRecord("client_id"),
+                buildExerciseSession());
     }
 }

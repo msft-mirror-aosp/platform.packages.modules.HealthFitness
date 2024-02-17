@@ -29,7 +29,9 @@ import android.widget.LinearLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -39,7 +41,10 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.WithData
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.route.ExerciseRouteViewModel
 import com.android.healthconnect.controller.route.ExerciseRouteViewModel.SessionWithAttribution
 import com.android.healthconnect.controller.route.RouteRequestActivity
@@ -56,11 +61,14 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 
+@ExperimentalCoroutinesApi
 @HiltAndroidTest
 class RouteRequestActivityTest {
 
@@ -119,7 +127,12 @@ class RouteRequestActivityTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
 
         whenever(migrationViewModel.migrationState).then {
-            MutableLiveData(WithData(MigrationState.IDLE))
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         whenever(viewModel.isReadRoutesPermissionDeclared(context.packageName)).thenReturn(true)
@@ -368,6 +381,121 @@ class RouteRequestActivityTest {
         assertThat(returnedIntent.hasExtra(EXTRA_EXERCISE_ROUTE)).isTrue()
         assertThat(returnedIntent.getParcelableExtra<ExerciseRoute>(EXTRA_EXERCISE_ROUTE))
             .isEqualTo(TEST_SESSION.route)
+    }
+
+    @Test
+    fun intent_migrationInProgress_shoesMigrationInProgressDialog() = runTest {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IN_PROGRESS,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IN_PROGRESS,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val startActivityIntent = getRouteActivityIntent()
+
+        whenever(viewModel.exerciseSession).then {
+            MutableLiveData(SessionWithAttribution(TEST_SESSION, TEST_APP))
+        }
+
+        launchActivityForResult<RouteRequestActivity>(startActivityIntent)
+        onView(
+                withText(
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use Health Connect with Health Connect."))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
+
+        onView(withText("Got it")).inRoot(isDialog()).perform(ViewActions.click())
+
+        // TODO (b/322495982) replace with idling resource
+        //        Thread.sleep(2000)
+        //        Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+    }
+
+    @Test
+    fun intent_restoreInProgress_showsRestoreInProgressDialog() = runTest {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IDLE,
+                dataRestoreState = DataRestoreUiState.IN_PROGRESS,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IN_PROGRESS,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val startActivityIntent = getRouteActivityIntent()
+
+        whenever(viewModel.exerciseSession).then {
+            MutableLiveData(SessionWithAttribution(TEST_SESSION, TEST_APP))
+        }
+
+        launchActivityForResult<RouteRequestActivity>(startActivityIntent)
+
+        onView(withText("Health Connect restore in progress"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
+
+        onView(withText("Got it")).inRoot(isDialog()).perform(ViewActions.click())
+
+        // TODO (b/322495982) replace with idling resource
+        //        Thread.sleep(2000)
+        //        Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+    }
+
+    @Test
+    fun intent_migrationPending_showsMigrationPendingDialog() = runTest {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val startActivityIntent = getRouteActivityIntent()
+
+        whenever(viewModel.exerciseSession).then {
+            MutableLiveData(SessionWithAttribution(TEST_SESSION, TEST_APP))
+        }
+
+        launchActivityForResult<RouteRequestActivity>(startActivityIntent)
+
+        onView(
+                withText(
+                    "Health Connect is ready to be integrated with your Android system. If you give Health Connect access now, some features may not work until integration is complete."))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        // TODO (b/322495982) check navigation to Migration activity
+        onView(withText("Start integration")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Continue")).inRoot(isDialog()).check(matches(isDisplayed()))
+
+        onView(withText("Continue")).inRoot(isDialog()).perform(ViewActions.click())
+        onView(withText("Continue")).check(ViewAssertions.doesNotExist())
     }
 
     private fun getRouteActivityIntent(): Intent {

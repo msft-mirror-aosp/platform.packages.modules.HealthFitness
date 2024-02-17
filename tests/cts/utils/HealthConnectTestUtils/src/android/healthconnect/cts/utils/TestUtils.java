@@ -108,6 +108,7 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RespiratoryRateRecord;
 import android.health.connect.datatypes.RestingHeartRateRecord;
 import android.health.connect.datatypes.SexualActivityRecord;
+import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
@@ -653,6 +654,10 @@ public final class TestUtils {
                 RestingHeartRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         VITALS, HealthPermissionCategory.RESTING_HEART_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                SkinTemperatureRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.SKIN_TEMPERATURE, new ArrayList<>()));
         expectedResponseMap.put(
                 ActiveCaloriesBurnedRecord.class,
                 new RecordTypeInfoTestResponse(

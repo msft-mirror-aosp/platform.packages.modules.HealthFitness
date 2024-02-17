@@ -203,6 +203,10 @@ public final class AggregationType<T> {
         int STEPS_CADENCE_RECORD_RATE_AVG = 81;
         int STEPS_CADENCE_RECORD_RATE_MIN = 82;
         int STEPS_CADENCE_RECORD_RATE_MAX = 83;
+        int SKIN_TEMPERATURE_RECORD_DELTA_AVG = 84;
+        int SKIN_TEMPERATURE_RECORD_DELTA_MIN = 85;
+        int SKIN_TEMPERATURE_RECORD_DELTA_MAX = 86;
+
         /**
          * Valid set of values for this IntDef. Update this set when add new type or deprecate
          * existing type.
@@ -294,7 +298,10 @@ public final class AggregationType<T> {
                         SPEED_RECORD_SPEED_MAX,
                         STEPS_CADENCE_RECORD_RATE_AVG,
                         STEPS_CADENCE_RECORD_RATE_MIN,
-                        STEPS_CADENCE_RECORD_RATE_MAX);
+                        STEPS_CADENCE_RECORD_RATE_MAX,
+                        SKIN_TEMPERATURE_RECORD_DELTA_AVG,
+                        SKIN_TEMPERATURE_RECORD_DELTA_MIN,
+                        SKIN_TEMPERATURE_RECORD_DELTA_MAX);
 
         /** @hide */
         @IntDef({
@@ -381,7 +388,10 @@ public final class AggregationType<T> {
             SPEED_RECORD_SPEED_MAX,
             STEPS_CADENCE_RECORD_RATE_AVG,
             STEPS_CADENCE_RECORD_RATE_MIN,
-            STEPS_CADENCE_RECORD_RATE_MAX
+            STEPS_CADENCE_RECORD_RATE_MAX,
+            SKIN_TEMPERATURE_RECORD_DELTA_AVG,
+            SKIN_TEMPERATURE_RECORD_DELTA_MIN,
+            SKIN_TEMPERATURE_RECORD_DELTA_MAX
         })
         @Retention(RetentionPolicy.SOURCE)
         @interface Id {}

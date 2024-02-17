@@ -34,10 +34,13 @@ import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showDataRestoreInProgressDialog
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.route.ExerciseRouteViewModel.SessionWithAttribution
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
@@ -72,7 +75,7 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         get() = intent.getStringExtra(EXTRA_SESSION_ID)
 
     private var requester: String? = null
-    private var migrationState = MigrationState.UNKNOWN
+    private var migrationRestoreState = MigrationUiState.UNKNOWN
     private var sessionWithAttribution: SessionWithAttribution? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,8 +111,9 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         migrationViewModel.migrationState.observe(this) { migrationState ->
             when (migrationState) {
                 is MigrationViewModel.MigrationFragmentState.WithData -> {
-                    maybeShowMigrationDialog(migrationState.migrationState)
-                    this.migrationState = migrationState.migrationState
+                    maybeShowMigrationDialog(migrationState.migrationRestoreState)
+                    this.migrationRestoreState =
+                        migrationState.migrationRestoreState.migrationUiState
                 }
                 else -> {
                     // do nothing
@@ -206,17 +210,20 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 .setView(view)
                 .setCancelable(false)
                 .create()
-        if (!dialog!!.isShowing &&
-            migrationState in
-                listOf(
-                    MigrationState.IDLE,
-                    MigrationState.COMPLETE,
-                    MigrationState.COMPLETE_IDLE,
-                    MigrationState.ALLOWED_MIGRATOR_DISABLED,
-                    MigrationState.ALLOWED_ERROR)) {
+        if (shouldShowDialog()) {
             dialog?.show()
         }
     }
+
+    private fun shouldShowDialog() =
+        !dialog!!.isShowing &&
+            migrationRestoreState in
+                listOf(
+                    MigrationUiState.IDLE,
+                    MigrationUiState.COMPLETE,
+                    MigrationUiState.COMPLETE_IDLE,
+                    MigrationUiState.ALLOWED_MIGRATOR_DISABLED,
+                    MigrationUiState.ALLOWED_ERROR)
 
     private fun setupInfoDialog() {
         val view = layoutInflater.inflate(R.layout.route_sharing_info_dialog, null)
@@ -232,36 +239,35 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 .create()
     }
 
-    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
-        when (migrationState) {
-            MigrationState.IN_PROGRESS -> {
-                showMigrationInProgressDialog(
-                    this,
-                    applicationContext.getString(
-                        R.string.migration_in_progress_permissions_dialog_content, requester)) {
-                        _,
-                        _ ->
-                        finish()
-                    }
-            }
-            MigrationState.ALLOWED_PAUSED,
-            MigrationState.ALLOWED_NOT_STARTED,
-            MigrationState.APP_UPGRADE_REQUIRED,
-            MigrationState.MODULE_UPGRADE_REQUIRED -> {
-                showMigrationPendingDialog(
-                    this,
-                    applicationContext.getString(
-                        R.string.migration_pending_permissions_dialog_content, requester),
-                    positiveButtonAction = { _, _ -> dialog?.show() },
-                    negativeButtonAction = { _, _ -> finishCancelled() })
-            }
-            MigrationState.COMPLETE -> {
-                maybeShowWhatsNewDialog(this) { _, _ -> dialog?.show() }
-            }
-            else -> {
-                // Show the request dialog
-                dialog?.show()
-            }
+    private fun maybeShowMigrationDialog(migrationRestoreState: MigrationRestoreState) {
+        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+
+        if (dataRestoreUiState == DataRestoreUiState.IN_PROGRESS) {
+            showDataRestoreInProgressDialog(this) { _, _ -> finish() }
+        } else if (migrationUiState == MigrationUiState.IN_PROGRESS) {
+            showMigrationInProgressDialog(
+                this,
+                applicationContext.getString(
+                    R.string.migration_in_progress_permissions_dialog_content, requester)) { _, _ ->
+                    finish()
+                }
+        } else if (migrationUiState in
+            listOf(
+                MigrationUiState.ALLOWED_PAUSED,
+                MigrationUiState.ALLOWED_NOT_STARTED,
+                MigrationUiState.MODULE_UPGRADE_REQUIRED,
+                MigrationUiState.APP_UPGRADE_REQUIRED)) {
+            showMigrationPendingDialog(
+                this,
+                applicationContext.getString(
+                    R.string.migration_pending_permissions_dialog_content, requester),
+                positiveButtonAction = { _, _ -> dialog?.show() },
+                negativeButtonAction = { _, _ -> finishCancelled() })
+        } else if (migrationUiState == MigrationUiState.COMPLETE) {
+            maybeShowWhatsNewDialog(this) { _, _ -> dialog?.show() }
+        } else {
+            // Show the request dialog
+            dialog?.show()
         }
     }
 
