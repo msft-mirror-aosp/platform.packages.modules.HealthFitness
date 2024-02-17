@@ -27,6 +27,7 @@ import android.health.connect.HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_DATA
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onIdle
@@ -45,8 +46,16 @@ import com.android.healthconnect.controller.categories.HealthDataCategoryViewMod
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.TrampolineActivity
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
@@ -58,10 +67,12 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import java.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 @HiltAndroidTest
@@ -76,6 +87,8 @@ class TrampolineActivityTest {
     @BindValue
     val categoryViewModel: HealthDataCategoryViewModel =
         mock(HealthDataCategoryViewModel::class.java)
+    @BindValue
+    val appPermissionViewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
 
     private val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -88,11 +101,38 @@ class TrampolineActivityTest {
 
         // Disable migration to show MainActivity and DataManagementActivity
         whenever(migrationViewModel.getCurrentMigrationUiState()).then {
-            MigrationState.COMPLETE_IDLE
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IDLE,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
         }
         whenever(migrationViewModel.migrationState).then {
-            MutableLiveData(WithData(MigrationState.COMPLETE_IDLE))
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
+        val writePermission =
+            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+        val readPermission =
+            HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
+        whenever(appPermissionViewModel.shouldNavigateToFragment).then { MutableLiveData(true) }
+        whenever(appPermissionViewModel.appPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(appPermissionViewModel.grantedPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
+        whenever(appPermissionViewModel.revokeAllPermissionsState).then {
+            MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
+        }
+        whenever(appPermissionViewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
+        whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
+        val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
+        whenever(appPermissionViewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
     }
 
     @Test

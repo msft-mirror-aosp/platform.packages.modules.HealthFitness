@@ -59,6 +59,12 @@ public final class BundleHelper {
     public static final String DELETE_RECORDS_QUERY = PREFIX + "DELETE_RECORDS_QUERY";
     public static final String UPDATE_RECORDS_QUERY = PREFIX + "UPDATE_RECORDS_QUERY";
     public static final String GET_CHANGE_LOG_TOKEN_QUERY = PREFIX + "GET_CHANGE_LOG_TOKEN_QUERY";
+
+    public static final String SELF_REVOKE_PERMISSION_REQUEST =
+            PREFIX + "SELF_REVOKE_PERMISSION_REQUEST";
+
+    public static final String KILL_SELF_REQUEST = PREFIX + "KILL_SELF_REQUEST";
+
     public static final String INTENT_EXCEPTION = PREFIX + "INTENT_EXCEPTION";
 
     private static final String CHANGE_LOGS_RESPONSE = PREFIX + "CHANGE_LOGS_RESPONSE";
@@ -87,6 +93,7 @@ public final class BundleHelper {
     private static final String TIME_INSTANT_RANGE_FILTER = PREFIX + "TIME_INSTANT_RANGE_FILTER";
     private static final String CHANGE_LOGS_REQUEST = PREFIX + "CHANGE_LOGS_REQUEST";
     private static final String CHANGE_LOG_TOKEN_REQUEST = PREFIX + "CHANGE_LOG_TOKEN_REQUEST";
+    private static final String PERMISSION_NAME = PREFIX + "PERMISSION_NAME";
     private static final String EXERCISE_SEGMENT_START_TIMES =
             PREFIX + "EXERCISE_SEGMENT_START_TIMES";
     private static final String EXERCISE_SEGMENT_END_TIMES = PREFIX + "EXERCISE_SEGMENT_END_TIMES";
@@ -275,6 +282,26 @@ public final class BundleHelper {
         bundle.putString(QUERY_TYPE, GET_CHANGE_LOG_TOKEN_QUERY);
         bundle.putParcelable(CHANGE_LOG_TOKEN_REQUEST, request);
         return bundle;
+    }
+
+    /** Converts a self-revoke permission request to a bundle. */
+    public static Bundle forSelfRevokePermissionRequest(String permission) {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, SELF_REVOKE_PERMISSION_REQUEST);
+        bundle.putString(PERMISSION_NAME, permission);
+        return bundle;
+    }
+
+    /** Creates a bundle representing a kill-self request. */
+    public static Bundle forKillSelfRequest() {
+        Bundle bundle = new Bundle();
+        bundle.putString(QUERY_TYPE, KILL_SELF_REQUEST);
+        return bundle;
+    }
+
+    /** Converts a bundle to a self-revoke permission request. */
+    public static String toPermissionToSelfRevoke(Bundle bundle) {
+        return bundle.getString(PERMISSION_NAME);
     }
 
     /** Converts a bundle to a ChangeLogTokenRequest. */
