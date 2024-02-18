@@ -49,14 +49,14 @@ class SettingsActivity : Hilt_SettingsActivity() {
             val packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)!!
 
             viewModel.shouldNavigateToFragment.observe(this) { shouldNavigate ->
-                maybeNavigateToFragment(shouldNavigate)
+                maybeNavigateToAppPermissions(shouldNavigate)
             }
 
             viewModel.loadShouldNavigateToFragment(packageName)
         }
     }
 
-    private fun maybeNavigateToFragment(shouldNavigate: Boolean) {
+    private fun maybeNavigateToAppPermissions(shouldNavigate: Boolean) {
         val navController = findNavController(R.id.nav_host_fragment)
         navController.addOnDestinationChangedListener(DestinationChangedListener(this))
         if (shouldNavigate) {

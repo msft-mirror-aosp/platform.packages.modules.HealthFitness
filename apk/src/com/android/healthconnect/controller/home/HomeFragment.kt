@@ -27,10 +27,11 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.HealthFitnessUiStatsLog.*
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.dataentries.formatters.DurationFormatter
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessPreference
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
@@ -46,12 +47,12 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.TimeSource
-import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
+import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.Duration
 import javax.inject.Inject
 
 /** Home fragment for Health Connect. */
@@ -63,6 +64,7 @@ class HomeFragment : Hilt_HomeFragment() {
         private const val RECENT_ACCESS_PREFERENCE_KEY = "recent_access"
         private const val CONNECTED_APPS_PREFERENCE_KEY = "connected_apps"
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
+        private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
 
         @JvmStatic fun newInstance() = HomeFragment()
@@ -74,6 +76,7 @@ class HomeFragment : Hilt_HomeFragment() {
 
     @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var timeSource: TimeSource
+    @Inject lateinit var navigationUtils: NavigationUtils
 
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
@@ -153,7 +156,7 @@ class HomeFragment : Hilt_HomeFragment() {
         migrationViewModel.migrationState.observe(viewLifecycleOwner) { migrationState ->
             when (migrationState) {
                 is MigrationViewModel.MigrationFragmentState.WithData -> {
-                    showMigrationState(migrationState.migrationState)
+                    showMigrationState(migrationState.migrationRestoreState)
                 }
                 else -> {
                     // do nothing
@@ -162,34 +165,26 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
-    private fun updateMigrationBannerText(duration: Duration) {
-        val formattedDuration =
-            DurationFormatter.formatDurationDaysOrHours(requireContext(), duration)
-        migrationBannerSummary =
-            getString(R.string.resume_migration_banner_description, formattedDuration)
-        migrationBanner?.summary = migrationBannerSummary
-    }
-
-    private fun showMigrationState(migrationState: MigrationState) {
+    private fun showMigrationState(migrationRestoreState: MigrationRestoreState) {
         preferenceScreen.removePreferenceRecursively(MIGRATION_BANNER_PREFERENCE_KEY)
+        preferenceScreen.removePreferenceRecursively(DATA_RESTORE_BANNER_PREFERENCE_KEY)
 
-        when (migrationState) {
-            MigrationState.ALLOWED_PAUSED,
-            MigrationState.ALLOWED_NOT_STARTED,
-            MigrationState.MODULE_UPGRADE_REQUIRED,
-            MigrationState.APP_UPGRADE_REQUIRED -> {
-                migrationBanner = getMigrationBanner()
-                preferenceScreen.addPreference(migrationBanner)
-            }
-            MigrationState.COMPLETE -> {
-                maybeShowWhatsNewDialog(requireContext())
-            }
-            MigrationState.ALLOWED_ERROR -> {
-                maybeShowMigrationNotCompleteDialog()
-            }
-            else -> {
-                // show nothing
-            }
+        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+
+        if (dataRestoreUiState == DataRestoreUiState.PENDING) {
+            preferenceScreen.addPreference(getDataRestorePendingBanner())
+        } else if (migrationUiState in
+            listOf(
+                MigrationUiState.ALLOWED_PAUSED,
+                MigrationUiState.ALLOWED_NOT_STARTED,
+                MigrationUiState.MODULE_UPGRADE_REQUIRED,
+                MigrationUiState.APP_UPGRADE_REQUIRED)) {
+            migrationBanner = getMigrationBanner()
+            preferenceScreen.addPreference(migrationBanner)
+        } else if (migrationUiState == MigrationUiState.COMPLETE) {
+            maybeShowWhatsNewDialog(requireContext())
+        } else if (migrationUiState == MigrationUiState.ALLOWED_ERROR) {
+            maybeShowMigrationNotCompleteDialog()
         }
     }
 
@@ -200,14 +195,13 @@ class HomeFragment : Hilt_HomeFragment() {
 
         if (!dialogSeen) {
             AlertDialogBuilder(this)
-                .setLogName(ErrorPageElement.UNKNOWN_ELEMENT)
+                .setLogName(MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_CONTAINER)
                 .setTitle(R.string.migration_not_complete_dialog_title)
                 .setMessage(R.string.migration_not_complete_dialog_content)
                 .setCancelable(false)
                 .setNegativeButton(
-                    R.string.migration_whats_new_dialog_button, ErrorPageElement.UNKNOWN_ELEMENT) {
-                        _,
-                        _ ->
+                    R.string.migration_whats_new_dialog_button,
+                    MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_BUTTON) { _, _ ->
                         sharedPreference.edit().apply {
                             putBoolean(MIGRATION_NOT_COMPLETE_DIALOG_SEEN, true)
                             apply()
@@ -224,9 +218,27 @@ class HomeFragment : Hilt_HomeFragment() {
             it.title = resources.getString(R.string.resume_migration_banner_title)
             it.key = MIGRATION_BANNER_PREFERENCE_KEY
             it.summary = migrationBannerSummary
-            it.setIcon(R.drawable.ic_settings_alert)
+            it.icon =
+                AttributeResolver.getNullableDrawable(requireContext(), R.attr.settingsAlertIcon)
             it.setPrimaryButtonOnClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_migrationActivity)
+                navigationUtils.navigate(
+                    this@HomeFragment, R.id.action_homeFragment_to_migrationActivity)
+            }
+            it.order = 1
+        }
+    }
+
+    private fun getDataRestorePendingBanner(): BannerPreference {
+        return BannerPreference(requireContext()).also {
+            it.setPrimaryButton(resources.getString(R.string.data_restore_pending_banner_button))
+            it.title = resources.getString(R.string.data_restore_pending_banner_title)
+            it.key = DATA_RESTORE_BANNER_PREFERENCE_KEY
+            it.summary = resources.getString(R.string.data_restore_pending_banner_content)
+            it.icon =
+                AttributeResolver.getNullableDrawable(requireContext(), R.attr.updateNeededIcon)
+            it.setPrimaryButtonOnClickListener {
+                navigationUtils.navigate(
+                    this@HomeFragment, R.id.action_homeFragment_to_systemUpdateActivity)
             }
             it.order = 1
         }

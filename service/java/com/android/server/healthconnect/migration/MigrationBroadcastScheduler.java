@@ -90,26 +90,15 @@ public final class MigrationBroadcastScheduler {
                     .forNamespace(MIGRATION_BROADCAST_NAMESPACE)
                     .cancelAll();
 
-            int requiredCount = getRequiredCount(migrationState);
-            long requiredInterval = getRequiredInterval(migrationState);
-
             try {
-                if ((requiredCount > 0) && (requiredInterval >= JobInfo.getMinPeriodMillis())) {
+                // When migration state is not in progress or allowed the count will be zero and no
+                // job will be scheduled.
+                if (getRequiredCount(migrationState) > 0) {
                     createJobLocked(
-                            /* createPeriodic= */ true,
-                            /* scheduledCount= */ 0,
-                            requiredInterval,
+                            Math.max(
+                                    getRequiredInterval(migrationState),
+                                    JobInfo.getMinPeriodMillis()),
                             context);
-                } else {
-                    int scheduledCount = 0;
-                    while (scheduledCount < requiredCount) {
-                        createJobLocked(
-                                /* createPeriodic= */ false,
-                                scheduledCount,
-                                requiredInterval,
-                                context);
-                        scheduledCount += 1;
-                    }
                 }
             } catch (Exception e) {
                 Slog.e(TAG, "Exception while creating job : ", e);
@@ -120,12 +109,7 @@ public final class MigrationBroadcastScheduler {
     /***
      * Creates a new {@link MigrationBroadcastJobService} job, to which it passes the user id in a
      * PersistableBundle object.
-     * If the requiredInterval is greater than the minimum interval allowed for periodic jobs, a
-     * periodic job is created.
      *
-     * @param createPeriodic Indicates whether to create a periodic job
-     * @param scheduledCount Number of jobs that have already been scheduled for a particular
-     *                       migration state
      * @param requiredInterval Time interval between each successive job for that current
      *                         migration state
      * @param context Context
@@ -133,9 +117,7 @@ public final class MigrationBroadcastScheduler {
      * @throws Exception if migration broadcast job scheduling fails.
      */
     @GuardedBy("mLock")
-    private void createJobLocked(
-            boolean createPeriodic, int scheduledCount, long requiredInterval, Context context)
-            throws Exception {
+    private void createJobLocked(long requiredInterval, Context context) throws Exception {
         ComponentName schedulerServiceComponent =
                 new ComponentName(context, MigrationBroadcastJobService.class);
 
@@ -148,12 +130,7 @@ public final class MigrationBroadcastScheduler {
         JobInfo.Builder builder =
                 new JobInfo.Builder(jobId, schedulerServiceComponent).setExtras(extras);
 
-        if (createPeriodic) {
-            builder.setPeriodic(requiredInterval);
-        } else {
-            long interval = requiredInterval * scheduledCount;
-            builder.setMinimumLatency(interval).setOverrideDeadline(interval);
-        }
+        builder.setPeriodic(requiredInterval);
 
         JobScheduler jobScheduler =
                 Objects.requireNonNull(context.getSystemService(JobScheduler.class))

@@ -21,6 +21,7 @@ import static com.android.server.healthconnect.permission.FirstGrantTimeDatastor
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.WorkerThread;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -105,7 +106,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         if (grantTimeDate == null) {
             // Check and update the state in case health permission has been granted before
             // onPermissionsChanged callback was propagated.
-            onPermissionsChanged(
+            updateFirstGrantTimesFromPermissionState(
                     mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user)));
             grantTimeDate = getGrantTimeReadLocked(uid);
         }
@@ -139,6 +140,17 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
     @Override
     public void onPermissionsChanged(int uid) {
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> updateFirstGrantTimesFromPermissionState(uid));
+    }
+
+    /**
+     * Checks permission states for {@code uid} and updates first grant times accordingly.
+     *
+     * <p><b>Note:</b>This method must only be called from a non-main thread.
+     */
+    @WorkerThread
+    private void updateFirstGrantTimesFromPermissionState(int uid) {
         if (!mUserManager.isUserUnlocked()) {
             // onPermissionsChanged(uid) is called as soon as the system boots up, even before the
             // user has unlock the device for the first time.
@@ -210,6 +222,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     }
 
     // TODO(b/277063776): move two methods below to b&r classes.
+
     /** Returns the state which should be backed up. */
     public UserGrantTimeState createBackupState(UserHandle user) {
         initAndValidateUserStateIfNeedLocked(user);

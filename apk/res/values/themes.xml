@@ -73,6 +73,7 @@
         <!--  Migration -->
         <item name="moreSpaceNeededIcon">@drawable/ic_storage</item>
         <item name="updateNeededIcon">@drawable/ic_system_security_update</item>
+        <item name="settingsAlertIcon">@drawable/ic_settings_alert</item>
 
         <!-- Data sources & priority -->
         <item name="addIcon">@drawable/ic_add</item>

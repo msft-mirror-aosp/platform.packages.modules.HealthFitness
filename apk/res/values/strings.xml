@@ -137,6 +137,11 @@
     <string name="exercise_route_read_content_description" description="Content description for switch that enables permissions for reading the user's exercise route [CHAR_LIMIT=NONE]">Read exercise route</string>
     <string name="exercise_routes_read_content_description" description="Content description for switch that enables permissions for reading user's exercise routes [CHAR_LIMIT=NONE]">Read exercise routes</string>
 
+    <string name="planned_exercise_uppercase_label" description="Uppercase label used to show the user's planned exercise data [CHAR_LIMIT=50]">Training plans</string>
+    <string name="planned_exercise_lowercase_label" description="Lowercase label used to show the user's planned exercise data [CHAR_LIMIT=50]">training plans</string>
+    <string name="planned_exercise_read_content_description" description="Content description for switch that enables permissions for reading the user's planned exercise data [CHAR_LIMIT=NONE]">Read training plans</string>
+    <string name="planned_exercise_write_content_description" description="Content description for switch that enables permissions for writing the user's planned exercise data [CHAR_LIMIT=NONE]">Write training plans</string>
+
     <string name="distance_uppercase_label" description="Uppercase label used to show the user's distance data [CHAR_LIMIT=50]">Distance</string>
     <string name="distance_lowercase_label" description="Lowercase label used to show the user's distance data [CHAR_LIMIT=50]">distance</string>
     <string name="distance_read_content_description" description="Content description for switch that enables permissions for reading the user's distance data [CHAR_LIMIT=NONE]">Read distance</string>
@@ -1093,6 +1098,16 @@
     <string name="migration_whats_new_dialog_title" description="Title of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">What\'s new</string>
     <string name="migration_whats_new_dialog_content" description="Content of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">You can now access Health&#160;Connect directly from your settings. Uninstall the Health&#160;Connect app any time to free up storage space.</string>
     <string name="migration_whats_new_dialog_button" description="Button of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">Got it</string>
+    <!--  endregion -->
+
+    <!-- region Data restore -->
+    <string name="data_restore_in_progress_screen_title" description="Title of screen shown when data restore is in progress">Restore in progress</string>
+    <string name="data_restore_in_progress_content" description="Detail information shown when migration is in progress">Health&#160;Connect is restoring data and permissions. This may take some time to complete.</string>
+    <string name="data_restore_in_progress_dialog_title" description="Title of dialog shown when data restore is in progress">Health&#160;Connect restore in progress</string>
+    <string name="data_restore_in_progress_dialog_button" description="Button of dialog shown when data restore is in progress">Got it</string>
+    <string name="data_restore_pending_banner_title" description="Title of banner shown when data restore is pending">Update needed</string>
+    <string name="data_restore_pending_banner_content" description="Content of banner shown when data restore is pending">Before continuing restoring your data, update your phone system.</string>
+    <string name="data_restore_pending_banner_button" description="Button for banner shown when data restore is pending">Update now</string>
     <!--  endregion -->
 
     <!-- region Data sources -->

@@ -49,7 +49,11 @@ import android.widget.Button
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isNotEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -57,7 +61,10 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.WithData
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.PermissionState
@@ -111,7 +118,12 @@ class MockedPermissionsActivityTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         whenever(migrationViewModel.migrationState).then {
-            MutableLiveData(WithData(MigrationState.IDLE))
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
         showOnboarding(context, false)
     }
@@ -257,6 +269,134 @@ class MockedPermissionsActivityTest {
             .isEqualTo(
                 intArrayOf(
                     PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED, PERMISSION_GRANTED))
+    }
+
+    @Test
+    fun intent_migrationInProgress_shoesMigrationInProgressDialog() {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IN_PROGRESS,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IN_PROGRESS,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
+        whenever(viewModel.grantedPermissions).then {
+            MutableLiveData(setOf(fromPermissionString(READ_STEPS)))
+        }
+
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onView(withText("Health Connect integration in progress"))
+        onView(
+                withText(
+                    "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(withText("Got it"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+
+        onView(withText("Got it")).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
+
+        // TODO (b/322495982) replace with idling resource
+        //        Thread.sleep(2000)
+        //        Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+    }
+
+    @Test
+    fun intent_restoreInProgress_showsRestoreInProgressDialog() {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.IDLE,
+                dataRestoreState = DataRestoreUiState.IN_PROGRESS,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IN_PROGRESS,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
+        whenever(viewModel.grantedPermissions).then {
+            MutableLiveData(setOf(fromPermissionString(READ_STEPS)))
+        }
+
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onView(withText("Health Connect restore in progress"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(
+                withText(
+                    "Health Connect is restoring data and permissions. This may take some time to complete."))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(withText("Got it"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+
+        onView(withText("Got it")).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
+
+        // TODO (b/322495982) replace with idling resource
+        //        Thread.sleep(2000)
+        //        Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+    }
+
+    @Test
+    fun intent_migrationPending_showsMigrationPendingDialog() {
+        whenever(migrationViewModel.getCurrentMigrationUiState()).then {
+            MigrationRestoreState(
+                migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
+                dataRestoreState = DataRestoreUiState.IDLE,
+                dataRestoreError = DataRestoreUiError.ERROR_NONE)
+        }
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData(
+                WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
+        whenever(viewModel.grantedPermissions).then {
+            MutableLiveData(setOf(fromPermissionString(READ_STEPS)))
+        }
+
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onView(
+                withText(
+                    "Health Connect is ready to be integrated with your Android system. If you give $TEST_APP_NAME access now, some features may not work until integration is complete."))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+        // TODO (b/322495982) check navigation to Migration activity
+        onView(withText("Start integration"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+        onView(withText("Continue"))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(ViewMatchers.isDisplayed()))
+
+        onView(withText("Continue")).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
+        onView(withText("Continue")).check(ViewAssertions.doesNotExist())
     }
 
     private fun getPermissionScreenIntent(permissions: Array<String>): Intent =

@@ -20,6 +20,7 @@ import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
@@ -79,15 +80,15 @@ class SettingsActivityTest {
         whenever(viewModel.grantedPermissions).then {
             MutableLiveData<Set<HealthPermission>>(emptySet())
         }
-
         showOnboarding(context, false)
+
 
         // Needed for the fragment
         whenever(viewModel.revokeAllPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(false) }
-        whenever(viewModel.atLeastOnePermissionGranted).then { MutableLiveData(false) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
 

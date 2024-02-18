@@ -26,6 +26,7 @@ import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.units.Temperature;
 import android.health.connect.datatypes.units.TemperatureDelta;
 import android.health.connect.datatypes.validation.ValidationUtils;
@@ -58,6 +59,39 @@ public final class SkinTemperatureRecord extends IntervalRecord {
     public static final int MEASUREMENT_LOCATION_TOE = 2;
     /** Skin temperature measurement location wrist. */
     public static final int MEASUREMENT_LOCATION_WRIST = 3;
+    /**
+     * Metric identifier to retrieve average skin temperature delta using aggregate APIs in {@link
+     * HealthConnectManager}.
+     */
+    @NonNull
+    public static final AggregationType<TemperatureDelta> SKIN_TEMPERATURE_DELTA_AVG =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.SKIN_TEMPERATURE_RECORD_DELTA_AVG,
+                    AggregationType.AVG,
+                    RECORD_TYPE_SKIN_TEMPERATURE,
+                    TemperatureDelta.class);
+    /**
+     * Metric identifier to retrieve minimum skin temperature delta using aggregate APIs in {@link
+     * HealthConnectManager}.
+     */
+    @NonNull
+    public static final AggregationType<TemperatureDelta> SKIN_TEMPERATURE_DELTA_MIN =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.SKIN_TEMPERATURE_RECORD_DELTA_MIN,
+                    AggregationType.MIN,
+                    RECORD_TYPE_SKIN_TEMPERATURE,
+                    TemperatureDelta.class);
+    /**
+     * Metric identifier to retrieve maximum skin temperature delta using aggregate APIs in {@link
+     * HealthConnectManager}.
+     */
+    @NonNull
+    public static final AggregationType<TemperatureDelta> SKIN_TEMPERATURE_DELTA_MAX =
+            new AggregationType<>(
+                    AggregationType.AggregationTypeIdentifier.SKIN_TEMPERATURE_RECORD_DELTA_MAX,
+                    AggregationType.MAX,
+                    RECORD_TYPE_SKIN_TEMPERATURE,
+                    TemperatureDelta.class);
 
     @Nullable private final Temperature mBaseline;
     @NonNull private final List<Delta> mDeltas;
@@ -197,7 +231,7 @@ public final class SkinTemperatureRecord extends IntervalRecord {
         private final Instant mTime;
 
         /**
-         * Skin temperature delta entry of {@link SkinTemperatureRecord}
+         * Skin temperature delta entry of {@link SkinTemperatureRecord}.
          *
          * @param delta Temperature difference.
          * @param time The point in time when the measurement was taken.
@@ -207,7 +241,7 @@ public final class SkinTemperatureRecord extends IntervalRecord {
         }
 
         /**
-         * Skin temperature delta entry of {@link SkinTemperatureRecord}
+         * Skin temperature delta entry of {@link SkinTemperatureRecord}.
          *
          * @param delta Temperature difference.
          * @param time The point in time when the measurement was taken.
