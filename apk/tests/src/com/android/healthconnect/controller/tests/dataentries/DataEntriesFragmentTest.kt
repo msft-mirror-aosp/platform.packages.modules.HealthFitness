@@ -26,6 +26,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
 import com.android.healthconnect.controller.dataentries.DataEntriesFragment
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.Empty
@@ -113,6 +114,8 @@ class DataEntriesFragmentTest {
 
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
+        onView(withText("127 steps")).check(matches(isDisplayed()))
+        onView(withText("TEST_APP_NAME, TEST_APP_NAME_2")).check(matches(isDisplayed()))
         onView(withText("7:06 - 7:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
@@ -145,4 +148,8 @@ private val FORMATTED_STEPS_LIST =
             headerA11y = "from 8:06 to 8:06 • TES   T_APP_NAME",
             title = "15 steps",
             titleA11y = "15 steps",
-            dataType = DataType.STEPS))
+            dataType = DataType.STEPS),
+        FormattedAggregation(
+            aggregation = "127 steps",
+            aggregationA11y = "127 steps",
+            contributingApps = "TEST_APP_NAME, TEST_APP_NAME_2"))

@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.NavigationUtils
@@ -38,7 +40,7 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
                 }
                 is MigrationViewModel.MigrationFragmentState.WithData -> {
                     setLoading(false)
-                    updateFragment(migrationState.migrationState)
+                    updateFragment(migrationState.migrationRestoreState)
                 }
                 is MigrationViewModel.MigrationFragmentState.Error -> {
                     setError(true)
@@ -47,32 +49,31 @@ class MigrationNavigationFragment : Hilt_MigrationNavigationFragment() {
         }
     }
 
-    private fun updateFragment(migrationState: MigrationState) {
-        when (migrationState) {
-            MigrationState.ALLOWED_NOT_STARTED,
-            MigrationState.ALLOWED_PAUSED -> {
-                showMigrationPausedFragment()
-            }
-            MigrationState.APP_UPGRADE_REQUIRED -> {
-                showAppUpdateRequiredFragment()
-            }
-            MigrationState.MODULE_UPGRADE_REQUIRED -> {
-                showModuleUpdateRequiredFragment()
-            }
-            MigrationState.IN_PROGRESS -> {
-                showInProgressFragment()
-            }
-            MigrationState.COMPLETE_IDLE,
-            MigrationState.COMPLETE -> {
-                navigateToHomeFragment()
-            }
-            else -> {
-                navigateToHomeFragment()
-            }
+    private fun updateFragment(migrationRestoreState: MigrationRestoreState) {
+        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+
+        if (dataRestoreUiState == DataRestoreUiState.IN_PROGRESS) {
+            showDataRestoreInProgressFragment()
+        } else if (migrationUiState in
+            listOf(MigrationUiState.ALLOWED_NOT_STARTED, MigrationUiState.ALLOWED_PAUSED)) {
+            showMigrationPausedFragment()
+        } else if (migrationUiState == MigrationUiState.APP_UPGRADE_REQUIRED) {
+            showAppUpdateRequiredFragment()
+        } else if (migrationUiState == MigrationUiState.MODULE_UPGRADE_REQUIRED) {
+            showModuleUpdateRequiredFragment()
+        } else if (migrationUiState == MigrationUiState.IN_PROGRESS) {
+            showMigrationInProgressFragment()
+        } else {
+            navigateToHomeFragment()
         }
     }
 
-    private fun showInProgressFragment() {
+    private fun showDataRestoreInProgressFragment() {
+        navigationUtils.navigate(
+            this, R.id.action_migrationNavigationFragment_to_dataRestoreInProgressFragment)
+    }
+
+    private fun showMigrationInProgressFragment() {
         navigationUtils.navigate(
             this, R.id.action_migrationNavigationFragment_to_migrationInProgressFragment)
     }

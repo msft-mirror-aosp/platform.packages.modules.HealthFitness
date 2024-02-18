@@ -158,8 +158,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             appName = requireArguments().getString(EXTRA_APP_NAME)!!
         }
 
-        appPermissionViewModel.loadAppInfo(packageName)
-        appPermissionViewModel.loadForPackage(packageName)
+        appPermissionViewModel.loadPermissionsForPackage(packageName)
 
         appPermissionViewModel.appPermissions.observe(viewLifecycleOwner) { permissions ->
             updatePermissions(permissions)
@@ -171,7 +170,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         }
 
         deletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
-            if (isReloadNeeded) appPermissionViewModel.loadForPackage(packageName)
+            if (isReloadNeeded) appPermissionViewModel.loadPermissionsForPackage(packageName)
         }
 
         appPermissionViewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->

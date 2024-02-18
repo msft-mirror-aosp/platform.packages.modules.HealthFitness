@@ -21,7 +21,6 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
 import android.health.connect.datatypes.ExerciseSessionRecord
@@ -40,7 +39,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.ALL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.PerformanceTesting
+import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.data.ExerciseRoutesTestData.Companion.WARSAW_ROUTE
 import com.android.healthconnect.testapps.toolbox.data.ExerciseRoutesTestData.Companion.generateExerciseRouteFromLocations
@@ -56,9 +55,9 @@ import java.time.temporal.ChronoUnit
 class HomeFragment : Fragment() {
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -66,10 +65,11 @@ class HomeFragment : Fragment() {
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var mRequestRoutePermissionLauncher: ActivityResultLauncher<String>
     private lateinit var mNavigationController: NavController
+    private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
+
     private val manager by lazy {
         requireContext().getSystemService(HealthConnectManager::class.java)
     }
-    private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,7 +112,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val performanceTesting = PerformanceTesting(performanceTestingViewModel)
+        val performanceTesting = PerformanceTestingFragment()
         childFragmentManager
                 .beginTransaction()
                 .add(performanceTesting, "PERFORMANCE_TESTING_FRAGMENT")
