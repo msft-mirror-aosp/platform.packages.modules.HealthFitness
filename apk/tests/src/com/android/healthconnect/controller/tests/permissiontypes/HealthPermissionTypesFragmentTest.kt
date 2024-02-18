@@ -15,9 +15,12 @@
  */
 package com.android.healthconnect.controller.tests.permissiontypes
 
+import android.content.Context
 import android.health.connect.HealthDataCategory
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -28,6 +31,7 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -42,6 +46,7 @@ import com.android.healthconnect.controller.tests.utils.atPosition
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -56,6 +61,8 @@ class HealthPermissionTypesFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
+    private lateinit var context: Context
+    private lateinit var navHostController: TestNavHostController
 
     @BindValue
     val viewModel: HealthPermissionTypesViewModel =
@@ -65,6 +72,57 @@ class HealthPermissionTypesFragmentTest {
     fun setup() {
         hiltRule.inject()
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
+        context = InstrumentationRegistry.getInstrumentation().context
+        navHostController = TestNavHostController(context)
+    }
+
+    @Test
+    fun dataType_navigatesToDataAccess() {
+        setupFragmentForNavigationTesting()
+        onView(withText("Distance")).check(matches(isDisplayed()))
+        onView(withText("Distance")).perform(click())
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.healthDataAccessFragment)
+    }
+
+    @Test
+    fun newAppPriority_navigatesToDataSources() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
+        setupFragmentForNavigationTesting()
+        onView(withText("Data sources and priority")).check(matches(isDisplayed()))
+        onView(withText("Data sources and priority")).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.dataSourcesFragment)
+    }
+
+    @Test
+    fun deletePermissionTypeData_showsDialog() {
+        Mockito.`when`(viewModel.permissionTypesData).then {
+            MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
+                HealthPermissionTypesViewModel.PermissionTypesState.WithData(
+                    listOf(
+                        HealthPermissionType.DISTANCE,
+                        HealthPermissionType.EXERCISE,
+                        HealthPermissionType.STEPS)))
+        }
+        Mockito.`when`(viewModel.priorityList).then {
+            MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
+                HealthPermissionTypesViewModel.PriorityListState.WithData(
+                    listOf(TEST_APP, TEST_APP_2)))
+        }
+        Mockito.`when`(viewModel.appsWithData).then {
+            MutableLiveData<HealthPermissionTypesViewModel.AppsWithDataFragmentState>(
+                HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData(listOf()))
+        }
+        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
+        launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
+
+        onView(withText("Delete activity data")).check(matches(isDisplayed()))
+        onView(withText("Delete activity data")).perform(click())
+        onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -88,7 +146,7 @@ class HealthPermissionTypesFragmentTest {
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
         Mockito.`when`(viewModel.editedPriorityList).then {
-            MutableLiveData<List<AppMetadata>>(listOf(TEST_APP, TEST_APP_2))
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
         }
         Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
         launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle())
@@ -746,5 +804,35 @@ class HealthPermissionTypesFragmentTest {
         val bundle = Bundle()
         bundle.putInt(HealthDataCategoriesFragment.CATEGORY_KEY, HealthDataCategory.VITALS)
         return bundle
+    }
+
+    private fun setupFragmentForNavigationTesting() {
+        Mockito.`when`(viewModel.permissionTypesData).then {
+            MutableLiveData<HealthPermissionTypesViewModel.PermissionTypesState>(
+                HealthPermissionTypesViewModel.PermissionTypesState.WithData(
+                    listOf(
+                        HealthPermissionType.DISTANCE,
+                        HealthPermissionType.EXERCISE,
+                        HealthPermissionType.STEPS)))
+        }
+        Mockito.`when`(viewModel.priorityList).then {
+            MutableLiveData<HealthPermissionTypesViewModel.PriorityListState>(
+                HealthPermissionTypesViewModel.PriorityListState.WithData(
+                    listOf(TEST_APP, TEST_APP_2)))
+        }
+        Mockito.`when`(viewModel.appsWithData).then {
+            MutableLiveData<HealthPermissionTypesViewModel.AppsWithDataFragmentState>(
+                HealthPermissionTypesViewModel.AppsWithDataFragmentState.WithData(listOf()))
+        }
+        Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
+        Mockito.`when`(viewModel.editedPriorityList).then {
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
+        }
+        Mockito.`when`(viewModel.categoryLabel).then { MutableLiveData("activity") }
+        launchFragment<HealthPermissionTypesFragment>(activityCategoryBundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph)
+            navHostController.setCurrentDestination(R.id.healthPermissionTypesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
     }
 }

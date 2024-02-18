@@ -15,16 +15,21 @@
  */
 package com.android.healthconnect.controller.tests.categories
 
+import android.content.Context
 import android.health.connect.HealthDataCategory
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange
 import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
@@ -36,13 +41,16 @@ import com.android.healthconnect.controller.categories.HealthDataCategoryViewMod
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,6 +72,8 @@ class HealthDataCategoriesFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
+    private lateinit var context: Context
+    private lateinit var navHostController: TestNavHostController
 
     @BindValue
     val viewModel: HealthDataCategoryViewModel =
@@ -79,6 +89,68 @@ class HealthDataCategoriesFragmentTest {
             MutableLiveData(AutoDeleteState.WithData(AutoDeleteRange.AUTO_DELETE_RANGE_NEVER))
         }
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
+        context = InstrumentationRegistry.getInstrumentation().context
+        navHostController = TestNavHostController(context)
+        toggleAnimation(false)
+    }
+
+    @After
+    fun tearDown() {
+        toggleAnimation(true)
+    }
+
+    @Test
+    fun seeAllCategories_navigatesToSeeAllCategories() {
+        whenever(viewModel.categoriesData).then {
+            MutableLiveData<CategoriesFragmentState>(WithData(HEALTH_DATA_ALL_CATEGORIES))
+        }
+        launchFragment<HealthDataCategoriesFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph)
+            navHostController.setCurrentDestination(R.id.healthDataCategoriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("See all categories")).check(matches(isDisplayed()))
+        onView(withText("See all categories")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.healthDataAllCategoriesFragment)
+    }
+
+    @Test
+    fun activityButton_navigatesToActivityDataType() {
+        whenever(viewModel.categoriesData).then {
+            MutableLiveData<CategoriesFragmentState>(WithData(HEALTH_DATA_ALL_CATEGORIES))
+        }
+        launchFragment<HealthDataCategoriesFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph)
+            navHostController.setCurrentDestination(R.id.healthDataCategoriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Activity")).check(matches(isDisplayed()))
+        onView(withText("Activity")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.healthPermissionTypesFragment)
+    }
+
+    @Test
+    fun oldIA_autoDelete_navigatesToAutoDelete() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
+        whenever(viewModel.categoriesData).then {
+            MutableLiveData<CategoriesFragmentState>(WithData(HEALTH_DATA_ALL_CATEGORIES))
+        }
+        launchFragment<HealthDataCategoriesFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph)
+            navHostController.setCurrentDestination(R.id.healthDataCategoriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Auto-delete")).check(matches(isDisplayed()))
+        onView(withText("Auto-delete")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.autoDeleteFragment)
     }
 
     @Test

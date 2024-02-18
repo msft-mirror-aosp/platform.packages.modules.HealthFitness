@@ -16,11 +16,24 @@
 
 package android.healthconnect.cts.changelogs;
 
+import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
+import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
+import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+import static android.healthconnect.cts.utils.TestUtils.deleteRecordsByIdFilter;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
+import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -30,6 +43,8 @@ import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
@@ -39,6 +54,8 @@ import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
+
+import com.google.common.collect.ImmutableList;
 
 import org.junit.After;
 import org.junit.Rule;
@@ -50,11 +67,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** CTS test for API provided by HealthConnectManager. */
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectChangeLogsTests {
+    private final Context mContext = ApplicationProvider.getApplicationContext();
+    private final String mPackageName = mContext.getPackageName();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -63,11 +83,10 @@ public class HealthConnectChangeLogsTests {
 
     @After
     public void tearDown() throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        String packageName = context.getPackageName();
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
-                        .addDataOrigin(new DataOrigin.Builder().setPackageName(packageName).build())
+                        .addDataOrigin(
+                                new DataOrigin.Builder().setPackageName(mPackageName).build())
                         .build());
         TestUtils.deleteAllStagedRemoteData();
     }
@@ -523,6 +542,109 @@ public class HealthConnectChangeLogsTests {
         assertThat(newResponse.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(newResponse.hasMorePages()).isFalse();
         assertThat(newResponse.getNextChangesToken()).isEqualTo(changeLogsRequestNew.getToken());
+    }
+
+    @Test
+    public void testChangeLogs_operationCombinations_expectCorrectChangeLogs() throws Exception {
+        Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS).truncatedTo(MILLIS);
+
+        // insert some unrelated records
+        insertRecords(getTestRecords());
+        StepsRecord preExistingStepsRecord =
+                getStepsRecord(
+                        /* steps= */ 3456,
+                        yesterday.plus(4, HOURS),
+                        yesterday.plus(5, HOURS),
+                        /* clientId= */ "preExistingStepsRecord");
+        String preExistingStepsId = insertRecordAndGetId(preExistingStepsRecord);
+        StepsRecord updatedPreExistingStepsRecord =
+                new StepsRecord.Builder(
+                                getMetadataForId(preExistingStepsId, getDataOrigin(mPackageName)),
+                                preExistingStepsRecord.getStartTime(),
+                                preExistingStepsRecord.getEndTime(),
+                                6543)
+                        .build();
+        String preExistingRecordId = insertRecordAndGetId(getDistanceRecord());
+        // then get changes token. The above records shouldn't be included in the change logs.
+        String changeToken =
+                getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+
+        ImmutableList.Builder<Record> recordBuilder = ImmutableList.builder();
+        for (int i = 0; i < 50; i++) {
+            recordBuilder.add(
+                    getStepsRecord(
+                            i + 100,
+                            yesterday.plus(i, MINUTES),
+                            yesterday.plus(i + 1, MINUTES),
+                            "stepsId_" + i));
+        }
+        for (int i = 0; i < 50; i++) {
+            int heartRate = (int) (Math.random() * 30) + 80;
+            recordBuilder.add(
+                    getHeartRateRecord(heartRate, yesterday.plus(i, MINUTES), "heartRateId_" + i));
+        }
+        List<Record> records = insertRecords(recordBuilder.build());
+
+        StepsRecord stepsRecordToUpdate = (StepsRecord) records.get(2);
+        StepsRecord updatedStepsRecord =
+                new StepsRecord.Builder(
+                                getMetadataForId(
+                                        stepsRecordToUpdate.getMetadata().getId(),
+                                        getDataOrigin(mPackageName)), // workaround for b/325029194
+                                stepsRecordToUpdate.getStartTime(),
+                                stepsRecordToUpdate.getEndTime(),
+                                /* count= */ 9876)
+                        .build();
+        HeartRateRecord heartRateRecordToUpdate = (HeartRateRecord) records.get(68);
+        HeartRateRecord updatedHeartRateRecord =
+                new HeartRateRecord.Builder(
+                                getMetadataForId(
+                                        heartRateRecordToUpdate.getMetadata().getId(),
+                                        getDataOrigin(mPackageName)),
+                                heartRateRecordToUpdate.getStartTime(),
+                                heartRateRecordToUpdate.getEndTime(),
+                                List.of(
+                                        new HeartRateRecord.HeartRateSample(
+                                                150, heartRateRecordToUpdate.getStartTime())))
+                        .build();
+        // Update steps record, only the updated value should appear in upsert change log
+        updateRecords(
+                List.of(updatedPreExistingStepsRecord, updatedStepsRecord, updatedHeartRateRecord));
+
+        deleteRecordsByIdFilter(
+                List.of(
+                        // Delete updated HR record, it should not appear in upsert change log
+                        RecordIdFilter.fromId(
+                                HeartRateRecord.class,
+                                updatedHeartRateRecord.getMetadata().getId()),
+                        RecordIdFilter.fromClientRecordId(
+                                StepsRecord.class,
+                                records.get(6).getMetadata().getClientRecordId()),
+                        RecordIdFilter.fromId(DistanceRecord.class, preExistingRecordId)));
+        List<String> expectedDeletedIds =
+                List.of(
+                        updatedHeartRateRecord.getMetadata().getId(),
+                        records.get(6).getMetadata().getId(),
+                        preExistingRecordId);
+
+        ChangeLogsResponse response =
+                getChangeLogs(new ChangeLogsRequest.Builder(changeToken).build());
+        List<String> updatedIdsFromLog =
+                response.getUpsertedRecords().stream()
+                        .map(log -> log.getMetadata().getId())
+                        .toList();
+        List<String> deletedIdsFromLog =
+                response.getDeletedLogs().stream()
+                        .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                        .collect(Collectors.toList());
+
+        // inserted 50*2 - deleted 2 + updated pre-existing 1
+        assertThat(response.getUpsertedRecords()).hasSize(99);
+        assertThat(updatedIdsFromLog).doesNotContain(updatedHeartRateRecord.getMetadata().getId());
+        assertThat(response.getUpsertedRecords()).contains(updatedPreExistingStepsRecord);
+        assertThat(response.getUpsertedRecords()).doesNotContain(stepsRecordToUpdate);
+        assertThat(response.getUpsertedRecords()).contains(updatedStepsRecord);
+        assertThat(deletedIdsFromLog).containsExactlyElementsIn(expectedDeletedIds);
     }
 
     private static StepsRecord getStepsRecord_minusDays(int days) {

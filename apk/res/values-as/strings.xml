@@ -97,6 +97,14 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"ব্যায়াম কৰাৰ পথটো লিখক"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"ব্যায়াম কৰাৰ পদ্ধতি পঢ়ক"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"ব্যায়ামৰ পথসমূহ পঢ়ক"</string>
+    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
+    <skip />
+    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
+    <skip />
+    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
+    <skip />
+    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
+    <skip />
     <string name="distance_uppercase_label" msgid="1420705424462077174">"দূৰত্ব"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"দূৰত্ব"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"দূৰত্বৰ ডেটা পঢ়ক"</string>
@@ -268,8 +276,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectত ষ্ট’ৰ হৈ থকা ডেটা কোনবোৰ এপে এক্সেছ কৰিব পাৰে সেয়া নিয়ন্ত্ৰণ কৰক। কোনো এটা এপে পঢ়িব অথবা লিখিব পৰা ডেটাখিনি পৰ্যালোচনা কৰিবলৈ সেই এপ্‌টোত টিপক।"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"অনুমতি দিয়া এক্সেছ"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"অনুমতি নিদিয়া এক্সেছ"</string>
-    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
-    <skip />
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"আপডে’ট কৰাৰ প্ৰয়োজন"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"ছেটিং আৰু সহায়"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"আটাইবোৰ এপৰ বাবে এক্সেছ আঁতৰাওক"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"পঢ়িবলৈ অনুমতি দিছে"</string>
@@ -666,7 +673,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{১ শতাংশ}one{# শতাংশ}other{# শতাংশ}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"বাতিল কৰক"</string>
     <string name="units_title" msgid="6504086463237869339">"একক"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"ডেটাৰ একক ছেট কৰক"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"দূৰত্ব"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"উচ্চতা"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"ওজন"</string>
@@ -774,13 +780,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect একত্ৰিত কৰাটো পুনৰ আৰম্ভ কৰক"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"আপোনাৰ ডেটা ৰাখিবলৈ, এইটো <xliff:g id="TIME_NEEDED">%1$s</xliff:g>ৰ ভিতৰত সম্পূৰ্ণ কৰক"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"এপ্‌টো আপডে’ট কৰাৰ প্ৰয়োজন"</string>
-    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
-    <skip />
-    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
-    <skip />
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connectৰ সৈতে ছিংক কৰা অব্যাহত ৰাখিবলৈ <xliff:g id="APP_NAME">%1$s</xliff:g> আপডে’ট হৈ থাকিব লাগিব"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connectৰ সৈতে ছিংক কৰা অব্যাহত ৰাখিবলৈ কিছুমান এপ্ আপডে’ট হৈ থাকিব লাগিব"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"আপডে’ট আছে নেকি চাওক"</string>
-    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
-    <skip />
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"অধিক জানক"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect একত্ৰিত কৰা"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"আপোনাৰ Android ছিষ্টেমৰ সৈতে একত্ৰিত কৰিবলৈ Health Connect সাজু। যদি আপুনি এতিয়া <xliff:g id="APP_NAME">%1$s</xliff:g>ক এক্সেছ দিয়ে, একত্ৰিত কৰাটো সম্পূৰ্ণ নোহোৱা পৰ্যন্ত কিছুমান সুবিধাই কাম নকৰিব পাৰে।"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"আপোনাৰ Android ছিষ্টেমৰ সৈতে একত্ৰিত কৰিবলৈ Health Connect সাজু। যদি আপুনি এতিয়া এপ্‌সমূহক এক্সেছ দিয়ে, একত্ৰিত কৰাটো সম্পূৰ্ণ নোহোৱা পৰ্যন্ত কিছুমান সুবিধাই কাম নকৰিব পাৰে।"</string>

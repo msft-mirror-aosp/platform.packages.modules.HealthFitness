@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.permission;
 
+import static com.android.server.healthconnect.TestUtils.getInternalBackgroundExecutorTaskCount;
+import static com.android.server.healthconnect.TestUtils.waitForAllScheduledTasksToComplete;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_CURRENT;
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_STAGED;
 
@@ -45,7 +47,6 @@ import android.os.UserManager;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.android.server.healthconnect.TestUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 // TODO(b/261432978): add test for sharedUser backup
@@ -105,7 +107,7 @@ public class FirstGrantTimeUnitTest {
 
     @After
     public void tearDown() throws Exception {
-        TestUtils.waitForAllScheduledTasksToComplete();
+        waitForAllScheduledTasksToComplete();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -121,7 +123,8 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
-    public void testOnPermissionsChangedCalledWhileDeviceIsLocked_getGrantTimeNotNullAfterUnlock() {
+    public void testOnPermissionsChangedCalledWhileDeviceIsLocked_getGrantTimeNotNullAfterUnlock()
+            throws TimeoutException {
         // before device is unlocked
         when(mUserManager.isUserUnlocked()).thenReturn(false);
         when(mDatastore.readForUser(CURRENT_USER, DATA_TYPE_CURRENT)).thenReturn(null);
@@ -132,6 +135,7 @@ public class FirstGrantTimeUnitTest {
         when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
                 .thenReturn(true);
         mGrantTimeManager.onPermissionsChanged(uid);
+        waitForAllScheduledTasksToComplete();
         // after device is unlocked
         when(mUserManager.isUserUnlocked()).thenReturn(true);
         UserGrantTimeState currentGrantTimeState = new UserGrantTimeState(DEFAULT_VERSION);
@@ -142,6 +146,17 @@ public class FirstGrantTimeUnitTest {
 
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEqualTo(now);
+    }
+
+    @Test
+    public void testOnPermissionsChangedCalled_expectBackgroundTaskAdded() throws TimeoutException {
+        long currentTaskCount = getInternalBackgroundExecutorTaskCount();
+        waitForAllScheduledTasksToComplete();
+
+        mGrantTimeManager.onPermissionsChanged(0);
+        waitForAllScheduledTasksToComplete();
+
+        assertThat(getInternalBackgroundExecutorTaskCount()).isEqualTo(currentTaskCount + 1);
     }
 
     @Test

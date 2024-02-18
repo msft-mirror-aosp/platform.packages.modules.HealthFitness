@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import android.content.Intent.*
 import androidx.core.os.bundleOf
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceCategory
 import androidx.test.espresso.Espresso.onView
@@ -84,8 +85,8 @@ class ConnectedAppFragmentTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(false)
 
         whenever(viewModel.revokeAllPermissionsState).then { MutableLiveData(NotStarted) }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(false) }
-        whenever(viewModel.atLeastOnePermissionGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
         whenever(viewModel.grantedPermissions).then {
             MutableLiveData(emptySet<HealthPermission>())
         }
@@ -227,7 +228,7 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.grantedPermissions).then {
             MutableLiveData(setOf(writePermission, readPermission))
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(true) }
 
         val scenario =
             launchFragment<ConnectedAppFragment>(
@@ -254,7 +255,7 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(false) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
 
         val scenario =
             launchFragment<ConnectedAppFragment>(
@@ -281,7 +282,7 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<ConnectedAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
         onView(withText("Allow all")).perform(click())
@@ -300,7 +301,7 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.grantedPermissions).then {
             MutableLiveData(setOf(writePermission, readPermission))
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<ConnectedAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
         onView(withText("Allow all")).perform(click())
@@ -322,7 +323,7 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.grantedPermissions).then {
             MutableLiveData(setOf(writePermission, readPermission))
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<ConnectedAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
         onView(withText("Allow all")).perform(click())
@@ -365,7 +366,7 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.grantedPermissions).then {
             MutableLiveData(setOf(writePermission, readPermission))
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(true) }
         launchFragment<ConnectedAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
         onView(withText("See app data")).perform(scrollTo()).check(matches(isDisplayed()))
