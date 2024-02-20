@@ -74,6 +74,7 @@
     <!-- Migration -->
     <attr name="moreSpaceNeededIcon" format="reference"/>
     <attr name="updateNeededIcon" format="reference"/>
+    <attr name="settingsAlertIcon" format="reference"/>
 
     <!-- Data sources & priority -->
     <attr name="addIcon" format="reference"/>

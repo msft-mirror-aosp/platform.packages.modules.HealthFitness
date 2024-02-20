@@ -29,8 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SuccessDialogFragment : Hilt_SuccessDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialogBuilder(this)
-            .setLogName(SuccessDialogElement.DELETION_DIALOG_SUCCESS_CONTAINER)
+        return AlertDialogBuilder(this, SuccessDialogElement.DELETION_DIALOG_SUCCESS_CONTAINER)
             .setIcon(R.attr.successIcon)
             .setTitle(R.string.delete_dialog_success_title)
             .setMessage(R.string.delete_dialog_success_message)

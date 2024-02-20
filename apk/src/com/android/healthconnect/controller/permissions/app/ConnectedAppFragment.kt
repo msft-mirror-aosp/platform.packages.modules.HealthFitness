@@ -52,11 +52,11 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_ALL_EVENT
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.KEY_DELETE_DATA
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -158,8 +158,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             appName = requireArguments().getString(EXTRA_APP_NAME)!!
         }
 
-        appPermissionViewModel.loadAppInfo(packageName)
-        appPermissionViewModel.loadForPackage(packageName)
+        appPermissionViewModel.loadPermissionsForPackage(packageName)
 
         appPermissionViewModel.appPermissions.observe(viewLifecycleOwner) { permissions ->
             updatePermissions(permissions)
@@ -171,7 +170,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         }
 
         deletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
-            if (isReloadNeeded) appPermissionViewModel.loadForPackage(packageName)
+            if (isReloadNeeded) appPermissionViewModel.loadPermissionsForPackage(packageName)
         }
 
         appPermissionViewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->
@@ -220,6 +219,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         } else {
             mManageDataCategory?.addPreference(
                 HealthPreference(requireContext()).also {
+                    it.logName = AppAccessElement.DELETE_APP_DATA_BUTTON
                     it.title = getString(R.string.delete_app_data)
                     it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.deleteIcon)
                     it.setOnPreferenceClickListener {

@@ -12,16 +12,23 @@ import com.android.healthconnect.controller.migration.MigrationPausedFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
@@ -30,10 +37,16 @@ class MigrationPausedFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
         hiltRule.inject()
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -49,6 +62,9 @@ class MigrationPausedFragmentTest {
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Resume")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MIGRATION_PAUSED_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_PAUSED_CONTINUE_BUTTON)
     }
 
     @Test
@@ -63,6 +79,8 @@ class MigrationPausedFragmentTest {
                 activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
             Truth.assertThat(preferences.getBoolean("integration_paused_seen", false)).isTrue()
         }
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
     }
 
     @Test
@@ -74,6 +92,8 @@ class MigrationPausedFragmentTest {
 
         verify(navigationUtils, times(1))
             .navigate(any(), eq(R.id.action_migrationPausedFragment_to_migrationApk))
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_PAUSED_CONTINUE_BUTTON)
     }
 
     @Test
@@ -82,6 +102,8 @@ class MigrationPausedFragmentTest {
         launchFragment<MigrationPausedFragment>(Bundle())
         onView(withText("Resume")).check(matches(isDisplayed()))
         onView(withText("Resume")).perform(ViewActions.click())
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_PAUSED_CONTINUE_BUTTON)
 
         onView(withText("Integration paused")).check(matches(isDisplayed()))
         onView(

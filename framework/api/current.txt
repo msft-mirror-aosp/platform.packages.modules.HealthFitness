@@ -81,6 +81,7 @@ package android.health.connect {
     field public static final String READ_DISTANCE = "android.permission.health.READ_DISTANCE";
     field public static final String READ_ELEVATION_GAINED = "android.permission.health.READ_ELEVATION_GAINED";
     field public static final String READ_EXERCISE = "android.permission.health.READ_EXERCISE";
+    field @FlaggedApi("com.android.healthconnect.flags.read_exercise_routes_all_enabled") public static final String READ_EXERCISE_ROUTES = "android.permission.health.READ_EXERCISE_ROUTES";
     field public static final String READ_FLOORS_CLIMBED = "android.permission.health.READ_FLOORS_CLIMBED";
     field public static final String READ_HEART_RATE = "android.permission.health.READ_HEART_RATE";
     field public static final String READ_HEART_RATE_VARIABILITY = "android.permission.health.READ_HEART_RATE_VARIABILITY";
@@ -92,10 +93,12 @@ package android.health.connect {
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
+    field @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final String READ_PLANNED_EXERCISE = "android.permission.health.READ_PLANNED_EXERCISE";
     field public static final String READ_POWER = "android.permission.health.READ_POWER";
     field public static final String READ_RESPIRATORY_RATE = "android.permission.health.READ_RESPIRATORY_RATE";
     field public static final String READ_RESTING_HEART_RATE = "android.permission.health.READ_RESTING_HEART_RATE";
     field public static final String READ_SEXUAL_ACTIVITY = "android.permission.health.READ_SEXUAL_ACTIVITY";
+    field @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public static final String READ_SKIN_TEMPERATURE = "android.permission.health.READ_SKIN_TEMPERATURE";
     field public static final String READ_SLEEP = "android.permission.health.READ_SLEEP";
     field public static final String READ_SPEED = "android.permission.health.READ_SPEED";
     field public static final String READ_STEPS = "android.permission.health.READ_STEPS";
@@ -128,10 +131,12 @@ package android.health.connect {
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";
+    field @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final String WRITE_PLANNED_EXERCISE = "android.permission.health.WRITE_PLANNED_EXERCISE";
     field public static final String WRITE_POWER = "android.permission.health.WRITE_POWER";
     field public static final String WRITE_RESPIRATORY_RATE = "android.permission.health.WRITE_RESPIRATORY_RATE";
     field public static final String WRITE_RESTING_HEART_RATE = "android.permission.health.WRITE_RESTING_HEART_RATE";
     field public static final String WRITE_SEXUAL_ACTIVITY = "android.permission.health.WRITE_SEXUAL_ACTIVITY";
+    field @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public static final String WRITE_SKIN_TEMPERATURE = "android.permission.health.WRITE_SKIN_TEMPERATURE";
     field public static final String WRITE_SLEEP = "android.permission.health.WRITE_SLEEP";
     field public static final String WRITE_SPEED = "android.permission.health.WRITE_SPEED";
     field public static final String WRITE_STEPS = "android.permission.health.WRITE_STEPS";
@@ -1192,6 +1197,37 @@ package android.health.connect.datatypes {
     field public static final int PROTECTION_USED_UNPROTECTED = 2; // 0x2
   }
 
+  @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public final class SkinTemperatureRecord extends android.health.connect.datatypes.IntervalRecord {
+    method @Nullable public android.health.connect.datatypes.units.Temperature getBaseline();
+    method @NonNull public java.util.List<android.health.connect.datatypes.SkinTemperatureRecord.Delta> getDeltas();
+    method public int getMeasurementLocation();
+    field public static final int MEASUREMENT_LOCATION_FINGER = 1; // 0x1
+    field public static final int MEASUREMENT_LOCATION_TOE = 2; // 0x2
+    field public static final int MEASUREMENT_LOCATION_UNKNOWN = 0; // 0x0
+    field public static final int MEASUREMENT_LOCATION_WRIST = 3; // 0x3
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.TemperatureDelta> SKIN_TEMPERATURE_DELTA_AVG;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.TemperatureDelta> SKIN_TEMPERATURE_DELTA_MAX;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.TemperatureDelta> SKIN_TEMPERATURE_DELTA_MIN;
+  }
+
+  public static final class SkinTemperatureRecord.Builder {
+    ctor public SkinTemperatureRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord build();
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder clearEndZoneOffset();
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder clearStartZoneOffset();
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setBaseline(@Nullable android.health.connect.datatypes.units.Temperature);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setDeltas(@NonNull java.util.List<android.health.connect.datatypes.SkinTemperatureRecord.Delta>);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setMeasurementLocation(int);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+  }
+
+  public static final class SkinTemperatureRecord.Delta {
+    ctor public SkinTemperatureRecord.Delta(@NonNull android.health.connect.datatypes.units.TemperatureDelta, @NonNull java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.units.TemperatureDelta getDelta();
+    method @NonNull public java.time.Instant getTime();
+  }
+
   public final class SleepSessionRecord extends android.health.connect.datatypes.IntervalRecord {
     method @Nullable public CharSequence getNotes();
     method @NonNull public java.util.List<android.health.connect.datatypes.SleepSessionRecord.Stage> getStages();
@@ -1399,6 +1435,12 @@ package android.health.connect.datatypes.units {
   public final class Temperature implements java.lang.Comparable<android.health.connect.datatypes.units.Temperature> {
     method public int compareTo(@NonNull android.health.connect.datatypes.units.Temperature);
     method @NonNull public static android.health.connect.datatypes.units.Temperature fromCelsius(double);
+    method public double getInCelsius();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public final class TemperatureDelta implements java.lang.Comparable<android.health.connect.datatypes.units.TemperatureDelta> {
+    method public int compareTo(@NonNull android.health.connect.datatypes.units.TemperatureDelta);
+    method @NonNull public static android.health.connect.datatypes.units.TemperatureDelta fromCelsius(double);
     method public double getInCelsius();
   }
 
