@@ -137,6 +137,11 @@
     <string name="exercise_route_read_content_description" description="Content description for switch that enables permissions for reading the user's exercise route [CHAR_LIMIT=NONE]">Read exercise route</string>
     <string name="exercise_routes_read_content_description" description="Content description for switch that enables permissions for reading user's exercise routes [CHAR_LIMIT=NONE]">Read exercise routes</string>
 
+    <string name="planned_exercise_uppercase_label" description="Uppercase label used to show the user's planned exercise data [CHAR_LIMIT=50]">Training plans</string>
+    <string name="planned_exercise_lowercase_label" description="Lowercase label used to show the user's planned exercise data [CHAR_LIMIT=50]">training plans</string>
+    <string name="planned_exercise_read_content_description" description="Content description for switch that enables permissions for reading the user's planned exercise data [CHAR_LIMIT=NONE]">Read training plans</string>
+    <string name="planned_exercise_write_content_description" description="Content description for switch that enables permissions for writing the user's planned exercise data [CHAR_LIMIT=NONE]">Write training plans</string>
+
     <string name="distance_uppercase_label" description="Uppercase label used to show the user's distance data [CHAR_LIMIT=50]">Distance</string>
     <string name="distance_lowercase_label" description="Lowercase label used to show the user's distance data [CHAR_LIMIT=50]">distance</string>
     <string name="distance_read_content_description" description="Content description for switch that enables permissions for reading the user's distance data [CHAR_LIMIT=NONE]">Read distance</string>
@@ -365,6 +370,7 @@
     <string name="connected_apps_text" description="Description text shown on screen for managing which apps have access to health and fitness data. Note: Health Connect is the brand [CHAR_LIMIT=NONE]">Control which apps can access data stored in Health&#160;Connect. Tap an app to review the data it can read or write.</string>
     <string name="connected_apps_section_title" description="Title of section containing all the connected apps [CHAR_LIMIT=40]">Allowed access</string>
     <string name="not_connected_apps_section_title" description="Title of section containing all the not-connected apps [CHAR_LIMIT=40]">Not allowed access</string>
+    <string name="needs_updating_apps_section_title" description="Title of section containing all the apps that need updating in order to work with Health Connect [CHAR_LIMIT=40]">Needs updating</string>
     <string name="settings_and_help_header" description="Title shown for the section of settings and help [CHAR_LIMIT=70]">Settings &amp; help</string>
     <string name="disconnect_all_apps" description="Button text for removing access to health and fitness data for all apps [CHAR_LIMIT=40]">Remove access for all apps</string>
     <string name="manage_permissions_read_header" description="Header for list of permissions an app is allowed read access to [CHAR_LIMIT=40]">Allowed to read</string>
@@ -878,8 +884,6 @@
     <!-- region units -->
     <string name="units_cancel" description="Label for button to cancel changing units. [CHAR_LIMIT=20]">Cancel</string>
     <string name="units_title" description="Title on a screen allowing users to go to display units (weight/height/temperature etc) in the app[CHAR_LIMIT=50]">Units</string>
-    <string name="set_units_label" description="Label in the drop down menu, allowing users to go to display units (weight/height/temperature etc) in the app [CHAR_LIMIT=50]">Set data units</string>
-
     <string name="distance_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Distance</string>
     <string name="height_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Height</string>
     <string name="weight_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Weight</string>
@@ -1000,12 +1004,6 @@
     <!--  endregion -->
 
     <!-- region Migration -->
-
-    <string name="module_update_needed_seen" description="Label used as key to track if user has seen the Module Update Needed migration screen" translatable="false">Module Update Seen</string>
-    <string name="app_update_needed_seen" description="Label used as key to track if user has seen the App Update Needed migration screen" translatable="false">App Update Seen</string>
-    <string name="whats_new_dialog_seen" description="Label used as key to track if user has seen the What's new migration dialog" translatable="false">Whats New Seen</string>
-    <string name="migration_not_complete_dialog_seen" description="Label used as key to track if user has seen the Migration not complete dialog" translatable="false">Migration Not Complete Seen</string>
-
     <!-- region In progress -->
     <string name="migration_in_progress_screen_title" description="Title of screen shown when migration is in progress">Integration in progress</string>
     <string name="migration_in_progress_screen_integration_details" description="Detail information shown when migration is in progress">Health&#160;Connect is being integrated with the Android system.\n\nIt may take some time while your data and permissions are being transferred.</string>
@@ -1062,9 +1060,10 @@
 
     <!-- region App update needed banner -->
     <string name="app_update_needed_banner_title" description="Title of banner prompting the user to update an app which is not currently working on this Android version.">App update needed</string>
-    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be up-to-date in order to keep working with Health&#160;Connect</string>
-    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be up-to-date in order to keep working with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_single" description="Description of banner prompting the user to update an app which is not currently working on this Android version."><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs to be updated to continue syncing with Health&#160;Connect</string>
+    <string name="app_update_needed_banner_description_multiple" description="Description of banner prompting the user to update an app which is not currently working on this Android version."> Some apps need to be updated to continue syncing with Health&#160;Connect</string>
     <string name="app_update_needed_banner_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Check for updates</string>
+    <string name="app_update_needed_banner_learn_more_button" description="Button of banner prompting the user to update an app which is not currently working on this Android version.">Learn more</string>
     <!--  endregion -->
 
     <!-- region Migration pending permissions dialog -->
@@ -1099,6 +1098,16 @@
     <string name="migration_whats_new_dialog_title" description="Title of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">What\'s new</string>
     <string name="migration_whats_new_dialog_content" description="Content of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">You can now access Health&#160;Connect directly from your settings. Uninstall the Health&#160;Connect app any time to free up storage space.</string>
     <string name="migration_whats_new_dialog_button" description="Button of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">Got it</string>
+    <!--  endregion -->
+
+    <!-- region Data restore -->
+    <string name="data_restore_in_progress_screen_title" description="Title of screen shown when data restore is in progress">Restore in progress</string>
+    <string name="data_restore_in_progress_content" description="Detail information shown when migration is in progress">Health&#160;Connect is restoring data and permissions. This may take some time to complete.</string>
+    <string name="data_restore_in_progress_dialog_title" description="Title of dialog shown when data restore is in progress">Health&#160;Connect restore in progress</string>
+    <string name="data_restore_in_progress_dialog_button" description="Button of dialog shown when data restore is in progress">Got it</string>
+    <string name="data_restore_pending_banner_title" description="Title of banner shown when data restore is pending">Update needed</string>
+    <string name="data_restore_pending_banner_content" description="Content of banner shown when data restore is pending">Before continuing restoring your data, update your phone system.</string>
+    <string name="data_restore_pending_banner_button" description="Button for banner shown when data restore is pending">Update now</string>
     <!--  endregion -->
 
     <!-- region Data sources -->

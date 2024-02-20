@@ -96,7 +96,14 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"parcours sportif"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Écrire le parcours sportif"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lire le parcours sportif"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lisez des itinéraires d\'exercice"</string>
+    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
+    <skip />
+    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
+    <skip />
+    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
+    <skip />
+    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
     <skip />
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distance"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distance"</string>
@@ -269,6 +276,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Contrôlez les applis autorisées à accéder aux données stockées dans Santé Connect. Appuyez sur une appli pour consulter les données qu\'elle peut lire ou modifier."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Accès autorisé"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Accès non autorisé"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Mise à jour nécessaire"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Paramètres et aide"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Retirer l\'accès aux applis"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Lecture autorisée"</string>
@@ -665,7 +673,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 pour cent}one{# pour cent}other{# pour cent}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Annuler"</string>
     <string name="units_title" msgid="6504086463237869339">"Unités"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Configurer les unités de données"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Distance"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Taille"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Poids"</string>
@@ -716,8 +723,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Déplacer vers le bas"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Première position"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Dernière position"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Bouton pour faire glisser et réorganiser <xliff:g id="SELECTED_APP">%s</xliff:g> dans la liste des priorités"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Bouton pour supprimer <xliff:g id="SELECTED_APP">%s</xliff:g> de la liste des priorités"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Appuyez deux fois et faites glisser pour réorganiser"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"remise en forme, bien-être"</string>
@@ -736,12 +742,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Seules les applis que vous autorisez à accéder à vos parcours sportifs"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Comment puis-je gérer l\'accès ?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Vous pouvez gérer l\'accès de cette appli aux parcours sportifs dans les paramètres Santé Connect"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"Autoriser cet itinéraire"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Autoriser tous les itinéraires"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne pas autoriser"</string>
     <string name="back_button" msgid="780519527385993407">"Retour"</string>
     <string name="loading" msgid="2526615755685950317">"Chargement…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Intégration en cours"</string>
@@ -777,9 +780,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reprendre l\'intégration de Santé Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Pour conserver vos données, effectuez l\'opération sous <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Mise à jour d\'application requise"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> doit être mis à jour pour continuer de fonctionner avec Santé Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Certaines applis doivent être mises à jour pour continuer de fonctionner avec Santé Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> doit être mise à jour afin de pouvoir continuer à être synchronisée avec Santé Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Certaines applis doivent être mises à jour afin de pouvoir continuer à être synchronisées avec Santé Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Rechercher les mises à jour"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"En savoir plus"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Intégration de Santé Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Santé Connect est prêt à être intégré à votre système Android. Si vous autorisez <xliff:g id="APP_NAME">%1$s</xliff:g> à y accéder avant que l\'intégration soit terminée, il se peut que vous ne puissiez pas profiter de certaines fonctionnalités."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Santé Connect est prête à être intégrée à votre système Android. Si vous accordez l\'accès à des applis maintenant, certaines fonctionnalités risquent de ne pas fonctionner jusqu\'à ce que l\'intégration soit terminée."</string>

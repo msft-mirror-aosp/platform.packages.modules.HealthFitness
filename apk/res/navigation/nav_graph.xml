@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_homeFragment_to_manageDataFragment"
             app:destination="@+id/manageDataFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_systemUpdateActivity"
+            app:destination="@id/systemUpdateActivity"/>
     </fragment>
 
     <activity
@@ -204,5 +207,10 @@
         android:label="@string/playstore_app_title"
         app:data="@string/playstore_manage_apps_url"
         app:targetPackage="@string/playstore_package_name" />
+
+    <activity
+        android:id="@+id/systemUpdateActivity"
+        app:action="android.settings.SYSTEM_UPDATE_SETTINGS"
+        android:label="systemUpdateActivity"/>
 
 </navigation>

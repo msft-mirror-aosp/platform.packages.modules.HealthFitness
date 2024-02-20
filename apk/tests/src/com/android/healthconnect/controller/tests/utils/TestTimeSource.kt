@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.utils
 
+import android.content.Context
 import com.android.healthconnect.controller.utils.SystemTimeSourceModule
 import com.android.healthconnect.controller.utils.TimeSource
 import dagger.Module
@@ -30,6 +31,7 @@ import javax.inject.Singleton
 /** Time source for testing purposes. */
 object TestTimeSource : TimeSource {
     private var localNow: Instant = NOW
+    private var is24HourFormat = true
 
     override fun currentTimeMillis(): Long = localNow.toEpochMilli()
 
@@ -38,12 +40,21 @@ object TestTimeSource : TimeSource {
     override fun currentLocalDateTime(): LocalDateTime =
         Instant.ofEpochMilli(currentTimeMillis()).atZone(deviceZoneOffset()).toLocalDateTime()
 
+    override fun is24Hour(context: Context): Boolean {
+        return is24HourFormat
+    }
+
     fun setNow(instant: Instant) {
         localNow = instant
     }
 
     fun reset() {
         localNow = NOW
+        is24HourFormat = true
+    }
+
+    fun setIs24Hour(boolean: Boolean) {
+        is24HourFormat = boolean
     }
 }
 

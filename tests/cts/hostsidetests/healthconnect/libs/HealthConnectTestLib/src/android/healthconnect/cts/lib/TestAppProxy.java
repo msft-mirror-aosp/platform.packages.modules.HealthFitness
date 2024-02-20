@@ -17,6 +17,7 @@
 package android.healthconnect.cts.lib;
 
 import static android.healthconnect.cts.lib.BundleHelper.INTENT_EXCEPTION;
+import static android.healthconnect.cts.lib.BundleHelper.KILL_SELF_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.QUERY_TYPE;
 
 import static androidx.test.InstrumentationRegistry.getContext;
@@ -39,6 +40,7 @@ import android.os.Bundle;
 import com.android.cts.install.lib.TestApp;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -80,6 +82,11 @@ public class TestAppProxy {
     /** Returns the package name of the app. */
     public String getPackageName() {
         return mPackageName;
+    }
+
+    /** Inserts a record to HC on behalf of the app. */
+    public String insertRecord(Record record) throws Exception {
+        return insertRecords(Collections.singletonList(record)).get(0);
     }
 
     /** Inserts records to HC on behalf of the app. */
@@ -144,6 +151,18 @@ public class TestAppProxy {
         Bundle requestBundle = BundleHelper.fromChangeLogTokenRequest(request);
         Bundle responseBundle = getFromTestApp(requestBundle);
         return BundleHelper.toChangeLogTokenResponse(responseBundle);
+    }
+
+    /** Instructs the app to self-revokes the specified permission. */
+    public void selfRevokePermission(String permission) throws Exception {
+        Bundle requestBundle = BundleHelper.forSelfRevokePermissionRequest(permission);
+        getFromTestApp(requestBundle);
+    }
+
+    /** Instructs the app to kill itself. */
+    public void kill() throws Exception {
+        Bundle requestBundle = BundleHelper.forKillSelfRequest();
+        getFromTestApp(requestBundle);
     }
 
     /** Starts an activity on behalf of the app and returns the result. */
@@ -233,7 +252,11 @@ public class TestAppProxy {
             getContext().startActivity(intent);
         }
 
-        if (!latch.await(POLLING_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
+        // We don't wait for responses to kill requests. These kill the app & there is no easy or
+        // reliable way for the app to return a broadcast before being killed.
+        boolean isKillRequest =
+                bundleToCreateIntent.getString(QUERY_TYPE).equals(KILL_SELF_REQUEST);
+        if (!isKillRequest && !latch.await(POLLING_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
             final String errorMessage =
                     "Timed out while waiting to receive "
                             + bundleToCreateIntent.getString(QUERY_TYPE)
