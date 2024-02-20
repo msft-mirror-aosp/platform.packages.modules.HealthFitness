@@ -28,6 +28,8 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.units.Energy
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Power
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
@@ -134,6 +136,17 @@ fun verifySleepSessionListsEqual(actual: List<Record>, expected: List<SleepSessi
         assertThat(actualElement.notes).isEqualTo(expectedElement.notes)
         assertThat(actualElement.title).isEqualTo(expectedElement.title)
         assertThat(actualElement.stages).isEqualTo(expectedElement.stages)
+    }
+}
+
+// Enables or disables animations in a test
+fun toggleAnimation(isEnabled: Boolean) {
+    with(UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())) {
+        executeShellCommand(
+            "settings put global transition_animation_scale ${if (isEnabled) 1 else 0}")
+        executeShellCommand("settings put global window_animation_scale ${if (isEnabled) 1 else 0}")
+        executeShellCommand(
+            "settings put global animator_duration_scale ${if (isEnabled) 1 else 0}")
     }
 }
 

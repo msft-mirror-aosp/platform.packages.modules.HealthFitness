@@ -1100,6 +1100,16 @@
     <string name="migration_whats_new_dialog_button" description="Button of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">Got it</string>
     <!--  endregion -->
 
+    <!-- region Data restore -->
+    <string name="data_restore_in_progress_screen_title" description="Title of screen shown when data restore is in progress">Restore in progress</string>
+    <string name="data_restore_in_progress_content" description="Detail information shown when migration is in progress">Health&#160;Connect is restoring data and permissions. This may take some time to complete.</string>
+    <string name="data_restore_in_progress_dialog_title" description="Title of dialog shown when data restore is in progress">Health&#160;Connect restore in progress</string>
+    <string name="data_restore_in_progress_dialog_button" description="Button of dialog shown when data restore is in progress">Got it</string>
+    <string name="data_restore_pending_banner_title" description="Title of banner shown when data restore is pending">Update needed</string>
+    <string name="data_restore_pending_banner_content" description="Content of banner shown when data restore is pending">Before continuing restoring your data, update your phone system.</string>
+    <string name="data_restore_pending_banner_button" description="Button for banner shown when data restore is pending">Update now</string>
+    <!--  endregion -->
+
     <!-- region Data sources -->
     <string name="data_totals_header" description="Header for section showing cards with data type totals [CHAR_LIMIT=70]">Data totals</string>
     <string name="app_sources_header" description="Header for section showing apps contributing to the shown totals [CHAR_LIMIT=70]">App sources</string>

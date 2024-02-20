@@ -138,7 +138,9 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             when (migrationState) {
                 is WithData -> {
                     maybeShowMigrationDialog(
-                        migrationState.migrationState, requireActivity(), appName)
+                        migrationState.migrationRestoreState,
+                        requireActivity(),
+                        viewModel.appInfo.value?.appName!!)
                 }
                 else -> {
                     // do nothing

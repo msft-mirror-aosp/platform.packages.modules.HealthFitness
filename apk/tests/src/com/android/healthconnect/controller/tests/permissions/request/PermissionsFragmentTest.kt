@@ -47,12 +47,17 @@ import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.PermissionsElement
+import com.android.healthconnect.controller.utils.logging.UIAction
 import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -68,6 +73,7 @@ class PermissionsFragmentTest {
 
     @BindValue
     val viewModel: RequestPermissionViewModel = mock(RequestPermissionViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
 
     @Before
     fun setup() {
@@ -82,6 +88,11 @@ class PermissionsFragmentTest {
         }
         `when`(viewModel.allPermissionsGranted).then { MutableLiveData(false) }
         `when`(viewModel.grantedPermissions).then { MutableLiveData(emptySet<HealthPermission>()) }
+    }
+
+    @After
+    fun teardown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -109,6 +120,11 @@ class PermissionsFragmentTest {
                     hasDescendant(withText("Allow \u201C$TEST_APP_NAME\u201D to write"))))
         Espresso.onIdle()
         onView(withText("Allow \u201C$TEST_APP_NAME\u201D to write")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.REQUEST_PERMISSIONS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(2)).logImpression(PermissionsElement.PERMISSION_SWITCH)
+        verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
     }
 
     @Test
@@ -184,6 +200,8 @@ class PermissionsFragmentTest {
         onView(withText("Distance")).perform(click())
 
         verify(viewModel).updatePermission(any(HealthPermission::class.java), eq(true))
+        verify(healthConnectLogger)
+            .logInteraction(PermissionsElement.PERMISSION_SWITCH, UIAction.ACTION_TOGGLE_ON)
     }
 
     @Test
@@ -212,6 +230,10 @@ class PermissionsFragmentTest {
             allowAllPreference?.isChecked = true
 
             verify(viewModel).updatePermissions(eq(true))
+            // TODO (b/325680041) this is not triggered?
+            //
+            // verify(healthConnectLogger).logInteraction(PermissionsElement.ALLOW_ALL_SWITCH,
+            // UIAction.ACTION_TOGGLE_ON)
         }
     }
 

@@ -219,6 +219,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         } else {
             mManageDataCategory?.addPreference(
                 HealthPreference(requireContext()).also {
+                    it.logName = AppAccessElement.DELETE_APP_DATA_BUTTON
                     it.title = getString(R.string.delete_app_data)
                     it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.deleteIcon)
                     it.setOnPreferenceClickListener {

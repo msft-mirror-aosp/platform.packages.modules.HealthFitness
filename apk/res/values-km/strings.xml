@@ -97,6 +97,14 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"សរសេរ​ផ្លូវលំហាត់ប្រាណ"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"អានអំពីផ្លូវនៃលំហាត់ប្រាណ"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"អានផ្លូវហាត់ប្រាណ"</string>
+    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
+    <skip />
+    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
+    <skip />
+    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
+    <skip />
+    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
+    <skip />
     <string name="distance_uppercase_label" msgid="1420705424462077174">"ចម្ងាយ"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"ចម្ងាយ"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"អានចម្ងាយ"</string>
@@ -268,8 +276,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"គ្រប់គ្រងថាតើកម្មវិធីណាខ្លះអាចចូលប្រើប្រាស់ទិន្នន័យដែលបានរក្សាទុកក្នុង Health Connect។ ចុចលើកម្មវិធីមួយ ដើម្បីពិនិត្យមើលទិន្នន័យដែលកម្មវិធីនោះអាចអាន ឬសរសេរបាន។"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"សិទ្ធិចូលប្រើដែលត្រូវបានអនុញ្ញាត"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"មិនបានអនុញ្ញាតឱ្យចូលប្រើ"</string>
-    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
-    <skip />
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"ចាំបាច់ត្រូវដំឡើងកំណែ"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"ការកំណត់ និងជំនួយ"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"ដកសិទ្ធិចូលប្រើសម្រាប់កម្មវិធីទាំងអស់"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"បានអនុញ្ញាតឱ្យអាន"</string>
@@ -666,7 +673,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 ភាគ​រយ}other{# ភាគ​រយ}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"បោះបង់"</string>
     <string name="units_title" msgid="6504086463237869339">"ឯកតា"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"កំណត់ឯកតាទិន្នន័យ"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"ចម្ងាយ"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"កម្ពស់"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"ទម្ងន់"</string>
@@ -774,13 +780,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"បន្តការរួមបញ្ចូល Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"ដើម្បីរក្សាទុក​ទិន្នន័យរបស់អ្នក សូមបញ្ចប់​សកម្មភាពនេះក្នុងរយៈពេល <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"តម្រូវឱ្យមានកំណែថ្មី​របស់កម្មវិធី"</string>
-    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
-    <skip />
-    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
-    <skip />
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"ចាំបាច់ត្រូវដំឡើងកំណែ <xliff:g id="APP_NAME">%1$s</xliff:g> ដើម្បីបន្តការធ្វើសមកាលកម្មជាមួយ Health Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"ចាំបាច់ត្រូវដំឡើងកំណែកម្មវិធីមួយចំនួន ដើម្បីបន្តការធ្វើសមកាលកម្មជាមួយ Health Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"រក​មើល​កំណែ​ថ្មី"</string>
-    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
-    <skip />
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"ស្វែងយល់បន្ថែម"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"ការរួមបញ្ចូល Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"អាចរួមបញ្ចូល Health Connect ជាមួយប្រព័ន្ធ Android របស់អ្នកបានហើយ។ ប្រសិនបើ​អ្នកផ្ដល់សិទ្ធិឱ្យ <xliff:g id="APP_NAME">%1$s</xliff:g> ចូលប្រើឥឡូវនេះ មុខងារមួយចំនួន​អាចនឹងមិនដំណើរការទេ រហូតទាល់តែ​ការរួមបញ្ចូលបញ្ចប់។"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"អាចរួមបញ្ចូល Health Connect ជាមួយប្រព័ន្ធ Android របស់អ្នកបានហើយ។ ប្រសិនបើ​អ្នកផ្ដល់សិទ្ធិចូលប្រើប្រាស់ដល់កម្មវិធីឥឡូវនេះ មុខងារមួយចំនួន​អាចនឹងមិនដំណើរការទេ រហូតទាល់តែ​ការរួមបញ្ចូលបញ្ចប់។"</string>

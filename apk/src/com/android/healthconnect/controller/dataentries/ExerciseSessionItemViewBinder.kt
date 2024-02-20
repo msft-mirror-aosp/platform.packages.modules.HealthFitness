@@ -73,6 +73,7 @@ class ExerciseSessionItemViewBinder(
         mapContainer.isVisible = (data.route != null)
         if (data.route != null) {
             mapView.setRoute(data.route)
+            logger.logImpression(DataEntriesElement.EXERCISE_SESSION_MAP_VIEW)
         }
 
         deleteButton.contentDescription =

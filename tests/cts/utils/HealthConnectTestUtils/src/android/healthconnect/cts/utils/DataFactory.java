@@ -294,6 +294,17 @@ public final class DataFactory {
     /** Creates and returns a {@link StepsRecord} with the specified arguments. */
     public static StepsRecord getCompleteStepsRecord(
             Instant startTime, Instant endTime, String clientRecordId, int count) {
+        return getCompleteStepsRecord(
+                startTime, endTime, clientRecordId, /* clientRecordVersion= */ 0L, count);
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            int count) {
         Device device =
                 new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
         DataOrigin dataOrigin =
@@ -302,6 +313,7 @@ public final class DataFactory {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
+        testMetadataBuilder.setClientRecordVersion(clientRecordVersion);
         testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
         Metadata testMetaData = testMetadataBuilder.build();
         assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);

@@ -8,7 +8,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationNavigationFragment
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
@@ -38,7 +41,7 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationLoading_showsLoading() {
+    fun whenMigrationFragmentStateLoading_showsLoading() {
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.Loading)
@@ -49,7 +52,7 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationError_showsError() {
+    fun whenMigrationFragmentStateError_showsError() {
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.Error)
@@ -60,12 +63,15 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateAllowedNotStarted_navigatesToMigrationPausedFragment() {
+    fun whenMigrationStateAllowedNotStarted_navigatesToMigrationPausedFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(
-                    MigrationState.ALLOWED_NOT_STARTED))
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.ALLOWED_NOT_STARTED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -74,11 +80,15 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateAllowedPaused_navigatesToMigrationPausedFragment() {
+    fun whenMigrationStateAllowedPaused_navigatesToMigrationPausedFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.WithData(MigrationState.ALLOWED_PAUSED))
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.ALLOWED_PAUSED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -87,12 +97,15 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateAppUpdateRequired_navigatesToAppUpdateRequiredFragment() {
+    fun whenMigrationStateAppUpdateRequired_navigatesToAppUpdateRequiredFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(
-                    MigrationState.APP_UPGRADE_REQUIRED))
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.APP_UPGRADE_REQUIRED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -103,12 +116,15 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateModuleUpdateRequired_navigatesToModuleUpdateRequiredFragment() {
+    fun whenMigrationStateModuleUpdateRequired_navigatesToModuleUpdateRequiredFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(
-                    MigrationState.MODULE_UPGRADE_REQUIRED))
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.MODULE_UPGRADE_REQUIRED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -119,11 +135,15 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateInProgress_navigatesToMigrationInProgressFragment() {
+    fun whenMigrationStateInProgress_navigatesToMigrationInProgressFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.WithData(MigrationState.IN_PROGRESS))
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IN_PROGRESS,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -133,51 +153,15 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateCompleteIdle_navigatesToHomeFragment() {
-        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
-        whenever(migrationViewModel.migrationState).then {
-            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.WithData(MigrationState.COMPLETE_IDLE))
-        }
-
-        launchFragment<MigrationNavigationFragment>()
-        verify(navigationUtils, times(1))
-            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
-    }
-
-    @Test
-    fun migrationNavigationFragment_whenMigrationStateComplete_navigatesToHomeFragment() {
-        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
-        whenever(migrationViewModel.migrationState).then {
-            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.WithData(MigrationState.COMPLETE))
-        }
-
-        launchFragment<MigrationNavigationFragment>()
-        verify(navigationUtils, times(1))
-            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
-    }
-
-    @Test
-    fun migrationNavigationFragment_whenMigrationStateIdle_navigatesToHomeFragment() {
-        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
-        whenever(migrationViewModel.migrationState).then {
-            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.WithData(MigrationState.IDLE))
-        }
-
-        launchFragment<MigrationNavigationFragment>()
-        verify(navigationUtils, times(1))
-            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
-    }
-
-    @Test
-    fun migrationNavigationFragment_whenMigrationStateAllowedMigratorDisabled_navigatesToHomeFragment() {
+    fun whenMigrationStateCompleteIdle_navigatesToHomeFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
                 MigrationViewModel.MigrationFragmentState.WithData(
-                    MigrationState.ALLOWED_MIGRATOR_DISABLED))
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.COMPLETE_IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
 
         launchFragment<MigrationNavigationFragment>()
@@ -186,11 +170,118 @@ class MigrationNavigationFragmentTest {
     }
 
     @Test
-    fun migrationNavigationFragment_whenMigrationStateUnknown_navigatesToHomeFragment() {
+    fun whenMigrationStateComplete_navigatesToHomeFragment() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {
             MutableLiveData<MigrationViewModel.MigrationFragmentState>(
-                MigrationViewModel.MigrationFragmentState.WithData(MigrationState.UNKNOWN))
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.COMPLETE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        launchFragment<MigrationNavigationFragment>()
+        verify(navigationUtils, times(1))
+            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
+    }
+
+    @Test
+    fun whenMigrationStateIdle_navigatesToHomeFragment() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        launchFragment<MigrationNavigationFragment>()
+        verify(navigationUtils, times(1))
+            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
+    }
+
+    @Test
+    fun whenMigrationStateAllowedMigratorDisabled_navigatesToHomeFragment() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.ALLOWED_MIGRATOR_DISABLED,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        launchFragment<MigrationNavigationFragment>()
+        verify(navigationUtils, times(1))
+            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
+    }
+
+    @Test
+    fun whenMigrationStateUnknown_navigatesToHomeFragment() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.UNKNOWN,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        launchFragment<MigrationNavigationFragment>()
+        verify(navigationUtils, times(1))
+            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
+    }
+
+    @Test
+    fun whenDataRestoreInProgress_navigatesToDataRestoreInProgressScreen() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IN_PROGRESS,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        launchFragment<MigrationNavigationFragment>()
+        verify(navigationUtils, times(1))
+            .navigate(
+                any(), eq(R.id.action_migrationNavigationFragment_to_dataRestoreInProgressFragment))
+    }
+
+    @Test
+    fun whenDataRestorePending_navigatesToHomeFragment() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.PENDING,
+                        dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+
+        launchFragment<MigrationNavigationFragment>()
+        verify(navigationUtils, times(1))
+            .navigate(any(), eq(R.id.action_migrationNavigationFragment_to_homeFragment))
+    }
+
+    @Test
+    fun whenDataRestoreError_navigatesToHomeFragment() {
+        Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
+        whenever(migrationViewModel.migrationState).then {
+            MutableLiveData<MigrationViewModel.MigrationFragmentState>(
+                MigrationViewModel.MigrationFragmentState.WithData(
+                    MigrationRestoreState(
+                        migrationUiState = MigrationUiState.IDLE,
+                        dataRestoreState = DataRestoreUiState.IDLE,
+                        dataRestoreError = DataRestoreUiError.ERROR_FETCHING_DATA)))
         }
 
         launchFragment<MigrationNavigationFragment>()

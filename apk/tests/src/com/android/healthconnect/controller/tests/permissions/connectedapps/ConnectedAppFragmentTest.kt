@@ -49,8 +49,13 @@ import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -62,6 +67,7 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -75,6 +81,7 @@ class ConnectedAppFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @BindValue val viewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
 
     @Before
     fun setup() {
@@ -100,6 +107,16 @@ class ConnectedAppFragmentTest {
                     TEST_APP_NAME,
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
+
+        // disable animations
+        toggleAnimation(false)
+    }
+
+    @After
+    fun teardown() {
+        reset(healthConnectLogger)
+        // enable animations
+        toggleAnimation(true)
     }
 
     @Test
@@ -216,6 +233,14 @@ class ConnectedAppFragmentTest {
         onView(withText("Exercise")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
         onView(withText("See app data")).check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        // TODO (b/325680041) investigate why these are not active
+        verify(healthConnectLogger, times(2))
+            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
+        verify(healthConnectLogger)
+            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
     }
 
     @Test
@@ -245,6 +270,9 @@ class ConnectedAppFragmentTest {
 
             assertThat(mainSwitchPreference?.isChecked).isTrue()
         }
+        // TODO (b/325680041) investigate why not active
+        verify(healthConnectLogger)
+            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
         onView(withText("See app data")).check(doesNotExist())
     }
 
@@ -288,6 +316,15 @@ class ConnectedAppFragmentTest {
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+
         onView(withText("See app data")).check(doesNotExist())
     }
 
@@ -307,6 +344,8 @@ class ConnectedAppFragmentTest {
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
 
         onView(withText("Exercise")).check(matches(not(isChecked())))
         onView(withText("Distance")).check(matches(not(isChecked())))
@@ -330,6 +369,10 @@ class ConnectedAppFragmentTest {
 
         onView(withId(R.id.dialog_checkbox)).perform(click())
         onView(withText("Remove all")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
 
         verify(viewModel).deleteAppData(safeEq(TEST_APP_PACKAGE_NAME), safeEq(TEST_APP_NAME))
     }
@@ -353,6 +396,7 @@ class ConnectedAppFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
     }
 
     @Test

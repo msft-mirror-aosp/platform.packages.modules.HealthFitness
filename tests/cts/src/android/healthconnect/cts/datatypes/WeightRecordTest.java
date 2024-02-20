@@ -951,12 +951,6 @@ public class WeightRecordTest {
                 .build();
     }
 
-    static WeightRecord getBaseWeightRecord(Instant time, double weight) {
-        return new WeightRecord.Builder(
-                        new Metadata.Builder().build(), time, Mass.fromGrams(weight))
-                .build();
-    }
-
     static WeightRecord getBaseWeightRecord(double weight) {
         return new WeightRecord.Builder(
                         new Metadata.Builder().setClientRecordId("WR" + Math.random()).build(),

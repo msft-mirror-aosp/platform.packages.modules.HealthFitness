@@ -96,7 +96,14 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"жаттығу бағыты"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Жаттығу бағытын жазу"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Жаттығу бағытын оқу"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Жаттығу бағыттарын оқу"</string>
+    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
+    <skip />
+    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
+    <skip />
+    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
+    <skip />
+    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
     <skip />
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Қашықтық"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"қашықтық"</string>
@@ -269,8 +276,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect қолданбасында сақталған деректерді қандай қолданбалардың пайдалана алатынын таңдай аласыз. Қолданба оқи немесе жаза алатын деректерді көру үшін оны түртіңіз."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Рұқсат берілгендер"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Рұқсат берілмегендер"</string>
-    <!-- no translation found for needs_updating_apps_section_title (8561510523049921199) -->
-    <skip />
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Жаңарту керек"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Параметрлер және анықтама"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Барлық қолданбаның рұқсатын өшіру"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Оқуға рұқсаты бар"</string>
@@ -667,7 +673,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 пайыз}other{# пайыз}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Бас тарту"</string>
     <string name="units_title" msgid="6504086463237869339">"Бірліктер"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Дерек бірліктерін реттеу"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Қашықтық"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Бой"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Салмақ"</string>
@@ -718,8 +723,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Төмен жылжыту"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Басына жылжыту"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Соңына жылжыту"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Маңыздылар тізіміндегі <xliff:g id="SELECTED_APP">%s</xliff:g> қолданбасын сүйреп, оның ретін өзгертуге арналған түйме"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Маңыздылар тізімінен <xliff:g id="SELECTED_APP">%s</xliff:g> жою түймесі"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Ретін өзгерту үшін екі рет түртіп, сүйреңіз."</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"фитнес, сауықтыру"</string>
@@ -738,12 +742,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Жаттығу бағыттарын рұқсаты бар қолданбалар ғана пайдалана алады."</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Пайдалану рұқсатын қалай басқара аламын?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Қолданбаның жаттығу бағыттарын пайдалану рұқсатын Health Connect параметрлерінен басқара аласыз."</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"Осы бағытқа рұқсат ету"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Барлық бағытқа рұқсат ету"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Рұқсат етпеу"</string>
     <string name="back_button" msgid="780519527385993407">"Артқа"</string>
     <string name="loading" msgid="2526615755685950317">"Жүктеліп жатыр…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Біріктіру процесі орындалып жатыр"</string>
@@ -779,13 +780,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect-ті біріктіру процесін жалғастырыңыз"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Деректерді сақтап қалу үшін процесті <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ішінде аяқтаңыз."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Қолданбаның жаңа нұсқасын орнату қажет"</string>
-    <!-- no translation found for app_update_needed_banner_description_single (1114809360264027362) -->
-    <skip />
-    <!-- no translation found for app_update_needed_banner_description_multiple (4660700626698013764) -->
-    <skip />
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect платформасымен синхрондала беруі үшін, <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасын жаңарту керек."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect платформасымен синхрондала беруі үшін, кейбір қолданбаларды жаңарту керек."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Жаңартулардың бар-жоғын тексеру"</string>
-    <!-- no translation found for app_update_needed_banner_learn_more_button (7269232067819258160) -->
-    <skip />
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Толық ақпарат"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-ті біріктіру"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect қолданбасы Android жүйесімен біріктіруге дайын. <xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына қазір пайдалану рұқсатын берсеңіз, кейбір функциялар біріктіру процесі аяқталғанша істемей тұруы мүмкін."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect қолданбасы Android жүйесімен біріктіруге дайын. Қолданбаларға қазір пайдалану рұқсатын берсеңіз, кейбір функциялар біріктіру процесі аяқталғанша істемей тұруы мүмкін."</string>

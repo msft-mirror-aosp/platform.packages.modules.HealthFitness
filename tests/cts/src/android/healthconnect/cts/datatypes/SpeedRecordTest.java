@@ -594,41 +594,99 @@ public class SpeedRecordTest {
     @Test
     public void insertRecords_sameClientRecordIdAndNewData_readNewData() throws Exception {
         int recordCount = 10;
-        List<SpeedRecord> records = new ArrayList<>();
-        List<SpeedRecord> newRecords = new ArrayList<>();
-        Instant now = Instant.now();
+        insertAndReadRecords(recordCount, /* speed= */ 10);
+
         double newSpeed = 20;
+        List<SpeedRecord> newRecords = insertAndReadRecords(recordCount, newSpeed);
+
+        for (SpeedRecord record : newRecords) {
+            assertRecord(record, newSpeed);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewerVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 0L;
+        double oldSpeed = 10;
+        insertAndReadRecords(recordCount, oldVersion, oldSpeed);
+
+        long newVersion = 1L;
+        double newSpeed = 20;
+        List<SpeedRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newSpeed);
+
+        for (SpeedRecord record : newRecords) {
+            assertRecord(record, newSpeed);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndSameVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long version = 1L;
+        double oldSpeed = 10;
+        insertAndReadRecords(recordCount, version, oldSpeed);
+
+        double newSpeed = 20;
+        List<SpeedRecord> newRecords = insertAndReadRecords(recordCount, version, newSpeed);
+
+        for (SpeedRecord record : newRecords) {
+            assertRecord(record, newSpeed);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndOlderVersion_readOldData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 1L;
+        double oldSpeed = 10;
+        insertAndReadRecords(recordCount, oldVersion, oldSpeed);
+
+        long newVersion = 0L;
+        double newSpeed = 20;
+        List<SpeedRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newSpeed);
+
+        for (SpeedRecord record : newRecords) {
+            assertRecord(record, oldSpeed);
+        }
+    }
+
+    private static void assertRecord(SpeedRecord record, double speed) {
+        assertThat(
+                        record.getSamples().stream()
+                                .map(sample -> sample.getSpeed().getInMetersPerSecond())
+                                .distinct()
+                                .toList())
+                .containsExactly(speed);
+    }
+
+    private static List<SpeedRecord> insertAndReadRecords(int recordCount, double speed)
+            throws Exception {
+        return insertAndReadRecords(recordCount, /* version= */ 0L, speed);
+    }
+
+    private static List<SpeedRecord> insertAndReadRecords(
+            int recordCount, long version, double speed) throws Exception {
+        List<SpeedRecord> records = new ArrayList<>();
+        Instant now = Instant.now();
         for (int i = 0; i < recordCount; i++) {
-            double speed = 10;
             long millisFromStart = 0;
             Instant startTime = now.minusSeconds(i + 1);
             Instant endTime = now.minusSeconds(i);
             String clientRecordId = "client_id_" + i;
             records.add(
                     buildRecordForSpeed(
-                            speed, millisFromStart, startTime, endTime, clientRecordId));
-            newRecords.add(
-                    buildRecordForSpeed(
-                            newSpeed, millisFromStart, startTime, endTime, clientRecordId));
+                            speed, millisFromStart, startTime, endTime, clientRecordId, version));
         }
         List<Record> insertedRecords = insertRecords(records);
         assertThat(insertedRecords).hasSize(recordCount);
-
-        List<Record> newInsertedRecords = insertRecords(newRecords);
-        assertThat(newInsertedRecords).hasSize(recordCount);
 
         List<SpeedRecord> readRecords =
                 readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SpeedRecord.class).build());
         assertThat(readRecords).hasSize(recordCount);
-        for (SpeedRecord record : readRecords) {
-            assertThat(
-                            record.getSamples().stream()
-                                    .map(sample -> sample.getSpeed().getInMetersPerSecond())
-                                    .distinct()
-                                    .toList())
-                    .containsExactly(newSpeed);
-        }
+
+        return readRecords;
     }
 
     SpeedRecord getSpeedRecord_update(Record record, String id, String clientRecordId) {
@@ -692,6 +750,22 @@ public class SpeedRecordTest {
             Instant startTime,
             Instant endTime,
             String clientRecordId) {
+        return buildRecordForSpeed(
+                speed,
+                millisFromStart,
+                startTime,
+                endTime,
+                clientRecordId,
+                /* clientRecordVersion= */ 0L);
+    }
+
+    private static SpeedRecord buildRecordForSpeed(
+            double speed,
+            long millisFromStart,
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion) {
 
         Device device =
                 new Device.Builder()
@@ -704,6 +778,7 @@ public class SpeedRecordTest {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
+        testMetadataBuilder.setClientRecordVersion(clientRecordVersion);
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         SpeedRecord.SpeedRecordSample speedRecord =
