@@ -20,10 +20,12 @@ import static android.healthconnect.cts.lib.BundleHelper.DELETE_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.GET_CHANGE_LOG_TOKEN_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.INSERT_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.INTENT_EXCEPTION;
+import static android.healthconnect.cts.lib.BundleHelper.KILL_SELF_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.QUERY_TYPE;
 import static android.healthconnect.cts.lib.BundleHelper.READ_CHANGE_LOGS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.READ_RECORDS_QUERY;
 import static android.healthconnect.cts.lib.BundleHelper.READ_RECORDS_USING_IDS_QUERY;
+import static android.healthconnect.cts.lib.BundleHelper.SELF_REVOKE_PERMISSION_REQUEST;
 import static android.healthconnect.cts.lib.BundleHelper.UPDATE_RECORDS_QUERY;
 
 import android.content.Context;
@@ -67,6 +69,8 @@ final class TestAppHelper {
             case READ_RECORDS_USING_IDS_QUERY -> handleReadRecordsUsingIds(context, bundle);
             case READ_CHANGE_LOGS_QUERY -> handleGetChangeLogs(context, bundle);
             case GET_CHANGE_LOG_TOKEN_QUERY -> handleGetChangeLogToken(context, bundle);
+            case SELF_REVOKE_PERMISSION_REQUEST -> handleSelfRevoke(context, bundle);
+            case KILL_SELF_REQUEST -> handleKillSelf();
             default -> throw new IllegalStateException(
                     "Unknown query received from launcher app: " + queryType);
         };
@@ -113,6 +117,17 @@ final class TestAppHelper {
         ChangeLogTokenRequest request = BundleHelper.toChangeLogTokenRequest(bundle);
         ChangeLogTokenResponse response = TestUtils.getChangeLogToken(request, context);
         return BundleHelper.fromChangeLogTokenResponse(response.getToken());
+    }
+
+    private static Bundle handleSelfRevoke(Context context, Bundle bundle) throws Exception {
+        String permissionToRevoke = BundleHelper.toPermissionToSelfRevoke(bundle);
+        context.revokeSelfPermissionOnKill(permissionToRevoke);
+        return new Bundle();
+    }
+
+    private static Bundle handleKillSelf() throws Exception {
+        System.exit(0);
+        return new Bundle();
     }
 
     private static Bundle handleGetChangeLogs(Context context, Bundle bundle) throws Exception {

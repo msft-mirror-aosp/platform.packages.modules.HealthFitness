@@ -18,6 +18,7 @@ package com.android.healthconnect.testapps.toolbox.utils
 import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.health.connect.InsertRecordsResponse
+import android.health.connect.ReadRecordsRequest
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
 import android.health.connect.TimeRangeFilter
@@ -92,8 +93,7 @@ class GeneralUtils {
             val fieldNameToValue: MutableMap<String, Any> = emptyMap<String, Any>().toMutableMap()
             val fields: List<Field> =
                 obj.java.declaredFields.filter { field ->
-                    Modifier.isStatic(field.modifiers) &&
-                        field.type == Int::class.java
+                    Modifier.isStatic(field.modifiers) && field.type == Int::class.java
                 }
             for (field in fields) {
                 fieldNameToValue[field.name] = field.get(obj)!!
@@ -115,6 +115,20 @@ class GeneralUtils {
             val records =
                 suspendCancellableCoroutine<ReadRecordsResponse<*>> { continuation ->
                         manager.readRecords(filter, Runnable::run, continuation.asOutcomeReceiver())
+                    }
+                    .records
+            Log.d("READ_RECORDS", "Read ${records.size} records")
+            return records
+        }
+
+        suspend fun <T : Record> readRecords(
+            manager: HealthConnectManager,
+            request: ReadRecordsRequest<T>,
+        ): List<T> {
+            val records =
+                suspendCancellableCoroutine<ReadRecordsResponse<T>> { continuation ->
+                        manager.readRecords(
+                            request, Runnable::run, continuation.asOutcomeReceiver())
                     }
                     .records
             Log.d("READ_RECORDS", "Read ${records.size} records")

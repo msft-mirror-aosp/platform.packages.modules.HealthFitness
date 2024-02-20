@@ -35,6 +35,7 @@ import android.health.connect.HealthPermissions;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.healthconnect.tests.IntegrationTestUtils;
+import android.os.Build;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
@@ -92,6 +93,8 @@ public class HealthConnectWithManagePermissionsTest {
 
         revokePermissionViaPackageManager(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
         revokePermissionViaPackageManager(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
+        resetPermissionFlags(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        resetPermissionFlags(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
         assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
         assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
         deleteAllStagedRemoteData();
@@ -107,6 +110,39 @@ public class HealthConnectWithManagePermissionsTest {
         grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
 
         assertPermGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+    }
+
+    @Test
+    public void testGrantHealthPermission_appHasPermissionDeclared_flagUserSetEnabled()
+            throws Exception {
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        Map<String, Integer> permissionsFlags =
+                getHealthPermissionsFlags(DEFAULT_APP_PACKAGE, List.of(DEFAULT_PERM));
+
+        assertPermGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        assertFlagsSet(permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_SET);
+        assertFlagsNotSet(
+                permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_FIXED);
+    }
+
+    @Test
+    public void testGrantHealthPermission_revokeTwiceThenGrant_flagUserSetEnabled()
+            throws Exception {
+        revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
+        revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
+        Map<String, Integer> permissionsFlags =
+                getHealthPermissionsFlags(DEFAULT_APP_PACKAGE, List.of(DEFAULT_PERM));
+
+        assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        assertFlagsSet(
+                permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_FIXED);
+
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        permissionsFlags = getHealthPermissionsFlags(DEFAULT_APP_PACKAGE, List.of(DEFAULT_PERM));
+
+        assertFlagsSet(permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_SET);
+        assertFlagsNotSet(
+                permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_FIXED);
     }
 
     @Test(expected = SecurityException.class)
@@ -126,11 +162,21 @@ public class HealthConnectWithManagePermissionsTest {
         assertPermGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
     }
 
-    @Test(expected = SecurityException.class)
-    public void testGrantHealthPermission_appHasPermissionNotDeclared_throwsSecurityException()
+    @Test
+    public void testGrantHealthPermission_appHasPermissionNotDeclared_notGranted()
             throws Exception {
-        grantHealthPermission(DEFAULT_APP_PACKAGE, UNDECLARED_PERM);
-        fail("Expected SecurityException due permission not being declared by target app.");
+        try {
+            grantHealthPermission(DEFAULT_APP_PACKAGE, UNDECLARED_PERM);
+        } catch (SecurityException e) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // 1) On V and above, this situation should not result in an exception
+                // 2) On U, it may result in an exception prior to b/322033581.
+                // This test currently ensures that if it throws on V (thus going against (1)),
+                // we will propagate the exception to fail the test, as expected.
+                throw e;
+            }
+        }
+        assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, UNDECLARED_PERM);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -176,7 +222,44 @@ public class HealthConnectWithManagePermissionsTest {
     }
 
     @Test
-    public void testRevokeHealthPermission_appHasPermissionNotGranted_success() throws Exception {
+    public void testRevokeHealthPermission_firstRevoke_flagUserSetEnabled() throws Exception {
+        revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
+        Map<String, Integer> permissionsFlags =
+                getHealthPermissionsFlags(DEFAULT_APP_PACKAGE, List.of(DEFAULT_PERM));
+
+        assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        assertFlagsSet(permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_SET);
+        assertFlagsNotSet(
+                permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_FIXED);
+    }
+
+    @Test
+    public void testRevokeHealthPermission_grantThenRevoke_flagUserSetEnabled() throws Exception {
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
+        Map<String, Integer> permissionsFlags =
+                getHealthPermissionsFlags(DEFAULT_APP_PACKAGE, List.of(DEFAULT_PERM));
+
+        assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        assertFlagsSet(permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_SET);
+        assertFlagsNotSet(
+                permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_FIXED);
+    }
+
+    @Test
+    public void testRevokeHealthPermission_secondRevoke_flagUserFixedEnabled() throws Exception {
+        revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
+        revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
+        Map<String, Integer> permissionsFlags =
+                getHealthPermissionsFlags(DEFAULT_APP_PACKAGE, List.of(DEFAULT_PERM));
+
+        assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        assertFlagsSet(
+                permissionsFlags.get(DEFAULT_PERM), PackageManager.FLAG_PERMISSION_USER_FIXED);
+    }
+
+    @Test
+    public void testRevokeHealthPermission_success() throws Exception {
         revokeHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM, /* reason= */ null);
 
         assertPermNotGrantedForApp(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
@@ -534,6 +617,10 @@ public class HealthConnectWithManagePermissionsTest {
                 Manifest.permission.GRANT_RUNTIME_PERMISSIONS);
     }
 
+    private void resetPermissionFlags(String packageName, String permName) {
+        updatePermissionsFlagsViaPackageManager(packageName, permName, /* flags= */ 0);
+    }
+
     private void updatePermissionsFlagsViaPackageManager(
             String packageName, String permName, int flags) {
         int mask =
@@ -651,5 +738,9 @@ public class HealthConnectWithManagePermissionsTest {
 
     private static void assertFlagsSet(int actualFlags, int expectedFlags) {
         assertThat((actualFlags & expectedFlags)).isEqualTo(expectedFlags);
+    }
+
+    private static void assertFlagsNotSet(int actualFlags, int expectedFlagsNotSet) {
+        assertThat((actualFlags & expectedFlagsNotSet)).isEqualTo(0);
     }
 }

@@ -22,6 +22,8 @@ import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -1505,6 +1507,92 @@ public class StepsRecordTest {
         assertThat(distinctRecords.size()).isEqualTo(distinctRecordCount);
 
         assertStepsRecordUsingIds(distinctRecords);
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewData_readNewData() throws Exception {
+        int recordCount = 10;
+        insertAndReadRecords(recordCount, /* stepCount= */ 10);
+
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(newCount);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewerVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 0L;
+        int oldCount = 10;
+        insertAndReadRecords(recordCount, oldVersion, oldCount);
+
+        long newVersion = 1L;
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(newCount);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndSameVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long version = 1L;
+        int oldCount = 10;
+        insertAndReadRecords(recordCount, version, oldCount);
+
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, version, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(newCount);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndOlderVersion_readOldData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 1L;
+        int oldCount = 10;
+        insertAndReadRecords(recordCount, oldVersion, oldCount);
+
+        long newVersion = 0L;
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(oldCount);
+        }
+    }
+
+    private static List<StepsRecord> insertAndReadRecords(int recordCount, int stepCount)
+            throws Exception {
+        return insertAndReadRecords(recordCount, /* version= */ 0L, stepCount);
+    }
+
+    private static List<StepsRecord> insertAndReadRecords(
+            int recordCount, long version, int stepCount) throws Exception {
+        List<StepsRecord> records = new ArrayList<>();
+        Instant now = Instant.now();
+        for (int i = 0; i < recordCount; i++) {
+            Instant startTime = now.minusSeconds(i + 1);
+            Instant endTime = now.minusSeconds(i);
+            String recordId = "client_id_" + i;
+            records.add(getCompleteStepsRecord(startTime, endTime, recordId, version, stepCount));
+        }
+        List<Record> insertedRecords = insertRecords(records);
+        assertThat(insertedRecords).hasSize(recordCount);
+
+        List<StepsRecord> readRecords =
+                readRecords(
+                        new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
+        assertThat(readRecords).hasSize(recordCount);
+
+        return readRecords;
     }
 
     private void testAggregateDurationWithLocalTimeForZoneOffset(ZoneOffset offset)

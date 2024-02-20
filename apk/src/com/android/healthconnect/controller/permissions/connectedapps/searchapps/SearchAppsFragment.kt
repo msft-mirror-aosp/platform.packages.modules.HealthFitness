@@ -17,10 +17,12 @@ package com.android.healthconnect.controller.permissions.connectedapps.searchapp
 
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuHost
@@ -34,15 +36,18 @@ import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.INACTIVE
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.settingslib.widget.TopIntroPreference
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Fragment for search apps screen. */
 @AndroidEntryPoint(PreferenceFragmentCompat::class)
@@ -55,6 +60,9 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
         private const val EMPTY_SEARCH_RESULT = "no_search_result_preference"
         private const val TOP_INTRO_PREF = "search_apps_top_intro"
     }
+
+    @Inject lateinit var logger: HealthConnectLogger
+    private val pageName = PageName.SEARCH_APPS_PAGE
 
     private var searchView: SearchView? = null
     private val viewModel: ConnectedAppsViewModel by viewModels()
@@ -114,6 +122,11 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
             }
         }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        logger.setPageId(pageName)
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.search_apps_screen, rootKey)
         preferenceScreen.addPreference(NoSearchResultPreference(requireContext()))
@@ -142,6 +155,17 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
     override fun onResume() {
         super.onResume()
         hideTitleFromCollapsingToolbarLayout()
+        logger.setPageId(pageName)
+        logger.logPageImpression()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        logger.setPageId(pageName)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun updateInactiveApps(appsList: List<ConnectedAppMetadata>) {
@@ -198,6 +222,8 @@ class SearchAppsFragment : Hilt_SearchAppsFragment() {
                 it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
             } else if (app.status == DENIED) {
                 it.logName = AppPermissionsElement.NOT_CONNECTED_APP_BUTTON
+            } else if (app.status == INACTIVE) {
+                it.logName = AppPermissionsElement.INACTIVE_APP_BUTTON
             }
             it.setOnPreferenceClickListener {
                 onClick?.invoke()

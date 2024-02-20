@@ -5,6 +5,7 @@ import android.health.connect.HealthPermissions
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.UNSUPPORTED_TEST_APP_PACKAGE_NAME
@@ -112,11 +113,22 @@ class HealthPermissionReaderTest {
         assertThat(apps).isEqualTo(apps.distinct())
     }
 
-
     @Test
     fun getAppsWithHealthPermissions_doesNotReturnUnsupportedApps() = runTest {
         assertThat(permissionReader.getAppsWithHealthPermissions())
             .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    fun getAppsWithOldHealthPermissions_returnsOldSupportedApps() = runTest {
+        assertThat(permissionReader.getAppsWithOldHealthPermissions())
+            .containsExactly(OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+    }
+
+    @Test
+    fun getAppsWithOldHealthPermissions_returnsDistinctApps() = runTest {
+        val apps = permissionReader.getAppsWithOldHealthPermissions()
+        assertThat(apps).isEqualTo(apps.distinct())
     }
 
     private fun String.toHealthPermission(): HealthPermission {

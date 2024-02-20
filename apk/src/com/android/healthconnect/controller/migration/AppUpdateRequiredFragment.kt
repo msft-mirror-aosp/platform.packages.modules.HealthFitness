@@ -27,6 +27,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_SEEN
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.utils.AppStoreUtils
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -97,13 +99,11 @@ class AppUpdateRequiredFragment : Hilt_AppUpdateRequiredFragment() {
         cancelButton.setOnClickListener {
             logger.logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
             val sharedPreferences =
-                requireActivity()
-                    .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-            val appUpdateSeen =
-                sharedPreferences.getBoolean(getString(R.string.app_update_needed_seen), false)
+                requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+            val appUpdateSeen = sharedPreferences.getBoolean(APP_UPDATE_NEEDED_SEEN, false)
             if (!appUpdateSeen) {
                 sharedPreferences.edit().apply {
-                    putBoolean(getString(R.string.app_update_needed_seen), true)
+                    putBoolean(APP_UPDATE_NEEDED_SEEN, true)
                     apply()
                 }
                 navigationUtils.navigate(
