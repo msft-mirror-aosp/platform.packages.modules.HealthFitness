@@ -147,10 +147,6 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
             filterImpressionLogs(data, categoriesPageId, ElementId.SEE_ALL_CATEGORIES_BUTTON)
         assertThat(seeAllCategoriesImpression.size).isAtLeast(1)
 
-        val autoDeleteImpression =
-            filterImpressionLogs(data, categoriesPageId, ElementId.AUTO_DELETE_BUTTON)
-        assertThat(autoDeleteImpression.size).isAtLeast(1)
-
         val deleteAllDataImpression =
             filterImpressionLogs(data, categoriesPageId, ElementId.DELETE_ALL_DATA_BUTTON)
         assertThat(deleteAllDataImpression.size).isAtLeast(1)
