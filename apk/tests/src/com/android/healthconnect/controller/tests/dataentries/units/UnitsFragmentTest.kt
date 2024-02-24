@@ -3,9 +3,11 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
+ *
  * ```
  *      http://www.apache.org/licenses/LICENSE-2.0
  * ```
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -38,7 +40,11 @@ import com.android.healthconnect.controller.dataentries.units.UnitPreferencesStr
 import com.android.healthconnect.controller.dataentries.units.UnitsFragment
 import com.android.healthconnect.controller.dataentries.units.WeightUnit
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.UnitsElement
 import com.google.common.truth.Truth.*
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -46,6 +52,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class UnitsFragmentTest {
@@ -53,6 +64,7 @@ class UnitsFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     private lateinit var context: Context
     @Inject lateinit var unitPreferences: UnitPreferences
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -65,6 +77,7 @@ class UnitsFragmentTest {
         val pref =
             context.getSharedPreferences(getDefaultSharedPreferencesName(context), MODE_PRIVATE)
         pref.edit().clear().apply()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -76,6 +89,14 @@ class UnitsFragmentTest {
         onView(withText("Distance")).check(matches(isDisplayed()))
         onView(withText("Energy")).check(matches(isDisplayed()))
         onView(withText("Temperature")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.UNITS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(UnitsElement.CHANGE_UNITS_HEIGHT_BUTTON)
+        verify(healthConnectLogger).logImpression(UnitsElement.CHANGE_UNITS_WEIGHT_BUTTON)
+        verify(healthConnectLogger).logImpression(UnitsElement.CHANGE_UNITS_DISTANCE_BUTTON)
+        verify(healthConnectLogger).logImpression(UnitsElement.CHANGE_UNITS_ENERGY_BUTTON)
+        verify(healthConnectLogger).logImpression(UnitsElement.CHANGE_UNITS_TEMPERATURE_BUTTON)
     }
 
     @Test

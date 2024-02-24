@@ -41,7 +41,10 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
+import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.app.SettingsManageAppPermissionsFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -51,7 +54,14 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.NavigationUtils
+import com.android.healthconnect.controller.utils.logging.DataRestoreElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -60,21 +70,31 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class SettingsManageAppPermissionsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    @BindValue
-    val viewModel: AppPermissionViewModel = Mockito.mock(AppPermissionViewModel::class.java)
-    @BindValue
-    val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
+    @BindValue val viewModel: AppPermissionViewModel = mock()
+    @BindValue val navigationUtils: NavigationUtils = mock()
+    @BindValue val migrationViewModel: MigrationViewModel = mock()
+    @BindValue val additionalAccessViewModel: AdditionalAccessViewModel = mock()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -84,7 +104,11 @@ class SettingsManageAppPermissionsFragmentTest {
         hiltRule.inject()
 
         whenever(viewModel.revokeAllPermissionsState).then {
-            MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
+            MutableLiveData(RevokeAllState.NotStarted)
+        }
+        whenever(viewModel.appPermissions).then { MutableLiveData(emptyList<HealthPermission>()) }
+        whenever(viewModel.grantedPermissions).then {
+            MutableLiveData(emptySet<HealthPermission>())
         }
         whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
@@ -97,6 +121,10 @@ class SettingsManageAppPermissionsFragmentTest {
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
                     context.getDrawable(R.drawable.health_connect_logo)))
+        }
+
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(AdditionalAccessViewModel.State())
         }
 
         whenever(migrationViewModel.getCurrentMigrationUiState()).then {
@@ -113,6 +141,16 @@ class SettingsManageAppPermissionsFragmentTest {
                         dataRestoreState = DataRestoreUiState.IDLE,
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
+
+        // disable animations
+        toggleAnimation(false)
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+        // enable animations
+        toggleAnimation(true)
     }
 
     @Test
@@ -136,6 +174,10 @@ class SettingsManageAppPermissionsFragmentTest {
         onView(withText("Allow all")).check(matches(isDisplayed()))
         onView(withText("Allowed to read")).check(matches(isDisplayed()))
         onView(withText("Allowed to write")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_PERMISSIONS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(PermissionsElement.ALLOW_ALL_SWITCH)
+        verify(healthConnectLogger, times(2)).logImpression(PermissionsElement.PERMISSION_SWITCH)
     }
 
     @Test
@@ -277,6 +319,51 @@ class SettingsManageAppPermissionsFragmentTest {
     }
 
     @Test
+    fun additionalAccessState_notValid_hidesAdditionalAccess() {
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(AdditionalAccessViewModel.State())
+        }
+
+        launchFragment<SettingsManageAppPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+
+        onView(withText(R.string.additional_access_label)).check(doesNotExist())
+    }
+
+    @Test
+    fun additionalAccessState_valid_showsAdditionalAccess() {
+        val validState =
+            AdditionalAccessViewModel.State(exerciseRouteState = ExerciseRouteState.DECLARED)
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<SettingsManageAppPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+
+        onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
+        val validState =
+            AdditionalAccessViewModel.State(exerciseRouteState = ExerciseRouteState.DECLARED)
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<SettingsManageAppPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+        onView(withText(R.string.additional_access_label)).perform(click())
+
+        verify(navigationUtils)
+            .navigate(
+                fragment = any(),
+                action = eq(R.id.action_manageAppFragment_to_additionalAccessFragment),
+                bundle = any())
+    }
+
+    @Test
     fun whenMigrationPending_showsMigrationPendingDialog() {
         whenever(migrationViewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
@@ -302,9 +389,8 @@ class SettingsManageAppPermissionsFragmentTest {
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
 
-        val scenario =
-            launchFragment<SettingsManageAppPermissionsFragment>(
-                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+        launchFragment<SettingsManageAppPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
 
         onView(
                 withText(
@@ -314,9 +400,17 @@ class SettingsManageAppPermissionsFragmentTest {
         // TODO (b/322495982) check navigation to Migration activity
         onView(withText("Start integration")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Continue")).inRoot(isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_PENDING_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_PENDING_DIALOG_CONTINUE_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_PENDING_DIALOG_CANCEL_BUTTON)
 
         onView(withText("Continue")).inRoot(isDialog()).perform(click())
         onView(withText("Continue")).check(doesNotExist())
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_PENDING_DIALOG_CONTINUE_BUTTON)
     }
 
     @Test
@@ -355,11 +449,17 @@ class SettingsManageAppPermissionsFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON)
 
         onView(withText("Got it")).inRoot(isDialog()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON)
 
-        // TODO (b/322495982) replace with idling resource
-        Thread.sleep(2000)
+        // Needed to makes sure activity has finished
+        Thread.sleep(2_000)
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
 
@@ -402,11 +502,17 @@ class SettingsManageAppPermissionsFragmentTest {
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_BUTTON)
 
         onView(withText("Got it")).inRoot(isDialog()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_BUTTON)
 
-        // TODO (b/322495982) replace with idling resource
-        Thread.sleep(2000)
+        // Needed to makes sure activity has finished
+        Thread.sleep(2_000)
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
 }

@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2023 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- */
-
 /**
  * Copyright (C) 2022 The Android Open Source Project
  *
@@ -40,8 +22,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
-import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
@@ -69,7 +51,7 @@ constructor(
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
     private val deleteAppDataUseCase: DeleteAppDataUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
-    private val loadGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
+    private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
     private val healthPermissionReader: HealthPermissionReader,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -119,11 +101,6 @@ constructor(
      * permissions on orientation change
      */
     private var shouldLoadGrantedPermissions = true
-
-    /** True if the package is supported or if it has any permissions granted */
-    private val _shouldNavigateToFragment = MutableLiveData(false)
-    val shouldNavigateToFragment: LiveData<Boolean>
-        get() = _shouldNavigateToFragment
 
     fun loadPermissionsForPackage(packageName: String) {
         viewModelScope.launch { _appInfo.postValue(appInfoReader.getAppMetadata(packageName)) }
@@ -206,6 +183,8 @@ constructor(
     }
 
     fun revokeAllPermissions(packageName: String): Boolean {
+        // TODO (b/325729045) if there is an error within the coroutine scope
+        // it will not be caught by this statement in tests. Consider using LiveData instead
         try {
             viewModelScope.launch(ioDispatcher) {
                 _revokeAllPermissionsState.postValue(RevokeAllState.Loading)
@@ -235,15 +214,14 @@ constructor(
         }
     }
 
-    fun loadShouldNavigateToFragment(packageName: String) {
-        viewModelScope.launch {
-            val anyPermissionsGranted =
-                loadGrantedHealthPermissionsUseCase(packageName)
-                    .map { permission -> fromPermissionString(permission) }
-                    .isNotEmpty()
-            _shouldNavigateToFragment.value =
-                anyPermissionsGranted || isPackageSupported(packageName)
-        }
+    fun shouldNavigateToAppPermissionsFragment(packageName: String): Boolean {
+        return isPackageSupported(packageName) || hasGrantedPermissions(packageName)
+    }
+
+    private fun hasGrantedPermissions(packageName: String): Boolean {
+        return loadGrantedHealthPermissionsUseCase(packageName)
+            .map { permission -> fromPermissionString(permission) }
+            .isNotEmpty()
     }
 
     private fun isAllPermissionsGranted(

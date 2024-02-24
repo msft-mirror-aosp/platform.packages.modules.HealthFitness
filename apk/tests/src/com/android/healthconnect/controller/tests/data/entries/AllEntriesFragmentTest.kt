@@ -97,8 +97,6 @@ class AllEntriesFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
-
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
     }
 
@@ -112,8 +110,6 @@ class AllEntriesFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -129,8 +125,6 @@ class AllEntriesFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
-
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
 
@@ -145,8 +139,6 @@ class AllEntriesFragmentTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
-
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
 
@@ -160,8 +152,6 @@ class AllEntriesFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -179,8 +169,6 @@ class AllEntriesFragmentTest {
         scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
         onView(withIndex(withId(R.id.item_data_entry_delete), 0))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))

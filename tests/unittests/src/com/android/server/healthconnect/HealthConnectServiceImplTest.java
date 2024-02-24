@@ -129,7 +129,9 @@ public class HealthConnectServiceImplTest {
                     "getContributorApplicationsInfo",
                     "queryAllRecordTypesInfo",
                     "queryAccessLogs",
-                    "getActivityDates");
+                    "getActivityDates",
+                    "configureScheduledExport",
+                    "getScheduledExportPeriodInDays");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =

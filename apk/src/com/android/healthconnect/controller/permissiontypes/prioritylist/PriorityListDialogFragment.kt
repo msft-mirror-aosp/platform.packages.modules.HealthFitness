@@ -57,8 +57,7 @@ class PriorityListDialogFragment() : Hilt_PriorityListDialogFragment() {
         adapter.setOnItemDragStartedListener(priorityListMover)
         priorityListMover.attachToRecyclerView(priorityListView)
 
-        return AlertDialogBuilder(this)
-            .setLogName(PermissionTypesElement.SET_APP_PRIORITY_DIALOG_CONTAINER)
+        return AlertDialogBuilder(this, PermissionTypesElement.SET_APP_PRIORITY_DIALOG_CONTAINER)
             .setView(parentView)
             .setNeutralButton(
                 android.R.string.cancel,

@@ -46,15 +46,25 @@ import com.android.healthconnect.controller.tests.utils.atPosition
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.logging.DeletionDialogTimeRangeElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.PermissionTypesElement
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class HealthPermissionTypesFragmentTest {
@@ -67,6 +77,7 @@ class HealthPermissionTypesFragmentTest {
     @BindValue
     val viewModel: HealthPermissionTypesViewModel =
         Mockito.mock(HealthPermissionTypesViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -74,6 +85,11 @@ class HealthPermissionTypesFragmentTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(false)
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -123,6 +139,21 @@ class HealthPermissionTypesFragmentTest {
         onView(withText("Delete activity data")).check(matches(isDisplayed()))
         onView(withText("Delete activity data")).perform(click())
         onView(withText("Choose data to delete")).inRoot(isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_7_DAYS_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_24_HOURS_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(
+                DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_LAST_30_DAYS_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_NEXT_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CANCEL_BUTTON)
     }
 
     @Test
@@ -166,6 +197,14 @@ class HealthPermissionTypesFragmentTest {
         onView(withText("Health Connect test app")).check(matches(isDisplayed()))
         onView(withText("Delete activity data")).check(matches(isDisplayed()))
         onView(withText("Data sources and priority")).check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.PERMISSION_TYPES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(3))
+            .logImpression(PermissionTypesElement.PERMISSION_TYPE_BUTTON)
+        verify(healthConnectLogger).logImpression(PermissionTypesElement.SET_APP_PRIORITY_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(PermissionTypesElement.DELETE_CATEGORY_DATA_BUTTON)
     }
 
     @Test
@@ -186,7 +225,7 @@ class HealthPermissionTypesFragmentTest {
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
         Mockito.`when`(viewModel.editedPriorityList).then {
-            MutableLiveData<List<AppMetadata>>(listOf(TEST_APP, TEST_APP_2))
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
         }
         Mockito.`when`(viewModel.categoryLabel).then {
             MutableLiveData(HealthDataCategory.SLEEP.lowercaseTitle())
@@ -325,6 +364,15 @@ class HealthPermissionTypesFragmentTest {
             .check(matches(isDisplayed()))
         onView(withText("Save")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.PERMISSION_TYPES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(PermissionTypesElement.SET_APP_PRIORITY_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(PermissionTypesElement.SET_APP_PRIORITY_DIALOG_SAVE_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(PermissionTypesElement.SET_APP_PRIORITY_DIALOG_CANCEL_BUTTON)
     }
 
     @Test
@@ -394,6 +442,10 @@ class HealthPermissionTypesFragmentTest {
         onView(withText("All apps")).check(matches(isDisplayed()))
         onView(withText(TEST_APP.appName)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_2.appName)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.PERMISSION_TYPES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, atLeast(2))
+            .logImpression(PermissionTypesElement.APP_FILTER_BUTTON)
     }
 
     @Test
@@ -448,6 +500,7 @@ class HealthPermissionTypesFragmentTest {
 
         onView(withText(TEST_APP_3.appName)).perform(scrollTo(), click())
         assert(viewModel.selectedAppFilter.value == TEST_APP_3.appName)
+        verify(healthConnectLogger).logInteraction(PermissionTypesElement.APP_FILTER_BUTTON)
     }
 
     @Test
@@ -492,6 +545,9 @@ class HealthPermissionTypesFragmentTest {
         onView(withText("Data sources and priority")).check(matches(isDisplayed()))
         onView(withText("Health Connect test app")).check(doesNotExist())
         onView(withText("Delete activity data")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger)
+            .logImpression(PermissionTypesElement.DATA_SOURCES_AND_PRIORITY_BUTTON)
     }
 
     @Test
@@ -513,7 +569,7 @@ class HealthPermissionTypesFragmentTest {
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
         Mockito.`when`(viewModel.editedPriorityList).then {
-            MutableLiveData<List<AppMetadata>>(listOf(TEST_APP, TEST_APP_2))
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
         }
         Mockito.`when`(viewModel.categoryLabel).then {
             MutableLiveData(HealthDataCategory.SLEEP.lowercaseTitle())
@@ -548,7 +604,7 @@ class HealthPermissionTypesFragmentTest {
         }
         Mockito.`when`(viewModel.selectedAppFilter).then { MutableLiveData("") }
         Mockito.`when`(viewModel.editedPriorityList).then {
-            MutableLiveData<List<AppMetadata>>(listOf(TEST_APP, TEST_APP_2))
+            MutableLiveData(listOf(TEST_APP, TEST_APP_2))
         }
         Mockito.`when`(viewModel.categoryLabel).then {
             MutableLiveData(HealthDataCategory.BODY_MEASUREMENTS.lowercaseTitle())

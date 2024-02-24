@@ -56,6 +56,12 @@ import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.NavigationUtils
+import com.android.healthconnect.controller.utils.logging.DataRestoreElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.HomePageElement
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RecentAccessElement
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -71,7 +77,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
@@ -93,6 +101,7 @@ class HomeFragmentTest {
     val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
 
     @BindValue val timeSource = TestTimeSource
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
     private lateinit var navHostController: TestNavHostController
@@ -124,6 +133,7 @@ class HomeFragmentTest {
         timeSource.reset()
         // enable animations
         toggleAnimation(true)
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -164,6 +174,41 @@ class HomeFragmentTest {
         onView(withText("Manage data")).check(matches(isDisplayed()))
         onView(withText("Manage data")).perform(click())
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.manageDataFragment)
+    }
+
+    @Test
+    fun homeFragmentLogging_impressionsLogged() {
+        val recentApp =
+            RecentAccessEntry(
+                metadata = TEST_APP,
+                instantTime = Instant.parse("2022-10-20T18:40:13.00Z"),
+                isToday = true,
+                dataTypesWritten =
+                    mutableSetOf(
+                        HealthDataCategory.ACTIVITY.uppercaseTitle(),
+                        HealthDataCategory.VITALS.uppercaseTitle()),
+                dataTypesRead =
+                    mutableSetOf(
+                        HealthDataCategory.SLEEP.uppercaseTitle(),
+                        HealthDataCategory.NUTRITION.uppercaseTitle()))
+
+        timeSource.setIs24Hour(true)
+
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(listOf(recentApp)))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(listOf<ConnectedAppMetadata>())
+        }
+
+        launchFragment<HomeFragment>(Bundle())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.HOME_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(HomePageElement.APP_PERMISSIONS_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.DATA_AND_ACCESS_BUTTON)
+        verify(healthConnectLogger).logImpression(HomePageElement.SEE_ALL_RECENT_ACCESS_BUTTON)
+        verify(healthConnectLogger).logImpression(RecentAccessElement.RECENT_ACCESS_ENTRY_BUTTON)
     }
 
     @Test
@@ -390,16 +435,22 @@ class HomeFragmentTest {
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
                     ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
         }
-        launchFragment<HomeFragment>(Bundle())
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
 
         onView(withText("Resume integration")).check(matches(isDisplayed()))
         onView(withText("Tap to continue integrating Health Connect with the Android system."))
             .check(matches(isDisplayed()))
         onView(withText("Continue")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_RESUME_BANNER)
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_RESUME_BANNER_BUTTON)
 
         onView(withText("Continue")).perform(click())
-        verify(navigationUtils, times(1))
-            .navigate(any(), eq(R.id.action_homeFragment_to_migrationActivity))
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.migrationActivity)
+        verify(healthConnectLogger, atLeast(1))
+            .logInteraction(MigrationElement.MIGRATION_RESUME_BANNER_BUTTON)
     }
 
     @Test
@@ -422,17 +473,24 @@ class HomeFragmentTest {
                     ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
                     ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
         }
-        launchFragment<HomeFragment>(Bundle())
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
 
         onView(withText("Update needed")).check(matches(isDisplayed()))
         onView(withText("Before continuing restoring your data, update your phone system."))
             .check(matches(isDisplayed()))
         onView(withText("Update now")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(DataRestoreElement.RESTORE_PENDING_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(DataRestoreElement.RESTORE_PENDING_BANNER_UPDATE_BUTTON)
 
         onView(withText("Update now")).perform(click())
 
-        verify(navigationUtils, times(1))
-            .navigate(any(), eq(R.id.action_homeFragment_to_systemUpdateActivity))
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.systemUpdateActivity)
+        verify(healthConnectLogger)
+            .logInteraction(DataRestoreElement.RESTORE_PENDING_BANNER_UPDATE_BUTTON)
     }
 
     @Test
@@ -469,8 +527,11 @@ class HomeFragmentTest {
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_DONE_DIALOG_CONTAINER)
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_DONE_DIALOG_BUTTON)
 
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).perform(click())
+        verify(healthConnectLogger).logInteraction(MigrationElement.MIGRATION_DONE_DIALOG_BUTTON)
 
         scenario.onActivity { activity ->
             val preferences =
@@ -513,8 +574,14 @@ class HomeFragmentTest {
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_BUTTON)
 
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_BUTTON)
 
         scenario.onActivity { activity ->
             val preferences =

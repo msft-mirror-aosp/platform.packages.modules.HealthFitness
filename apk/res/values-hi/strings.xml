@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"कसरत का रूट बनाएं"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"कसरत का रूट पढ़ें"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"कसरत के रूट देखें"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"ट्रेनिंग के प्लान"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"ट्रेनिंग के प्लान"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"ट्रेनिंग के प्लान देखें"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"ट्रेनिंग के प्लान में बदलाव करने की अनुमति दें"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"दूरी का डेटा"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"दूरी का डेटा"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"तय की गई दूरी का डेटा पढ़ने की अनुमति दें"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"नया क्या है"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Health Connect को अब सीधे अपने डिवाइस की सेटिंग से ऐक्सेस किया जा सकता है. स्टोरेज की जगह खाली करने के लिए, Health Connect ऐप्लिकेशन को कभी भी अनइंस्टॉल किया जा सकता है."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ठीक है"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"डेटा वापस लाने की प्रोसेस जारी है"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect, डेटा और अनुमतियों को वापस ला रहा है. इस प्रोसेस को पूरा होने में कुछ समय लग सकता है."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect की, डेटा वापस लाने की प्रोसेस जारी है"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"ठीक है"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"अपडेट करना ज़रूरी है"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"अपना डेटा वापस लाने की प्रोसेस जारी रखने से पहले, अपने फ़ोन का सिस्टम अपडेट करें."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"अभी अपडेट करें"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"डेटा सोर्स की कुल संख्या"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"ऐप्लिकेशन सोर्स"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"सूची में सोर्स के तौर पर कोई ऐप्लिकेशन जोड़ें, ताकि देखा जा सके कि डेटा सोर्स की कुल संख्या में कैसे बदलाव होता है. सूची से किसी भी ऐप्लिकेशन को हटाने पर, डेटा के कुल सोर्स में कोई डेटा नहीं जाएगा. हालांकि, ऐप्लिकेशन के पास अब भी डेटा में बदलाव करने की अनुमति होगी."</string>
