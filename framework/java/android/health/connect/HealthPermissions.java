@@ -140,6 +140,18 @@ public final class HealthPermissions {
             "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
 
     /**
+     * Allows an application to read the entire history of health data (of any type).
+     *
+     * <p>Protection level: dangerous.
+     *
+     * @hide
+     */
+    // TODO (b/325434006): Specify a label for the permission in HealthPermissionsManifest.xml when
+    // exposing this constant. Also search for 325434006 and remove workarounds.
+    public static final String READ_HEALTH_DATA_HISTORY =
+            "android.permission.health.READ_HEALTH_DATA_HISTORY";
+
+    /**
      * Allows an application to read the user's active calories burned data.
      *
      * <p>Protection level: dangerous.

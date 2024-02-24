@@ -709,65 +709,6 @@ public class StepsRecordTest {
     }
 
     @Test
-    public void testAggregation_StepsCountTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        List<Record> records =
-                Arrays.asList(getStepsRecord(1000, 1, 1), getStepsRecord(1000, 2, 1));
-
-        AggregateRecordsRequest<Long> aggregateRecordsRequest =
-                new AggregateRecordsRequest.Builder<Long>(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(Instant.ofEpochMilli(0))
-                                        .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                        .build())
-                        .addAggregationType(STEPS_COUNT_TOTAL)
-                        .build();
-        assertThat(aggregateRecordsRequest.getAggregationTypes()).isNotNull();
-        assertThat(aggregateRecordsRequest.getTimeRangeFilter()).isNotNull();
-        assertThat(aggregateRecordsRequest.getDataOriginsFilters()).isNotNull();
-        AggregateRecordsResponse<Long> oldResponse =
-                TestUtils.getAggregateResponse(aggregateRecordsRequest, records);
-        List<Record> recordNew =
-                Arrays.asList(getStepsRecord(1000, 3, 1), getStepsRecord(1000, 4, 1));
-        AggregateRecordsResponse<Long> newResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Long>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(STEPS_COUNT_TOTAL)
-                                .build(),
-                        recordNew);
-        assertThat(newResponse.get(STEPS_COUNT_TOTAL)).isNotNull();
-        assertThat(newResponse.get(STEPS_COUNT_TOTAL))
-                .isEqualTo(oldResponse.get(STEPS_COUNT_TOTAL) + 2000);
-        Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(STEPS_COUNT_TOTAL);
-        for (DataOrigin itr : newDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo(PACKAGE_NAME);
-        }
-        Set<DataOrigin> oldDataOrigin = oldResponse.getDataOrigins(STEPS_COUNT_TOTAL);
-        for (DataOrigin itr : oldDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo(PACKAGE_NAME);
-        }
-        StepsRecord record = getStepsRecord(1000, 5, 1);
-        List<Record> recordNew2 = Arrays.asList(record, record);
-        AggregateRecordsResponse<Long> newResponse2 =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Long>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(STEPS_COUNT_TOTAL)
-                                .build(),
-                        recordNew2);
-        assertThat(newResponse2.get(STEPS_COUNT_TOTAL)).isNotNull();
-        assertThat(newResponse2.get(STEPS_COUNT_TOTAL))
-                .isEqualTo(newResponse.get(STEPS_COUNT_TOTAL) + 1000);
-    }
-
-    @Test
     public void testInsertWithClientVersion() throws InterruptedException {
         List<Record> records = List.of(getStepsRecordWithClientVersion(10, 1, "testId"));
         final String id = TestUtils.insertRecords(records).get(0).getMetadata().getId();

@@ -25,8 +25,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
 import com.android.healthconnect.controller.dataentries.DataEntriesFragment
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.Empty
@@ -39,16 +39,25 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.withIndex
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class DataEntriesFragmentTest {
@@ -58,6 +67,7 @@ class DataEntriesFragmentTest {
     @BindValue
     val viewModel: DataEntriesFragmentViewModel =
         Mockito.mock(DataEntriesFragmentViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var context: Context
 
@@ -71,6 +81,11 @@ class DataEntriesFragmentTest {
         Mockito.`when`(viewModel.currentSelectedDate).thenReturn(MutableLiveData())
     }
 
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+    }
+
     @Test
     fun dataEntriesInit_showsDateNavigationPreference() {
         Mockito.`when`(viewModel.dataEntries).thenReturn(MutableLiveData(WithData(emptyList())))
@@ -78,6 +93,11 @@ class DataEntriesFragmentTest {
         launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
 
         onView(withId(R.id.selected_date)).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.DATA_ENTRIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(DataEntriesElement.SELECT_DATE_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.NEXT_DAY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.PREVIOUS_DAY_BUTTON)
     }
 
     @Test
@@ -120,6 +140,10 @@ class DataEntriesFragmentTest {
         onView(withText("12 steps")).check(matches(isDisplayed()))
         onView(withText("8:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("15 steps")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(DataEntriesElement.AGGREGATION_DATA_VIEW)
+        verify(healthConnectLogger, times(2)).logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
+        verify(healthConnectLogger, times(2))
+            .logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
     }
 
     @Test

@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Zapisovať trasu cvičenia"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Čítať trasu cvičenia"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Čítať trasy cvičenia"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Tréningové plány"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"tréningové plány"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Čítať tréningové plány"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Zapísať tréningové plány"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Vzdialenosť"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"vzdialenosť"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Čítanie údajov o vzdialenosti"</string>
@@ -780,7 +776,7 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Obnovte integráciu Dát o zdraví"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Ak si chcete svoje údaje ponechať, vykonajte tento krok do <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Vyžaduje sa aktualizácia aplikácie"</string>
-    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, <xliff:g id="APP_NAME">%1$s</xliff:g> musíte aktualizovať"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, musíte aktualizovať aplikáciu <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Ak chcete, aby sa údaje s Dátami o zdraví naďalej synchronizovali, musíte niektoré aplikácie aktualizovať"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Skontrolovať dostupnosť aktualizácií"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Ďalšie informácie"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novinky"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Teraz máte prístup k Dátam o zdraví priamo v nastaveniach. Aplikáciu Dáta o zdraví môžete kedykoľvek aktualizovať a uvoľniť tak priestor."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Dobre"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Prebieha obnova"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Dáta o zdraví obnovujú údaje a povolenia. Dokončenie môže chvíľu trvať."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"V Dátach o zdraví priebeha obnova"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Dobre"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Vyžaduje sa aktualizácia"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Než budete pokračovať v obnove údajov, aktualizujte systém telefónu."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Aktualizovať"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Celkové hodnoty údajov"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Zdrojové aplikácie"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Pridajte zdrojové aplikácie do zoznamu a zistite, ako sa celkové hodnoty údajov môžu meniť. Ak aplikáciu odstránite z tohto zoznamu, už nebude prispievať k celkovým hodnotám, ale stále bude mať povolenia na zápis."</string>

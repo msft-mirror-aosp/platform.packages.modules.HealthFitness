@@ -37,7 +37,7 @@ import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEnt
 import dagger.hilt.android.EntryPointAccessors
 
 /** {@link AlertDialog.Builder} wrapper for applying theming attributes. */
-class AlertDialogBuilder(private val context: Context) {
+class AlertDialogBuilder(private val context: Context, private val containerLogName: ElementName) {
 
     private var alertDialogBuilder: AlertDialog.Builder
     private var customTitleLayout: View =
@@ -48,15 +48,20 @@ class AlertDialogBuilder(private val context: Context) {
         LayoutInflater.from(context).inflate(R.layout.dialog_custom_layout, null)
     private var logger: HealthConnectLogger
 
-    constructor(fragment: Fragment) : this(fragment.requireContext())
+    constructor(
+        fragment: Fragment,
+        containerLogName: ElementName
+    ) : this(fragment.requireContext(), containerLogName)
 
-    constructor(activity: FragmentActivity) : this(activity as Context)
+    constructor(
+        activity: FragmentActivity,
+        containerLogName: ElementName
+    ) : this(activity as Context, containerLogName)
 
     private var iconView: ImageView? = null
 
     private var positiveButtonKey: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
     private var negativeButtonKey: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
-    private var elementName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
     private var loggingAction = {}
 
     private var hasPositiveButton = false
@@ -74,11 +79,6 @@ class AlertDialogBuilder(private val context: Context) {
 
     fun setCancelable(isCancelable: Boolean): AlertDialogBuilder {
         alertDialogBuilder.setCancelable(isCancelable)
-        return this
-    }
-
-    fun setLogName(elementName: ElementName): AlertDialogBuilder {
-        this.elementName = elementName
         return this
     }
 
@@ -262,7 +262,7 @@ class AlertDialogBuilder(private val context: Context) {
         dialog.setOnShowListener { increaseDialogTouchTargetSize(dialog) }
 
         // Dialog container
-        logger.logImpression(elementName)
+        logger.logImpression(this.containerLogName)
 
         // Dialog buttons
         if (hasPositiveButton) {
