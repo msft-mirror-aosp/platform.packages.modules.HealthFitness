@@ -46,16 +46,27 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
+import com.android.healthconnect.controller.utils.logging.DataRestoreElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
-import org.junit.Assert
+import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class SettingsManagePermissionFragmentTest {
@@ -67,6 +78,7 @@ class SettingsManagePermissionFragmentTest {
     val viewModel: ConnectedAppsViewModel = Mockito.mock(ConnectedAppsViewModel::class.java)
     @BindValue
     val migrationViewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -86,6 +98,15 @@ class SettingsManagePermissionFragmentTest {
                         dataRestoreState = DataRestoreUiState.IDLE,
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
+        // disable animations
+        toggleAnimation(false)
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+        // enable animations
+        toggleAnimation(true)
     }
 
     @Test
@@ -157,6 +178,10 @@ class SettingsManagePermissionFragmentTest {
         onView(withText(TEST_APP_NAME_2)).check(matches(isDisplayed()))
         onView(withText("No apps allowed")).check(doesNotExist())
         onView(withText("No apps denied")).check(doesNotExist())
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.SETTINGS_MANAGE_PERMISSIONS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.CONNECTED_APP_BUTTON)
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.NOT_CONNECTED_APP_BUTTON)
     }
 
     @Test
@@ -189,12 +214,18 @@ class SettingsManagePermissionFragmentTest {
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON)
 
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON)
 
-        // TODO (b/322495982) replace with idling resource
-        Thread.sleep(2000)
-        Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+        // Needed to makes sure activity has finished
+        Thread.sleep(2_000)
+        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
 
     @Test
@@ -230,11 +261,17 @@ class SettingsManagePermissionFragmentTest {
             .inRoot(RootMatchers.isDialog())
             .check(matches(isDisplayed()))
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_BUTTON)
 
         onView(withText("Got it")).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
+        verify(healthConnectLogger)
+            .logInteraction(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_BUTTON)
 
-        // TODO (b/322495982) replace with idling resource
-        Thread.sleep(2000)
-        Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+        // Needed to makes sure activity has finished
+        Thread.sleep(2_000)
+        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
 }

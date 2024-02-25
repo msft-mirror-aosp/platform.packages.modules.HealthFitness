@@ -36,7 +36,7 @@ import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 import java.util.Objects;
 
 /**
- * A service that is run periodically and triggers other periodic tasks..
+ * Health Connect wrapper around JobService.
  *
  * @hide
  */
@@ -47,10 +47,15 @@ public class HealthConnectDailyService extends JobService {
     @UserIdInt private static volatile int sCurrentUserId;
 
     /**
-     * Called everytime when the operation corresponding to this service is to be performed,
+     * Routes the job to the right place based on the job name, after performing common checks.,
      *
      * <p>Please handle exceptions for each task within the task. Do not crash the job as it might
      * result in failure of other tasks being triggered from the job.
+     *
+     * <p>HealthConnect doesn't call onJobFinished, as required by the JobScheduler API, once the
+     * job is finished. This means JobScheduler keeps on holding the wakelock for our app till any
+     * timeouts kick in and kill the jobs. This is acceptable in our case since we are running in
+     * the system server and always awake.
      */
     @Override
     public boolean onStartJob(@NonNull JobParameters params) {
@@ -69,15 +74,14 @@ public class HealthConnectDailyService extends JobService {
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
         switch (jobName) {
-            case HC_DAILY_JOB -> {
+            case HC_DAILY_JOB:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             HealthConnectDailyJobs.execute(getApplicationContext(), params);
                             jobFinished(params, false);
                         });
                 return true;
-            }
-            case MIGRATION_COMPLETE_JOB_NAME -> {
+            case MIGRATION_COMPLETE_JOB_NAME:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationCompletionJob(
@@ -85,8 +89,7 @@ public class HealthConnectDailyService extends JobService {
                             jobFinished(params, false);
                         });
                 return true;
-            }
-            case MIGRATION_PAUSE_JOB_NAME -> {
+            case MIGRATION_PAUSE_JOB_NAME:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationPauseJob(
@@ -94,10 +97,9 @@ public class HealthConnectDailyService extends JobService {
                             jobFinished(params, false);
                         });
                 return true;
-            }
-            default -> {
+            default:
                 Slog.w(TAG, "Job name " + jobName + " is not supported.");
-            }
+                break;
         }
         return false;
     }

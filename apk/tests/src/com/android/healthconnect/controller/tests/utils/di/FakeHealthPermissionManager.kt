@@ -36,11 +36,11 @@ class FakeHealthPermissionManager : HealthPermissionManager {
         packageName: String,
         permissions: List<String>
     ): Map<String, Int> {
-        TODO("Not yet implemented")
+        return emptyMap()
     }
 
     override fun makeHealthPermissionsRequestable(packageName: String, permissions: List<String>) {
-        TODO("Not yet implemented")
+        // do nothing
     }
 
     override fun grantHealthPermission(packageName: String, permissionName: String) {

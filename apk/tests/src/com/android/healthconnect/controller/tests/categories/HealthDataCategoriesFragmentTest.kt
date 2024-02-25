@@ -44,6 +44,9 @@ import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.logging.CategoriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -55,6 +58,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 /** List of all Health data categories. */
 private val HEALTH_DATA_ALL_CATEGORIES =
@@ -78,6 +86,7 @@ class HealthDataCategoriesFragmentTest {
     @BindValue
     val viewModel: HealthDataCategoryViewModel =
         Mockito.mock(HealthDataCategoryViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @BindValue
     val autoDeleteViewModel: AutoDeleteViewModel = Mockito.mock(AutoDeleteViewModel::class.java)
@@ -97,6 +106,7 @@ class HealthDataCategoriesFragmentTest {
     @After
     fun tearDown() {
         toggleAnimation(true)
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -115,6 +125,7 @@ class HealthDataCategoriesFragmentTest {
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.healthDataAllCategoriesFragment)
+        verify(healthConnectLogger).logInteraction(CategoriesElement.SEE_ALL_CATEGORIES_BUTTON)
     }
 
     @Test
@@ -133,6 +144,7 @@ class HealthDataCategoriesFragmentTest {
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.healthPermissionTypesFragment)
+        verify(healthConnectLogger).logInteraction(CategoriesElement.CATEGORY_BUTTON)
     }
 
     @Test
@@ -151,6 +163,7 @@ class HealthDataCategoriesFragmentTest {
         onView(withText("Auto-delete")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.autoDeleteFragment)
+        verify(healthConnectLogger).logInteraction(CategoriesElement.AUTO_DELETE_BUTTON)
     }
 
     @Test
@@ -200,6 +213,12 @@ class HealthDataCategoriesFragmentTest {
 
         onView(withText("Activity")).check(matches(isDisplayed()))
         onView(withText("Body measurements")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.CATEGORIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(CategoriesElement.SEE_ALL_CATEGORIES_BUTTON)
+        verify(healthConnectLogger, times(2)).logImpression(CategoriesElement.CATEGORY_BUTTON)
+        verify(healthConnectLogger).logImpression(CategoriesElement.AUTO_DELETE_BUTTON)
+        verify(healthConnectLogger).logImpression(CategoriesElement.DELETE_ALL_DATA_BUTTON)
     }
 
     @Test
