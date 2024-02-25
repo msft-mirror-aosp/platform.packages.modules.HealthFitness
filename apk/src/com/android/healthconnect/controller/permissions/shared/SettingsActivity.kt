@@ -19,6 +19,9 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.R
@@ -28,6 +31,7 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint(CollapsingToolbarBaseActivity::class)
 class SettingsActivity : Hilt_SettingsActivity() {
@@ -40,25 +44,26 @@ class SettingsActivity : Hilt_SettingsActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
         setTitle(R.string.permgrouplab_health)
+        if (savedInstanceState == null && intent.hasExtra(EXTRA_PACKAGE_NAME)) {
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    val packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)!!
+                    maybeNavigateToAppPermissions(
+                        viewModel.shouldNavigateToAppPermissionsFragment(packageName))
+                }
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
-
-        if (intent.hasExtra(EXTRA_PACKAGE_NAME)) {
-            val packageName = intent.getStringExtra(EXTRA_PACKAGE_NAME)!!
-
-            viewModel.shouldNavigateToFragment.observe(this) { shouldNavigate ->
-                maybeNavigateToAppPermissions(shouldNavigate)
-            }
-
-            viewModel.loadShouldNavigateToFragment(packageName)
-        }
+        findNavController(R.id.nav_host_fragment)
+            .addOnDestinationChangedListener(DestinationChangedListener(this))
     }
 
     private fun maybeNavigateToAppPermissions(shouldNavigate: Boolean) {
         val navController = findNavController(R.id.nav_host_fragment)
-        navController.addOnDestinationChangedListener(DestinationChangedListener(this))
+
         if (shouldNavigate) {
             navController.navigate(
                 R.id.action_deeplink_to_settingsManageAppPermissionsFragment,

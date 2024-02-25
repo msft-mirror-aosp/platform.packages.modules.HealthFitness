@@ -40,6 +40,7 @@ import android.os.Bundle;
 import com.android.cts.install.lib.TestApp;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +82,11 @@ public class TestAppProxy {
     /** Returns the package name of the app. */
     public String getPackageName() {
         return mPackageName;
+    }
+
+    /** Inserts a record to HC on behalf of the app. */
+    public String insertRecord(Record record) throws Exception {
+        return insertRecords(Collections.singletonList(record)).get(0);
     }
 
     /** Inserts records to HC on behalf of the app. */

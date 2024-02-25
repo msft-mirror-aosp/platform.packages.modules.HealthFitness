@@ -72,7 +72,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 @HiltAndroidTest
@@ -119,7 +118,10 @@ class TrampolineActivityTest {
         val readPermission =
             HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
-        whenever(appPermissionViewModel.shouldNavigateToFragment).then { MutableLiveData(true) }
+        whenever(
+                appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
+                    TEST_APP_PACKAGE_NAME))
+            .then { true }
         whenever(appPermissionViewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -132,7 +134,7 @@ class TrampolineActivityTest {
         whenever(appPermissionViewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
         whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
-        whenever(appPermissionViewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
+        whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
     }
 
     @Test

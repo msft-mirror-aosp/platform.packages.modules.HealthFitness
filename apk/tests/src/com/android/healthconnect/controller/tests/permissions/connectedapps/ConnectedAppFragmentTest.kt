@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
+import android.content.Intent
 import android.content.Intent.*
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MediatorLiveData
@@ -25,6 +26,9 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -41,6 +45,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -49,8 +54,13 @@ import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.safeEq
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.settingslib.widget.MainSwitchPreference
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -62,10 +72,11 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Matchers.*
+import org.junit.Ignore
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 
@@ -75,6 +86,9 @@ class ConnectedAppFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @BindValue val viewModel: AppPermissionViewModel = mock(AppPermissionViewModel::class.java)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
+    @BindValue
+    val healthPermissionReader: HealthPermissionReader = mock(HealthPermissionReader::class.java)
 
     @Before
     fun setup() {
@@ -100,6 +114,18 @@ class ConnectedAppFragmentTest {
                     TEST_APP_NAME,
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
+
+        // disable animations
+        toggleAnimation(false)
+        Intents.init()
+    }
+
+    @After
+    fun teardown() {
+        reset(healthConnectLogger)
+        // enable animations
+        toggleAnimation(true)
+        Intents.release()
     }
 
     @Test
@@ -216,6 +242,14 @@ class ConnectedAppFragmentTest {
         onView(withText("Exercise")).check(matches(isDisplayed()))
         onView(withText("Distance")).check(matches(isDisplayed()))
         onView(withText("See app data")).check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        // TODO (b/325680041) investigate why these are not active
+        verify(healthConnectLogger, times(2))
+            .logImpression(AppAccessElement.PERMISSION_SWITCH_INACTIVE)
+        verify(healthConnectLogger)
+            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
     }
 
     @Test
@@ -245,6 +279,9 @@ class ConnectedAppFragmentTest {
 
             assertThat(mainSwitchPreference?.isChecked).isTrue()
         }
+        // TODO (b/325680041) investigate why these are not active
+        verify(healthConnectLogger)
+            .logImpression(AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE)
         onView(withText("See app data")).check(doesNotExist())
     }
 
@@ -288,6 +325,15 @@ class ConnectedAppFragmentTest {
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all permissions?")).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
+
         onView(withText("See app data")).check(doesNotExist())
     }
 
@@ -307,6 +353,8 @@ class ConnectedAppFragmentTest {
         onView(withText("Allow all")).perform(click())
 
         onView(withText("Remove all")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
 
         onView(withText("Exercise")).check(matches(not(isChecked())))
         onView(withText("Distance")).check(matches(not(isChecked())))
@@ -330,15 +378,23 @@ class ConnectedAppFragmentTest {
 
         onView(withId(R.id.dialog_checkbox)).perform(click())
         onView(withText("Remove all")).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logInteraction(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_DELETE_CHECKBOX)
 
         verify(viewModel).deleteAppData(safeEq(TEST_APP_PACKAGE_NAME), safeEq(TEST_APP_NAME))
     }
 
     @Test
-    fun test_footerIsDisplayed() {
+    fun test_footerWithGrantTime_isDisplayed() {
         val permission = HealthPermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
-
+        whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
+        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+            .thenReturn(true)
+        whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
+            .thenReturn(Intent())
         launchFragment<ConnectedAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
 
@@ -353,6 +409,68 @@ class ConnectedAppFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
+    }
+
+    @Test
+    fun footerWithoutGrantTime_isDisplayed() {
+        val permission = HealthPermission(DISTANCE, READ)
+        whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
+        whenever(viewModel.grantedPermissions).then {
+            MutableLiveData<Set<HealthPermission>>(setOf())
+        }
+        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
+        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+            .thenReturn(true)
+        whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
+            .thenReturn(Intent())
+        launchFragment<ConnectedAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(
+                withText(
+                    "To manage other Android permissions this app can " +
+                        "access, go to Settings > Apps" +
+                        "\n\n" +
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
+    }
+
+    // TODO unignore when stable
+    @Test
+    @Ignore
+    fun whenClickOnPrivacyPolicyLink_startsRationaleActivity() {
+        val rationaleAction = "android.intent.action.VIEW_PERMISSION_USAGE"
+        val permission = HealthPermission(DISTANCE, READ)
+        whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
+        whenever(viewModel.grantedPermissions).then {
+            MutableLiveData<Set<HealthPermission>>(setOf())
+        }
+        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
+        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+            .thenReturn(true)
+        whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
+            .thenReturn(Intent(rationaleAction))
+
+        launchFragment<ConnectedAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(
+                withText(
+                    "To manage other Android permissions this app can " +
+                        "access, go to Settings > Apps" +
+                        "\n\n" +
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
+
+        onView(withText("Read privacy policy")).perform(scrollTo()).perform(click())
+        intended(hasAction(rationaleAction))
     }
 
     @Test

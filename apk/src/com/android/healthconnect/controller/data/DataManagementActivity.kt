@@ -45,7 +45,7 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_management)
-        if (featureUtils.isNewInformationArchitectureEnabled() && (savedInstanceState == null)) {
+        if (savedInstanceState == null && featureUtils.isNewInformationArchitectureEnabled()) {
             updateNavGraphToNewIA()
         }
 
