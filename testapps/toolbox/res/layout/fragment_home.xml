@@ -53,13 +53,13 @@
             android:text="@string/request_permissions" />
 
         <Button
-            android:id="@+id/request_route_permissions_button"
+            android:id="@+id/request_route_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
-            android:text="@string/request_route_permissions" />
+            android:text="@string/request_route" />
 
         <Button
             android:id="@+id/insert_update_data_button"

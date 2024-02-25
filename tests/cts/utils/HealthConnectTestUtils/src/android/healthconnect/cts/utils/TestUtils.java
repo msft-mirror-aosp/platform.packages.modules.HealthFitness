@@ -30,6 +30,7 @@ import static android.health.connect.HealthPermissionCategory.HEART_RATE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
@@ -1046,6 +1047,23 @@ public final class TestUtils {
         sendCommandToTestAppReceiver(context, ACTION_INSERT_STEPS_RECORDS, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
                 .getStringArrayList(EXTRA_RECORD_IDS);
+    }
+
+    /** Inserts {@link WeightRecord} via test app with the specified data. */
+    public static List<String> insertWeightRecordViaTestApp(
+            Context context, Instant time, double value) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {time.toEpochMilli()});
+        bundle.putDoubleArray(EXTRA_RECORD_VALUES, new double[] {value});
+        android.healthconnect.cts.utils.TestReceiver.reset();
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_WEIGHT_RECORDS, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS);
+    }
+
+    /** Extracts and returns ids of the provided records. */
+    public static List<String> getRecordIds(List<? extends Record> records) {
+        return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
     }
 
     public static final class RecordAndIdentifier {

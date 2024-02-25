@@ -49,6 +49,7 @@ import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.TimeSource
+import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
@@ -194,8 +195,7 @@ class HomeFragment : Hilt_HomeFragment() {
         val dialogSeen = sharedPreference.getBoolean(MIGRATION_NOT_COMPLETE_DIALOG_SEEN, false)
 
         if (!dialogSeen) {
-            AlertDialogBuilder(this)
-                .setLogName(MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_CONTAINER)
+            AlertDialogBuilder(this, MigrationElement.MIGRATION_NOT_COMPLETE_DIALOG_CONTAINER)
                 .setTitle(R.string.migration_not_complete_dialog_title)
                 .setMessage(R.string.migration_not_complete_dialog_content)
                 .setCancelable(false)
@@ -213,32 +213,34 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun getMigrationBanner(): BannerPreference {
-        return BannerPreference(requireContext()).also {
-            it.setPrimaryButton(resources.getString(R.string.resume_migration_banner_button))
+        return BannerPreference(requireContext(), MigrationElement.MIGRATION_RESUME_BANNER).also {
+            it.setPrimaryButton(
+                resources.getString(R.string.resume_migration_banner_button),
+                MigrationElement.MIGRATION_RESUME_BANNER_BUTTON)
             it.title = resources.getString(R.string.resume_migration_banner_title)
             it.key = MIGRATION_BANNER_PREFERENCE_KEY
             it.summary = migrationBannerSummary
             it.icon =
                 AttributeResolver.getNullableDrawable(requireContext(), R.attr.settingsAlertIcon)
             it.setPrimaryButtonOnClickListener {
-                navigationUtils.navigate(
-                    this@HomeFragment, R.id.action_homeFragment_to_migrationActivity)
+                findNavController().navigate(R.id.action_homeFragment_to_migrationActivity)
             }
             it.order = 1
         }
     }
 
     private fun getDataRestorePendingBanner(): BannerPreference {
-        return BannerPreference(requireContext()).also {
-            it.setPrimaryButton(resources.getString(R.string.data_restore_pending_banner_button))
+        return BannerPreference(requireContext(), DataRestoreElement.RESTORE_PENDING_BANNER).also {
+            it.setPrimaryButton(
+                resources.getString(R.string.data_restore_pending_banner_button),
+                DataRestoreElement.RESTORE_PENDING_BANNER_UPDATE_BUTTON)
             it.title = resources.getString(R.string.data_restore_pending_banner_title)
             it.key = DATA_RESTORE_BANNER_PREFERENCE_KEY
             it.summary = resources.getString(R.string.data_restore_pending_banner_content)
             it.icon =
                 AttributeResolver.getNullableDrawable(requireContext(), R.attr.updateNeededIcon)
             it.setPrimaryButtonOnClickListener {
-                navigationUtils.navigate(
-                    this@HomeFragment, R.id.action_homeFragment_to_systemUpdateActivity)
+                findNavController().navigate(R.id.action_homeFragment_to_systemUpdateActivity)
             }
             it.order = 1
         }

@@ -20,12 +20,18 @@ import static android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGM
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.healthconnect.cts.utils.DataFactory.buildExerciseSessionWithEmptyMetadata;
+import static android.healthconnect.cts.utils.DataFactory.buildSleepSessionWithEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigins;
+import static android.healthconnect.cts.utils.DataFactory.getDistanceRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
+import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForClientId;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
+import static android.healthconnect.cts.utils.DataFactory.getStepsRecordWithEmptyMetaData;
+import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.getGrantedHealthPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAndThenGrantHealthPermissions;
@@ -82,6 +88,7 @@ import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
+import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -289,6 +296,52 @@ public class HealthConnectDeviceTest {
                                                                         .getPackageName()))
                                                 .build()));
         assertThat(e.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    public void testAppWithReadPerms_readOtherAppsDataByIds_expectSuccess() throws Exception {
+        List<Pair<Class<? extends Record>, String>> classAndIdPairs =
+                List.of(
+                        insertRecord(APP_WITH_WRITE_PERMS_ONLY, getStepsRecordWithEmptyMetaData()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, getHeartRateRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, buildSleepSessionWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, getDistanceRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY,
+                                getTotalCaloriesBurnedRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, buildExerciseSessionWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, getStepsRecordWithEmptyMetaData()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, getHeartRateRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, buildSleepSessionWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, getDistanceRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS,
+                                getTotalCaloriesBurnedRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS,
+                                buildExerciseSessionWithEmptyMetadata()));
+
+        List<Record> readRecords = new ArrayList<>();
+        for (var classAndId : classAndIdPairs) {
+            readRecords.addAll(
+                    APP_A_WITH_READ_WRITE_PERMS.readRecords(
+                            new ReadRecordsRequestUsingIds.Builder<>(classAndId.first)
+                                    .addId(classAndId.second)
+                                    .build()));
+        }
+
+        List<String> readIds =
+                readRecords.stream().map(Record::getMetadata).map(Metadata::getId).toList();
+        List<String> insertedIds = classAndIdPairs.stream().map(pair -> pair.second).toList();
+        assertThat(readIds).containsExactlyElementsIn(insertedIds);
     }
 
     @Test
@@ -1056,6 +1109,11 @@ public class HealthConnectDeviceTest {
         for (String perm : healthPerms) {
             grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
+    }
+
+    private static Pair<Class<? extends Record>, String> insertRecord(
+            TestAppProxy testAppProxy, Record record) throws Exception {
+        return new Pair<>(record.getClass(), testAppProxy.insertRecord(record));
     }
 
     private static StepsRecord getStepsRecord(

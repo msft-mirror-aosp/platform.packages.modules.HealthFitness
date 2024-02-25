@@ -32,6 +32,7 @@ import com.android.healthconnect.controller.shared.Constants.MODULE_UPDATE_NEEDE
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.Constants.WHATS_NEW_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -138,8 +139,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
             positiveButtonAction: DialogInterface.OnClickListener? = null,
             negativeButtonAction: DialogInterface.OnClickListener? = null
         ) {
-            AlertDialogBuilder(context)
-                .setLogName(MigrationElement.MIGRATION_PENDING_DIALOG_CONTAINER)
+            AlertDialogBuilder(context, MigrationElement.MIGRATION_PENDING_DIALOG_CONTAINER)
                 .setTitle(R.string.migration_pending_permissions_dialog_title)
                 .setMessage(message)
                 .setCancelable(false)
@@ -160,8 +160,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
             message: String,
             negativeButtonAction: DialogInterface.OnClickListener? = null
         ) {
-            AlertDialogBuilder(context)
-                .setLogName(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
+            AlertDialogBuilder(context, MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
                 .setTitle(R.string.migration_in_progress_permissions_dialog_title)
                 .setMessage(message)
                 .setCancelable(false)
@@ -177,14 +176,13 @@ class MigrationActivity : Hilt_MigrationActivity() {
             context: Context,
             negativeButtonAction: DialogInterface.OnClickListener? = null
         ) {
-            AlertDialogBuilder(context)
-                .setLogName(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
+            AlertDialogBuilder(context, DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_CONTAINER)
                 .setTitle(R.string.data_restore_in_progress_dialog_title)
                 .setMessage(R.string.data_restore_in_progress_content)
                 .setCancelable(false)
                 .setNegativeButton(
                     R.string.data_restore_in_progress_dialog_button,
-                    MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON,
+                    DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_BUTTON,
                     negativeButtonAction)
                 .create()
                 .show()
@@ -199,8 +197,7 @@ class MigrationActivity : Hilt_MigrationActivity() {
             val dialogSeen = sharedPreference.getBoolean(WHATS_NEW_DIALOG_SEEN, false)
 
             if (!dialogSeen) {
-                AlertDialogBuilder(context)
-                    .setLogName(MigrationElement.MIGRATION_DONE_DIALOG_CONTAINER)
+                AlertDialogBuilder(context, MigrationElement.MIGRATION_DONE_DIALOG_CONTAINER)
                     .setTitle(R.string.migration_whats_new_dialog_title)
                     .setMessage(R.string.migration_whats_new_dialog_content)
                     .setCancelable(false)

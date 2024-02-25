@@ -667,14 +667,6 @@ public class HeightRecordTest {
                 .build();
     }
 
-    static HeightRecord getBaseHeightRecord(Instant time, double height) {
-        return new HeightRecord.Builder(
-                        new Metadata.Builder().setClientRecordId("HR" + Math.random()).build(),
-                        time,
-                        Length.fromMeters(height))
-                .build();
-    }
-
     private static HeightRecord getCompleteHeightRecord() {
         return getCompleteHeightRecord(Instant.now(), /* clientRecordId= */ "HR" + Math.random());
     }

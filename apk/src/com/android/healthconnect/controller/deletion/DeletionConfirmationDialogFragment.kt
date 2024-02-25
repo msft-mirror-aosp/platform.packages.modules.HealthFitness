@@ -47,9 +47,8 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alertDialogBuilder =
-            AlertDialogBuilder(this)
-                .setLogName(
-                    DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
+            AlertDialogBuilder(
+                    this, DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
                 .setTitle(buildTitle())
                 .setIcon(R.attr.deleteIcon)
                 .setMessage(buildMessage())

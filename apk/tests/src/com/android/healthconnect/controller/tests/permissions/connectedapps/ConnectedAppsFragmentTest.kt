@@ -15,9 +15,12 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
+import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -29,7 +32,9 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsFragment
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel
@@ -49,16 +54,23 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.NavigationUtils
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
+import com.android.healthconnect.controller.utils.logging.DeletionDialogConfirmationElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -67,7 +79,9 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
 @UninstallModules(DeviceInfoUtilsModule::class)
@@ -83,6 +97,9 @@ class ConnectedAppsFragmentTest {
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
+    private lateinit var navHostController: TestNavHostController
+    private lateinit var context: Context
 
     @Before
     fun setup() {
@@ -90,11 +107,32 @@ class ConnectedAppsFragmentTest {
         hiltRule.inject()
         whenever(viewModel.disconnectAllState).then { MutableLiveData(NotStarted) }
         whenever(viewModel.alertDialogActive).then { MutableLiveData(false) }
+        context = InstrumentationRegistry.getInstrumentation().context
+        navHostController = TestNavHostController(context)
+        toggleAnimation(false)
     }
 
     @After
     fun tearDown() {
         (deviceInfoUtils as FakeDeviceInfoUtils).reset()
+        reset(healthConnectLogger)
+        toggleAnimation(true)
+    }
+
+    @Test
+    fun appName_navigatesToManageAppPermissions() {
+        setupFragmentForNavigation()
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.connectedAppFragment)
+    }
+
+    @Test
+    fun helpAndFeedback_navigatesToHelpAndFeedback() {
+        setupFragmentForNavigation()
+        onView(withText("Help & feedback")).check(matches(isDisplayed()))
+        onView(withText("Help & feedback")).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.helpAndFeedbackFragment)
     }
 
     @Test
@@ -106,6 +144,7 @@ class ConnectedAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText("No apps allowed")).check(doesNotExist())
+        onView(withText("No apps denied")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -116,6 +155,7 @@ class ConnectedAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText("No apps denied")).check(doesNotExist())
+        onView(withText("No apps allowed")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -179,7 +219,7 @@ class ConnectedAppsFragmentTest {
     }
 
     @Test
-    fun test_inactiveApp_showsInactiveApps() {
+    fun inactiveApp_showsInactiveApps() {
         val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
 
@@ -187,6 +227,32 @@ class ConnectedAppsFragmentTest {
 
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.INACTIVE_APP_BUTTON)
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.INACTIVE_APP_DELETE_BUTTON)
+    }
+
+    @Test
+    fun whenClickOnInactiveApp_showsDeleteDataDialog() {
+        val connectApp = listOf(ConnectedAppMetadata(TEST_APP, status = INACTIVE))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+
+        launchFragment<ConnectedAppsFragment>(Bundle())
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(R.string.inactive_apps)).check(matches(isDisplayed()))
+        onView(withTagValue(`is`("Delete button inactive app"))).perform(click())
+
+        onView(withText("Permanently delete $TEST_APP_NAME data from all time?"))
+            .check(matches(isDisplayed()))
+
+        verify(healthConnectLogger)
+            .logImpression(DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(
+                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_DELETE_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(
+                DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CANCEL_BUTTON)
     }
 
     @Test
@@ -213,6 +279,10 @@ class ConnectedAppsFragmentTest {
             .perform(scrollTo())
             .check(matches(isDisplayed()))
         onView(withText("Send feedback")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.SEND_FEEDBACK_BUTTON)
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.CHECK_FOR_UPDATES_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AppPermissionsElement.SEE_ALL_COMPATIBLE_APPS_BUTTON)
     }
 
     @Test
@@ -253,10 +323,15 @@ class ConnectedAppsFragmentTest {
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(scrollToLastPosition<RecyclerView.ViewHolder>())
         onView(withText("Inactive apps")).check(doesNotExist())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.APP_PERMISSIONS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.CONNECTED_APP_BUTTON)
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.NOT_CONNECTED_APP_BUTTON)
     }
 
     @Test
-    fun test_eitherFeedbackOrPlayStoreAvailable_helpAndFeedbackPreferenceShouldBeDisplayed() {
+    fun eitherFeedbackOrPlayStoreAvailable_helpAndFeedbackPreferenceShouldBeDisplayed() {
         val connectApp =
             listOf(
                 ConnectedAppMetadata(TEST_APP, status = DENIED),
@@ -269,10 +344,11 @@ class ConnectedAppsFragmentTest {
         launchFragment<ConnectedAppsFragment>(Bundle())
 
         onView(withText("Help & feedback")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppPermissionsElement.HELP_AND_FEEDBACK_BUTTON)
     }
 
     @Test
-    fun test_bothFeedbackAndPlayStoreNotAvailable_helpAndFeedbackPreferenceShouldNotBeDisplayed() {
+    fun bothFeedbackAndPlayStoreNotAvailable_helpAndFeedbackPreferenceShouldNotBeDisplayed() {
         val connectApp =
             listOf(
                 ConnectedAppMetadata(TEST_APP, status = DENIED),
@@ -311,6 +387,11 @@ class ConnectedAppsFragmentTest {
         onView(withText("Old permissions test app"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_APP_UPDATE_BANNER)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_APP_UPDATE_LEARN_MORE_BUTTON)
+        verify(healthConnectLogger).logImpression(MigrationElement.MIGRATION_APP_UPDATE_BUTTON)
     }
 
     @Test
@@ -333,6 +414,8 @@ class ConnectedAppsFragmentTest {
 
         onView(withText("Learn more")).perform(click())
         assertThat(deviceInfoUtils.helpCenterInvoked).isTrue()
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_APP_UPDATE_LEARN_MORE_BUTTON)
     }
 
     @Test
@@ -348,7 +431,11 @@ class ConnectedAppsFragmentTest {
         whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
         (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
 
-        launchFragment<ConnectedAppsFragment>(Bundle())
+        launchFragment<ConnectedAppsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.connectedAppsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
         onView(withText("App update needed")).check(matches(isDisplayed()))
         onView(withText("Some apps need to be updated to continue syncing with Health Connect"))
             .check(matches(isDisplayed()))
@@ -356,6 +443,23 @@ class ConnectedAppsFragmentTest {
         onView(withText("Check for updates")).check(matches(isDisplayed()))
 
         onView(withText("Check for updates")).perform(click())
-        verify(navigationUtils).navigate(any(), eq(R.id.action_connected_apps_to_updated_apps))
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.update_apps_activity)
+        verify(healthConnectLogger).logInteraction(MigrationElement.MIGRATION_APP_UPDATE_BUTTON)
+    }
+
+    private fun setupFragmentForNavigation() {
+        val connectApp =
+            listOf(
+                ConnectedAppMetadata(TEST_APP, status = DENIED),
+                ConnectedAppMetadata(TEST_APP_2, status = ALLOWED))
+        whenever(viewModel.connectedApps).then { MutableLiveData(connectApp) }
+        (deviceInfoUtils as FakeDeviceInfoUtils).setSendFeedbackAvailability(false)
+        deviceInfoUtils.setPlayStoreAvailability(true)
+
+        launchFragment<ConnectedAppsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.connectedAppsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
     }
 }

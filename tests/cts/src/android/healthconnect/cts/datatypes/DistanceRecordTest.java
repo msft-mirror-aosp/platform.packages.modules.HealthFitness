@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -345,49 +344,6 @@ public class DistanceRecordTest {
                         instant,
                         Length.fromMeters(distance))
                 .build();
-    }
-
-    @Test
-    public void testAggregation_DistanceTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        List<Record> records =
-                Arrays.asList(
-                        DistanceRecordTest.getBaseDistanceRecord(1, 74.0),
-                        DistanceRecordTest.getBaseDistanceRecord(2, 100.5));
-        AggregateRecordsResponse<Length> oldResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Length>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(DISTANCE_TOTAL)
-                                .build(),
-                        records);
-        List<Record> recordNew = Arrays.asList(DistanceRecordTest.getBaseDistanceRecord(3, 100.5));
-        AggregateRecordsResponse<Length> newResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Length>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(DISTANCE_TOTAL)
-                                .build(),
-                        recordNew);
-        Length oldLength = oldResponse.get(DISTANCE_TOTAL);
-        Length newLength = newResponse.get(DISTANCE_TOTAL);
-        assertThat(oldLength).isNotNull();
-        assertThat(newLength).isNotNull();
-        assertThat(newLength.getInMeters() - oldLength.getInMeters()).isEqualTo(100.5);
-        Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(DISTANCE_TOTAL);
-        for (DataOrigin itr : newDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
-        Set<DataOrigin> oldDataOrigin = oldResponse.getDataOrigins(DISTANCE_TOTAL);
-        for (DataOrigin itr : oldDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
     }
 
     @Test

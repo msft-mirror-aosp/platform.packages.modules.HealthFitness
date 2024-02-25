@@ -72,7 +72,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -215,46 +214,6 @@ public class WeightRecordTest {
                                         new DataOrigin.Builder().setPackageName("abc").build())
                                 .build());
         assertThat(newWeightRecords.size()).isEqualTo(0);
-    }
-
-    @Test
-    public void testAggregation_weight() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Context context = ApplicationProvider.getApplicationContext();
-        List<Record> records =
-                Arrays.asList(
-                        getBaseWeightRecord(5.0),
-                        getBaseWeightRecord(10.0),
-                        getBaseWeightRecord(15.0));
-        AggregateRecordsResponse<Mass> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Mass>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, DAYS))
-                                                .build())
-                                .addAggregationType(WEIGHT_AVG)
-                                .addAggregationType(WEIGHT_MAX)
-                                .addAggregationType(WEIGHT_MIN)
-                                .addDataOriginsFilter(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(context.getPackageName())
-                                                .build())
-                                .build(),
-                        records);
-        Mass maxWeight = response.get(WEIGHT_MAX);
-        Mass minWeight = response.get(WEIGHT_MIN);
-        Mass avgWeight = response.get(WEIGHT_AVG);
-        assertThat(maxWeight).isNotNull();
-        assertThat(maxWeight.getInGrams()).isEqualTo(15.0);
-        assertThat(minWeight).isNotNull();
-        assertThat(minWeight.getInGrams()).isEqualTo(5.0);
-        assertThat(avgWeight).isNotNull();
-        assertThat(avgWeight.getInGrams()).isEqualTo(10.0);
-        Set<DataOrigin> dataOrigins = response.getDataOrigins(WEIGHT_AVG);
-        for (DataOrigin itr : dataOrigins) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -948,12 +907,6 @@ public class WeightRecordTest {
     private static WeightRecord getBaseWeightRecord() {
         return new WeightRecord.Builder(
                         new Metadata.Builder().build(), Instant.now(), Mass.fromGrams(10.0))
-                .build();
-    }
-
-    static WeightRecord getBaseWeightRecord(Instant time, double weight) {
-        return new WeightRecord.Builder(
-                        new Metadata.Builder().build(), time, Mass.fromGrams(weight))
                 .build();
     }
 

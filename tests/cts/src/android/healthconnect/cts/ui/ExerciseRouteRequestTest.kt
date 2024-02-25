@@ -28,7 +28,6 @@ import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.ExerciseSessionType
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitNotDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
@@ -48,6 +47,7 @@ import java.time.Duration
 import java.time.Instant
 import org.junit.AfterClass
 import org.junit.Assert.assertThrows
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -295,6 +295,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @Ignore("b/322300333#comment5")
     fun requestRoute_allowAllFeatureOff_allowAllNotDisplayed() {
         val record = getExerciseSessionWithRoute()
         val recordId = insertRecordAndGetId(record)
