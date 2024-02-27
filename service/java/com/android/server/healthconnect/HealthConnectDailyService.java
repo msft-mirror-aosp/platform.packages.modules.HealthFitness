@@ -19,6 +19,7 @@ package com.android.server.healthconnect;
 import static android.health.connect.Constants.DEFAULT_INT;
 
 import static com.android.server.healthconnect.HealthConnectDailyJobs.HC_DAILY_JOB;
+import static com.android.server.healthconnect.exportimport.ExportImportJobs.PERIODIC_EXPORT_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_COMPLETE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 
@@ -31,6 +32,7 @@ import android.app.job.JobService;
 import android.health.connect.Constants;
 import android.util.Slog;
 
+import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 
 import java.util.Objects;
@@ -51,11 +53,6 @@ public class HealthConnectDailyService extends JobService {
      *
      * <p>Please handle exceptions for each task within the task. Do not crash the job as it might
      * result in failure of other tasks being triggered from the job.
-     *
-     * <p>HealthConnect doesn't call onJobFinished, as required by the JobScheduler API, once the
-     * job is finished. This means JobScheduler keeps on holding the wakelock for our app till any
-     * timeouts kick in and kill the jobs. This is acceptable in our case since we are running in
-     * the system server and always awake.
      */
     @Override
     public boolean onStartJob(@NonNull JobParameters params) {
@@ -94,6 +91,13 @@ public class HealthConnectDailyService extends JobService {
                         () -> {
                             MigrationStateChangeJob.executeMigrationPauseJob(
                                     getApplicationContext());
+                            jobFinished(params, false);
+                        });
+                return true;
+            case PERIODIC_EXPORT_JOB_NAME:
+                HealthConnectThreadScheduler.scheduleInternalTask(
+                        () -> {
+                            ExportImportJobs.executePeriodicExportJob(getApplicationContext());
                             jobFinished(params, false);
                         });
                 return true;

@@ -41,6 +41,9 @@ import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
+import static java.time.Instant.EPOCH;
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -52,6 +55,7 @@ import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.HealthConnectException;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
@@ -79,6 +83,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AggregationApisTest {
+    private static final int MAXIMUM_GROUP_SIZE = 5000;
     private final Context mContext = ApplicationProvider.getApplicationContext();
     private final String mPackageName = mContext.getPackageName();
 
@@ -97,6 +102,51 @@ public class AggregationApisTest {
     @After
     public void tearDown() {
         deleteAllStagedRemoteData();
+    }
+
+    @Test
+    public void aggregate_noData_nullResponse() throws Exception {
+        AggregateRecordsRequest<Long> request =
+                new AggregateRecordsRequest.Builder<Long>(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setEndTime(Instant.now())
+                                        .build())
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+
+        AggregateRecordsResponse<Long> response = getAggregateResponse(request);
+        assertThat(response.get(STEPS_COUNT_TOTAL)).isNull();
+    }
+
+    @Test
+    public void groupByDuration_noData_nullResponses() throws Exception {
+        Instant time = Instant.now().minus(2, DAYS);
+        AggregateRecordsRequest<Length> request =
+                new AggregateRecordsRequest.Builder<Length>(
+                                getTimeFilter(time, time.plus(2, HOURS)))
+                        .addAggregationType(DISTANCE_TOTAL)
+                        .build();
+
+        List<AggregateRecordsGroupedByDurationResponse<Length>> responses =
+                getAggregateResponseGroupByDuration(request, Duration.ofHours(1));
+        assertThat(responses).hasSize(2);
+        assertThat(responses.get(0).get(DISTANCE_TOTAL)).isNull();
+        assertThat(responses.get(1).get(DISTANCE_TOTAL)).isNull();
+    }
+
+    @Test
+    public void groupByPeriod_noData_nullResponses() throws Exception {
+        LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC).minusDays(2);
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(time, time.plusDays(2)))
+                        .addAggregationType(ACTIVE_CALORIES_TOTAL)
+                        .build();
+
+        List<AggregateRecordsGroupedByPeriodResponse<Energy>> responses =
+                getAggregateResponseGroupByPeriod(request, Period.ofDays(1));
+        assertThat(responses).hasSize(2);
+        assertThat(responses.get(0).get(ACTIVE_CALORIES_TOTAL)).isNull();
+        assertThat(responses.get(1).get(ACTIVE_CALORIES_TOTAL)).isNull();
     }
 
     @Test
@@ -321,6 +371,96 @@ public class AggregationApisTest {
         assertThat(responses.get(0).getStartTime()).isEqualTo(localTime);
         assertThat(responses.get(0).getEndTime()).isEqualTo(localTime.plusDays(1));
         assertThat(responses.get(0).getZoneOffset(STEPS_CADENCE_RATE_MAX)).isEqualTo(UTC);
+    }
+
+    @Test
+    public void aggregationRequest_emptyAggregationType_throws() {
+        Instant time = Instant.now().minus(1, DAYS);
+        AggregateRecordsRequest.Builder<?> requestBuilder =
+                new AggregateRecordsRequest.Builder<>(getTimeFilter(time, time.plusMillis(1)));
+
+        Throwable thrown = assertThrows(IllegalArgumentException.class, requestBuilder::build);
+        assertThat(thrown).hasMessageThat().contains("At least one of the aggregation types");
+    }
+
+    @Test
+    public void groupByPeriod_withInstantTimeFilter_throws() {
+        Instant time = Instant.now().minus(1, DAYS);
+
+        AggregateRecordsRequest<Long> request =
+                new AggregateRecordsRequest.Builder<Long>(getTimeFilter(time, time.plusMillis(1)))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        Throwable thrown =
+                assertThrows(
+                        UnsupportedOperationException.class,
+                        () -> getAggregateResponseGroupByPeriod(request, Period.ofDays(1)));
+        assertThat(thrown).hasMessageThat().contains("should use LocalTimeRangeFilter");
+    }
+
+    @Test
+    public void groupByPeriod_zeroPeriod_throws() {
+        AggregateRecordsRequest<Mass> request =
+                new AggregateRecordsRequest.Builder<Mass>(
+                                getTimeFilter(
+                                        LocalDateTime.now(ZoneOffset.UTC).minusDays(1),
+                                        LocalDateTime.now(ZoneOffset.UTC)))
+                        .addAggregationType(WEIGHT_AVG)
+                        .build();
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> getAggregateResponseGroupByPeriod(request, Period.ZERO));
+        assertThat(thrown).hasMessageThat().isEqualTo("Period duration should be at least a day");
+    }
+
+    @Test
+    public void groupByPeriod_hugeNumberOfGroups_throws() {
+        LocalDateTime localTime = LocalDateTime.now(ZoneOffset.UTC);
+        LocalTimeRangeFilter timeFilter =
+                getTimeFilter(localTime.minusDays(MAXIMUM_GROUP_SIZE + 1), localTime);
+
+        Throwable thrown =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                getAggregateResponseGroupByPeriod(
+                                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
+                                                .addAggregationType(WEIGHT_AVG)
+                                                .build(),
+                                        Period.ofDays(1)));
+        assertThat(thrown).hasMessageThat().contains("Number of groups");
+    }
+
+    @Test
+    public void groupByDuration_zeroDuration_throws() {
+        AggregateRecordsRequest<Mass> request =
+                new AggregateRecordsRequest.Builder<Mass>(getTimeFilter(EPOCH, Instant.now()))
+                        .addAggregationType(WEIGHT_AVG)
+                        .build();
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> getAggregateResponseGroupByDuration(request, Duration.ZERO));
+        assertThat(thrown).hasMessageThat().isEqualTo("Duration should be at least 1 millisecond");
+    }
+
+    @Test
+    public void groupByDuration_hugeNumberOfGroups_throws() {
+        Instant time = Instant.now();
+        TimeInstantRangeFilter timeFilter =
+                getTimeFilter(time.minusSeconds(MAXIMUM_GROUP_SIZE + 1), time);
+        Throwable thrown =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                getAggregateResponseGroupByDuration(
+                                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
+                                                .addAggregationType(WEIGHT_AVG)
+                                                .build(),
+                                        Duration.ofSeconds(1)));
+        assertThat(thrown).hasMessageThat().contains("Number of buckets");
     }
 
     private static WeightRecord getWeightRecord(double weight, Instant time) {
