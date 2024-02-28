@@ -28,7 +28,6 @@ import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.ExerciseSessionType
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
-import android.healthconnect.cts.lib.UiTestUtils.scrollDownTo
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.lib.UiTestUtils.waitNotDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
@@ -48,6 +47,7 @@ import java.time.Duration
 import java.time.Instant
 import org.junit.AfterClass
 import org.junit.Assert.assertThrows
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -85,7 +85,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val result =
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow all routes"))
-                scrollDownTo(By.text("Don't allow"))
                 clickOnText("Allow this route")
             }
 
@@ -108,7 +107,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val result =
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow this route"))
-                scrollDownTo(By.text("Don't allow"))
                 clickOnText("Allow all routes")
             }
 
@@ -132,7 +130,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow all routes"))
                 waitDisplayed(By.text("Allow this route"))
-                scrollDownTo(By.text("Don't allow"))
                 clickOnText("Don't allow")
             }
 
@@ -232,7 +229,6 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
                 ROUTE_READER_WRITER_APP.getPackageName(), HealthPermissions.WRITE_EXERCISE_ROUTE) {
                     ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                         waitDisplayed(By.text("Allow this route"))
-                        scrollDownTo(By.text("Don't allow"))
                         clickOnText("Allow all routes")
                     }
                 }
@@ -299,6 +295,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @Ignore("b/322300333#comment5")
     fun requestRoute_allowAllFeatureOff_allowAllNotDisplayed() {
         val record = getExerciseSessionWithRoute()
         val recordId = insertRecordAndGetId(record)

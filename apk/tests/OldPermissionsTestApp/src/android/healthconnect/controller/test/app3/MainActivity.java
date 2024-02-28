@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.healthconnect.controller.migration.api
+
+package android.healthconnect.controller.test.app4;
+
+import android.app.Activity;
+import android.health.connect.HealthConnectManager;
 
 /**
- * Internal class representing the [HealthConnectMigrationUiState] and [HealthConnectDataState]
- * received from the HealthConnectManager.
+ * This app is used as an external package to test system api {@link HealthConnectManager}
+ * permission-related APIs.
  */
-enum class MigrationState {
-    IDLE,
-    ALLOWED_MIGRATOR_DISABLED,
-    ALLOWED_NOT_STARTED,
-    ALLOWED_PAUSED,
-    ALLOWED_ERROR,
-    IN_PROGRESS,
-    APP_UPGRADE_REQUIRED,
-    MODULE_UPGRADE_REQUIRED,
-    COMPLETE,
-    COMPLETE_IDLE,
-    UNKNOWN
-}
+public class MainActivity extends Activity {}

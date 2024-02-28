@@ -67,6 +67,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RespiratoryRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RestingHeartRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SexualActivityRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SleepSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SpeedRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsCadenceRecordHelper;
@@ -286,6 +287,9 @@ public class AutoDeleteServiceTest {
                 new ExerciseSessionRecordHelper());
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, new SleepSessionRecordHelper());
+        recordIDToHelperMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE,
+                new SkinTemperatureRecordHelper());
 
         recordIDToHelperMap = Collections.unmodifiableMap(recordIDToHelperMap);
         return recordIDToHelperMap;

@@ -97,6 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Trainingsroute schrijven"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Trainingsroute lezen"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Trainingsroutes lezen"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Trainingsplannen"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"trainingsplannen"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Trainingsplannen lezen"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Trainingsplannen schrijven"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Afstand"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"afstand"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Gegevens over afstand lezen"</string>
@@ -268,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Bepaal welke apps toegang hebben tot gegevens die zijn opgeslagen in Health Connect. Tik op een app om de gegevens te bekijken die de app kan lezen of schrijven."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Toegang toegestaan"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Toegang niet toegestaan"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Moet worden geüpdatet"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Instellingen en hulp"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Toegang verwijderen voor alle apps"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Toestemming om te lezen"</string>
@@ -664,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 procent}other{# procent}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Annuleren"</string>
     <string name="units_title" msgid="6504086463237869339">"Eenheden"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Gegevenseenheden instellen"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Afstand"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Lengte"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Gewicht"</string>
@@ -772,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Integratie van Health Connect hervatten"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Als je je gegevens wilt behouden, moet je dit binnen <xliff:g id="TIME_NEEDED">%1$s</xliff:g> afronden."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"App-update nodig"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> moet worden geüpdatet om te blijven werken met Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Sommige apps moeten worden geüpdatet om te blijven werken met Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> moet worden geüpdatet om te blijven synchroniseren met Health Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Sommige apps moeten worden geüpdatet om te blijven synchroniseren met Health Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Checken op updates"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Meer informatie"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-integratie"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect is klaar voor integratie met je Android-systeem. Als je <xliff:g id="APP_NAME">%1$s</xliff:g> nu toegang geeft, werken sommige functies misschien pas nadat de integratie is afgerond."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect is klaar voor integratie met je Android-systeem. Als je apps nu toegang geeft, werken sommige functies misschien pas nadat de integratie is afgerond."</string>
@@ -794,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Wat is er nieuw"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Je hebt nu direct vanuit je instellingen toegang tot Health Connect. Je kunt de Health Connect-app altijd verwijderen om opslagruimte vrij te maken."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Herstel is bezig"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect herstelt gegevens en rechten. Dit kan even duren."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect-herstel is bezig"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Update vereist"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Update je telefoonsysteem voordat je doorgaat met je gegevens herstellen."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Nu updaten"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Gegevenstotalen"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"App-bronnen"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Voeg app-bronnen aan de lijst toe om te zien hoe de gegevenstotalen kunnen veranderen. Als je een app uit deze lijst verwijdert, draagt die niet meer bij aan de totalen. De app heeft nog wel schrijfrechten."</string>
