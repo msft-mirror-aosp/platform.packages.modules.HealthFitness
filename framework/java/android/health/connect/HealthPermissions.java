@@ -41,6 +41,7 @@ import static android.health.connect.HealthPermissionCategory.MENSTRUATION;
 import static android.health.connect.HealthPermissionCategory.NUTRITION;
 import static android.health.connect.HealthPermissionCategory.OVULATION_TEST;
 import static android.health.connect.HealthPermissionCategory.OXYGEN_SATURATION;
+import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.POWER;
 import static android.health.connect.HealthPermissionCategory.RESPIRATORY_RATE;
 import static android.health.connect.HealthPermissionCategory.RESTING_HEART_RATE;
@@ -137,6 +138,18 @@ public final class HealthPermissions {
     // exposing this constant. Also search for 299897306 and remove workarounds.
     public static final String READ_HEALTH_DATA_IN_BACKGROUND =
             "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
+
+    /**
+     * Allows an application to read the entire history of health data (of any type).
+     *
+     * <p>Protection level: dangerous.
+     *
+     * @hide
+     */
+    // TODO (b/325434006): Specify a label for the permission in HealthPermissionsManifest.xml when
+    // exposing this constant. Also search for 325434006 and remove workarounds.
+    public static final String READ_HEALTH_DATA_HISTORY =
+            "android.permission.health.READ_HEALTH_DATA_HISTORY";
 
     /**
      * Allows an application to read the user's active calories burned data.
@@ -440,6 +453,15 @@ public final class HealthPermissions {
             "android.permission.health.READ_SKIN_TEMPERATURE";
 
     /**
+     * Allows an application to read the user's training plan data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final String READ_PLANNED_EXERCISE =
+            "android.permission.health.READ_PLANNED_EXERCISE";
+
+    /**
      * Allows an application to write the user's calories burned data.
      *
      * <p>Protection level: dangerous.
@@ -722,6 +744,15 @@ public final class HealthPermissions {
     public static final String WRITE_SKIN_TEMPERATURE =
             "android.permission.health.WRITE_SKIN_TEMPERATURE";
 
+    /**
+     * Allows an application to write the user's training plan data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final String WRITE_PLANNED_EXERCISE =
+            "android.permission.health.WRITE_PLANNED_EXERCISE";
+
     private static final Set<String> sWritePermissionsSet =
             new ArraySet<>(
                     Set.of(
@@ -760,7 +791,8 @@ public final class HealthPermissions {
                             WRITE_OXYGEN_SATURATION,
                             WRITE_RESPIRATORY_RATE,
                             WRITE_RESTING_HEART_RATE,
-                            WRITE_SKIN_TEMPERATURE));
+                            WRITE_SKIN_TEMPERATURE,
+                            WRITE_PLANNED_EXERCISE));
 
     private static final Map<String, Integer> sWriteHealthPermissionToHealthDataCategoryMap =
             new ArrayMap<>();
@@ -928,6 +960,7 @@ public final class HealthPermissions {
         sHealthCategoryToWritePermissionMap.put(RESPIRATORY_RATE, WRITE_RESPIRATORY_RATE);
         sHealthCategoryToWritePermissionMap.put(RESTING_HEART_RATE, WRITE_RESTING_HEART_RATE);
         sHealthCategoryToWritePermissionMap.put(SKIN_TEMPERATURE, WRITE_SKIN_TEMPERATURE);
+        sHealthCategoryToWritePermissionMap.put(PLANNED_EXERCISE, WRITE_PLANNED_EXERCISE);
 
         // Populate permission category to read permission map
         sHealthCategoryToReadPermissionMap.put(ACTIVE_CALORIES_BURNED, READ_ACTIVE_CALORIES_BURNED);
@@ -967,6 +1000,7 @@ public final class HealthPermissions {
         sHealthCategoryToReadPermissionMap.put(RESPIRATORY_RATE, READ_RESPIRATORY_RATE);
         sHealthCategoryToReadPermissionMap.put(RESTING_HEART_RATE, READ_RESTING_HEART_RATE);
         sHealthCategoryToReadPermissionMap.put(SKIN_TEMPERATURE, READ_SKIN_TEMPERATURE);
+        sHealthCategoryToReadPermissionMap.put(PLANNED_EXERCISE, READ_PLANNED_EXERCISE);
     }
 
     private static synchronized void populateWriteHealthPermissionToHealthDataCategoryMap() {
@@ -983,6 +1017,8 @@ public final class HealthPermissions {
                 WRITE_ELEVATION_GAINED, HealthDataCategory.ACTIVITY);
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_EXERCISE, HealthDataCategory.ACTIVITY);
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_PLANNED_EXERCISE, HealthDataCategory.ACTIVITY);
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_FLOORS_CLIMBED, HealthDataCategory.ACTIVITY);
         sWriteHealthPermissionToHealthDataCategoryMap.put(WRITE_STEPS, HealthDataCategory.ACTIVITY);
@@ -1055,6 +1091,7 @@ public final class HealthPermissions {
                     WRITE_DISTANCE,
                     WRITE_ELEVATION_GAINED,
                     WRITE_EXERCISE,
+                    WRITE_PLANNED_EXERCISE,
                     WRITE_FLOORS_CLIMBED,
                     WRITE_STEPS,
                     WRITE_TOTAL_CALORIES_BURNED,

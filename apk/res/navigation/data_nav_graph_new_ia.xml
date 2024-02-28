@@ -74,12 +74,12 @@
 
     <fragment
         android:id="@+id/unitFragment"
-        android:name="com.android.healthconnect.controller.data.entries.units.UnitsFragment"
+        android:name="com.android.healthconnect.controller.dataentries.units.UnitsFragment"
         android:label="@string/units_title" />
 
     <fragment
         android:id="@+id/dataEntryDetailsFragment"
-        android:name="com.android.healthconnect.controller.data.entrydetails.DataEntryDetailsFragment"
+        android:name="com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment"
         android:label="@string/entry_details_title" >
         <action
             android:id="@+id/action_dataEntryDetailsFragment_to_unitFragment"
@@ -89,7 +89,7 @@
     <fragment
         android:id="@+id/connectedAppFragment"
         android:label="@string/app_access_title"
-        android:name="com.android.healthconnect.controller.permissions.connectedapp.ConnectedAppFragment">
+        android:name="com.android.healthconnect.controller.permissions.app.ConnectedAppFragment">
         <argument
             android:name="android.intent.extra.PACKAGE_NAME"
             app:argType="string" />

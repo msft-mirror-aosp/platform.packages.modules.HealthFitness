@@ -21,6 +21,7 @@ import static com.android.server.healthconnect.permission.FirstGrantTimeDatastor
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.WorkerThread;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -41,6 +42,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -105,8 +107,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         if (grantTimeDate == null) {
             // Check and update the state in case health permission has been granted before
             // onPermissionsChanged callback was propagated.
-            onPermissionsChanged(
-                    mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user)));
+            updateFirstGrantTimesFromPermissionState(uid, true);
             grantTimeDate = getGrantTimeReadLocked(uid);
         }
 
@@ -126,6 +127,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                             + user.getIdentifier()
                             + " not found.");
         }
+        initAndValidateUserStateIfNeedLocked(user);
 
         mGrantTimeLock.writeLock().lock();
         try {
@@ -139,26 +141,60 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
     @Override
     public void onPermissionsChanged(int uid) {
+        updateFirstGrantTimesFromPermissionState(uid, false);
+    }
+
+    /**
+     * Checks whether the {@code uid} is mapped to valid package names of valid health apps before
+     * updating first grant times from the current permission state. The update can be perform in
+     * the same thread where this method is called if {@code sync} is set to {@code true}, another
+     * background thread otherwise.
+     */
+    private void updateFirstGrantTimesFromPermissionState(int uid, boolean sync) {
         if (!mUserManager.isUserUnlocked()) {
-            // onPermissionsChanged(uid) is called as soon as the system boots up, even before the
-            // user has unlock the device for the first time.
-            // Side note: this method is also called on both primary user and work profile user.
+            // this method is called in onPermissionsChanged(uid) which is called as soon as the
+            // system boots up, even before the user has unlock the device for the first time.
+            // Side note: onPermissionsChanged() is also called on both primary user and work
+            // profile user.
             return;
         }
 
-        String[] packageNames = mPackageManager.getPackagesForUid(uid);
+        final String[] packageNames = mPackageManager.getPackagesForUid(uid);
         if (packageNames == null) {
             Log.w(TAG, "onPermissionsChanged: no known packages for UID: " + uid);
             return;
         }
 
-        UserHandle user = UserHandle.getUserHandleForUid(uid);
+        final UserHandle user = UserHandle.getUserHandleForUid(uid);
 
         if (!checkSupportPermissionsUsageIntent(packageNames, user)) {
             logIfInDebugMode("Cannot find health intent declaration in ", packageNames[0]);
             return;
         }
 
+        if (sync) {
+            updateFirstGrantTimesFromPermissionState(uid, user, packageNames);
+        } else {
+            try {
+                HealthConnectThreadScheduler.scheduleInternalTask(
+                        () -> updateFirstGrantTimesFromPermissionState(uid, user, packageNames));
+            } catch (RejectedExecutionException executionException) {
+                Log.e(
+                        TAG,
+                        "Can't queue internal task in #onPermissionsChanged for uid=" + uid,
+                        executionException);
+            }
+        }
+    }
+
+    /**
+     * Checks permission states for {@code uid} and updates first grant times accordingly.
+     *
+     * <p><b>Note:</b>This method must only be called from a non-main thread.
+     */
+    @WorkerThread
+    private void updateFirstGrantTimesFromPermissionState(
+            int uid, UserHandle user, String[] packageNames) {
         // call this method after `checkSupportPermissionsUsageIntent` so we are sure that we are
         // not initializing user state when onPermissionsChanged(uid) is called for non HC client
         // apps.
@@ -210,6 +246,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
     }
 
     // TODO(b/277063776): move two methods below to b&r classes.
+
     /** Returns the state which should be backed up. */
     public UserGrantTimeState createBackupState(UserHandle user) {
         initAndValidateUserStateIfNeedLocked(user);
@@ -546,7 +583,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
     private void logIfInDebugMode(@NonNull String prefixMessage, @NonNull Object objectToLog) {
         if (Constants.DEBUG) {
-            Log.d(TAG, prefixMessage + objectToLog.toString());
+            Log.d(TAG, prefixMessage + objectToLog);
         }
     }
 

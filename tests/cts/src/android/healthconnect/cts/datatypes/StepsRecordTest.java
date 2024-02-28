@@ -709,65 +709,6 @@ public class StepsRecordTest {
     }
 
     @Test
-    public void testAggregation_StepsCountTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        List<Record> records =
-                Arrays.asList(getStepsRecord(1000, 1, 1), getStepsRecord(1000, 2, 1));
-
-        AggregateRecordsRequest<Long> aggregateRecordsRequest =
-                new AggregateRecordsRequest.Builder<Long>(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(Instant.ofEpochMilli(0))
-                                        .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                        .build())
-                        .addAggregationType(STEPS_COUNT_TOTAL)
-                        .build();
-        assertThat(aggregateRecordsRequest.getAggregationTypes()).isNotNull();
-        assertThat(aggregateRecordsRequest.getTimeRangeFilter()).isNotNull();
-        assertThat(aggregateRecordsRequest.getDataOriginsFilters()).isNotNull();
-        AggregateRecordsResponse<Long> oldResponse =
-                TestUtils.getAggregateResponse(aggregateRecordsRequest, records);
-        List<Record> recordNew =
-                Arrays.asList(getStepsRecord(1000, 3, 1), getStepsRecord(1000, 4, 1));
-        AggregateRecordsResponse<Long> newResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Long>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(STEPS_COUNT_TOTAL)
-                                .build(),
-                        recordNew);
-        assertThat(newResponse.get(STEPS_COUNT_TOTAL)).isNotNull();
-        assertThat(newResponse.get(STEPS_COUNT_TOTAL))
-                .isEqualTo(oldResponse.get(STEPS_COUNT_TOTAL) + 2000);
-        Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(STEPS_COUNT_TOTAL);
-        for (DataOrigin itr : newDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo(PACKAGE_NAME);
-        }
-        Set<DataOrigin> oldDataOrigin = oldResponse.getDataOrigins(STEPS_COUNT_TOTAL);
-        for (DataOrigin itr : oldDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo(PACKAGE_NAME);
-        }
-        StepsRecord record = getStepsRecord(1000, 5, 1);
-        List<Record> recordNew2 = Arrays.asList(record, record);
-        AggregateRecordsResponse<Long> newResponse2 =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Long>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(STEPS_COUNT_TOTAL)
-                                .build(),
-                        recordNew2);
-        assertThat(newResponse2.get(STEPS_COUNT_TOTAL)).isNotNull();
-        assertThat(newResponse2.get(STEPS_COUNT_TOTAL))
-                .isEqualTo(newResponse.get(STEPS_COUNT_TOTAL) + 1000);
-    }
-
-    @Test
     public void testInsertWithClientVersion() throws InterruptedException {
         List<Record> records = List.of(getStepsRecordWithClientVersion(10, 1, "testId"));
         final String id = TestUtils.insertRecords(records).get(0).getMetadata().getId();
@@ -1512,30 +1453,87 @@ public class StepsRecordTest {
     @Test
     public void insertRecords_sameClientRecordIdAndNewData_readNewData() throws Exception {
         int recordCount = 10;
+        insertAndReadRecords(recordCount, /* stepCount= */ 10);
+
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(newCount);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewerVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 0L;
+        int oldCount = 10;
+        insertAndReadRecords(recordCount, oldVersion, oldCount);
+
+        long newVersion = 1L;
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(newCount);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndSameVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long version = 1L;
+        int oldCount = 10;
+        insertAndReadRecords(recordCount, version, oldCount);
+
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, version, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(newCount);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndOlderVersion_readOldData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 1L;
+        int oldCount = 10;
+        insertAndReadRecords(recordCount, oldVersion, oldCount);
+
+        long newVersion = 0L;
+        int newCount = 20;
+        List<StepsRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newCount);
+
+        for (StepsRecord record : newRecords) {
+            assertThat(record.getCount()).isEqualTo(oldCount);
+        }
+    }
+
+    private static List<StepsRecord> insertAndReadRecords(int recordCount, int stepCount)
+            throws Exception {
+        return insertAndReadRecords(recordCount, /* version= */ 0L, stepCount);
+    }
+
+    private static List<StepsRecord> insertAndReadRecords(
+            int recordCount, long version, int stepCount) throws Exception {
         List<StepsRecord> records = new ArrayList<>();
-        List<StepsRecord> newRecords = new ArrayList<>();
         Instant now = Instant.now();
-        int newCount = 10;
         for (int i = 0; i < recordCount; i++) {
             Instant startTime = now.minusSeconds(i + 1);
             Instant endTime = now.minusSeconds(i);
-            String clientRecordId = "client_id_" + i;
-            records.add(getCompleteStepsRecord(startTime, endTime, clientRecordId, 10));
-            newRecords.add(getCompleteStepsRecord(startTime, endTime, clientRecordId, newCount));
+            String recordId = "client_id_" + i;
+            records.add(getCompleteStepsRecord(startTime, endTime, recordId, version, stepCount));
         }
         List<Record> insertedRecords = insertRecords(records);
         assertThat(insertedRecords).hasSize(recordCount);
-
-        List<Record> newInsertedRecords = insertRecords(newRecords);
-        assertThat(newInsertedRecords).hasSize(recordCount);
 
         List<StepsRecord> readRecords =
                 readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build());
         assertThat(readRecords).hasSize(recordCount);
-        for (StepsRecord record : readRecords) {
-            assertThat(record.getCount()).isEqualTo(newCount);
-        }
+
+        return readRecords;
     }
 
     private void testAggregateDurationWithLocalTimeForZoneOffset(ZoneOffset offset)

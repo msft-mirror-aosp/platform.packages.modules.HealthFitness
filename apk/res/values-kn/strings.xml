@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"ವ್ಯಾಯಾಮದ ಯೋಜನೆ"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"ವ್ಯಾಯಾಮದ ಯೋಜನೆಯನ್ನು ಬರೆಯಿರಿ"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"ವ್ಯಾಯಾಮದ ಯೋಜನೆಯನ್ನು ಓದಿರಿ"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಓದಿ"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"ತರಬೇತಿ ಪ್ಲಾನ್‌ಗಳು"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"ತರಬೇತಿ ಪ್ಲಾನ್‌ಗಳು"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"ತರಬೇತಿ ಪ್ಲಾನ್‌ಗಳನ್ನು ಓದಿ"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"ತರಬೇತಿ ಪ್ಲಾನ್‌ಗಳನ್ನು ಬರೆಯಿರಿ"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"ದೂರ"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"ದೂರ"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"ದೂರವನ್ನು ಓದುತ್ತದೆ"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect ನಲ್ಲಿ ಸಂಗ್ರಹವಾಗಿರುವ ಡೇಟಾವನ್ನು ಯಾವ ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದು ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ. ಆ್ಯಪ್ ಓದಬಹುದಾದ ಅಥವಾ ಬರೆಯಬಹುದಾದ ಡೇಟಾವನ್ನು ಪರಿಶೀಲಿಸಲು ಆ್ಯಪ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ಆ್ಯಕ್ಸೆಸ್ ಅನುಮತಿಸಲಾಗಿದೆ"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"ಆ್ಯಕ್ಸೆಸ್ ನೀಡಿಲ್ಲದಿರುವುದು"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"ಅಪ್‌ಡೇಟ್ ಮಾಡುವ ಅಗತ್ಯವಿದೆ"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಸಹಾಯ"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳ ಆ್ಯಕ್ಸೆಸ್ ತೆಗೆದುಹಾಕಿ"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"ಓದಲು ಅನುಮತಿಸಲಾಗಿದೆ"</string>
@@ -665,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{ಶೇಕಡಾ 1}one{ಶೇಕಡಾ #}other{ಶೇಕಡಾ #}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"ರದ್ದುಮಾಡಿ"</string>
     <string name="units_title" msgid="6504086463237869339">"ಯೂನಿಟ್‌ಗಳು"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"ಡೇಟಾ ಯೂನಿಟ್‌ಗಳನ್ನು ಸೆಟ್ ಮಾಡಿ"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"ದೂರ"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"ಎತ್ತರ"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"ತೂಕ"</string>
@@ -716,8 +719,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"ಕೆಳಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"ಮೇಲಕ್ಕೆ ಸರಿಸಿ"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"ಕೆಳಕ್ಕೆ ಸರಿಸಿ"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"ಆದ್ಯತೆಯ ಪಟ್ಟಿಯಲ್ಲಿ <xliff:g id="SELECTED_APP">%s</xliff:g> ಅನ್ನು ಡ್ರ್ಯಾಗ್ ಮಾಡಲು ಮತ್ತು ರೀಆರ್ಡರ್ ಮಾಡುವುದಕ್ಕಾಗಿ ಬಟನ್"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"ಆದ್ಯತೆಯ ಪಟ್ಟಿಯಿಂದ <xliff:g id="SELECTED_APP">%s</xliff:g> ಅನ್ನು ತೆಗೆದುಹಾಕಲು ಇರುವ ಬಟನ್"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"ಮರುಕ್ರಮಗೊಳಿಸಲು ಡಬಲ್ ಟ್ಯಾಪ್ ಮಾಡಿ ಹಾಗೂ ಡ್ರ್ಯಾಗ್ ಮಾಡಿ"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"ಫಿಟ್‌ನೆಸ್, ಯೋಗಕ್ಷೇಮ"</string>
@@ -736,12 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"ನೀವು ಅನುಮತಿಸುವ ಆ್ಯಪ್‌ಗಳು ಮಾತ್ರ ನಿಮ್ಮ ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದು"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"ನಾನು ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸಬಹುದು?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"ನೀವು Health Connect ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳಿಗೆ ಆ್ಯಪ್ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ನಿರ್ವಹಿಸಬಹುದು"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"ಈ ಮಾರ್ಗವನ್ನು ಅನುಮತಿಸಿ"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"ಎಲ್ಲಾ ಮಾರ್ಗಗಳಿಗೆ ಅನುಮತಿಸಿ"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"ಅನುಮತಿಸಬೇಡಿ"</string>
     <string name="back_button" msgid="780519527385993407">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="loading" msgid="2526615755685950317">"ಲೋಡ್ ಆಗುತ್ತಿದೆ…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ಇಂಟಿಗ್ರೇಶನ್ ಪ್ರಗತಿಯಲ್ಲಿದೆ"</string>
@@ -777,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect ಇಂಟಿಗ್ರೇಶನ್ ಅನ್ನು ಪುನರಾರಂಭಿಸಿ"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಇರಿಸಿಕೊಳ್ಳಲು, <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ಒಳಗಾಗಿ ಇದನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ಆ್ಯಪ್ ಅಪ್‌ಡೇಟ್ ಅಗತ್ಯವಿದೆ"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect ನೊಂದಿಗೆ ಕಾರ್ಯ ನಿರ್ವಹಿಸುವುದನ್ನು ಮುಂದುವರಿಸಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಅಪ್‌ ಟು ಡೇಟ್‌‌ ಆಗಿರುವ ಅಗತ್ಯವಿದೆ"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect ನೊಂದಿಗೆ ಕಾರ್ಯ ನಿರ್ವಹಿಸುವುದನ್ನು ಮುಂದುವರಿಸಲು ಕೆಲವು ಆ್ಯಪ್‌ಗಳು ಅಪ್‌ ಟು ಡೇಟ್‌‌ ಆಗಿರುವ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect ಜೊತೆಗೆ ಸಿಂಕ್ ಮಾಡುವುದನ್ನು ಮುಂದುವರಿಸಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡುವ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect ಜೊತೆಗೆ ಸಿಂಕ್ ಮಾಡುವುದನ್ನು ಮುಂದುವರಿಸಲು ಕೆಲವು ಆ್ಯಪ್‌ಗಳನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡುವ ಅಗತ್ಯವಿದೆ"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"ಅಪ್‌ಡೇಟ್‌ಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಿ"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect ಇಂಟಿಗ್ರೇಶನ್"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"ನಿಮ್ಮ Android ಸಿಸ್ಟಂನೊಂದಿಗೆ ಇಂಟಿಗ್ರೇಟ್ ಆಗಲು Health Connect ಸಿದ್ಧವಾಗಿದೆ. ನೀವು ಈಗ <xliff:g id="APP_NAME">%1$s</xliff:g> ಆ್ಯಕ್ಸೆಸ್ ನೀಡಿದರೆ, ಇಂಟಿಗ್ರೇಶನ್ ಪೂರ್ಣವಾಗುವವರೆಗೂ ಕೆಲವು ಫೀಚರ್‌ಗಳು ಕೆಲಸ ಮಾಡದೇ ಇರಬಹುದು."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"ನಿಮ್ಮ Android ಸಿಸ್ಟಂನೊಂದಿಗೆ ಇಂಟಿಗ್ರೇಟ್ ಆಗಲು Health Connect ಸಿದ್ಧವಾಗಿದೆ. ನೀವು ಈಗ ಆ್ಯಪ್‌ಗಳಿಗೆ ಆ್ಯಕ್ಸೆಸ್ ನೀಡಿದರೆ, ಇಂಟಿಗ್ರೇಶನ್ ಪೂರ್ಣವಾಗುವವರೆಗೂ ಕೆಲವು ಫೀಚರ್‌ಗಳು ಕೆಲಸ ಮಾಡದೇ ಇರಬಹುದು."</string>
@@ -799,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ಹೊಸದೇನಿದೆ"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ಈಗ ನೀವು ನೇರವಾಗಿ ನಿಮ್ಮ ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಂದ Health Connect ಗೆ ಆ್ಯಕ್ಸೆಸ್ ಪಡೆಯಬಹುದು. ಸಂಗ್ರಹಣೆ ಸ್ಥಳವನ್ನು ತೆರವುಗೊಳಿಸಲು, ಯಾವುದೇ ಸಮಯದಲ್ಲಿ Health Connect ಆ್ಯಪ್ ಅನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ಅರ್ಥವಾಯಿತು"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"ಮರುಸ್ಥಾಪನೆ ಪ್ರಗತಿಯಲ್ಲಿದೆ"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"ಡೇಟಾ ಮತ್ತು ಅನುಮತಿಗಳನ್ನು Health Connect ಮರುಸ್ಥಾಪಿಸುತ್ತಿದೆ. ಇದು ಪೂರ್ಣಗೊಳ್ಳಲು ಸ್ವಲ್ಪ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect ಮರುಸ್ಥಾಪನೆ ಪ್ರಗತಿಯಲ್ಲಿದೆ"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"ಅರ್ಥವಾಯಿತು"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"ಅಪ್‌ಡೇಟ್‌ನ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"ನಿಮ್ಮ ಡೇಟಾ ಮರುಸ್ಥಾಪನೆಯನ್ನು ಮುಂದುವರಿಸುವ ಮೊದಲು, ನಿಮ್ಮ ಫೋನ್ ಸಿಸ್ಟಮ್ ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಿ."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"ಈಗಲೇ ಅಪ್‌ಡೇಟ್ ಮಾಡಿ"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"ಡೇಟಾ ಟೋಟಲ್‌ಗಳು"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"ಆ್ಯಪ್ ಮೂಲಗಳು"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"ಡೇಟಾ ಟೋಟಲ್‌ಗಳು ಹೇಗೆ ಬದಲಾಗಬಲ್ಲವು ಎಂಬುದನ್ನು ನೋಡಲು ಆ್ಯಪ್ ಮೂಲಗಳನ್ನು ಪಟ್ಟಿಗೆ ಸೇರಿಸಿ. ಆ್ಯಪ್ ಒಂದನ್ನು ಈ ಪಟ್ಟಿಯಿಂದ ತೆಗೆದುಹಾಕುವುದರಿಂದ ಅದು ಟೋಟಲ್‌ಗಳಿಗೆ ಕೊಡುಗೆ ನೀಡುವುದು ನಿಂತುಹೋಗುತ್ತದೆ, ಆದರೆ ಅದು ಈಗಲೂ ರೈಟ್ ಅನುಮತಿಗಳನ್ನು ಹೊಂದಿರುತ್ತದೆ."</string>

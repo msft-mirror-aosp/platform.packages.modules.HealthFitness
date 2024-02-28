@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"trasa ćwiczeń"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Zapisz trasę ćwiczeń"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Odczyt trasy ćwiczeń"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Odczytuj trasy ćwiczeń"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Plany treningowe"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"plany treningowe"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Odczytywanie planów treningowych"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Sporządzanie planów treningowych"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Odległość"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"odległość"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Odczytuj dane o odległości"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Określ, które aplikacje mogą mieć dostęp do danych przechowywanych w Health Connect. Kliknij nazwę aplikacji, aby sprawdzić, jakie dane może zapisywać i odczytywać."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dostęp dozwolony"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Brak dostępu"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Wymaga aktualizacji"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Ustawienia i pomoc"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Usuń dostęp wszystkich aplikacji"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Może odczytywać"</string>
@@ -665,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 procent}few{# procent}many{# procent}other{# procent}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Anuluj"</string>
     <string name="units_title" msgid="6504086463237869339">"Jednostki"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Ustaw jednostki danych"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Odległość"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Wzrost"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Waga"</string>
@@ -716,8 +719,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Przenieś w dół"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Przenieś na początek"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Przenieś na koniec"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Przycisk do przesuwania i zmiany kolejności aplikacji <xliff:g id="SELECTED_APP">%s</xliff:g> na liście priorytetów"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Przycisk usuwania aplikacji <xliff:g id="SELECTED_APP">%s</xliff:g> z listy priorytetów"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Aby zmienić kolejność, kliknij dwukrotnie i przeciągnij"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"fitness, samopoczucie"</string>
@@ -736,12 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Tylko aplikacje, którym zezwalasz na dostęp do swoich tras ćwiczeń"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Jak mogę zarządzać dostępem?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Dostępem aplikacji do tras ćwiczeń możesz zarządzać w ustawieniach Health Connect"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"Zezwalaj na tę trasę"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Zezwalaj na wszystkie trasy"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Nie zezwalaj"</string>
     <string name="back_button" msgid="780519527385993407">"Wstecz"</string>
     <string name="loading" msgid="2526615755685950317">"Ładuję…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Trwa integracja"</string>
@@ -777,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Wznów integrację Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Aby dane zostały zachowane, cały proces nie może trwać dłużej niż <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Wymagana jest aktualizacja aplikacji"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> musi być zaktualizowana, aby mogła nadal współpracować z Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Niektóre aplikacje muszą być zaktualizowane, aby mogły nadal współpracować z Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> musi zostać zaktualizowana, aby kontynuować synchronizację z Health Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Niektóre aplikacje muszą zostać zaktualizowane, aby kontynuować synchronizację z Health Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Sprawdź dostępność aktualizacji"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Więcej informacji"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integracja Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Aplikacja Health Connect jest gotowa do integracji z systemem Android. Jeśli przyznasz teraz dostęp aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g>, niektóre funkcje mogą nie działać do czasu zakończenia integracji."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Aplikacja Health Connect jest gotowa do integracji z systemem Android. Jeśli przyznasz teraz dostęp aplikacjom, niektóre funkcje mogą nie działać do czasu zakończenia integracji."</string>
@@ -799,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nowości"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Możesz teraz korzystać z Health Connect bezpośrednio przez ustawienia. Aplikację Health Connect możesz odinstalować w dowolnym momencie, aby zwolnić dostępne miejsce."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Przywracanie w toku"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect przywraca dane i uprawnienia. Może to zająć trochę czasu."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Trwa przywracanie Health Connect"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Wymagana aktualizacja"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Zaktualizuj system telefonu, aby kontynuować przywracanie danych."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Aktualizuj teraz"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Suma danych"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Źródła aplikacji"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Dodawaj źródła aplikacji do listy, aby widzieć, jak zmieniają się sumy danych. Usunięcie aplikacji z tej listy zatrzyma jej podliczanie w sumie danych, ale wciąż będzie mieć uprawnienia do zapisu."</string>

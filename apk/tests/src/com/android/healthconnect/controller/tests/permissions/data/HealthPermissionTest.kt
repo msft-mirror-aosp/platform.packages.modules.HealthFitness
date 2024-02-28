@@ -21,6 +21,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.tests.permissions.HealthPermissionConstants
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -56,8 +57,17 @@ class HealthPermissionTest {
 
     @Test
     fun fromPermissionString_canParseAllHealthPermissions() {
-        val allPermissions = healthPermissionReader.getHealthPermissions()
+        val allPermissions =
+            healthPermissionReader.getHealthPermissions().filterNot { perm ->
+                healthPermissionReader.isAdditionalPermission(perm)
+            }
         for (permissionString in allPermissions) {
+            if (permissionString == HealthPermissionConstants.READ_HEALTH_DATA_HISTORY) {
+                // TODO(b/325434006): Remove this exception case when we have strings properly
+                //  defined for the Background Read permission
+                continue
+            }
+
             assertThat(fromPermissionString(permissionString).toString())
                 .isEqualTo(permissionString)
         }

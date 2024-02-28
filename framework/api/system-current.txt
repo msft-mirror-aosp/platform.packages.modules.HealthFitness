@@ -113,6 +113,7 @@ package android.health.connect {
     field public static final int NUTRITION = 24; // 0x18
     field public static final int OVULATION_TEST = 21; // 0x15
     field public static final int OXYGEN_SATURATION = 31; // 0x1f
+    field @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final int PLANNED_EXERCISE = 40; // 0x28
     field public static final int POWER = 36; // 0x24
     field public static final int RESPIRATORY_RATE = 32; // 0x20
     field public static final int RESTING_HEART_RATE = 34; // 0x22
