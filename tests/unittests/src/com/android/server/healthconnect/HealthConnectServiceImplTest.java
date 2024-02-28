@@ -49,6 +49,7 @@ import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.migration.MigrationException;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -128,7 +129,9 @@ public class HealthConnectServiceImplTest {
                     "getContributorApplicationsInfo",
                     "queryAllRecordTypesInfo",
                     "queryAccessLogs",
-                    "getActivityDates");
+                    "getActivityDates",
+                    "configureScheduledExport",
+                    "getScheduledExportPeriodInDays");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -172,6 +175,12 @@ public class HealthConnectServiceImplTest {
     private HealthConnectServiceImpl mHealthConnectService;
     private UserHandle mUserHandle;
     private File mMockDataDirectory;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {

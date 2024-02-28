@@ -45,7 +45,7 @@
     <string name="write_data_access_label" msgid="7955988316773000250">"Idatzi: %s"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Kudeatu baimenak"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Denbora: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Ordua: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Jarduerak"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"jarduerak"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Gorputzaren neurketak"</string>
@@ -75,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Aktibo egondako denbora, ariketa mota, itzuliak, errepikapenak, saioak, besakadak eta antzeko informazioa sartzen da datuetan"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Lo-faseak eta -saioak, eta antzeko informazioa sartzen da datuetan"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Ikusi sarrera guztiak"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"aldatu"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Ezabatu datuak"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"atzitu osasunari buruzko datuak"</string>
@@ -95,7 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"ariketari dagokion ibilbidea"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Idatzi ariketari dagokion ibilbidea"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Irakurri ariketaren ibilbidea"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Irakurri ariketei dagozkien ibilbideak"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Irakurri ariketei dagozkien ibilbideak"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Entrenamendu-planak"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"entrenamendu-planak"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Irakurri entrenamendu-planak"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Idatzi entrenamendu-planak"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distantzia"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distantzia"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Irakurri distantziari buruzko datuak"</string>
@@ -240,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"atsedeneko bihotz-maiztasuna"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Irakurri atsedeneko bihotz-maiztasunari buruzko datuak"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Idatzi atsedeneko bihotz-maiztasunari buruzko datuak"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Azalaren tenperatura"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"azalaren tenperatura"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Azalaren tenperatura irakurri"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Azalaren tenperatura idatzi"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Eman irakurtzeko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Eman idazteko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Utzi"</string>
@@ -263,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolatu zein aplikaziok atzi ditzaketen Health Connect-eko datuak. Sakatu aplikazio bat zein datu irakurri edo idatz ditzakeen berrikusteko."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Erabiltzeko baimena dutenak"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Erabiltzeko baimenik ez dutenak"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Eguneratu egin behar da"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Ezarpenak eta laguntza"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Kendu sarbidea aplikazio guztiei"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Hauek irakurtzeko baimena du:"</string>
@@ -347,8 +357,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Health Connect-eko datuak ezabatzen"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Health Connect-eko datuak ezabatzen"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Datuak ezabatzea"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Ezabatu idatzitako datuak"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Ezabatu sarrera"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Ezabatu datu hauek: <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Ezabatu sarrera hau: <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Guztira: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 watt}other{# watt}}"</string>
@@ -659,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{Ehuneko 1}other{Ehuneko #}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Utzi"</string>
     <string name="units_title" msgid="6504086463237869339">"Unitateak"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Ezarri datu-unitateak"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Distantzia"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Altuera"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Pisua"</string>
@@ -710,6 +719,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Jaitsi"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Eraman goraino"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Eraman beheraino"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Lehentasunen zerrendan <xliff:g id="SELECTED_APP">%s</xliff:g> arrastatzeko eta haren ordena aldatzeko botoia"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"<xliff:g id="SELECTED_APP">%s</xliff:g> lehentasunezkoen zerrendatik kentzeko botoia"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Ordena aldatzeko, sakatu birritan eta arrastatu"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"fitnessa, ongizatea"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"baimenak"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, osasunari buruzko datuak, osasunarekin erlazionatutako kategoriak, datuetarako sarbidea, jarduerak, gorputzaren neurketak, zikloen jarraipena, elikadura, loa, bizi-konstanteak"</string>
@@ -726,6 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Ariketei dagozkien ibilbideak erabiltzeko baimena duten aplikazioek soilik"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Nola kudea dezaket datuok erabiltzeko baimena?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Aplikazioek ariketei dagozkien ibilbideak erabiltzeko duten baimena kudeatzeko, joan Health Connect-en ezarpenetara"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Eman ibilbidea erabiltzeko baimena"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Eman ibilbide guztiak erabiltzeko baimena"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ez eman baimenik"</string>
     <string name="back_button" msgid="780519527385993407">"Atzera"</string>
     <string name="loading" msgid="2526615755685950317">"Kargatzen…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrazio-prozesua abian da"</string>
@@ -761,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Berrekin Health Connect integratzeko prozesuari"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Datuak gorde nahi badituzu, amaitu prozesua <xliff:g id="TIME_NEEDED">%1$s</xliff:g> igaro baino lehen"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Aplikazioa eguneratu egin behar da"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak eguneratuta egon behar du Health Connect-ekin funtzionatzen jarraitzeko"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Aplikazio batzuek eguneratuta egon behar dute Health Connect-ekin funtzionatzen jarraitzeko"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> eguneratu egin behar da datuak Health Connect-ekin sinkronizatzen jarrai dezan"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Aplikazio batzuk eguneratu egin behar dira datuak Health Connect-ekin sinkronizatzen jarrai dezaten"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Bilatu eguneratzeak"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Lortu informazio gehiago"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-en integrazioa"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect Android sisteman integratzeko prest dago. <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari hura erabiltzeko baimena emanez gero, baliteke eginbide batzuek ez funtzionatzea integratzen amaitu arte."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect Android sisteman integratzeko prest dago. Aplikazioei baimena emanez gero, baliteke eginbide batzuek ez funtzionatzea integratzen amaitu arte."</string>
@@ -783,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Berritasunak"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Orain, ezarpenetatik zuzenean erabil dezakezu Health Connect. Edonoiz desinstala dezakezu Health Connect aplikazioa biltegiratzeko tokia egiteko."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Ados"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Leheneratzen"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect datuak eta baimenak leheneratzen ari da. Baliteke denbora pixka bat behar izatea."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect leheneratzen"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Ados"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Eguneratu egin behar da"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Datuak leheneratzen jarraitu aurretik, eguneratu telefonoaren sistema."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Eguneratu"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Guztizko datuak"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Aplikazio-iturburuak"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Gehitu aplikazio-iturburuak zerrendan, guztizko datuak nola alda daitezkeen ikusteko. Zerrenda horretatik aplikazio bat kenduz gero, aplikazioa ez da izango guztizko datuen parte, baina idazteko baimenak izaten jarraituko du."</string>

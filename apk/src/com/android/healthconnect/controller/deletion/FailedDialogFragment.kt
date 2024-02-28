@@ -31,8 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class FailedDialogFragment : Hilt_FailedDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialogBuilder(this)
-            .setLogName(FailedDialogElement.DELETION_DIALOG_ERROR_CONTAINER)
+        return AlertDialogBuilder(this, FailedDialogElement.DELETION_DIALOG_ERROR_CONTAINER)
             .setIcon(R.attr.failureIcon)
             .setTitle(R.string.delete_dialog_failure_title)
             .setMessage(R.string.delete_dialog_failure_message)

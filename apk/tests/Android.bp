@@ -69,6 +69,7 @@ android_test {
         "androidx.navigation_navigation-fragment-ktx",
         "androidx.navigation_navigation-runtime-ktx",
         "androidx.navigation_navigation-ui-ktx",
+        "androidx.navigation_navigation-testing",
         "SettingsLibCollapsingToolbarBaseActivity",
         "SettingsLibHelpUtils",
         "SettingsLibTopIntroPreference",
@@ -82,6 +83,7 @@ android_test {
         "androidx.test.ext.junit",
         "androidx.test.ext.truth",
         "androidx.test.rules",
+        "compatibility-device-util-axt",
         "mockito-kotlin2"
     ],
     resource_dirs: ["main_res"],
@@ -101,5 +103,6 @@ android_test {
         ":HealthConnectUITestApp",
         ":HealthConnectUITestApp2",
         ":UnsupportedTestApp",
+        ":OldPermissionsTestApp",
     ],
 }

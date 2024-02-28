@@ -75,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"මෙම දත්තවල ක්‍රියාකාරී වේලාව, ව්‍යායාම වර්ගය, වට, පුනරාවර්තන, සැසි, හෝ පිහිනුම් පහරවල් වැනි තොරතුරු ඇතුළත් වේ"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"මෙම දත්තවලට නින්දේ අදියර සහ නින්ද සැසි වැනි තොරතුරු ඇතුළත් වේ"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"සියලු ඇතුළත් කිරීම් බලන්න"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"වෙනස් කරන්න"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"මෙම දත්ත මකන්න"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"ඔබේ සෞඛ්‍ය දත්ත වෙත ප්‍රවේශය"</string>
@@ -95,7 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"ව්‍යායාම මාර්ගය"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"ව්‍යායාම මාර්ගය ලියන්න"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"ව්‍යායාම මාර්ගය කියවන්න"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"සියලු ව්‍යායාම මාර්ග කියවන්න"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"ව්‍යායාම ගමන් මඟ කියවන්න"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"පුහුණු සැලසුම්"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"පුහුණු සැලසුම්"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"පුහුණු සැලසුම් කියවන්න"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"පුහුණු සැලසුම් ලියන්න"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"දුර"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"දුර"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"දුර කියවන්න"</string>
@@ -240,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"විවේකී හෘද ස්පන්දන වේගය"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"විවේකී හෘද ස්පන්දන වේගය කියවන්න"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"විවේකී හෘද ස්පන්දන වේගය ලියන්න"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"සමේ උෂ්ණත්වය"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"සමේ උෂ්ණත්වය"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"සමේ උෂ්ණත්වය කියවන්න"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"සමේ උෂ්ණත්වය ලියන්න"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” හට කියවීමට ඉඩ දෙන්න"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” හට ලිවීමට ඉඩ දෙන්න"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"අවලංගු කරන්න"</string>
@@ -263,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect තුළ ගබඩා කර ඇති දත්ත වෙත ප්‍රවේශ විය හැකි යෙදුම් පාලන කරන්න. යෙදුමට කියවීමට හෝ ලිවීමට හැකි දත්ත සමාලෝචන කිරීමට එය තට්ටු කරන්න."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ප්‍රවේශයට ඉඩ දුන්නා"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"ප්‍රවේශයට ඉඩ දුන්නා"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"යාවත්කාලීන කිරීම අවශ්‍යයි"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"සැකසීම් සහ උදවු"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"සියලු යෙදුම් සඳහා ප්‍රවේශය ඉවත් කරන්න"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"කියවීමට ඉඩ දුන්නා"</string>
@@ -347,8 +357,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Health Connect දත්ත මැකීම"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Health Connect දත්ත මැකීම"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"දත්ත මකා දැමීම"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"දත්ත ඇතුළත් කිරීම මකන්න"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"ඇතුළත් කිරීම මකන්න"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"දත්ත ඇතුළත් කිරීම <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> මකන්න"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"ඇතුළත් කිරීම <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> මකන්න"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"එකතුව: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}one{# W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{වොට් 1 ක්}one{වොට් # ක්}other{වොට් # ක්}}"</string>
@@ -659,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{සියයට 1}one{සියයට #}other{සියයට #}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"අවලංගු කරන්න"</string>
     <string name="units_title" msgid="6504086463237869339">"ඒකක"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"දත්ත ඒකක සකසන්න"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"දුර"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"උස"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"බර"</string>
@@ -710,6 +719,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"පහළට ගෙන යන්න"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"ඉහළට ගෙන යන්න"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"පතුළට ගෙන යන්න"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"ප්‍රමුඛතා ලැයිස්තුවේ <xliff:g id="SELECTED_APP">%s</xliff:g> ඇද නැවත ඇණවුම් කිරීමට බොත්තම"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"ප්‍රමුඛතා ලැයිස්තුවෙන් <xliff:g id="SELECTED_APP">%s</xliff:g> ඉවත් කිරීමට බොත්තම"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"යළි අනුපිළිවෙලට සැකසීමට දෙවරක් තට්ටු කර අදින්න"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"යෝග්‍යතාව, සුවතාවය"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"අවසර"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, සෞඛ්‍ය දත්ත, සෞඛ්‍ය ප්‍රවර්ග, දත්ත ප්‍රවේශය, ක්‍රියාකාරකම්, ශරීර මිනුම්, ඔසප් චක්‍ර ලුහුබැඳීම, පෝෂණය, නින්ද, vitals"</string>
@@ -726,6 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"ඔබේ ව්‍යායාම මාර්ග වෙත ප්‍රවේශ වීමට ඔබ ඉඩ දෙන යෙදුම් පමණි"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"මට ප්‍රවේශය කළමනා කළ හැක්කේ කෙසේද?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Health Connect සැකසීම් තුළ ඔබට ව්‍යායාම් මාර්ග වෙත ප්‍රවේශය කළමනා කළ හැක"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"මෙම ගමන් මඟට ඉඩ දෙන්න"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"සියලුම ගමන් මාර්ගවලට ඉඩ දෙන්න"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"ඉඩ නොදෙන්න"</string>
     <string name="back_button" msgid="780519527385993407">"ආපසු"</string>
     <string name="loading" msgid="2526615755685950317">"පූරණය කරමින්…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ඒකාබද්ධ කිරීම සිදු වෙමින් පවතී"</string>
@@ -761,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect ඒකාබද්ධ කිරීම නැවත ආරම්භ කරන්න"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"ඔබේ දත්ත තබා ගැනීම සඳහා, මෙය <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ඇතුළත සම්පූර්ණ කරන්න"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"යෙදුම් යාවත්කාලීනය අවශ්‍යයි"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect සමග දිගටම වැඩ කිරීමට <xliff:g id="APP_NAME">%1$s</xliff:g> යාවත්කාලීන විය යුතුය"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect සමග දිගටම වැඩ කිරීමට සමහර යෙදුම් යාවත්කාලීන විය යුතුය"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect සමඟ සමමුහුර්ත කිරීම දිගටම කරගෙන යාමට යාවත්කාලීන කිරීමට අවශ්‍ය වේ"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect සමග සමමුහුර්ත කිරීම දිගටම කරගෙන යාමට සමහර යෙදුම් යාවත්කාලීන කිරීමට අවශ්‍ය වේ"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"යාවත්කාලීන තිබේද පරීක්‍ෂා කරන්න"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"තව දැන ගන්න"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect ඒකාබද්ධ කිරීම"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect ඔබේ Android පද්ධතිය සමග ඒකාබද්ධ වීමට සූදානම් වෙයි. ඔබ දැන් <xliff:g id="APP_NAME">%1$s</xliff:g>ට ප්‍රවේශය ලබා දෙන්නේ නම්, ඒකාබද්ධ කිරීම සම්පූර්ණ වන තෙක් සමහර විශේෂාංග ක්‍රියා නොකරයි."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect ඔබේ Android පද්ධතිය සමග ඒකාබද්ධ වීමට සූදානම් වෙයි. ඔබ දැන් යෙදුම්වලට ප්‍රවේශය ලබා දෙන්නේ නම්, ඒකාබද්ධ කිරීම සම්පූර්ණ වන තෙක් සමහර විශේෂාංග ක්‍රියා නොකරයි."</string>
@@ -783,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"අලුත් මොනවා ද"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ඔබට දැන් ඔබේ සැකසීම්වලින් සෘජුවම Health Connect වෙත ප්‍රවේශ විය හැක. ගබඩා ඉඩ නිදහස් කර ගැනීමට ඕනෑම වේලාවක Health Connect යෙදුම අස්ථාපන කරන්න."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"තේරුණා"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"ප්‍රතිසාධනය කරමින් පවතී"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect දත්ත සහ අවසර ප්‍රතිසාධනය කරයි. මෙය සම්පූර්ණ කිරීමට යම් කාලයක් ගත විය හැක."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect ප්‍රතිසාධනය සිදු වෙමින් පවතී"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"තේරුණා"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"යාවත්කාලීන කිරීමක් අවශ්‍යයි"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"ඔබේ දත්ත ප්‍රතිසාධනය කරගෙන යාමට පෙර, ඔබේ දුරකථන පද්ධතිය යාවත්කාලීන කරන්න."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"දැන් යාවත්කාලීන කරන්න"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"දත්ත එකතු"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"යෙදුම් මූලාශ්‍ර"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"දත්ත එකතුව වෙනස් විය හැකි ආකාරය බැලීමට ලැයිස්තුවට යෙදුම් මූලාශ්‍ර එක් කරන්න. මෙම ලැයිස්තුවෙන් යෙදුමක් ඉවත් කිරීමෙන් එය එකතුවට දායක වීම නවත්වනු ඇති නමුත්, එයට තවමත් ලිවීමේ අවසර ඇත."</string>
