@@ -57,7 +57,13 @@
       "name": "CtsHealthConnectHostSideDeviceTestCases"
     },
     {
+      "name": "CtsExerciseRouteTestCases"
+    },
+    {
       "name": "CtsHealthFitnessShowMigrationInfoIntentAbsentTests"
+    },
+    {
+      "name": "CtsHealthFitnessDeviceTestCasesHistoricAccessLimitWithPermission"
     }
   ]
 }

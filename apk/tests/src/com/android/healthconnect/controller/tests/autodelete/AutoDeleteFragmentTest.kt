@@ -30,14 +30,22 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteFragment
 import com.android.healthconnect.controller.autodelete.AutoDeleteRange
 import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.utils.logging.AutoDeleteElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers.allOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class AutoDeleteFragmentTest {
@@ -45,10 +53,16 @@ class AutoDeleteFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val viewModel: AutoDeleteViewModel = Mockito.mock(AutoDeleteViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
         hiltRule.inject()
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -76,6 +90,12 @@ class AutoDeleteFragmentTest {
                 withText(
                     "When you change these settings, Health\u00A0Connect deletes existing data to reflect your new preferences"))
             .check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.AUTO_DELETE_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(AutoDeleteElement.AUTO_DELETE_NEVER_BUTTON)
+        verify(healthConnectLogger).logImpression(AutoDeleteElement.AUTO_DELETE_3_MONTHS_BUTTON)
+        verify(healthConnectLogger).logImpression(AutoDeleteElement.AUTO_DELETE_18_MONTHS_BUTTON)
     }
 
     @Test
@@ -124,7 +144,15 @@ class AutoDeleteFragmentTest {
         onView(withText("Set auto-delete")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
 
+        verify(healthConnectLogger).logImpression(AutoDeleteElement.AUTO_DELETE_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AutoDeleteElement.AUTO_DELETE_DIALOG_CANCEL_BUTTON)
+
         onView(withText("Set auto-delete")).inRoot(isDialog()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(AutoDeleteElement.AUTO_DELETE_DIALOG_CONFIRM_BUTTON)
 
         onView(withText("Existing data will be deleted"))
             .inRoot(isDialog())
@@ -134,7 +162,15 @@ class AutoDeleteFragmentTest {
                     "Health\u00A0Connect will delete all data older than 3 months. It may take a day for these changes to appear in your connected apps."))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
+
+        verify(healthConnectLogger)
+            .logImpression(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_DONE_BUTTON)
+
         onView(withText("Done")).inRoot(isDialog()).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_DONE_BUTTON)
 
         onView(withId(R.id.radio_button_3_months)).check(matches(isChecked()))
     }
@@ -192,6 +228,7 @@ class AutoDeleteFragmentTest {
         launchFragment<AutoDeleteFragment>(Bundle())
 
         // Need to provide id as well, otherwise both TextView and TextLinkView are found.
-        onView(allOf(withText("Learn more about auto-delete"), withId(R.id.header_link))).perform(click())
+        onView(allOf(withText("Learn more about auto-delete"), withId(R.id.header_link)))
+            .perform(click())
     }
 }

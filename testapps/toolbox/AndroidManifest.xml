@@ -15,7 +15,8 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.android.healthconnect.testapps.toolbox">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.android.healthconnect.testapps.toolbox">
 
   <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
   <uses-permission android:name="android.permission.health.READ_BASAL_BODY_TEMPERATURE" />
@@ -31,7 +32,7 @@
   <uses-permission android:name="android.permission.health.READ_DISTANCE" />
   <uses-permission android:name="android.permission.health.READ_ELEVATION_GAINED" />
   <uses-permission android:name="android.permission.health.READ_EXERCISE" />
-  <uses-permission android:name="android.permission.health.READ_EXERCISE_ROUTES_ALL" />
+  <uses-permission android:name="android.permission.health.READ_EXERCISE_ROUTES" />
   <uses-permission android:name="android.permission.health.READ_FLOORS_CLIMBED" />
   <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
   <uses-permission android:name="android.permission.health.READ_HEART_RATE_VARIABILITY" />
@@ -117,6 +118,11 @@
       </intent-filter>
     </activity-alias>
 
+    <!-- Remove "androidx-startup" provider to avoid conflict between different Toolbox app. -->
+    <provider
+        android:name="androidx.startup.InitializationProvider"
+        android:authorities="${applicationId}.androidx-startup"
+        tools:node="remove" />
   </application>
 
 </manifest>

@@ -23,6 +23,7 @@ import static android.health.connect.Constants.READ;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -92,6 +93,7 @@ import android.health.connect.changelog.ChangeLogsResponse.DeletedLog;
 import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
@@ -130,6 +132,7 @@ import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.storage.AutoDeleteService;
+import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -493,7 +496,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             .getApplicableRecordTypeIds());
                         }
 
-                        long startDateAccess;
+                        long startDateAccess = request.getStartTime();
                         // TODO(b/309776578): Consider making background reads possible for
                         // aggregations when only using own data
                         if (!holdsDataManagementPermission) {
@@ -515,11 +518,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             boolean enforceSelfRead =
                                     mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
                                             recordTypesToTest, attributionSource);
-                            startDateAccess =
-                                    mPermissionHelper
-                                            .getHealthDataStartDateAccessOrThrow(
-                                                    attributionSource.getPackageName(), userHandle)
-                                            .toEpochMilli();
+                            if (!hasReadHistoryPermission(uid, pid)) {
+                                startDateAccess =
+                                        mPermissionHelper
+                                                .getHealthDataStartDateAccessOrThrow(
+                                                        attributionSource.getPackageName(),
+                                                        userHandle)
+                                                .toEpochMilli();
+                            }
                             maybeEnforceOnlyCallingPackageDataRequested(
                                     request.getPackageFilters(),
                                     attributionSource.getPackageName(),
@@ -530,8 +536,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                             AggregationTypeIdMapper.getInstance()
                                                                     ::getAggregationTypeFor)
                                                     .collect(Collectors.toList()));
-                        } else {
-                            startDateAccess = request.getStartTime();
                         }
                         callback.onResult(
                                 new AggregateTransactionRequest(
@@ -607,10 +611,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         boolean enforceSelfRead = false;
 
-                        if (!holdsDataManagementPermission) {
-                            final boolean isInForeground =
-                                    mAppOpsManagerLocal.isUidInForeground(uid);
+                        final boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
 
+                        if (!holdsDataManagementPermission) {
                             logger.setCallerForegroundState(isInForeground);
 
                             tryAcquireApiCallQuota(
@@ -651,17 +654,16 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 + enforceSelfRead);
                             }
                         }
-                        final Map<String, Boolean> extraReadPermsToGrantState =
-                                Collections.unmodifiableMap(
-                                        mDataPermissionEnforcer
-                                                .collectExtraReadPermissionToStateMapping(
-                                                        Set.of(request.getRecordType()),
-                                                        attributionSource));
+                        final Set<String> grantedExtraReadPermissions =
+                                mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
+                                        Set.of(request.getRecordType()), attributionSource);
 
                         Trace.traceBegin(TRACE_TAG_READ, TAG_READ);
                         try {
                             long startDateAccessEpochMilli = request.getStartTime();
-                            if (!holdsDataManagementPermission) {
+
+                            if (!holdsDataManagementPermission
+                                    && !hasReadHistoryPermission(uid, pid)) {
                                 Instant startDateAccessInstant =
                                         mPermissionHelper.getHealthDataStartDateAccessOrThrow(
                                                 callingPackageName, userHandle);
@@ -683,7 +685,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             request,
                                             startDateAccessEpochMilli,
                                             enforceSelfRead,
-                                            extraReadPermsToGrantState);
+                                            grantedExtraReadPermissions,
+                                            isInForeground);
                             // throw an exception if read requested is not for a single record type
                             // i.e. size of read table request is not equal to 1.
                             if (readTransactionRequest.getReadRequests().size() != 1) {
@@ -1018,10 +1021,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 changeLogsTokenRequest.getRecordTypes(), attributionSource);
-                        Instant startDateAccessInstant =
-                                mPermissionHelper.getHealthDataStartDateAccessOrThrow(
-                                        callerPackageName, userHandle);
-                        long startDateAccessEpochMilli = startDateAccessInstant.toEpochMilli();
+                        long startDateAccessEpochMilli = DEFAULT_LONG;
+                        if (!hasReadHistoryPermission(uid, pid)) {
+                            startDateAccessEpochMilli =
+                                    mPermissionHelper
+                                            .getHealthDataStartDateAccessOrThrow(
+                                                    callerPackageName, userHandle)
+                                            .toEpochMilli();
+                        }
                         final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
                                 ChangeLogsHelper.getInstance()
                                         .getChangeLogs(changeLogsTokenRequest, request);
@@ -1030,8 +1037,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 ChangeLogsHelper.getRecordTypeToInsertedUuids(
                                         changeLogsResponse.getChangeLogsMap());
 
-                        Map<String, Boolean> extraReadPermsToGrantState =
-                                mDataPermissionEnforcer.collectExtraReadPermissionToStateMapping(
+                        Set<String> grantedExtraReadPermissions =
+                                mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
                                         recordTypeToInsertedUuids.keySet(), attributionSource);
 
                         List<RecordInternal<?>> recordInternals =
@@ -1040,7 +1047,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                 callerPackageName,
                                                 recordTypeToInsertedUuids,
                                                 startDateAccessEpochMilli,
-                                                extraReadPermsToGrantState));
+                                                grantedExtraReadPermissions,
+                                                isInForeground));
 
                         List<DeletedLog> deletedLogs =
                                 ChangeLogsHelper.getDeletedLogs(
@@ -2032,6 +2040,54 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
+    @Override
+    public void configureScheduledExport(
+            @Nullable ScheduledExportSettings settings, @NonNull UserHandle user) {
+        checkParamsNonNull(user);
+
+        enforceIsForegroundUser(getCallingUserHandle());
+        throwExceptionIfDataSyncInProgress();
+
+        try {
+            mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
+            ScheduledExportSettingsStorage.configure(settings);
+        } catch (SQLiteException sqLiteException) {
+            Slog.e(TAG, "SQLiteException: ", sqLiteException);
+            throw new HealthConnectException(
+                    HealthConnectException.ERROR_IO, sqLiteException.toString());
+        } catch (SecurityException securityException) {
+            Slog.e(TAG, "SecurityException: ", securityException);
+            throw new HealthConnectException(
+                    HealthConnectException.ERROR_SECURITY, securityException.toString());
+        } catch (HealthConnectException healthConnectException) {
+            Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+            throw new HealthConnectException(
+                    healthConnectException.getErrorCode(), healthConnectException.toString());
+        } catch (Exception exception) {
+            Slog.e(TAG, "Exception: ", exception);
+            throw new HealthConnectException(ERROR_INTERNAL, exception.toString());
+        }
+    }
+
+    @Override
+    public int getScheduledExportPeriodInDays(@NonNull UserHandle user) {
+        checkParamsNonNull(user);
+
+        enforceIsForegroundUser(getCallingUserHandle());
+        throwExceptionIfDataSyncInProgress();
+        try {
+            mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
+            return ScheduledExportSettingsStorage.getScheduledExportPeriodInDays();
+        } catch (Exception e) {
+            if (e instanceof SecurityException) {
+                throw e;
+            }
+            Slog.e(TAG, "Unable to get period between scheduled exports for " + user);
+        }
+
+        throw new RuntimeException();
+    }
+
     // Cancel BR timeouts - this might be needed when a user is going into background.
     void cancelBackupRestoreTimeouts() {
         mBackupRestore.cancelAllJobs();
@@ -2224,6 +2280,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private boolean hasDataManagementPermission(int uid, int pid) {
         return isPermissionGranted(MANAGE_HEALTH_DATA_PERMISSION, uid, pid);
+    }
+
+    private boolean hasReadHistoryPermission(int uid, int pid) {
+        return mDeviceConfigManager.isHistoryReadFeatureEnabled()
+                && isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid);
     }
 
     /**

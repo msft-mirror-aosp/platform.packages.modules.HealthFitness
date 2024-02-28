@@ -75,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Ti podatki vključujejo informacije, kot so čas dejavnosti, vrsta vadbe, število krogov, ponovitev, sej ali plavalnih zamahov."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Ti podatki vključujejo informacije, kot so faze in seje spanja."</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Ogled vseh vnosov"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"spremeni"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Izbriši te podatke"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"dostop do podatkov o zdravju"</string>
@@ -95,7 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"vadbena pot"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Zapisovanje vadbene poti"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Branje vadbene poti"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Branje vseh vadbenih poti"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Branje vadbenih poti"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Vadbeni programi"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"vadbeni programi"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Branje vadbenih programov"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Zapisovanje vadbenih programov"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Razdalja"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"razdalja"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Branje razdalje"</string>
@@ -240,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"srčni utrip v mirovanju"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Branje srčnega utripa v mirovanju"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Zapisovanje srčnega utripa v mirovanju"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Temperatura kože"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura kože"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Branje temperature kože"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisovanje temperature kože"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Dovoljevanje branja aplikaciji »<xliff:g id="APP_NAME">%1$s</xliff:g>«"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Dovoljevanje pisanja aplikaciji »<xliff:g id="APP_NAME">%1$s</xliff:g>«"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Prekliči"</string>
@@ -263,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Upravljajte, katere aplikacije lahko dostopajo do podatkov, shranjenih v storitvi Health Connect. Dotaknite se aplikacije, da pregledate, katere podatke lahko bere in zapisuje."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dostop je dovoljen"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Dostop ni dovoljen"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Potrebna je posodobitev"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Nastavitve in pomoč"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Odstrani dostop za vse aplikacije"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Dovoljeno branje"</string>
@@ -347,8 +357,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Brisanje podatkov storitve Health Connect"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Brisanje podatkov storitve Health Connect"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Brisanje podatkov"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Izbris vnosa podatkov"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Izbriši vnos"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Izbris vnosa podatkov »<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>«"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Izbriši vnos »<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>«"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Skupaj: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}one{# W}two{# W}few{# W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 vat}one{# vat}two{# vata}few{# vati}other{# vatov}}"</string>
@@ -659,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 odstotek}one{# odstotek}two{# odstotka}few{# odstotki}other{# odstotkov}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Prekliči"</string>
     <string name="units_title" msgid="6504086463237869339">"Enote"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Nastavitev enot za podatke"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Razdalja"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Višina"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Teža"</string>
@@ -710,6 +719,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Premik navzdol"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Premik na vrh"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Premik na dno"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Gumb za prerazporeditev aplikacije <xliff:g id="SELECTED_APP">%s</xliff:g> na prednostnem seznamu z vlečenjem"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"Gumb za odstranitev aplikacije <xliff:g id="SELECTED_APP">%s</xliff:g> s prednostnega seznama"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Dvakrat se dotaknite in povlecite za prerazporeditev"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"telesna pripravljenost, dobro počutje"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"dovoljenja"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, podatki o zdravju, kategorije zdravja, dostop do podatkov, dejavnost, telesne meritve, spremljanje cikla, prehrana, spanje, spanec, osnovni podatki"</string>
@@ -726,6 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Samo aplikacije, ki jim dovolite dostop do vadbenih poti."</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Kako lahko upravljam dostop?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Dostop aplikacij do vadbenih poti lahko upravljate v nastavitvah za Health Connect."</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Dovoli to pot"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Dovoli vse poti"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne dovoli"</string>
     <string name="back_button" msgid="780519527385993407">"Nazaj"</string>
     <string name="loading" msgid="2526615755685950317">"Nalaganje …"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integracija je v teku"</string>
@@ -761,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Nadaljujte integracijo aplikacije Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Če želite obdržati podatke, to dokončajte v tem času: <xliff:g id="TIME_NEEDED">%1$s</xliff:g>."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Posodobiti morate aplikacijo"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g> je treba posodobiti, da bo še naprej delovala z aplikacijo Health Connect."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Nekatere aplikacije je treba posodobiti, da bodo še naprej delovale z aplikacijo Health Connect."</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g> je treba posodobiti, da se bo še naprej sinhronizirala z aplikacijo Health Connect."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Nekatere aplikacije je treba posodobiti, da se bodo še naprej sinhronizirale z aplikacijo Health Connect."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Preverite, ali so na voljo posodobitve"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Več o tem"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integracija aplikacije Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Aplikacija Health Connect je pripravljena za integracijo s sistemom Android. Če aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> odobrite dostop zdaj, nekatere funkcije morda ne bodo delovale, dokler integracija ne bo dokončana."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Aplikacija Health Connect je pripravljena za integracijo s sistemom Android. Če aplikacijam odobrite dostop zdaj, nekatere funkcije morda ne bodo delovale, dokler integracija ne bo dokončana."</string>
@@ -783,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novosti"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Do aplikacije Health Connect lahko zdaj dostopate neposredno v nastavitvah. Aplikacijo Health Connect lahko kadar koli odmestite, da sprostite prostor za shranjevanje."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Razumem"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Poteka obnavljanje"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect obnavlja podatke in dovoljenja. Traja lahko nekaj časa, da bo postopek dokončan."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Poteka obnavljanje aplikacije Health Connect"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Razumem"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Potrebna je posodobitev"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Pred nadaljevanjem obnavljanja podatkov posodobite sistem telefona."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Posodobi zdaj"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Skupne količine podatkov"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Aplikacijski viri"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Dodajte aplikacijske vire na seznam, da boste videli, kako se skupne količine podatkov lahko spreminjajo. Če aplikacijo odstranite s seznama, ne bo več prispevala k skupnim količinam podatkov, vendar bo še naprej imela dovoljenja za zapisovanje."</string>
