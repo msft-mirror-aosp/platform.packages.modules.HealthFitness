@@ -158,11 +158,13 @@ public class HealthPermissionCategory {
 
     /**
      * Permission category for {SkinTemperature}
-     *
-     * @hide
      */
     @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
     public static final int SKIN_TEMPERATURE = 39;
+
+    /** Permission category for {PlannedExerciseSession} */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final int PLANNED_EXERCISE = 40;
 
     private HealthPermissionCategory() {}
 
@@ -204,7 +206,8 @@ public class HealthPermissionCategory {
         OXYGEN_SATURATION,
         RESPIRATORY_RATE,
         RESTING_HEART_RATE,
-        SKIN_TEMPERATURE
+        SKIN_TEMPERATURE,
+        PLANNED_EXERCISE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Type {}

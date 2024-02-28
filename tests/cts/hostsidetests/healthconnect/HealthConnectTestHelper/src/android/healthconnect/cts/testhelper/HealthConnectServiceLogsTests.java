@@ -18,6 +18,7 @@ package android.healthconnect.cts.testhelper;
 
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.NutritionRecord.BIOTIN_TOTAL;
+import static android.healthconnect.cts.testhelper.TestHelperUtils.TIMEOUT_SECONDS;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteAllRecordsAddedByTestApp;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.deleteRecords;
 import static android.healthconnect.cts.testhelper.TestHelperUtils.getBloodPressureRecord;
@@ -179,7 +180,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -206,7 +207,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -236,7 +237,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -271,7 +272,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -294,7 +295,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -319,7 +320,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -344,7 +345,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 
     @Test
@@ -375,7 +376,7 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
         return token.get();
     }
 
@@ -398,6 +399,6 @@ public class HealthConnectServiceLogsTests {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
     }
 }

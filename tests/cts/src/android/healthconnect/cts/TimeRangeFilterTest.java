@@ -18,6 +18,8 @@ package android.healthconnect.cts;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.platform.test.annotations.AppModeFull;
@@ -104,5 +106,53 @@ public class TimeRangeFilterTest {
                         timeRangeFilter.getEndTime().toInstant(ZoneOffset.MAX).toEpochMilli()
                                 - Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli())
                 .isLessThan(100);
+    }
+
+    @Test
+    public void instantTimeRange_startTimeNotLaterThanEndTime_throws() {
+        Instant time = Instant.ofEpochMilli(123456789);
+        TimeInstantRangeFilter.Builder builder =
+                new TimeInstantRangeFilter.Builder().setStartTime(time).setEndTime(time);
+        Throwable thrown = assertThrows(IllegalArgumentException.class, builder::build);
+        assertThat(thrown).hasMessageThat().contains("end time needs to be after start time");
+
+        builder.setEndTime(time.minusMillis(1));
+        thrown = assertThrows(IllegalArgumentException.class, builder::build);
+        assertThat(thrown).hasMessageThat().contains("end time needs to be after start time");
+    }
+
+    @Test
+    public void localTimeRange_startTimeNotLaterThanEndTime_throws() {
+        LocalDateTime time = LocalDateTime.of(2024, 2, 1, 18, 0, 0);
+        LocalTimeRangeFilter.Builder builder =
+                new LocalTimeRangeFilter.Builder().setStartTime(time).setEndTime(time);
+        Throwable thrown = assertThrows(IllegalArgumentException.class, builder::build);
+        assertThat(thrown).hasMessageThat().contains("end time needs to be after start time");
+
+        builder.setEndTime(time.minusSeconds(1));
+        thrown = assertThrows(IllegalArgumentException.class, builder::build);
+        assertThat(thrown).hasMessageThat().contains("end time needs to be after start time");
+    }
+
+    @Test
+    public void instantTimeRange_bothEndsOpen_throws() {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new TimeInstantRangeFilter.Builder().build());
+        assertThat(thrown)
+                .hasMessageThat()
+                .isEqualTo("Both start time and end time cannot be null.");
+    }
+
+    @Test
+    public void localTimeRange_bothEndsOpen_throws() {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new LocalTimeRangeFilter.Builder().build());
+        assertThat(thrown)
+                .hasMessageThat()
+                .isEqualTo("Both start time and end time cannot be null.");
     }
 }

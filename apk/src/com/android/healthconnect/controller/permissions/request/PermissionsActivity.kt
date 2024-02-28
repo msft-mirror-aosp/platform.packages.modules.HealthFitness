@@ -32,15 +32,19 @@ import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
+import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showDataRestoreInProgressDialog
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationInProgressDialog
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.showMigrationPendingDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.increaseViewTouchTargetSize
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
@@ -60,6 +64,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 
     private val migrationViewModel: MigrationViewModel by viewModels()
@@ -74,16 +80,24 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_permissions)
+        // Handles unsupported devices and user profiles.
+        if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
+            Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
+            finish()
+            return
+        }
 
         if (!intent.hasExtra(EXTRA_PACKAGE_NAME)) {
             Log.e(TAG, "Invalid Intent Extras, finishing")
             finish()
+            return
         }
 
         if (maybeRedirectIntoTwoPaneSettings(this)) {
             return
         }
+
+        setContentView(R.layout.activity_permissions)
 
         if (savedInstanceState == null && shouldRedirectToOnboardingActivity(this)) {
             openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
@@ -105,7 +119,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         migrationViewModel.migrationState.observe(this) { migrationState ->
             when (migrationState) {
                 is MigrationViewModel.MigrationFragmentState.WithData -> {
-                    maybeShowMigrationDialog(migrationState.migrationState)
+                    maybeShowMigrationDialog(migrationState.migrationRestoreState)
                 }
                 else -> {
                     // do nothing
@@ -155,39 +169,38 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
     }
 
-    private fun maybeShowMigrationDialog(migrationState: MigrationState) {
-        when (migrationState) {
-            MigrationState.IN_PROGRESS -> {
-                showMigrationInProgressDialog(
-                    this,
-                    getString(
-                        R.string.migration_in_progress_permissions_dialog_content,
-                        requestPermissionsViewModel.appMetadata.value?.appName)) { _, _ ->
-                        finish()
-                    }
-            }
-            MigrationState.ALLOWED_PAUSED,
-            MigrationState.ALLOWED_NOT_STARTED,
-            MigrationState.APP_UPGRADE_REQUIRED,
-            MigrationState.MODULE_UPGRADE_REQUIRED -> {
-                showMigrationPendingDialog(
-                    this,
-                    getString(
-                        R.string.migration_pending_permissions_dialog_content,
-                        requestPermissionsViewModel.appMetadata.value?.appName),
-                    null,
-                ) { _, _ ->
-                    requestPermissionsViewModel.updatePermissions(false)
-                    handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+    private fun maybeShowMigrationDialog(migrationRestoreState: MigrationRestoreState) {
+        val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
+
+        if (dataRestoreUiState == DataRestoreUiState.IN_PROGRESS) {
+            showDataRestoreInProgressDialog(this) { _, _ -> finish() }
+        } else if (migrationUiState == MigrationUiState.IN_PROGRESS) {
+            showMigrationInProgressDialog(
+                this,
+                getString(
+                    R.string.migration_in_progress_permissions_dialog_content,
+                    requestPermissionsViewModel.appMetadata.value?.appName)) { _, _ ->
                     finish()
                 }
+        } else if (migrationUiState in
+            listOf(
+                MigrationUiState.ALLOWED_PAUSED,
+                MigrationUiState.ALLOWED_NOT_STARTED,
+                MigrationUiState.MODULE_UPGRADE_REQUIRED,
+                MigrationUiState.APP_UPGRADE_REQUIRED)) {
+            showMigrationPendingDialog(
+                this,
+                getString(
+                    R.string.migration_pending_permissions_dialog_content,
+                    requestPermissionsViewModel.appMetadata.value?.appName),
+                null,
+            ) { _, _ ->
+                requestPermissionsViewModel.updatePermissions(false)
+                handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+                finish()
             }
-            MigrationState.COMPLETE -> {
-                maybeShowWhatsNewDialog(this)
-            }
-            else -> {
-                // Show nothing
-            }
+        } else if (migrationUiState == MigrationUiState.COMPLETE) {
+            maybeShowWhatsNewDialog(this)
         }
     }
 

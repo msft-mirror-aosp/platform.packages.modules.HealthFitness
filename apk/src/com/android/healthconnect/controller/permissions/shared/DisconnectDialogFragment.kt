@@ -84,8 +84,7 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         }
 
         val dialog =
-            AlertDialogBuilder(this)
-                .setLogName(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
+            AlertDialogBuilder(this, DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
                 .setView(body)
                 .setNeutralButton(
                     android.R.string.cancel,

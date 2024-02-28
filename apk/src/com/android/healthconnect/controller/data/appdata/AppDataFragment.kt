@@ -24,7 +24,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
-import com.android.healthconnect.controller.permissions.shared.Constants
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.preference.HealthPreference

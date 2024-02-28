@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"مسیر تمرین"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"نوشتن مسیر تمرین"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"خواندن مسیر تمرین"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"خواندن مسیرهای تمرین"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"طرح‌های تمرین"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"طرح‌های تمرین"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"خواندن طرح‌های تمرین"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"نوشتن طرح‌های تمرین"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"مسافت"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"مسافت"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"خواندن داده مسافت"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"کنترل کنید کدام برنامه‌ها می‌توانند به داده‌های ذخیره‌شده در Health Connect دسترسی داشته باشند. با ضربه زدن روی برنامه موردنظر، مرور کنید این برنامه چه داده‌هایی را می‌تواند بخواند یا بنویسد."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"دسترسی دارند"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"دسترسی ندارند"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"باید به‌روزرسانی شود"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"تنظیمات و راهنمایی"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"برداشتن دسترسی برای همه برنامه‌ها"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"مجاز به خواندن"</string>
@@ -665,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{یک درصد}one{# درصد}other{# درصد}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"لغو"</string>
     <string name="units_title" msgid="6504086463237869339">"واحدها"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"تنظیم واحد داده‌ها"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"مسافت"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"قد"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"وزن"</string>
@@ -716,8 +719,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"انتقال به‌پایین"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"انتقال به ابتدا"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"انتقال به انتها"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"دکمه مخصوص کشیدن و تغییر ترتیب <xliff:g id="SELECTED_APP">%s</xliff:g> در فهرست اولویت"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"دکمه برداشتن <xliff:g id="SELECTED_APP">%s</xliff:g> از فهرست اولویت"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"برای تغییر ترتیب، دوضربه بزنید و بکشید"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"تناسب اندام، تندرستی"</string>
@@ -736,12 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"فقط برنامه‌هایی که به آن‌ها اجازه می‌دهید به مسیرهای تمرین شما دسترسی داشته باشند"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"چگونه می‌توانم دسترسی را مدیریت کنم؟"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"در تنظیمات Health Connect می‌توانید دسترسی برنامه‌ها به مسیرهای تمرین را مدیریت کنید"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"اجازه دادن به این مسیر"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"اجازه دادن به همه مسیرها"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"اجازه داده نشود"</string>
     <string name="back_button" msgid="780519527385993407">"برگشت"</string>
     <string name="loading" msgid="2526615755685950317">"درحال بار کردن…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"یکپارچه‌سازی درحال انجام است"</string>
@@ -777,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"ازسرگیری یکپارچه‌سازی Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"برای حفظ داده‌ها، این فرایند را ظرف <xliff:g id="TIME_NEEDED">%1$s</xliff:g> آینده تکمیل کنید"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"به‌روزرسانی برنامه لازم است"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> باید به‌روز باشد تا همچنان با Health Connect کار کند"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"برخی‌از برنامه‌ها باید به‌روز باشند تا همچنان با Health Connect کار کنند"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> برای ادامه همگام‌سازی با Health Connect باید به‌روزرسانی شود"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"برخی‌از برنامه‌ها برای ادامه همگام‌سازی با Health Connect باید به‌روزرسانی شوند"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"به‌روزرسانی‌ها را بررسی کنید"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"بیشتر بدانید"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"یکپارچه‌سازی Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"‫Health Connect برای ادغام شدن با سیستم Android آماده است. اگر اکنون به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه دسترسی بدهید، ممکن است برخی‌از ویژگی‌ها تا زمان تکمیل یکپارچه‌سازی کار نکنند."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"‫Health Connect برای ادغام شدن با سیستم Android آماده است. اگر اکنون به برنامه‌ها اجازه دسترسی بدهید، ممکن است برخی‌از ویژگی‌ها تا زمان تکمیل فرایند ادغام کار نکنند."</string>
@@ -799,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ویژگی‌های جدید"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"اکنون می‌توانید مستقیماً از تنظیمات به Health Connect دسترسی داشته باشید. هروقت خواستید برنامه Health Connect را حذف نصب کنید تا فضای ذخیره‌سازی آزاد شود."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"متوجه‌ام"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"درحال بازیابی"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"‫Health Connect درحال بازیابی داده‌ها و اجازه‌ها است. تکمیل این کنش ممکن است مدتی طول بکشد."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"بازیابی Health Connect درحال انجام است"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"متوجه‌ام"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"باید به‌روزرسانی شود"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"قبل‌از ادامه دادن بازیابی داده‌ها، سیستم تلفن را به‌روز کنید."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"به‌روز شود"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"مجموع داده"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"منابع برنامه"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"منابع برنامه را به فهرست اضافه کنید تا ببینید که مجموع داده‌ها چگونه می‌تواند تغییر کند. برداشتن برنامه از این فهرست باعث می‌شود که آن برنامه دیگر در مجموع دخیل نباشد، اما همچنان اجازه نوشتن خواهد داشت."</string>

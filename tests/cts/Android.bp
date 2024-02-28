@@ -35,6 +35,7 @@ android_test {
         "src/android/healthconnect/cts/datatypes/**/*.java",
         "src/android/healthconnect/cts/migration/*.java",
         "src/android/healthconnect/cts/readdata/*.java",
+        "src/android/healthconnect/cts/historicaccess/HistoricAccessLimitTest.java",
     ],
     // Tag this module as a cts test artifact
     test_suites: [
@@ -208,4 +209,43 @@ android_test {
     sdk_version: "module_current",
     test_config:"AndroidTestShowMigrationInfoIntentAbsent.xml",
     manifest: "AndroidManifestShowMigrationInfoIntentAbsent.xml",
+}
+
+android_test {
+    name: "CtsHealthFitnessDeviceTestCasesHistoricAccessLimitWithPermission",
+    defaults: ["cts_defaults"],
+    libs: [
+        "android.test.runner",
+        "android.test.base",
+        "framework-healthfitness",
+        "framework-configinfrastructure",
+        "framework-sdkextensions"
+    ],
+    srcs: [
+        "src/android/healthconnect/cts/historicaccess/HistoricAccessLimitWithPermissionTest.java",
+    ],
+    // Tag this module as a cts test artifact
+    test_suites: [
+        "cts",
+        "general-tests",
+        "mts-healthfitness",
+        "mcts-healthfitness",
+    ],
+    static_libs: [
+        "androidx.test.rules",
+        "androidx.test.ext.truth",
+        "compatibility-device-util-axt",
+        "ctstestrunner-axt",
+        "cts-wm-util",
+        "modules-utils-build",
+        "testng",
+        "cts-healthconnect-utils",
+    ],
+    min_sdk_version: "34",
+    sdk_version: "module_current",
+    test_config:"AndroidTestHistoricAccessLimitWithPermission.xml",
+    manifest: "AndroidManifestHistoricAccessLimitWithPermission.xml",
+    data: [
+        ":HealthFitnessPermsTestApp",
+    ],
 }

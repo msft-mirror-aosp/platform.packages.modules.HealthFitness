@@ -59,8 +59,8 @@ class TimeRangeDialogFragment : Hilt_TimeRangeDialogFragment() {
         }
         title.text = getString(R.string.time_range_title)
 
-        return AlertDialogBuilder(this)
-            .setLogName(DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER)
+        return AlertDialogBuilder(
+                this, DeletionDialogTimeRangeElement.DELETION_DIALOG_TIME_RANGE_CONTAINER)
             .setView(view)
             .setNeutralButton(
                 android.R.string.cancel,
