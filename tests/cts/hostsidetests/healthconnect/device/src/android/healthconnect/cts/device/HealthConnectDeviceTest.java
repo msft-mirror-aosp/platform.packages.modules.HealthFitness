@@ -20,12 +20,18 @@ import static android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGM
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.healthconnect.cts.utils.DataFactory.buildExerciseSessionWithEmptyMetadata;
+import static android.healthconnect.cts.utils.DataFactory.buildSleepSessionWithEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigins;
+import static android.healthconnect.cts.utils.DataFactory.getDistanceRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
+import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForClientId;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
+import static android.healthconnect.cts.utils.DataFactory.getStepsRecordWithEmptyMetaData;
+import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.PermissionHelper.getGrantedHealthPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAndThenGrantHealthPermissions;
@@ -43,6 +49,8 @@ import static android.healthconnect.cts.utils.TestUtils.updateDataOriginPriority
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.yesterdayAt;
 
+import static com.android.compatibility.common.util.SystemUtil.eventually;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
@@ -52,6 +60,7 @@ import static java.time.Duration.ofMinutes;
 
 import android.app.UiAutomation;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.HealthConnectException;
@@ -79,6 +88,7 @@ import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
+import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -101,6 +111,9 @@ import java.util.stream.Collectors;
 public class HealthConnectDeviceTest {
     static final String TAG = "HealthConnectDeviceTest";
     public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+
+    public static final String APP_A_DECLARED_PERMISSION = HealthPermissions.READ_STEPS;
+
     static final long VERSION_CODE = 1;
     private static final int ASYNC_RETRIES = 3;
     private static final int ASYNC_RETRY_DELAY_MILLIS = 500;
@@ -158,12 +171,14 @@ public class HealthConnectDeviceTest {
     @Before
     public void setUp() {
         mContext = ApplicationProvider.getApplicationContext();
+        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
     }
 
     @After
     public void tearDown() throws InterruptedException {
         deleteTestData();
         deleteAllStagedRemoteData();
+        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
     }
 
     @Test
@@ -281,6 +296,52 @@ public class HealthConnectDeviceTest {
                                                                         .getPackageName()))
                                                 .build()));
         assertThat(e.getErrorCode()).isEqualTo(HealthConnectException.ERROR_SECURITY);
+    }
+
+    @Test
+    public void testAppWithReadPerms_readOtherAppsDataByIds_expectSuccess() throws Exception {
+        List<Pair<Class<? extends Record>, String>> classAndIdPairs =
+                List.of(
+                        insertRecord(APP_WITH_WRITE_PERMS_ONLY, getStepsRecordWithEmptyMetaData()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, getHeartRateRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, buildSleepSessionWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, getDistanceRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY,
+                                getTotalCaloriesBurnedRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_WITH_WRITE_PERMS_ONLY, buildExerciseSessionWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, getStepsRecordWithEmptyMetaData()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, getHeartRateRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, buildSleepSessionWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS, getDistanceRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS,
+                                getTotalCaloriesBurnedRecordWithEmptyMetadata()),
+                        insertRecord(
+                                APP_A_WITH_READ_WRITE_PERMS,
+                                buildExerciseSessionWithEmptyMetadata()));
+
+        List<Record> readRecords = new ArrayList<>();
+        for (var classAndId : classAndIdPairs) {
+            readRecords.addAll(
+                    APP_A_WITH_READ_WRITE_PERMS.readRecords(
+                            new ReadRecordsRequestUsingIds.Builder<>(classAndId.first)
+                                    .addId(classAndId.second)
+                                    .build()));
+        }
+
+        List<String> readIds =
+                readRecords.stream().map(Record::getMetadata).map(Metadata::getId).toList();
+        List<String> insertedIds = classAndIdPairs.stream().map(pair -> pair.second).toList();
+        assertThat(readIds).containsExactlyElementsIn(insertedIds);
     }
 
     @Test
@@ -679,6 +740,25 @@ public class HealthConnectDeviceTest {
     }
 
     @Test
+    public void testSelfRevokePermissions_revokedOnKill() throws Exception {
+        grantPermission(APP_A_WITH_READ_WRITE_PERMS.getPackageName(), APP_A_DECLARED_PERMISSION);
+
+        APP_A_WITH_READ_WRITE_PERMS.selfRevokePermission(APP_A_DECLARED_PERMISSION);
+        APP_A_WITH_READ_WRITE_PERMS.kill();
+
+        eventually(
+                () ->
+                        assertThat(
+                                        mContext.getPackageManager()
+                                                .checkPermission(
+                                                        APP_A_DECLARED_PERMISSION,
+                                                        APP_A_WITH_READ_WRITE_PERMS
+                                                                .getPackageName()))
+                                .isEqualTo(PackageManager.PERMISSION_DENIED),
+                /* timeoutMillis= */ 7000);
+    }
+
+    @Test
     public void testAppWithManageHealthDataPermissionCanUpdatePriority()
             throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
@@ -1029,6 +1109,11 @@ public class HealthConnectDeviceTest {
         for (String perm : healthPerms) {
             grantPermission(APP_B_WITH_READ_WRITE_PERMS.getPackageName(), perm);
         }
+    }
+
+    private static Pair<Class<? extends Record>, String> insertRecord(
+            TestAppProxy testAppProxy, Record record) throws Exception {
+        return new Pair<>(record.getClass(), testAppProxy.insertRecord(record));
     }
 
     private static StepsRecord getStepsRecord(

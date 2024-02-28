@@ -85,7 +85,7 @@ abstract class SeriesRecordHelper<
     @Override
     final void populateSpecificContentValues(
             @NonNull ContentValues contentValues, @NonNull T record) {
-        // Empty as we don't want to populate any additional in the main table
+        // Empty as we don't want to populate any additional in the main table.
     }
 
     /** Populates record with datatype specific details */

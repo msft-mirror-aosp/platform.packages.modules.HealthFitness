@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.service
 
+import android.content.Context
 import android.health.connect.HealthConnectManager
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -49,6 +50,7 @@ import com.android.healthconnect.controller.permissions.api.HealthPermissionMana
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.connectedapps.LoadHealthPermissionApps
+import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissions.shared.QueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
@@ -57,10 +59,12 @@ import com.android.healthconnect.controller.recentaccess.LoadRecentAccessUseCase
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.GetContributorAppInfoUseCase
+import com.android.healthconnect.controller.shared.app.IGetContributorAppInfoUseCase
 import com.android.healthconnect.controller.utils.TimeSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 
@@ -247,5 +251,22 @@ class UseCaseModule {
         healthPermissionManager: HealthPermissionManager
     ): IGetGrantedHealthPermissionsUseCase {
         return GetGrantedHealthPermissionsUseCase(healthPermissionManager)
+    }
+
+    @Provides
+    fun providesQueryRecentAccessLogsUseCase(
+        healthConnectManager: HealthConnectManager,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): IQueryRecentAccessLogsUseCase {
+        return QueryRecentAccessLogsUseCase(healthConnectManager, dispatcher)
+    }
+
+    @Provides
+    fun providesGetContributorAppInfoUseCase(
+        healthConnectManager: HealthConnectManager,
+        @ApplicationContext context: Context,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): IGetContributorAppInfoUseCase {
+        return GetContributorAppInfoUseCase(healthConnectManager, context, dispatcher)
     }
 }

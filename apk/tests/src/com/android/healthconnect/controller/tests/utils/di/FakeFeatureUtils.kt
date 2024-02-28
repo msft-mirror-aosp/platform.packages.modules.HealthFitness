@@ -11,7 +11,6 @@ import javax.inject.Singleton
 class FakeFeatureUtils : FeatureUtils {
 
     private var isSessionTypesEnabled = true
-    private var isExerciseRoutesEnabled = true
     private var isExerciseRoutesReadAllEnabled = true
     private var isEntryPointsEnabled = true
     private var isNewAppPriorityEnabled = false
@@ -21,10 +20,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
-    }
-
-    fun setIsExerciseRoutesEnabled(boolean: Boolean) {
-        isExerciseRoutesEnabled = boolean
     }
 
     fun setIsExerciseRoutesReadAllEnabled(boolean: Boolean) {
@@ -61,10 +56,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     override fun isSessionTypesEnabled(): Boolean {
         return isSessionTypesEnabled
-    }
-
-    override fun isExerciseRouteEnabled(): Boolean {
-        return isExerciseRoutesEnabled
     }
 
     override fun isExerciseRouteReadAllEnabled(): Boolean {

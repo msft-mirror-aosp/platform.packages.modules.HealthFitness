@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"l\'itinéraire d\'exercice"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Écriture des données relatives à l\'itinéraire d\'exercice"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lecture des données relatives à l\'itinéraire d\'exercice"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lire les itinéraires d\'exercice"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Plans d\'entraînement"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"plans d\'entraînement"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Lire des plans d\'entraînement"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Rédigez des plans d\'entraînement"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distance"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distance"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Lecture des données relatives à la distance"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Choisissez les applications qui peuvent accéder aux données stockées dans Connexion santé. Touchez une application pour vérifier les données qu\'elle peut lire et écrire."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Accès autorisé"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Accès non autorisé"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Doivent être mises à jour"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Paramètres et aide"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Retirer l\'accès pour toutes les applis"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Lecture autorisée"</string>
@@ -665,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 pour cent}one{# pour cent}other{# pour cent}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Annuler"</string>
     <string name="units_title" msgid="6504086463237869339">"Unités"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Définir les unités de données"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Distance"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Taille"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Poids"</string>
@@ -716,8 +719,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Déplacer vers le bas"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Placer en première position"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Placer en dernière position"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Bouton permettant de faire glisser et de réorganiser <xliff:g id="SELECTED_APP">%s</xliff:g> dans la liste de priorité"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Bouton pour retirer <xliff:g id="SELECTED_APP">%s</xliff:g> de la liste de priorité"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Toucher deux fois et glisser pour réorganiser"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"mise en forme, bien-être"</string>
@@ -736,12 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Uniquement les applications que vous autorisez à accéder à vos itinéraires d\'exercice"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Comment puis-je gérer l\'accès?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Vous pouvez gérer l\'accès des applications aux itinéraires d\'exercices dans les paramètres de Connexion santé"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"Autoriser cet itinéraire"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Autoriser tous les itinéraires"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne pas autoriser"</string>
     <string name="back_button" msgid="780519527385993407">"Retour"</string>
     <string name="loading" msgid="2526615755685950317">"Chargement en cours…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Intégration en cours…"</string>
@@ -777,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reprendre l\'intégration de Connexion santé"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Pour conserver vos données de Connexion santé, complétez l\'intégration dans un délai de <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Mise à jour de l\'application nécessaire"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> doit être mise à jour pour continuer de fonctionner avec Connexion santé"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Certaines applications doivent être mises à jour pour continuer de fonctionner avec Connexion santé"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> doit être mise à jour pour continuer la synchronisation avec Connexion santé"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Certaines applications ont besoin d\'être mises à jour pour continuer la synchronisation avec Connexion santé"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Rechercher des mises à jour"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"En savoir plus"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Intégration Connexion santé"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Connexion santé est prête à être intégrée à votre système Android. Si vous accordez l\'accès à <xliff:g id="APP_NAME">%1$s</xliff:g> dès maintenant, certaines fonctionnalités risquent de ne pas fonctionner jusqu\'à ce que l\'intégration soit terminée."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Connexion santé est prête à être intégrée à votre système Android. Si vous accordez l\'accès aux applications dès maintenant, certaines fonctionnalités risquent de ne pas fonctionner jusqu\'à ce que l\'intégration soit terminée."</string>
@@ -799,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nouveautés"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Vous pouvez désormais accéder à Connexion santé directement à partir de vos paramètres. Désinstallez l\'application Connexion santé à tout moment pour libérer de l\'espace de stockage."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Restauration en cours…"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Connexion santé restaure actuellement les données et les autorisations. Cela peut prendre un certain temps."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Restauration des données de Connexion santé en cours…"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Mise à jour requise"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Avant de poursuivre la restauration de vos données, mettez à jour le système d\'exploitation de votre téléphone."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Mettre à jour maintenant"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Totaux de données"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Sources d\'applications"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Ajouter des sources d\'applications à la liste pour voir comment les totaux de données peuvent changer. Le retrait d\'une application de cette liste l\'empêchera de contribuer aux totaux, mais elle disposera toujours des autorisations d\'écriture."</string>

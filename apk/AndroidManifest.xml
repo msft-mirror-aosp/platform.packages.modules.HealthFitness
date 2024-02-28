@@ -141,6 +141,11 @@
             android:exported="false"
             android:theme="@style/Theme.HealthConnect" />
 
+        <activity
+            android:name=".export.ExportFrequencyActivity"
+            android:exported="false"
+            android:theme="@style/Theme.HealthConnect" />
+
         <provider
             android:name=".searchindexables.HealthConnectSearchIndexablesProvider"
             android:authorities="${packageName}"

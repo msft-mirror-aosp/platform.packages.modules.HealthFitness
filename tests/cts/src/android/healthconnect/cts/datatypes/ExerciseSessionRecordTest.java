@@ -23,6 +23,8 @@ import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
 import static android.healthconnect.cts.utils.DataFactory.buildLocationTimePoint;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.readRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -39,6 +41,7 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.ExerciseLap;
 import android.health.connect.datatypes.ExerciseRoute;
+import android.health.connect.datatypes.ExerciseRoute.Location;
 import android.health.connect.datatypes.ExerciseSegment;
 import android.health.connect.datatypes.ExerciseSegmentType;
 import android.health.connect.datatypes.ExerciseSessionRecord;
@@ -48,6 +51,7 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Length;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
+import android.util.Pair;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
@@ -213,7 +217,7 @@ public class ExerciseSessionRecordTest {
                 .setRoute(
                         new ExerciseRoute(
                                 List.of(
-                                        new ExerciseRoute.Location.Builder(
+                                        new Location.Builder(
                                                         SESSION_END_TIME.plusSeconds(1), 10.0, 10.0)
                                                 .build())))
                 .build();
@@ -229,7 +233,7 @@ public class ExerciseSessionRecordTest {
                 .setRoute(
                         new ExerciseRoute(
                                 List.of(
-                                        new ExerciseRoute.Location.Builder(
+                                        new Location.Builder(
                                                         SESSION_START_TIME.minusSeconds(1),
                                                         10.0,
                                                         10.0)
@@ -617,6 +621,118 @@ public class ExerciseSessionRecordTest {
         readAndAssertEquals(distinctRecords);
     }
 
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewData_readNewData() throws Exception {
+        int recordCount = 10;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, oldLat, oldLng);
+
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords = insertAndReadRecords(recordCount, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, newLat, newLng);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewerVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 0L;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, oldVersion, oldLat, oldLng);
+
+        long newVersion = 1L;
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords =
+                insertAndReadRecords(recordCount, newVersion, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, newLat, newLng);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndSameVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long version = 1L;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, version, oldLat, oldLng);
+
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords =
+                insertAndReadRecords(recordCount, version, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, newLat, newLng);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndOlderVersion_readOldData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 1L;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, oldVersion, oldLat, oldLng);
+
+        long newVersion = 0L;
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords =
+                insertAndReadRecords(recordCount, newVersion, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, oldLat, oldLng);
+        }
+    }
+
+    private static void assertRoute(ExerciseSessionRecord record, double lat, double lng) {
+        ExerciseRoute route = record.getRoute();
+        assertThat(route).isNotNull();
+
+        assertThat(
+                        route.getRouteLocations().stream()
+                                .map(loc -> new Pair<>(loc.getLatitude(), loc.getLongitude()))
+                                .distinct()
+                                .toList())
+                .containsExactly(new Pair<>(lat, lng));
+    }
+
+    private static List<ExerciseSessionRecord> insertAndReadRecords(
+            int recordCount, double lat, double lng) throws Exception {
+        return insertAndReadRecords(recordCount, /* version= */ 0L, lat, lng);
+    }
+
+    private static List<ExerciseSessionRecord> insertAndReadRecords(
+            int recordCount, long version, double lat, double lng) throws Exception {
+        List<ExerciseSessionRecord> records = new ArrayList<>();
+        Instant now = Instant.now();
+        for (int i = 0; i < recordCount; i++) {
+            Instant startTime = now.minusSeconds(i + 1);
+            Instant endTime = now.minusSeconds(i);
+            String clientRecordId = "client_id_" + i;
+            Location location = new Location.Builder(startTime, lat, lng).build();
+            records.add(buildSession(startTime, endTime, clientRecordId, version, location));
+        }
+        List<Record> insertedRecords = insertRecords(records);
+        assertThat(insertedRecords).hasSize(recordCount);
+
+        List<ExerciseSessionRecord> readRecords =
+                readRecords(
+                        new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
+                                .build());
+        assertThat(readRecords).hasSize(recordCount);
+
+        return readRecords;
+    }
+
     private ExerciseSessionRecord buildRecordWithOneSegment(int sessionType, int segmentType) {
         return new ExerciseSessionRecord.Builder(
                         generateMetadata(), SESSION_START_TIME, SESSION_END_TIME, sessionType)
@@ -673,14 +789,29 @@ public class ExerciseSessionRecordTest {
 
     private static ExerciseSessionRecord buildSession(
             Instant startTime, Instant endTime, String clientRecordId) {
+        return buildSession(startTime, endTime, clientRecordId, buildLocationTimePoint(startTime));
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, String clientRecordId, Location location) {
+        return buildSession(
+                startTime, endTime, clientRecordId, /* clientRecordVersion= */ 0L, location);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            Location location) {
         return new ExerciseSessionRecord.Builder(
-                        buildMetadata(clientRecordId),
+                        buildMetadata(clientRecordId, clientRecordVersion),
                         startTime,
                         endTime,
                         ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
                 .setEndZoneOffset(ZoneOffset.MAX)
                 .setStartZoneOffset(ZoneOffset.MIN)
-                .setRoute(new ExerciseRoute(List.of(buildLocationTimePoint(startTime))))
+                .setRoute(new ExerciseRoute(List.of(location)))
                 .setNotes("notes")
                 .setTitle("title")
                 .build();
@@ -696,6 +827,10 @@ public class ExerciseSessionRecordTest {
     }
 
     private static Metadata buildMetadata(String clientRecordId) {
+        return buildMetadata(clientRecordId, /* clientRecordVersion= */ 0L);
+    }
+
+    private static Metadata buildMetadata(String clientRecordId, long clientRecordVersion) {
         return new Metadata.Builder()
                 .setDataOrigin(
                         new DataOrigin.Builder()
@@ -703,6 +838,7 @@ public class ExerciseSessionRecordTest {
                                 .build())
                 .setId(UUID.randomUUID().toString())
                 .setClientRecordId(clientRecordId)
+                .setClientRecordVersion(clientRecordVersion)
                 .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
                 .build();
     }
