@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Skriv træningsrute"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Læs træningsrute"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Læs træningsruter"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Træningsplaner"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"træningsplaner"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Læs træningsplaner"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Skriv træningsplaner"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Afstand"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"afstand"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Læs afstand"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nyheder"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Du kan nu tilgå Health Connect direkte fra dine indstillinger. Du kan til enhver tid afinstallere Health Connect-appen for at frigøre lagerplads."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Gendannelse i gang"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect gendanner data og tilladelser. Det kan tage et stykke tid."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Gendannelse af Health Connect er i gang"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Opdatering er påkrævet"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Inden du fortsætter med gendannelsen af dine data, skal du opdatere telefonens system."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Opdater nu"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Samlede data"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Appkilder"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Føj appkilder til listen for at se, hvordan de samlede data kan ændre sig. Hvis du fjerner en app fra denne liste, vil den ikke længere bidrage til de samlede data, men den vil stadig have skrivetilladelser."</string>

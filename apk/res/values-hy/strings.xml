@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Գրանցել մարզումների երթուղին"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Կարդալ մարզման եղանակների մասին տեղեկություններ"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Կարդալ մարզումների երթուղիները"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Պլանավորված մարզումներ"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"պլանավորված մարզումներ"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Կարդալ պլանավորված մարզումները"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Գրանցել պլանավորված մարզումները"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Հեռավորություն"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"հեռավորություն"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Կարդալ անցած հեռավորության մասին տվյալները"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Ինչ նոր բան կա"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Այժմ դուք կարող եք բացել Health Connect-ն անմիջապես ձեր կարգավորումներից։ Health Connect հավելվածը ցանկացած ժամանակ կարելի է ապատեղադրել՝ տարածք ազատելու համար։"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Եղավ"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Վերականգնումն ընթացքում է"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect-ը վերականգնում է տվյալներն ու թույլտվությունները։ Դրա համար կարող է որոշ ժամանակ պահանջվել։"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect-ի վերականգնումն ընթացքում է"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Եղավ"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Անհրաժեշտ է թարմացում"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Նախքան տվյալների վերականգնման գործողությունը շարունակելը, թարմացրեք ձեր հեռախոսի համակարգը։"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Թարմացնել"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Ամփոփիչ ցուցանիշներ"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Հավելվածների աղբյուրներ"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Հավելվածներ ավելացրեք ցանկում՝ տեսնելու, թե ինչպես կփոխվեն ամփոփիչ ցուցանիշները։ Որևէ հավելված ջնջելու դեպքում այդ հավելվածից ստացված տվյալներն ամփոփիչ ցուցանիշներում հաշվի չեն առնվի։ Ընդ որում՝ գրելու թույլտվությունները չեն չեղարկվի։"</string>

@@ -117,7 +117,7 @@
             <Button
                 android:id="@+id/route_allow_all_button"
                 android:text="@string/request_route_allow_all"
-                style="@style/PermissionGrantButtonTop" />
+                style="@style/PermissionGrantButtonMid" />
 
             <Button
                 android:id="@+id/route_dont_allow_button"

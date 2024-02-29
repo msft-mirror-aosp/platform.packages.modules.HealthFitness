@@ -80,6 +80,9 @@
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
 
+        <!-- Export -->
+        <item name="repeatIcon">@drawable/ic_repeat</item>
+
         <!-- END REGION -->
 
         <!-- REGION DIALOG GRAVITY -->

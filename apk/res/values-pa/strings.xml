@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"ਕਸਰਤ ਕਰਨ ਦਾ ਤਰੀਕਾ ਲਿਖੋ"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"ਕਸਰਤ ਸੰਬੰਧੀ ਰਸਤੇ ਨੂੰ ਪੜ੍ਹੋ"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"ਕਸਰਤ ਦੇ ਰਸਤੇ ਪੜ੍ਹੋ"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"ਟ੍ਰੇਨਿੰਗ ਸੰਬੰਧੀ ਪਲਾਨ"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"ਟ੍ਰੇਨਿੰਗ ਸੰਬੰਧੀ ਪਲਾਨ"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"ਟ੍ਰੇਨਿੰਗ ਸੰਬੰਧੀ ਪਲਾਨ ਪੜ੍ਹੋ"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"ਟ੍ਰੇਨਿੰਗ ਸੰਬੰਧੀ ਪਲਾਨ ਲਿਖੋ"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"ਦੂਰੀ"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"ਦੂਰੀ"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"ਦੂਰੀ ਸੰਬੰਧੀ ਡਾਟਾ ਪੜ੍ਹੋ"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ਨਵਾਂ ਕੀ ਹੈ"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"ਤੁਸੀਂ ਹੁਣ Health Connect ਤੱਕ ਸਿੱਧਾ ਆਪਣੀਆਂ ਸੈਟਿੰਗਾਂ ਤੋਂ ਪਹੁੰਚ ਕਰ ਸਕਦੇ ਹੋ। ਸਟੋਰੇਜ ਜਗ੍ਹਾ ਨੂੰ ਖਾਲੀ ਕਰਨ ਲਈ ਕਿਸੇ ਵੀ ਵੇਲੇ Health Connect ਐਪ ਨੂੰ ਅਣਸਥਾਪਤ ਕਰੋ।"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ਸਮਝ ਲਿਆ"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"ਮੁੜ-ਬਹਾਲੀ ਪ੍ਰਕਿਰਿਆ ਜਾਰੀ ਹੈ"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect, ਡਾਟੇ ਅਤੇ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਮੁੜ-ਬਹਾਲ ਕਰ ਰਿਹਾ ਹੈ। ਇਸ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਪੂਰਾ ਹੋਣ ਵਿੱਚ ਕੁਝ ਸਮਾਂ ਲੱਗ ਸਕਦਾ ਹੈ।"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect ਦੀ ਮੁੜ-ਬਹਾਲੀ ਪ੍ਰਕਿਰਿਆ ਜਾਰੀ ਹੈ"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"ਸਮਝ ਲਿਆ"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"ਅੱਪਡੇਟ ਕਰਨ ਦੀ ਲੋੜ ਹੈ"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"ਆਪਣਾ ਡਾਟਾ ਮੁੜ-ਬਹਾਲ ਕਰਨਾ ਜਾਰੀ ਰੱਖਣ ਤੋਂ ਪਹਿਲਾਂ, ਆਪਣੇ ਫ਼ੋਨ ਸਿਸਟਮ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ।"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"ਹੁਣੇ ਅੱਪਡੇਟ ਕਰੋ"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"ਡਾਟਾ ਸਰੋਤਾਂ ਦੀ ਕੁੱਲ ਗਿਣਤੀ"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"ਐਪ ਸਰੋਤ"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"ਇਹ ਦੇਖਣ ਲਈ ਕਿ ਡਾਟਾ ਸਰੋਤਾਂ ਦੀ ਕੁੱਲ ਗਿਣਤੀ ਕਿਵੇਂ ਬਦਲਦੀ ਹੈ, ਸੂਚੀ ਵਿੱਚ ਐਪ ਸਰੋਤ ਸ਼ਾਮਲ ਕਰੋ। ਇਸ ਸੂਚੀ ਵਿੱਚੋਂ ਕਿਸੇ ਐਪ ਨੂੰ ਹਟਾਉਣ ਨਾਲ ਕੁੱਲ ਗਿਣਤੀ ਵਿੱਚ ਉਸਦਾ ਯੋਗਦਾਨ ਬੰਦ ਹੋ ਜਾਵੇਗਾ, ਪਰ ਉਸ ਕੋਲ ਫਿਰ ਵੀ ਲਿਖਣ ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਹੋਣਗੀਆਂ।"</string>

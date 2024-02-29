@@ -799,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"What\'s new"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"You can now access Health Connect directly from your settings. Uninstall the Health Connect app any time to free up storage space."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Got it"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Restore in progress"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect is restoring data and permissions. This may take some time to complete."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect restore in progress"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Got it"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Update needed"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Before continuing restoring your data, update your phone system."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Update now"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Data totals"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"App sources"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Add app sources to the list to see how the data totals can change. Removing an app from this list will stop it from contributing to totals, but it will still have write permissions."</string>

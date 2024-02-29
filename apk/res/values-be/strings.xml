@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Запісваць маршрут трэніроўкі"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Азнаёміцца з праграмай трэніроўкі"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Чытаць маршруты трэніровак"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Планы трэніровак"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"планы трэніровак"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Чытаць планы трэніровак"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Пісаць планы трэніровак"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Адлегласць"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"адлегласць"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Счытваць даныя пра адлегласць"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Што новага"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Цяпер у вас ёсць доступ да праграмы \"Здароўе і спорт\" непасрэдна з налад. Каб вызваліць месца ў сховішчы, яе можна выдаліць у любы час."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Ідзе аднаўленне"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Праграма \"Здароўе і спорт\" аднаўляе даныя і дазволы. Гэта можа заняць некаторы час."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Праграма \"Здароўе і спорт\" аднаўляе даныя"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Зразумела"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Патрабуецца абнаўленне"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Перш чым аднаўляць даныя, абнавіце сістэму на тэлефоне."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Абнавіць"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Сумарныя паказчыкі"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Праграмы – крыніцы даных"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Дадайце праграмы-крыніцы ў спіс, каб пабачыць, як зменяцца сумарныя паказчыкі. Калі выдаліць праграму з гэтага спіса, даныя з яе не будуць брацца пад увагу пры разліку сумарных паказчыкаў, але дадзеныя ёй дазволы на запіс не адклікаюцца."</string>

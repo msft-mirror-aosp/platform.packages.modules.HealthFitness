@@ -38,6 +38,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceGroup
@@ -46,6 +47,9 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowMigrationDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
+import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
@@ -54,10 +58,13 @@ import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
+import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.pref
@@ -82,19 +89,33 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     }
 
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
+    @Inject lateinit var navigationUtils: NavigationUtils
 
     private lateinit var packageName: String
     private var appName: String = ""
 
     private val viewModel: AppPermissionViewModel by activityViewModels()
     private val permissionMap: MutableMap<HealthPermission, TwoStatePreference> = mutableMapOf()
+    private val additionalAccessViewModel: AdditionalAccessViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by viewModels()
     private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
     private val readPermissionCategory: PreferenceGroup by pref(READ_CATEGORY)
     private val writePermissionCategory: PreferenceGroup by pref(WRITE_CATEGORY)
+    private val manageAppCategory: PreferenceGroup by pref(MANAGE_APP_CATEGORY)
     private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val footer: FooterPreference by pref(FOOTER)
     private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
+    private val onSwitchChangeListener = OnCheckedChangeListener { switchView, isChecked ->
+        if (isChecked) {
+            val permissionsUpdated = viewModel.grantAllPermissions(packageName)
+            if (!permissionsUpdated) {
+                switchView.isChecked = false
+                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            showRevokeAllPermissions()
+        }
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -114,6 +135,8 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         }
 
         viewModel.loadPermissionsForPackage(packageName)
+        additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
+
         viewModel.appPermissions.observe(viewLifecycleOwner) { permissions ->
             updatePermissions(permissions)
         }
@@ -125,7 +148,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
         viewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is AppPermissionViewModel.RevokeAllState.Loading -> {
+                is RevokeAllState.Loading -> {
                     showLoadingDialog()
                 }
                 else -> {
@@ -148,7 +171,15 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             }
         }
 
+        viewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
+            if (event.shouldShowDialog) {
+                DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
+                    .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
+            }
+        }
+
         setupHeader()
+        setupManageAppCategory()
     }
 
     private fun setupHeader() {
@@ -175,15 +206,27 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         }
     }
 
-    private val onSwitchChangeListener = OnCheckedChangeListener { switchView, isChecked ->
-        if (isChecked) {
-            val permissionsUpdated = viewModel.grantAllPermissions(packageName)
-            if (!permissionsUpdated) {
-                switchView.isChecked = false
-                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
+    private fun setupManageAppCategory() {
+        additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
+            manageAppCategory.isVisible = state.isValid()
+            manageAppCategory.removeAll()
+            if (state.isValid()) {
+                val additionalAccessPref =
+                    HealthPreference(requireContext()).also {
+                        it.key = KEY_ADDITIONAL_ACCESS
+                        it.logName = ADDITIONAL_ACCESS_BUTTON
+                        it.setTitle(R.string.additional_access_label)
+                        it.setOnPreferenceClickListener { _ ->
+                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
+                            navigationUtils.navigate(
+                                fragment = this,
+                                action = R.id.action_manageAppFragment_to_additionalAccessFragment,
+                                bundle = extras)
+                            true
+                        }
+                    }
+                manageAppCategory.addPreference(additionalAccessPref)
             }
-        } else {
-            showRevokeAllPermissions()
         }
     }
 
@@ -299,6 +342,9 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         private const val READ_CATEGORY = "read_permission_category"
         private const val WRITE_CATEGORY = "write_permission_category"
         private const val PERMISSION_HEADER = "manage_app_permission_header"
+        private const val MANAGE_APP_CATEGORY = "manage_app_category"
+        private const val KEY_ADDITIONAL_ACCESS = "additional_access"
+        private const val DISABLE_EXERCISE_ROUTE_DIALOG_TAG = "disable_exercise_route_dialog"
         private const val FOOTER = "manage_app_permission_footer"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }

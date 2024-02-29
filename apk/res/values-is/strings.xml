@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Skrifa æfingaleið"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lesa æfingaleið"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lesa æfingaleiðir"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Æfingaáætlanir"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"æfingaáætlanir"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Lesa æfingaáætlanir"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Skrifa æfingaáætlanir"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Vegalengd"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"vegalengd"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Lesa vegalengd"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nýjungar"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Nú geturðu opnað Heilsutengingu beint úr stillingunum. Þú getur fjarlægt forrit Heilsutengingar hvenær sem er til að losa geymslurými."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Ég skil"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Endurheimt í gangi"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Heilsutenging er að endurheimta gögn og heimildir. Það gæti tekið smástund."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Endurheimt Heilsutengingar í gangi"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Ég skil"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Uppfærslu er krafist"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Uppfærðu kerfi símans áður en þú heldur áfram að endurheimta gögn"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Uppfæra núna"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Gagnasamtölur"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Upprunaforrit"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Bættu upprunaforritum á listann til að sýna hvernig gagnasamtölur breytast. Þegar forrit er fjarlægt af listanum er það ekki lengur tekið með í samtölum en hefur samt sem áður áfram skrifheimildir."</string>

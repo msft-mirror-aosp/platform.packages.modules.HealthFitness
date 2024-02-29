@@ -240,6 +240,36 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
+    fun sendsOkResult_requestWithNoPermissionsGranted() {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
+        whenever(viewModel.request(anyString())).then {
+            mapOf(
+                fromPermissionString(READ_STEPS) to PermissionState.NOT_GRANTED,
+                fromPermissionString(READ_HEART_RATE) to PermissionState.NOT_GRANTED,
+                fromPermissionString(WRITE_DISTANCE) to PermissionState.NOT_GRANTED,
+                fromPermissionString(WRITE_EXERCISE) to PermissionState.NOT_GRANTED,
+            )
+        }
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        scenario.onActivity { activity: PermissionsActivity ->
+            activity.findViewById<Button>(R.id.cancel).callOnClick()
+        }
+
+        verify(viewModel).updatePermissions(false)
+        assertThat(scenario.getResult().getResultCode()).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.getResult().getResultData()
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(
+                intArrayOf(
+                    PERMISSION_DENIED, PERMISSION_DENIED, PERMISSION_DENIED, PERMISSION_DENIED))
+    }
+
+    @Test
     fun sendsOkResult_requestWithPermissionsSomeWithError() {
         whenever(viewModel.request(anyString())).then {
             mapOf(

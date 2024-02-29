@@ -25,6 +25,9 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.Device;
+import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.ExerciseLap;
 import android.health.connect.datatypes.ExerciseRoute;
 import android.health.connect.datatypes.ExerciseSegment;
 import android.health.connect.datatypes.ExerciseSessionRecord;
@@ -33,13 +36,18 @@ import android.health.connect.datatypes.InstantRecord;
 import android.health.connect.datatypes.IntervalRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
+import android.health.connect.datatypes.SleepSessionRecord;
+import android.health.connect.datatypes.SleepSessionRecord.Stage;
 import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
 import android.os.Bundle;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -78,8 +86,14 @@ public final class BundleHelper {
     private static final String CLIENT_ID = PREFIX + "CLIENT_ID";
     private static final String RECORD_ID = PREFIX + "RECORD_ID";
     private static final String METADATA = PREFIX + "METADATA";
+    private static final String DEVICE = PREFIX + "DEVICE";
+    private static final String DEVICE_TYPE = PREFIX + "DEVICE_TYPE";
+    private static final String MANUFACTURER = PREFIX + "MANUFACTURER";
+    private static final String MODEL = PREFIX + "MODEL";
     private static final String VALUES = PREFIX + "VALUES";
     private static final String COUNT = PREFIX + "COUNT";
+    private static final String LENGTH_IN_METERS = PREFIX + "LENGTH_IN_METERS";
+    private static final String ENERGY_IN_CALORIES = PREFIX + "ENERGY_IN_CALORIES";
     private static final String SAMPLE_TIMES = PREFIX + "SAMPLE_TIMES";
     private static final String SAMPLE_VALUES = PREFIX + "SAMPLE_VALUES";
     private static final String EXERCISE_ROUTE_TIMESTAMPS = PREFIX + "EXERCISE_ROUTE_TIMESTAMPS";
@@ -89,15 +103,21 @@ public final class BundleHelper {
     private static final String EXERCISE_ROUTE_HACCS = PREFIX + "EXERCISE_ROUTE_HACCS";
     private static final String EXERCISE_ROUTE_VACCS = PREFIX + "EXERCISE_ROUTE_VACCS";
     private static final String EXERCISE_HAS_ROUTE = PREFIX + "EXERCISE_HAS_ROUTE";
+    private static final String EXERCISE_LAPS = PREFIX + "EXERCISE_LAPS";
     private static final String POWER_WATTS = PREFIX + "POWER_WATTS";
     private static final String TIME_INSTANT_RANGE_FILTER = PREFIX + "TIME_INSTANT_RANGE_FILTER";
     private static final String CHANGE_LOGS_REQUEST = PREFIX + "CHANGE_LOGS_REQUEST";
     private static final String CHANGE_LOG_TOKEN_REQUEST = PREFIX + "CHANGE_LOG_TOKEN_REQUEST";
     private static final String PERMISSION_NAME = PREFIX + "PERMISSION_NAME";
-    private static final String EXERCISE_SEGMENT_START_TIMES =
-            PREFIX + "EXERCISE_SEGMENT_START_TIMES";
-    private static final String EXERCISE_SEGMENT_END_TIMES = PREFIX + "EXERCISE_SEGMENT_END_TIMES";
+    private static final String START_TIMES = PREFIX + "START_TIMES";
+    private static final String END_TIMES = PREFIX + "END_TIMES";
     private static final String EXERCISE_SEGMENT_TYPES = PREFIX + "EXERCISE_SEGMENT_TYPES";
+    private static final String EXERCISE_SEGMENT_REP_COUNTS =
+            PREFIX + "EXERCISE_SEGMENT_REP_COUNTS";
+    private static final String NOTES = PREFIX + "NOTES";
+    private static final String TITLE = PREFIX + "TITLE";
+    private static final String START_ZONE_OFFSET = PREFIX + "START_ZONE_OFFSET";
+    private static final String END_ZONE_OFFSET = PREFIX + "END_ZONE_OFFSET";
 
     /** Converts an insert records request to a bundle. */
     public static Bundle fromInsertRecordsRequest(List<Record> records) {
@@ -210,8 +230,20 @@ public final class BundleHelper {
         bundle.putString(RECORD_CLASS_NAME, request.getRecordType().getName());
 
         var recordIdFilters = request.getRecordIdFilters();
-        List<String> recordIds = recordIdFilters.stream().map(RecordIdFilter::getId).toList();
-        bundle.putStringArrayList(RECORD_ID, new ArrayList<>(recordIds));
+        bundle.putStringArrayList(
+                RECORD_ID,
+                new ArrayList<>(
+                        recordIdFilters.stream()
+                                .map(RecordIdFilter::getId)
+                                .filter(Objects::nonNull)
+                                .toList()));
+        bundle.putStringArrayList(
+                CLIENT_ID,
+                new ArrayList<>(
+                        recordIdFilters.stream()
+                                .map(RecordIdFilter::getClientRecordId)
+                                .filter(Objects::nonNull)
+                                .toList()));
 
         return bundle;
     }
@@ -222,8 +254,16 @@ public final class BundleHelper {
         String recordClassName = bundle.getString(RECORD_CLASS_NAME);
         var request = new ReadRecordsRequestUsingIds.Builder<>(recordClassForName(recordClassName));
         var recordIds = bundle.getStringArrayList(RECORD_ID);
-        for (String id : recordIds) {
-            request.addId(id);
+        if (recordIds != null) {
+            for (String id : recordIds) {
+                request.addId(id);
+            }
+        }
+        var clientRecordIds = bundle.getStringArrayList(CLIENT_ID);
+        if (clientRecordIds != null) {
+            for (String clientId : clientRecordIds) {
+                request.addClientRecordId(clientId);
+            }
         }
 
         return request.build();
@@ -362,8 +402,11 @@ public final class BundleHelper {
         if (record instanceof IntervalRecord intervalRecord) {
             bundle.putLong(START_TIME_MILLIS, intervalRecord.getStartTime().toEpochMilli());
             bundle.putLong(END_TIME_MILLIS, intervalRecord.getEndTime().toEpochMilli());
+            bundle.putInt(START_ZONE_OFFSET, intervalRecord.getStartZoneOffset().getTotalSeconds());
+            bundle.putInt(END_ZONE_OFFSET, intervalRecord.getEndZoneOffset().getTotalSeconds());
         } else if (record instanceof InstantRecord instantRecord) {
             bundle.putLong(START_TIME_MILLIS, instantRecord.getTime().toEpochMilli());
+            bundle.putInt(START_ZONE_OFFSET, instantRecord.getZoneOffset().getTotalSeconds());
         } else {
             throw new IllegalArgumentException("Unsupported record type: ");
         }
@@ -378,6 +421,12 @@ public final class BundleHelper {
             values = getStepsRecordValues(stepsRecord);
         } else if (record instanceof HeartRateRecord heartRateRecord) {
             values = getHeartRateRecordValues(heartRateRecord);
+        } else if (record instanceof SleepSessionRecord sleepSessionRecord) {
+            values = getSleepRecordValues(sleepSessionRecord);
+        } else if (record instanceof DistanceRecord distanceRecord) {
+            values = getDistanceRecordValues(distanceRecord);
+        } else if (record instanceof TotalCaloriesBurnedRecord totalCaloriesBurnedRecord) {
+            values = getTotalCaloriesBurnedRecord(totalCaloriesBurnedRecord);
         } else {
             throw new IllegalArgumentException(
                     "Unsupported record type: " + record.getClass().getName());
@@ -401,17 +450,31 @@ public final class BundleHelper {
 
         Instant startTime = Instant.ofEpochMilli(bundle.getLong(START_TIME_MILLIS));
         Instant endTime = Instant.ofEpochMilli(bundle.getLong(END_TIME_MILLIS));
+        ZoneOffset startZoneOffset = ZoneOffset.ofTotalSeconds(bundle.getInt(START_ZONE_OFFSET));
+        ZoneOffset endZoneOffset = ZoneOffset.ofTotalSeconds(bundle.getInt(END_ZONE_OFFSET));
 
         Bundle values = bundle.getBundle(VALUES);
 
         if (Objects.equals(recordClassName, BasalMetabolicRateRecord.class.getName())) {
-            return createBasalMetabolicRateRecord(metadata, startTime, values);
+            return createBasalMetabolicRateRecord(metadata, startTime, startZoneOffset, values);
         } else if (Objects.equals(recordClassName, ExerciseSessionRecord.class.getName())) {
-            return createExerciseSessionRecord(metadata, startTime, endTime, values);
+            return createExerciseSessionRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         } else if (Objects.equals(recordClassName, HeartRateRecord.class.getName())) {
-            return createHeartRateRecord(metadata, startTime, endTime, values);
+            return createHeartRateRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         } else if (Objects.equals(recordClassName, StepsRecord.class.getName())) {
-            return createStepsRecord(metadata, startTime, endTime, values);
+            return createStepsRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, SleepSessionRecord.class.getName())) {
+            return createSleepSessionRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, DistanceRecord.class.getName())) {
+            return createDistanceRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, TotalCaloriesBurnedRecord.class.getName())) {
+            return createTotalCaloriesBurnedRecord(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
         }
 
         throw new IllegalArgumentException("Unsupported record type: " + recordClassName);
@@ -424,10 +487,11 @@ public final class BundleHelper {
     }
 
     private static BasalMetabolicRateRecord createBasalMetabolicRateRecord(
-            Metadata metadata, Instant time, Bundle values) {
+            Metadata metadata, Instant time, ZoneOffset startZoneOffset, Bundle values) {
         double powerWatts = values.getDouble(POWER_WATTS);
 
         return new BasalMetabolicRateRecord.Builder(metadata, time, Power.fromWatts(powerWatts))
+                .setZoneOffset(startZoneOffset)
                 .build();
     }
 
@@ -490,16 +554,54 @@ public final class BundleHelper {
                         .toArray();
         int[] segmentTypes =
                 record.getSegments().stream().mapToInt(ExerciseSegment::getSegmentType).toArray();
+        int[] repCounts =
+                record.getSegments().stream()
+                        .mapToInt(ExerciseSegment::getRepetitionsCount)
+                        .toArray();
 
-        values.putLongArray(EXERCISE_SEGMENT_START_TIMES, segmentStartTimes);
-        values.putLongArray(EXERCISE_SEGMENT_END_TIMES, segmentEndTimes);
+        values.putLongArray(START_TIMES, segmentStartTimes);
+        values.putLongArray(END_TIMES, segmentEndTimes);
         values.putIntArray(EXERCISE_SEGMENT_TYPES, segmentTypes);
+        values.putIntArray(EXERCISE_SEGMENT_REP_COUNTS, repCounts);
+
+        List<ExerciseLap> laps = record.getLaps();
+        if (laps != null && !laps.isEmpty()) {
+            Bundle lapsBundle = new Bundle();
+            lapsBundle.putLongArray(
+                    START_TIMES,
+                    laps.stream()
+                            .map(ExerciseLap::getStartTime)
+                            .mapToLong(Instant::toEpochMilli)
+                            .toArray());
+            lapsBundle.putLongArray(
+                    END_TIMES,
+                    laps.stream()
+                            .map(ExerciseLap::getEndTime)
+                            .mapToLong(Instant::toEpochMilli)
+                            .toArray());
+            lapsBundle.putDoubleArray(
+                    LENGTH_IN_METERS,
+                    laps.stream()
+                            .map(ExerciseLap::getLength)
+                            .map(length -> length == null ? -1 : length.getInMeters())
+                            .mapToDouble(value -> value)
+                            .toArray());
+            values.putBundle(EXERCISE_LAPS, lapsBundle);
+        }
+
+        values.putCharSequence(TITLE, record.getTitle());
+        values.putCharSequence(NOTES, record.getNotes());
 
         return values;
     }
 
     private static ExerciseSessionRecord createExerciseSessionRecord(
-            Metadata metadata, Instant startTime, Instant endTime, Bundle values) {
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
         int exerciseType = values.getInt(EXERCISE_SESSION_TYPE);
 
         ExerciseSessionRecord.Builder record =
@@ -557,9 +659,10 @@ public final class BundleHelper {
             setHasRoute(record, hasRoute);
         }
 
-        long[] segmentStartTimes = values.getLongArray(EXERCISE_SEGMENT_START_TIMES);
-        long[] segmentEndTimes = values.getLongArray(EXERCISE_SEGMENT_END_TIMES);
+        long[] segmentStartTimes = values.getLongArray(START_TIMES);
+        long[] segmentEndTimes = values.getLongArray(END_TIMES);
         int[] segmentTypes = values.getIntArray(EXERCISE_SEGMENT_TYPES);
+        int[] repCounts = values.getIntArray(EXERCISE_SEGMENT_REP_COUNTS);
 
         List<ExerciseSegment> segments =
                 IntStream.range(0, segmentStartTimes.length)
@@ -573,11 +676,36 @@ public final class BundleHelper {
                                                     segmentStartTime,
                                                     segmentEndTime,
                                                     segmentTypes[i])
+                                            .setRepetitionsCount(repCounts[i])
                                             .build();
                                 })
                         .toList();
 
         record.setSegments(segments);
+
+        Bundle lapsBundle = values.getBundle(EXERCISE_LAPS);
+        if (lapsBundle != null) {
+            List<ExerciseLap> laps = new ArrayList<>();
+            double[] lengths = lapsBundle.getDoubleArray(LENGTH_IN_METERS);
+            long[] startTimes = lapsBundle.getLongArray(START_TIMES);
+            long[] endTimes = lapsBundle.getLongArray(END_TIMES);
+            for (int i = 0; i < lengths.length; i++) {
+                ExerciseLap.Builder lap =
+                        new ExerciseLap.Builder(
+                                Instant.ofEpochMilli(startTimes[i]),
+                                Instant.ofEpochMilli(endTimes[i]));
+                if (lengths[i] > 0) {
+                    lap.setLength(Length.fromMeters(lengths[i]));
+                }
+                laps.add(lap.build());
+            }
+            record.setLaps(laps);
+        }
+
+        record.setTitle(values.getCharSequence(TITLE));
+        record.setNotes(values.getCharSequence(NOTES));
+        record.setStartZoneOffset(startZoneOffset);
+        record.setEndZoneOffset(endZoneOffset);
 
         return record.build();
     }
@@ -599,8 +727,46 @@ public final class BundleHelper {
         return values;
     }
 
+    private static Bundle getSleepRecordValues(SleepSessionRecord record) {
+        Bundle values = new Bundle();
+        values.putLongArray(
+                START_TIMES,
+                record.getStages().stream()
+                        .map(Stage::getStartTime)
+                        .mapToLong(Instant::toEpochMilli)
+                        .toArray());
+        values.putLongArray(
+                END_TIMES,
+                record.getStages().stream()
+                        .map(Stage::getEndTime)
+                        .mapToLong(Instant::toEpochMilli)
+                        .toArray());
+        values.putIntArray(
+                SAMPLE_VALUES, record.getStages().stream().mapToInt(Stage::getType).toArray());
+        values.putCharSequence(NOTES, record.getNotes());
+        values.putCharSequence(TITLE, record.getTitle());
+        return values;
+    }
+
+    private static Bundle getDistanceRecordValues(DistanceRecord record) {
+        Bundle values = new Bundle();
+        values.putDouble(LENGTH_IN_METERS, record.getDistance().getInMeters());
+        return values;
+    }
+
+    private static Bundle getTotalCaloriesBurnedRecord(TotalCaloriesBurnedRecord record) {
+        Bundle values = new Bundle();
+        values.putDouble(ENERGY_IN_CALORIES, record.getEnergy().getInCalories());
+        return values;
+    }
+
     private static HeartRateRecord createHeartRateRecord(
-            Metadata metadata, Instant startTime, Instant endTime, Bundle values) {
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
 
         long[] times = values.getLongArray(SAMPLE_TIMES);
         long[] bpms = values.getLongArray(SAMPLE_VALUES);
@@ -613,7 +779,10 @@ public final class BundleHelper {
                                                 bpms[i], Instant.ofEpochMilli(times[i])))
                         .toList();
 
-        return new HeartRateRecord.Builder(metadata, startTime, endTime, samples).build();
+        return new HeartRateRecord.Builder(metadata, startTime, endTime, samples)
+                .setStartZoneOffset(startZoneOffset)
+                .setEndZoneOffset(endZoneOffset)
+                .build();
     }
 
     private static Bundle getStepsRecordValues(StepsRecord record) {
@@ -623,10 +792,75 @@ public final class BundleHelper {
     }
 
     private static StepsRecord createStepsRecord(
-            Metadata metadata, Instant startTime, Instant endTime, Bundle values) {
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
         long count = values.getLong(COUNT);
 
-        return new StepsRecord.Builder(metadata, startTime, endTime, count).build();
+        return new StepsRecord.Builder(metadata, startTime, endTime, count)
+                .setStartZoneOffset(startZoneOffset)
+                .setEndZoneOffset(endZoneOffset)
+                .build();
+    }
+
+    private static SleepSessionRecord createSleepSessionRecord(
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
+        List<Stage> stages = new ArrayList<>();
+        int[] stageInts = values.getIntArray(SAMPLE_VALUES);
+        long[] startTimeMillis = values.getLongArray(START_TIMES);
+        long[] endTimeMillis = values.getLongArray(END_TIMES);
+        for (int i = 0; i < stageInts.length; i++) {
+            stages.add(
+                    new Stage(
+                            Instant.ofEpochMilli(startTimeMillis[i]),
+                            Instant.ofEpochMilli(endTimeMillis[i]),
+                            stageInts[i]));
+        }
+        return new SleepSessionRecord.Builder(metadata, startTime, endTime)
+                .setStages(stages)
+                .setNotes(values.getCharSequence(NOTES))
+                .setTitle(values.getCharSequence(TITLE))
+                .setStartZoneOffset(startZoneOffset)
+                .setEndZoneOffset(endZoneOffset)
+                .build();
+    }
+
+    private static DistanceRecord createDistanceRecord(
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
+        double lengthInMeters = values.getDouble(LENGTH_IN_METERS);
+        return new DistanceRecord.Builder(
+                        metadata, startTime, endTime, Length.fromMeters(lengthInMeters))
+                .setStartZoneOffset(startZoneOffset)
+                .setEndZoneOffset(endZoneOffset)
+                .build();
+    }
+
+    private static TotalCaloriesBurnedRecord createTotalCaloriesBurnedRecord(
+            Metadata metadata,
+            Instant startTime,
+            Instant endTime,
+            ZoneOffset startZoneOffset,
+            ZoneOffset endZoneOffset,
+            Bundle values) {
+        double energyInCalories = values.getDouble(ENERGY_IN_CALORIES);
+        return new TotalCaloriesBurnedRecord.Builder(
+                        metadata, startTime, endTime, Energy.fromCalories(energyInCalories))
+                .setStartZoneOffset(startZoneOffset)
+                .setEndZoneOffset(endZoneOffset)
+                .build();
     }
 
     private static Bundle fromMetadata(Metadata metadata) {
@@ -634,6 +868,15 @@ public final class BundleHelper {
         bundle.putString(RECORD_ID, metadata.getId());
         bundle.putString(PACKAGE_NAME, metadata.getDataOrigin().getPackageName());
         bundle.putString(CLIENT_ID, metadata.getClientRecordId());
+        bundle.putBundle(DEVICE, fromDevice(metadata.getDevice()));
+        return bundle;
+    }
+
+    private static Bundle fromDevice(Device device) {
+        Bundle bundle = new Bundle();
+        bundle.putString(MANUFACTURER, device.getManufacturer());
+        bundle.putString(MODEL, device.getModel());
+        bundle.putInt(DEVICE_TYPE, device.getType());
         return bundle;
     }
 
@@ -647,6 +890,20 @@ public final class BundleHelper {
                         metadata.setDataOrigin(
                                 new DataOrigin.Builder().setPackageName(packageName).build()));
         metadata.setClientRecordId(bundle.getString(CLIENT_ID));
+
+        Bundle deviceBundle = bundle.getBundle(DEVICE);
+        ifNotNull(
+                deviceBundle,
+                nonNullDeviceBundle -> {
+                    Device.Builder deviceBuilder = new Device.Builder();
+                    ifNotNull(
+                            nonNullDeviceBundle.getString(MANUFACTURER),
+                            deviceBuilder::setManufacturer);
+                    ifNotNull(nonNullDeviceBundle.getString(MODEL), deviceBuilder::setModel);
+                    deviceBuilder.setType(
+                            nonNullDeviceBundle.getInt(DEVICE_TYPE, Device.DEVICE_TYPE_UNKNOWN));
+                    metadata.setDevice(deviceBuilder.build());
+                });
 
         return metadata.build();
     }

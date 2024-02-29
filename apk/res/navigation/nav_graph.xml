@@ -65,6 +65,19 @@
         android:id="@+id/data_activity"
         app:action="android.health.connect.action.MANAGE_HEALTH_DATA" />
 
+    <activity
+        android:id="@+id/exportFrequencyActivity"
+        android:name="com.android.healthconnect.controller.export.ExportFrequencyActivity"/>
+
+    <fragment
+        android:id="@+id/exportSettingsFragment"
+        android:name="com.android.healthconnect.controller.export.ExportSettingsFragment"
+        android:label="@string/export_settings_screen_title">
+        <action
+            android:id="@+id/action_exportSettingsFragment_to_exportFrequencyActivity"
+            app:destination="@id/exportFrequencyActivity" />
+    </fragment>
+
     <fragment
         android:id="@+id/connectedAppsFragment"
         android:name="com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsFragment"
@@ -98,6 +111,9 @@
         <action
             android:id="@+id/action_connectedApp_to_appData"
             app:destination="@id/appDataFragment" />
+        <action
+            android:id="@+id/action_connectedAppFragment_to_additionalAccessFragment"
+            app:destination="@id/additionalAccessFragment" />
     </fragment>
 
     <fragment
@@ -162,6 +178,9 @@
         <action
             android:id="@+id/action_manageData_to_setUnits"
             app:destination="@+id/setUnitsFragment"/>
+        <action
+            android:id="@+id/action_manageData_to_saveData"
+            app:destination="@+id/exportSettingsFragment" />
     </fragment>
 
     <fragment
@@ -193,6 +212,15 @@
         android:id="@+id/setUnitsFragment"
         android:name="com.android.healthconnect.controller.dataentries.units.UnitsFragment"
         android:label="@string/units_title"/>
+
+    <fragment
+        android:id="@+id/additionalAccessFragment"
+        android:name="com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessFragment"
+        android:label="@string/additional_access_label" >
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
+    </fragment>
 
     <activity
         android:id="@+id/playstore_activity"

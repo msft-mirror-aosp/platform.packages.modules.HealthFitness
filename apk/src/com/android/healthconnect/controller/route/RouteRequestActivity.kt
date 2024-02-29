@@ -47,6 +47,7 @@ import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.shared.map.MapView
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.boldAppName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.RouteRequestElement
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,12 +84,6 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (!featureUtils.isExerciseRouteEnabled()) {
-            Log.e(TAG, "Exercise routes not available, finishing.")
-            finishCancelled()
-            return
-        }
 
         if (sessionIdExtra == null || callingPackage == null) {
             Log.e(TAG, "Invalid Intent Extras, finishing.")
@@ -137,7 +132,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val session = data.session
         val route = session.route!!
 
-        if (session.metadata.dataOrigin.packageName == callingPackage) {
+        if (session.metadata.dataOrigin.packageName == callingPackage &&
+            viewModel.isRouteReadOrWritePermissionGranted(callingPackage)) {
             finishWithResult(route)
             return
         }
@@ -168,9 +164,10 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
                 ExerciseSessionFormatter.Companion.getExerciseType(
                     applicationContext, session.exerciseType)
             else session.title
-        val view = layoutInflater.inflate(R.layout.route_request_dialog, null)
 
-        val title = applicationContext.getString(R.string.request_route_header_title, requester)
+        val view = layoutInflater.inflate(R.layout.route_request_dialog, null)
+        val text = applicationContext.getString(R.string.request_route_header_title, requester)
+        val title = boldAppName(requester, text)
 
         view.findViewById<MapView>(R.id.map_view).setRoute(session.route!!)
         view.findViewById<TextView>(R.id.session_title).text = sessionTitle
