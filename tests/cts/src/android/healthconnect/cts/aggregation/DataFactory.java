@@ -16,15 +16,33 @@
 
 package android.healthconnect.cts.aggregation;
 
+import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
+
+import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Power;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /** Test data factory for aggregations. */
 public final class DataFactory {
+    /**
+     * Returns a {@link ActiveCaloriesBurnedRecord} with given {@code energy} between the given
+     * {@code start} and {@code end} time.
+     */
+    static ActiveCaloriesBurnedRecord getActiveCaloriesBurnedRecord(
+            double energy, Instant start, Instant end) {
+        return new ActiveCaloriesBurnedRecord.Builder(
+                        getEmptyMetadata(), start, end, Energy.fromCalories(energy))
+                .build();
+    }
+
     /**
      * Returns a {@link BasalMetabolicRateRecord} with given {@code power} at the given {@code
      * time}.
@@ -45,5 +63,15 @@ public final class DataFactory {
                         new Metadata.Builder().build(), time, Power.fromWatts(power))
                 .setZoneOffset(offset)
                 .build();
+    }
+
+    /** Returns a {@link TimeInstantRangeFilter} with given {@code start} and {@code end} time. */
+    static TimeInstantRangeFilter getTimeFilter(Instant start, Instant end) {
+        return new TimeInstantRangeFilter.Builder().setStartTime(start).setEndTime(end).build();
+    }
+
+    /** Returns a {@link LocalTimeRangeFilter} with given {@code start} and {@code end} time. */
+    static LocalTimeRangeFilter getTimeFilter(LocalDateTime start, LocalDateTime end) {
+        return new LocalTimeRangeFilter.Builder().setStartTime(start).setEndTime(end).build();
     }
 }

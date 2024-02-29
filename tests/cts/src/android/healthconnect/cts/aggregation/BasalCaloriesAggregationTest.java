@@ -18,6 +18,7 @@ package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.datatypes.BasalMetabolicRateRecord.BASAL_CALORIES_TOTAL;
 import static android.healthconnect.cts.aggregation.DataFactory.getBasalMetabolicRateRecord;
+import static android.healthconnect.cts.aggregation.Utils.assertEnergyWithTolerance;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
@@ -646,10 +647,5 @@ public class BasalCaloriesAggregationTest {
 
     private static WeightRecord getBaseWeightRecord(Instant time, double weight) {
         return new WeightRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(weight)).build();
-    }
-
-    private static void assertEnergyWithTolerance(Energy energy, double expected) {
-        assertThat(energy).isNotNull();
-        assertThat(energy.getInCalories()).isWithin(0.001).of(expected);
     }
 }

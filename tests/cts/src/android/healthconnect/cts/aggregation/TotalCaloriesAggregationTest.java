@@ -18,6 +18,7 @@ package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.datatypes.TotalCaloriesBurnedRecord.ENERGY_TOTAL;
 import static android.healthconnect.cts.aggregation.DataFactory.getBasalMetabolicRateRecord;
+import static android.healthconnect.cts.aggregation.Utils.assertEnergyWithTolerance;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
@@ -283,10 +284,5 @@ public class TotalCaloriesAggregationTest {
                 .setStartZoneOffset(offset)
                 .setEndZoneOffset(offset)
                 .build();
-    }
-
-    private static void assertEnergyWithTolerance(Energy energy, double expected) {
-        assertThat(energy).isNotNull();
-        assertThat(energy.getInCalories()).isWithin(0.001).of(expected);
     }
 }
