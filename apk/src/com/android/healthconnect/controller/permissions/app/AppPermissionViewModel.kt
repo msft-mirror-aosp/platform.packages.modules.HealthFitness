@@ -24,7 +24,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
-import com.android.healthconnect.controller.permissions.additionalaccess.GetAdditionalPermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
@@ -36,12 +37,14 @@ import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.utils.FeatureUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /** View model for {@link ConnectedAppFragment} and {SettingsManageAppPermissionsFragment} . */
 @HiltViewModel
@@ -56,7 +59,7 @@ constructor(
     private val deleteAppDataUseCase: DeleteAppDataUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
-    private val getAdditionalPermissionUseCase: GetAdditionalPermissionUseCase,
+    private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
     private val featureUtils: FeatureUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
@@ -171,15 +174,13 @@ constructor(
         healthPermission: HealthPermission,
         grant: Boolean
     ): Boolean {
-
         try {
             if (grant) {
                 grantPermission(packageName, healthPermission)
             } else {
+                revokePermission(healthPermission, packageName)
                 if (shouldDisplayExerciseRouteDialog(packageName, healthPermission)) {
                     _showDisableExerciseRouteEvent.postValue(true)
-                } else {
-                    revokePermission(healthPermission, packageName)
                 }
             }
 
@@ -208,9 +209,19 @@ constructor(
         packageName: String,
         healthPermission: HealthPermission
     ): Boolean {
-        return featureUtils.isExerciseRouteReadAllEnabled() &&
-            healthPermission.toString() == READ_EXERCISE &&
-            getAdditionalPermissionUseCase(packageName).contains(READ_EXERCISE_ROUTES)
+        if (!featureUtils.isExerciseRouteReadAllEnabled() ||
+            healthPermission.toString() != READ_EXERCISE) {
+            return false
+        }
+
+        return runBlocking {
+            when (val exerciseRouteState = loadExerciseRoutePermissionUseCase(packageName)) {
+                is UseCaseResults.Success -> {
+                    exerciseRouteState.data.exerciseRoutePermissionState == ALWAYS_ALLOW
+                }
+                else -> false
+            }
+        }
     }
 
     fun grantAllPermissions(packageName: String): Boolean {

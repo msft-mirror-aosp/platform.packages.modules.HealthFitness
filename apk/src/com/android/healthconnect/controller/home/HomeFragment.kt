@@ -173,7 +173,8 @@ class HomeFragment : Hilt_HomeFragment() {
         val (migrationUiState, dataRestoreUiState, dataErrorState) = migrationRestoreState
 
         if (dataRestoreUiState == DataRestoreUiState.PENDING) {
-            preferenceScreen.addPreference(getDataRestorePendingBanner())
+            // TODO (b/327170886) uncomment when states are correct
+            // preferenceScreen.addPreference(getDataRestorePendingBanner())
         } else if (migrationUiState in
             listOf(
                 MigrationUiState.ALLOWED_PAUSED,

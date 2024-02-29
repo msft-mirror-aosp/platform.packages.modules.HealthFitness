@@ -132,7 +132,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val session = data.session
         val route = session.route!!
 
-        if (session.metadata.dataOrigin.packageName == callingPackage) {
+        if (session.metadata.dataOrigin.packageName == callingPackage &&
+            viewModel.isRouteReadOrWritePermissionGranted(callingPackage)) {
             finishWithResult(route)
             return
         }
@@ -189,6 +190,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val allowAllButton: Button = view.findViewById<Button>(R.id.route_allow_all_button)
 
         allowAllButton.setOnClickListener {
+            healthConnectLogger.logInteraction(
+                RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALWAYS_ALLOW_BUTTON)
             viewModel.grantReadRoutesPermission(callingPackage)
             finishWithResult(route)
         }
