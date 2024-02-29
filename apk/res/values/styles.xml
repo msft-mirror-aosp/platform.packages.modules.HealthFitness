@@ -164,6 +164,17 @@
         <item name="android:textAppearance">?attr/textAppearanceLabel</item>
     </style>
 
+    <style name="PermissionGrantButtonMid"
+        parent="@android:style/Widget.DeviceDefault.Button.Borderless.Colored">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:background">@drawable/grant_permissions_buttons_mid</item>
+        <item name="android:textColor">@android:color/system_neutral1_900</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabel</item>
+    </style>
+
     <style name="PermissionGrantButtonBottom"
         parent="@android:style/Widget.DeviceDefault.Button.Borderless.Colored">
         <item name="android:layout_width">match_parent</item>

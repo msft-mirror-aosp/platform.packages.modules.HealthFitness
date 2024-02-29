@@ -16,15 +16,17 @@
 
 package com.android.healthconnect.controller.permissions.api
 
+import android.content.pm.PackageManager.FLAG_PERMISSION_USER_FIXED
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Use case to reset health permissions flags for an app. */
+/** Use case to set/clear [FLAG_PERMISSION_USER_FIXED] flag for health permissions for given app. */
 @Singleton
-class MakeHealthPermissionsRequestableUseCase
+class SetHealthPermissionsUserFixedFlagValueUseCase
 @Inject
 constructor(private val healthPermissionManager: HealthPermissionManager) {
-    operator fun invoke(packageName: String, permissions: List<String>) {
-        healthPermissionManager.makeHealthPermissionsRequestable(packageName, permissions)
+    operator fun invoke(packageName: String, permissions: List<String>, value: Boolean) {
+        healthPermissionManager.setHealthPermissionsUserFixedFlagValue(
+            packageName, permissions, value)
     }
 }

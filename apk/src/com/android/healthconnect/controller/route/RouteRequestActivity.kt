@@ -132,7 +132,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val session = data.session
         val route = session.route!!
 
-        if (session.metadata.dataOrigin.packageName == callingPackage) {
+        if (session.metadata.dataOrigin.packageName == callingPackage &&
+            viewModel.isRouteReadOrWritePermissionGranted(callingPackage)) {
             finishWithResult(route)
             return
         }

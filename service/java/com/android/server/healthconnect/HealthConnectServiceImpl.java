@@ -316,14 +316,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void makeHealthPermissionsRequestable(
-            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+    public void setHealthPermissionsUserFixedFlagValue(
+            @NonNull String packageName,
+            @NonNull UserHandle user,
+            List<String> permissions,
+            boolean value) {
         checkParamsNonNull(packageName, user);
         throwIllegalStateExceptionIfDataSyncInProgress();
 
         Trace.traceBegin(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE, TAG_MAKE_PERMISSIONS_REQUESTABLE);
 
-        mPermissionHelper.makeHealthPermissionsRequestable(packageName, user, permissions);
+        mPermissionHelper.setHealthPermissionsUserFixedFlagValue(
+                packageName, user, permissions, value);
 
         Trace.traceEnd(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE);
     }

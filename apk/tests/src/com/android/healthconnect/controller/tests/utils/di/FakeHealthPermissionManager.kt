@@ -39,7 +39,11 @@ class FakeHealthPermissionManager : HealthPermissionManager {
         return emptyMap()
     }
 
-    override fun makeHealthPermissionsRequestable(packageName: String, permissions: List<String>) {
+    override fun setHealthPermissionsUserFixedFlagValue(
+        packageName: String,
+        permissions: List<String>,
+        value: Boolean
+    ) {
         // do nothing
     }
 

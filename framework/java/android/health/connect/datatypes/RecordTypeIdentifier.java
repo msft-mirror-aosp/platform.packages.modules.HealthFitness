@@ -352,6 +352,16 @@ public final class RecordTypeIdentifier {
     public static final int RECORD_TYPE_SKIN_TEMPERATURE = 39;
 
     /**
+     * Record type to capture planned exercise sessions, i.e. training plans. Each record represents
+     * a single planned workout, where the start and end times indicate when the workout should
+     * occur. Naturally, these times may be in the future.
+     *
+     * @see PlannedExerciseSessionRecord
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final int RECORD_TYPE_PLANNED_EXERCISE_SESSION = 40;
+
+    /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
      *
@@ -393,6 +403,7 @@ public final class RecordTypeIdentifier {
                     RECORD_TYPE_BODY_TEMPERATURE,
                     RECORD_TYPE_OVULATION_TEST,
                     RECORD_TYPE_EXERCISE_SESSION,
+                    RECORD_TYPE_PLANNED_EXERCISE_SESSION,
                     RECORD_TYPE_BODY_WATER_MASS,
                     RECORD_TYPE_HEART_RATE_VARIABILITY_RMSSD,
                     RECORD_TYPE_MENSTRUATION_PERIOD,
@@ -443,7 +454,8 @@ public final class RecordTypeIdentifier {
         RECORD_TYPE_MENSTRUATION_PERIOD,
         RECORD_TYPE_INTERMENSTRUAL_BLEEDING,
         RECORD_TYPE_SLEEP_SESSION,
-        RECORD_TYPE_SKIN_TEMPERATURE
+        RECORD_TYPE_SKIN_TEMPERATURE,
+        RECORD_TYPE_PLANNED_EXERCISE_SESSION
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface RecordType {}

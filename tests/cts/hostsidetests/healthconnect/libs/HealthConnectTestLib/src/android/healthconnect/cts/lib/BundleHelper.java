@@ -25,6 +25,7 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseLap;
 import android.health.connect.datatypes.ExerciseRoute;
@@ -85,6 +86,10 @@ public final class BundleHelper {
     private static final String CLIENT_ID = PREFIX + "CLIENT_ID";
     private static final String RECORD_ID = PREFIX + "RECORD_ID";
     private static final String METADATA = PREFIX + "METADATA";
+    private static final String DEVICE = PREFIX + "DEVICE";
+    private static final String DEVICE_TYPE = PREFIX + "DEVICE_TYPE";
+    private static final String MANUFACTURER = PREFIX + "MANUFACTURER";
+    private static final String MODEL = PREFIX + "MODEL";
     private static final String VALUES = PREFIX + "VALUES";
     private static final String COUNT = PREFIX + "COUNT";
     private static final String LENGTH_IN_METERS = PREFIX + "LENGTH_IN_METERS";
@@ -225,8 +230,20 @@ public final class BundleHelper {
         bundle.putString(RECORD_CLASS_NAME, request.getRecordType().getName());
 
         var recordIdFilters = request.getRecordIdFilters();
-        List<String> recordIds = recordIdFilters.stream().map(RecordIdFilter::getId).toList();
-        bundle.putStringArrayList(RECORD_ID, new ArrayList<>(recordIds));
+        bundle.putStringArrayList(
+                RECORD_ID,
+                new ArrayList<>(
+                        recordIdFilters.stream()
+                                .map(RecordIdFilter::getId)
+                                .filter(Objects::nonNull)
+                                .toList()));
+        bundle.putStringArrayList(
+                CLIENT_ID,
+                new ArrayList<>(
+                        recordIdFilters.stream()
+                                .map(RecordIdFilter::getClientRecordId)
+                                .filter(Objects::nonNull)
+                                .toList()));
 
         return bundle;
     }
@@ -237,8 +254,16 @@ public final class BundleHelper {
         String recordClassName = bundle.getString(RECORD_CLASS_NAME);
         var request = new ReadRecordsRequestUsingIds.Builder<>(recordClassForName(recordClassName));
         var recordIds = bundle.getStringArrayList(RECORD_ID);
-        for (String id : recordIds) {
-            request.addId(id);
+        if (recordIds != null) {
+            for (String id : recordIds) {
+                request.addId(id);
+            }
+        }
+        var clientRecordIds = bundle.getStringArrayList(CLIENT_ID);
+        if (clientRecordIds != null) {
+            for (String clientId : clientRecordIds) {
+                request.addClientRecordId(clientId);
+            }
         }
 
         return request.build();
@@ -843,6 +868,15 @@ public final class BundleHelper {
         bundle.putString(RECORD_ID, metadata.getId());
         bundle.putString(PACKAGE_NAME, metadata.getDataOrigin().getPackageName());
         bundle.putString(CLIENT_ID, metadata.getClientRecordId());
+        bundle.putBundle(DEVICE, fromDevice(metadata.getDevice()));
+        return bundle;
+    }
+
+    private static Bundle fromDevice(Device device) {
+        Bundle bundle = new Bundle();
+        bundle.putString(MANUFACTURER, device.getManufacturer());
+        bundle.putString(MODEL, device.getModel());
+        bundle.putInt(DEVICE_TYPE, device.getType());
         return bundle;
     }
 
@@ -856,6 +890,20 @@ public final class BundleHelper {
                         metadata.setDataOrigin(
                                 new DataOrigin.Builder().setPackageName(packageName).build()));
         metadata.setClientRecordId(bundle.getString(CLIENT_ID));
+
+        Bundle deviceBundle = bundle.getBundle(DEVICE);
+        ifNotNull(
+                deviceBundle,
+                nonNullDeviceBundle -> {
+                    Device.Builder deviceBuilder = new Device.Builder();
+                    ifNotNull(
+                            nonNullDeviceBundle.getString(MANUFACTURER),
+                            deviceBuilder::setManufacturer);
+                    ifNotNull(nonNullDeviceBundle.getString(MODEL), deviceBuilder::setModel);
+                    deviceBuilder.setType(
+                            nonNullDeviceBundle.getInt(DEVICE_TYPE, Device.DEVICE_TYPE_UNKNOWN));
+                    metadata.setDevice(deviceBuilder.build());
+                });
 
         return metadata.build();
     }

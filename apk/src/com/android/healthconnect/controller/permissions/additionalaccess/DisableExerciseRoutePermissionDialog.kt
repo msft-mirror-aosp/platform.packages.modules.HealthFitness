@@ -80,7 +80,7 @@ class DisableExerciseRoutePermissionDialog : Hilt_DisableExerciseRoutePermission
                 R.string.exercise_permission_dialog_negative_button,
                 DISABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON) { _, _ ->
                     viewModel.updatePermission(
-                        packageName, fromPermissionString(READ_EXERCISE), true)
+                        packageName, fromPermissionString(READ_EXERCISE), grant = true)
                     dismiss()
                 }
             .setCancelable(false)

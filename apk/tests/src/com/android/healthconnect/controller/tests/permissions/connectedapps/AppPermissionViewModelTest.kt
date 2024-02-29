@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.health.connect.TimeInstantRangeFilter
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
-import com.android.healthconnect.controller.permissions.additionalaccess.GetAdditionalPermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
@@ -76,7 +76,7 @@ class AppPermissionViewModelTest {
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase = mock()
     private val revokePermissionStatusUseCase: RevokeHealthPermissionUseCase = mock()
     private val grantPermissionsUseCase: GrantHealthPermissionUseCase = mock()
-    private val getAdditionalPermissionUseCase: GetAdditionalPermissionUseCase = mock()
+    private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase = mock()
 
     private lateinit var loadAppPermissionsStatusUseCase: LoadAppPermissionsStatusUseCase
     private lateinit var appPermissionViewModel: AppPermissionViewModel
@@ -113,7 +113,7 @@ class AppPermissionViewModelTest {
                 deleteAppDateUseCase,
                 loadAccessDateUseCase,
                 getGrantedHealthPermissionsUseCase,
-                getAdditionalPermissionUseCase,
+                loadExerciseRoutePermissionUseCase,
                 healthPermissionReader,
                 featureUtils,
                 Dispatchers.Main)
