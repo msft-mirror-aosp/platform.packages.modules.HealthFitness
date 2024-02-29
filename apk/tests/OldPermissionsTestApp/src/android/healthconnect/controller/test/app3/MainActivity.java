@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.permissions.api
+package android.healthconnect.controller.test.app4;
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import android.app.Activity;
+import android.health.connect.HealthConnectManager;
 
-/** Use case to reset health permissions flags for an app. */
-@Singleton
-class MakeHealthPermissionsRequestableUseCase
-@Inject
-constructor(private val healthPermissionManager: HealthPermissionManager) {
-    operator fun invoke(packageName: String, permissions: List<String>) {
-        healthPermissionManager.makeHealthPermissionsRequestable(packageName, permissions)
-    }
-}
+/**
+ * This app is used as an external package to test system api {@link HealthConnectManager}
+ * permission-related APIs.
+ */
+public class MainActivity extends Activity {}

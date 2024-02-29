@@ -40,8 +40,7 @@ class DeletionStartedDialogFragment : Hilt_DeletionStartedDialogFragment() {
             "DeletionStartedDialog not supported for AUTO_DELETE_RANGE_NEVER."
         }
         val alertDialog =
-            AlertDialogBuilder(this)
-                .setLogName(AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_CONTAINER)
+            AlertDialogBuilder(this, AutoDeleteElement.AUTO_DELETE_CONFIRMATION_DIALOG_CONTAINER)
                 .setTitle(R.string.deletion_started_title)
                 .setIcon(R.attr.successIcon)
                 .setPositiveButton(

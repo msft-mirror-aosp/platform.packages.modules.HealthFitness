@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"વ્યાયામનો રસ્તો"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"વ્યાયામનો રસ્તો બનાવો"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"વ્યાયામ કરવાની રીત વિશેની માહિતી વાંચવી"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"વ્યાયામના રૂટિન વાંચો"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"તાલીમ સંબંધી પ્લાન"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"તાલીમ સંબંધી પ્લાન"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"તાલીમ સંબંધી પ્લાન વાંચો"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"તાલીમ સંબંધી પ્લાન લખો"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"અંતર"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"અંતર"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"અંતરનો ડેટા વાંચો"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connectમાં સ્ટોર કરેલો ડેટા કઈ ઍપ ઍક્સેસ કરી શકે, તે નિયંત્રિત કરો. કોઈ ઍપ કયો ડેટા વાંચી કે લખી શકે છે, તેનો રિવ્યૂ કરવા માટે તેના પર ટૅપ કરો."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ઍક્સેસ કરવાની મંજૂરી છે"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"ઍક્સેસ કરવાની મંજૂરી નથી"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"અપડેટ કરવી જરૂરી છે"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"સેટિંગ અને સહાય"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"બધી ઍપ માટેનો ઍક્સેસ કાઢી નાખો"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"વાંચવાની મંજૂરી છે"</string>
@@ -665,7 +669,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 ટકો}one{# ટકો}other{# ટકા}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"રદ કરો"</string>
     <string name="units_title" msgid="6504086463237869339">"એકમો"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"ડેટા યુનિટ સેટ કરો"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"અંતર"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"ઊંચાઈ"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"વજન"</string>
@@ -716,8 +719,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"નીચે ખસેડો"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"સૌથી ઉપર ખસેડો"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"સૌથી નીચે ખસેડો"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"પ્રાધાન્યતા સૂચિમાં <xliff:g id="SELECTED_APP">%s</xliff:g>ને ખેંચવા તેમજ તેનો ક્રમ બદલવા માટેનું બટન"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"પ્રાધાન્યતા સૂચિમાંથી <xliff:g id="SELECTED_APP">%s</xliff:g> કાઢી નાખવા માટેનું બટન"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"ક્રમમાં ફેરફાર કરવા માટે બે વાર ટૅપ કરો અને ખેંચો"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"ફિટનેસ, સુખાકારી"</string>
@@ -736,12 +738,9 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"માત્ર એ ઍપ જેમને તમે તમારા વ્યાયામના રસ્તાને ઍક્સેસ કરવાની મંજૂરી આપો છો"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"હું ઍક્સેસ કેવી રીતે મેનેજ કરી શકું?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"તમે Health Connectના સેટિંગમાં જઈને વ્યાયામના રસ્તા માટેના ઍપના ઍક્સેસને મેનેજ કરી શકો છો"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"આ રૂટિનને મંજૂરી આપો"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"તમામ રૂટિનને મંજૂરી આપો"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"મંજૂરી આપશો નહીં"</string>
     <string name="back_button" msgid="780519527385993407">"પાછળ"</string>
     <string name="loading" msgid="2526615755685950317">"લોડ કરી રહ્યાં છીએ…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"એકીકરણની પ્રક્રિયા ચાલુ છે"</string>
@@ -777,9 +776,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect એકીકરણ ફરી શરૂ કરો"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"તમારો ડેટા રાખવા માટે, <xliff:g id="TIME_NEEDED">%1$s</xliff:g>ની અંદર આ પૂર્ણ કરો"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"ઍપ સંબંધિત અપડેટ જરૂરી છે"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect સાથે કાર્ય કરવાનું ચાલુ રાખવા માટે <xliff:g id="APP_NAME">%1$s</xliff:g> અપ ટૂ ડેટ હોવી જરૂરી છે"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect સાથે કાર્ય કરવાનું ચાલુ રાખવા માટે કેટલીક ઍપ અપ ટૂ ડેટ હોવી જરૂરી છે"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect સાથે સિંક કરવાનું ચાલુ રાખવા માટે, <xliff:g id="APP_NAME">%1$s</xliff:g> અપડેટ કરવી જરૂરી છે"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect સાથે સિંક કરવાનું ચાલુ રાખવા માટે, અમુક ઍપ અપડેટ કરવી જરૂરી છે"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"અપડેટ ચેક કરો"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"વધુ જાણો"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connectનું એકીકરણ"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect તમારી Android સિસ્ટમ સાથે એકીકરણ માટે તૈયાર છે. જો તમે હમણાં <xliff:g id="APP_NAME">%1$s</xliff:g>ને ઍક્સેસ આપશો, તો જ્યાં સુધી એકીકરણની પ્રક્રિયા પૂર્ણ ન થાય ત્યાં સુધી કેટલીક સુવિધાઓ કદાચ કામ ન કરે."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect તમારી Android સિસ્ટમ સાથે એકીકરણ માટે તૈયાર છે. જો તમે હમણાં ઍપને ઍક્સેસ આપશો, તો જ્યાં સુધી એકીકરણની પ્રક્રિયા પૂર્ણ ન થાય ત્યાં સુધી કેટલીક સુવિધાઓ કદાચ કામ ન કરે."</string>
@@ -799,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"નવું શું છે"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"હવે તમે Health Connectને સીધા તમારા સેટિંગમાંથી ઍક્સેસ કરી શકો છો. સ્ટોરેજ સ્પેસ ખાલી કરવા માટે, Health Connect ઍપને કોઈપણ સમયે અનઇન્સ્ટૉલ કરો."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"સમજાઈ ગયું"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"રિસ્ટોર કરવાની પ્રક્રિયા ચાલુ છે"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect ડેટા અને પરવાનગીઓ રિસ્ટોર કરી રહ્યું છે. આ પ્રક્રિયા પૂર્ણ થવામાં થોડો સમય લાગી શકે છે."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect દ્વારા રિસ્ટોર કરવાની પ્રક્રિયા ચાલુ છે"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"સમજાઈ ગયું"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"અપડેટ જરૂરી છે"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"તમારો ડેટા રિસ્ટોર કરવાનું ચાલુ રાખતા પહેલાં, તમારા ફોનની સિસ્ટમ અપડેટ કરો."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"હમણાં અપડેટ કરો"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"ડેટાની કુલ સંખ્યા"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"ઍપ સૉર્સ"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"ડેટાની કુલ સંખ્યામાં કેવી રીતે ફેરફાર થઈ શકે છે તે જોવા માટે સૂચિમાં ઍપ સૉર્સ ઉમેરો. આ સૂચિમાંથી કોઈ ઍપ કાઢી નાખવાથી, તે ઍપ કુલ સંખ્યામાં યોગદાન આપતી અટકી જશે, પરંતુ તે હજી પણ રાઇટ પરવાનગી ધરાવશે."</string>

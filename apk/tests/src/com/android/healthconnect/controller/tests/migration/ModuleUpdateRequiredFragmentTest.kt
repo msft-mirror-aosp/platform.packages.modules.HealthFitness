@@ -13,6 +13,9 @@ import com.android.healthconnect.controller.migration.ModuleUpdateRequiredFragme
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.NavigationUtils
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -23,7 +26,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
@@ -32,6 +38,7 @@ class ModuleUpdateRequiredFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @BindValue val navigationUtils: NavigationUtils = Mockito.mock(NavigationUtils::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -42,6 +49,7 @@ class ModuleUpdateRequiredFragmentTest {
     @After
     fun tearDown() {
         Intents.release()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -63,6 +71,13 @@ class ModuleUpdateRequiredFragmentTest {
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Update")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1))
+            .setPageId(PageName.MIGRATION_MODULE_UPDATE_NEEDED_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
     }
 
     @Test
@@ -77,6 +92,8 @@ class ModuleUpdateRequiredFragmentTest {
                 activity.getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
             Truth.assertThat(preferences.getBoolean("Module Update Seen", false)).isTrue()
         }
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
     }
 
     @Test
@@ -89,6 +106,8 @@ class ModuleUpdateRequiredFragmentTest {
         verify(navigationUtils, times(1))
             .navigate(
                 any(), eq(R.id.action_migrationModuleUpdateNeededFragment_to_systemUpdateActivity))
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
     }
 
     @Test
@@ -113,5 +132,7 @@ class ModuleUpdateRequiredFragmentTest {
             .check(matches(isDisplayed()))
         onView(withText("Cancel")).check(matches(isDisplayed()))
         onView(withText("Update")).check(matches(isDisplayed()))
+        verify(healthConnectLogger)
+            .logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_UPDATE_BUTTON)
     }
 }

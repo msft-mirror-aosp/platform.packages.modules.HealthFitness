@@ -17,6 +17,8 @@ package com.android.healthconnect.controller.route
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
+import android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -52,9 +54,6 @@ constructor(
 
     companion object {
         private const val TAG = "ExerciseRouteViewModel"
-        // TODO(b/300270771): use HealthPermissions.READ_EXERCISE_ROUTES when the API becomes
-        // unhidden.
-        private const val READ_EXERCISE_ROUTES = "android.permission.health.READ_EXERCISE_ROUTES"
     }
 
     private val _exerciseSession = MutableLiveData<SessionWithAttribution?>()
@@ -84,6 +83,12 @@ constructor(
         }
     }
 
+    fun isRouteReadOrWritePermissionGranted(packageName: String): Boolean {
+        val grantedPermissions = getGrantedHealthPermissionsUseCase(packageName)
+        val routePermissions = listOf(READ_EXERCISE_ROUTES, WRITE_EXERCISE_ROUTE)
+        return grantedPermissions.any { it in routePermissions }
+    }
+
     fun isReadRoutesPermissionGranted(packageName: String): Boolean {
         val grantedPermissions = getGrantedHealthPermissionsUseCase(packageName)
         return grantedPermissions.contains(READ_EXERCISE_ROUTES)
@@ -91,7 +96,7 @@ constructor(
 
     fun isReadRoutesPermissionUserFixed(packageName: String): Boolean {
         val permission = READ_EXERCISE_ROUTES
-        val flags = getHealthPermissionsFlagsUseCase(packageName, listOf(permission))
+        val flags = getHealthPermissionsFlagsUseCase(packageName, listOf(READ_EXERCISE_ROUTES))
 
         return flags[permission]!!.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0
     }
@@ -103,10 +108,15 @@ constructor(
                     packageName,
                     PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong()))
 
-            return appInfo.requestedPermissions.contains(READ_EXERCISE_ROUTES)
+            if (appInfo.requestedPermissions == null) {
+                Log.e(TAG, "isPermissionDeclared error: no permissions")
+                return false
+            }
+
+            appInfo.requestedPermissions.contains(READ_EXERCISE_ROUTES)
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "isPermissionDeclared error", e)
-            return false
+            false
         }
     }
 
@@ -115,6 +125,10 @@ constructor(
     }
 
     fun isSessionInaccessible(packageName: String, session: ExerciseSessionRecord): Boolean {
+        if (packageName == session.metadata.dataOrigin.packageName) {
+            return false
+        }
+
         val accessLimit = loadAccessDateUseCase(packageName)
 
         return session.startTime.isBefore(accessLimit)
