@@ -146,6 +146,8 @@ public final class HealthPermissions {
      *
      * @hide
      */
+    // TODO (b/325434006): Specify a label for the permission in HealthPermissionsManifest.xml when
+    // exposing this constant. Also search for 325434006 and remove workarounds.
     public static final String READ_HEALTH_DATA_HISTORY =
             "android.permission.health.READ_HEALTH_DATA_HISTORY";
 
