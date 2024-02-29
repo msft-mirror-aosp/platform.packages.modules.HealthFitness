@@ -80,11 +80,11 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
         if (!isHardwareSupported(getDevice())) {
             return;
         }
-        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
-        HostSideTestUtil.restoreRateLimitingFeatureFlag(getDevice());
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
         clearData();
+        // TODO(b/313055175): Do not disable rate limiting once b/300238889 is resolved.
+        HostSideTestUtil.restoreRateLimitingFeatureFlag(getDevice());
         resetTime();
         super.tearDown();
     }

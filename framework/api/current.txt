@@ -93,10 +93,12 @@ package android.health.connect {
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
+    field @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final String READ_PLANNED_EXERCISE = "android.permission.health.READ_PLANNED_EXERCISE";
     field public static final String READ_POWER = "android.permission.health.READ_POWER";
     field public static final String READ_RESPIRATORY_RATE = "android.permission.health.READ_RESPIRATORY_RATE";
     field public static final String READ_RESTING_HEART_RATE = "android.permission.health.READ_RESTING_HEART_RATE";
     field public static final String READ_SEXUAL_ACTIVITY = "android.permission.health.READ_SEXUAL_ACTIVITY";
+    field @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public static final String READ_SKIN_TEMPERATURE = "android.permission.health.READ_SKIN_TEMPERATURE";
     field public static final String READ_SLEEP = "android.permission.health.READ_SLEEP";
     field public static final String READ_SPEED = "android.permission.health.READ_SPEED";
     field public static final String READ_STEPS = "android.permission.health.READ_STEPS";
@@ -129,10 +131,12 @@ package android.health.connect {
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";
+    field @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final String WRITE_PLANNED_EXERCISE = "android.permission.health.WRITE_PLANNED_EXERCISE";
     field public static final String WRITE_POWER = "android.permission.health.WRITE_POWER";
     field public static final String WRITE_RESPIRATORY_RATE = "android.permission.health.WRITE_RESPIRATORY_RATE";
     field public static final String WRITE_RESTING_HEART_RATE = "android.permission.health.WRITE_RESTING_HEART_RATE";
     field public static final String WRITE_SEXUAL_ACTIVITY = "android.permission.health.WRITE_SEXUAL_ACTIVITY";
+    field @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public static final String WRITE_SKIN_TEMPERATURE = "android.permission.health.WRITE_SKIN_TEMPERATURE";
     field public static final String WRITE_SLEEP = "android.permission.health.WRITE_SLEEP";
     field public static final String WRITE_SPEED = "android.permission.health.WRITE_SPEED";
     field public static final String WRITE_STEPS = "android.permission.health.WRITE_STEPS";
@@ -567,6 +571,47 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.ElevationGainedRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
   }
 
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public abstract class ExerciseCompletionGoal {
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.ActiveCaloriesBurnedGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.ActiveCaloriesBurnedGoal(@NonNull android.health.connect.datatypes.units.Energy);
+    method @NonNull public android.health.connect.datatypes.units.Energy getActiveCalories();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.DistanceGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.DistanceGoal(@NonNull android.health.connect.datatypes.units.Length);
+    method @NonNull public android.health.connect.datatypes.units.Length getDistance();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.DurationGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.DurationGoal(@NonNull java.time.Duration);
+    method @NonNull public java.time.Duration getDuration();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.RepetitionsGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.RepetitionsGoal(int);
+    method public int getRepetitions();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.StepsGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.StepsGoal(int);
+    method public int getSteps();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.TotalCaloriesBurnedGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.TotalCaloriesBurnedGoal(@NonNull android.health.connect.datatypes.units.Energy);
+    method @NonNull public android.health.connect.datatypes.units.Energy getTotalCalories();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.UnknownGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    field @NonNull public static final android.health.connect.datatypes.ExerciseCompletionGoal.UnknownGoal INSTANCE;
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.UnspecifiedGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    field @NonNull public static final android.health.connect.datatypes.ExerciseCompletionGoal.UnspecifiedGoal INSTANCE;
+  }
+
   public final class ExerciseLap {
     method @NonNull public java.time.Instant getEndTime();
     method @Nullable public android.health.connect.datatypes.units.Length getLength();
@@ -577,6 +622,47 @@ package android.health.connect.datatypes {
     ctor public ExerciseLap.Builder(@NonNull java.time.Instant, @NonNull java.time.Instant);
     method @NonNull public android.health.connect.datatypes.ExerciseLap build();
     method @NonNull public android.health.connect.datatypes.ExerciseLap.Builder setLength(@NonNull android.health.connect.datatypes.units.Length);
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public abstract class ExercisePerformanceGoal {
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.CadenceGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    ctor public ExercisePerformanceGoal.CadenceGoal(double, double);
+    method public double getMaxRpm();
+    method public double getMinRpm();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.HeartRateGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    ctor public ExercisePerformanceGoal.HeartRateGoal(int, int);
+    method public int getMaxBpm();
+    method public int getMinBpm();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.PowerGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    ctor public ExercisePerformanceGoal.PowerGoal(@NonNull android.health.connect.datatypes.units.Power, @NonNull android.health.connect.datatypes.units.Power);
+    method @NonNull public android.health.connect.datatypes.units.Power getMaxPower();
+    method @NonNull public android.health.connect.datatypes.units.Power getMinPower();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.RateOfPerceivedExertionGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    ctor public ExercisePerformanceGoal.RateOfPerceivedExertionGoal(int);
+    method public int getRpe();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.SpeedGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    ctor public ExercisePerformanceGoal.SpeedGoal(@NonNull android.health.connect.datatypes.units.Velocity, @NonNull android.health.connect.datatypes.units.Velocity);
+    method @NonNull public android.health.connect.datatypes.units.Velocity getMaxSpeed();
+    method @NonNull public android.health.connect.datatypes.units.Velocity getMinSpeed();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.UnknownGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    field @NonNull public static final android.health.connect.datatypes.ExercisePerformanceGoal.UnknownGoal INSTANCE;
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.WeightGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    ctor public ExercisePerformanceGoal.WeightGoal(@NonNull android.health.connect.datatypes.units.Mass);
+    method @NonNull public android.health.connect.datatypes.units.Mass getMass();
   }
 
   public final class ExerciseRoute implements android.os.Parcelable {
@@ -1125,6 +1211,78 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.OxygenSaturationRecord.Builder setZoneOffset(@NonNull java.time.ZoneOffset);
   }
 
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public final class PlannedExerciseBlock {
+    method @Nullable public CharSequence getDescription();
+    method public int getRepetitions();
+    method @NonNull public java.util.List<android.health.connect.datatypes.PlannedExerciseStep> getSteps();
+  }
+
+  public static final class PlannedExerciseBlock.Builder {
+    ctor public PlannedExerciseBlock.Builder(int);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseBlock.Builder addStep(@NonNull android.health.connect.datatypes.PlannedExerciseStep);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseBlock build();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseBlock.Builder clearSteps();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseBlock.Builder setDescription(@Nullable CharSequence);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseBlock.Builder setRepetitions(int);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseBlock.Builder setSteps(@NonNull java.util.List<android.health.connect.datatypes.PlannedExerciseStep>);
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public final class PlannedExerciseSessionRecord extends android.health.connect.datatypes.IntervalRecord {
+    method @NonNull public java.util.List<android.health.connect.datatypes.PlannedExerciseBlock> getBlocks();
+    method @Nullable public String getCompletedExerciseSessionId();
+    method @NonNull public java.time.Duration getDuration();
+    method public int getExerciseType();
+    method @Nullable public CharSequence getNotes();
+    method @NonNull public java.time.LocalDate getStartDate();
+    method @Nullable public CharSequence getTitle();
+    method public boolean hasExplicitTime();
+  }
+
+  public static final class PlannedExerciseSessionRecord.Builder {
+    ctor public PlannedExerciseSessionRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, int, @NonNull java.time.Instant, @NonNull java.time.Instant);
+    ctor public PlannedExerciseSessionRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, int, @NonNull java.time.LocalDate, @NonNull java.time.Duration);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder addBlock(@NonNull android.health.connect.datatypes.PlannedExerciseBlock);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord build();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder clearBlocks();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder clearEndZoneOffset();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder clearStartZoneOffset();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setBlocks(@NonNull java.util.List<android.health.connect.datatypes.PlannedExerciseBlock>);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setEndTime(@NonNull java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setExerciseType(int);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setMetadata(@NonNull android.health.connect.datatypes.Metadata);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setNotes(@Nullable CharSequence);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setStartTime(@NonNull java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseSessionRecord.Builder setTitle(@Nullable CharSequence);
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public final class PlannedExerciseStep {
+    method @NonNull public android.health.connect.datatypes.ExerciseCompletionGoal getCompletionGoal();
+    method @Nullable public CharSequence getDescription();
+    method public int getExerciseCategory();
+    method public int getExerciseType();
+    method @NonNull public java.util.List<android.health.connect.datatypes.ExercisePerformanceGoal> getPerformanceGoals();
+    field public static final int EXERCISE_CATEGORY_ACTIVE = 3; // 0x3
+    field public static final int EXERCISE_CATEGORY_COOLDOWN = 4; // 0x4
+    field public static final int EXERCISE_CATEGORY_RECOVERY = 5; // 0x5
+    field public static final int EXERCISE_CATEGORY_REST = 2; // 0x2
+    field public static final int EXERCISE_CATEGORY_UNKNOWN = 0; // 0x0
+    field public static final int EXERCISE_CATEGORY_WARMUP = 1; // 0x1
+  }
+
+  public static final class PlannedExerciseStep.Builder {
+    ctor public PlannedExerciseStep.Builder(int, int, @NonNull android.health.connect.datatypes.ExerciseCompletionGoal);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder addPerformanceGoal(@NonNull android.health.connect.datatypes.ExercisePerformanceGoal);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep build();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder clearPerformanceGoals();
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder setCompletionGoal(@NonNull android.health.connect.datatypes.ExerciseCompletionGoal);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder setDescription(@Nullable CharSequence);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder setExerciseCategory(int);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder setExerciseType(int);
+    method @NonNull public android.health.connect.datatypes.PlannedExerciseStep.Builder setPerformanceGoals(@NonNull java.util.List<android.health.connect.datatypes.ExercisePerformanceGoal>);
+  }
+
   public final class PowerRecord extends android.health.connect.datatypes.IntervalRecord {
     method @NonNull public java.util.List<android.health.connect.datatypes.PowerRecord.PowerRecordSample> getSamples();
     field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.Power> POWER_AVG;
@@ -1191,6 +1349,37 @@ package android.health.connect.datatypes {
     field public static final int PROTECTION_USED_PROTECTED = 1; // 0x1
     field public static final int PROTECTION_USED_UNKNOWN = 0; // 0x0
     field public static final int PROTECTION_USED_UNPROTECTED = 2; // 0x2
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public final class SkinTemperatureRecord extends android.health.connect.datatypes.IntervalRecord {
+    method @Nullable public android.health.connect.datatypes.units.Temperature getBaseline();
+    method @NonNull public java.util.List<android.health.connect.datatypes.SkinTemperatureRecord.Delta> getDeltas();
+    method public int getMeasurementLocation();
+    field public static final int MEASUREMENT_LOCATION_FINGER = 1; // 0x1
+    field public static final int MEASUREMENT_LOCATION_TOE = 2; // 0x2
+    field public static final int MEASUREMENT_LOCATION_UNKNOWN = 0; // 0x0
+    field public static final int MEASUREMENT_LOCATION_WRIST = 3; // 0x3
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.TemperatureDelta> SKIN_TEMPERATURE_DELTA_AVG;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.TemperatureDelta> SKIN_TEMPERATURE_DELTA_MAX;
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<android.health.connect.datatypes.units.TemperatureDelta> SKIN_TEMPERATURE_DELTA_MIN;
+  }
+
+  public static final class SkinTemperatureRecord.Builder {
+    ctor public SkinTemperatureRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord build();
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder clearEndZoneOffset();
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder clearStartZoneOffset();
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setBaseline(@Nullable android.health.connect.datatypes.units.Temperature);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setDeltas(@NonNull java.util.List<android.health.connect.datatypes.SkinTemperatureRecord.Delta>);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setMeasurementLocation(int);
+    method @NonNull public android.health.connect.datatypes.SkinTemperatureRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+  }
+
+  public static final class SkinTemperatureRecord.Delta {
+    ctor public SkinTemperatureRecord.Delta(@NonNull android.health.connect.datatypes.units.TemperatureDelta, @NonNull java.time.Instant);
+    method @NonNull public android.health.connect.datatypes.units.TemperatureDelta getDelta();
+    method @NonNull public java.time.Instant getTime();
   }
 
   public final class SleepSessionRecord extends android.health.connect.datatypes.IntervalRecord {
@@ -1400,6 +1589,12 @@ package android.health.connect.datatypes.units {
   public final class Temperature implements java.lang.Comparable<android.health.connect.datatypes.units.Temperature> {
     method public int compareTo(@NonNull android.health.connect.datatypes.units.Temperature);
     method @NonNull public static android.health.connect.datatypes.units.Temperature fromCelsius(double);
+    method public double getInCelsius();
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.skin_temperature") public final class TemperatureDelta implements java.lang.Comparable<android.health.connect.datatypes.units.TemperatureDelta> {
+    method public int compareTo(@NonNull android.health.connect.datatypes.units.TemperatureDelta);
+    method @NonNull public static android.health.connect.datatypes.units.TemperatureDelta fromCelsius(double);
     method public double getInCelsius();
   }
 

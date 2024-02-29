@@ -28,11 +28,13 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Class that reads permissions declared by Health Connect clients as a string array in their XML
  * resources. See android.health.connect.HealthPermissions
  */
+@Singleton
 class HealthPermissionReader
 @Inject
 constructor(
@@ -51,19 +53,23 @@ constructor(
                 HealthPermissions.READ_SLEEP,
                 HealthPermissions.WRITE_SLEEP,
             )
-        private val exerciseRoutePermissions =
-            listOf(
-                HealthPermissions.WRITE_EXERCISE_ROUTE,
-            )
 
         private val backgroundReadPermissions =
             listOf(
                 // TODO (b/300270771) use the permission reference.
                 "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND",
             )
+
+        /** Special health permissions that don't represent health data types. */
+        private val additionalPermissions =
+            setOf(
+                HealthPermissions.READ_EXERCISE_ROUTES,
+                // TODO (b/300270771) use the permission reference.
+                "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND",
+            )
     }
 
-    suspend fun getAppsWithHealthPermissions(): List<String> {
+    fun getAppsWithHealthPermissions(): List<String> {
         return try {
             val appsWithDeclaredIntent =
                 context.packageManager
@@ -72,25 +78,61 @@ constructor(
                     .map { it.activityInfo.packageName }
                     .distinct()
 
-            appsWithDeclaredIntent.filter { getDeclaredPermissions(it).isNotEmpty() }
+            appsWithDeclaredIntent.filter { getDeclaredHealthPermissions(it).isNotEmpty() }
         } catch (e: Exception) {
             emptyList()
         }
     }
 
-    suspend fun getDeclaredPermissions(packageName: String): List<HealthPermission> {
+    /**
+     * Identifies apps that have the old permissions declared - they need to update before
+     * continuing to sync with Health Connect.
+     */
+    fun getAppsWithOldHealthPermissions(): List<String> {
+        return try {
+            val oldPermissionsRationale = "androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE"
+            val oldPermissionsMetaDataKey = "health_permissions"
+            val intent = Intent(oldPermissionsRationale)
+            val resolveInfoList =
+                context.packageManager
+                    .queryIntentActivities(intent, PackageManager.GET_META_DATA)
+                    .filter { resolveInfo -> resolveInfo.activityInfo != null }
+                    .filter { resolveInfo -> resolveInfo.activityInfo.metaData != null }
+                    .filter { resolveInfo ->
+                        resolveInfo.activityInfo.metaData.getInt(oldPermissionsMetaDataKey) != -1
+                    }
+
+            resolveInfoList.map { it.activityInfo.packageName }.distinct()
+        } catch (e: NameNotFoundException) {
+            emptyList()
+        }
+    }
+
+    /** Returns a list of health permissions that can be rendered in permission list in our UI. */
+    fun getDeclaredHealthPermissions(packageName: String): List<HealthPermission> {
+        return try {
+            val permissions = getHealthPermissions(packageName)
+            permissions.mapNotNull { permission -> parsePermission(permission) }
+        } catch (e: NameNotFoundException) {
+            emptyList()
+        }
+    }
+
+    /** Returns a list of health permissions that are declared by an app. */
+    fun getHealthPermissions(packageName: String): List<String> {
         return try {
             val appInfo =
                 context.packageManager.getPackageInfo(
                     packageName, PackageInfoFlags.of(PACKAGE_INFO_PERMISSIONS_FLAG))
             val healthPermissions = getHealthPermissions()
-            appInfo.requestedPermissions
-                ?.filter { it in healthPermissions }
-                ?.mapNotNull { permission -> parsePermission(permission) }
-                .orEmpty()
+            appInfo.requestedPermissions?.filter { it in healthPermissions }.orEmpty()
         } catch (e: NameNotFoundException) {
             emptyList()
         }
+    }
+
+    fun getAdditionalPermissions(packageName: String): List<String> {
+        return getHealthPermissions(packageName).filter { perm -> isAdditionalPermission(perm) }
     }
 
     fun isRationalIntentDeclared(packageName: String): Boolean {
@@ -127,26 +169,25 @@ constructor(
         return permissions.filterNot { permission -> shouldHidePermission(permission) }
     }
 
+    fun isAdditionalPermission(permission: String): Boolean {
+        return additionalPermissions.contains(permission)
+    }
+
     private fun shouldHidePermission(permission: String): Boolean {
-        return shouldHideExerciseRoute(permission) ||
-            shouldHideReadExerciseRoutes(permission) ||
-            shouldHideSessionTypes(permission) ||
+        return shouldHideSessionTypes(permission) ||
             shouldHideBackgroundReadPermission(permission) ||
-            shouldHideSkinTemperaturePermissions(permission)
-    }
-
-    private fun shouldHideExerciseRoute(permission: String): Boolean {
-        return permission in exerciseRoutePermissions && !featureUtils.isExerciseRouteEnabled()
-    }
-
-    private fun shouldHideReadExerciseRoutes(permission: String): Boolean {
-        return permission == HealthPermissions.READ_EXERCISE_ROUTES
+            shouldHideSkinTemperaturePermissions(permission) ||
+            shouldHidePlannedExercisePermissions(permission)
     }
 
     private fun shouldHideSkinTemperaturePermissions(permission: String): Boolean {
-        // TODO(b/319602927): use skin temperature permissions when the API becomes unhidden.
-        return permission == "android.permission.health.READ_SKIN_TEMPERATURE" ||
-            permission == "android.permission.health.WRITE_SKIN_TEMPERATURE"
+        return permission == HealthPermissions.READ_SKIN_TEMPERATURE ||
+            permission == HealthPermissions.WRITE_SKIN_TEMPERATURE
+    }
+
+    private fun shouldHidePlannedExercisePermissions(permission: String): Boolean {
+        return permission == HealthPermissions.READ_PLANNED_EXERCISE ||
+            permission == HealthPermissions.WRITE_PLANNED_EXERCISE
     }
 
     private fun shouldHideSessionTypes(permission: String): Boolean {

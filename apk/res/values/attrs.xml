@@ -74,11 +74,15 @@
     <!-- Migration -->
     <attr name="moreSpaceNeededIcon" format="reference"/>
     <attr name="updateNeededIcon" format="reference"/>
+    <attr name="settingsAlertIcon" format="reference"/>
 
     <!-- Data sources & priority -->
     <attr name="addIcon" format="reference"/>
     <attr name="editIcon" format="reference"/>
     <attr name="closeIcon" format="reference"/>
+
+    <!-- Export -->
+    <attr name="repeatIcon" format="reference"/>
 
     <!-- END REGION -->
 

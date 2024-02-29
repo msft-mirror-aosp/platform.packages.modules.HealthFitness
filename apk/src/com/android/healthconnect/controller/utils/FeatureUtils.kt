@@ -12,8 +12,6 @@ import javax.inject.Singleton
 interface FeatureUtils {
     fun isSessionTypesEnabled(): Boolean
 
-    fun isExerciseRouteEnabled(): Boolean
-
     fun isExerciseRouteReadAllEnabled(): Boolean
 
     fun isEntryPointsEnabled(): Boolean
@@ -54,13 +52,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_SESSIONS_TYPE_ENABLED, true)
 
-    private var isExerciseRouteEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_EXERCISE_ROUTE_ENABLED, true)
-
-    private var isExerciseRouteReadAllEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED, true)
+    private var isExerciseRouteReadAllEnabled = true
 
     private var isEntryPointsEnabled =
         DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_ENTRY_POINTS_ENABLED, true)
@@ -90,12 +82,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     override fun isSessionTypesEnabled(): Boolean {
         synchronized(lock) {
             return isSessionTypesEnabled
-        }
-    }
-
-    override fun isExerciseRouteEnabled(): Boolean {
-        synchronized(lock) {
-            return isExerciseRouteEnabled
         }
     }
 
@@ -131,9 +117,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
             for (name in properties.keyset) {
                 when (name) {
-                    PROPERTY_EXERCISE_ROUTE_ENABLED ->
-                        isExerciseRouteEnabled =
-                            properties.getBoolean(PROPERTY_EXERCISE_ROUTE_ENABLED, true)
                     PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED -> {
                         isExerciseRouteReadAllEnabled =
                             properties.getBoolean(PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED, true)

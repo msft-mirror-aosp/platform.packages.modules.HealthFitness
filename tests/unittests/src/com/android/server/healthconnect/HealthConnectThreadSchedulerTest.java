@@ -135,4 +135,14 @@ public class HealthConnectThreadSchedulerTest {
         Truth.assertThat(mForegroundTaskSchedulerCompletedJobs).isEqualTo(0);
         Truth.assertThat(mBackgroundTaskSchedulerCompletedJobs).isEqualTo(0);
     }
+
+    @Test
+    public void testScheduleAfterTheSchedulersAreShutdown_expectNoException() {
+        HealthConnectThreadScheduler.shutdownThreadPools();
+
+        HealthConnectThreadScheduler.schedule(mContext, () -> {}, Process.myUid(), false);
+        HealthConnectThreadScheduler.schedule(mContext, () -> {}, Process.myUid(), true);
+        HealthConnectThreadScheduler.scheduleInternalTask(() -> {});
+        HealthConnectThreadScheduler.scheduleControllerTask(() -> {});
+    }
 }

@@ -56,12 +56,14 @@ public class HealthPermissionsTest {
     // sets.
     private static final Set<String> ALL_EXPECTED_HEALTH_PERMISSIONS =
             Set.of(
+                    HealthPermissions.READ_HEALTH_DATA_HISTORY,
                     HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
                     HealthPermissions.READ_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.READ_DISTANCE,
                     HealthPermissions.READ_ELEVATION_GAINED,
                     HealthPermissions.READ_EXERCISE,
                     HealthPermissions.READ_EXERCISE_ROUTES,
+                    HealthPermissions.READ_PLANNED_EXERCISE,
                     HealthPermissions.READ_FLOORS_CLIMBED,
                     HealthPermissions.READ_STEPS,
                     HealthPermissions.READ_TOTAL_CALORIES_BURNED,
@@ -99,6 +101,7 @@ public class HealthPermissionsTest {
                     HealthPermissions.WRITE_ELEVATION_GAINED,
                     HealthPermissions.WRITE_EXERCISE,
                     HealthPermissions.WRITE_EXERCISE_ROUTE,
+                    HealthPermissions.WRITE_PLANNED_EXERCISE,
                     HealthPermissions.WRITE_FLOORS_CLIMBED,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.WRITE_TOTAL_CALORIES_BURNED,
