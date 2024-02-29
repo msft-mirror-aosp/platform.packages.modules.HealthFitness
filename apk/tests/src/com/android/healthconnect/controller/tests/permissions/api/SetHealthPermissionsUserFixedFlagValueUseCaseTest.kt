@@ -19,30 +19,39 @@ package com.android.healthconnect.controller.tests.permissions.api
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.api.MakeHealthPermissionsRequestableUseCase
+import com.android.healthconnect.controller.permissions.api.SetHealthPermissionsUserFixedFlagValueUseCase
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 
-class MakeHealthPermissionsRequestableUseCaseTest {
+class SetHealthPermissionsUserFixedFlagValueUseCaseTest {
     private lateinit var context: Context
-    private lateinit var useCase: MakeHealthPermissionsRequestableUseCase
+    private lateinit var useCase: SetHealthPermissionsUserFixedFlagValueUseCase
     private val healthPermissionManager: HealthPermissionManager =
         Mockito.mock(HealthPermissionManager::class.java)
 
     @Before
     fun setup() {
         context = InstrumentationRegistry.getInstrumentation().context
-        useCase = MakeHealthPermissionsRequestableUseCase(healthPermissionManager)
+        useCase = SetHealthPermissionsUserFixedFlagValueUseCase(healthPermissionManager)
     }
 
     @Test
-    fun invoke_callsHealthPermissionManager() {
-        useCase.invoke("TEST_APP", listOf("PERMISSION_1", "PERMISSION_2", "PERMISSION_3"))
+    fun invoke_setFlag_callsHealthPermissionManager() {
+        useCase.invoke("TEST_APP", listOf("PERMISSION_1", "PERMISSION_2", "PERMISSION_3"), true)
 
         verify(healthPermissionManager)
-            .makeHealthPermissionsRequestable(
-                "TEST_APP", listOf("PERMISSION_1", "PERMISSION_2", "PERMISSION_3"))
+            .setHealthPermissionsUserFixedFlagValue(
+                "TEST_APP", listOf("PERMISSION_1", "PERMISSION_2", "PERMISSION_3"), true)
+    }
+
+    @Test
+    fun invoke_clearFlag_callsHealthPermissionManager() {
+        useCase.invoke("TEST_APP", listOf("PERMISSION_1", "PERMISSION_2"), false)
+
+        verify(healthPermissionManager)
+            .setHealthPermissionsUserFixedFlagValue(
+                "TEST_APP", listOf("PERMISSION_1", "PERMISSION_2"), false)
     }
 }

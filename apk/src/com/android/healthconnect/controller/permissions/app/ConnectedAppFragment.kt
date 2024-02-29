@@ -38,7 +38,6 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
@@ -48,6 +47,8 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.START_DEL
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
@@ -60,17 +61,19 @@ import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
+import com.android.healthconnect.controller.shared.children
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
-import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
+import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
@@ -89,6 +92,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         private const val WRITE_CATEGORY = "write_permission_category"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_app"
         private const val FOOTER_KEY = "connected_app_footer"
+        private const val KEY_ADDITIONAL_ACCESS = "additional_access"
+        private const val DISABLE_EXERCISE_ROUTE_DIALOG_TAG = "disable_exercise_route"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
 
@@ -102,44 +107,25 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
     private var packageName: String = ""
     private var appName: String = ""
-    private val appPermissionViewModel: AppPermissionViewModel by viewModels()
+    private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
+    private val additionalAccessViewModel: AdditionalAccessViewModel by activityViewModels()
     private val permissionMap: MutableMap<HealthPermission, HealthSwitchPreference> = mutableMapOf()
 
-    private val header: AppHeaderPreference? by lazy {
-        preferenceScreen.findPreference(PERMISSION_HEADER)
-    }
-
-    private val allowAllPreference: HealthMainSwitchPreference? by lazy {
-        preferenceScreen.findPreference(ALLOW_ALL_PREFERENCE)
-    }
-
-    private val mReadPermissionCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(READ_CATEGORY)
-    }
-
-    private val mWritePermissionCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(WRITE_CATEGORY)
-    }
-
-    private val mManageDataCategory: PreferenceGroup? by lazy {
-        preferenceScreen.findPreference(MANAGE_DATA_PREFERENCE_KEY)
-    }
-
-    private val mConnectedAppFooter: FooterPreference? by lazy {
-        preferenceScreen.findPreference(FOOTER_KEY)
-    }
-
-    private val dateFormatter: LocalDateTimeFormatter by lazy {
-        LocalDateTimeFormatter(requireContext())
-    }
+    private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
+    private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
+    private val readPermissionCategory: PreferenceGroup by pref(READ_CATEGORY)
+    private val writePermissionCategory: PreferenceGroup by pref(WRITE_CATEGORY)
+    private val manageDataCategory: PreferenceGroup by pref(MANAGE_DATA_PREFERENCE_KEY)
+    private val connectedAppFooter: FooterPreference by pref(FOOTER_KEY)
+    private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.connected_app_screen, rootKey)
 
-        allowAllPreference?.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
-        allowAllPreference?.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
+        allowAllPreference.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
+        allowAllPreference.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
 
         if (childFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETION) == null) {
             childFragmentManager.commitNow { add(DeletionFragment(), FRAGMENT_TAG_DELETION) }
@@ -184,6 +170,13 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             }
         }
 
+        appPermissionViewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
+            if (event.shouldShowDialog) {
+                DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
+                    .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
+            }
+        }
+
         setupAllowAllPreference()
         setupManageDataPreferenceCategory()
         setupHeader()
@@ -192,7 +185,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
     private fun setupHeader() {
         appPermissionViewModel.appInfo.observe(viewLifecycleOwner) { appMetadata ->
-            header?.apply {
+            header.apply {
                 icon = appMetadata.icon
                 title = appMetadata.appName
             }
@@ -200,13 +193,11 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     }
 
     private fun setupManageDataPreferenceCategory() {
-        mManageDataCategory?.removeAll()
+        manageDataCategory.removeAll()
         if (featureUtils.isNewInformationArchitectureEnabled()) {
-            mManageDataCategory?.addPreference(
+            manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
                     it.title = getString(R.string.see_app_data)
-                    it.icon =
-                        AttributeResolver.getDrawable(requireContext(), R.attr.dataAndAccessIcon)
                     it.setOnPreferenceClickListener {
                         findNavController()
                             .navigate(
@@ -217,11 +208,10 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                     }
                 })
         } else {
-            mManageDataCategory?.addPreference(
+            manageDataCategory.addPreference(
                 HealthPreference(requireContext()).also {
                     it.logName = AppAccessElement.DELETE_APP_DATA_BUTTON
                     it.title = getString(R.string.delete_app_data)
-                    it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.deleteIcon)
                     it.setOnPreferenceClickListener {
                         val deletionType = DeletionType.DeletionTypeAppData(packageName, appName)
                         childFragmentManager.setFragmentResult(
@@ -230,6 +220,30 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                     }
                 })
         }
+        additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
+        additionalAccessViewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
+            if (state.isValid() && shouldAddAdditionalAccessPref()) {
+                val additionalAccessPref =
+                    HealthPreference(requireContext()).also {
+                        it.key = KEY_ADDITIONAL_ACCESS
+                        it.logName = AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
+                        it.setTitle(R.string.additional_access_label)
+                        it.setOnPreferenceClickListener { _ ->
+                            val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
+                            findNavController()
+                                .navigate(
+                                    R.id.action_connectedAppFragment_to_additionalAccessFragment,
+                                    extras)
+                            true
+                        }
+                    }
+                manageDataCategory.addPreference(additionalAccessPref)
+            }
+        }
+    }
+
+    private fun shouldAddAdditionalAccessPref(): Boolean {
+        return manageDataCategory.children.none { it.key == KEY_ADDITIONAL_ACCESS }
     }
 
     private val onSwitchChangeListener = OnMainSwitchChangeListener { switchView, isChecked ->
@@ -245,18 +259,18 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     }
 
     private fun setupAllowAllPreference() {
-        allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
+        allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
         appPermissionViewModel.allAppPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted
             ->
-            allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
-            allowAllPreference?.isChecked = isAllGranted
-            allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
+            allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
+            allowAllPreference.isChecked = isAllGranted
+            allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
         }
     }
 
     private fun showRevokeAllPermissions() {
         childFragmentManager.setFragmentResultListener(DISCONNECT_CANCELED_EVENT, this) { _, _ ->
-            allowAllPreference?.isChecked = true
+            allowAllPreference.isChecked = true
         }
 
         childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
@@ -273,8 +287,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     }
 
     private fun updatePermissions(permissions: List<HealthPermission>) {
-        mReadPermissionCategory?.removeAll()
-        mWritePermissionCategory?.removeAll()
+        readPermissionCategory.removeAll()
+        writePermissionCategory.removeAll()
         permissionMap.clear()
 
         permissions
@@ -285,9 +299,9 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             .forEach { permission ->
                 val category =
                     if (permission.permissionsAccessType == PermissionsAccessType.READ) {
-                        mReadPermissionCategory
+                        readPermissionCategory
                     } else {
-                        mWritePermissionCategory
+                        writePermissionCategory
                     }
 
                 val preference =
@@ -317,11 +331,11 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                         }
                     }
                 permissionMap[permission] = preference
-                category?.addPreference(preference)
+                category.addPreference(preference)
             }
 
-        mReadPermissionCategory?.apply { isVisible = (preferenceCount != 0) }
-        mWritePermissionCategory?.apply { isVisible = (preferenceCount != 0) }
+        readPermissionCategory.apply { isVisible = (preferenceCount != 0) }
+        writePermissionCategory.apply { isVisible = (preferenceCount != 0) }
     }
 
     private fun setupFooter() {
@@ -352,12 +366,12 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             }
         }
 
-        mConnectedAppFooter?.title = title
-        mConnectedAppFooter?.setContentDescription(contentDescription)
+        connectedAppFooter.title = title
+        connectedAppFooter.setContentDescription(contentDescription)
         if (healthPermissionReader.isRationalIntentDeclared(packageName)) {
-            mConnectedAppFooter?.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
+            connectedAppFooter.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
             logger.logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
-            mConnectedAppFooter?.setLearnMoreAction {
+            connectedAppFooter.setLearnMoreAction {
                 logger.logInteraction(AppAccessElement.PRIVACY_POLICY_LINK)
                 val startRationaleIntent =
                     healthPermissionReader.getApplicationRationaleIntent(packageName)

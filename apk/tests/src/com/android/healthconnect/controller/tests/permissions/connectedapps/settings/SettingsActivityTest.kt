@@ -22,7 +22,7 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -82,11 +82,13 @@ class SettingsActivityTest {
         }
         showOnboarding(context, false)
 
-
         // Needed for the fragment
         whenever(viewModel.revokeAllPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
+        whenever(viewModel.showDisableExerciseRouteEvent)
+            .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
+
         whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
@@ -117,9 +119,11 @@ class SettingsActivityTest {
         intent.putExtras(bundle)
 
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { false }
-        whenever(viewModel.shouldNavigateToFragment).then { MutableLiveData(false) }
+        whenever(viewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)).then {
+            false
+        }
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             Thread.sleep(4_000) // Need to wait for Activity to close before checking state
             Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
         }
@@ -133,9 +137,11 @@ class SettingsActivityTest {
         intent.putExtras(bundle)
 
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
-        whenever(viewModel.shouldNavigateToFragment).then { MutableLiveData(true) }
+        whenever(viewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)).then {
+            true
+        }
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         }
     }
@@ -148,9 +154,11 @@ class SettingsActivityTest {
         intent.putExtras(bundle)
 
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { false }
-        whenever(viewModel.shouldNavigateToFragment).then { MutableLiveData(true) }
+        whenever(viewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)).then {
+            true
+        }
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         }
     }
@@ -159,7 +167,7 @@ class SettingsActivityTest {
     fun settingsActivity_navigatesToManagePermissionsFragment_ifNoPackageName() {
         val intent = Intent(context, SettingsActivity::class.java)
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             onView(
                     withText(
                         "Apps with this permission can read and write your" +

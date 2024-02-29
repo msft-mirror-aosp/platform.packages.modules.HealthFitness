@@ -55,3 +55,21 @@ android_app {
     ],
     apex_available: ["com.android.healthfitness"],
 }
+
+android_app {
+    name: "HealthConnectToolbox2",
+    sdk_version: "module_current",
+    min_sdk_version: "34",
+    rename_resources_package: false,
+    updatable: true,
+    package_name: "com.android.healthconnect.testapps.toolbox2",
+    manifest: "AndroidManifest2.xml",
+    additional_manifests: [
+        "AndroidManifest.xml",
+    ],
+    certificate: "platform",
+    static_libs: [
+        "HealthConnectToolboxLibrary"
+    ],
+    apex_available: ["com.android.healthfitness"],
+}

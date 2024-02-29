@@ -107,6 +107,15 @@ class PermissionsFragmentTest {
         }
         launchFragment<PermissionsFragment>(bundleOf())
 
+        onView(withText("Allow “$TEST_APP_NAME” to access Health Connect?"))
+        onView(withText("Choose data you want this app to read or write to Health Connect"))
+        onView(
+            withText(
+                "If you give read access, this app can read new data and data from the past 30 days"))
+        onView(
+            withText(
+                "You can learn how “$TEST_APP_NAME” handles your data in the developer's privacy policy"))
+
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(

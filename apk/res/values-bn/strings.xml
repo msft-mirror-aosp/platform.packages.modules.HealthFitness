@@ -97,14 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"ব্যায়ামের পদ্ধতি লিখুন"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"ব্যায়ামের রুটিন দেখা"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"ব্যায়ামের রুট পড়ুন"</string>
-    <!-- no translation found for planned_exercise_uppercase_label (3315909901236811375) -->
-    <skip />
-    <!-- no translation found for planned_exercise_lowercase_label (7642993032791009809) -->
-    <skip />
-    <!-- no translation found for planned_exercise_read_content_description (3240286968325192534) -->
-    <skip />
-    <!-- no translation found for planned_exercise_write_content_description (8146488636094126823) -->
-    <skip />
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"ট্রেনিং প্ল্যান"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"ট্রেনিং প্ল্যান"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"ট্রেনিং প্ল্যান দেখার অনুমতি"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"ট্রেনিং প্ল্যান এডিট করার অনুমতি"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"দূরত্ব"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"দূরত্ব"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"দূরত্ব সংক্রান্ত ডেটা দেখুন"</string>
@@ -803,6 +799,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"নতুন কী রয়েছে"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"আপনি এখন সেটিংস থেকে সরাসরি Health Connect অ্যাক্সেস করতে পারবেন। স্টোরেজ স্পেস খালি করতে, যেকোনও সময় Health Connect অ্যাপ আনইনস্টল করুন।"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"বুঝেছি"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"ফিরিয়ে আনার প্রসেস চলছে"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect ডেটা ও অনুমতি ফিরিয়ে আনছে। এটি সম্পূর্ণ হতে কিছুটা সময় লাগতে পারে।"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect-এর ডেটা ফিরিয়ে আনার প্রসেস চলছে"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"বুঝেছি"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"আপডেট করতে হবে"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"আপনার ডেটা ফিরিয়ে আনা চালিয়ে যাওয়ার আগে, ফোনের সিস্টেম আপডেট করুন।"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"এখনই আপডেট করুন"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"ডেটা টোটাল"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"অ্যাপ সোর্স"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"ডেটা টোটাল কীভাবে পরিবর্তন হয় তা দেখতে, তালিকায় অ্যাপ সোর্স যোগ করুন। এই তালিকা থেকে কোনও অ্যাপ সরিয়ে দিলে টোটালে এটি আর কন্ট্রিবিউট করতে পারবে না, কিন্তু এরপরেও এটির রাইট পার্মিশন থাকবে।"</string>

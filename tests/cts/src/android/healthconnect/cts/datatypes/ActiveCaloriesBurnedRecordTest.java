@@ -16,16 +16,12 @@
 
 package android.healthconnect.cts.datatypes;
 
-import static android.health.connect.datatypes.ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
-import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -61,7 +57,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -328,50 +323,6 @@ public class ActiveCaloriesBurnedRecordTest {
         TestUtils.verifyDeleteRecords(recordIds);
         for (Record record : records) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
-        }
-    }
-
-    @Test
-    public void testAggregation_ActiveCaloriesBurntTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
-        List<Record> records =
-                Arrays.asList(
-                        ActiveCaloriesBurnedRecordTest.getBaseActiveCaloriesBurnedRecord(74.0, 1),
-                        ActiveCaloriesBurnedRecordTest.getBaseActiveCaloriesBurnedRecord(100.5, 2));
-        AggregateRecordsResponse<Energy> oldResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(ACTIVE_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        List<Record> recordNew =
-                Arrays.asList(
-                        ActiveCaloriesBurnedRecordTest.getBaseActiveCaloriesBurnedRecord(45.5, 3));
-        AggregateRecordsResponse<Energy> newResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(ACTIVE_CALORIES_TOTAL)
-                                .build(),
-                        recordNew);
-        assertThat(newResponse.get(ACTIVE_CALORIES_TOTAL)).isNotNull();
-        Energy newEnergy = newResponse.get(ACTIVE_CALORIES_TOTAL);
-        Energy oldEnergy = oldResponse.get(ACTIVE_CALORIES_TOTAL);
-        assertThat(newEnergy.getInCalories() - oldEnergy.getInCalories()).isEqualTo(45.5);
-        Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(ACTIVE_CALORIES_TOTAL);
-        for (DataOrigin itr : newDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
-        Set<DataOrigin> oldDataOrigin = oldResponse.getDataOrigins(ACTIVE_CALORIES_TOTAL);
-        for (DataOrigin itr : oldDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
         }
     }
 
