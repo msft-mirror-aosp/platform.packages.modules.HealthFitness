@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Đã truy cập trong 24 giờ qua"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Quyền truy cập của ứng dụng"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Hiện bạn chưa cài đặt ứng dụng nào tương thích"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Quyền truy cập bổ sung"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Đã xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA_0">%1$s</xliff:g> và <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Lý do Health Connect xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Nếu một ứng dụng bị tạm ngưng hoặc bị xoá khỏi Google Play, Health Connect sẽ tự động xoá các quyền của ứng dụng đó.\n\nĐiều này có nghĩa là ứng dụng đó không thể truy cập vào dữ liệu được lưu trữ trên Health Connect nữa. Nếu đã ghi dữ liệu trước đó thì ứng dụng này sẽ xuất hiện trong danh sách ứng dụng không hoạt động."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Tôi hiểu"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Làm quen với Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>
@@ -741,6 +766,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Cho phép lộ trình này"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Cho phép tất cả lộ trình"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Không cho phép"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Luôn cho phép"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Chia sẻ lộ trình tập luyện"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Kiểm soát cách ứng dụng này truy cập vào lộ trình tập luyện từ các ứng dụng đã kết nối"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Luôn hỏi"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Không cho phép"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"Quay lại"</string>
     <string name="loading" msgid="2526615755685950317">"Đang tải…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Đang trong quá trình tích hợp"</string>
