@@ -427,6 +427,29 @@ class RouteRequestActivityTest {
     }
 
     @Test
+    fun intentLaunchesRouteRequestActivity_alwaysAllow() {
+        val startActivityIntent = getRouteActivityIntent()
+        whenever(viewModel.exerciseSession).then {
+            MutableLiveData(SessionWithAttribution(TEST_SESSION, TEST_APP))
+        }
+
+        val scenario = launchActivityForResult<RouteRequestActivity>(startActivityIntent)
+
+        scenario.onActivity { activity: RouteRequestActivity ->
+            activity.dialog?.findViewById<Button>(R.id.route_allow_all_button)?.callOnClick()
+        }
+
+        verify(healthConnectLogger)
+            .logInteraction(RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALWAYS_ALLOW_BUTTON)
+        assertThat(scenario.getResult().getResultCode()).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.getResult().getResultData()
+        assertThat(returnedIntent.hasExtra(EXTRA_EXERCISE_ROUTE)).isTrue()
+        assertThat(returnedIntent.getParcelableExtra<ExerciseRoute>(EXTRA_EXERCISE_ROUTE))
+            .isEqualTo(TEST_SESSION.route)
+        verify(viewModel).grantReadRoutesPermission(context.packageName)
+    }
+
+    @Test
     fun intent_migrationInProgress_shoesMigrationInProgressDialog() = runTest {
         whenever(migrationViewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
