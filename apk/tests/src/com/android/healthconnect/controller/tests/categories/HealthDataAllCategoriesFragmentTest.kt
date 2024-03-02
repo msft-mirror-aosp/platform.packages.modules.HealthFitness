@@ -16,6 +16,7 @@
 
 package com.android.healthconnect.controller.tests.categories
 
+import android.content.Context
 import android.health.connect.HealthDataCategory.ACTIVITY
 import android.health.connect.HealthDataCategory.BODY_MEASUREMENTS
 import android.health.connect.HealthDataCategory.CYCLE_TRACKING
@@ -24,15 +25,18 @@ import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthCategoryUiState
 import com.android.healthconnect.controller.categories.HealthDataAllCategoriesFragment
-import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.Error
@@ -40,14 +44,24 @@ import com.android.healthconnect.controller.categories.HealthDataCategoryViewMod
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.CategoriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 /** List of all Health data categories. */
 private val HEALTH_DATA_ALL_CATEGORIES =
@@ -64,14 +78,41 @@ private val HEALTH_DATA_ALL_CATEGORIES =
 class HealthDataAllCategoriesFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    private lateinit var context: Context
+    private lateinit var navHostController: TestNavHostController
 
     @BindValue
     val viewModel: HealthDataCategoryViewModel =
         Mockito.mock(HealthDataCategoryViewModel::class.java)
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
         hiltRule.inject()
+        context = InstrumentationRegistry.getInstrumentation().context
+        navHostController = TestNavHostController(context)
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+    }
+
+    @Test
+    fun whenClickOnAvailableCategory_navigatesToDataTypeFragment() {
+        whenever(viewModel.categoriesData).then {
+            MutableLiveData(WithData(HEALTH_DATA_ALL_CATEGORIES))
+        }
+        launchFragment<HealthDataAllCategoriesFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph)
+            navHostController.setCurrentDestination(R.id.healthDataAllCategoriesFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        onView(withText("Nutrition")).check(matches(isDisplayed()))
+        onView(withText("Nutrition")).perform(click())
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.healthPermissionTypesFragment)
+        verify(healthConnectLogger).logInteraction(CategoriesElement.CATEGORY_BUTTON)
     }
 
     @Test
@@ -87,6 +128,9 @@ class HealthDataAllCategoriesFragmentTest {
         onView(withText("Nutrition")).check(matches(isDisplayed()))
         onView(withText("Sleep")).check(matches(isDisplayed()))
         onView(withText("Vitals")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ALL_CATEGORIES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger, times(6)).logImpression(CategoriesElement.CATEGORY_BUTTON)
     }
 
     @Test

@@ -52,6 +52,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_RESPIRATORY_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SEXUAL_ACTIVITY;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SPEED;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
@@ -97,6 +98,7 @@ public final class RecordTypeRecordCategoryMapper {
                         put(RECORD_TYPE_RESPIRATORY_RATE, VITALS);
                         put(RECORD_TYPE_BONE_MASS, BODY_MEASUREMENTS);
                         put(RECORD_TYPE_RESTING_HEART_RATE, VITALS);
+                        put(RECORD_TYPE_SKIN_TEMPERATURE, VITALS);
                         put(RECORD_TYPE_BODY_FAT, BODY_MEASUREMENTS);
                         put(RECORD_TYPE_VO2_MAX, ACTIVITY);
                         put(RECORD_TYPE_CERVICAL_MUCUS, CYCLE_TRACKING);

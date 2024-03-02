@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"锻炼路线"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"写入锻炼路线"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"读取锻炼路线"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"读取锻炼路线"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"训练计划"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"训练计划"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"读取训练计划"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"写入训练计划"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"距离"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"距离"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"读取距离数据"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"控制哪些应用可以访问存储在健康数据共享中的数据。点按应用即可查看其可以读取或写入的数据。"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"允许访问"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"不允许访问"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"需要更新"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"设置和帮助"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"撤消所有应用的访问权限"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"允许读取"</string>
@@ -291,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次访问时间：过去 24 小时内"</string>
     <string name="app_access_title" msgid="7137018424885371763">"应用访问权限"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"您目前没有安装任何兼容应用"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"额外访问权限"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"已撤消应用权限"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"健康数据共享已撤消“<xliff:g id="APP_DATA">%s</xliff:g>”的权限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"健康数据共享已撤消“<xliff:g id="APP_DATA_0">%1$s</xliff:g>”和“<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>”的权限"</string>
@@ -300,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"健康数据共享为何会撤消应用权限"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"如果应用在 Google Play 中被暂停或下架，健康数据共享将自动撤消其权限。\n\n这表示此应用无法再访问健康数据共享中存储的数据。此应用如果之前写入过数据，则会列在已停用应用的列表中。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"知道了"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"开始使用健康数据共享"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"健康数据共享会存储您的健康与健身数据，让您可以轻松同步手机上的不同应用"</string>
     <string name="share_data" msgid="3481932156368883946">"与应用分享数据"</string>
@@ -665,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{百分之 1}other{百分之 #}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"取消"</string>
     <string name="units_title" msgid="6504086463237869339">"单位"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"设置数据单位"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"距离"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"身高"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"体重"</string>
@@ -716,8 +744,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"下移"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"移至顶部"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"移至底部"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"这个按钮用于在优先级列表中拖动“<xliff:g id="SELECTED_APP">%s</xliff:g>”并将其重新排序"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"按钮，用于从优先级列表中移除“<xliff:g id="SELECTED_APP">%s</xliff:g>”"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"点按两次并拖动即可重新排序"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"健身, 健康, fitness, wellness"</string>
@@ -736,11 +763,25 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"只有您授予了相应权限的应用才能访问您的锻炼路线"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"如何管理访问权限？"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"您可以在健康数据共享设置中管理应用对锻炼路线的访问权限"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
+    <string name="request_route_allow" msgid="4427372851821847274">"允许访问此路线"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"允许访问所有路线"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"不允许"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"始终允许"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"锻炼路线分享"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"控制此应用如何获取关联的应用内的锻炼路线"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"每次都询问"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"不允许"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
     <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
     <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
     <skip />
     <string name="back_button" msgid="780519527385993407">"返回"</string>
     <string name="loading" msgid="2526615755685950317">"正在加载…"</string>
@@ -777,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"恢复健康数据共享集成"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"为保留您的数据，请在 <xliff:g id="TIME_NEEDED">%1$s</xliff:g>内完成这项操作"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"需要更新应用"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”必须为最新版本，才能继续与健康数据共享搭配使用"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"部分应用必须为最新版本，才能继续与健康数据共享搭配使用"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”需要更新，才能继续与“健康数据共享”同步"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"部分应用需要更新，才能继续与“健康数据共享”同步"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"检查更新"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"了解详情"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"健康数据共享集成"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"健康数据共享已可以与您的 Android 系统集成。如果您现在授予“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问权限，则在集成完成之前，部分功能可能无法使用。"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"健康数据共享已可以与您的 Android 系统集成。如果您现在授予应用访问权限，则在集成完成之前，部分功能可能无法使用。"</string>
@@ -799,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"新增功能"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"现在，您可以直接在设置中访问健康数据共享，也可以随时卸载健康数据共享应用以释放存储空间。"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"知道了"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"正在恢复数据"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"健康数据共享功能正在恢复数据和权限。此操作可能需要一点时间才能完成。"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"健康数据共享功能正在恢复数据"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"知道了"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"需要更新"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"继续恢复数据之前，请先更新您的手机系统。"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"立即更新"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"数据总值"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"应用来源"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"将应用来源添加到列表中，查看数据总值如何变化。从该列表中删除某应用后，相应应用的数据将不再计入总值，但该应用仍具有写入权限。"</string>

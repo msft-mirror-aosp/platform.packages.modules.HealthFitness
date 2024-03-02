@@ -37,11 +37,12 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
-import com.android.healthconnect.controller.migration.AppUpdateRequiredFragment
 import com.android.healthconnect.controller.permissions.connectedapps.ConnectedAppsViewModel.DisconnectAllState
-import com.android.healthconnect.controller.permissions.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.APP_INTEGRATION_REQUEST_BUCKET_ID
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
+import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_BANNER_SEEN
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.DENIED
@@ -60,6 +61,7 @@ import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.DisconnectAllAppsDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.setupMenu
 import com.android.healthconnect.controller.utils.setupSharedMenu
@@ -81,7 +83,6 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         private const val NEED_UPDATE_APPS = "need_update_apps"
         private const val THINGS_TO_TRY = "things_to_try_app_permissions_screen"
         private const val SETTINGS_AND_HELP = "settings_and_help"
-        private const val APP_UPDATE_NEEDED_BANNER_SEEN = "app_update_banner_seen"
         private const val BANNER_PREFERENCE_KEY = "banner_preference"
     }
 
@@ -137,8 +138,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
 
     private fun createRemoveAllAppsAccessDialog(apps: List<ConnectedAppMetadata>) {
         removeAllAppsDialog =
-            AlertDialogBuilder(this)
-                .setLogName(DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER)
+            AlertDialogBuilder(
+                    this, DisconnectAllAppsDialogElement.DISCONNECT_ALL_APPS_DIALOG_CONTAINER)
                 .setIcon(R.attr.disconnectAllIcon)
                 .setTitle(R.string.permissions_disconnect_all_dialog_title)
                 .setMessage(R.string.permissions_disconnect_all_dialog_message)
@@ -259,7 +260,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                     InactiveAppPreference(requireContext()).also {
                         it.title = app.appMetadata.appName
                         it.icon = app.appMetadata.icon
-                        it.logName = AppPermissionsElement.INACTIVE_APP_DELETE_BUTTON
+                        it.logName = AppPermissionsElement.INACTIVE_APP_BUTTON
                         it.setOnDeleteButtonClickListener {
                             val appDeletionType =
                                 DeletionType.DeletionTypeAppData(
@@ -280,12 +281,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         } else {
             mNeedUpdateAppsCategory?.isVisible = true
             appsList.forEach { app ->
-                val packageName =
-                    getString(
-                        resources.getIdentifier(
-                            AppUpdateRequiredFragment.HC_PACKAGE_NAME_CONFIG_NAME, null, null))
-
-                val intent = appStoreUtils.getAppStoreLink(packageName)
+                val intent = appStoreUtils.getAppStoreLink(app.appMetadata.packageName)
                 if (intent == null) {
                     mNeedUpdateAppsCategory?.addPreference(
                         getAppPreference(app).also { it.isSelectable = false })
@@ -296,8 +292,7 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
             }
 
             val sharedPreference =
-                requireActivity()
-                    .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
             val bannerSeen = sharedPreference.getBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, false)
 
             if (!bannerSeen) {
@@ -355,6 +350,8 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
                 it.logName = AppPermissionsElement.CONNECTED_APP_BUTTON
             } else if (app.status == DENIED) {
                 it.logName = AppPermissionsElement.NOT_CONNECTED_APP_BUTTON
+            } else if (app.status == NEEDS_UPDATE) {
+                it.logName = AppPermissionsElement.NEEDS_UPDATE_APP_BUTTON
             }
             it.setOnPreferenceClickListener {
                 onClick?.invoke()
@@ -412,10 +409,11 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     }
 
     private fun getSendFeedbackPreference(): Preference {
-        return Preference(requireContext()).also {
+        return HealthPreference(requireContext()).also {
             it.title = resources.getString(R.string.send_feedback)
             it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.sendFeedbackIcon)
             it.summary = resources.getString(R.string.send_feedback_description)
+            it.logName = AppPermissionsElement.SEND_FEEDBACK_BUTTON
             it.setOnPreferenceClickListener {
                 val intent = Intent(Intent.ACTION_BUG_REPORT)
                 intent.putExtra("category_tag", APP_INTEGRATION_REQUEST_BUCKET_ID)
@@ -425,52 +423,55 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
         }
     }
 
-    // TODO (b/275602235) Use this banner to indicate one or more apps need updating to work with
-    // Android U
     private fun getAppUpdateNeededBanner(appsList: List<ConnectedAppMetadata>): BannerPreference {
-        return BannerPreference(requireContext()).also { banner ->
-            banner.setPrimaryButton(resources.getString(R.string.app_update_needed_banner_button))
-            banner.setSecondaryButton(
-                resources.getString(R.string.app_update_needed_banner_learn_more_button))
-            banner.title = resources.getString(R.string.app_update_needed_banner_title)
+        return BannerPreference(requireContext(), MigrationElement.MIGRATION_APP_UPDATE_BANNER)
+            .also { banner ->
+                banner.setPrimaryButton(
+                    resources.getString(R.string.app_update_needed_banner_button),
+                    MigrationElement.MIGRATION_APP_UPDATE_BUTTON)
+                banner.setSecondaryButton(
+                    resources.getString(R.string.app_update_needed_banner_learn_more_button),
+                    MigrationElement.MIGRATION_APP_UPDATE_LEARN_MORE_BUTTON)
+                banner.title = resources.getString(R.string.app_update_needed_banner_title)
 
-            if (appsList.size > 1) {
-                banner.summary =
-                    resources.getString(R.string.app_update_needed_banner_description_multiple)
-            } else {
-                banner.summary =
-                    resources.getString(
-                        R.string.app_update_needed_banner_description_single,
-                        appsList[0].appMetadata.appName)
-            }
-
-            banner.key = BANNER_PREFERENCE_KEY
-            banner.setIcon(R.drawable.ic_apps_outage)
-            banner.order = 1
-            if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
-                banner.setPrimaryButtonOnClickListener {
-                    navigationUtils.navigate(this, R.id.action_connected_apps_to_updated_apps)
-                    true
+                if (appsList.size > 1) {
+                    banner.summary =
+                        resources.getString(R.string.app_update_needed_banner_description_multiple)
+                } else {
+                    banner.summary =
+                        resources.getString(
+                            R.string.app_update_needed_banner_description_single,
+                            appsList[0].appMetadata.appName)
                 }
-            } else {
-                banner.setPrimaryButtonVisibility(GONE)
-            }
 
-            banner.setSecondaryButtonOnClickListener {
-                deviceInfoUtils.openHCGetStartedLink(requireActivity())
-            }
-            banner.setIsDismissable(true)
-            banner.setDismissAction {
-                val sharedPreference =
-                    requireActivity()
-                        .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
-                sharedPreference.edit().apply {
-                    putBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, true)
-                    apply()
+                banner.key = BANNER_PREFERENCE_KEY
+                banner.setIcon(R.drawable.ic_apps_outage)
+                banner.order = 1
+                if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
+                    banner.setPrimaryButtonOnClickListener {
+                        findNavController().navigate(R.id.action_connected_apps_to_updated_apps)
+                        true
+                    }
+                } else {
+                    banner.setPrimaryButtonVisibility(GONE)
                 }
-                preferenceScreen.removePreference(banner)
+
+                banner.setSecondaryButtonOnClickListener {
+                    deviceInfoUtils.openHCGetStartedLink(requireActivity())
+                }
+                banner.setIsDismissable(true)
+                banner.setDismissAction(
+                    MigrationElement.MIGRATION_APP_UPDATE_BANNER_DISMISS_BUTTON) {
+                        val sharedPreference =
+                            requireActivity()
+                                .getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
+                        sharedPreference.edit().apply {
+                            putBoolean(APP_UPDATE_NEEDED_BANNER_SEEN, true)
+                            apply()
+                        }
+                        preferenceScreen.removePreference(banner)
+                    }
             }
-        }
     }
 
     private fun setUpEmptyState() {

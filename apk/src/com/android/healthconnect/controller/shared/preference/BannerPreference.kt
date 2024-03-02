@@ -24,8 +24,18 @@ import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.logging.ElementName
+import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.HealthConnectLoggerEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 
-class BannerPreference constructor(context: Context) : Preference(context) {
+/** Preference for displaying a banner with optional action and dismiss buttons. */
+class BannerPreference constructor(context: Context, private val logName: ElementName) :
+    Preference(context) {
+
+    private var logger: HealthConnectLogger
+
     private lateinit var bannerIcon: ImageView
     private lateinit var bannerTitle: TextView
     private lateinit var bannerMessage: TextView
@@ -36,23 +46,35 @@ class BannerPreference constructor(context: Context) : Preference(context) {
 
     private var buttonPrimaryText: String? = null
     private var buttonPrimaryAction: OnClickListener? = null
+    private var buttonPrimaryVisibility = View.VISIBLE
+    private var buttonPrimaryLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+
     private var buttonSecondaryText: String? = null
     private var buttonSecondaryAction: OnClickListener? = null
-    private var buttonPrimaryVisibility = View.VISIBLE
     private var buttonSecondaryVisibility = View.VISIBLE
+    private var buttonSecondaryLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
+
     private var isDismissable = false
     private var dismissAction: OnClickListener? = null
+    private var dismissActionLogName: ElementName = ErrorPageElement.UNKNOWN_ELEMENT
 
     init {
         layoutResource = R.layout.widget_banner_preference
         isSelectable = false
+
+        val hiltEntryPoint =
+            EntryPointAccessors.fromApplication(
+                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+        logger = hiltEntryPoint.logger()
     }
 
-    fun setPrimaryButton(buttonText: String) {
+    fun setPrimaryButton(buttonText: String, logName: ElementName) {
         this.buttonPrimaryText = buttonText
+        this.buttonPrimaryLogName = logName
     }
 
     fun setPrimaryButtonOnClickListener(onClickListener: OnClickListener?) {
+        logger.logInteraction(buttonPrimaryLogName)
         this.buttonPrimaryAction = onClickListener
     }
 
@@ -60,11 +82,13 @@ class BannerPreference constructor(context: Context) : Preference(context) {
         this.buttonPrimaryVisibility = visibility
     }
 
-    fun setSecondaryButton(buttonText: String) {
+    fun setSecondaryButton(buttonText: String, logName: ElementName) {
         this.buttonSecondaryText = buttonText
+        this.buttonSecondaryLogName = logName
     }
 
     fun setSecondaryButtonOnClickListener(onClickListener: OnClickListener?) {
+        logger.logInteraction(buttonSecondaryLogName)
         this.buttonSecondaryAction = onClickListener
     }
 
@@ -76,7 +100,9 @@ class BannerPreference constructor(context: Context) : Preference(context) {
         this.isDismissable = isDismissable
     }
 
-    fun setDismissAction(onClickListener: OnClickListener?) {
+    fun setDismissAction(logName: ElementName, onClickListener: OnClickListener?) {
+        dismissActionLogName = logName
+        logger.logInteraction(dismissActionLogName)
         this.dismissAction = onClickListener
     }
 
@@ -108,10 +134,24 @@ class BannerPreference constructor(context: Context) : Preference(context) {
         bannerPrimaryButton.visibility = buttonPrimaryVisibility
         bannerSecondaryButton.visibility = buttonSecondaryVisibility
 
+        if (buttonPrimaryVisibility == View.VISIBLE) {
+            logger.logImpression(buttonPrimaryLogName)
+        }
+
+        if (buttonSecondaryVisibility == View.VISIBLE) {
+            logger.logImpression(buttonSecondaryLogName)
+        }
+
         if (isDismissable) {
             dismissButton = holder.findViewById(R.id.dismiss_button) as ImageView
             dismissButton?.visibility = View.VISIBLE
+            logger.logImpression(dismissActionLogName)
             dismissButton?.setOnClickListener(dismissAction)
         }
+    }
+
+    override fun onAttached() {
+        super.onAttached()
+        logger.logImpression(logName)
     }
 }

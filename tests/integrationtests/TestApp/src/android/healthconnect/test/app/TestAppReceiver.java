@@ -287,7 +287,7 @@ public class TestAppReceiver extends BroadcastReceiver {
 
     private static List<Record> createWeightRecords(Intent intent) {
         List<Instant> times = getTimes(intent, EXTRA_TIMES);
-        long[] values = intent.getLongArrayExtra(EXTRA_RECORD_VALUES);
+        double[] values = intent.getDoubleArrayExtra(EXTRA_RECORD_VALUES);
 
         List<Record> result = new ArrayList<>();
         for (int i = 0; i < times.size(); i++) {
@@ -296,9 +296,9 @@ public class TestAppReceiver extends BroadcastReceiver {
         return result;
     }
 
-    private static WeightRecord createWeightRecord(Instant time, long weight) {
+    private static WeightRecord createWeightRecord(Instant time, double weight) {
         return new WeightRecord.Builder(
-                        new Metadata.Builder().build(), time, Mass.fromGrams((double) weight))
+                        new Metadata.Builder().build(), time, Mass.fromGrams(weight))
                 .build();
     }
 

@@ -27,6 +27,7 @@ import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
+import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
@@ -55,7 +56,7 @@ interface IHealthConnectService {
     /**
      * @hide
      */
-    void makeHealthPermissionsRequestable(String packageName, in UserHandle user, in List<String> permissions);
+    void setHealthPermissionsUserFixedFlagValue(String packageName, in UserHandle user, in List<String> permissions, boolean value);
 
     /* @hide */
     long getHistoricalAccessStartDateInMilliseconds(String packageName, in UserHandle user);
@@ -326,4 +327,20 @@ interface IHealthConnectService {
      * @hide
      */
     void getHealthConnectMigrationUiState(in IGetHealthConnectMigrationUiStateCallback callback);
+
+    /**
+    * Configures the settings for the scheduled export of Health Connect data.
+    *
+    * @param settings Settings to use for the scheduled export. Use null to clear the settings.
+    *
+    * @hide
+    */
+    void configureScheduledExport(in @nullable ScheduledExportSettings settings, in UserHandle userHandle);
+
+    /**
+    * Gets the period in days between scheduled exports of Health Connect data.
+    *
+    * @hide
+    */
+    int getScheduledExportPeriodInDays(in UserHandle userHandle);
 }

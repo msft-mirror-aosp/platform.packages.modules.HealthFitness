@@ -308,7 +308,8 @@ public final class ExerciseSessionRecordHelper
     /** Returns permissions required to read extra record data. */
     @Override
     public List<String> getExtraReadPermissions() {
-        return List.of(READ_EXERCISE_ROUTE, READ_EXERCISE_ROUTES);
+        // WRITE_EXERCISE_ROUTE is in fact a read permission as it allows reading own routes.
+        return List.of(READ_EXERCISE_ROUTE, READ_EXERCISE_ROUTES, WRITE_EXERCISE_ROUTE);
     }
 
     public List<String> getExtraWritePermissions() {
@@ -435,10 +436,9 @@ public final class ExerciseSessionRecordHelper
         return routeReadRequest;
     }
 
-    // TODO(b/319821477): disallow reading own routes without any granted ER permission.
     private int getExerciseRouteReadAccessType(
             String packageName, Set<String> grantedExtraReadPermissions, boolean isInForeground) {
-        if (!isExerciseRouteFeatureEnabled()) {
+        if (!isExerciseRouteFeatureEnabled() || grantedExtraReadPermissions.isEmpty()) {
             return ROUTE_READ_ACCESS_TYPE_NONE;
         }
 
