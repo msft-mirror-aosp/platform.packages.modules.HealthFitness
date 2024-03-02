@@ -131,6 +131,10 @@ constructor(
         }
     }
 
+    fun getAdditionalPermissions(packageName: String): List<String> {
+        return getHealthPermissions(packageName).filter { perm -> isAdditionalPermission(perm) }
+    }
+
     fun isRationalIntentDeclared(packageName: String): Boolean {
         val intent = getRationaleIntent(packageName)
         val resolvedInfo =

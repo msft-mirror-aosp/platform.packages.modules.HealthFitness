@@ -21,11 +21,14 @@ package com.android.healthconnect.controller.tests.permissions.additionalaccess
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -33,10 +36,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessFragment
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel.EnableExerciseDialogEvent
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel.State
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.DECLARED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.GRANTED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.REVOKED
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -53,8 +57,8 @@ import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.mock
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
 @HiltAndroidTest
@@ -62,8 +66,8 @@ class AdditionalAccessFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    @BindValue val permissionsViewModel = mock(AppPermissionViewModel::class.java)
-    @BindValue val additionalAccessViewModel = mock(AdditionalAccessViewModel::class.java)
+    @BindValue val permissionsViewModel: AppPermissionViewModel = mock()
+    @BindValue val additionalAccessViewModel: AdditionalAccessViewModel = mock()
 
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
@@ -82,6 +86,8 @@ class AdditionalAccessFragmentTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         whenever(additionalAccessViewModel.additionalAccessState).then { MutableLiveData(State()) }
+        whenever(additionalAccessViewModel.showEnableExerciseEvent)
+            .thenReturn(MediatorLiveData(EnableExerciseDialogEvent()))
     }
 
     @Test
@@ -103,7 +109,7 @@ class AdditionalAccessFragmentTest {
 
     @Test
     fun validArgument_exerciseRouteDeclared_showsExerciseRouteOption() {
-        val exerciseRouteDeclaredState = State(exerciseRouteState = DECLARED)
+        val exerciseRouteDeclaredState = State(exerciseRoutePermissionUIState = ASK_EVERY_TIME)
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(exerciseRouteDeclaredState)
         }
@@ -117,7 +123,7 @@ class AdditionalAccessFragmentTest {
 
     @Test
     fun validArgument_exerciseRouteGranted_showsExerciseRouteOption() {
-        val exerciseRouteGrantedState = State(exerciseRouteState = GRANTED)
+        val exerciseRouteGrantedState = State(exerciseRoutePermissionUIState = ALWAYS_ALLOW)
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(exerciseRouteGrantedState)
         }
@@ -131,7 +137,7 @@ class AdditionalAccessFragmentTest {
 
     @Test
     fun validArgument_exerciseRouteRevoked_showsExerciseRouteOption() {
-        val exerciseRouteRevokedState = State(exerciseRouteState = REVOKED)
+        val exerciseRouteRevokedState = State(exerciseRoutePermissionUIState = NEVER_ALLOW)
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(exerciseRouteRevokedState)
         }
@@ -145,7 +151,7 @@ class AdditionalAccessFragmentTest {
 
     @Test
     fun clickExerciseRoute_opensDialog() {
-        val exerciseRouteDeclaredState = State(exerciseRouteState = DECLARED)
+        val exerciseRouteDeclaredState = State(exerciseRoutePermissionUIState = ASK_EVERY_TIME)
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(exerciseRouteDeclaredState)
         }
@@ -156,5 +162,33 @@ class AdditionalAccessFragmentTest {
         onIdle()
 
         onView(withId(R.id.exercise_routes_permission_dialog)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onShowEnableExerciseEvent_true_opensEnableExercisePermissionDialog() {
+        val event = EnableExerciseDialogEvent(shouldShowDialog = true, appName = TEST_APP_NAME)
+        whenever(additionalAccessViewModel.showEnableExerciseEvent)
+            .thenReturn(MediatorLiveData(event))
+
+        launchFragment<AdditionalAccessFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+        onIdle()
+
+        onView(withText(R.string.exercise_permission_dialog_enable_title))
+            .inRoot(RootMatchers.isDialog())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun onShowEnableExerciseEvent_false_doesNotShowEnableExercisePermissionDialog() {
+        val event = EnableExerciseDialogEvent(shouldShowDialog = false, appName = TEST_APP_NAME)
+        whenever(additionalAccessViewModel.showEnableExerciseEvent)
+            .thenReturn(MediatorLiveData(event))
+
+        launchFragment<AdditionalAccessFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+        onIdle()
+
+        onView(withText(R.string.exercise_permission_dialog_enable_title)).check(doesNotExist())
     }
 }

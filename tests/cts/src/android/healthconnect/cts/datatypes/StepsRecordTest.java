@@ -18,6 +18,7 @@ package android.healthconnect.cts.datatypes;
 
 import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
@@ -195,8 +196,8 @@ public class StepsRecordTest {
     public void testReadStepsRecordUsingFilters_timeFilter() throws InterruptedException {
         TimeInstantRangeFilter filter =
                 new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
-                        .setEndTime(Instant.now().plusMillis(3000))
+                        .setStartTime(NOW)
+                        .setEndTime(NOW.plusMillis(3000))
                         .build();
         StepsRecord testRecord = getCompleteStepsRecord();
         TestUtils.insertRecords(Collections.singletonList(testRecord));
@@ -470,8 +471,8 @@ public class StepsRecordTest {
     public void testDeleteStepsRecord_time_filters() throws InterruptedException {
         TimeInstantRangeFilter timeRangeFilter =
                 new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
-                        .setEndTime(Instant.now().plusMillis(1000))
+                        .setStartTime(NOW)
+                        .setEndTime(NOW.plusMillis(1000))
                         .build();
         String id = TestUtils.insertRecordAndGetId(getCompleteStepsRecord());
         TestUtils.verifyDeleteRecords(
@@ -662,8 +663,8 @@ public class StepsRecordTest {
     public void testDeleteStepsRecord_time_range() throws InterruptedException {
         TimeInstantRangeFilter timeRangeFilter =
                 new TimeInstantRangeFilter.Builder()
-                        .setStartTime(Instant.now())
-                        .setEndTime(Instant.now().plusMillis(1000))
+                        .setStartTime(NOW)
+                        .setEndTime(NOW.plusMillis(1000))
                         .build();
         String id = TestUtils.insertRecordAndGetId(getCompleteStepsRecord());
         TestUtils.verifyDeleteRecords(StepsRecord.class, timeRangeFilter);

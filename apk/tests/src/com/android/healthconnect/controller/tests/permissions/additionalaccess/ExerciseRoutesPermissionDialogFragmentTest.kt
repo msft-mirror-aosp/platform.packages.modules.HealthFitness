@@ -32,10 +32,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel.State
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.DECLARED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.GRANTED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.REVOKED
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRoutesPermissionDialogFragment
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.TestActivity
@@ -75,14 +75,14 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         hiltRule.inject()
         whenever(permissionsViewModel.appInfo).then { MutableLiveData(appInfo) }
         whenever(additionalAccessViewModel.additionalAccessState).then {
-            MutableLiveData(State(exerciseRouteState = REVOKED))
+            MutableLiveData(State(exerciseRoutePermissionUIState = NEVER_ALLOW))
         }
     }
 
     @Test
     fun showDialog_permissionStateGranted_preselectCorrectView() {
         whenever(additionalAccessViewModel.additionalAccessState).then {
-            MutableLiveData(State(exerciseRouteState = GRANTED))
+            MutableLiveData(State(exerciseRoutePermissionUIState = ALWAYS_ALLOW))
         }
 
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
@@ -96,7 +96,7 @@ class ExerciseRoutesPermissionDialogFragmentTest {
     @Test
     fun showDialog_permissionStateDeclared_preselectCorrectView() {
         whenever(additionalAccessViewModel.additionalAccessState).then {
-            MutableLiveData(State(exerciseRouteState = DECLARED))
+            MutableLiveData(State(exerciseRoutePermissionUIState = ASK_EVERY_TIME))
         }
 
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
@@ -108,7 +108,7 @@ class ExerciseRoutesPermissionDialogFragmentTest {
     @Test
     fun showDialog_permissionStateRevoked_preselectCorrectView() {
         whenever(additionalAccessViewModel.additionalAccessState).then {
-            MutableLiveData(State(exerciseRouteState = REVOKED))
+            MutableLiveData(State(exerciseRoutePermissionUIState = NEVER_ALLOW))
         }
 
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
@@ -125,7 +125,7 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         onView(withId(R.id.radio_button_always_allow)).inRoot(isDialog()).perform(click())
 
         verify(additionalAccessViewModel)
-            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(GRANTED))
+            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(ALWAYS_ALLOW))
     }
 
     @Test
@@ -136,13 +136,13 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         onView(withId(R.id.radio_button_ask)).inRoot(isDialog()).perform(click())
 
         verify(additionalAccessViewModel)
-            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(DECLARED))
+            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(ASK_EVERY_TIME))
     }
 
     @Test
     fun onOptionSelected_withRevoke_callsViewModelWithRevoked() {
         whenever(additionalAccessViewModel.additionalAccessState).then {
-            MutableLiveData(State(exerciseRouteState = GRANTED))
+            MutableLiveData(State(exerciseRoutePermissionUIState = ALWAYS_ALLOW))
         }
         launchDialog<ExerciseRoutesPermissionDialogFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
@@ -150,6 +150,6 @@ class ExerciseRoutesPermissionDialogFragmentTest {
         onView(withId(R.id.radio_button_revoke)).inRoot(isDialog()).perform(click())
 
         verify(additionalAccessViewModel)
-            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(REVOKED))
+            .updateExerciseRouteState(safeEq(TEST_APP_PACKAGE_NAME), safeEq(NEVER_ALLOW))
     }
 }

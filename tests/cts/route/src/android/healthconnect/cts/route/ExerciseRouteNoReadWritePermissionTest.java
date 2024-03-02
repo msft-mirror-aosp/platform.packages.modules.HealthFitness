@@ -228,7 +228,6 @@ public class ExerciseRouteNoReadWritePermissionTest {
         assertThat(records.get(0).getRoute()).isNull();
     }
 
-    // TODO(b/319821477): disallow reading own routes without any granted ER permission.
     @Test
     public void readRecords_usingFilters_canAccessOwnRoute() throws Exception {
         ExerciseSessionRecord sessionWithRoute = getExerciseSessionWithRoute(getEmptyMetadata());
@@ -247,10 +246,9 @@ public class ExerciseRouteNoReadWritePermissionTest {
 
         assertThat(records).hasSize(1);
         assertThat(records.get(0).hasRoute()).isTrue();
-        assertThat(records.get(0).getRoute()).isEqualTo(sessionWithRoute.getRoute());
+        assertThat(records.get(0).getRoute()).isNull();
     }
 
-    // TODO(b/319821477): disallow reading own routes without any granted ER permission.
     @Test
     public void readRecords_usingIds_canAccessOwnRoute() throws Exception {
         ExerciseSessionRecord sessionWithRoute = getExerciseSessionWithRoute(getEmptyMetadata());
@@ -270,10 +268,9 @@ public class ExerciseRouteNoReadWritePermissionTest {
 
         assertThat(records).hasSize(1);
         assertThat(records.get(0).hasRoute()).isTrue();
-        assertThat(records.get(0).getRoute()).isEqualTo(sessionWithRoute.getRoute());
+        assertThat(records.get(0).getRoute()).isNull();
     }
 
-    // TODO(b/319821477): disallow reading own routes without any granted ER permission.
     @Test
     public void getChangelogs_canAccessOwnRoute() throws Exception {
         String token =
@@ -299,6 +296,6 @@ public class ExerciseRouteNoReadWritePermissionTest {
                         .toList();
         assertThat(records).hasSize(1);
         assertThat(records.get(0).hasRoute()).isTrue();
-        assertThat(records.get(0).getRoute()).isEqualTo(sessionWithRoute.getRoute());
+        assertThat(records.get(0).getRoute()).isNull();
     }
 }
