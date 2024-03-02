@@ -86,6 +86,9 @@ class SettingsActivityTest {
         whenever(viewModel.revokeAllPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
+        whenever(viewModel.showDisableExerciseRouteEvent)
+            .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
+
         whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")

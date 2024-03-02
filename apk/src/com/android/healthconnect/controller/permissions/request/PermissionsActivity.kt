@@ -27,6 +27,7 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
@@ -79,6 +80,11 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This flag ensures an app requesting permissions cannot show an overlay to deceive the
+        // user. For example, an app requesting permission for Sexual Activity, can overlay and
+        // replace the text with Body Weight, thus deceiving the user. b/313425281
+        getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
 
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {

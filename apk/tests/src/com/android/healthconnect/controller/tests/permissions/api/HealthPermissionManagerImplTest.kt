@@ -60,13 +60,14 @@ class HealthPermissionManagerImplTest {
 
     @Test
     @Ignore("b/314918667")
-    fun makeHealthPermissionsRequestable_callsHealthConnectManager() {
+    fun setHealthPermissionsUserFixedFlagValue_callsHealthConnectManager() {
         val packageName = "package.name"
         val permissions = listOf("Permission 1", "Permission 2")
-        healthPermissionManager.makeHealthPermissionsRequestable(packageName, permissions)
+        healthPermissionManager.setHealthPermissionsUserFixedFlagValue(
+            packageName, permissions, true)
 
         verify(healthConnectManager, times(1))
-            .makeHealthPermissionsRequestable(packageName, permissions)
+            .setHealthPermissionsUserFixedFlagValue(packageName, permissions, true)
     }
 
     @Test

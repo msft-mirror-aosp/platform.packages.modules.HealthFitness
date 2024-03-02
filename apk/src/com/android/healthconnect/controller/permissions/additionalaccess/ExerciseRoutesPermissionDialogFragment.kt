@@ -30,9 +30,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.DECLARED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.GRANTED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.REVOKED
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_ALLOW_ALL_BUTTON
@@ -59,15 +59,15 @@ class ExerciseRoutesPermissionDialogFragment : Hilt_ExerciseRoutesPermissionDial
         RadioGroup.OnCheckedChangeListener { _, selectedId ->
             when (selectedId) {
                 R.id.radio_button_always_allow -> {
-                    viewModel.updateExerciseRouteState(packageName, GRANTED)
+                    viewModel.updateExerciseRouteState(packageName, ALWAYS_ALLOW)
                     logger.logInteraction(EXERCISE_ROUTES_ALLOW_ALL_BUTTON)
                 }
                 R.id.radio_button_ask -> {
-                    viewModel.updateExerciseRouteState(packageName, DECLARED)
+                    viewModel.updateExerciseRouteState(packageName, ASK_EVERY_TIME)
                     logger.logInteraction(EXERCISE_ROUTES_ASK_BUTTON)
                 }
                 R.id.radio_button_revoke -> {
-                    viewModel.updateExerciseRouteState(packageName, REVOKED)
+                    viewModel.updateExerciseRouteState(packageName, NEVER_ALLOW)
                     logger.logInteraction(EXERCISE_ROUTES_DIALOG_DENY_BUTTON)
                 }
             }
@@ -106,7 +106,7 @@ class ExerciseRoutesPermissionDialogFragment : Hilt_ExerciseRoutesPermissionDial
     private fun setupPermissionRadioGroup(view: View) {
         permissionRadioGroup = view.findViewById(R.id.radio_group_route_permission)
         permissionRadioGroup.apply {
-            val state = viewModel.additionalAccessState.value?.exerciseRouteState
+            val state = viewModel.additionalAccessState.value?.exerciseRoutePermissionUIState
             if (state != null) {
                 setOnCheckedChangeListener(null)
                 check(getId(state))
@@ -118,7 +118,7 @@ class ExerciseRoutesPermissionDialogFragment : Hilt_ExerciseRoutesPermissionDial
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.additionalAccessState.observe(viewLifecycleOwner) { screenState ->
-            permissionRadioGroup.check(getId(screenState.exerciseRouteState))
+            permissionRadioGroup.check(getId(screenState.exerciseRoutePermissionUIState))
         }
     }
 
@@ -127,10 +127,10 @@ class ExerciseRoutesPermissionDialogFragment : Hilt_ExerciseRoutesPermissionDial
     }
 
     @IdRes
-    private fun getId(currentState: ExerciseRouteState): Int {
+    private fun getId(currentState: PermissionUiState): Int {
         return when (currentState) {
-            GRANTED -> R.id.radio_button_always_allow
-            REVOKED -> R.id.radio_button_revoke
+            ALWAYS_ALLOW -> R.id.radio_button_always_allow
+            NEVER_ALLOW -> R.id.radio_button_revoke
             else -> R.id.radio_button_ask
         }
     }

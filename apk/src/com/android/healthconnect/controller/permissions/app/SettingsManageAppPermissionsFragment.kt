@@ -37,8 +37,6 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -49,6 +47,7 @@ import com.android.healthconnect.controller.migration.MigrationActivity.Companio
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
@@ -169,6 +168,13 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 else -> {
                     // do nothing
                 }
+            }
+        }
+
+        viewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
+            if (event.shouldShowDialog) {
+                DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
+                    .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
             }
         }
 
@@ -338,6 +344,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         private const val PERMISSION_HEADER = "manage_app_permission_header"
         private const val MANAGE_APP_CATEGORY = "manage_app_category"
         private const val KEY_ADDITIONAL_ACCESS = "additional_access"
+        private const val DISABLE_EXERCISE_ROUTE_DIALOG_TAG = "disable_exercise_route_dialog"
         private const val FOOTER = "manage_app_permission_footer"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }

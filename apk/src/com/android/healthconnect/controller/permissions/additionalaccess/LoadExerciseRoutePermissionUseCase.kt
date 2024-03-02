@@ -19,6 +19,7 @@
 package com.android.healthconnect.controller.permissions.additionalaccess
 
 import android.content.pm.PackageManager
+import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
@@ -39,32 +40,51 @@ constructor(
 ) : BaseUseCase<String, ExerciseRouteState>(dispatcher) {
 
     override suspend fun execute(input: String): ExerciseRouteState {
-
         val grantedPermissions = getGrantedHealthPermissionsUseCase(input)
-        if (grantedPermissions.contains(READ_EXERCISE_ROUTES)) {
-            return ExerciseRouteState.GRANTED
-        }
-
         val appPermissions = loadDeclaredHealthPermissionUseCase(input)
-        if (!appPermissions.contains(READ_EXERCISE_ROUTES)) {
-            return ExerciseRouteState.NOT_DECLARED
+        val permissionFlags =
+            getHealthPermissionsFlagsUseCase(input, listOf(READ_EXERCISE_ROUTES, READ_EXERCISE))
+        return ExerciseRouteState(
+            exerciseRoutePermissionState =
+                getPermissionState(
+                    READ_EXERCISE_ROUTES, grantedPermissions, appPermissions, permissionFlags),
+            exercisePermissionState =
+                getPermissionState(
+                    READ_EXERCISE, grantedPermissions, appPermissions, permissionFlags))
+    }
+
+    private fun getPermissionState(
+        permission: String,
+        grantedPermissions: List<String>,
+        appPermissions: List<String>,
+        permissionFlags: Map<String, Int>
+    ): PermissionUiState {
+
+        if (grantedPermissions.contains(permission)) {
+            return PermissionUiState.ALWAYS_ALLOW
         }
 
-        val permissionFlags = getHealthPermissionsFlagsUseCase(input, listOf(READ_EXERCISE_ROUTES))
-
-        val exerciseRoutePermissionFlag =
-            permissionFlags[READ_EXERCISE_ROUTES] ?: return ExerciseRouteState.NOT_DECLARED
-        if (exerciseRoutePermissionFlag.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0) {
-            return ExerciseRouteState.REVOKED
+        if (!appPermissions.contains(permission)) {
+            return PermissionUiState.NOT_DECLARED
         }
 
-        return ExerciseRouteState.DECLARED
+        val flag = permissionFlags[permission] ?: return PermissionUiState.NOT_DECLARED
+        if (flag.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0) {
+            return PermissionUiState.NEVER_ALLOW
+        }
+
+        return PermissionUiState.ASK_EVERY_TIME
     }
 }
 
-enum class ExerciseRouteState {
+data class ExerciseRouteState(
+    val exerciseRoutePermissionState: PermissionUiState,
+    val exercisePermissionState: PermissionUiState
+)
+
+enum class PermissionUiState {
     NOT_DECLARED,
-    DECLARED,
-    GRANTED,
-    REVOKED
+    ASK_EVERY_TIME,
+    ALWAYS_ALLOW,
+    NEVER_ALLOW
 }

@@ -208,6 +208,8 @@ class TrampolineActivityTest {
     fun manageHealthPermissions_withPackageName_launchesSettingsActivity() {
         val intent = createStartIntent(ACTION_MANAGE_HEALTH_PERMISSIONS)
         intent.putExtra(EXTRA_PACKAGE_NAME, TEST_APP_PACKAGE_NAME)
+        whenever(appPermissionViewModel.showDisableExerciseRouteEvent)
+            .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
 
         launchActivityForResult<TrampolineActivity>(intent)
 

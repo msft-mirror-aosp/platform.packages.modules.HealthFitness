@@ -55,6 +55,7 @@ inline fun <reified T : Fragment> launchFragment(
 
 inline fun <reified T : DialogFragment> launchDialog(
     arguments: Bundle? = null,
+    tag: String = "TEST_DIALOG_TAG",
     @StyleRes themeResId: Int = R.style.Theme_HealthConnect,
     crossinline action: DialogFragment.() -> Unit = {}
 ): ActivityScenario<TestActivity> {
@@ -72,7 +73,7 @@ inline fun <reified T : DialogFragment> launchDialog(
                 T::class.java.classLoader, T::class.java.name)
         fragment as DialogFragment
         fragment.arguments = arguments
-        fragment.show(activity.supportFragmentManager, "TEST_DIALOG_TAG")
+        fragment.show(activity.supportFragmentManager, tag)
 
         fragment.action()
     }

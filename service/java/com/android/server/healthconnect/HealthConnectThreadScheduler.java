@@ -26,6 +26,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +60,7 @@ public final class HealthConnectThreadScheduler {
                     KEEP_ALIVE_TIME_BACKGROUND,
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
+
     // Executor to run HC background tasks
     @VisibleForTesting
     static volatile ThreadPoolExecutor sInternalBackgroundExecutor =
@@ -68,6 +70,7 @@ public final class HealthConnectThreadScheduler {
                     KEEP_ALIVE_TIME_INTERNAL_BACKGROUND,
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
+
     // Executor to run HC tasks for clients
     @VisibleForTesting
     static volatile ThreadPoolExecutor sForegroundExecutor =
@@ -77,6 +80,7 @@ public final class HealthConnectThreadScheduler {
                     KEEP_ALIVE_TIME_SHARED,
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
+
     // Executor to run HC controller tasks
     @VisibleForTesting
     static volatile ThreadPoolExecutor sControllerExecutor =
@@ -133,23 +137,24 @@ public final class HealthConnectThreadScheduler {
 
     /** Schedules the task on the executor dedicated for performing internal tasks */
     public static void scheduleInternalTask(Runnable task) {
-        sInternalBackgroundExecutor.execute(getSafeRunnable(task));
+        safeExecute(sInternalBackgroundExecutor, getSafeRunnable(task));
     }
 
     /** Schedules the task on the executor dedicated for performing controller tasks */
     static void scheduleControllerTask(Runnable task) {
-        sControllerExecutor.execute(getSafeRunnable(task));
+        safeExecute(sControllerExecutor, getSafeRunnable(task));
     }
 
     /** Schedules the task on the best possible executor based on the parameters */
     static void schedule(Context context, @NonNull Runnable task, int uid, boolean isController) {
         if (isController) {
-            sControllerExecutor.execute(getSafeRunnable(task));
+            safeExecute(sControllerExecutor, getSafeRunnable(task));
             return;
         }
 
         if (isUidInForeground(context, uid)) {
-            sForegroundExecutor.execute(
+            safeExecute(
+                    sForegroundExecutor,
                     getSafeRunnable(
                             () -> {
                                 if (!isUidInForeground(context, uid)) {
@@ -160,7 +165,8 @@ public final class HealthConnectThreadScheduler {
                                     // consume foreground resource anymore.
                                     HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.addTask(
                                             uid, task);
-                                    sBackgroundThreadExecutor.execute(
+                                    safeExecute(
+                                            sBackgroundThreadExecutor,
                                             () ->
                                                     HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER
                                                             .getNextTask()
@@ -172,7 +178,8 @@ public final class HealthConnectThreadScheduler {
                             }));
         } else {
             HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER.addTask(uid, task);
-            sBackgroundThreadExecutor.execute(
+            safeExecute(
+                    sBackgroundThreadExecutor,
                     getSafeRunnable(
                             () ->
                                     HEALTH_CONNECT_BACKGROUND_ROUND_ROBIN_SCHEDULER
@@ -197,6 +204,15 @@ public final class HealthConnectThreadScheduler {
             }
         }
         return false;
+    }
+
+    private static void safeExecute(ThreadPoolExecutor executor, Runnable task) {
+        try {
+            executor.execute(task);
+        } catch (RejectedExecutionException ex) {
+            // this is to prevent unexpected crashes, see b/325746130
+            Slog.e(TAG, executor + " is shutting down or already terminated!", ex);
+        }
     }
 
     // Makes sure that any exceptions don't end up in system_server.

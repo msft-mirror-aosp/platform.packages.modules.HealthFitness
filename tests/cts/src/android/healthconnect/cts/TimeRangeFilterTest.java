@@ -133,4 +133,26 @@ public class TimeRangeFilterTest {
         thrown = assertThrows(IllegalArgumentException.class, builder::build);
         assertThat(thrown).hasMessageThat().contains("end time needs to be after start time");
     }
+
+    @Test
+    public void instantTimeRange_bothEndsOpen_throws() {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new TimeInstantRangeFilter.Builder().build());
+        assertThat(thrown)
+                .hasMessageThat()
+                .isEqualTo("Both start time and end time cannot be null.");
+    }
+
+    @Test
+    public void localTimeRange_bothEndsOpen_throws() {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> new LocalTimeRangeFilter.Builder().build());
+        assertThat(thrown)
+                .hasMessageThat()
+                .isEqualTo("Both start time and end time cannot be null.");
+    }
 }

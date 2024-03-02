@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.health.connect.TimeInstantRangeFilter
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
@@ -35,6 +36,7 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -74,10 +76,12 @@ class AppPermissionViewModelTest {
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase = mock()
     private val revokePermissionStatusUseCase: RevokeHealthPermissionUseCase = mock()
     private val grantPermissionsUseCase: GrantHealthPermissionUseCase = mock()
+    private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase = mock()
 
     private lateinit var loadAppPermissionsStatusUseCase: LoadAppPermissionsStatusUseCase
     private lateinit var appPermissionViewModel: AppPermissionViewModel
     @Inject lateinit var appInfoReader: AppInfoReader
+    @Inject lateinit var featureUtils: FeatureUtils
 
     private val readExercisePermission =
         HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
@@ -109,7 +113,9 @@ class AppPermissionViewModelTest {
                 deleteAppDateUseCase,
                 loadAccessDateUseCase,
                 getGrantedHealthPermissionsUseCase,
+                loadExerciseRoutePermissionUseCase,
                 healthPermissionReader,
+                featureUtils,
                 Dispatchers.Main)
     }
 
