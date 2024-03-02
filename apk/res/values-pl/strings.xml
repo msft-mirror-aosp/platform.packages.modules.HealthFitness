@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Dostęp w ciągu ostatnich 24 godzin"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Dostęp aplikacji"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Nie masz obecnie zainstalowanych żadnych zgodnych aplikacji"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Dodatkowy dostęp"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Uprawnienia aplikacji zostały usunięte"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Aplikacja Health Connect usunęła uprawnienia aplikacji <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Aplikacja Health Connect usunęła uprawnienia aplikacji <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Dlaczego Health Connect usuwa uprawnienia aplikacji"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Jeśli aplikacja zostanie zawieszona lub usunięta z Google Play, Health Connect automatycznie usunie jej uprawnienia.\n\nOznacza to, że aplikacja utraci dostęp do informacji przechowywanych w Health Connect. Jeśli aplikacja zapisywała wcześniej dane, pojawi się na liście nieaktywnych aplikacji."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Pierwsze kroki w Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect przechowuje Twoje dane o zdrowiu i aktywności fizycznej oraz ułatwia synchronizację danych z różnych aplikacji na telefonie"</string>
     <string name="share_data" msgid="3481932156368883946">"Udostępniaj dane aplikacjom"</string>
@@ -741,6 +766,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Zezwalaj na tę trasę"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Zezwalaj na wszystkie trasy"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nie zezwalaj"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Zawsze zezwalaj"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Udostępnianie trasy ćwiczeń"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Określ, jak aplikacja ma uzyskiwać dostęp do tras ćwiczeń z połączonych aplikacji"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Zawsze pytaj"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Nie zezwalaj"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"Wstecz"</string>
     <string name="loading" msgid="2526615755685950317">"Ładuję…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Trwa integracja"</string>

@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"கடந்த 24 மணிநேரத்தில் அணுகியது"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ஆப்ஸ் அணுகல்"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"தற்போது இணக்கமான ஆப்ஸ் எதுவும் நிறுவப்பட்டிருக்கவில்லை"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"கூடுதல் அணுகல்"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"அகற்றப்பட்ட ஆப்ஸ் அனுமதிகள்"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> ஆப்ஸுக்கான அனுமதிகளை Health Connect அகற்றியுள்ளது"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ஆகிய ஆப்ஸுக்கான அனுமதிகளை Health Connect அகற்றியுள்ளது"</string>
@@ -304,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ஏன் ஆப்ஸ் அனுமதிகளை அகற்றுகிறது?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Playயில் இருந்து ஓர் ஆப்ஸ் இடைநிறுத்தப்பட்டாலோ அகற்றப்பட்டாலோ அதன் அனுமதிகளை Health Connect தானாக அகற்றிவிடும்.\n\nஅதாவது Health Connectடில் சேமிக்கப்பட்டிருக்கும் தரவை அந்த ஆப்ஸால் அணுக முடியாது. ஏற்கெனவே இந்த ஆப்ஸில் ஏதேனும் தரவு பதிவாகியிருந்தால், இது செயலற்ற ஆப்ஸ் பட்டியலில் காட்டப்படும்."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"சரி"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>
@@ -741,6 +766,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"இந்த வழிமுறையை அனுமதி"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"அனைத்து வழிமுறைகளையும் அனுமதி"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"அனுமதிக்க வேண்டாம்"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"எப்போதும் அனுமதி"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"உடற்பயிற்சிப் பாதையைப் பகிர்தல்"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"இணைக்கப்பட்ட ஆப்ஸிடம் இருந்து பெற்ற உடற்பயிற்சிப் பாதைகளை இந்த ஆப்ஸ் அணுகும் விதத்தைக் கட்டுப்படுத்தலாம்"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ஒவ்வொரு முறையும் கேள்"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"அனுமதிக்க வேண்டாம்"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"பின்செல்"</string>
     <string name="loading" msgid="2526615755685950317">"ஏற்றுகிறது…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ஒருங்கிணைப்பு செயலிலுள்ளது"</string>

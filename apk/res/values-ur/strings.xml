@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"گزشتہ 24 گھنٹے میں رسائی حاصل کی گئی"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ایپ تک رسائی"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"آپ کے پاس فی الحال کوئی موافق ایپ انسٹال نہیں ہے"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"اضافی رسائی"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ایپ کی اجازتیں ہٹا دی گئیں"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect نے <xliff:g id="APP_DATA">%s</xliff:g> کے لیے اجازتیں ہٹا دیں"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect نے <xliff:g id="APP_DATA_0">%1$s</xliff:g> اور <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> کے لیے اجازتیں ہٹا دیں"</string>
@@ -304,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ایپ کی اجازتوں کو کیوں ہٹاتی ہے"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"اگر کسی ایپ کو Google Play سے معطل یا ہٹا دیا جاتا ہے تو Health Connect خود کار طور پر اس کی اجازتوں کو ہٹا دیتی ہے۔\n\nاس کا مطلب ہے کہ ایپ Health Connect میں محفوظ کردہ ڈیٹا تک مزید رسائی حاصل نہیں کر سکتی۔ اگر اس ایپ میں پہلے ڈیٹا لکھا ہوا ہے تو یہ غیر فعال ایپس کی فہرست میں ظاہر ہوتا ہے۔"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"سمجھ آ گئی"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے فون پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>
@@ -741,6 +766,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"اس راستے کو اجازت دیں"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"سبھی راستوں کو اجازت دیں"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"اجازت نہ دیں"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ہمیشہ اجازت دیں"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"ورزش سے متعلق روٹ کا اشتراک"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"کنٹرول کریں کہ یہ ایپ منسلک ایپس سے ورزش کے روٹس تک کیسے رسائی حاصل کرتی ہے"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ہر بار پوچھیں"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"اجازت نہ دیں"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"پیچھے جائیں"</string>
     <string name="loading" msgid="2526615755685950317">"لوڈ ہو رہا ہے…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"انضمام پیشرفت میں ہے"</string>

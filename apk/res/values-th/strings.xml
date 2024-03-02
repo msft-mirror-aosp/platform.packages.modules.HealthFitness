@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"เข้าถึงในช่วง 24 ชั่วโมงที่ผ่านมา"</string>
     <string name="app_access_title" msgid="7137018424885371763">"สิทธิ์การเข้าถึงของแอป"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ตอนนี้คุณยังไม่ได้ติดตั้งแอปที่เข้ากันได้"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"การเข้าถึงเพิ่มเติม"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"สิทธิ์ของแอปที่ถูกนำออก"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA">%s</xliff:g> ออกแล้ว"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA_0">%1$s</xliff:g> และ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ออกแล้ว"</string>
@@ -304,6 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ทำไม Health Connect จึงนำสิทธิ์ของแอปออก"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"หากแอปถูกระงับหรือนำออกจาก Google Play, Health Connect จะนำสิทธิ์ของแอปนั้นออกโดยอัตโนมัติ\n\nซึ่งแปลว่าแอปดังกล่าวจะไม่สามารถเข้าถึงข้อมูลที่เก็บไว้ใน Health Connect ได้อีกต่อไป ข้อมูลที่แอปเคยเขียนไว้จะไปปรากฏในรายการข้อมูลแอปที่ไม่ได้ใช้งาน"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"รับทราบ"</string>
+    <string name="export_settings_screen_title" msgid="887671826359158339">"บันทึกข้อมูล"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"บันทึกข้อมูลและสิทธิ์ Health Connect เพื่อให้นำเข้าได้หากเปลี่ยนไปใช้โทรศัพท์เครื่องใหม่ คุณสามารถเลือกตำแหน่งที่จะจัดเก็บข้อมูลนี้ก่อนบันทึก"</string>
+    <string name="setup_button" msgid="1407942598553043961">"ตั้งค่า"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"การตั้งค่า"</string>
+    <string name="auto_save" msgid="7146497593975616076">"บันทึกอัตโนมัติ"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"เลือกความถี่"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"เลือกเพื่อบันทึกข้อมูลครั้งเดียว หรือตั้งค่าให้บันทึกโดยอัตโนมัติเป็นประจำเมื่อถึงเวลาที่ระบุ"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ทุกเดือน"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"เริ่มต้นใช้งาน Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย และให้คุณซิงค์แอปต่างๆ ในโทรศัพท์ได้โดยง่าย"</string>
     <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>
@@ -741,6 +754,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"อนุญาตเส้นทางนี้"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"อนุญาตเส้นทางทั้งหมด"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ไม่อนุญาต"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"อนุญาตเสมอ"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"แชร์เส้นทางออกกำลังกาย"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ควบคุมวิธีที่แอปนี้เข้าถึงเส้นทางออกกำลังกายจากแอปที่เชื่อมต่อ"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ถามทุกครั้ง"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"ไม่อนุญาต"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"กลับ"</string>
     <string name="loading" msgid="2526615755685950317">"กำลังโหลด…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"การผสานรวมอยู่ระหว่างดำเนินการ"</string>

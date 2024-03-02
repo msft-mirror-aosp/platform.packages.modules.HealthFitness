@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Použité v posledných 24 hodinách"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Prístup k aplikáciám"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálne nemáte nainštalované žiadne kompatibilné aplikácie"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Dodatočný prístup"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odstránené povolenia aplikácií"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Dáta o zdraví odstránili povolenia pre aplikáciu <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Dáta o zdraví odstránili povolenia pre aplikácie <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Prečo Dáta o zdraví odstraňujú povolenia aplikácií"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ak bude aplikácia zablokovaná alebo odstránená zo služby Google Play, Dáta o zdraví automaticky odstránia jej povolenia.\n\nZnamená to, že daná aplikácia už nebude mať prístup k údajom uloženým v Dátach o zdraví. Ak aplikácia v minulosti zapísala údaje, zobrazí sa v zozname neaktívnych aplikácií."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Dobre"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Začíname s Dátami o zdraví"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii a umožňujú vám jednoducho synchronizovať rôzne aplikácie v telefóne"</string>
     <string name="share_data" msgid="3481932156368883946">"Zdieľanie údajov s aplikáciami"</string>
@@ -741,6 +766,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Povoliť túto trasu"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Povoliť všetky trasy"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nepovoliť"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Vždy povoliť"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Zdieľanie trás cvičení"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Ovládajte, ako táto aplikácia získava prístup k trasám cvičení z pripojených aplikácií"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Vždy sa opýtať"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Nepovoliť"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"Späť"</string>
     <string name="loading" msgid="2526615755685950317">"Načítava sa…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integruje sa"</string>
