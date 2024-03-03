@@ -38,7 +38,6 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
@@ -49,6 +48,7 @@ import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
+import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
@@ -93,6 +93,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_app"
         private const val FOOTER_KEY = "connected_app_footer"
         private const val KEY_ADDITIONAL_ACCESS = "additional_access"
+        private const val DISABLE_EXERCISE_ROUTE_DIALOG_TAG = "disable_exercise_route"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
 
@@ -106,9 +107,9 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
     private var packageName: String = ""
     private var appName: String = ""
-    private val appPermissionViewModel: AppPermissionViewModel by viewModels()
+    private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
-    private val additionalAccessViewModel: AdditionalAccessViewModel by viewModels()
+    private val additionalAccessViewModel: AdditionalAccessViewModel by activityViewModels()
     private val permissionMap: MutableMap<HealthPermission, HealthSwitchPreference> = mutableMapOf()
 
     private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
@@ -166,6 +167,13 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 else -> {
                     dismissLoadingDialog()
                 }
+            }
+        }
+
+        appPermissionViewModel.showDisableExerciseRouteEvent.observe(viewLifecycleOwner) { event ->
+            if (event.shouldShowDialog) {
+                DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
+                    .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
             }
         }
 

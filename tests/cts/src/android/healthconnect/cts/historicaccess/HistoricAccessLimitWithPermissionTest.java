@@ -16,21 +16,35 @@
 
 package android.healthconnect.cts.historicaccess;
 
+import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.health.connect.datatypes.WeightRecord.WEIGHT_AVG;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getWeightRecord;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
+import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
+import static android.healthconnect.cts.utils.TestUtils.updatePriorityWithManageHealthDataPermission;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import android.content.Context;
+import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
+import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.DeviceConfigRule;
 import android.healthconnect.cts.utils.TestReceiver;
@@ -44,9 +58,12 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 public class HistoricAccessLimitWithPermissionTest {
+
+    private static final String TEST_APP_PACKAGE_NAME = "android.healthconnect.test.app";
 
     private Context mContext;
     private Instant mNow;
@@ -161,6 +178,95 @@ public class HistoricAccessLimitWithPermissionTest {
                 getRecordIds(TestUtils.readRecords(readUsingIdsRequest.build()));
 
         assertThat(recordIdsReadByIds).containsExactlyElementsIn(insertedRecordIds);
+    }
+
+    @Test
+    public void testAggregateIntervalRecords_expectCorrectResponse() throws InterruptedException {
+        setupAggregation(mContext.getPackageName(), HealthDataCategory.ACTIVITY);
+        long ownRecordValueAfterHistoricLimit = 20;
+        long ownRecordValueBeforeHistoricLimit = 300;
+        long otherAppsRecordValueAfterHistoricLimit = 4_000;
+        long otherAppsRecordValueBeforeHistoricLimit = 50_000;
+        insertStepsRecord(daysBeforeNow(10), daysBeforeNow(9), ownRecordValueAfterHistoricLimit);
+        insertStepsRecord(daysBeforeNow(50), daysBeforeNow(40), ownRecordValueBeforeHistoricLimit);
+        insertStepsRecordViaTestApp(
+                daysBeforeNow(2), daysBeforeNow(1), otherAppsRecordValueAfterHistoricLimit);
+        insertStepsRecordViaTestApp(
+                daysBeforeNow(60), daysBeforeNow(50), otherAppsRecordValueBeforeHistoricLimit);
+        // Add the other app to the priority list
+        updatePriorityWithManageHealthDataPermission(
+                HealthDataCategory.ACTIVITY,
+                Arrays.asList(mContext.getPackageName(), TEST_APP_PACKAGE_NAME));
+        TimeInstantRangeFilter timeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(daysBeforeNow(1000))
+                        .setEndTime(mNow.plus(1000, DAYS))
+                        .build();
+
+        AggregateRecordsResponse<Long> totalStepsCountAggregation =
+                getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Long>(timeFilter)
+                                .addAggregationType(STEPS_COUNT_TOTAL)
+                                .build());
+
+        assertThat(totalStepsCountAggregation.get(STEPS_COUNT_TOTAL))
+                .isEqualTo(
+                        ownRecordValueAfterHistoricLimit
+                                + ownRecordValueBeforeHistoricLimit
+                                + otherAppsRecordValueAfterHistoricLimit
+                                + otherAppsRecordValueBeforeHistoricLimit);
+    }
+
+    @Test
+    public void testAggregateInstantRecords_expectCorrectResponse() throws InterruptedException {
+        setupAggregation(mContext.getPackageName(), HealthDataCategory.BODY_MEASUREMENTS);
+        double ownRecordValueAfterHistoricLimit = 20;
+        double ownRecordValueBeforeHistoricLimit = 300;
+        double otherAppsRecordValueAfterHistoricLimit = 4_000;
+        double otherAppsRecordValueBeforeHistoricLimit = 50_000;
+        insertWeightRecord(daysBeforeNow(10), ownRecordValueAfterHistoricLimit);
+        insertWeightRecord(daysBeforeNow(50), ownRecordValueBeforeHistoricLimit);
+        insertWeightRecordViaTestApp(daysBeforeNow(2), otherAppsRecordValueAfterHistoricLimit);
+        insertWeightRecordViaTestApp(daysBeforeNow(60), otherAppsRecordValueBeforeHistoricLimit);
+        TimeInstantRangeFilter timeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(daysBeforeNow(1000))
+                        .setEndTime(mNow.plus(1000, DAYS))
+                        .build();
+
+        AggregateRecordsResponse<Mass> averageWeightAggregation =
+                getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
+                                .addAggregationType(WEIGHT_AVG)
+                                .build());
+
+        assertThat(averageWeightAggregation.get(WEIGHT_AVG).getInGrams())
+                .isEqualTo(
+                        (ownRecordValueAfterHistoricLimit
+                                        + ownRecordValueBeforeHistoricLimit
+                                        + otherAppsRecordValueAfterHistoricLimit
+                                        + otherAppsRecordValueBeforeHistoricLimit)
+                                / 4d);
+    }
+
+    @Test
+    public void testGetChangeLogs_expectCorrectResponse() throws InterruptedException {
+        String token = getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+        List<String> insertedRecordIds =
+                List.of(
+                        insertWeightRecord(daysBeforeNow(10), 10),
+                        insertWeightRecord(daysBeforeNow(50), 11),
+                        insertWeightRecord(Instant.EPOCH, 12),
+                        insertWeightRecordViaTestApp(daysBeforeNow(2), 13),
+                        insertWeightRecordViaTestApp(daysBeforeNow(50), 14),
+                        insertWeightRecordViaTestApp(Instant.EPOCH, 15));
+
+        List<String> logsRecordIds =
+                getRecordIds(
+                        getChangeLogs(new ChangeLogsRequest.Builder(token).build())
+                                .getUpsertedRecords());
+
+        assertThat(logsRecordIds).containsExactlyElementsIn(insertedRecordIds);
     }
 
     private String insertStepsRecord(Instant startTime, Instant endTime, long value)

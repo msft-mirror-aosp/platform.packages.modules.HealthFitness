@@ -202,6 +202,7 @@ package android.health.connect.datatypes {
     field public static final int RECORD_TYPE_NUTRITION = 8; // 0x8
     field public static final int RECORD_TYPE_OVULATION_TEST = 30; // 0x1e
     field public static final int RECORD_TYPE_OXYGEN_SATURATION = 22; // 0x16
+    field @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final int RECORD_TYPE_PLANNED_EXERCISE_SESSION = 40; // 0x28
     field public static final int RECORD_TYPE_POWER = 13; // 0xd
     field public static final int RECORD_TYPE_RESPIRATORY_RATE = 31; // 0x1f
     field public static final int RECORD_TYPE_RESTING_HEART_RATE = 33; // 0x21

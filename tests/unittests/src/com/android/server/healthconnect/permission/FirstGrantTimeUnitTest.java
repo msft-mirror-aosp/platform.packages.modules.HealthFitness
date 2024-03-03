@@ -50,7 +50,6 @@ import android.util.Pair;
 
 import androidx.test.InstrumentationRegistry;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -210,14 +209,38 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
-    public void testOnPermissionsChangedCalled_expectBackgroundTaskAdded() throws TimeoutException {
+    public void testOnPermissionsChangedCalled_withHealthPermissionsUid_expectBackgroundTaskAdded()
+            throws TimeoutException {
         long currentTaskCount = getInternalBackgroundExecutorTaskCount();
         waitForAllScheduledTasksToComplete();
+        int uid = 123;
+        String[] packageNames = {"package.name"};
+        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
+        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
+                .thenReturn(true);
 
-        mGrantTimeManager.onPermissionsChanged(0);
+        mGrantTimeManager.onPermissionsChanged(uid);
         waitForAllScheduledTasksToComplete();
 
         assertThat(getInternalBackgroundExecutorTaskCount()).isEqualTo(currentTaskCount + 1);
+    }
+
+    @Test
+    public void
+            testOnPermissionsChangedCalled_withNoHealthPermissionsUid_expectNoBackgroundTaskAdded()
+                    throws TimeoutException {
+        long currentTaskCount = getInternalBackgroundExecutorTaskCount();
+        waitForAllScheduledTasksToComplete();
+        int uid = 123;
+        String[] packageNames = {"package.name"};
+        when(mPackageManager.getPackagesForUid(uid)).thenReturn(packageNames);
+        when(mTracker.supportsPermissionUsageIntent(eq(packageNames[0]), ArgumentMatchers.any()))
+                .thenReturn(false);
+
+        mGrantTimeManager.onPermissionsChanged(uid);
+        waitForAllScheduledTasksToComplete();
+
+        assertThat(getInternalBackgroundExecutorTaskCount()).isEqualTo(currentTaskCount);
     }
 
     @Test
