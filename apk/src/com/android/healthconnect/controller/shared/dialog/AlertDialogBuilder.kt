@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.shared.dialog
 
 import android.content.Context
 import android.content.DialogInterface
+import android.text.SpannableString
 import android.view.Gravity.CENTER
 import android.view.LayoutInflater
 import android.view.View
@@ -129,6 +130,14 @@ class AlertDialogBuilder(private val context: Context, private val containerLogN
 
     /** Sets the title with custom view in the custom title layout. */
     fun setCustomTitle(titleString: String): AlertDialogBuilder {
+        val titleView: TextView = customTitleLayout.findViewById(R.id.dialog_title)
+        titleView.text = titleString
+        alertDialogBuilder.setCustomTitle(customTitleLayout)
+        return this
+    }
+
+    /** Sets the title with custom view in the custom title layout using a Spannable String. */
+    fun setCustomTitle(titleString: SpannableString): AlertDialogBuilder {
         val titleView: TextView = customTitleLayout.findViewById(R.id.dialog_title)
         titleView.text = titleString
         alertDialogBuilder.setCustomTitle(customTitleLayout)

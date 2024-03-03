@@ -81,6 +81,9 @@
     <attr name="editIcon" format="reference"/>
     <attr name="closeIcon" format="reference"/>
 
+    <!-- Export -->
+    <attr name="repeatIcon" format="reference"/>
+
     <!-- END REGION -->
 
     <!-- REGION DIALOG GRAVITY -->

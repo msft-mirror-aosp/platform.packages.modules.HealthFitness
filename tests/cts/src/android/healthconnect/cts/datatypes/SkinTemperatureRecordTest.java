@@ -16,6 +16,7 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.datatypes.SkinTemperatureRecord.MEASUREMENT_LOCATION_TOE;
 import static android.health.connect.datatypes.SkinTemperatureRecord.SKIN_TEMPERATURE_DELTA_AVG;
 import static android.health.connect.datatypes.SkinTemperatureRecord.SKIN_TEMPERATURE_DELTA_MAX;
 import static android.health.connect.datatypes.SkinTemperatureRecord.SKIN_TEMPERATURE_DELTA_MIN;
@@ -93,6 +94,42 @@ public class SkinTemperatureRecordTest {
     @Before
     public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
+    }
+
+    @Test
+    public void testSkinTemperatureRecordDelta_correctFields() {
+        Instant recordTime = Instant.now();
+
+        SkinTemperatureRecord.Delta delta =
+                new SkinTemperatureRecord.Delta(TemperatureDelta.fromCelsius(0.5), recordTime);
+
+        assertThat(delta.getDelta()).isEqualTo(TemperatureDelta.fromCelsius(0.5));
+        assertThat(delta.getTime()).isEqualTo(recordTime);
+    }
+
+    @Test
+    public void testSkinTemperatureRecordBuilder_correctFields() {
+        Instant recordStartTime = Instant.now();
+        Instant recordEndTime = recordStartTime.plusMillis(1000);
+
+        SkinTemperatureRecord.Delta delta =
+                new SkinTemperatureRecord.Delta(TemperatureDelta.fromCelsius(0.5), recordStartTime);
+
+        SkinTemperatureRecord record =
+                new SkinTemperatureRecord.Builder(
+                                new Metadata.Builder().build(), recordStartTime, recordEndTime)
+                        .setMeasurementLocation(MEASUREMENT_LOCATION_TOE)
+                        .setBaseline(Temperature.fromCelsius(36.9))
+                        .setStartZoneOffset(ZoneOffset.UTC)
+                        .setEndZoneOffset(ZoneOffset.UTC)
+                        .setDeltas(List.of(delta))
+                        .build();
+
+        assertThat(record.getDeltas()).isEqualTo(List.of(delta));
+        assertThat(record.getBaseline()).isEqualTo(Temperature.fromCelsius(36.9));
+        assertThat(record.getMeasurementLocation()).isEqualTo(MEASUREMENT_LOCATION_TOE);
+        assertThat(record.getStartZoneOffset()).isEqualTo(ZoneOffset.UTC);
+        assertThat(record.getEndZoneOffset()).isEqualTo(ZoneOffset.UTC);
     }
 
     @Test(expected = IllegalArgumentException.class)
