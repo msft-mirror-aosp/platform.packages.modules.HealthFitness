@@ -42,8 +42,9 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.DisableExerciseRouteDialogEvent
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
 import com.android.healthconnect.controller.permissions.app.SettingsManageAppPermissionsFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -76,7 +77,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
@@ -114,7 +114,8 @@ class SettingsManageAppPermissionsFragmentTest {
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
-
+        whenever(viewModel.showDisableExerciseRouteEvent)
+            .thenReturn(MediatorLiveData(DisableExerciseRouteDialogEvent()))
         whenever(viewModel.appInfo).then {
             MutableLiveData(
                 AppMetadata(
@@ -333,7 +334,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun additionalAccessState_valid_showsAdditionalAccess() {
         val validState =
-            AdditionalAccessViewModel.State(exerciseRouteState = ExerciseRouteState.DECLARED)
+            AdditionalAccessViewModel.State(
+                exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
@@ -347,7 +350,9 @@ class SettingsManageAppPermissionsFragmentTest {
     @Test
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
-            AdditionalAccessViewModel.State(exerciseRouteState = ExerciseRouteState.DECLARED)
+            AdditionalAccessViewModel.State(
+                exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
+                exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }

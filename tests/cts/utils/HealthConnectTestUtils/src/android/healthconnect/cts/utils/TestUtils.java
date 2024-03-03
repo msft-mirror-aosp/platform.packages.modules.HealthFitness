@@ -28,6 +28,7 @@ import static android.health.connect.HealthPermissionCategory.BASAL_METABOLIC_RA
 import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
+import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
@@ -145,6 +146,7 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1064,6 +1066,21 @@ public final class TestUtils {
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
+    }
+
+    /**
+     * Creates a {@link ReadRecordsRequestUsingFilters} with the filters being a {@code clazz} and a
+     * list of package names.
+     */
+    public static <T extends Record>
+            ReadRecordsRequestUsingFilters<T> createReadRecordsRequestUsingFilters(
+                    Class<T> clazz, Collection<String> packageNameFilters) {
+        ReadRecordsRequestUsingFilters.Builder<T> builder =
+                new ReadRecordsRequestUsingFilters.Builder<>(clazz);
+        for (String packageName : packageNameFilters) {
+            builder.addDataOrigins(getDataOrigin(packageName));
+        }
+        return builder.build();
     }
 
     public static final class RecordAndIdentifier {

@@ -24,9 +24,9 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.DECLARED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.GRANTED
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState.NOT_DECLARED
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NOT_DECLARED
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -73,7 +73,14 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         packageName = packageNameExtra
 
         viewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            setupExerciseRoutePref(state.exerciseRouteState)
+            setupExerciseRoutePref(state.exerciseRoutePermissionUIState)
+        }
+
+        viewModel.showEnableExerciseEvent.observe(viewLifecycleOwner) { state ->
+            if (state.shouldShowDialog) {
+                EnableExercisePermissionDialog.createDialog(packageName, state.appName)
+                    .show(childFragmentManager, ENABLE_EXERCISE_DIALOG_TAG)
+            }
         }
 
         permissionsViewModel.appInfo.observe(viewLifecycleOwner) { appMetaData ->
@@ -89,7 +96,7 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         viewModel.loadAdditionalAccessPreferences(packageName)
     }
 
-    private fun setupExerciseRoutePref(state: ExerciseRouteState) {
+    private fun setupExerciseRoutePref(state: PermissionUiState) {
         exerciseRoutePref.isVisible = state != NOT_DECLARED
         if (state == NOT_DECLARED) {
             return
@@ -98,8 +105,8 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
             logName = EXERCISE_ROUTES_BUTTON
             exerciseRoutePref.setSummary(
                 when (state) {
-                    DECLARED -> R.string.route_permissions_ask
-                    GRANTED -> R.string.route_permissions_always_allow
+                    ASK_EVERY_TIME -> R.string.route_permissions_ask
+                    ALWAYS_ALLOW -> R.string.route_permissions_always_allow
                     else -> R.string.route_permissions_deny
                 })
             exerciseRoutePref.setOnPreferenceClickListener {
@@ -115,5 +122,6 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         private const val PREF_APP_HEADER = "manage_app_permission_header"
         private const val KEY_EXERCISE_ROUTES_PERMISSION = "key_exercise_routes_permission"
         private const val EXERCISE_ROUTES_DIALOG_TAG = "ExerciseRoutesPermissionDialogFragment"
+        private const val ENABLE_EXERCISE_DIALOG_TAG = "EnableExercisePermissionDialog"
     }
 }
