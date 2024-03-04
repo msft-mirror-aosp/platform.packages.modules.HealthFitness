@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"маршрута на вежбање"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Запиши маршрута на вежбање"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Читај ја маршрутата на вежбање"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Читање маршрути за вежбање"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Планови за вежбање"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"планови за вежбање"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Читање на плановите за вежбање"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Пишување планови за вежбање"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Растојание"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"растојание"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Читање растојание"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Контролирајте кои апликации може да пристапуваат до податоците складирани во Health Connect. Допрете апликација за да ги прегледате податоците што може да ги чита или запишува."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Со дозвола за пристап"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Без дозвола за пристап"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Треба да се ажурира"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Поставки и помош"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Отстрани го пристапот за сите апликации"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Дозволено да чита"</string>
@@ -291,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Пристапено во минатите 24 часа"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Пристап на апликацијата"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Во моментов немате инсталирано компатибилни апликации"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Дополнителен пристап"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Отстранети дозволи за апликации"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ги отстрани дозволите за <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ги отстрани дозволите за <xliff:g id="APP_DATA_0">%1$s</xliff:g> и <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -300,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Зошто Health Connect отстранува дозволи за апликации"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ако некоја апликација е суспендирана или отстранета од Google Play, Health Connect автоматски ги отстранува нејзините дозволи.\n\nОва значи дека апликацијата веќе нема да може да пристапува до податоците зачувани во Health Connect. Ако оваа апликација има претходно запишани податоци, таа се појавува во списокот со неактивни апликации."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Сфатив"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Започнете со Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ги складира податоците за вашето здравје и фитнес, давајќи ви едноставен начин да ги синхронизирате различните апликации на вашиот телефон"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделувајте податоци со вашите апликации"</string>
@@ -665,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 процент}one{# процент}other{# проценти}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Откажи"</string>
     <string name="units_title" msgid="6504086463237869339">"Мерни единици"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Поставете мерни единици"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Растојание"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Висина"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Тежина"</string>
@@ -716,8 +744,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Премести надолу"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Премести најгоре"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Премести најдолу"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Копче за повлекување и прераспоредување на <xliff:g id="SELECTED_APP">%s</xliff:g> во приоритетната листа"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Копче за отстранување на <xliff:g id="SELECTED_APP">%s</xliff:g> од приоритетната листа"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Допрете двапати и повлечете за да прераспоредите"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"фитнес, велнес"</string>
@@ -736,11 +763,25 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Само апликациите на кои им дозволувате пристап до вашите маршрути за вежбање"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Како да управувам со пристапот?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Може да управувате со пристапот на апликацијата до маршрутите за вежбање во поставките на Health Connect"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
+    <string name="request_route_allow" msgid="4427372851821847274">"Дозволи ја маршутава"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Дозволи ги сите маршути"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дозволувај"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Секогаш дозволувај"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Споделување на маршрутата за вежбање"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Контролирање на тоа како апликацијава пристапува до маршрутите за вежбање од поврзаните апликации"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Секогаш прашувај"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Не дозволувај"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
     <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
     <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
     <skip />
     <string name="back_button" msgid="780519527385993407">"Назад"</string>
     <string name="loading" msgid="2526615755685950317">"Се вчитува…"</string>
@@ -777,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Продолжете со интеграција со Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"За да ги зачувате вашите податоци, завршете го ова за <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Потребно е ажурирање на апликацијата"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> треба да се ажурира за да продолжи да функционира со Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Некои апликации треба да се ажурираат за да продолжат да функционираат со Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Апликацијата <xliff:g id="APP_NAME">%1$s</xliff:g> треба да се ажурира за да продолжи да се синхронизира со Health Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Некои апликации треба да се ажурираат за да продолжат да се синхронизираат со Health Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Проверете дали има ажурирања"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Дознајте повеќе"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Интеграција на Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect е подготвена да се интегрира со системот со Android. Ако сега дадете пристап на <xliff:g id="APP_NAME">%1$s</xliff:g>, некои функции може да не функционираат додека не заврши интеграцијата."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect е подготвена да се интегрира со системот со Android. Ако сега дадете пристап на апликациите, некои функции може да не функционираат додека не заврши интеграцијата."</string>
@@ -799,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Што има ново"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Сега може да пристапите до Health Connect директно од вашите поставки. Деинсталирајте ја апликацијата Health Connect во секое време за да ослободите простор за складирање."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Сфатив"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Враќање во тек"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect ги враќа податоците и дозволите. Може да биде потребно некое време за да се заврши тоа."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Враќањето преку Health Connect е во тек"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Сфатив"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Потребно е ажурирање"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Пред да продолжите со враќањето на податоците, ажурирајте го телефонскиот систем."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Ажурирај сега"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Вкупни податоци"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Извори за апликацијата"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Додајте извори за апликацијата во списокот за да видите како може да се променат вкупните податоци. Ако ја отстраните апликацијата од списоков, веќе нема да придонесува во вкупните податоци, но сѐ уште ќе има дозволи за пишување."</string>

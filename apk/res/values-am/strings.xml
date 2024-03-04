@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"የልምምድ መስመር"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"የልምምድ አቅጣጫን መጻፍ"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"የአካላዊ ልምምድ አቅጣጫን ያንብቡ"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"የልምምድ መስመሮችን ያንብቡ"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"የሥልጠና ዕቅዶች"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"የሥልጠና ዕቅዶች"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"የሥልጠና ዕቅዶችን ያንብቡ"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"የሥልጠና ዕቅዶችን ይጻፉ"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"ርቀት"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"ርቀት"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"ርቀትን ያነባል"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"የትኛዎቹ መተግበሪያዎች በHealth Connect ውስጥ የተከማቸ ውሂብን መድረስ እንደሚችሉ ይቆጣጠሩ። አንድ መተግበሪያ ማንበብ ወይም መጻፍ የሚችለውን ውሂብ ለመገምገም መታ ያድርጉት።"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"መዳረሻ የተፈቀደላቸው"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"መዳረሻ ያልተፈቀደላቸው"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"ማዘመን ይፈልጋል"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"ቅንብሮች እና እገዛ"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"የሁሉም መተግበሪያዎች መዳረሻን አስወግድ"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"ለማንበብ የተፈቀደለት"</string>
@@ -291,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"ባለፉት 24 ሰዓታት ውስጥ ተደርሶበታል"</string>
     <string name="app_access_title" msgid="7137018424885371763">"የመተግበሪያ መዳረሻ"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"በአሁኑ ጊዜ ምንም የተጫኑ ተኳዃኝ መተግበሪያዎች የሉዎትም"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"ተጨማሪ መዳረሻ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"የተወገዱ የመተግበሪያ ፍቃዶች"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"የጤና አገናኝ የ<xliff:g id="APP_DATA">%s</xliff:g>ን ፈቃዶች አስወግዷል"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"የጤና አገናኝ የ<xliff:g id="APP_DATA_0">%1$s</xliff:g>ን እና የ<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>ን ፈቃዶች አስወግዷል"</string>
@@ -300,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"የጤና አገናኝ ለምን የመተግበሪያ ፍቃዶችን እንደሚያስወግድ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"አንድ መተግበሪያ ከGoogle Play ከታገደ ወይም ከተወገደ የጤና አገናኝ በራስ-ሰር የእሱን ፈቃዶች ያስወግዳል።\n\nይህ ማለት መተግበሪያው ከእንግዲህ የጤና አገናኝ ውስጥ የተከማቸ ውሂብን መድረስ አይችልም ማለት ነው። ይህ መተግበሪያ ከዚህ ቀደም የተጻፈ ውሂብ ካለው የቦዘኑ መተግበሪያዎች ዝርዝሩ ውስጥ ይታያል።"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ገባኝ"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"በHealth Connect ይጀምሩ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"የጤና አገናኝ የእርስዎን የጤና እና አካል ብቃት ውሂብ ያከማቻል፣ ይህም በስልክዎ ላይ ያሉ የተለያዩ መተግበሪያዎችን ለማስመር ቀላል መንገድ ይሰጥዎታል"</string>
     <string name="share_data" msgid="3481932156368883946">"በመተግበሪያዎችዎ ውሂብን ያጋሩ"</string>
@@ -665,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 መቶኛ}one{# መቶኛ}other{# መቶኛ}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"ይቅር"</string>
     <string name="units_title" msgid="6504086463237869339">"አሃዶች"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"የውሂብ አሃዶችን አቀናብር"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"ርቀት"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"ቁመት"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"ክብደት"</string>
@@ -716,8 +744,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"ወደ ታች ውሰድ"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"ወደ ራስጌ ውሰድ"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"ወደ ግርጌ ውሰድ"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"ቅድሚያ በሚሰጠው ዝርዝር ውስጥ <xliff:g id="SELECTED_APP">%s</xliff:g> የሚለውን ለመጎተት እና እንደገና ለማዘዝ ጥቅም ላይ የሚውል አዝራር"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"ከቅድሚያ ዝርዝር <xliff:g id="SELECTED_APP">%s</xliff:g> ማስወገጃ አዝራር"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"ዳግም ለመደርደር ሁለቴ መታ አድርገው ይጎትቱ"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"የአካል ብቃት፣ ጤናማነት"</string>
@@ -736,11 +763,25 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"እርስዎ የልምምድ መስመሮችዎን እንዲደርሱ የሚፈቅዱላቸው መተግበሪያዎች ብቻ"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"መዳረሻን እንዴት ማስተዳደር እችላለሁ?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"የልምምድ መስመሮችን የመተግበሪያ መዳረሻ በጤና አገናኝ ቅንብሮች ውስጥ ማስተዳደር ይችላሉ"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
+    <string name="request_route_allow" msgid="4427372851821847274">"ይህን መስመር ፍቀድ"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"ሁሉንም መስመሮች ፍቀድ"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"አትፍቀድ"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ሁልጊዜ ፍቀድ"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"የልምምድ መስመር ማጋራት"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ይህ መተግበሪያ ከተገናኙ መተግበሪያዎች የልምምድ መስመሮችን እንዴት እንደሚደርስ ይቆጣጠሩ"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ሁልጊዜ ጠይቅ"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"አትፍቀድ"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
     <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
     <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
     <skip />
     <string name="back_button" msgid="780519527385993407">"ተመለስ"</string>
     <string name="loading" msgid="2526615755685950317">"በመጫን ላይ…"</string>
@@ -777,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"የጤና አገናኝ ውህደትን ካቆመበት ይቀጥሉ"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"ውሂብዎን ይዞ ለመቆየት፣ ይህን በ<xliff:g id="TIME_NEEDED">%1$s</xliff:g> ውስጥ ያጠናቅቁ"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"የመተግበሪያ ዝማኔ ያስፈልጋል"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> ከጤና አገናኝ ጋር መስራት እንዲቀጥል ወቅታዊ መሆን አለበት"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"ከጤና አገናኝ ጋር መስራት ለመቀጠል አንዳንድ መተግበሪያዎች ወቅታዊ መሆን አለባቸው"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"ከጤና አገናኝ ጋር ማመሳሰልን ለመቀጠል <xliff:g id="APP_NAME">%1$s</xliff:g> መዘመን አለበት"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"ከጤና አገናኝ ጋር ማመሳሰልን ለመቀጠል አንዳንድ መተግበሪያዎች መዘመን አለባቸው"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"ዝማኔዎች ካሉ ይፈትሹ"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"የበለጠ ለመረዳት"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"የጤና አገናኝ ውህደት"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"የጤና አገናኝ ከእርስዎ የAndroid ሥርዓት ጋር ለመዋሃድ ዝግጁ ነው። ለ<xliff:g id="APP_NAME">%1$s</xliff:g> አሁን መዳረሻ ከሰጡ አንዳንድ ባህሪያት ውህደት እስኪጠናቀቅ ድረስ ላይሰሩ ይችላሉ።"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"የጤና አገናኝ ከእርስዎ የAndroid ሥርዓት ጋር ለመዋሃድ ዝግጁ ነው። ለመተግበሪያዎች አሁን መዳረሻ ከሰጡ አንዳንድ ባህሪያት ውህደት እስከሚጠናቀቅ ድረስ ላይሠሩ ይችላሉ።"</string>
@@ -799,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ምን አዲስ ነገር አለ"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"አሁን የጤና አገናኝን በቀጥታ ከቅንብሮችዎ መድረስ ይችላሉ። የማከማቻ ቦታ ነፃ ለማድረግ የጤና አገናኝ መተግበሪያን በማንኛውም ጊዜ ያራግፉ።"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ገባኝ"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"ወደነበረበት መመለስ በሂደት ላይ"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"የጤና አገናኝ ውሂብን እና ፈቃዶችን ወደነበረበት በመመለስ ላይ ነው። ይህን ማጠናቀቅ የተወሰነ ጊዜ ሊወስድ ይችላል።"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"የጤና አገናኝን ወደነበረበት መመለስ በሂደት ላይ"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"ገባኝ"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"ዝማኔ ያስፈልጋል"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"ውሂብዎን ወደነበረበት ለመመለስ ከመቀጠልዎ በፊት የስልክዎን ስርዓት ያዘምኑ።"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"አሁን አዘምን"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"የውሂብ ጠቅላላ"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"የመተግበሪያ ምንጮች"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"እንዴት የውሂብ ጠቅላላው ሊለወጥ እንደሚችል ለመመልከት የመተግበሪያ ምንጮችን ወደ ዝርዝሩ ያክሉ። አንድ መተግበሪያን ከዚህ ዝርዝር ማስወገድ ለጠቅላላው አስተዋጽዖ ከማድረግ ያቆማል፣ ነገር ግን የመፃፍ ፈቃዶችን ይኖረዋል።"</string>

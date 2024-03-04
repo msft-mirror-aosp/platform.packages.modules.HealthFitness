@@ -1,15 +1,30 @@
-package android.healthconnect.cts;
+/*
+ * Copyright (C) 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package android.healthconnect.cts.historicaccess;
 
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_AVG;
+import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
+import static android.healthconnect.cts.utils.DataFactory.getWeightRecord;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
-import static android.healthconnect.cts.utils.TestUtils.sendCommandToTestAppReceiver;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
-import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
-import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
+import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
+import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -22,15 +37,14 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
-import android.health.connect.datatypes.Metadata;
-import android.health.connect.datatypes.Record;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
-import android.os.Bundle;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -193,7 +207,7 @@ public class HistoricAccessLimitTest {
         insertStepsRecordViaTestApp(
                 daysBeforeNow(2), daysBeforeNow(1), otherAppsRecordValueAfterHistoricLimit);
         insertStepsRecordViaTestApp(
-                daysBeforeNow(50), daysBeforeNow(40), otherAppsRecordValueBeforeHistoricLimit);
+                daysBeforeNow(60), daysBeforeNow(50), otherAppsRecordValueBeforeHistoricLimit);
         // Add the other app to the priority list
         TestUtils.updatePriorityWithManageHealthDataPermission(
                 HealthDataCategory.ACTIVITY,
@@ -220,14 +234,14 @@ public class HistoricAccessLimitTest {
     @Test
     public void testAggregateInstantRecords_expectCorrectResponse() throws InterruptedException {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        long ownRecordValueAfterHistoricLimit = 20;
-        long ownRecordValueBeforeHistoricLimit = 300;
-        long otherAppsRecordValueAfterHistoricLimit = 4_000;
-        long otherAppsRecordValueBeforeHistoricLimit = 50_000;
+        double ownRecordValueAfterHistoricLimit = 20;
+        double ownRecordValueBeforeHistoricLimit = 300;
+        double otherAppsRecordValueAfterHistoricLimit = 4_000;
+        double otherAppsRecordValueBeforeHistoricLimit = 50_000;
         insertWeightRecord(daysBeforeNow(10), ownRecordValueAfterHistoricLimit);
         insertWeightRecord(daysBeforeNow(50), ownRecordValueBeforeHistoricLimit);
         insertWeightRecordViaTestApp(daysBeforeNow(2), otherAppsRecordValueAfterHistoricLimit);
-        insertWeightRecordViaTestApp(daysBeforeNow(50), otherAppsRecordValueBeforeHistoricLimit);
+        insertWeightRecordViaTestApp(daysBeforeNow(60), otherAppsRecordValueBeforeHistoricLimit);
         TimeInstantRangeFilter timeFilter =
                 new TimeInstantRangeFilter.Builder()
                         .setStartTime(daysBeforeNow(1000))
@@ -248,40 +262,48 @@ public class HistoricAccessLimitTest {
                                 / 3d);
     }
 
-    private String insertStepsRecord(Instant startTime, Instant endTime, long value)
-            throws InterruptedException {
-        return TestUtils.insertRecordAndGetId(
-                new StepsRecord.Builder(new Metadata.Builder().build(), startTime, endTime, value)
-                        .build());
+    @Test
+    public void testGetChangeLogs_expectCorrectResponse() throws InterruptedException {
+        String token =
+                getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
+        List<String> insertedRecentRecordIds =
+                List.of(
+                        insertWeightRecord(daysBeforeNow(10), 10),
+                        insertWeightRecord(daysBeforeNow(11), 11),
+                        insertWeightRecordViaTestApp(daysBeforeNow(2), 13));
+        insertWeightRecord(daysBeforeNow(50), 12);
+        insertWeightRecordViaTestApp(daysBeforeNow(60), 14);
+
+        List<String> logsRecordIds =
+                getRecordIds(
+                        getChangeLogs(new ChangeLogsRequest.Builder(token).build())
+                                .getUpsertedRecords());
+
+        assertThat(logsRecordIds).containsExactlyElementsIn(insertedRecentRecordIds);
     }
 
-    private String insertWeightRecord(Instant time, long value) throws InterruptedException {
-        return TestUtils.insertRecordAndGetId(
-                new WeightRecord.Builder(
-                                new Metadata.Builder().build(),
-                                time,
-                                Mass.fromGrams((double) value))
-                        .build());
+    private String insertStepsRecord(Instant startTime, Instant endTime, long value)
+            throws InterruptedException {
+        return insertRecordAndGetId(getStepsRecord(value, startTime, endTime));
+    }
+
+    private String insertWeightRecord(Instant time, double value) throws InterruptedException {
+        return insertRecordAndGetId(getWeightRecord(value, time));
     }
 
     private String insertStepsRecordViaTestApp(Instant startTime, Instant endTime, long value) {
         return TestUtils.insertStepsRecordViaTestApp(mContext, startTime, endTime, value).get(0);
     }
 
-    private String insertWeightRecordViaTestApp(Instant startTime, long value) {
-        Bundle bundle = new Bundle();
-        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
-        bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {value});
-        TestReceiver.reset();
-        sendCommandToTestAppReceiver(mContext, ACTION_INSERT_WEIGHT_RECORDS, bundle);
-        return TestReceiver.getResult().getStringArrayList(EXTRA_RECORD_IDS).get(0);
+    private String insertWeightRecordViaTestApp(Instant startTime, double value) {
+        return TestUtils.insertWeightRecordViaTestApp(mContext, startTime, value).get(0);
     }
 
     private Instant daysBeforeNow(int days) {
         return mNow.minus(days, DAYS);
-    }
-
-    private static List<String> getRecordIds(List<? extends Record> records) {
-        return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
     }
 }

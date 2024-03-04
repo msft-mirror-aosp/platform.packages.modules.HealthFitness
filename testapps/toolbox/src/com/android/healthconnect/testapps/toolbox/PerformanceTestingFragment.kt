@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
 import com.android.healthconnect.testapps.toolbox.ui.PerformanceTestingLinearLayout
 import com.android.healthconnect.testapps.toolbox.utils.LoadingDialog
@@ -15,12 +16,13 @@ import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingV
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel.PerformanceInsertedRecordsState
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel.PerformanceReadRecordsState
 
-class PerformanceTesting(private val performanceTestingViewModel: PerformanceTestingViewModel) :
-    Fragment() {
+class PerformanceTestingFragment : Fragment() {
 
     private lateinit var manager: HealthConnectManager
     private lateinit var seedDataClass: SeedData
     private lateinit var loadingDialog: LoadingDialog
+
+    private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

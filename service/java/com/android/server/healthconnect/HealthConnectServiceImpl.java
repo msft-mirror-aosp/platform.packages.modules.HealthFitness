@@ -23,6 +23,7 @@ import static android.health.connect.Constants.READ;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
+import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 
 import static com.android.server.healthconnect.logging.HealthConnectServiceLogger.ApiMethods.DELETE_DATA;
@@ -92,6 +93,7 @@ import android.health.connect.changelog.ChangeLogsResponse.DeletedLog;
 import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
@@ -130,6 +132,7 @@ import com.android.server.healthconnect.permission.DataPermissionEnforcer;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.HealthConnectPermissionHelper;
 import com.android.server.healthconnect.storage.AutoDeleteService;
+import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -313,14 +316,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void makeHealthPermissionsRequestable(
-            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+    public void setHealthPermissionsUserFixedFlagValue(
+            @NonNull String packageName,
+            @NonNull UserHandle user,
+            List<String> permissions,
+            boolean value) {
         checkParamsNonNull(packageName, user);
         throwIllegalStateExceptionIfDataSyncInProgress();
 
         Trace.traceBegin(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE, TAG_MAKE_PERMISSIONS_REQUESTABLE);
 
-        mPermissionHelper.makeHealthPermissionsRequestable(packageName, user, permissions);
+        mPermissionHelper.setHealthPermissionsUserFixedFlagValue(
+                packageName, user, permissions, value);
 
         Trace.traceEnd(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE);
     }
@@ -493,7 +500,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                             .getApplicableRecordTypeIds());
                         }
 
-                        long startDateAccess;
+                        long startDateAccess = request.getStartTime();
                         // TODO(b/309776578): Consider making background reads possible for
                         // aggregations when only using own data
                         if (!holdsDataManagementPermission) {
@@ -515,11 +522,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             boolean enforceSelfRead =
                                     mDataPermissionEnforcer.enforceReadAccessAndGetEnforceSelfRead(
                                             recordTypesToTest, attributionSource);
-                            startDateAccess =
-                                    mPermissionHelper
-                                            .getHealthDataStartDateAccessOrThrow(
-                                                    attributionSource.getPackageName(), userHandle)
-                                            .toEpochMilli();
+                            if (!hasReadHistoryPermission(uid, pid)) {
+                                startDateAccess =
+                                        mPermissionHelper
+                                                .getHealthDataStartDateAccessOrThrow(
+                                                        attributionSource.getPackageName(),
+                                                        userHandle)
+                                                .toEpochMilli();
+                            }
                             maybeEnforceOnlyCallingPackageDataRequested(
                                     request.getPackageFilters(),
                                     attributionSource.getPackageName(),
@@ -530,8 +540,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                                             AggregationTypeIdMapper.getInstance()
                                                                     ::getAggregationTypeFor)
                                                     .collect(Collectors.toList()));
-                        } else {
-                            startDateAccess = request.getStartTime();
                         }
                         callback.onResult(
                                 new AggregateTransactionRequest(
@@ -657,7 +665,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         Trace.traceBegin(TRACE_TAG_READ, TAG_READ);
                         try {
                             long startDateAccessEpochMilli = request.getStartTime();
-                            if (!holdsDataManagementPermission) {
+
+                            if (!holdsDataManagementPermission
+                                    && !hasReadHistoryPermission(uid, pid)) {
                                 Instant startDateAccessInstant =
                                         mPermissionHelper.getHealthDataStartDateAccessOrThrow(
                                                 callingPackageName, userHandle);
@@ -933,6 +943,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mAppOpsManagerLocal.isUidInForeground(uid),
                                 logger);
                         throwExceptionIfDataSyncInProgress();
+                        if (request.getRecordTypes().isEmpty()) {
+                            throw new IllegalArgumentException(
+                                    "Requested record types must not be empty.");
+                        }
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 request.getRecordTypesList(), attributionSource);
                         callback.onResult(
@@ -951,6 +965,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (IllegalArgumentException illegalArgumentException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                HealthConnectException.ERROR_INVALID_ARGUMENT);
+                        Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
+                        tryAndThrowException(
+                                callback,
+                                illegalArgumentException,
+                                HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
@@ -1013,12 +1035,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         callerPackageName, request.getToken());
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+                        if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
+                            throw new IllegalArgumentException(
+                                    "Requested record types must not be empty.");
+                        }
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 changeLogsTokenRequest.getRecordTypes(), attributionSource);
-                        Instant startDateAccessInstant =
-                                mPermissionHelper.getHealthDataStartDateAccessOrThrow(
-                                        callerPackageName, userHandle);
-                        long startDateAccessEpochMilli = startDateAccessInstant.toEpochMilli();
+                        long startDateAccessEpochMilli = DEFAULT_LONG;
+                        if (!hasReadHistoryPermission(uid, pid)) {
+                            startDateAccessEpochMilli =
+                                    mPermissionHelper
+                                            .getHealthDataStartDateAccessOrThrow(
+                                                    callerPackageName, userHandle)
+                                            .toEpochMilli();
+                        }
                         final ChangeLogsHelper.ChangeLogsResponse changeLogsResponse =
                                 ChangeLogsHelper.getInstance()
                                         .getChangeLogs(changeLogsTokenRequest, request);
@@ -2030,6 +2060,54 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
+    @Override
+    public void configureScheduledExport(
+            @Nullable ScheduledExportSettings settings, @NonNull UserHandle user) {
+        checkParamsNonNull(user);
+
+        enforceIsForegroundUser(getCallingUserHandle());
+        throwExceptionIfDataSyncInProgress();
+
+        try {
+            mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
+            ScheduledExportSettingsStorage.configure(settings);
+        } catch (SQLiteException sqLiteException) {
+            Slog.e(TAG, "SQLiteException: ", sqLiteException);
+            throw new HealthConnectException(
+                    HealthConnectException.ERROR_IO, sqLiteException.toString());
+        } catch (SecurityException securityException) {
+            Slog.e(TAG, "SecurityException: ", securityException);
+            throw new HealthConnectException(
+                    HealthConnectException.ERROR_SECURITY, securityException.toString());
+        } catch (HealthConnectException healthConnectException) {
+            Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+            throw new HealthConnectException(
+                    healthConnectException.getErrorCode(), healthConnectException.toString());
+        } catch (Exception exception) {
+            Slog.e(TAG, "Exception: ", exception);
+            throw new HealthConnectException(ERROR_INTERNAL, exception.toString());
+        }
+    }
+
+    @Override
+    public int getScheduledExportPeriodInDays(@NonNull UserHandle user) {
+        checkParamsNonNull(user);
+
+        enforceIsForegroundUser(getCallingUserHandle());
+        throwExceptionIfDataSyncInProgress();
+        try {
+            mContext.enforceCallingPermission(MANAGE_HEALTH_DATA_PERMISSION, null);
+            return ScheduledExportSettingsStorage.getScheduledExportPeriodInDays();
+        } catch (Exception e) {
+            if (e instanceof SecurityException) {
+                throw e;
+            }
+            Slog.e(TAG, "Unable to get period between scheduled exports for " + user);
+        }
+
+        throw new RuntimeException();
+    }
+
     // Cancel BR timeouts - this might be needed when a user is going into background.
     void cancelBackupRestoreTimeouts() {
         mBackupRestore.cancelAllJobs();
@@ -2222,6 +2300,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private boolean hasDataManagementPermission(int uid, int pid) {
         return isPermissionGranted(MANAGE_HEALTH_DATA_PERMISSION, uid, pid);
+    }
+
+    private boolean hasReadHistoryPermission(int uid, int pid) {
+        return mDeviceConfigManager.isHistoryReadFeatureEnabled()
+                && isPermissionGranted(READ_HEALTH_DATA_HISTORY, uid, pid);
     }
 
     /**

@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"trajeto de exercício"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Escrever trajeto de exercício"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Ler o trajeto do exercício"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Ler trajetos de exercício"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Planos de treino"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"planos de treino"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Ler planos de treino"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Escrever planos de treino"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distância"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distância"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Ler distância"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Controle que apps podem aceder aos dados armazenados na Saúde Connect. Toque numa app para rever os dados que pode ler ou escrever."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Acesso permitido"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Acesso não permitido"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Precisa de ser atualizada"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Definições e ajuda"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Remover acesso para todas as apps"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Com autorização para ler"</string>
@@ -291,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Acesso nas últimas 24 horas"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Acesso de apps"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Atualmente, não tem nenhuma app compatível instalada"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Acesso adicional"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorizações de apps removidas"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"A Saúde Connect removeu autorizações para a app <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"A Saúde Connect removeu autorizações para as apps <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -300,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Por que motivo a Saúde Connect remove autorizações de apps"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Se uma app for suspensa ou removida do Google Play, a Saúde Connect remove automaticamente as respetivas autorizações.\n\nIsto significa que a app deixa de poder aceder aos dados armazenados na Saúde Connect. Se esta app tiver dados escritos anteriormente, é apresentada na lista de apps inativas."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Comece a usar a Saúde Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"A Saúde Connect armazena os seus dados de saúde e fitness, oferecendo-lhe uma forma simples de sincronizar as diferentes apps no seu telemóvel"</string>
     <string name="share_data" msgid="3481932156368883946">"Partilhar dados com as suas apps"</string>
@@ -665,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 por cento}other{# por cento}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Cancelar"</string>
     <string name="units_title" msgid="6504086463237869339">"Unidades"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Definir unidades dos dados"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Distância"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Altura"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Peso"</string>
@@ -716,8 +744,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Mover para baixo"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Mover para o início"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Mover para o fim"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Botão para arrastar e reordenar a app <xliff:g id="SELECTED_APP">%s</xliff:g> na lista de prioridades"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Botão que remove a app <xliff:g id="SELECTED_APP">%s</xliff:g> da lista de prioridades"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Toque duas vezes e arraste para reordenar"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"fitness, bem-estar"</string>
@@ -736,11 +763,25 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Apenas as apps que permite que acedam aos trajetos de exercício"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Como posso gerir o acesso?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Pode gerir o acesso das apps aos trajetos de exercício nas definições da Saúde Connect"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
+    <string name="request_route_allow" msgid="4427372851821847274">"Permitir este trajeto"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Permitir todos os trajetos"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Não permitir"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permitir sempre"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Partilha de trajeto de exercício"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Controle a forma como esta app acede a trajetos de exercício a partir de apps associadas"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Perguntar sempre"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Não permitir"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
     <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
     <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
     <skip />
     <string name="back_button" msgid="780519527385993407">"Anterior"</string>
     <string name="loading" msgid="2526615755685950317">"A carregar…"</string>
@@ -777,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Retome a integração da Saúde Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Para manter os seus dados, conclua esta ação em <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Atualização da app necessária"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"A app <xliff:g id="APP_NAME">%1$s</xliff:g> tem de estar atualizada para continuar a funcionar com a Saúde Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Algumas apps têm de estar atualizadas para continuarem a funcionar com a Saúde Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"É necessário atualizar a app <xliff:g id="APP_NAME">%1$s</xliff:g> para continuar a sincronização com a Saúde Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"É necessário atualizar algumas apps para continuar a sincronização com a Saúde Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Procurar atualizações"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Saber mais"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integração da Saúde Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"A Saúde Connect está pronta para ser integrada com o seu sistema Android. Se conceder acesso à app <xliff:g id="APP_NAME">%1$s</xliff:g> agora, algumas funcionalidades podem não funcionar até que a integração esteja concluída."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"A Saúde Connect está pronta para ser integrada com o seu sistema Android. Se conceder acesso às apps agora, algumas funcionalidades podem não funcionar até que a integração esteja concluída."</string>
@@ -799,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novidades"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Já pode aceder à Saúde Connect diretamente nas definições. Desinstale a app Saúde Connect em qualquer altura para libertar espaço de armazenamento."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Restauro em curso"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"A Saúde Connect está a restaurar dados e autorizações. Esta ação pode demorar algum tempo a ser concluída."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"O restauro da Saúde Connect está em curso"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Atualização necessária"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Antes de continuar a restaurar os dados, atualize o sistema do telemóvel."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Atualizar agora"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Totais de dados"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Origens de apps"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Adicione origens de apps à lista para ver como os totais de dados podem mudar. Se remover uma app desta lista, a app deixa de contribuir para os totais, mas continua a ter autorizações de escrita."</string>

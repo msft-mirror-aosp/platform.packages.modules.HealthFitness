@@ -17,11 +17,11 @@
 package com.android.healthconnect.controller.tests.permissions;
 
 /** Temporary copy-pasted permission constants to allow some tests passing. */
-// TODO(b/299897306): Remove when UI implementation for Background Reads is done
+// TODO(b/325434006): Remove when UI implementation for Background Reads is done
 public final class HealthPermissionConstants {
 
-    public static final String READ_HEALTH_DATA_IN_BACKGROUND =
-            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
+    public static final String READ_HEALTH_DATA_HISTORY =
+            "android.permission.health.READ_HEALTH_DATA_HISTORY";
 
     private HealthPermissionConstants() {}
 }

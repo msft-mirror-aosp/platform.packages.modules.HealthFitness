@@ -37,11 +37,22 @@ final class UsageStatsLogger {
 
         UsageStatsCollector usageStatsCollector = new UsageStatsCollector(context, userHandle);
         usageStatsCollector.upsertLastAccessLogTimeStamp();
+        int numberOfConnectedApps = usageStatsCollector.getPackagesHoldingHealthPermissions();
+        int numberOfAvailableApps =
+                usageStatsCollector.getNumberOfAppsCompatibleWithHealthConnect();
+        boolean isUserMonthlyActive = usageStatsCollector.isUserMonthlyActive();
+
+        // If this condition is true then the user does not uses HC and we should not collect data.
+        // This will reduce the load on logging service otherwise we will get daily data from
+        // billions of Android devices.
+        if (numberOfConnectedApps == 0 && numberOfAvailableApps == 0 && !isUserMonthlyActive) {
+            return;
+        }
 
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_USAGE_STATS,
-                usageStatsCollector.getPackagesHoldingHealthPermissions(),
-                usageStatsCollector.getNumberOfAppsCompatibleWithHealthConnect(),
-                usageStatsCollector.isUserMonthlyActive());
+                numberOfConnectedApps,
+                numberOfAvailableApps,
+                isUserMonthlyActive);
     }
 }

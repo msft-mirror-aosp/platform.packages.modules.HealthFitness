@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"လေ့ကျင့်ခန်း လမ်းကြောင်း"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"လေ့ကျင့်ခန်းလမ်းကြောင်း ရေးရန်"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"လေ့ကျင့်ခန်း ပုံမှန်အစီအစဉ် ဖတ်ရန်"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"လေ့ကျင့်ခန်းလမ်းကြောင်းများ ဖတ်ရန်"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"လေ့ကျင့်မှု အစီအစဉ်များ"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"လေ့ကျင့်မှု အစီအစဉ်များ"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"လေ့ကျင့်မှု အစီအစဉ်များ ဖတ်ရန်"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"လေ့ကျင့်မှု အစီအစဉ်များ ရေးရန်"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"အကွာအဝေး"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"အကွာအဝေး"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"အကွာအဝေးကို ဖတ်ရန်"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect တွင် သိမ်းထားသောဒေတာကို မည်သည့်အက်ပ်က သုံးနိုင်ကြောင်း သတ်မှတ်နိုင်သည်။ အက်ပ်ကဖတ်နိုင် (သို့) ရေးနိုင်သော ဒေတာများ ပြန်ကြည့်ရန် ၎င်းကိုတို့ပါ။"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"ခွင့်ပြုထားသည်များ"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"သုံးခွင့်မပေးထားသည်များ"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"အပ်ဒိတ်လုပ်ရန် လိုသည်"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"ဆက်တင်များနှင့် အကူအညီ"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"အက်ပ်အားလုံးအတွက် သုံးခွင့် ဖယ်ရှားရန်"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"ဖတ်ခွင့်ပေးထားသည်များ"</string>
@@ -291,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"ပြီးခဲ့သော ၂၄ နာရီအတွင်း သုံးထားသည်"</string>
     <string name="app_access_title" msgid="7137018424885371763">"အက်ပ်သုံးခွင့်"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"တွဲသုံးနိုင်သောအက်ပ်များကို လောလောဆယ် ထည့်သွင်းမထားပါ"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"နောက်ထပ်သုံးခွင့်"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ဖယ်ရှားထားသည့် အက်ပ်ခွင့်ပြုချက်များ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect က <xliff:g id="APP_DATA">%s</xliff:g> အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားလိုက်သည်"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect က <xliff:g id="APP_DATA_0">%1$s</xliff:g> နှင့် <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားလိုက်သည်"</string>
@@ -300,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect က အက်ပ်ခွင့်ပြုချက်များကို ဖယ်ရှားရသည့် အကြောင်းရင်း"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"အက်ပ်ကို Google Play မှ ဆိုင်းငံ့ (သို့) ဖယ်ရှားလိုက်ပါက Health Connect သည် ၎င်း၏ ခွင့်ပြုချက်များကို အလိုအလျောက် ဖယ်ရှားသည်။\n\nဆိုလိုသည်မှာ အက်ပ်သည် Health Connect တွင် သိမ်းထားသည့် ဒေတာကို မသုံးနိုင်တော့ပါ။ ဤအက်ပ်တွင် ယခင်ရေးသွင်းထားသည့် ဒေတာရှိပါက အသုံးမပြုသော အက်ပ်စာရင်းတွင် ၎င်းကို မြင်ရသည်။"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ရပြီ"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect စတင်အသုံးပြုခြင်း"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect သည် သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး ၎င်းဖြင့် သင့်ဖုန်းပေါ်ရှိ အက်ပ်အမျိုးမျိုးကို ရိုးရှင်းစွာစင့်ခ်လုပ်နိုင်သည်"</string>
     <string name="share_data" msgid="3481932156368883946">"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</string>
@@ -665,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{၁ ရာခိုင်နှုန်း}other{# ရာခိုင်နှုန်း}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"မလုပ်တော့"</string>
     <string name="units_title" msgid="6504086463237869339">"ယူနစ်"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"ဒေတာယူနစ် သတ်မှတ်ရန်"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"အကွာအဝေး"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"အရပ်"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"အလေးချိန်"</string>
@@ -716,8 +744,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"အောက်ရွှေ့ရန်"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"ထိပ်ပိုင်းသို့ ရွှေ့ရန်"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"အောက်ခြေသို့ ရွှေ့ရန်"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"ဦးစားပေးစာရင်းတွင် <xliff:g id="SELECTED_APP">%s</xliff:g> ကို ဖိဆွဲ၍ ပြန်စီရန်ခလုတ်"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"<xliff:g id="SELECTED_APP">%s</xliff:g> ကို ဦးစားပေးစာရင်းမှ ဖယ်ရှားရန် ခလုတ်"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"ပြန်စီရန် နှစ်ချက်တို့ပြီး ဖိဆွဲပါ"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"ကျန်းမာကြံ့ခိုင်ရေး၊ ကြံ့ခိုင်မှု"</string>
@@ -736,11 +763,25 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"သင်ခွင့်ပြုသော အက်ပ်များကသာ လေ့ကျင့်ခန်းလမ်းကြောင်းများကို သုံးနိုင်သည်"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"သုံးခွင့်ကို ဘယ်လိုစီမံနိုင်သလဲ။"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"လေ့ကျင့်ခန်းလမ်းကြောင်းများအတွက် အက်ပ်သုံးခွင့်ကို Health Connect ဆက်တင်များတွင် စီမံနိုင်သည်"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
+    <string name="request_route_allow" msgid="4427372851821847274">"ဤလမ်းကြောင်းကို ခွင့်ပြုရန်"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"လမ်းကြောင်းအားလုံး ခွင့်ပြုရန်"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"ခွင့်မပြုပါ"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"အမြဲခွင့်ပြုရန်"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"လေ့ကျင့်ခန်းလမ်းကြောင်း မျှဝေခြင်း"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ချိတ်ဆက်ထားသောအက်ပ်များမှ လေ့ကျင့်ခန်းလမ်းကြောင်းများကို ဤအက်ပ်က အသုံးပြုပုံအား သတ်မှတ်ပါ"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"အကြိမ်တိုင်း မေးရန်"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"ခွင့်မပြုပါ"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
     <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
     <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
     <skip />
     <string name="back_button" msgid="780519527385993407">"နောက်သို့"</string>
     <string name="loading" msgid="2526615755685950317">"ဖွင့်နေသည်…"</string>
@@ -777,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect ပေါင်းစည်းမှု ဆက်လုပ်ပါ"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"သင့်ဒေတာများ ဆက်ထားရန် ၎င်းကို <xliff:g id="TIME_NEEDED">%1$s</xliff:g> အတွင်း အပြီးသတ်ပါ"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"အက်ပ်အပ်ဒိတ် လိုသည်"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect နှင့် ဆက်လက်လုပ်ဆောင်နိုင်ရန် <xliff:g id="APP_NAME">%1$s</xliff:g> သည် အပ်ဒိတ်ဖြစ်နေရမည်"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect နှင့် ဆက်လက်လုပ်ဆောင်နိုင်ရန် အက်ပ်အချို့သည် အပ်ဒိတ်ဖြစ်နေရမည်"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect နှင့် စင့်ခ်ဆက်လုပ်ရန် <xliff:g id="APP_NAME">%1$s</xliff:g> ကို အပ်ဒိတ်လုပ်ရပါမည်"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect နှင့် စင့်ခ်ဆက်လုပ်ရန် အက်ပ်အချို့ကို အပ်ဒိတ်လုပ်ရပါမည်"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"အပ်ဒိတ်များ ရှာရန်"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"ပိုမိုလေ့လာရန်"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect ပေါင်းစည်းမှု"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect ကို Android စနစ်နှင့် ပေါင်းစည်းရန် အသင့်ဖြစ်ပါပြီ။ <xliff:g id="APP_NAME">%1$s</xliff:g> အား ယခုသုံးခွင့်ပေးပါက ပေါင်းစည်းမှုမပြီးစီးမီ တူးလ်အချို့ အလုပ်လုပ်မည်မဟုတ်ပါ။"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect ကို Android စနစ်နှင့် ပေါင်းစည်းရန် အသင့်ဖြစ်ပါပြီ။ အက်ပ်များအား ယခုသုံးခွင့်ပေးပါက ပေါင်းစည်းမှုမပြီးစီးမီ တူးလ်အချို့ အလုပ်လုပ်မည်မဟုတ်ပါ။"</string>
@@ -799,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"ဘာတွေထူးသလဲ"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Health Connect ကို ဆက်တင်များမှ တိုက်ရိုက်သုံးနိုင်ပါပြီ။ သိုလှောင်ခန်း နေရာလွတ်ပြုလုပ်ရန် Health Connect အက်ပ်ကို အချိန်မရွေး ဖယ်ရှားနိုင်သည်။"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"ရပြီ"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"ပြန်ယူနေဆဲဖြစ်သည်"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect သည် ဒေတာနှင့် ခွင့်ပြုချက်များကို ပြန်လည်ရယူနေပါပြီ။ ဤသို့လုပ်ဆောင်ခြင်းက အချိန်အနည်းငယ် ကြာနိုင်ပါသည်။"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect ပြန်လည်ရယူနေဆဲ"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"နားလည်ပြီ"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"အပ်ဒိတ်လုပ်ရန် လိုအပ်သည်"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"သင့်ဒေတာကို ပြန်လည်ရယူရန် ဆက်လက်မလုပ်ဆောင်မီ သင့်ဖုန်းစနစ်ကို အပ်ဒိတ်လုပ်ရန်လိုအပ်ပါသည်။"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"ယခု အပ်ဒိတ်လုပ်ရန်"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"ဒေတာစုစုပေါင်း"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"အက်ပ်ရင်းမြစ်များ"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"ဒေတာစုစုပေါင်း မည်သို့ပြောင်းလဲနိုင်ကြောင်း မြင်ရရန် အက်ပ်ရင်းမြစ်များကို စာရင်းတွင် ထည့်နိုင်သည်။ အက်ပ်ကို စာရင်းမှဖယ်ရှားခြင်းသည် စုစုပေါင်းတွင် ၎င်းပံ့ပိုးပါဝင်နေသည်ကို ရပ်လိုက်မည်ဖြစ်သော်လည်း ရေးခွင့်များရှိပါဦးမည်။"</string>

@@ -27,6 +27,9 @@
     <action
         android:id="@+id/action_homeFragment_to_categoryList"
         app:destination="@id/categories_list_screen" />
+    <action
+        android:id="@+id/action_homeFragment_to_routeRequest"
+        app:destination="@id/route_request_screen" />
   </fragment>
 
   <fragment
@@ -60,6 +63,13 @@
     <argument
         android:name="permissionType"
         app:argType="com.android.healthconnect.testapps.toolbox.Constants$HealthPermissionType" />
+  </fragment>
+
+  <fragment
+      android:id="@+id/route_request_screen"
+      android:name="com.android.healthconnect.testapps.toolbox.ui.RouteRequestFragment"
+      android:label="fragment_route_request"
+      tools:layout="@layout/fragment_route_request">
   </fragment>
 
 </navigation>

@@ -25,6 +25,7 @@ import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.connectedapps.ComparablePreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
 import java.time.Instant
 import java.time.LocalTime
@@ -36,6 +37,7 @@ class RecentAccessPreference
 constructor(
     context: Context,
     private val recentAccessApp: RecentAccessEntry,
+    private val timeSource: TimeSource,
     private val showCategories: Boolean
 ) : HealthPreference(context), ComparablePreference {
 
@@ -110,6 +112,10 @@ constructor(
 
     private fun formatTime(instant: Instant): String {
         val localTime: LocalTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
-        return localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+        return if (timeSource.is24Hour(context)) {
+            localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+        } else {
+            localTime.format(DateTimeFormatter.ofPattern("h:mm a"))
+        }
     }
 }

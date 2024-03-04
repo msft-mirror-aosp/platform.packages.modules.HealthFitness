@@ -26,9 +26,9 @@
     <string name="no_data" description="Label that is displayed when the given health data category does not have any data.">No data</string>
     <string name="connected_apps_title" description="Label for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=40]">App permissions</string>
     <string name="connected_apps_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]">Manage your apps and permissions</string>
-    <string name="connected_apps_button_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]"><xliff:g id="num_apps_connected" example="1">%1$s</xliff:g> of <xliff:g id="num_possible_apps" example="3">%2$s</xliff:g> apps have access</string>
-    <string name="connected_apps_all_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [CHAR_LIMIT=NONE]"><xliff:g id="num_apps_connected" example="1">%1$s</xliff:g> apps have access</string>
-    <string name="connected_apps_one_app_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens with one app connected. [CHAR_LIMIT=NONE]"><xliff:g id="num_apps_connected" example="1">%1$s</xliff:g> app has access</string>
+    <string name="connected_apps_button_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> of <xliff:g example="3" id="num_possible_apps">%2$s</xliff:g> apps have access</string>
+    <string name="connected_apps_all_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> apps have access</string>
+    <string name="connected_apps_one_app_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens with one app connected. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> app has access</string>
     <string name="connected_apps_button_no_permissions_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens, when no apps are connected. [CHAR_LIMIT=NONE]">None</string>
     <string name="entry_details_title" description="Label for a screen that list an entry details. [CHAR_LIMIT=40]">Entry details</string>
     <!--  endregion -->
@@ -83,17 +83,17 @@
     <!-- region Permission types  -->
     <string name="permission_types_title" description="Title of screen for a user to manage their health and fitness data [CHAR_LIMIT=40]">Your data</string>
     <string name="app_priority_button" description="Label for a button that opens the app priority settings screen where users can set which app should have higher priority. [CHAR_LIMIT=50]">App priority</string>
-    <string name="delete_category_data_button" description="Label for a button that allows deleting all data points from a given health data category. [CHAR_LIMIT=50]">Delete <xliff:g id="category" example="activity">%s</xliff:g> data</string>
+    <string name="delete_category_data_button" description="Label for a button that allows deleting all data points from a given health data category. [CHAR_LIMIT=50]">Delete <xliff:g example="activity" id="category">%s</xliff:g> data</string>
     <string name="select_all_apps_title" description="Title shown for clearing filters. [CHAR_LIMIT=40]">All apps</string>
 
     <!--endregion-->
 
     <!-- region Data access  -->
-    <string name="can_read" description="Section title that refers to apps with read permission for given permission type. [CHAR_LIMIT=50]">Can read <xliff:g id="permission_type" example="heart rate">%s</xliff:g></string>
-    <string name="can_write" description="Section title that refers to apps with write permission for given permission type. [CHAR_LIMIT=50]">Can write <xliff:g id="permission_type" example="heart rate">%s</xliff:g></string>
+    <string name="can_read" description="Section title that refers to apps with read permission for given permission type. [CHAR_LIMIT=50]">Can read <xliff:g example="heart rate" id="permission_type">%s</xliff:g></string>
+    <string name="can_write" description="Section title that refers to apps with write permission for given permission type. [CHAR_LIMIT=50]">Can write <xliff:g example="heart rate" id="permission_type">%s</xliff:g></string>
     <string name="inactive_apps" description="Section title that refers to apps that are inactive in Health Connect. [CHAR_LIMIT=50]">Inactive apps</string>
-    <string name="inactive_apps_message" description="Description of the inactive apps section. [CHAR_LIMIT=NONE]">These apps can no longer write <xliff:g id="data_type" example="heart rate">%s</xliff:g>, but still have data stored in Health&#160;Connect</string>
-    <string name="data_access_empty_message" description="Message shown if there is no app to display on this page [CHAR_LIMIT=NONE]">Apps can no longer read or write <xliff:g id="data_type" example="heart rate">%1$s</xliff:g> and there is no <xliff:g id="data_type_2" example="heart rate">%2$s</xliff:g> data stored in Health&#160;Connect</string>
+    <string name="inactive_apps_message" description="Description of the inactive apps section. [CHAR_LIMIT=NONE]">These apps can no longer write <xliff:g example="heart rate" id="data_type">%s</xliff:g>, but still have data stored in Health&#160;Connect</string>
+    <string name="data_access_empty_message" description="Message shown if there is no app to display on this page [CHAR_LIMIT=NONE]">Apps can no longer read or write <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> and there is no <xliff:g example="heart rate" id="data_type_2">%2$s</xliff:g> data stored in Health&#160;Connect</string>
     <string name="data_access_exercise_description" description="Description of data access for the exercise data type [CHAR_LIMIT=NONE]">This data includes information like active time, exercise type, laps, repetitions, sessions, or swimming strokes</string>
     <string name="data_access_sleep_description" description="Description of data access for the sleep data type [CHAR_LIMIT=NONE]">This data includes information like sleep stages and sleep sessions</string>
     <string name="all_entries_button" description="Label for a button that opens the Data entries page. [CHAR_LIMIT=50]">See all entries</string>
@@ -136,6 +136,11 @@
     <string name="exercise_route_write_content_description" description="Content description for switch that enables permissions for writing the user's exercise route [CHAR_LIMIT=NONE]">Write exercise route</string>
     <string name="exercise_route_read_content_description" description="Content description for switch that enables permissions for reading the user's exercise route [CHAR_LIMIT=NONE]">Read exercise route</string>
     <string name="exercise_routes_read_content_description" description="Content description for switch that enables permissions for reading user's exercise routes [CHAR_LIMIT=NONE]">Read exercise routes</string>
+
+    <string name="planned_exercise_uppercase_label" description="Uppercase label used to show the user's planned exercise data [CHAR_LIMIT=50]">Training plans</string>
+    <string name="planned_exercise_lowercase_label" description="Lowercase label used to show the user's planned exercise data [CHAR_LIMIT=50]">training plans</string>
+    <string name="planned_exercise_read_content_description" description="Content description for switch that enables permissions for reading the user's planned exercise data [CHAR_LIMIT=NONE]">Read training plans</string>
+    <string name="planned_exercise_write_content_description" description="Content description for switch that enables permissions for writing the user's planned exercise data [CHAR_LIMIT=NONE]">Write training plans</string>
 
     <string name="distance_uppercase_label" description="Uppercase label used to show the user's distance data [CHAR_LIMIT=50]">Distance</string>
     <string name="distance_lowercase_label" description="Lowercase label used to show the user's distance data [CHAR_LIMIT=50]">distance</string>
@@ -388,18 +393,36 @@
     <string name="app_perms_content_provider_24h" description="Summary for showing the last access text for content provider permissions [CHAR LIMIT=70]">Accessed in past 24 hours</string>
     <string name="app_access_title" description="Title of screen for a user to manage the health and fitness data a particular app has access to [CHAR_LIMIT=40]">App access</string>
     <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
+    <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
+
     <!--endregion-->
 
     <!--region Denied Apps -->
     <string name="denied_apps_banner_title" description="Title of a banner that provides information about apps that have been denied, in other words their permissions have been removed. [CHAR_LIMIT=100]">Removed app permissions</string>
-    <string name="denied_apps_banner_message_one_app" description="Message of a banner that provides information about an app that has been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g id="app_data" example="Strava">%s</xliff:g></string>
-    <string name="denied_apps_banner_message_two_apps" description="Message of a banner that provides information about two apps that have been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g id="app_data" example="Strava">%1$s</xliff:g> and <xliff:g id="app_data_two" example="Strava">%2$s</xliff:g></string>
-    <string name="denied_apps_banner_message_three_apps" description="Message of a banner that provides information about three apps that have been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g id="app_data" example="Strava">%1$s</xliff:g>, <xliff:g id="app_data_two" example="Strava">%2$s</xliff:g> and <xliff:g id="app_data_three" example="Strava">%3$s</xliff:g></string>
-    <string name="denied_apps_banner_message_many_apps" description="Message of a banner that provides information about more than three apps that have been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g id="app_data" example="Strava">%1$s</xliff:g>, <xliff:g id="app_data_two" example="Strava">%2$s</xliff:g>, <xliff:g id="app_data_three" example="Strava">%3$s</xliff:g> and other apps</string>
+    <string name="denied_apps_banner_message_one_app" description="Message of a banner that provides information about an app that has been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g example="Strava" id="app_data">%s</xliff:g></string>
+    <string name="denied_apps_banner_message_two_apps" description="Message of a banner that provides information about two apps that have been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g example="Strava" id="app_data">%1$s</xliff:g> and <xliff:g example="Strava" id="app_data_two">%2$s</xliff:g></string>
+    <string name="denied_apps_banner_message_three_apps" description="Message of a banner that provides information about three apps that have been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g example="Strava" id="app_data">%1$s</xliff:g>, <xliff:g example="Strava" id="app_data_two">%2$s</xliff:g> and <xliff:g example="Strava" id="app_data_three">%3$s</xliff:g></string>
+    <string name="denied_apps_banner_message_many_apps" description="Message of a banner that provides information about more than three apps that have been denied. [CHAR_LIMIT=NONE]">Health&#160;Connect removed permissions for <xliff:g example="Strava" id="app_data">%1$s</xliff:g>, <xliff:g example="Strava" id="app_data_two">%2$s</xliff:g>, <xliff:g example="Strava" id="app_data_three">%3$s</xliff:g> and other apps</string>
     <string name="denied_apps_banner_button" description="Label of a button that opens a page with more details about denied apps. [CHAR_LIMIT=40]">See details</string>
     <string name="denied_apps_dialog_title" description="Title of a dialog that provides information about apps with permissions removed by Health Connect. [CHAR_LIMIT=NONE]">Why Health&#160;Connect removes app permissions</string>
     <string name="denied_apps_dialog_message" description="Label of a button that opens a page with more details about denied apps. [CHAR_LIMIT=NONE]">If an app is suspended or removed from Google&#160;Play, Health&#160;Connect automatically removes its permissions.\n\nThis means the app can no longer access data stored in Health&#160;Connect. If this app has previously written data, it appears in the inactive apps list.</string>
     <string name="denied_apps_dialog_got_it_button" description="Label of a button that closes the dialog. [CHAR_LIMIT=40]">Got it</string>
+    <!--endregion-->
+
+    <!--region Export -->
+    <string name="export_settings_screen_title" description="Title of the 'save data' screen where users can set up configurations to auto-save Health Connect data and permissions. [CHAR_LIMIT=40]">Save data</string>
+    <string name="export_settings_screen_description" description="The top description of the 'save data' screen.">Save Health&#160;Connect data and permissions so you can import them if you switch to a new phone. You can choose where to store this data before saving.</string>
+    <string name="setup_button" description="Button on the 'save data' screen start the data saving flow, which allows a user to schedule data exports to save their data externally and keep it safe. [CHAR_LIMIT=50]">Set up</string>
+    <string name="export_settings_header" descrption="Title of the settings section where users can check the status of their data saving settings.">Settings</string>
+    <string name="auto_save" description="Menu item to indicate the currently selected configuration for scheduled auto-saves. Options are: off, daily, weekly or monthly.">Auto-save</string>
+
+    <string name="choose_frequency" description="Title of the 'choose frequency' screen where users can select the data saving frequency.">Choose frequency</string>
+    <string name="choose_frequency_description" description="Description of the data export frequency">Choose to save data once, or set it to save automatically at regular times.</string>
+    <string name="frequency_daily" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data daily.">Daily</string>
+    <string name="frequency_weekly" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data weekly.">Weekly</string>
+    <string name="frequency_monthly" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data monthly.">Monthly</string>
+    <string name="export_back_button" descrption="Text on a button that navigates back to the previous 'save data' screen.">Back</string>
+    <string name="export_next_button" descrption="Text on a button that navigates to the next setup screen.">Next</string>
     <!--endregion-->
 
     <!--region Onboarding -->
@@ -422,9 +445,9 @@
     <string name="time_range_next_button" description="Label of a button that navigates to the next window of the deletion flow. [CHAR_LIMIT=50]">Next</string>
 
     <string name="time_range_message_all" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes all data added to Health&#160;Connect in the chosen time period</string>
-    <string name="time_range_message_data_type" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g id="data_type" example="heart rate">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
-    <string name="time_range_message_category" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g id="category" example="activity">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
-    <string name="time_range_message_app_data" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g id="app_data" example="Strava">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
+    <string name="time_range_message_data_type" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="heart rate" id="data_type">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
+    <string name="time_range_message_category" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="activity" id="category">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
+    <string name="time_range_message_app_data" description="Description explaining that this data deletion user activity is permanent. [CHAR_LIMIT=NONE]">This permanently deletes <xliff:g example="Strava" id="app_data">%s</xliff:g> data added to Health&#160;Connect in the chosen time period</string>
 
     <string name="time_range_one_day" description="Item on list of possible deletion time ranges the user can choose. This option deletes data for the last 24 hours. [CHAR_LIMIT=50]">Delete last 24 hours</string>
     <string name="time_range_one_week" description="Item on list of possible deletion time ranges the user can choose. This option deletes data for the last 7 days. [CHAR_LIMIT=50]">Delete last 7 days</string>
@@ -438,24 +461,24 @@
     <string name="confirming_question_one_week" description="Description of what permanent deletion of some data means. [CHAR_LIMIT=NONE]">Permanently delete all data from the last 7 days?</string>
     <string name="confirming_question_one_month" description="Description of what permanent deletion of some data means. [CHAR_LIMIT=NONE]">Permanently delete all data from the last 30 days?</string>
 
-    <string name="confirming_question_data_type_all" description="Description of what permanent deletion of all given data type data means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="data_type" example="heart rate">%s</xliff:g> data from all time?</string>
-    <string name="confirming_question_data_type_one_day" description="Description of what permanent deletion of given data type data from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="data_type" example="heart rate">%s</xliff:g> data from the last 24 hours?</string>
-    <string name="confirming_question_data_type_one_week" description="Description of what permanent deletion of given data type data from the last 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="data_type" example="heart rate">%s</xliff:g> data from the last 7 days?</string>
-    <string name="confirming_question_data_type_one_month" description="Description of what permanent deletion of given data type data from the last 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="data_type" example="heart rate">%s</xliff:g> data from the last 30 days?</string>
+    <string name="confirming_question_data_type_all" description="Description of what permanent deletion of all given data type data means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from all time?</string>
+    <string name="confirming_question_data_type_one_day" description="Description of what permanent deletion of given data type data from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from the last 24 hours?</string>
+    <string name="confirming_question_data_type_one_week" description="Description of what permanent deletion of given data type data from the last 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from the last 7 days?</string>
+    <string name="confirming_question_data_type_one_month" description="Description of what permanent deletion of given data type data from the last 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="heart rate" id="data_type">%s</xliff:g> data from the last 30 days?</string>
 
-    <string name="confirming_question_category_all" description="Description of what permanent deletion of all given activity data means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="category" example="activity">%s</xliff:g> data from all time?</string>
-    <string name="confirming_question_category_one_day" description="Description of what permanent deletion of given activity data from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="category" example="activity">%s</xliff:g> data from the last 24 hours?</string>
-    <string name="confirming_question_category_one_week" description="Description of what permanent deletion of given activity data from the lat 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="category" example="activity">%s</xliff:g> data from the last 7 days?</string>
-    <string name="confirming_question_category_one_month" description="Description of what permanent deletion of given activity data from the lat 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="category" example="activity">%s</xliff:g> data from the last 30 days?</string>
+    <string name="confirming_question_category_all" description="Description of what permanent deletion of all given activity data means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="activity" id="category">%s</xliff:g> data from all time?</string>
+    <string name="confirming_question_category_one_day" description="Description of what permanent deletion of given activity data from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="activity" id="category">%s</xliff:g> data from the last 24 hours?</string>
+    <string name="confirming_question_category_one_week" description="Description of what permanent deletion of given activity data from the lat 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="activity" id="category">%s</xliff:g> data from the last 7 days?</string>
+    <string name="confirming_question_category_one_month" description="Description of what permanent deletion of given activity data from the lat 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="activity" id="category">%s</xliff:g> data from the last 30 days?</string>
 
-    <string name="confirming_question_app_data_all" description="Description of what permanent deletion of all data written by given app means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="app_data" example="Strava">%s</xliff:g> data from all time?</string>
-    <string name="confirming_question_app_data_one_day" description="Description of what permanent deletion of data written by given app from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="app_data" example="Strava">%s</xliff:g> data from the last 24 hours?</string>
-    <string name="confirming_question_app_data_one_week" description="Description of what permanent deletion of data written by given app from the lat 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="app_data" example="Strava">%s</xliff:g> data from the last 7 days?</string>
-    <string name="confirming_question_app_data_one_month" description="Description of what permanent deletion of data written by given app from the lat 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g id="app_data" example="Strava">%s</xliff:g> data from the last 30 days?</string>
+    <string name="confirming_question_app_data_all" description="Description of what permanent deletion of all data written by given app means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="Strava" id="app_data">%s</xliff:g> data from all time?</string>
+    <string name="confirming_question_app_data_one_day" description="Description of what permanent deletion of data written by given app from the lat 24 hours means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="Strava" id="app_data">%s</xliff:g> data from the last 24 hours?</string>
+    <string name="confirming_question_app_data_one_week" description="Description of what permanent deletion of data written by given app from the lat 7 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="Strava" id="app_data">%s</xliff:g> data from the last 7 days?</string>
+    <string name="confirming_question_app_data_one_month" description="Description of what permanent deletion of data written by given app from the lat 30 days means. [CHAR_LIMIT=NONE]">Permanently delete <xliff:g example="Strava" id="app_data">%s</xliff:g> data from the last 30 days?</string>
 
-    <string name="confirming_question_app_remove_all_permissions" description="Message of a check box that gives the user an option to remove all permissions from an app they're deleting data from. [CHAR_LIMIT=NONE]">Also remove all <xliff:g id="app_with_permissions" example="Strava">%s</xliff:g> permissions from Health&#160;Connect</string>
+    <string name="confirming_question_app_remove_all_permissions" description="Message of a check box that gives the user an option to remove all permissions from an app they're deleting data from. [CHAR_LIMIT=NONE]">Also remove all <xliff:g example="Strava" id="app_with_permissions">%s</xliff:g> permissions from Health&#160;Connect</string>
 
-    <string name="confirming_question_data_type_from_app_all" description="Description of what permanent deletion of given data type written by given app means. [CHAR_LIMIT=NONE]">Permanently delete all <xliff:g id="data_type" example="heart rate">%1$s</xliff:g> data added by <xliff:g id="app_data" example="Strava">%2$s</xliff:g>?</string>
+    <string name="confirming_question_data_type_from_app_all" description="Description of what permanent deletion of given data type written by given app means. [CHAR_LIMIT=NONE]">Permanently delete all <xliff:g example="heart rate" id="data_type">%1$s</xliff:g> data added by <xliff:g example="Strava" id="app_data">%2$s</xliff:g>?</string>
 
     <string name="confirming_question_single_entry" description="Description of what permanent deletion of a single data point means. [CHAR_LIMIT=NONE]">Permanently delete this entry?</string>
     <string name="confirming_question_message" description="Description of what permanent deletion of some data means. [CHAR_LIMIT=NONE]">Connected apps will no longer be able to access this data from Health&#160;Connect</string>
@@ -486,9 +509,9 @@
     <!-- region Data entries -->
     <string name="data_entry_header_with_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g> • <xliff:g example="Run tracker" id="app_data">%2$s</xliff:g></string>
     <string name="data_entry_header_without_source_app" translatable="false"><xliff:g example="14:41" id="time">%1$s</xliff:g></string>
-    <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry <xliff:g id="entry_to_delete" example="1000 steps">%s</xliff:g></string>
-    <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry <xliff:g id="entry_to_delete" example="1000 steps">%s</xliff:g></string>
-    <string name="aggregation_total" description="Description before the total value. For instance, Total: 1000 steps. [CHAR LIMIT=50]">Total: <xliff:g id="total_value" example="1000 steps">%s</xliff:g></string>
+    <string name="data_point_action_content_description" description="Content description for the menu button of an individual data entry [CHAR LIMIT=NONE]">Delete data entry <xliff:g example="1000 steps" id="entry_to_delete">%s</xliff:g></string>
+    <string name="delete_data_point" description="Menu option for deleting an individual data entry [CHAR LIMIT=50]">Delete entry <xliff:g example="1000 steps" id="entry_to_delete">%s</xliff:g></string>
+    <string name="aggregation_total" description="Description before the total value. For instance, Total: 1000 steps. [CHAR LIMIT=50]">Total: <xliff:g example="1000 steps" id="total_value">%s</xliff:g></string>
 
     <string name="watt_format" description="Power value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 W} other {# W}}</string>
     <string name="watt_format_long" description="Power value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 watt} other {# watts}}</string>
@@ -686,20 +709,20 @@
     <!--  endregion -->
 
     <!-- region Duration -->
-    <string translation_description="minute duration representation [CHAR LIMIT=8]" name="minute_duration"><xliff:g id="minute" example="1">%1$s</xliff:g>m</string>
-    <string translation_description="Hour and minute time duration representation [CHAR LIMIT=8]" name="hour_minute_duration_short"><xliff:g id="hour" example="1">%1$s</xliff:g>h <xliff:g id="min" example="31">%2$s</xliff:g>m</string>
-    <string translation_description="hour duration representation [CHAR LIMIT=8]" name="hour_duration"><xliff:g id="hour" example="1">%1$s</xliff:g>h</string>
+    <string name="minute_duration" translation_description="minute duration representation [CHAR LIMIT=8]"><xliff:g example="1" id="minute">%1$s</xliff:g>m</string>
+    <string name="hour_minute_duration_short" translation_description="Hour and minute time duration representation [CHAR LIMIT=8]"><xliff:g example="1" id="hour">%1$s</xliff:g>h <xliff:g example="31" id="min">%2$s</xliff:g>m</string>
+    <string name="hour_duration" translation_description="hour duration representation [CHAR LIMIT=8]"><xliff:g example="1" id="hour">%1$s</xliff:g>h</string>
 
     <string name="hour_minute_duration_accessibility" translation_description="Hour and minute time duration representation used by accessibility, 'space' between minute and second should be deleted or replaced according to each language to translate [CHAR LIMIT=NONE]">
   <xliff:g example="2 hours" id="hours">%1$s</xliff:g> <xliff:g example="2 minutes" id="minutes">%2$s</xliff:g>
   </string>
-    <string translation_description="Hour time duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="hour_duration_accessibility">{count, plural, =1 {1 hour} other {# hours}}</string>
-    <string translation_description="minute duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="minute_duration_accessibility">{count, plural, =1 {1 minute} other {# minutes}}</string>
+    <string name="hour_duration_accessibility" translation_description="Hour time duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]">{count, plural, =1 {1 hour} other {# hours}}</string>
+    <string name="minute_duration_accessibility" translation_description="minute duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]">{count, plural, =1 {1 minute} other {# minutes}}</string>
 
 
-    <string translation_description="Days duration representation [CHAR LIMIT=8]" name="day_duration"><xliff:g id="days" example="2 days">%1$s</xliff:g></string>
-    <string translation_description="Days and hours time duration representation [CHAR LIMIT=8]" name="day_hour_duration"><xliff:g id="days" example="2 days">%1$s</xliff:g> and <xliff:g id="hours" example="3 hours">%2$s</xliff:g></string>
-    <string translation_description="Days duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]" name="day_duration_accessibility">{count, plural, =1 {1 day} other {# days}}</string>
+    <string name="day_duration" translation_description="Days duration representation [CHAR LIMIT=8]"><xliff:g example="2 days" id="days">%1$s</xliff:g></string>
+    <string name="day_hour_duration" translation_description="Days and hours time duration representation [CHAR LIMIT=8]"><xliff:g example="2 days" id="days">%1$s</xliff:g> and <xliff:g example="3 hours" id="hours">%2$s</xliff:g></string>
+    <string name="day_duration_accessibility" translation_description="Days duration representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=NONE]">{count, plural, =1 {1 day} other {# days}}</string>
     <!-- endregion -->
 
     <!--  region vo2 max-->
@@ -812,19 +835,19 @@
     <!-- endregion -->
 
     <!--  region Respiratory Rate-->
-    <string translation_description="Value of respiratory rate. rpm is short for 'respirations per minute'. [ICU SYNTAX][CHAR LIMIT=18]" name="respiratory_rate_value">{count, plural, =1 {1 rpm} other {# rpm}}</string>
-    <string translation_description="Value of respiratory rate in respirations per minute. [ICU SYNTAX][CHAR LIMIT=26]" name="respiratory_rate_value_long">{count, plural, =1 {1 respiration per minute} other {# respirations per minute}}</string>
+    <string name="respiratory_rate_value" translation_description="Value of respiratory rate. rpm is short for 'respirations per minute'. [ICU SYNTAX][CHAR LIMIT=18]">{count, plural, =1 {1 rpm} other {# rpm}}</string>
+    <string name="respiratory_rate_value_long" translation_description="Value of respiratory rate in respirations per minute. [ICU SYNTAX][CHAR LIMIT=26]">{count, plural, =1 {1 respiration per minute} other {# respirations per minute}}</string>
     <!--  endregion  -->
 
     <!--  region Weight -->
-    <string translation_description="Weight in kilograms. [ICU SYNTAX][CHAR LIMIT=60]" name="kilograms_short_label">{count, plural, =1 {1 kg} other {# kg}}</string>
-    <string translation_description="Weight in pounds. [ICU SYNTAX][CHAR LIMIT=60]" name="pounds_short_label">{count, plural, =1 {1 lb} other {# lb}}</string>
-    <string translation_description="Weight in stone. [ICU SYNTAX][CHAR LIMIT=60]" name="stone_short_label">{count, plural, =1 {1 st} other {# st}}</string>
-    <string translation_description="Weight in stone and pounds. Example: 9st 2lb. [ICU][CHAR LIMIT=60]" name="stone_pound_short_label">{stone_part} {pound_part}</string>
-    <string translation_description="Weight in kilograms representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=60]" name="kilograms_long_label">{count, plural, =1 {1 kilogram} other {# kilograms}}</string>
-    <string translation_description="Weight in pounds representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=60]" name="pounds_long_label">{count, plural, =1 {1 pound} other {# pounds}}</string>
-    <string translation_description="Weight in stone representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=60]" name="stone_long_label">{count, plural, =1 {1 stone} other {# stones}}</string>
-    <string translation_description="Weight in stone and pounds representation used by accessibility. Example: 9 stone, 2 pounds. [ICU][CHAR LIMIT=60]" name="stone_pound_long_label">{stone_part} {pound_part}</string>
+    <string name="kilograms_short_label" translation_description="Weight in kilograms. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 kg} other {# kg}}</string>
+    <string name="pounds_short_label" translation_description="Weight in pounds. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 lb} other {# lb}}</string>
+    <string name="stone_short_label" translation_description="Weight in stone. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 st} other {# st}}</string>
+    <string name="stone_pound_short_label" translation_description="Weight in stone and pounds. Example: 9st 2lb. [ICU][CHAR LIMIT=60]">{stone_part} {pound_part}</string>
+    <string name="kilograms_long_label" translation_description="Weight in kilograms representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 kilogram} other {# kilograms}}</string>
+    <string name="pounds_long_label" translation_description="Weight in pounds representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 pound} other {# pounds}}</string>
+    <string name="stone_long_label" translation_description="Weight in stone representation used by accessibility. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 stone} other {# stones}}</string>
+    <string name="stone_pound_long_label" translation_description="Weight in stone and pounds representation used by accessibility. Example: 9 stone, 2 pounds. [ICU][CHAR LIMIT=60]">{stone_part} {pound_part}</string>
     <!-- endregion -->
 
     <!-- region Temperature units -->
@@ -847,31 +870,31 @@
     <string name="temperature_location_vagina" description="Where the body temperature measurement was taken - vagina. [CHAR LIMIT=50]">Vagina</string>
     <!--endregion-->
 
-    <string translation_description="miles formatted. [ICU SYNTAX][CHAR LIMIT=60]" name="distance_miles">{dist, plural, =1 {1 mile} other {# miles}}</string>
-    <string translation_description="Kilometers formatted. [ICU SYNTAX][CHAR LIMIT=60]" name="distance_km">{dist, plural, =1 {1 km} other {# km}}</string>
-    <string translation_description="miles formatted for speech. [ICU SYNTAX][CHAR LIMIT=NONE]" name="distance_miles_long">{dist, plural, =1 {1 mile} other {# miles}}</string>
-    <string translation_description="Kilometers formatted for speech. [ICU SYNTAX][CHAR LIMIT=NONE]" name="distance_km_long">{dist, plural, =1 {1 kilometer} other {# kilometers}}</string>
+    <string name="distance_miles" translation_description="miles formatted. [ICU SYNTAX][CHAR LIMIT=60]">{dist, plural, =1 {1 mile} other {# miles}}</string>
+    <string name="distance_km" translation_description="Kilometers formatted. [ICU SYNTAX][CHAR LIMIT=60]">{dist, plural, =1 {1 km} other {# km}}</string>
+    <string name="distance_miles_long" translation_description="miles formatted for speech. [ICU SYNTAX][CHAR LIMIT=NONE]">{dist, plural, =1 {1 mile} other {# miles}}</string>
+    <string name="distance_km_long" translation_description="Kilometers formatted for speech. [ICU SYNTAX][CHAR LIMIT=NONE]">{dist, plural, =1 {1 kilometer} other {# kilometers}}</string>
 
     <!-- region Height -->
-    <string translation_description="Height in centimeters. [ICU SYNTAX][CHAR LIMIT=10]" name="height_cm">{height, plural, =1 {1 cm} other {# cm}}</string>
-    <string translation_description="Height in centimeters. [ICU SYNTAX][CHAR LIMIT=30]" name="height_cm_long">{height, plural, =1 {1 centimeter} other {# centimeters}}</string>
-    <string translation_description="Height measurement part in inches. [ICU SYNTAX][CHAR LIMIT=30]" name="height_in_long">{height, plural, =1 {1 inch} other {# inches}}</string>
-    <string translation_description="Height measurement part in feet. [ICU SYNTAX][CHAR LIMIT=30]" name="height_ft_long">{height, plural, =1 {1 foot} other {# feet}}</string>
-    <string translation_description="Height measurement part in inches compacted. [ICU SYNTAX][CHAR LIMIT=5]" name="height_in_compacted">{height, plural, =1 {1\u2033} other {#\u2033}}</string>
-    <string translation_description="Height measurement part in feet compacted. [ICU SYNTAX][CHAR LIMIT=5]" name="height_ft_compacted">{height, plural, =1 {1\u2032} other {#\u2032}}</string>
-    <string translation_description="Format for displaying height in feet and inches in compacted form e.g. 5′11″ [CHAR LIMIT=10]" name="feet_inches_format"><xliff:g id="ft" example="5′">%1$s</xliff:g><xliff:g id="in" example="11″">%2$s</xliff:g></string>
-    <string translation_description="Format for displaying height in feet and inches in long form e.g. 5 feet 11 inches [CHAR LIMIT=60]" name="feet_inches_format_long"><xliff:g id="ft" example="5 feet">%1$s</xliff:g> <xliff:g id="in" example="11 inches">%2$s</xliff:g></string>
+    <string name="height_cm" translation_description="Height in centimeters. [ICU SYNTAX][CHAR LIMIT=10]">{height, plural, =1 {1 cm} other {# cm}}</string>
+    <string name="height_cm_long" translation_description="Height in centimeters. [ICU SYNTAX][CHAR LIMIT=30]">{height, plural, =1 {1 centimeter} other {# centimeters}}</string>
+    <string name="height_in_long" translation_description="Height measurement part in inches. [ICU SYNTAX][CHAR LIMIT=30]">{height, plural, =1 {1 inch} other {# inches}}</string>
+    <string name="height_ft_long" translation_description="Height measurement part in feet. [ICU SYNTAX][CHAR LIMIT=30]">{height, plural, =1 {1 foot} other {# feet}}</string>
+    <string name="height_in_compacted" translation_description="Height measurement part in inches compacted. [ICU SYNTAX][CHAR LIMIT=5]">{height, plural, =1 {1\u2033} other {#\u2033}}</string>
+    <string name="height_ft_compacted" translation_description="Height measurement part in feet compacted. [ICU SYNTAX][CHAR LIMIT=5]">{height, plural, =1 {1\u2032} other {#\u2032}}</string>
+    <string name="feet_inches_format" translation_description="Format for displaying height in feet and inches in compacted form e.g. 5′11″ [CHAR LIMIT=10]"><xliff:g example="5′" id="ft">%1$s</xliff:g><xliff:g example="11″" id="in">%2$s</xliff:g></string>
+    <string name="feet_inches_format_long" translation_description="Format for displaying height in feet and inches in long form e.g. 5 feet 11 inches [CHAR LIMIT=60]"><xliff:g example="5 feet" id="ft">%1$s</xliff:g> <xliff:g example="11 inches" id="in">%2$s</xliff:g></string>
     <!--endregion-->
 
     <!-- region Energy -->
-    <string translation_description="Calories formatted. [ICU SYNTAX][CHAR LIMIT=60]" name="calories_long">{count, plural, =1 {1 calorie} other {# calories}}</string>
-    <string translation_description="Calories formatted. [ICU SYNTAX][CHAR LIMIT=60]" name="calories">{count, plural, =1 {1 Cal} other {# Cal}}</string>
-    <string translation_description="KiloJoules (the energy unit) formatted. [ICU SYNTAX][CHAR LIMIT=20]" name="kj">{count, plural, =1 {1 kJ} other {# kJ}}</string>
-    <string translation_description="KiloJoules (the energy unit) formatted to be spoken aloud. [ICU SYNTAX][CHAR LIMIT=20]" name="kj_long">{count, plural, =1 {1 kilojoule} other {# kilojoules}}</string>
+    <string name="calories_long" translation_description="Calories formatted. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 calorie} other {# calories}}</string>
+    <string name="calories" translation_description="Calories formatted. [ICU SYNTAX][CHAR LIMIT=60]">{count, plural, =1 {1 Cal} other {# Cal}}</string>
+    <string name="kj" translation_description="KiloJoules (the energy unit) formatted. [ICU SYNTAX][CHAR LIMIT=20]">{count, plural, =1 {1 kJ} other {# kJ}}</string>
+    <string name="kj_long" translation_description="KiloJoules (the energy unit) formatted to be spoken aloud. [ICU SYNTAX][CHAR LIMIT=20]">{count, plural, =1 {1 kilojoule} other {# kilojoules}}</string>
     <!--endregion-->
 
     <!-- region percent -->
-    <string name="percent" formatted="false" description="Percentage value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1%} other {#%}}</string>
+    <string name="percent" description="Percentage value with unit. [ICU SYNTAX][CHAR LIMIT=80]" formatted="false">{value, plural, =1 {1%} other {#%}}</string>
     <string name="percent_long" description="Percentage value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 percent} other {# percent}}</string>
     <!--endregion-->
     <!--endregion-->
@@ -879,8 +902,6 @@
     <!-- region units -->
     <string name="units_cancel" description="Label for button to cancel changing units. [CHAR_LIMIT=20]">Cancel</string>
     <string name="units_title" description="Title on a screen allowing users to go to display units (weight/height/temperature etc) in the app[CHAR_LIMIT=50]">Units</string>
-    <string name="set_units_label" description="Label in the drop down menu, allowing users to go to display units (weight/height/temperature etc) in the app [CHAR_LIMIT=50]">Set data units</string>
-
     <string name="distance_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Distance</string>
     <string name="height_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Height</string>
     <string name="weight_unit_title" description="Label of a unit preference in settings, allowing the user to change height display unit in the app [CHAR_LIMIT=50]">Weight</string>
@@ -951,14 +972,14 @@
 
     <!--  region Priority -->
     <string name="priority_dialog_title" description="Window title where user can set the priority order of apps. [CHAR_LIMIT=50]">Set app priority</string>
-    <string name="priority_dialog_message" description="Description of the dar-and-drop list of apps that is modifiable by the user. [CHAR_LIMIT=NONE]">If more than one app adds <xliff:g id="data_type" example="heart rate">%s</xliff:g> data, Health&#160;Connect prioritizes the app highest in this list. Drag apps to reorder them.</string>
+    <string name="priority_dialog_message" description="Description of the dar-and-drop list of apps that is modifiable by the user. [CHAR_LIMIT=NONE]">If more than one app adds <xliff:g example="heart rate" id="data_type">%s</xliff:g> data, Health&#160;Connect prioritizes the app highest in this list. Drag apps to reorder them.</string>
     <string name="priority_dialog_positive_button" description="Label of the button that saves modifications made by the user. [CHAR_LIMIT=50]">Save</string>
     <string name="action_drag_label_move_up" description="Label for an accessibility action that moves an app up in the ordered app priority list [CHAR LIMIT=50]">Move up</string>
     <string name="action_drag_label_move_down" description="Label for an accessibility action that moves an app down in the ordered app priority list [CHAR LIMIT=50]">Move down</string>
     <string name="action_drag_label_move_top" description="Label for an accessibility action that moves an app to the top of the ordered app priority list [CHAR LIMIT=50]">Move to top</string>
     <string name="action_drag_label_move_bottom" description="Label for an accessibility action that moves an app to the bottom of the ordered app priority list [CHAR LIMIT=50]">Move to bottom</string>
-    <string name="reorder_button_content_description" description="Content description of a button for accessibility that is used to reorder selected app in the app priority list [CHAR LIMIT=NONE]">Button to drag and reorder <xliff:g id="selected_app" example="Test app">%s</xliff:g> in the priority list</string>
-    <string name="remove_button_content_description" description="Content description of a button for accessibility that is used to remove selected app from the app priority list [CHAR LIMIT=NONE]">Button to remove <xliff:g id="selected_app" example="Test app">%s</xliff:g> from the priority list</string>
+    <string name="reorder_button_content_description" description="Content description of a button for accessibility that is used to reorder selected app in the app priority list [CHAR LIMIT=NONE]">Button to drag and reorder <xliff:g example="Test app" id="selected_app">%s</xliff:g> in the priority list</string>
+    <string name="remove_button_content_description" description="Content description of a button for accessibility that is used to remove selected app from the app priority list [CHAR LIMIT=NONE]">Button to remove <xliff:g example="Test app" id="selected_app">%s</xliff:g> from the priority list</string>
     <string name="reorder_button_action_description" description="Action description of a button for accessibility that is used to reorder selected app from the app priority list [CHAR LIMIT=NONE]">Double tap and drag to reorder</string>
     <!--  endregion-->
 
@@ -993,6 +1014,17 @@
     <string name="request_route_allow" description="Label for button in the route request dialog to allow an app access the requested exercise route [CHAR_LIMIT=30]">Allow this route</string>
     <string name="request_route_allow_all" description="Label for button in the route request dialog to allow an app access all exercise routes from now on [CHAR_LIMIT=30]">Allow all routes</string>
     <string name="request_route_dont_allow" description="Label for button in the route request dialog to deny an app access to the requested route [CHAR_LIMIT=20]">Don\'t allow</string>
+    <string name="route_permissions_always_allow" description="Label for button in the route read request dialog to allow an app access all exercise routes from now on.">Always allow</string>
+    <string name="route_permissions_label" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Exercise route sharing</string>
+    <string name="route_permissions_summary" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Control how this app accesses exercise routes from connected apps</string>
+    <string name="route_permissions_ask" description="Label for button in the route read request dialog to require an app to ask for a permission next time they need it.">Ask every time</string>
+    <string name="route_permissions_deny" description="Label for button in the route read request dialog to to deny with prejudice a permission grant.">Don\u2019t allow</string>
+    <string name="exercise_permission_dialog_enable_title" description="Title for a dialog to ask users to disable exercise and exercise routes permissions.">Enable both data types? </string>
+    <string name="exercise_permission_dialog_disable_title" description="Title for a dialog to ask users to disable exercise and exercise routes permissions.">Disable both data types? </string>
+    <string name="exercise_permission_dialog_enabled_summary" description="Summary for a dialog explaining in more details that read access for exercise is needed when enabling exercise routes"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs read access to exercise for exercise routes to be enabled</string>
+    <string name="exercise_permission_dialog_disable_summary" description="Summary for a dialog explaining in more details that read access for exercise routes needs to be disabled when disabling exercise permission"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> requires exercise access in order for exercise routes to be enabled</string>
+    <string name="exercise_permission_dialog_positive_button" description="Label of the button that applies the dialog action. [CHAR_LIMIT=50]">Yes</string>
+    <string name="exercise_permission_dialog_negative_button" description="Label of the button that cancels the dialog action. [CHAR_LIMIT=50]">No</string>
     <string name="back_button" description="Label on the back button. [CHAR_LIMIT=20]">Back</string>
     <!--  endregion-->
 
@@ -1001,12 +1033,6 @@
     <!--  endregion -->
 
     <!-- region Migration -->
-
-    <string name="module_update_needed_seen" description="Label used as key to track if user has seen the Module Update Needed migration screen" translatable="false">Module Update Seen</string>
-    <string name="app_update_needed_seen" description="Label used as key to track if user has seen the App Update Needed migration screen" translatable="false">App Update Seen</string>
-    <string name="whats_new_dialog_seen" description="Label used as key to track if user has seen the What's new migration dialog" translatable="false">Whats New Seen</string>
-    <string name="migration_not_complete_dialog_seen" description="Label used as key to track if user has seen the Migration not complete dialog" translatable="false">Migration Not Complete Seen</string>
-
     <!-- region In progress -->
     <string name="migration_in_progress_screen_title" description="Title of screen shown when migration is in progress">Integration in progress</string>
     <string name="migration_in_progress_screen_integration_details" description="Detail information shown when migration is in progress">Health&#160;Connect is being integrated with the Android system.\n\nIt may take some time while your data and permissions are being transferred.</string>
@@ -1035,7 +1061,7 @@
 
     <!-- region More space needed -->
     <string name="migration_more_space_needed_screen_title" description="Title of screen shown when migration is pending and more space is needed.">More space needed</string>
-<!--    TODO (b/275685595) use string resource for storage space -->
+    <!--    TODO (b/275685595) use string resource for storage space -->
     <string name="migration_more_space_needed_screen_details" description="Detail information shown when migration is pending and more space is needed.">Health&#160;Connect needs <xliff:g example="500MB" id="space_needed">%1$s</xliff:g> of storage space on your phone in order for the integration to continue.\n\nClear some space on your phone and then try again.</string>
     <string name="try_again_button" description="Text of a button prompting the user to try looking at the space again [CHAR_LIMIT=40]">Try again</string>
     <string name="free_up_space_button" description="Text of a button leading the user to their system storage so they can free up space. [CHAR_LIMIT=40]">Free up space</string>
@@ -1101,6 +1127,16 @@
     <string name="migration_whats_new_dialog_title" description="Title of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">What\'s new</string>
     <string name="migration_whats_new_dialog_content" description="Content of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">You can now access Health&#160;Connect directly from your settings. Uninstall the Health&#160;Connect app any time to free up storage space.</string>
     <string name="migration_whats_new_dialog_button" description="Button of dialog shown to the user after migration is done, informing them how to access the Health Connect module.">Got it</string>
+    <!--  endregion -->
+
+    <!-- region Data restore -->
+    <string name="data_restore_in_progress_screen_title" description="Title of screen shown when data restore is in progress">Restore in progress</string>
+    <string name="data_restore_in_progress_content" description="Detail information shown when migration is in progress">Health&#160;Connect is restoring data and permissions. This may take some time to complete.</string>
+    <string name="data_restore_in_progress_dialog_title" description="Title of dialog shown when data restore is in progress">Health&#160;Connect restore in progress</string>
+    <string name="data_restore_in_progress_dialog_button" description="Button of dialog shown when data restore is in progress">Got it</string>
+    <string name="data_restore_pending_banner_title" description="Title of banner shown when data restore is pending">Update needed</string>
+    <string name="data_restore_pending_banner_content" description="Content of banner shown when data restore is pending">Before continuing restoring your data, update your phone system.</string>
+    <string name="data_restore_pending_banner_button" description="Button for banner shown when data restore is pending">Update now</string>
     <!--  endregion -->
 
     <!-- region Data sources -->

@@ -44,8 +44,7 @@ import java.util.Set;
 public class PackageInfoUtils {
     private static final String TAG = "HealthConnectPackageInfoUtils";
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile PackageInfoUtils sPackageInfoUtils;
+    @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
 
     /**
      * Store PackageManager for each user. Keys are users, values are PackageManagers which get from
@@ -64,8 +63,14 @@ public class PackageInfoUtils {
         return sPackageInfoUtils;
     }
 
+    /**
+     * Set an instance of {@link PackageInfoUtils} for testing purposes, such as a mock.
+     *
+     * <p>Passing {@code null} as {@code instance} would result in the actual implementation of
+     * {@link PackageInfoUtils}.
+     */
     @VisibleForTesting
-    public static synchronized void setInstanceForTest(PackageInfoUtils instance) {
+    public static synchronized void setInstanceForTest(@Nullable PackageInfoUtils instance) {
         sPackageInfoUtils = instance;
     }
 
@@ -100,7 +105,8 @@ public class PackageInfoUtils {
         return healthAppsInfos;
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
+    @SuppressWarnings("NullAway")
+    // TODO(b/317029272): fix this suppression
     boolean hasGrantedHealthPermissions(
             @NonNull String[] packageNames, @NonNull UserHandle user, @NonNull Context context) {
         for (String packageName : packageNames) {

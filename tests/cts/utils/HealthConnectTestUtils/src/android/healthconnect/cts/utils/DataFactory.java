@@ -24,6 +24,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
+import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -40,11 +41,14 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.utils.TestUtils.RecordAndIdentifier;
 
+import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
 
 import java.time.Instant;
@@ -56,9 +60,11 @@ import java.util.List;
 import java.util.UUID;
 
 public final class DataFactory {
-    public static final Instant SESSION_START_TIME = Instant.now().minus(10, ChronoUnit.DAYS);
+    // truncate to MILLIS because HC does, so reduce flakiness in some tests.
+    public static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    public static final Instant SESSION_START_TIME = NOW.minus(10, ChronoUnit.DAYS);
     public static final Instant SESSION_END_TIME =
-            Instant.now().minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
+            NOW.minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
 
     public static Device buildDevice() {
         return new Device.Builder()
@@ -72,16 +78,27 @@ public final class DataFactory {
         return generateMetadata(UUID.randomUUID().toString());
     }
 
+    /** Generates a {@link Metadata} with specific {@code id}. */
     public static Metadata generateMetadata(String id) {
+        return generateMetadata(id, "clientRecordId" + Math.random());
+    }
+
+    /** Generates a {@link Metadata} with specific {@code id} and {@code clientId}. */
+    public static Metadata generateMetadata(String id, String clientId) {
         Context context = ApplicationProvider.getApplicationContext();
         return new Metadata.Builder()
                 .setDevice(buildDevice())
                 .setId(id)
-                .setClientRecordId("clientRecordId" + Math.random())
+                .setClientRecordId(clientId)
                 .setDataOrigin(
                         new DataOrigin.Builder().setPackageName(context.getPackageName()).build())
                 .setRecordingMethod(Metadata.RECORDING_METHOD_UNKNOWN)
                 .build();
+    }
+
+    /** Generates a {@link Metadata} with a specific {@code clientId}. */
+    public static Metadata generateMetadataWithClientId(String clientId) {
+        return generateMetadata(UUID.randomUUID().toString(), clientId);
     }
 
     public static Metadata getEmptyMetadata() {
@@ -132,8 +149,22 @@ public final class DataFactory {
     }
 
     public static SleepSessionRecord buildSleepSession() {
-        return new SleepSessionRecord.Builder(
-                        generateMetadata(), SESSION_START_TIME, SESSION_END_TIME)
+        return buildSleepSession(generateMetadata());
+    }
+
+    /** Builds a {@link SleepSessionRecord} with a specific {@code clientId}. */
+    public static SleepSessionRecord buildSleepSessionWithClientId(String clientId) {
+        return buildSleepSession(generateMetadataWithClientId(clientId));
+    }
+
+    /** Builds a {@link SleepSessionRecord} with empty {@link Metadata}. */
+    public static SleepSessionRecord buildSleepSessionWithEmptyMetadata() {
+        return buildSleepSession(getEmptyMetadata());
+    }
+
+    /** Builds a {@link SleepSessionRecord} with a specific {@link Metadata}. */
+    public static SleepSessionRecord buildSleepSession(Metadata metadata) {
+        return new SleepSessionRecord.Builder(metadata, SESSION_START_TIME, SESSION_END_TIME)
                 .setNotes("warm")
                 .setTitle("Afternoon nap")
                 .setStages(
@@ -153,9 +184,25 @@ public final class DataFactory {
                 .build();
     }
 
+    /** Builds a {@link ExerciseSessionRecord} with {@link #generateMetadata()}. */
     public static ExerciseSessionRecord buildExerciseSession() {
+        return buildExerciseSession(generateMetadata());
+    }
+
+    /** Builds a {@link ExerciseSessionRecord} with an empty {@link Metadata}. */
+    public static ExerciseSessionRecord buildExerciseSessionWithEmptyMetadata() {
+        return buildExerciseSession(getEmptyMetadata());
+    }
+
+    /** Builds a {@link ExerciseSessionRecord} with a specific {@code clientId}. */
+    public static ExerciseSessionRecord buildExerciseSessionWithClientId(String clientId) {
+        return buildExerciseSession(generateMetadataWithClientId(clientId));
+    }
+
+    /** Builds a {@link ExerciseSessionRecord} with a specific {@link Metadata}. */
+    public static ExerciseSessionRecord buildExerciseSession(Metadata metadata) {
         return new ExerciseSessionRecord.Builder(
-                        generateMetadata(),
+                        metadata,
                         SESSION_START_TIME,
                         SESSION_END_TIME,
                         ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
@@ -208,16 +255,31 @@ public final class DataFactory {
                 .build();
     }
 
+    /** Gets a {@link HeartRateRecord} with an empty {@link Metadata}. */
+    public static HeartRateRecord getHeartRateRecordWithEmptyMetadata() {
+        return getHeartRateRecord(72, getEmptyMetadata());
+    }
+
+    /** Gets a {@link HeartRateRecord} with a specific heart rate and {@link Metadata}. */
+    public static HeartRateRecord getHeartRateRecord(int heartRate, Metadata metadata) {
+        Instant instant = NOW;
+        HeartRateRecord.HeartRateSample heartRateSample =
+                new HeartRateRecord.HeartRateSample(heartRate, instant.plusMillis(10));
+        return new HeartRateRecord.Builder(
+                        metadata, instant, instant.plusMillis(1000), List.of(heartRateSample))
+                .build();
+    }
+
     public static HeartRateRecord getHeartRateRecord() {
         return getHeartRateRecord(72);
     }
 
     public static HeartRateRecord getHeartRateRecord(int heartRate, String clientId) {
-        return getHeartRateRecord(heartRate, Instant.now().plusMillis(100), clientId);
+        return getHeartRateRecord(heartRate, NOW.plusMillis(100), clientId);
     }
 
     public static HeartRateRecord getHeartRateRecord(int heartRate) {
-        return getHeartRateRecord(heartRate, Instant.now().plusMillis(100));
+        return getHeartRateRecord(heartRate, NOW.plusMillis(100));
     }
 
     public static HeartRateRecord getHeartRateRecord(int heartRate, Instant instant) {
@@ -247,42 +309,54 @@ public final class DataFactory {
                 .build();
     }
 
+    /** Creates and returns a {@link WeightRecord} with the specified arguments. */
+    public static WeightRecord getWeightRecord(double grams, Instant time) {
+        return new WeightRecord.Builder(new Metadata.Builder().build(), time, Mass.fromGrams(grams))
+                .build();
+    }
+
+    public static StepsRecord getStepsRecordWithEmptyMetaData() {
+        return getStepsRecord(10, getEmptyMetadata());
+    }
+
     public static StepsRecord getStepsRecord() {
         return getStepsRecord(10);
     }
 
-    public static StepsRecord getStepsRecord(int steps) {
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getStepsRecord(long steps) {
         return getStepsRecord(steps, generateMetadata());
     }
 
-    public static StepsRecord getStepsRecord(int steps, String clientId) {
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getStepsRecord(long steps, String clientId) {
         return getStepsRecord(steps, getMetadataForClientId(clientId));
     }
 
     /** Creates and returns a {@link StepsRecord} with the specified metadata. */
-    public static StepsRecord getStepsRecord(int steps, Metadata metadata) {
-        return new StepsRecord.Builder(
-                        metadata, Instant.now(), Instant.now().plusMillis(1000), steps)
-                .build();
+    public static StepsRecord getStepsRecord(long steps, Metadata metadata) {
+        return new StepsRecord.Builder(metadata, NOW, NOW.plusMillis(1000), steps).build();
     }
 
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getStepsRecord(long steps, Instant start, Instant end) {
+        return new StepsRecord.Builder(getEmptyMetadata(), start, end, steps).build();
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
     public static StepsRecord getStepsRecord(
-            int steps, Instant start, Instant end, String clientId) {
+            long steps, Instant start, Instant end, String clientId) {
         return new StepsRecord.Builder(getMetadataForClientId(clientId), start, end, steps).build();
     }
 
     public static StepsRecord getStepsRecord(String id) {
-        return new StepsRecord.Builder(
-                        generateMetadata(id), Instant.now(), Instant.now().plusMillis(1000), 10)
-                .build();
+        return new StepsRecord.Builder(generateMetadata(id), NOW, NOW.plusMillis(1000), 10).build();
     }
 
     /** Creates and returns a {@link StepsRecord} with default arguments. */
     public static StepsRecord getCompleteStepsRecord() {
         return getCompleteStepsRecord(
-                Instant.now(),
-                Instant.now().plusMillis(1000),
-                /* clientRecordId= */ "SR" + Math.random());
+                NOW, NOW.plusMillis(1000), /* clientRecordId= */ "SR" + Math.random());
     }
 
     /** Creates and returns a {@link StepsRecord} with the specified arguments. */
@@ -294,6 +368,17 @@ public final class DataFactory {
     /** Creates and returns a {@link StepsRecord} with the specified arguments. */
     public static StepsRecord getCompleteStepsRecord(
             Instant startTime, Instant endTime, String clientRecordId, int count) {
+        return getCompleteStepsRecord(
+                startTime, endTime, clientRecordId, /* clientRecordVersion= */ 0L, count);
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            int count) {
         Device device =
                 new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
         DataOrigin dataOrigin =
@@ -302,6 +387,7 @@ public final class DataFactory {
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
+        testMetadataBuilder.setClientRecordVersion(clientRecordVersion);
         testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
         Metadata testMetaData = testMetadataBuilder.build();
         assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);
@@ -320,37 +406,112 @@ public final class DataFactory {
                         .setDevice(metadata.getDevice())
                         .setLastModifiedTime(metadata.getLastModifiedTime())
                         .build();
-        return new StepsRecord.Builder(
-                        metadataWithId, Instant.now(), Instant.now().plusMillis(2000), 20)
-                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
-                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
+        return new StepsRecord.Builder(metadataWithId, NOW, NOW.plusMillis(2000), 20)
+                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(NOW))
+                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(NOW))
                 .build();
     }
 
+    /** Creates a {@link DistanceRecord}. */
     public static DistanceRecord getDistanceRecord() {
-        return getDistanceRecord(10.0, Instant.now(), Instant.now().plusMillis(1000));
+        return getDistanceRecord(10.0, NOW, NOW.plusMillis(1000));
     }
 
+    /** Creates a {@link DistanceRecord} with a specified {@code clientId}. */
+    public static DistanceRecord getDistanceRecordWithClientId(String clientId) {
+        return getDistanceRecord(
+                10,
+                NOW,
+                NOW.plusMillis(1000),
+                /* startZoneOffset= */ null,
+                /* endZoneOffset= */ null,
+                generateMetadataWithClientId(clientId));
+    }
+
+    /** Create a {@link DistanceRecord} with non empty record ID. */
+    public static DistanceRecord getDistanceRecordWithNonEmptyId() {
+        return getDistanceRecord(
+                10,
+                NOW,
+                NOW.plusMillis(1000),
+                /* startZoneOffset= */ null,
+                /* endZoneOffset= */ null,
+                generateMetadata());
+    }
+
+    /** Create a {@link DistanceRecord} with empty {@link Metadata}. */
+    public static DistanceRecord getDistanceRecordWithEmptyMetadata() {
+        return getDistanceRecord(
+                10,
+                NOW,
+                NOW.plusMillis(1000),
+                /* startZoneOffset= */ null,
+                /* endZoneOffset= */ null,
+                getEmptyMetadata());
+    }
+
+    /** Create a {@link DistanceRecord} with the specified arguments. */
     public static DistanceRecord getDistanceRecord(double distance, Instant start, Instant end) {
-        return new DistanceRecord.Builder(
-                        getEmptyMetadata(), start, end, Length.fromMeters(distance))
-                .build();
+        return getDistanceRecord(
+                distance,
+                start,
+                end,
+                /* startZoneOffset= */ null,
+                /* endZoneOffset= */ null,
+                getEmptyMetadata());
     }
 
+    /** Create a {@link DistanceRecord} with the specified arguments. */
+    public static DistanceRecord getDistanceRecord(
+            double distance, Instant start, Instant end, ZoneOffset offset) {
+        return getDistanceRecord(distance, start, end, offset, offset, getEmptyMetadata());
+    }
+
+    /** Create a {@link DistanceRecord} with the specified arguments. */
     public static DistanceRecord getDistanceRecord(
             double distance, Instant start, Instant end, String clientId) {
-        return new DistanceRecord.Builder(
-                        getMetadataForClientId(clientId), start, end, Length.fromMeters(distance))
+        return getDistanceRecord(
+                distance,
+                start,
+                end,
+                /* startZoneOffset= */ null,
+                /* endZoneOffset= */ null,
+                getMetadataForClientId(clientId));
+    }
+
+    /** Create a {@link DistanceRecord} with the specified arguments. */
+    public static DistanceRecord getDistanceRecord(
+            double distance,
+            Instant start,
+            Instant end,
+            @Nullable ZoneOffset startZoneOffset,
+            @Nullable ZoneOffset endZoneOffset,
+            Metadata metadata) {
+        DistanceRecord.Builder builder =
+                new DistanceRecord.Builder(metadata, start, end, Length.fromMeters(distance));
+        if (startZoneOffset != null) {
+            builder.setStartZoneOffset(startZoneOffset);
+        }
+        if (endZoneOffset != null) {
+            builder.setEndZoneOffset(endZoneOffset);
+        }
+        return builder.build();
+    }
+
+    /** Gets a {@link TotalCaloriesBurnedRecord} with a specific {@code clientId}. */
+    public static TotalCaloriesBurnedRecord getTotalCaloriesBurnedRecord(String clientId) {
+        return getTotalCaloriesBurnedRecord(getMetadataForClientId(clientId));
+    }
+
+    /** Gets a {@link TotalCaloriesBurnedRecord} with a specific {@link Metadata}. */
+    public static TotalCaloriesBurnedRecord getTotalCaloriesBurnedRecord(Metadata metadata) {
+        return new TotalCaloriesBurnedRecord.Builder(
+                        metadata, NOW, NOW.plusMillis(1000), Energy.fromCalories(10.0))
                 .build();
     }
 
-    public static TotalCaloriesBurnedRecord getTotalCaloriesBurnedRecord(String clientId) {
-        return new TotalCaloriesBurnedRecord.Builder(
-                        getMetadataForClientId(clientId),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
-                        Energy.fromCalories(10.0))
-                .build();
+    public static TotalCaloriesBurnedRecord getTotalCaloriesBurnedRecordWithEmptyMetadata() {
+        return getTotalCaloriesBurnedRecord(getEmptyMetadata());
     }
 
     public static List<Record> getTestRecords() {
@@ -361,6 +522,14 @@ public final class DataFactory {
                 buildExerciseSession());
     }
 
+    public static ChangeLogTokenRequest.Builder getChangeLogTokenRequestForTestRecordTypes() {
+        return new ChangeLogTokenRequest.Builder()
+                .addRecordType(StepsRecord.class)
+                .addRecordType(HeartRateRecord.class)
+                .addRecordType(BasalMetabolicRateRecord.class)
+                .addRecordType(ExerciseSessionRecord.class);
+    }
+
     public static List<RecordAndIdentifier> getRecordsAndIdentifiers() {
         return Arrays.asList(
                 new RecordAndIdentifier(RECORD_TYPE_STEPS, getStepsRecord()),
@@ -369,9 +538,8 @@ public final class DataFactory {
                         RECORD_TYPE_BASAL_METABOLIC_RATE, getBasalMetabolicRateRecord()));
     }
 
-    private static BasalMetabolicRateRecord getBasalMetabolicRateRecord() {
-        return new BasalMetabolicRateRecord.Builder(
-                        generateMetadata(), Instant.now(), Power.fromWatts(100.0))
+    public static BasalMetabolicRateRecord getBasalMetabolicRateRecord() {
+        return new BasalMetabolicRateRecord.Builder(generateMetadata(), NOW, Power.fromWatts(100.0))
                 .build();
     }
 }

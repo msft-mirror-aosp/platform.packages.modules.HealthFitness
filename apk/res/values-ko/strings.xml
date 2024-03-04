@@ -96,8 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"운동 경로"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"운동 경로 기록"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"운동 루트 보기"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"읽기 연습 경로"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"훈련 계획"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"훈련 계획"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"훈련 계획을 읽습니다"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"훈련 계획을 작성합니다"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"거리"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"거리"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"거리 읽기"</string>
@@ -269,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"헬스 커넥트에 저장된 데이터에 액세스할 수 있는 앱을 관리합니다. 어떤 데이터를 읽거나 쓸 수 있는지 검토할 앱을 탭하세요."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"액세스가 허용된 앱"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"액세스가 허용되지 않은 앱"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"업데이트 필요"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"설정 및 도움말"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"모든 앱의 액세스 권한 삭제"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"읽기 허용됨"</string>
@@ -291,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"지난 24시간 이내에 액세스함"</string>
     <string name="app_access_title" msgid="7137018424885371763">"앱 액세스"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"현재 설치되어 있는 호환 앱이 없습니다"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"추가 액세스"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"앱 권한 삭제됨"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"헬스 커넥트에서 <xliff:g id="APP_DATA">%s</xliff:g>의 권한을 삭제했습니다."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"헬스 커넥트에서 <xliff:g id="APP_DATA_0">%1$s</xliff:g> 및 <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>의 권한을 삭제했습니다."</string>
@@ -300,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"헬스 커넥트에서 앱 권한을 삭제하는 이유"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"앱이 Google Play에서 정지되거나 삭제되면 헬스 커넥트에서 해당 앱의 권한을 자동으로 삭제합니다.\n\n그러면 앱에서 더 이상 헬스 커넥트에 저장된 데이터에 액세스할 수 없게 됩니다. 이전에 데이터를 기록한 적이 있는 앱이라면 비활성 앱 목록에 표시됩니다."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"확인"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"헬스 커넥트 시작하기"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"헬스 커넥트는 건강 및 피트니스 데이터를 저장하므로 휴대전화에 설치된 여러 앱을 간편하게 동기화할 수 있습니다."</string>
     <string name="share_data" msgid="3481932156368883946">"앱과 데이터 공유"</string>
@@ -665,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1퍼센트}other{#퍼센트}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"취소"</string>
     <string name="units_title" msgid="6504086463237869339">"단위"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"데이터 단위 설정하기"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"거리"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"키"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"체중"</string>
@@ -716,8 +744,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"아래로 이동"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"맨 위로 이동"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"맨 아래로 이동"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"우선순위 목록에서 <xliff:g id="SELECTED_APP">%s</xliff:g> 앱을 끌어다 순서를 변경하는 버튼"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"우선순위 목록에서 <xliff:g id="SELECTED_APP">%s</xliff:g>을(를) 제거하는 버튼"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"두 번 탭한 후 드래그하여 순서 변경"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"피트니스, 웰니스"</string>
@@ -736,11 +763,25 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"운동 경로에 액세스하도록 허용한 앱만 볼 수 있습니다."</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"어떻게 액세스를 관리하나요?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"헬스 커넥트 설정에서 운동 경로에 액세스하는 앱을 관리할 수 있습니다."</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
+    <string name="request_route_allow" msgid="4427372851821847274">"이 경로 허용"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"모든 경로 허용"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"허용 안 함"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"항상 허용"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"운동 경로 공유"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"이 앱에서 연결된 앱의 운동 경로에 액세스하는 방식을 제어합니다."</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"항상 확인"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"허용 안함"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
     <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
     <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
     <skip />
     <string name="back_button" msgid="780519527385993407">"뒤로"</string>
     <string name="loading" msgid="2526615755685950317">"로드 중…"</string>
@@ -777,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"헬스 커넥트 통합 재개"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"데이터를 유지하려면 <xliff:g id="TIME_NEEDED">%1$s</xliff:g> 이내에 완료하세요."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"앱 업데이트 필요"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱은 헬스 커넥트와 호환되기 위해 최신 버전으로 업데이트되어야 합니다."</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"일부 앱은 최신 버전으로 업데이트하지 않으면 헬스 커넥트와 호환되지 않습니다."</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"헬스 커넥트와 계속 동기화하려면 <xliff:g id="APP_NAME">%1$s</xliff:g> 앱을 업데이트해야 합니다."</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"헬스 커넥트와 계속 동기화하려면 일부 앱을 업데이트해야 합니다."</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"업데이트 확인"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"자세히 알아보기"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"헬스 커넥트 통합"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"헬스 커넥트가 Android 시스템과 통합될 준비가 되었습니다. 지금 <xliff:g id="APP_NAME">%1$s</xliff:g> 앱에 액세스 권한을 부여하면 통합이 완료될 때까지 일부 기능이 작동하지 않을 수 있습니다."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"헬스 커넥트가 Android 시스템과 통합될 준비가 되었습니다. 지금 앱에 액세스 권한을 부여하면 통합이 완료될 때까지 일부 기능이 작동하지 않을 수 있습니다."</string>
@@ -799,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"새로운 기능"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"이제 설정에서 바로 헬스 커넥트에 액세스할 수 있습니다. 언제든 헬스 커넥트 앱을 제거하여 저장공간을 확보하세요."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"확인"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"복원 진행 중"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"헬스 커넥트가 데이터 및 권한을 복원하는 중입니다. 완료되기까지 다소 시간이 걸릴 수 있습니다."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"헬스 커넥트 복원 진행 중"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"확인"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"업데이트 필요"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"데이터 복원을 계속하기 전에 휴대전화 시스템을 업데이트하세요."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"지금 업데이트"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"데이터 총계"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"앱 소스"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"데이터 총계가 어떻게 변할 수 있는지 확인하려면 앱 소스를 목록에 추가합니다. 이 목록에서 앱을 삭제하면 더 이상 총계에 포함되지 않지만 쓰기 권한은 계속 유지됩니다."</string>

@@ -97,6 +97,10 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Sumulat ng ruta ng pag-eehersisyo"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"I-read ang ruta ng pag-eehersisyo"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Basahin ang mga ruta ng pag-e-ehersisyo"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Mga plano sa pagsasanay"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"mga plano sa pagsasanay"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Basahin ang mga plano sa pagsasanay"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Sumulat ng mga plano sa pagsasanay"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Layo"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"layo"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"I-read ang layo"</string>
@@ -268,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Kontrolin kung aling mga app ang makaka-access sa data na naka-store sa Health Connect. Mag-tap ng app para suriin ang data na puwede nitong i-read o i-write."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Pinapayagan ang access"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Hindi pinapayagan ang access"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Kailangang i-update"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Mga setting at tulong"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Alisin ang access para sa lahat ng app"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Pinapayagang i-read"</string>
@@ -290,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Na-access sa nakalipas na 24 na oras"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Access ng app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Wala kang anumang compatible na naka-install na app sa kasalukuyan"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Karagdagang access"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Inalis ang mga pahintulot sa app"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA_0">%1$s</xliff:g> at <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -299,6 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Bakit nag-aalis ng mga pahintulot sa app ang Health Connect"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Kung sinuspinde o inalis sa Google Play ang isang app, awtomatikong aalisin ng Health Connect ang mga pahintulot nito.\n\nIbig sabihin, hindi na maa-access ng app ang data na naka-store sa Health Connect. Kung dating nagra-write ng data ang app na ito, lalabas ito sa listahan ng mga hindi aktibong app."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="export_settings_screen_title" msgid="887671826359158339">"I-save ang data"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"I-save ang data at mga pahintulot ng Health Connect para ma-import mo ang mga ito kung lilipat ka sa bagong telepono. Puwede mong piliin kung saan iso-store ang data na ito bago i-save."</string>
+    <string name="setup_button" msgid="1407942598553043961">"I-set up"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Mga Setting"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Auto-save"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Pumili ng dalas"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Piliing mag-save ng data nang isang beses, o itakda itong awtomatikong mag-save sa mga regular na oras."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Araw-araw"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Linggo-linggo"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Buwanan"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Bumalik"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Susunod"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Magsimula sa Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa telepono mo"</string>
     <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>
@@ -664,7 +682,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 porsyento}one{# porsyento}other{# na porsyento}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Kanselahin"</string>
     <string name="units_title" msgid="6504086463237869339">"Mga Unit"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Magtakda ng mga unit ng data"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Layo"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Tangkad"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Bigat"</string>
@@ -737,6 +754,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Payagan ang rutang ito"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Payagan ang lahat ng ruta"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Huwag payagan"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Palaging payagan"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Pagbabahagi ng ruta ng pag-eehersisyo"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Kontrolin kung paano ina-access ng app na ito ang mga ruta ng pag-eehersisyo mula sa mga nakakonektang app"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Tanungin palagi"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Huwag payagan"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"I-enable ang parehong uri ng data?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"I-disable ang parehong uri ng data?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa pag-read sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Oo"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Hindi"</string>
     <string name="back_button" msgid="780519527385993407">"Bumalik"</string>
     <string name="loading" msgid="2526615755685950317">"Naglo-load…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Isinasagawa ang pag-integrate"</string>
@@ -772,9 +800,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Ituloy ang pag-integrate ng Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Para mapanatili ang iyong data, tapusin ito sa loob ng <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Kailangan ang update ng app"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Kailangang up to date ang <xliff:g id="APP_NAME">%1$s</xliff:g> para manatiling gumagana ito sa Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Kailangang up to date ang ilang app para manatiling gumagana ang mga ito sa Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Kailangang i-update ang <xliff:g id="APP_NAME">%1$s</xliff:g> para magpatuloy sa pag-sync sa Health Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Kailangang i-update ang ilang app para magpatuloy sa pag-sync sa Health Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Tumingin ng mga update"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Matuto pa"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Pag-integrate ng Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Handa nang ma-integrate sa iyong Android system ang Health Connect. Kung bibigyan mo ngayon ng access ang <xliff:g id="APP_NAME">%1$s</xliff:g>, puwedeng hindi gumana ang ilang feature hanggang sa matapos ang pag-integrate."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Handa nang ma-integrate sa iyong Android system ang Health Connect. Kung bibigyan mo ngayon ng access ang mga app, posibleng hindi gumana ang ilang feature hanggang sa matapos ang pag-integrate."</string>
@@ -794,6 +823,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Ano\'ng bago"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Puwede mo nang direktang i-access ang Health Connect mula sa iyong mga setting. I-uninstall ang Health Connect app anumang oras para magbakante ng storage space."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Isinasagawa ang pag-restore"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Nire-restore ng Health Connect ang data at mga pahintulot. Posibleng abutin ito nang ilang sandali bago matapos."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Kasalukuyang isinasagawa ng Health Connect ang pag-restore"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Kailangang i-update"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Bago magpatuloy sa pag-restore ng iyong data, i-update ang system ng telepono mo."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"I-update ngayon"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Mga kabuuan ng data"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Mga source ng app"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Magdagdag ng mga source ng app sa listahan para makita kung paano posibleng magbago ang mga kabuuan ng data. Kapag naalis ang isang app sa listahang ito, mapipigilan ito sa pag-ambag sa mga kabuuan, pero magkakaroon pa rin ito ng mga write permission."</string>
