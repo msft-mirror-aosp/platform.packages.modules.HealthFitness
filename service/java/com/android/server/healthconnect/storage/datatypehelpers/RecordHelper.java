@@ -116,17 +116,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 .toEpochMilli());
     }
 
+    /** Database migration. Introduces automatic local time generation. */
+    public abstract void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db);
+
     @RecordTypeIdentifier.RecordType
     public int getRecordIdentifier() {
         return mRecordIdentifier;
-    }
-
-    /**
-     * Called on DB update. Inheriting classes should implement this if they need to add new columns
-     * or tables.
-     */
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        // empty
     }
 
     /**
