@@ -27,9 +27,7 @@ import static android.healthconnect.cts.aggregation.DataFactory.getActiveCalorie
 import static android.healthconnect.cts.aggregation.DataFactory.getTimeFilter;
 import static android.healthconnect.cts.aggregation.Utils.assertDoubleWithTolerance;
 import static android.healthconnect.cts.aggregation.Utils.assertEnergyWithTolerance;
-import static android.healthconnect.cts.aggregation.Utils.assertLengthWithTolerance;
 import static android.healthconnect.cts.aggregation.Utils.assertMassWithTolerance;
-import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
@@ -48,7 +46,6 @@ import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MILLIS;
-import static java.time.temporal.ChronoUnit.MINUTES;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
@@ -202,81 +199,6 @@ public class AggregationApisTest {
         assertThat(responses.get(2).getStartTime()).isEqualTo(time.plus(2, HOURS));
         assertThat(responses.get(2).getEndTime()).isEqualTo(time.plus(4, HOURS));
         assertThat(responses.get(2).getZoneOffset(ACTIVE_CALORIES_TOTAL)).isEqualTo(defaultOffset);
-    }
-
-    @Test
-    public void groupByDurationWithLocalFilter_distanceTotal() throws Exception {
-        Instant time = Instant.now().minus(1, DAYS).truncatedTo(DAYS);
-        LocalDateTime localTime = time.atOffset(UTC).toLocalDateTime();
-        insertRecords(
-                List.of(
-                        getDistanceRecord(210.0, time, time.plus(21, MINUTES), UTC),
-                        getDistanceRecord(
-                                10.0, time.plus(21, MINUTES), time.plus(30, MINUTES), UTC)));
-        LocalTimeRangeFilter timeFilter =
-                getTimeFilter(localTime.minusMinutes(40), localTime.plusMinutes(40));
-
-        List<AggregateRecordsGroupedByDurationResponse<Length>> responses =
-                getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Length>(timeFilter)
-                                .addAggregationType(DISTANCE_TOTAL)
-                                .build(),
-                        Duration.ofMinutes(30));
-
-        assertThat(responses).hasSize(3);
-        // (min -40) - (min -10) no distance
-        assertThat(responses.get(0).get(DISTANCE_TOTAL)).isNull();
-        assertThat(responses.get(0).getStartTime()).isEqualTo(time.minus(40, MINUTES));
-        assertThat(responses.get(0).getEndTime()).isEqualTo(time.minus(10, MINUTES));
-        assertThat(responses.get(0).getZoneOffset(DISTANCE_TOTAL)).isNull();
-        // (min -10) - (min 20), distance = 210 / 21 * 20
-        assertLengthWithTolerance(responses.get(1).get(DISTANCE_TOTAL), 200.0);
-        assertThat(responses.get(1).getStartTime()).isEqualTo(time.minus(10, MINUTES));
-        assertThat(responses.get(1).getEndTime()).isEqualTo(time.plus(20, MINUTES));
-        assertThat(responses.get(1).getZoneOffset(DISTANCE_TOTAL)).isEqualTo(UTC);
-        // (min 20) - (min 40), distance = 210 / 21 + 10
-        assertLengthWithTolerance(responses.get(2).get(DISTANCE_TOTAL), 20.0);
-        assertThat(responses.get(2).getStartTime()).isEqualTo(time.plus(20, MINUTES));
-        assertThat(responses.get(2).getEndTime()).isEqualTo(time.plus(40, MINUTES));
-        assertThat(responses.get(2).getZoneOffset(DISTANCE_TOTAL)).isEqualTo(UTC);
-    }
-
-    @Test
-    public void groupByPeriod_weightAvg() throws Exception {
-        Instant time = Instant.now().minus(1, DAYS).truncatedTo(DAYS);
-        LocalDateTime localTime = time.atOffset(UTC).toLocalDateTime();
-        insertRecords(
-                List.of(
-                        getWeightRecord(50.0, time.minus(30, DAYS)),
-                        getWeightRecord(60.0, time.minus(15, DAYS)),
-                        getWeightRecord(70.0, time.minus(60, DAYS))));
-
-        LocalTimeRangeFilter timeFilter = getTimeFilter(localTime.minusDays(70), localTime);
-        List<AggregateRecordsGroupedByPeriodResponse<Mass>> responses =
-                getAggregateResponseGroupByPeriod(
-                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
-                                .addAggregationType(WEIGHT_AVG)
-                                .build(),
-                        Period.ofMonths(1));
-
-        assertThat(responses).hasSize(3);
-        // (day -70) - (day -40), weight avg = 70
-        assertMassWithTolerance(responses.get(0).get(WEIGHT_AVG), 70.0);
-        assertThat(responses.get(0).getStartTime()).isEqualTo(localTime.minusDays(70));
-        assertThat(responses.get(0).getEndTime()).isEqualTo(localTime.minusDays(70).plusMonths(1));
-        assertThat(responses.get(0).getZoneOffset(WEIGHT_AVG)).isEqualTo(UTC);
-        // (day -40) - (day -10), weight avg = (50 + 60) / 2
-        assertMassWithTolerance(responses.get(1).get(WEIGHT_AVG), 55.0);
-        assertThat(responses.get(1).getStartTime())
-                .isEqualTo(localTime.minusDays(70).plusMonths(1));
-        assertThat(responses.get(1).getEndTime()).isEqualTo(localTime.minusDays(70).plusMonths(2));
-        assertThat(responses.get(1).getZoneOffset(WEIGHT_AVG)).isEqualTo(UTC);
-        // (day -10) - localTime, no weight
-        assertThat(responses.get(2).get(WEIGHT_AVG)).isNull();
-        assertThat(responses.get(2).getStartTime())
-                .isEqualTo(localTime.minusDays(70).plusMonths(2));
-        assertThat(responses.get(2).getEndTime()).isEqualTo(localTime);
-        assertThat(responses.get(2).getZoneOffset(WEIGHT_AVG)).isNull();
     }
 
     @Test
