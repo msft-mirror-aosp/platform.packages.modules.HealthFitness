@@ -24,6 +24,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
+import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
@@ -519,6 +520,14 @@ public final class DataFactory {
                 getHeartRateRecord(),
                 getBasalMetabolicRateRecord(),
                 buildExerciseSession());
+    }
+
+    public static ChangeLogTokenRequest.Builder getChangeLogTokenRequestForTestRecordTypes() {
+        return new ChangeLogTokenRequest.Builder()
+                .addRecordType(StepsRecord.class)
+                .addRecordType(HeartRateRecord.class)
+                .addRecordType(BasalMetabolicRateRecord.class)
+                .addRecordType(ExerciseSessionRecord.class);
     }
 
     public static List<RecordAndIdentifier> getRecordsAndIdentifiers() {
