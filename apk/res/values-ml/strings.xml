@@ -759,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"കണക്റ്റ് ചെയ്‌ത ആപ്പുകളിൽ നിന്ന് ഈ ആപ്പ് എങ്ങനെ വ്യായാമ സെഷന്റെ വഴി ആക്‌സസ് ചെയ്യുന്നു എന്നത് നിയന്ത്രിക്കുക"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"എല്ലായ്‌പ്പോഴും ചോദിക്കുക"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"അനുവദിക്കരുത്"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"രണ്ട് ഡാറ്റ തരങ്ങളും പ്രവർത്തനക്ഷമമാക്കണോ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"രണ്ട് ഡാറ്റ തരങ്ങളും പ്രവർത്തനരഹിതമാക്കണോ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"വ്യായാമ സെഷന്റെ വഴികൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന്, <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് വ്യായാമ ഡാറ്റ വായിക്കുന്നതിനുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"വ്യായാമ സെഷന്റെ വഴികൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന് <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് വ്യായാമ ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ഉവ്വ്"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ഇല്ല"</string>
     <string name="back_button" msgid="780519527385993407">"മടങ്ങുക"</string>
     <string name="loading" msgid="2526615755685950317">"ലോഡ് ചെയ്യുന്നു…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"സംയോജനം പുരോഗമിക്കുന്നു"</string>

@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"למה אפליקציית Health Connect מסירה הרשאות הניתנות לאפליקציות"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"אם אפליקציה הושעתה מ-Google Play או הוסרה משם, Health Connect מסירה אוטומטית את ההרשאות שניתנו לאפליקציה.\n\nכלומר, האפליקציה הזו כבר לא יכולה לגשת לנתונים שאוחסנו ב-Health Connect. אם לאפליקציה הזו יש נתונים שנכתבו לפני כן, היא תופיע ברשימת האפליקציות הלא פעילות."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"הבנתי"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"שמירת נתונים"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"שמירת הנתונים וההרשאות של Health Connect כדי לייבא אותם במקרה של מעבר לטלפון חדש. אפשר לבחור היכן לאחסן את הנתונים האלה לפני השמירה."</string>
+    <string name="setup_button" msgid="1407942598553043961">"הגדרה"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"הגדרות"</string>
+    <string name="auto_save" msgid="7146497593975616076">"שמירה אוטומטית"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"בחירת תדירות"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"אפשר לבחור לשמור נתונים פעם אחת או להגדיר שמירה אוטומטית בזמנים קבועים."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"כל יום"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"כל שבוע"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"כל חודש"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"חזרה"</string>
+    <string name="export_next_button" msgid="657930567137105172">"הבא"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"איך מתחילים להשתמש ב-Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"אפליקציית Health Connect מאחסנת את נתוני הבריאות והכושר שלך, ומאפשרת לך לסנכרן בקלות את האפליקציות השונות בטלפון"</string>
     <string name="share_data" msgid="3481932156368883946">"שיתוף נתונים עם האפליקציות שלך"</string>

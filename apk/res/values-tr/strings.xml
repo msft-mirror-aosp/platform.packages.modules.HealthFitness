@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect\'in uygulama izinlerini kaldırmasının nedeni"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Health Connect, Google Play\'den kaldırılan veya askıya alınan uygulamaların izinlerini otomatik olarak kaldırır.\n\nİzinleri kaldırılan uygulamalar artık Health Connect\'te depolanan verilere erişemez. Bu uygulamalar daha önce yazılmış veriler içeriyorsa etkin olmayan uygulamalar listesinde görünür."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Anladım"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"Verileri kaydet"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Yeni bir telefona geçiş yaptığınızda aktarabilmek için Health Connect verilerini ve izinlerini kaydedin. Kaydetmeden önce bu verilerin saklanacağı yeri seçebilirsiniz."</string>
+    <string name="setup_button" msgid="1407942598553043961">"Ayarla"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Ayarlar"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Otomatik kaydet"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Sıklık seçin"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Verileri bir kez kaydetmeyi seçin veya düzenli aralıklarla otomatik olarak kaydedilecek şekilde ayarlayın."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Günlük"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Haftalık"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Aylık"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
+    <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>
@@ -771,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Bu uygulamanın, bağlı uygulamalardan egzersiz rotalarına erişme şeklini kontrol edin"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Her zaman sor"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"İzin verme"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Her iki veri türü de etkinleştirilsin mi?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Her iki veri türü de devre dışı bırakılsın mı?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Egzersiz rotalarının etkinleştirilmesi için <xliff:g id="APP_NAME">%1$s</xliff:g> adlı uygulamanın, egzersiz verilerine okuma erişimi olması gerekir"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Egzersiz rotalarının etkinleştirilmesi için <xliff:g id="APP_NAME">%1$s</xliff:g> adlı uygulamanın, egzersiz verilerine erişmesi gerekir"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Evet"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Hayır"</string>
     <string name="back_button" msgid="780519527385993407">"Geri"</string>
     <string name="loading" msgid="2526615755685950317">"Yükleniyor…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Entegrasyon devam ediyor"</string>

@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ஏன் ஆப்ஸ் அனுமதிகளை அகற்றுகிறது?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Playயில் இருந்து ஓர் ஆப்ஸ் இடைநிறுத்தப்பட்டாலோ அகற்றப்பட்டாலோ அதன் அனுமதிகளை Health Connect தானாக அகற்றிவிடும்.\n\nஅதாவது Health Connectடில் சேமிக்கப்பட்டிருக்கும் தரவை அந்த ஆப்ஸால் அணுக முடியாது. ஏற்கெனவே இந்த ஆப்ஸில் ஏதேனும் தரவு பதிவாகியிருந்தால், இது செயலற்ற ஆப்ஸ் பட்டியலில் காட்டப்படும்."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"சரி"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"தரவைச் சேமித்தல்"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Health Connect தரவையும் அனுமதிகளையும் சேமித்து, நீங்கள் புதிய மொபைலைப் பயன்படுத்தத் தொடங்கும்போது அவற்றை இறக்கிக்கொள்ளலாம். சேமிக்கும் முன்பு இந்தத் தரவை எங்கே சேமிக்க வேண்டும் எனத் தேர்வுசெய்யலாம்."</string>
+    <string name="setup_button" msgid="1407942598553043961">"அமை"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"அமைப்புகள்"</string>
+    <string name="auto_save" msgid="7146497593975616076">"தானாகச் சேமி"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"கால அளவைத் தேர்வுசெய்யுங்கள்"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"தரவை ஒருமுறை சேமிக்கத் தேர்வுசெய்யலாம்/குறிப்பிட்ட நேரங்களில் தானாகச் சேமிக்கும்படி அதை அமைக்கலாம்."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"தினமும்"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"வாரந்தோறும்"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"மாதந்தோறும்"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"பின்செல்"</string>
+    <string name="export_next_button" msgid="657930567137105172">"அடுத்து"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>
@@ -771,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"இணைக்கப்பட்ட ஆப்ஸிடம் இருந்து பெற்ற உடற்பயிற்சிப் பாதைகளை இந்த ஆப்ஸ் அணுகும் விதத்தைக் கட்டுப்படுத்தலாம்"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ஒவ்வொரு முறையும் கேள்"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"அனுமதிக்க வேண்டாம்"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"இரண்டு தரவு வகைகளையும் இயக்கவா?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"இரண்டு தரவு வகைகளையும் முடக்கவா?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"உடற்பயிற்சி வழக்கங்களை இயக்க வேண்டுமெனில் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸுக்கு உடற்பயிற்சியைப் படிப்பதற்கான அணுகல் தேவை"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"உடற்பயிற்சி வழக்கங்களை இயக்க வேண்டுமெனில் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸுக்கு உடற்பயிற்சிக்கான அணுகல் தேவை"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ஆம்"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"இல்லை"</string>
     <string name="back_button" msgid="780519527385993407">"பின்செல்"</string>
     <string name="loading" msgid="2526615755685950317">"ஏற்றுகிறது…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ஒருங்கிணைப்பு செயலிலுள்ளது"</string>

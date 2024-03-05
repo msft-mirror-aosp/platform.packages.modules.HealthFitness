@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect हे अ‍ॅप परवानग्या का काढून टाकते"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"एखादे अ‍ॅप Google Play वरून निलंबित केल्यास किंवा काढून टाकल्यास, Health Connect हे आपोआप त्याच्या परवानग्या काढून टाकते.\n\nयाचा अर्थ असा, की अ‍ॅप यापुढे Health Connect मध्ये स्टोअर केलेला डेटा अ‍ॅक्सेस करू शकत नाही. या अ‍ॅपने याआधी डेटा राइट केलेला असल्यास, ते इनॅक्टिव्ह अ‍ॅप्सच्या सूचीमध्ये दिसते."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"समजले"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"डेटा सेव्ह करा"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Health Connect डेटा आणि परवानग्या सेव्ह करा, जेणेकरून तुम्ही नवीन फोनवर स्विच केल्यावर तुम्हाला त्या गोष्टी इंपोर्ट करता येतील. सेव्ह करण्यापूर्वी तुम्ही हा डेटा कुठे स्टोअर करावा हे निवडू शकता."</string>
+    <string name="setup_button" msgid="1407942598553043961">"सेट करा"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"सेटिंग्ज"</string>
+    <string name="auto_save" msgid="7146497593975616076">"ऑटो-सेव्ह करा"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"वारंवारता निवडा"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एकदा सेव्ह करणे निवडा किंवा तो नियमित वेळी आपोआप सेव्ह करणे सेट करा."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"दररोज"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"दर आठवड्याला"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"दर महिन्याला"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"मागे जा"</string>
+    <string name="export_next_button" msgid="657930567137105172">"पुढे जा"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect सह सुरुवात करा"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect हे तुमचा आरोग्य आणि फिटनेसशी संबंधित डेटा स्टोअर करते व तुम्हाला तुमच्या फोनवरील वेगवेगळी अ‍ॅप्स सिंक करण्याचा सोपा मार्ग देते"</string>
     <string name="share_data" msgid="3481932156368883946">"तुमच्या अ‍ॅप्ससह डेटा शेअर करा"</string>
@@ -771,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"कनेक्ट केलेल्या ॲप्समधून हे ॲप व्यायामाचे मार्ग कसे अ‍ॅक्सेस करते ते नियंत्रित करा"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"प्रत्येक वेळी विचारा"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"अनुमती देऊ नका"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"दोन्ही डेटा प्रकार सुरू करायचे आहेत का?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"दोन्ही डेटा प्रकार बंद करायचे आहेत का?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला व्यायाम मार्ग सुरू करण्यासाठी रीड अ‍ॅक्सेस हवा आहे"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला व्यायाम मार्ग सुरू करण्यासाठी व्यायामाचा अ‍ॅक्सेस हवा आहे"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"होय"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"नाही"</string>
     <string name="back_button" msgid="780519527385993407">"मागे जा"</string>
     <string name="loading" msgid="2526615755685950317">"लोड करत आहे…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"इंटिग्रेशन प्रगतीपथावर आहे"</string>

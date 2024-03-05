@@ -759,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"ควบคุมวิธีที่แอปนี้เข้าถึงเส้นทางออกกำลังกายจากแอปที่เชื่อมต่อ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ถามทุกครั้ง"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"ไม่อนุญาต"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"เปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงและอ่านข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ใช่"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ไม่"</string>
     <string name="back_button" msgid="780519527385993407">"กลับ"</string>
     <string name="loading" msgid="2526615755685950317">"กำลังโหลด…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"การผสานรวมอยู่ระหว่างดำเนินการ"</string>

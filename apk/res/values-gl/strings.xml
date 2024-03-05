@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Por que Saúde conectada quita permisos de aplicacións?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Se se suspende unha aplicación ou desaparece de Google Play, Saúde conectada quítalle os permisos de xeito automático.\n\nAo facelo, a aplicación xa non poderá acceder aos datos almacenados en Saúde conectada. Se esta aplicación escribiu datos anteriormente, aparecerá na lista de aplicacións inactivas."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendido"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"Gardar datos"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Garda os datos e permisos de Saúde conectada para poder importalos se cambias de teléfono. Podes escoller onde almacenalos antes de gardalos."</string>
+    <string name="setup_button" msgid="1407942598553043961">"Configurar"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Configuración"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Gardar automaticamente"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Escoller a frecuencia"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Escolle se queres gardar os datos unha vez ou se prefires que se garden automaticamente cada certo tempo."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mensualmente"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comeza a usar Saúde conectada"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Saúde conectada almacena os teus datos de saúde e actividade física, e permíteche sincronizar facilmente as distintas aplicacións do teléfono"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparte datos coas túas aplicacións"</string>
@@ -771,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Controla o acceso desta aplicación ás rutas de exercicio das aplicacións conectadas"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Preguntar sempre"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Non permitir"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Queres activar os dous tipos de datos?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Queres desactivar os dous tipos de datos?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> require permiso de lectura dos exercicios para que se activen as rutas de exercicio"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> require permiso de acceso aos exercicios para que se activen as rutas de exercicio"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Si"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Non"</string>
     <string name="back_button" msgid="780519527385993407">"Atrás"</string>
     <string name="loading" msgid="2526615755685950317">"Cargando…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integración en proceso"</string>

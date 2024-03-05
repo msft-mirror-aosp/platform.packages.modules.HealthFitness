@@ -759,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"ຄວບຄຸມວິທີທີ່ແອັບນີ້ເຂົ້າເຖິງເສັ້ນທາງການອອກກຳລັງກາຍຈາກແອັບທີ່ເຊື່ອມຕໍ່"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ຖາມທຸກເທື່ອ"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"ບໍ່ອະນຸຍາດ"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ເປີດການນຳໃຊ້ທັງສອງປະເພດຂໍ້ມູນບໍ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ປິດການນຳໃຊ້ທັງສອງປະເພດຂໍ້ມູນບໍ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ຕ້ອງການສິດເຂົ້າເຖິງການອ່ານເພື່ອອອກກໍາລັງກາຍເພື່ອໃຫ້ເສັ້ນທາງອອກກໍາລັງກາຍຖືກເປີດການນຳໃຊ້"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ຕ້ອງມີສິດເຂົ້າເຖິງການອອກກໍາລັງກາຍເພື່ອໃຫ້ເສັ້ນທາງອອກກໍາລັງກາຍຖືກເປີດການນຳໃຊ້"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ແມ່ນ"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ບໍ່"</string>
     <string name="back_button" msgid="780519527385993407">"ກັບຄືນ"</string>
     <string name="loading" msgid="2526615755685950317">"ກຳລັງໂຫຼດ…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ກຳລັງດຳເນີນການເຊື່ອມໂຍງ"</string>

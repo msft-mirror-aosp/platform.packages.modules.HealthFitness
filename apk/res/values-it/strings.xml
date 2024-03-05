@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Perché Connessione Salute rimuove le autorizzazioni app"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Se un\'app viene sospesa o rimossa da Google Play, Connessione Salute rimuove automaticamente le relative autorizzazioni.\n\nCiò significa che l\'app non può più accedere ai dati archiviati in Connessione Salute. Se in precedenza aveva scritto dati, l\'app apparirà nell\'elenco di app non attive."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"Risparmia dati"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Salva i dati e le autorizzazioni di Connessione Salute per importarli se cambi smartphone. Puoi scegliere di archiviare questi dati prima di salvare."</string>
+    <string name="setup_button" msgid="1407942598553043961">"Configura"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Impostazioni"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Salvataggio automatico"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Scegli la frequenza"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Scegli se salvare i dati una volta o salvarli automaticamente a intervalli regolari."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Ogni giorno"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Ogni settimana"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Ogni mese"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Indietro"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Avanti"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Inizia a usare Connessione Salute"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Connessione Salute archivia i dati relativi alla salute e all\'attività fisica e ti consente di sincronizzare facilmente le varie app installate sul telefono"</string>
     <string name="share_data" msgid="3481932156368883946">"Condividi i dati con le tue app"</string>
@@ -771,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Controlla il modo in cui questa app accede ai percorsi per l\'esercizio fisico dalle app collegate"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Chiedi ogni volta"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Non consentire"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Abilitare entrambi i tipi di dati?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Disattivare entrambi i tipi di dati?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ha bisogno dell\'accesso di lettura agli allenamenti per abilitarne i percorsi"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> richiede l\'accesso agli allenamenti per abilitarne i percorsi"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Sì"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"No"</string>
     <string name="back_button" msgid="780519527385993407">"Indietro"</string>
     <string name="loading" msgid="2526615755685950317">"Caricamento in corso…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrazione in corso"</string>

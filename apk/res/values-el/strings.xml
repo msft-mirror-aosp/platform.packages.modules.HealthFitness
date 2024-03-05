@@ -305,30 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Γιατί το Health Connect καταργεί άδειες εφαρμογών"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Αν μια εφαρμογή τεθεί σε αναστολή ή καταργηθεί από το Google Play, το Health Connect καταργεί αυτόματα τις άδειές της.\n\nΑυτό σημαίνει ότι η εφαρμογή δεν μπορεί πλέον να αποκτήσει πρόσβαση σε δεδομένα που έχουν αποθηκευτεί στο Health Connect. Εάν αυτή η εφαρμογή έχει εγγράψει στο παρελθόν δεδομένα, θα εμφανίζεται στη λίστα ανενεργών εφαρμογών."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Το κατάλαβα"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_settings_screen_title" msgid="887671826359158339">"Αποθήκευση δεδομένων"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Αποθηκεύστε τα δεδομένα και τις άδειες του Health Connect για να μπορείτε να τα εισαγάγετε σε περίπτωση που κάνετε εναλλαγή σε νέο τηλέφωνο. Μπορείτε να επιλέξετε το σημείο στο οποίο θα αποθηκευτούν τα δεδομένα πριν τα αποθηκεύσετε."</string>
+    <string name="setup_button" msgid="1407942598553043961">"Ρύθμιση"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Ρυθμίσεις"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Αυτόματη αποθήκευση"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Επιλογή συχνότητας"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Επιλέξτε αν θέλετε να αποθηκεύσετε τα δεδομένα μία φορά ή αν θα αποθηκεύονται αυτόματα ανά τακτά χρονικά διαστήματα."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Ανά ημέρα"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Ανά εβδομάδα"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Ανά μήνα"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Πίσω"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Επόμενο"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Ξεκινήστε με το Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Το Health Connect αποθηκεύει τα δεδομένα υγείας και φυσικής κατάστασής σας, προσφέροντας έναν απλό τρόπο συγχρονισμού των διαφορετικών εφαρμογών στο τηλέφωνό σας"</string>
     <string name="share_data" msgid="3481932156368883946">"Μοιραστείτε δεδομένα με τις εφαρμογές σας"</string>
@@ -771,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Καθορισμός του τρόπου με τον οποίο αυτή η εφαρμογή έχει πρόσβαση σε διαδρομές άσκησης από συνδεδεμένες εφαρμογές"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Ερώτηση κάθε φορά"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Να μην επιτρέπεται"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Ενεργοποίηση και των δύο τύπων δεδομένων;"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Απενεργοποίηση και των δύο τύπων δεδομένων;"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> απαιτεί πρόσβαση ανάγνωσης για άσκηση προκειμένου να ενεργοποιηθούν οι διαδρομές άσκησης"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> απαιτεί πρόσβαση σε ασκήσεις προκειμένου να ενεργοποιηθούν οι διαδρομές άσκησης"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ναι"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Όχι"</string>
     <string name="back_button" msgid="780519527385993407">"Πίσω"</string>
     <string name="loading" msgid="2526615755685950317">"Φόρτωση…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Η ενσωμάτωση είναι σε εξέλιξη"</string>
@@ -802,7 +784,7 @@
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Απαιτείται περισσότερος χρόνος"</string>
     <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας προκειμένου να συνεχιστεί η ενσωμάτωση.\n\nΑπελευθερώσετε χώρο στο τηλέφωνό σας και δοκιμάστε ξανά."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Δοκιμάστε ξανά"</string>
-    <string name="free_up_space_button" msgid="4141013808635654695">"Ελευθερώστε χώρο"</string>
+    <string name="free_up_space_button" msgid="4141013808635654695">"Αποδεσμεύστε χώρο"</string>
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Απαιτείται περισσότερος χρόνος"</string>
     <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας για να συνεχίσει την ενσωμάτωση."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Η ενσωμάτωση τέθηκε σε παύση"</string>
@@ -839,7 +821,7 @@
     <string name="migration_complete_notification_title" msgid="4988631739109332404">"Η ενσωμάτωση του Health Connect ολοκληρώθηκε"</string>
     <string name="migration_complete_notification_action" msgid="5350322865206331186">"Άνοιγμα"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Τι νέο υπάρχει"</string>
-    <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Μπορείτε πλέον να αποκτήσετε πρόσβαση στο Health Connect απευθείας από τις ρυθμίσεις σας. Απεγκαταστήστε την εφαρμογή Health Connect ανά πάσα στιγμή για να ελευθερώσετε αποθηκευτικό χώρο."</string>
+    <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Μπορείτε πλέον να αποκτήσετε πρόσβαση στο Health Connect απευθείας από τις ρυθμίσεις σας. Απεγκαταστήστε την εφαρμογή Health Connect ανά πάσα στιγμή για να αποδεσμεύσετε αποθηκευτικό χώρο."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Το κατάλαβα"</string>
     <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Επαναφορά σε εξέλιξη"</string>
     <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Το Health Connect επαναφέρει δεδομένα και άδειες. Μπορεί να χρειαστεί λίγη ώρα για την ολοκλήρωση της διαδικασίας."</string>

@@ -759,18 +759,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Kontrolin kung paano ina-access ng app na ito ang mga ruta ng pag-eehersisyo mula sa mga nakakonektang app"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Tanungin palagi"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Huwag payagan"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"I-enable ang parehong uri ng data?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"I-disable ang parehong uri ng data?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa pag-read sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Oo"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Hindi"</string>
     <string name="back_button" msgid="780519527385993407">"Bumalik"</string>
     <string name="loading" msgid="2526615755685950317">"Naglo-load…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Isinasagawa ang pag-integrate"</string>
