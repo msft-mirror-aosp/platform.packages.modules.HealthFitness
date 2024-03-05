@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"मागील २४ तासांमध्ये अ‍ॅक्सेस केले होते"</string>
     <string name="app_access_title" msgid="7137018424885371763">"अ‍ॅप अ‍ॅक्सेस"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"तुमच्याकडे सध्या कोणतीही कंपॅटिबल अ‍ॅप्स इंस्टॉल केलेली नाहीत"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"अतिरिक्त अ‍ॅक्सेस"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"काढून टाकलेल्या अ‍ॅप परवानग्या"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ने <xliff:g id="APP_DATA">%s</xliff:g> साठी परवानग्या काढून टाकल्या"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ने <xliff:g id="APP_DATA_0">%1$s</xliff:g> आणि <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> साठी परवानग्या काढून टाकल्या"</string>
@@ -304,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect हे अ‍ॅप परवानग्या का काढून टाकते"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"एखादे अ‍ॅप Google Play वरून निलंबित केल्यास किंवा काढून टाकल्यास, Health Connect हे आपोआप त्याच्या परवानग्या काढून टाकते.\n\nयाचा अर्थ असा, की अ‍ॅप यापुढे Health Connect मध्ये स्टोअर केलेला डेटा अ‍ॅक्सेस करू शकत नाही. या अ‍ॅपने याआधी डेटा राइट केलेला असल्यास, ते इनॅक्टिव्ह अ‍ॅप्सच्या सूचीमध्ये दिसते."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"समजले"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect सह सुरुवात करा"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect हे तुमचा आरोग्य आणि फिटनेसशी संबंधित डेटा स्टोअर करते व तुम्हाला तुमच्या फोनवरील वेगवेगळी अ‍ॅप्स सिंक करण्याचा सोपा मार्ग देते"</string>
     <string name="share_data" msgid="3481932156368883946">"तुमच्या अ‍ॅप्ससह डेटा शेअर करा"</string>
@@ -741,6 +766,23 @@
     <string name="request_route_allow" msgid="4427372851821847274">"या मार्गाला अनुमती द्या"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"सर्व मार्गांना अनुमती द्या"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"अनुमती देऊ नका"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"नेहमी अनुमती द्या"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"व्यायामाचा मार्ग शेअर करणे"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"कनेक्ट केलेल्या ॲप्समधून हे ॲप व्यायामाचे मार्ग कसे अ‍ॅक्सेस करते ते नियंत्रित करा"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"प्रत्येक वेळी विचारा"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"अनुमती देऊ नका"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"मागे जा"</string>
     <string name="loading" msgid="2526615755685950317">"लोड करत आहे…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"इंटिग्रेशन प्रगतीपथावर आहे"</string>
