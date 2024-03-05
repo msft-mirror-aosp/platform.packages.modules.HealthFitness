@@ -75,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Канча убакыт машыкканыңыз, кандай көнүгүүлөрдү жасаганыңыз, канча жолу айланып жана кайталаганыңыз, канча ирет жасаганыңыз же канча жолу чабак урганыңыз тууралуу маалымат"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Уйку тууралуу маалымат, анын фазалары сыяктуу"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Бардык киргизилген нерселерди көрүү"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"өзгөртүү"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Бул нерселерди өчүрүү"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"ден соолукка байланыштуу нерселерди көрүү мүмкүнчүлүгү"</string>
@@ -95,7 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"машыгуу маршруту"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Машыгуу маршрутун жазуу"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Машыгуу маршрутун окуу"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Бардык машыгуу маршруттарын окуу"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Машыгуу маршруттарын окуу"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Машыгуу пландары"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"машыгуу пландары"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Машыгуу пландарын окуу"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Машыгуу пландарын жазуу"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Аралык"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"аралык"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Аралыкты окуу"</string>
@@ -240,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"тынч абалдагы жүрөктүн согушу"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Тынч абалдагы жүрөктүн согушун окуу"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Тынч абалдагы жүрөктүн согушун жазуу"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Теринин температурасы"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"теринин температурасы"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Теринин температурасын окуу"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Теринин температурасын жазуу"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” колдонмосуна окууга уруксат берүү"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” колдонмосуна жазууга уруксат берүү"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Жок"</string>
@@ -263,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Health Connect кызматында сакталган нерселер кайсы колдонмолорго жеткиликтүү болорун тандаңыз. Колдонмо кайсы нерселерди окуп же жаза ала турганын билүү үчүн аны басып коюңуз."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Уруксат берилгендер"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Тыюу салынгандар"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Жаңыртуу керек"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Параметрлер жана жардам"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Бардык колдонмолорго тыюу салуу"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Окууга уруксат берилген"</string>
@@ -285,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Акыркы 24 сааттын ичинде колдонулган"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Колдонмонун мүмкүнчүлүгү"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Учурда орнотулган шайкеш колдонмолоруңуз жок"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Кошумча мүмкүнчүлүк алуу"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Колдонмолордун өчүрүлгөн уруксаттары"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g> колдонмосунун уруксаттарын өчүрдү"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> жана <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> колдонмолорунун уруксаттарын өчүрдү"</string>
@@ -294,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect колдонмолордун уруксаттарын эмне үчүн өчүрөт"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Эгер колдонмо Google Play\'де убактылуу токтотулуп же өчүрүлсө, Health Connect анын уруксаттарын автоматтык түрдө өчүрүп коёт.\n\nБул колдонмо Health Connect\'те сакталган маалыматыңызга мындан ары мүмкүнчүлүк ала албайт дегенди билдирет. Бул колдонмонун мурда жазылган маалыматы болсо, ал жигерсиз колдонмолордун тизмесинде көрүнөт."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Түшүндүм"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect\'ти колдонуп баштоо"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect кызматы ден-соолугуңузга жана кыймылдуулугуңузга байланыштуу нерселерди сактап, аларды телефондогу башка колдонмолор менен шайкештештирет."</string>
     <string name="share_data" msgid="3481932156368883946">"Колдонмолор менен ар кандай нерселерди бөлүшүү"</string>
@@ -347,8 +382,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Health Connect кызматындагы нерселер өчүүдө"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Health Connect кызматындагы нерселер өчүүдө"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Өчүүдө"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Киргизилген нерселерди өчүрүү"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Киргизилген нерселерди өчүрүү"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Киргизилген нерселерди өчүрүү: <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Киргизилген нерселерди өчүрүү: <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Жалпысынан: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 Вт}other{# Вт}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 ватт}other{# ватт}}"</string>
@@ -659,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 пайыз}other{# пайыз}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Жокко чыгаруу"</string>
     <string name="units_title" msgid="6504086463237869339">"Бирдик"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Бирдиктерди коюңуз"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Аралык"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Боюңуз"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Салмагыңыз"</string>
@@ -710,6 +744,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Төмөн жылдыруу"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Башына жылдыруу"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Аягына жылдыруу"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"<xliff:g id="SELECTED_APP">%s</xliff:g> колдонмосун маанилүүлөр тизмесинде түзөтүү үчүн сүйрөө баскычы"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"<xliff:g id="SELECTED_APP">%s</xliff:g> колдонмосун маанилүүлөр тизмесинен өчүрүү баскычы"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Иретин өзгөртүү үчүн эки жолу басып, сүйрөңүз"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"фитнес, саламаттык"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"уруксаттар"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, ден соолукка байланыштуу нерселер, ден соолук категориялары, маалыматка мүмкүнчүлүк алуу, кыймылдуулук, дене-бой өлчөмдөрү, циклге көз салуу, тамактануу, уйку, организмдин негизги көрсөткүчтөрү"</string>
@@ -726,6 +763,26 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Кайда машыгып жүргөнүңүздү көрүүгө уруксат берген колдонмолор гана"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Кирүү мүмкүнчүлүгүн кантип тескей алам?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Колдонмолордун кайда машыгын жүргөнүңүздү көрүү мүмкүнчүлүгүн Health Connect параметрлеринен тескей аласыз"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Бул маршрутка уруксат берүү"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Бардык маршрутка уруксат берүү"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Тыюу салуу"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Ар дайым уруксат берүү"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Машыгуу маршрутун бөлүшүү"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Бул колдонмо туташып турган башка колдонмолордон машыгуу маршрутун кантип аларын көзөмөлдөө"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Ар дайым суралсын"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Тыюу салуу"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"Артка"</string>
     <string name="loading" msgid="2526615755685950317">"Жүктөлүүдө…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Интеграция аткарылууда"</string>
@@ -761,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Health Connect интеграциясын улантыңыз"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Ал жердеги нерселериңиз жоголуп кетпеши үчүн <xliff:g id="TIME_NEEDED">%1$s</xliff:g> ичинде бүтүрүңүз"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Колдонмону жаңыртуу керек"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Health Connect менен иштөөнү улантуу үчүн <xliff:g id="APP_NAME">%1$s</xliff:g> колдонмосун жаңыртуу керек"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Health Connect менен иштөөнү улантуу үчүн айрым колдонмолорду жаңыртуу керек"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Health Connect менен шайкештирүүнү улантуу үчүн <xliff:g id="APP_NAME">%1$s</xliff:g> колдонмосун жаңыртуу керек"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Health Connect менен шайкештирүүнү улантуу үчүн айрым колдонмолорду жаңыртуу керек"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Жаңыртууларды карап көрүү"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Кеңири маалымат"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect интеграциясы"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect Android системаңыз менен интеграцияланууга даяр. Эгер <xliff:g id="APP_NAME">%1$s</xliff:g> колдонмосуна азыр уруксат берсеңиз,айрым функциялар интеграция аягына чыкмайынча иштебей калышы мүмкүн."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect Android тутумуңузга кошулууга даяр. Эгер колдонмолорго азыр мүмкүнчүлүк берсеңиз, айрым функциялар кошулуу процесси аяктамайынча иштебеши мүмкүн."</string>
@@ -783,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Эмне жаңылык"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Эми Health Connect\'ке түздөн-түз параметрлериңизден кире аласыз. Сактагычтан орун бошотуу үчүн Health Connect колдонмосун каалаган убакта чыгарып салсаңыз болот."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Түшүндүм"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Калыбына келтирилүүдө"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect маалыматты жана уруксаттарды калыбына келтирип жатат. Буга бир аз убакыт кетиши мүмкүн."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connect калыбына келтирүүдө"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Түшүндүм"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Жаңыртуу талап кылынат"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Маалыматты калыбына келтирүүдөн мурда телефондун системасын жаңыртыңыз."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Азыр жаңыртуу"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Жалпы көрсөткүчтөр"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Колдонмолор"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Жалпы көрсөткүчтөр кандайча өзгөрө турганын көрүү үчүн тизмеге колдонмолорду кошуңуз. Бул тизмеден колдонмону өчүрсөңүз, ал маалымат кошо албай калат, бирок жаза берет."</string>

@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage;
 
+import static android.health.connect.HealthPermissions.WRITE_EXERCISE_ROUTE;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createExerciseSessionRecordWithRoute;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -50,6 +52,7 @@ import org.junit.runner.RunWith;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -60,7 +63,7 @@ public class TransactionManagerExerciseRoutesTest {
     private static final String FOO_PACKAGE_NAME = "package.foo";
     private static final String BAR_PACKAGE_NAME = "package.bar";
     private static final String UNKNOWN_PACKAGE_NAME = "package.unknown";
-    private static final Map<String, Boolean> NO_EXTRA_PERMS = Map.of();
+    private static final Set<String> WRITE_EXERCISE_ROUTE_EXTRA_PERM = Set.of(WRITE_EXERCISE_ROUTE);
     @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
 
     private TransactionTestUtils mTransactionTestUtils;
@@ -103,8 +106,9 @@ public class TransactionManagerExerciseRoutesTest {
                         TEST_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, allUuids),
-                        /* startDateAccess= */ 0,
-                        NO_EXTRA_PERMS);
+                        /* startDateAccessMillis= */ 0,
+                        WRITE_EXERCISE_ROUTE_EXTRA_PERM,
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -134,8 +138,9 @@ public class TransactionManagerExerciseRoutesTest {
                         UNKNOWN_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
-                        /* startDateAccess= */ 0,
-                        NO_EXTRA_PERMS);
+                        /* startDateAccessMillis= */ 0,
+                        WRITE_EXERCISE_ROUTE_EXTRA_PERM,
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -158,8 +163,9 @@ public class TransactionManagerExerciseRoutesTest {
                         null,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
-                        /* startDateAccess= */ 0,
-                        NO_EXTRA_PERMS);
+                        /* startDateAccessMillis= */ 0,
+                        WRITE_EXERCISE_ROUTE_EXTRA_PERM,
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -182,8 +188,9 @@ public class TransactionManagerExerciseRoutesTest {
                         UNKNOWN_PACKAGE_NAME,
                         ImmutableMap.of(
                                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, List.of(uuid)),
-                        /* startDateAccess= */ 0,
-                        Map.of(HealthPermissions.READ_EXERCISE_ROUTE, true));
+                        /* startDateAccessMillis= */ 0,
+                        Set.of(HealthPermissions.READ_EXERCISE_ROUTE),
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords = mTransactionManager.readRecordsByIds(request);
 
@@ -218,7 +225,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 .toReadRecordsRequestParcel(),
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
-                        NO_EXTRA_PERMS);
+                        WRITE_EXERCISE_ROUTE_EXTRA_PERM,
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;
@@ -256,7 +264,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 .toReadRecordsRequestParcel(),
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
-                        NO_EXTRA_PERMS);
+                        WRITE_EXERCISE_ROUTE_EXTRA_PERM,
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;
@@ -286,7 +295,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 .toReadRecordsRequestParcel(),
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
-                        NO_EXTRA_PERMS);
+                        WRITE_EXERCISE_ROUTE_EXTRA_PERM,
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;
@@ -316,7 +326,8 @@ public class TransactionManagerExerciseRoutesTest {
                                 .toReadRecordsRequestParcel(),
                         /* startDateAccessMillis= */ 0,
                         /* enforceSelfRead= */ false,
-                        Map.of(HealthPermissions.READ_EXERCISE_ROUTE, true));
+                        Set.of(HealthPermissions.READ_EXERCISE_ROUTE),
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> returnedRecords =
                 mTransactionManager.readRecordsAndPageToken(request).first;

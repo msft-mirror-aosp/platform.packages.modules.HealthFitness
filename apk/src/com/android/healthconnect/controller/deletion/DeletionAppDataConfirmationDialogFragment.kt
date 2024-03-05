@@ -71,9 +71,8 @@ class DeletionAppDataConfirmationDialogFragment : Hilt_DeletionAppDataConfirmati
         }
 
         val alertDialogBuilder =
-            AlertDialogBuilder(this)
-                .setLogName(
-                    DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
+            AlertDialogBuilder(
+                    this, DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
                 .setView(view)
                 .setPositiveButton(
                     R.string.confirming_question_delete_button,

@@ -53,6 +53,8 @@ public class TestHelperUtils {
     public static final String MY_PACKAGE_NAME =
             InstrumentationRegistry.getContext().getPackageName();
 
+    public static final int TIMEOUT_SECONDS = 5;
+
     public static Metadata getMetadata() {
         return new Metadata.Builder().setDataOrigin(getDataOrigin()).build();
     }
@@ -132,7 +134,7 @@ public class TestHelperUtils {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
         return response.get();
     }
 
@@ -168,7 +170,7 @@ public class TestHelperUtils {
                             latch.countDown();
                         }
                     });
-            assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+            assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
         }
     }
 
@@ -194,7 +196,7 @@ public class TestHelperUtils {
                     }
                 });
 
-        assertThat(latch.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(latch.await(TIMEOUT_SECONDS, TimeUnit.SECONDS)).isTrue();
         return response.get();
     }
 

@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_homeFragment_to_manageDataFragment"
             app:destination="@+id/manageDataFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_systemUpdateActivity"
+            app:destination="@id/systemUpdateActivity"/>
     </fragment>
 
     <activity
@@ -61,6 +64,19 @@
     <activity
         android:id="@+id/data_activity"
         app:action="android.health.connect.action.MANAGE_HEALTH_DATA" />
+
+    <activity
+        android:id="@+id/exportSetupActivity"
+        android:name="com.android.healthconnect.controller.export.ExportSetupActivity"/>
+
+    <fragment
+        android:id="@+id/exportSettingsFragment"
+        android:name="com.android.healthconnect.controller.export.ExportSettingsFragment"
+        android:label="@string/export_settings_screen_title">
+        <action
+            android:id="@+id/action_exportSettingsFragment_to_exportSetupActivity"
+            app:destination="@id/exportSetupActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/connectedAppsFragment"
@@ -95,6 +111,9 @@
         <action
             android:id="@+id/action_connectedApp_to_appData"
             app:destination="@id/appDataFragment" />
+        <action
+            android:id="@+id/action_connectedAppFragment_to_additionalAccessFragment"
+            app:destination="@id/additionalAccessFragment" />
     </fragment>
 
     <fragment
@@ -159,6 +178,9 @@
         <action
             android:id="@+id/action_manageData_to_setUnits"
             app:destination="@+id/setUnitsFragment"/>
+        <action
+            android:id="@+id/action_manageData_to_saveData"
+            app:destination="@+id/exportSettingsFragment" />
     </fragment>
 
     <fragment
@@ -191,6 +213,15 @@
         android:name="com.android.healthconnect.controller.dataentries.units.UnitsFragment"
         android:label="@string/units_title"/>
 
+    <fragment
+        android:id="@+id/additionalAccessFragment"
+        android:name="com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessFragment"
+        android:label="@string/additional_access_label" >
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
+    </fragment>
+
     <activity
         android:id="@+id/playstore_activity"
         android:label="@string/playstore_app_title"
@@ -204,5 +235,10 @@
         android:label="@string/playstore_app_title"
         app:data="@string/playstore_manage_apps_url"
         app:targetPackage="@string/playstore_package_name" />
+
+    <activity
+        android:id="@+id/systemUpdateActivity"
+        app:action="android.settings.SYSTEM_UPDATE_SETTINGS"
+        android:label="systemUpdateActivity"/>
 
 </navigation>

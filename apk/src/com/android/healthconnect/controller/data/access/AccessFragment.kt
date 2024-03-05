@@ -15,10 +15,12 @@
  */
 package com.android.healthconnect.controller.data.access
 
+import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
@@ -29,6 +31,7 @@ import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
 import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -195,11 +198,11 @@ class AccessFragment : Hilt_AccessFragment() {
         return HealthAppPreference(requireContext(), appMetadata).also {
             it.logName = DataAccessElement.DATA_ACCESS_APP_BUTTON
             it.setOnPreferenceClickListener {
-                // TODO(b/291249677): Enable in an upcoming CL.
-                //                findNavController()
-                //                    .navigate(
-                //                        R.id.action_entriesAndAccessFragment_to_appAccess,
-                //                        bundleOf(EXTRA_PACKAGE_NAME to appMetadata.packageName))
+                findNavController()
+                        .navigate(
+                                R.id.action_entriesAndAccessFragment_to_appAccess,
+                                bundleOf(EXTRA_PACKAGE_NAME to appMetadata.packageName,
+                                        EXTRA_APP_NAME to appMetadata.appName))
                 true
             }
         }

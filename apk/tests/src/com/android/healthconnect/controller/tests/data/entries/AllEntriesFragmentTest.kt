@@ -16,9 +16,12 @@
 package com.android.healthconnect.controller.tests.data.entries
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -87,7 +90,12 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_showsDateNavigationPreference() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(emptyList())))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         onView(withId(R.id.date_picker_spinner)).check(matches(isDisplayed()))
     }
@@ -96,7 +104,12 @@ class AllEntriesFragmentTest {
     fun allEntriesInit_noData_showsNoData() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Empty))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         onView(withId(R.id.no_data_view)).check(matches(isDisplayed()))
     }
@@ -105,7 +118,12 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_error_showsErrorView() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(LoadingFailed))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
     }
@@ -114,7 +132,12 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_loading_showsLoading() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(Loading))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         onView(withId(R.id.loading)).check(matches(isDisplayed()))
     }
@@ -123,7 +146,12 @@ class AllEntriesFragmentTest {
     fun appEntriesInit_withData_showsListOfEntries() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
         onView(withText("12 steps")).check(matches(isDisplayed()))
@@ -135,11 +163,44 @@ class AllEntriesFragmentTest {
     fun appEntries_withData_notShowingDeleteAction() {
         Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
 
-        launchFragment<AllEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
 
         onView(withIndex(withId(R.id.item_data_entry_delete), 0))
-            .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)))
     }
+
+    @Test
+    fun appEntries_withData_onOrientationChange() {
+        Mockito.`when`(viewModel.entries).thenReturn(MutableLiveData(With(FORMATTED_STEPS_LIST)))
+
+        val scenario =
+                launchFragment<AllEntriesFragment>(
+                        bundleOf(PERMISSION_TYPE_KEY to STEPS))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        onView(withText("7:06 - 7:06")).check(matches(isDisplayed()))
+        onView(withText("12 steps")).check(matches(isDisplayed()))
+        onView(withText("8:06 - 8:06")).check(matches(isDisplayed()))
+        onView(withText("15 steps")).check(matches(isDisplayed()))
+
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+
+        onIdle()
+        onView(withText("7:06 - 7:06")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("12 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("8:06 - 8:06")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("15 steps")).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+
 }
 
 private val FORMATTED_STEPS_LIST =

@@ -693,6 +693,10 @@ public final class TransactionManager {
                             request.getContentValues(),
                             SQLiteDatabase.CONFLICT_FAIL);
             insertChildTableRequest(request, rowId, db);
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
+
             return rowId;
         } catch (SQLiteConstraintException e) {
             try (Cursor cursor = db.rawQuery(request.getReadRequest().getReadCommand(), null)) {
@@ -743,10 +747,12 @@ public final class TransactionManager {
     private void insertChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
         for (UpsertTableRequest childTableRequest : request.getChildTableRequests()) {
-            db.insertOrThrow(
-                    childTableRequest.withParentKey(rowId).getTable(),
-                    null,
-                    childTableRequest.getContentValues());
+            long childRowId =
+                    db.insertOrThrow(
+                            childTableRequest.withParentKey(rowId).getTable(),
+                            null,
+                            childTableRequest.getContentValues());
+            insertChildTableRequest(childTableRequest, childRowId, db);
         }
     }
 

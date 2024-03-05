@@ -25,6 +25,8 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.shared.Constants.INTEGRATION_PAUSED_SEEN_KEY
+import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.MigrationElement
@@ -40,7 +42,6 @@ class MigrationPausedFragment : Hilt_MigrationPausedFragment() {
 
     companion object {
         private const val TAG = "MigrationPausedFragment"
-        const val INTEGRATION_PAUSED_SEEN_KEY = "integration_paused_seen"
     }
 
     override fun onCreateView(
@@ -71,8 +72,7 @@ class MigrationPausedFragment : Hilt_MigrationPausedFragment() {
         cancelButton.setOnClickListener {
             logger.logInteraction(MigrationElement.MIGRATION_UPDATE_NEEDED_CANCEL_BUTTON)
             val sharedPreferences =
-                requireActivity()
-                    .getSharedPreferences("USER_ACTIVITY_TRACKER", Context.MODE_PRIVATE)
+                requireActivity().getSharedPreferences(USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
             val integrationPausedSeen =
                 sharedPreferences.getBoolean(INTEGRATION_PAUSED_SEEN_KEY, false)
             if (!integrationPausedSeen) {

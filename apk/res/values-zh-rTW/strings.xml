@@ -62,7 +62,7 @@
     <string name="manage_data_section" msgid="5859629270946511903">"管理資料"</string>
     <string name="export_data_button" msgid="7783329820434117744">"匯出資料"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"刪除所有資料"</string>
-    <string name="no_categories" msgid="2636778482437506241">"你在「健康資料同步」中沒有任何資料"</string>
+    <string name="no_categories" msgid="2636778482437506241">"你在「健康資料同步」平台沒有任何資料"</string>
     <string name="permission_types_title" msgid="7698058200557389436">"你的資料"</string>
     <string name="app_priority_button" msgid="3126133977893705098">"應用程式優先順序"</string>
     <string name="delete_category_data_button" msgid="2324773398768267043">"刪除<xliff:g id="CATEGORY">%s</xliff:g>資料"</string>
@@ -75,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"這類資料包括活動時間、運動類型、圈數、重複次數、時段或泳姿等資訊"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"這類資料包括睡眠階段和睡眠時段"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"查看所有資料"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"變更"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"刪除這類資料"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"健康資料同步"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"存取你的健康資料"</string>
@@ -95,7 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"運動路線"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"寫入運動路線"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"讀取運動路線"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"讀取所有運動路線"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"讀取運動路線"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"訓練計畫"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"訓練計畫"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"讀取訓練計畫"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"寫入訓練計畫"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"距離"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"距離"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"讀取距離資料"</string>
@@ -240,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"靜止心率"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"讀取靜止心率資料"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"寫入靜止心率資料"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"皮膚溫度"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"皮膚溫度"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"讀取皮膚溫度"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"寫入皮膚溫度"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」讀取"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」寫入"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"取消"</string>
@@ -263,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"控制哪些應用程式可以存取「健康資料同步」中儲存的資料。輕觸應用程式即可查看該應用程式可讀取或寫入的資料。"</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"已允許存取"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"不允許存取"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"需要更新"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"設定與說明"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"移除所有應用程式的存取權"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"允許讀取"</string>
@@ -285,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次存取時間：過去 24 小時內"</string>
     <string name="app_access_title" msgid="7137018424885371763">"應用程式存取權"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"你目前未安裝任何相容的應用程式"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"額外存取權"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"應用程式權限已移除"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"「健康資料同步」已移除「<xliff:g id="APP_DATA">%s</xliff:g>」的權限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"「健康資料同步」已移除「<xliff:g id="APP_DATA_0">%1$s</xliff:g>」和「<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>」的權限"</string>
@@ -294,6 +305,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"「健康資料同步」移除應用程式權限的原因"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"如果應用程式在 Google Play 中遭到停權或移除，「健康資料同步」會自動移除該應用程式的權限。\n\n這表示該應用程式無法再存取「健康資料同步」中儲存的資料。如果應用程式曾寫入資料，就會列在已停用應用程式的清單中。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"我知道了"</string>
+    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <skip />
+    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <skip />
+    <!-- no translation found for setup_button (1407942598553043961) -->
+    <skip />
+    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <skip />
+    <!-- no translation found for auto_save (7146497593975616076) -->
+    <skip />
+    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <skip />
+    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <skip />
+    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <skip />
+    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <skip />
+    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <skip />
+    <!-- no translation found for export_next_button (657930567137105172) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"開始使用「健康資料同步」"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"「健康資料同步」會儲存健康與健身資料，方便你在手機上同步不同應用程式的資料"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>
@@ -347,8 +382,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"正在刪除「健康資料同步」資料"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"正在刪除「健康資料同步」資料"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"資料刪除"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"刪除資料項目"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"刪除項目"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"刪除「<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>」資料項目"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"刪除「<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>」項目"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"總計：<xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 瓦特}other{# 瓦特}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 瓦特}other{# 瓦特}}"</string>
@@ -659,7 +694,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{百分之 1}other{百分之 #}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"取消"</string>
     <string name="units_title" msgid="6504086463237869339">"單位"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"設定資料單位"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"距離"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"身高"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"體重"</string>
@@ -710,6 +744,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"向下移"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"移至頂端"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"移至底部"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"這個按鈕可拖曳及調整「<xliff:g id="SELECTED_APP">%s</xliff:g>」在優先清單中的順序"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"點選這個按鈕可從優先清單移除「<xliff:g id="SELECTED_APP">%s</xliff:g>」"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"輕觸兩下並拖曳即可調整順序"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"健身, 健康"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"權限"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"健康資料同步, 健康資料, 健康類別, 資料存取, 活動, 身體測量資料, 經期追蹤, 營養, 睡眠, 生命徵象"</string>
@@ -726,6 +763,26 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"只有你允許的應用程式能存取運動路線"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"如何管理存取權？"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"你可以在「健康資料同步」設定中管理應用程式的運動路線存取權"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"允許存取這條路線"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"允許存取所有路線"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"不允許"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"一律允許"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"分享運動路線"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"控管這個應用程式如何存取連結應用程式中的運動路線資訊"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"每次都詢問"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"不允許"</string>
+    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
+    <skip />
+    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
+    <skip />
     <string name="back_button" msgid="780519527385993407">"返回"</string>
     <string name="loading" msgid="2526615755685950317">"載入中…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"整合中"</string>
@@ -761,9 +818,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"繼續整合「健康資料同步」"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"為了保留你的資料，請在 <xliff:g id="TIME_NEEDED">%1$s</xliff:g>內完成這項操作"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"應用程式需要更新"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」必須是最新版本，才能持續與「健康資料同步」搭配運作"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"部分應用程式必須是最新版本，才能持續與「健康資料同步」搭配運作"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」需要更新，才能繼續與「健康資料同步」保持同步"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"部分應用程式需要更新，才能繼續與「健康資料同步」保持同步"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"檢查更新"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"瞭解詳情"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"「健康資料同步」整合作業"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"「健康資料同步」已準備好與 Android 系統整合。如果你現在授予「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取權限，在整合作業完成前，部分功能可能會無法運作。"</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"「健康資料同步」已準備就緒，可以與 Android 系統整合。如果現在將權限授予應用程式，部分功能在整合完成前可能無法運作。"</string>
@@ -783,6 +841,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"新功能"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"你現在可以直接從設定頁面存取「健康資料同步」，也可以隨時解除安裝「健康資料同步」應用程式，釋出儲存空間。"</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"我知道了"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"還原作業進行中"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"「健康資料同步」正在還原資料和權限。這項作業需要一段時間才能完成。"</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"「健康資料同步」還原作業進行中"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"我知道了"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"需要更新"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"必須先更新手機系統，才能繼續還原資料。"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"立即更新"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"資料總數"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"應用程式來源"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"在清單中新增應用程式來源，即可查看資料總數的變化情形。從這份清單中移除某個應用程式後，相關資料就不會計入總數，但應用程式仍具有寫入權限。"</string>

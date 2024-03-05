@@ -58,6 +58,7 @@ import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -76,6 +77,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -115,17 +117,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 .toEpochMilli());
     }
 
+    /** Database migration. Introduces automatic local time generation. */
+    public abstract void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db);
+
     @RecordTypeIdentifier.RecordType
     public int getRecordIdentifier() {
         return mRecordIdentifier;
-    }
-
-    /**
-     * Called on DB update. Inheriting classes should implement this if they need to add new columns
-     * or tables.
-     */
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        // empty
     }
 
     /**
@@ -289,6 +286,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                     }
                                 })
                         .setChildTableRequests(getChildTableUpsertRequests((T) recordInternal))
+                        .setPostUpsertCommands(getPostUpsertCommands(recordInternal))
                         .setHelper(this)
                         .setExtraWritePermissionsStateMapping(extraWritePermissionToStateMap);
         Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
@@ -320,6 +318,22 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return Collections.emptyList();
     }
 
+    /**
+     * SQLite only permits FK constraints to be added at column creation time. This poses a problem
+     * however, as depending on the order (undefined) in which we ask record helpers to create their
+     * tables, the referenced column may not exist. The solution is to add columns with a FK in a
+     * separate step, after main table creation.
+     *
+     * <p>As a concrete example, the {@link
+     * android.health.connect.datatypes.PlannedExerciseSessionRecord} data type has references to
+     * exercise sessions, and thus necessitates a foreign key constraint to the ID column of the
+     * exercise session table.
+     */
+    @NonNull
+    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
+        return Collections.emptyList();
+    }
+
     private void populateWithTablesNames(
             CreateTableRequest childTableCreateRequest, List<String> childTables) {
         childTables.add(childTableCreateRequest.getTableName());
@@ -334,19 +348,27 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             ReadRecordsRequestParcel request,
             String callingPackageName,
             boolean enforceSelfRead,
-            long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            long startDateAccessMillis,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
                         getReadTableWhereClause(
-                                request, callingPackageName, enforceSelfRead, startDateAccess))
+                                request,
+                                callingPackageName,
+                                enforceSelfRead,
+                                startDateAccessMillis))
                 .setOrderBy(getOrderByClause(request))
                 .setLimit(getLimitSize(request))
                 .setRecordHelper(this)
                 .setExtraReadRequests(
                         getExtraDataReadRequests(
-                                request, callingPackageName, startDateAccess, extraPermsState));
+                                request,
+                                callingPackageName,
+                                startDateAccessMillis,
+                                grantedExtraReadPermissions,
+                                isInForeground));
     }
 
     /**
@@ -372,11 +394,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     /** Returns ReadTableRequest for {@code uuids} */
-    public ReadTableRequest getReadTableRequest(
+    public final ReadTableRequest getReadTableRequest(
             String packageName,
             List<UUID> uuids,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return new ReadTableRequest(getMainTableName())
                 .setJoinClause(getJoinForReadRequest())
                 .setWhereClause(
@@ -388,7 +411,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setRecordHelper(this)
                 .setExtraReadRequests(
                         getExtraDataReadRequests(
-                                packageName, uuids, startDateAccess, extraPermsState));
+                                packageName,
+                                uuids,
+                                startDateAccess,
+                                grantedExtraReadPermissions,
+                                isInForeground));
     }
 
     /**
@@ -399,19 +426,21 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             ReadRecordsRequestParcel request,
             String packageName,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return Collections.emptyList();
     }
 
     /**
-     * Returns list if ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
+     * Returns a list of ReadSingleTableRequest for {@code uuids} to populate extra data. Called in
      * change logs read requests.
      */
     List<ReadTableRequest> getExtraDataReadRequests(
             String packageName,
             List<UUID> uuids,
             long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         return Collections.emptyList();
     }
 
@@ -698,7 +727,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             long startDateAccessMillis) {
         AppInfoHelper appInfoHelper = AppInfoHelper.getInstance();
         long callingAppInfoId = appInfoHelper.getAppInfoId(callingPackageName);
-
         RecordIdFiltersParcel recordIdFiltersParcel = request.getRecordIdFiltersParcel();
         if (recordIdFiltersParcel == null) {
             List<Long> appInfoIds =
@@ -873,6 +901,13 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     /** Returns extra permissions required to write given record. */
     public List<String> getRequiredExtraWritePermissions(RecordInternal<?> recordInternal) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Returns any SQL commands that should be executed after the provided record has been upserted.
+     */
+    List<String> getPostUpsertCommands(RecordInternal<?> record) {
         return Collections.emptyList();
     }
 }

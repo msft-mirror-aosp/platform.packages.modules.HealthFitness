@@ -48,11 +48,13 @@ import com.android.server.healthconnect.storage.datatypehelpers.MenstruationPeri
 import com.android.server.healthconnect.storage.datatypehelpers.NutritionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.OvulationTestRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.OxygenSaturationRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PowerRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RespiratoryRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RestingHeartRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SexualActivityRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SleepSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SpeedRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsCadenceRecordHelper;
@@ -146,6 +148,9 @@ public final class RecordHelperProvider {
                 RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE,
                 new RestingHeartRateRecordHelper());
         recordIDToHelperMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE,
+                new SkinTemperatureRecordHelper());
+        recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_OXYGEN_SATURATION,
                 new OxygenSaturationRecordHelper());
         recordIDToHelperMap.put(RecordTypeIdentifier.RECORD_TYPE_WEIGHT, new WeightRecordHelper());
@@ -163,6 +168,9 @@ public final class RecordHelperProvider {
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
                 new ExerciseSessionRecordHelper());
+        recordIDToHelperMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                new PlannedExerciseSessionRecordHelper());
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, new SleepSessionRecordHelper());
 

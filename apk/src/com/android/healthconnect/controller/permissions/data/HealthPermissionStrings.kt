@@ -268,6 +268,12 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<HealthPermissionType, HealthPe
                 R.string.resting_heart_rate_lowercase_label,
                 R.string.resting_heart_rate_read_content_description,
                 R.string.resting_heart_rate_write_content_description))
+        .put(HealthPermissionType.SKIN_TEMPERATURE,
+             HealthPermissionStrings(
+                R.string.skin_temperature_uppercase_label,
+                R.string.skin_temperature_lowercase_label,
+                R.string.skin_temperature_read_content_description,
+                R.string.skin_temperature_write_content_description))
         .put(
             HealthPermissionType.EXERCISE_ROUTE,
             HealthPermissionStrings(
@@ -276,4 +282,12 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<HealthPermissionType, HealthPe
                 R.string.exercise_route_read_content_description,
                 R.string.exercise_route_write_content_description,
             ))
+            .put(
+                    HealthPermissionType.PLANNED_EXERCISE,
+                    HealthPermissionStrings(
+                            R.string.planned_exercise_uppercase_label,
+                            R.string.planned_exercise_lowercase_label,
+                            R.string.planned_exercise_read_content_description,
+                            R.string.planned_exercise_write_content_description,
+                    ))
         .buildOrThrow()

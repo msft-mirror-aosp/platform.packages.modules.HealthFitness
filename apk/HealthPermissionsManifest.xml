@@ -24,6 +24,11 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
+    <permission
+        android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
     <!-- Read permissions for activities -->
     <!-- Allows an application to read calories burnt.
          <p>Protection level: dangerous
@@ -53,8 +58,8 @@
         android:permissionGroup="android.permission-group.HEALTH" />
 
     <permission
-        android:name="android.permission.health.READ_EXERCISE_ROUTES_ALL"
-        android:label="@string/exercise_routes_all_read_content_description"
+        android:name="android.permission.health.READ_EXERCISE_ROUTES"
+        android:label="@string/exercise_routes_read_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
@@ -251,6 +256,18 @@
     <permission
         android:name="android.permission.health.READ_RESTING_HEART_RATE"
         android:label="@string/resting_heart_rate_read_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <permission
+        android:name="android.permission.health.READ_SKIN_TEMPERATURE"
+        android:label="@string/skin_temperature_read_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <permission
+        android:name="android.permission.health.READ_PLANNED_EXERCISE"
+        android:label="@string/skin_temperature_read_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
@@ -474,6 +491,18 @@
     <permission
         android:name="android.permission.health.WRITE_RESTING_HEART_RATE"
         android:label="@string/resting_heart_rate_write_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <permission
+        android:name="android.permission.health.WRITE_SKIN_TEMPERATURE"
+        android:label="@string/skin_temperature_write_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <permission
+        android:name="android.permission.health.WRITE_PLANNED_EXERCISE"
+        android:label="@string/skin_temperature_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 </manifest>

@@ -29,11 +29,14 @@ import android.Manifest;
 import android.content.Context;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,6 +60,11 @@ public class GrantTimeIntegrationTest {
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {
@@ -134,6 +142,19 @@ public class GrantTimeIntegrationTest {
         grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
         Instant grantTime2 = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
         assertThat(grantTime).isEqualTo(grantTime2);
+    }
+
+    @Test
+    public void testGrantHealthPermission_notAllPermissionsRevoked_returnsTheSameTime()
+            throws Exception {
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        Instant grantTime = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
+        grantHealthPermission(DEFAULT_APP_PACKAGE, DEFAULT_PERM_2);
+        Instant grantTime2 = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
+        assertThat(grantTime).isEqualTo(grantTime2);
+        revokePermissionWithDelay(DEFAULT_APP_PACKAGE, DEFAULT_PERM);
+        Instant grantTime3 = getHealthDataHistoricalAccessStartDate(DEFAULT_APP_PACKAGE);
+        assertThat(grantTime3).isEqualTo(grantTime);
     }
 
     @Test

@@ -43,12 +43,14 @@ import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.OvulationTestRecord;
 import android.health.connect.datatypes.OxygenSaturationRecord;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.RespiratoryRateRecord;
 import android.health.connect.datatypes.RestingHeartRateRecord;
 import android.health.connect.datatypes.SexualActivityRecord;
+import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
@@ -83,11 +85,13 @@ import android.health.connect.internal.datatypes.MenstruationPeriodRecordInterna
 import android.health.connect.internal.datatypes.NutritionRecordInternal;
 import android.health.connect.internal.datatypes.OvulationTestRecordInternal;
 import android.health.connect.internal.datatypes.OxygenSaturationRecordInternal;
+import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.PowerRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.RespiratoryRateRecordInternal;
 import android.health.connect.internal.datatypes.RestingHeartRateRecordInternal;
 import android.health.connect.internal.datatypes.SexualActivityRecordInternal;
+import android.health.connect.internal.datatypes.SkinTemperatureRecordInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.health.connect.internal.datatypes.SpeedRecordInternal;
 import android.health.connect.internal.datatypes.StepsCadenceRecordInternal;
@@ -211,7 +215,13 @@ public final class RecordMapper {
                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
                 ExerciseSessionRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                PlannedExerciseSessionRecordInternal.class);
+        mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, SleepSessionRecordInternal.class);
+        mRecordIdToInternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE,
+                SkinTemperatureRecordInternal.class);
 
         mRecordIdToExternalRecordClassMap = new ArrayMap<>(NUM_ENTRIES);
         mRecordIdToExternalRecordClassMap.put(
@@ -280,6 +290,8 @@ public final class RecordMapper {
                 RecordTypeIdentifier.RECORD_TYPE_SEXUAL_ACTIVITY, SexualActivityRecord.class);
         mRecordIdToExternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, SleepSessionRecord.class);
+        mRecordIdToExternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE, SkinTemperatureRecord.class);
 
         mRecordIdToExternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_RESPIRATORY_RATE, RespiratoryRateRecord.class);
@@ -302,6 +314,9 @@ public final class RecordMapper {
                 IntermenstrualBleedingRecord.class);
         mRecordIdToExternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION, ExerciseSessionRecord.class);
+        mRecordIdToExternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                PlannedExerciseSessionRecord.class);
 
         mExternalRecordClassToRecordIdMap =
                 new ArrayMap<>(mRecordIdToExternalRecordClassMap.size());

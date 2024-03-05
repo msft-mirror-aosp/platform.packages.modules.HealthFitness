@@ -28,6 +28,8 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord
 import android.health.connect.datatypes.units.Energy
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Power
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
@@ -137,15 +139,28 @@ fun verifySleepSessionListsEqual(actual: List<Record>, expected: List<SleepSessi
     }
 }
 
+// Enables or disables animations in a test
+fun toggleAnimation(isEnabled: Boolean) {
+    with(UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())) {
+        executeShellCommand(
+            "settings put global transition_animation_scale ${if (isEnabled) 1 else 0}")
+        executeShellCommand("settings put global window_animation_scale ${if (isEnabled) 1 else 0}")
+        executeShellCommand(
+            "settings put global animator_duration_scale ${if (isEnabled) 1 else 0}")
+    }
+}
+
 // region apps
 
 const val TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app"
 const val TEST_APP_PACKAGE_NAME_2 = "android.healthconnect.controller.test.app2"
 const val TEST_APP_PACKAGE_NAME_3 = "package.name.3"
 const val UNSUPPORTED_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app3"
+const val OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME = "android.healthconnect.controller.test.app4"
 const val TEST_APP_NAME = "Health Connect test app"
 const val TEST_APP_NAME_2 = "Health Connect test app 2"
 const val TEST_APP_NAME_3 = "Health Connect test app 3"
+const val OLD_APP_NAME = "Old permissions test app"
 
 val TEST_APP =
     AppMetadata(packageName = TEST_APP_PACKAGE_NAME, appName = TEST_APP_NAME, icon = null)
@@ -153,5 +168,7 @@ val TEST_APP_2 =
     AppMetadata(packageName = TEST_APP_PACKAGE_NAME_2, appName = TEST_APP_NAME_2, icon = null)
 val TEST_APP_3 =
     AppMetadata(packageName = TEST_APP_PACKAGE_NAME_3, appName = TEST_APP_NAME_3, icon = null)
-
+val OLD_TEST_APP =
+    AppMetadata(
+        packageName = OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME, appName = OLD_APP_NAME, icon = null)
 // endregion

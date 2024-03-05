@@ -33,13 +33,29 @@ class DatabaseStatsLogger {
 
     /** Write Health Connect database stats to statsd. */
     static void log(@NonNull Context context) {
+
+        long numberOfInstantRecords = DatabaseStatsCollector.getNumberOfInstantRecordRows();
+        long numberOfIntervalRecords = DatabaseStatsCollector.getNumberOfIntervalRecordRows();
+        long numberOfSeriesRecords = DatabaseStatsCollector.getNumberOfSeriesRecordRows();
+        long numberOfChangeLogs = DatabaseStatsCollector.getNumberOfChangeLogs();
+
+        // If this condition is true then the user does not uses HC and we should not collect data.
+        // This will reduce the load on logging service otherwise we will get daily data from
+        // billions of Android devices.
+        if (numberOfInstantRecords == 0
+                && numberOfIntervalRecords == 0
+                && numberOfSeriesRecords == 0
+                && numberOfChangeLogs == 0) {
+            return;
+        }
+
         Objects.requireNonNull(context);
         HealthFitnessStatsLog.write(
                 HealthFitnessStatsLog.HEALTH_CONNECT_STORAGE_STATS,
                 DatabaseStatsCollector.getDatabaseSize(context),
-                DatabaseStatsCollector.getNumberOfInstantRecordRows(),
-                DatabaseStatsCollector.getNumberOfIntervalRecordRows(),
-                DatabaseStatsCollector.getNumberOfSeriesRecordRows(),
-                DatabaseStatsCollector.getNumberOfChangeLogs());
+                numberOfInstantRecords,
+                numberOfIntervalRecords,
+                numberOfSeriesRecords,
+                numberOfChangeLogs);
     }
 }

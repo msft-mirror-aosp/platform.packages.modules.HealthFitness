@@ -37,6 +37,11 @@ public class FakePreferenceHelper extends PreferenceHelper {
     }
 
     @Override
+    public synchronized void removeKey(String id) {
+        getPreferences().remove(id);
+    }
+
+    @Override
     public synchronized void clearCache() {
         mPreferences.clear();
     }

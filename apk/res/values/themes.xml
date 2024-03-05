@@ -73,11 +73,17 @@
         <!--  Migration -->
         <item name="moreSpaceNeededIcon">@drawable/ic_storage</item>
         <item name="updateNeededIcon">@drawable/ic_system_security_update</item>
+        <item name="settingsAlertIcon">@drawable/ic_settings_alert</item>
 
         <!-- Data sources & priority -->
         <item name="addIcon">@drawable/ic_add</item>
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
+
+        <!-- Export -->
+        <item name="repeatIcon">@drawable/ic_repeat</item>
+        <item name="lockIcon">@drawable/ic_lock</item>
+        <item name="warningIcon">@drawable/ic_warning</item>
 
         <!-- END REGION -->
 

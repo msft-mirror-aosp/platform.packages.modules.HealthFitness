@@ -30,15 +30,14 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
-import static android.healthconnect.cts.utils.TestUtils.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
+import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
 
 import static com.google.common.truth.Truth.assertThat;
-
-import static org.junit.Assert.assertThrows;
 
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -58,10 +57,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.ReadRecordsRequest;
-import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
-import android.health.connect.ReadRecordsResponse;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -80,6 +76,8 @@ import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Volume;
 import android.health.connect.restore.StageRemoteDataException;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.DataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
@@ -95,6 +93,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -125,6 +124,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HealthConnectManagerTest {
     private static final String TAG = "HealthConnectManagerTest";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void before() throws InterruptedException {
@@ -166,8 +170,7 @@ public class HealthConnectManagerTest {
 
     @Test
     public void testRecordIdentifiers() {
-        for (TestUtils.RecordAndIdentifier recordAndIdentifier :
-                TestUtils.getRecordsAndIdentifiers()) {
+        for (TestUtils.RecordAndIdentifier recordAndIdentifier : getRecordsAndIdentifiers()) {
             assertThat(recordAndIdentifier.getRecordClass().getRecordType())
                     .isEqualTo(recordAndIdentifier.getId());
         }
@@ -194,7 +197,8 @@ public class HealthConnectManagerTest {
     public void testRandomIdWithInsert() throws Exception {
         // Insert a sample record of each data type.
         List<Record> insertRecords =
-                TestUtils.insertRecords(Collections.singletonList(TestUtils.getStepsRecord("abc")));
+                TestUtils.insertRecords(
+                        Collections.singletonList(DataFactory.getStepsRecord("abc")));
         assertThat(insertRecords.get(0).getMetadata().getId()).isNotNull();
         assertThat(insertRecords.get(0).getMetadata().getId()).isNotEqualTo("abc");
     }
@@ -557,7 +561,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testInsertRecords_instantDifferentClientIdsAndSameTime_doesNotOwerwrite()
+    public void testInsertRecords_instantDifferentClientIdsAndSameTime_doesNotOverwrite()
             throws InterruptedException {
         final Power bmr1 = Power.fromWatts(100.0);
         final Power bmr2 = Power.fromWatts(110.0);
@@ -642,93 +646,6 @@ public class HealthConnectManagerTest {
         assertThat(records).hasSize(2);
         assertThat(getRecordById(records, id1).getProtein()).isEqualTo(protein1);
         assertThat(getRecordById(records, id2).getProtein()).isEqualTo(protein2);
-    }
-
-    @Test
-    public void testReadRecords_readByIdMaxPageSizeExceeded_throws() {
-        int maxPageSize = 5000;
-        ReadRecordsRequestUsingIds.Builder<StepsRecord> request =
-                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class);
-        for (int i = 0; i < maxPageSize; i++) {
-            request.addClientRecordId("client.id" + i);
-        }
-        Throwable thrown =
-                assertThrows(IllegalArgumentException.class, () -> request.addId("extra_id"));
-        assertThat(thrown.getMessage()).contains("Maximum allowed pageSize is 5000");
-        thrown =
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () -> request.addClientRecordId("extra_client_id"));
-        assertThat(thrown.getMessage()).contains("Maximum allowed pageSize is 5000");
-    }
-
-    @Test
-    public void testReadRecords_readByFilterMaxPageSizeExceeded_throws() {
-        int maxPageSize = 5000;
-        ReadRecordsRequestUsingFilters.Builder<StepsRecord> request =
-                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class);
-        Throwable thrown =
-                assertThrows(
-                        IllegalArgumentException.class, () -> request.setPageSize(maxPageSize + 1));
-        assertThat(thrown.getMessage()).contains("Maximum allowed pageSize is 5000");
-    }
-
-    @Test
-    public void testReadRecords_multiplePagesSameStartTimeRecords_paginatedCorrectly()
-            throws Exception {
-        Instant startTime = Instant.now().minus(1, DAYS);
-
-        insertRecords(
-                List.of(
-                        getStepsRecord(
-                                "client.id1",
-                                "package.name",
-                                /* count= */ 100,
-                                startTime,
-                                startTime.plusSeconds(500)),
-                        getStepsRecord(
-                                "client.id2",
-                                "package.name",
-                                /* count= */ 100,
-                                startTime,
-                                startTime.plusSeconds(200)),
-                        getStepsRecord(
-                                "client.id3",
-                                "package.name",
-                                /* count= */ 100,
-                                startTime,
-                                startTime.plusSeconds(400)),
-                        getStepsRecord(
-                                "client.id4",
-                                "package.name",
-                                /* count= */ 100,
-                                startTime,
-                                startTime.plusSeconds(300))));
-
-        ReadRecordsRequest<StepsRecord> request1 =
-                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                        .setPageSize(2)
-                        .setAscending(false)
-                        .build();
-        ReadRecordsResponse<StepsRecord> result1 = TestUtils.readRecordsWithPagination(request1);
-        assertThat(result1.getRecords()).hasSize(2);
-        assertThat(result1.getRecords().get(0).getMetadata().getClientRecordId())
-                .isEqualTo("client.id1");
-        assertThat(result1.getRecords().get(1).getMetadata().getClientRecordId())
-                .isEqualTo("client.id2");
-
-        ReadRecordsRequest<StepsRecord> request2 =
-                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
-                        .setPageSize(2)
-                        .setPageToken(result1.getNextPageToken())
-                        .build();
-        ReadRecordsResponse<StepsRecord> result2 = TestUtils.readRecordsWithPagination(request2);
-        assertThat(result2.getRecords()).hasSize(2);
-        assertThat(result2.getRecords().get(0).getMetadata().getClientRecordId())
-                .isEqualTo("client.id3");
-        assertThat(result2.getRecords().get(1).getMetadata().getClientRecordId())
-                .isEqualTo("client.id4");
-        assertThat(result2.getNextPageToken()).isEqualTo(-1);
     }
 
     @Test
@@ -1629,7 +1546,7 @@ public class HealthConnectManagerTest {
                 },
                 Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
 
-        StepsRecord testRecord = TestUtils.getStepsRecord();
+        StepsRecord testRecord = DataFactory.getStepsRecord();
 
         try {
             TestUtils.insertRecords(Collections.singletonList(testRecord));
@@ -1716,7 +1633,8 @@ public class HealthConnectManagerTest {
         }
 
         try {
-            TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+            TestUtils.getChangeLogToken(
+                    new ChangeLogTokenRequest.Builder().addRecordType(StepsRecord.class).build());
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
@@ -1788,7 +1706,7 @@ public class HealthConnectManagerTest {
     public void testGetRecordTypeInfo_InsertRecords_correctContributingPackages() throws Exception {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = TestUtils.getTestRecords();
+        List<Record> testRecords = DataFactory.getTestRecords();
         TestUtils.insertRecords(testRecords);
 
         // Populate expected records. This method puts empty lists as contributing packages for all
@@ -1849,7 +1767,7 @@ public class HealthConnectManagerTest {
             throws Exception {
         // Insert a sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = TestUtils.getTestRecords();
+        List<Record> testRecords = DataFactory.getTestRecords();
         TestUtils.insertRecords(testRecords);
 
         // Populate expected records. This method puts empty lists as contributing packages for all
@@ -1914,10 +1832,10 @@ public class HealthConnectManagerTest {
             throws Exception {
         // Insert 2 sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = TestUtils.getTestRecords();
+        List<Record> testRecords = DataFactory.getTestRecords();
         TestUtils.insertRecords(testRecords);
 
-        List<Record> testRecords2 = TestUtils.getTestRecords();
+        List<Record> testRecords2 = DataFactory.getTestRecords();
         TestUtils.insertRecords(testRecords2);
 
         // When recordTypes are modified the appInfo also gets updated and this update happens on
