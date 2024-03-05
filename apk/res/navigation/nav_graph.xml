@@ -66,16 +66,16 @@
         app:action="android.health.connect.action.MANAGE_HEALTH_DATA" />
 
     <activity
-        android:id="@+id/exportFrequencyActivity"
-        android:name="com.android.healthconnect.controller.export.ExportFrequencyActivity"/>
+        android:id="@+id/exportSetupActivity"
+        android:name="com.android.healthconnect.controller.export.ExportSetupActivity"/>
 
     <fragment
         android:id="@+id/exportSettingsFragment"
         android:name="com.android.healthconnect.controller.export.ExportSettingsFragment"
         android:label="@string/export_settings_screen_title">
         <action
-            android:id="@+id/action_exportSettingsFragment_to_exportFrequencyActivity"
-            app:destination="@id/exportFrequencyActivity" />
+            android:id="@+id/action_exportSettingsFragment_to_exportSetupActivity"
+            app:destination="@id/exportSetupActivity" />
     </fragment>
 
     <fragment

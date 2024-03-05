@@ -16,30 +16,16 @@
 
 package com.android.healthconnect.controller.export
 
-
-import android.app.Activity
 import android.os.Bundle
-import android.widget.Button
 import androidx.fragment.app.FragmentActivity
-import dagger.hilt.android.AndroidEntryPoint
 import com.android.healthconnect.controller.R
+import dagger.hilt.android.AndroidEntryPoint
 
-/** Export frequency activity for Health Connect. */
-// TODO: b/325917283 - Save the selected frequency preference.
+/** Export setup activity for Health Connect. */
 @AndroidEntryPoint(FragmentActivity::class)
-class ExportFrequencyActivity: Hilt_ExportFrequencyActivity() {
-
-    // TODO: b/325917283 - Add proper logging for the export frequency activity.
+class ExportSetupActivity: Hilt_ExportSetupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.export_frequency_screen)
-
-        // TODO: b/325917283 - Add the navigation to the next screen.
-        val backButton = findViewById<Button>(R.id.export_back_button)
-
-        backButton.setOnClickListener {
-            setResult(Activity.RESULT_CANCELED)
-            finish()
-        }
+        setContentView(R.layout.activity_export)
     }
 }

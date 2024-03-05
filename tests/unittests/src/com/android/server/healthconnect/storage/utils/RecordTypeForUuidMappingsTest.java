@@ -40,7 +40,7 @@ public class RecordTypeForUuidMappingsTest {
     @Rule public final Expect mExpect = Expect.create();
 
     @Test
-    public void testForEveryInternalRecordTypeReturnsDistinctResult_exceptWipDataTypes() {
+    public void testForEveryInternalRecordTypeReturnsDistinctResult_exceptUnreleasedDataTypes() {
         final Set<Integer> resultTypeIds = new HashSet<>();
         for (Integer recordTypeId : RecordTypeIdentifier.VALID_TYPES) {
             if (recordTypeId == RECORD_TYPE_SKIN_TEMPERATURE

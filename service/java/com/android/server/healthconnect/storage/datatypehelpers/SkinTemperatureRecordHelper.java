@@ -48,7 +48,6 @@ import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -62,8 +61,6 @@ public final class SkinTemperatureRecordHelper
         extends IntervalRecordHelper<SkinTemperatureRecordInternal> {
 
     private static final String TABLE_NAME = "skin_temperature_record_table";
-
-    public static final int DB_VERSION_SKIN_TEMPERATURE = 11;
 
     private static final String SKIN_TEMPERATURE_BASELINE_COLUMN_NAME = "baseline";
 
@@ -183,20 +180,9 @@ public final class SkinTemperatureRecordHelper
         contentValues.put(EPOCH_MILLIS_COLUMN_NAME, sample.mEpochMillis());
     }
 
-    @Override
-    public void onUpgrade(
-            @android.annotation.NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        super.onUpgrade(db, oldVersion, newVersion);
-        if (oldVersion < DB_VERSION_SKIN_TEMPERATURE) {
-            List<CreateTableRequest> requests = new ArrayList<>();
-            requests.add(getCreateTableRequest());
-            for (CreateTableRequest request : getChildTableCreateRequests()) {
-                requests.add(request);
-            }
-            for (CreateTableRequest createTableRequest : requests) {
-                createTable(db, createTableRequest);
-            }
-        }
+    /** Adds the skin temperature tables. */
+    public void applySkinTemperatureUpgrade(@NonNull SQLiteDatabase db) {
+        createTable(db, getCreateTableRequest());
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
