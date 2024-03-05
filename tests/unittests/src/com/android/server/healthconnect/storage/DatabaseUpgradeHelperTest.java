@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -32,11 +31,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class HealthConnectDatabaseTest {
-    // This number can only increase, as we are not allowed to make changes that remove tables or
-    // columns
-    private static final int NUM_OF_TABLES = 63;
-
+public class DatabaseUpgradeHelperTest {
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;
@@ -53,17 +48,29 @@ public class HealthConnectDatabaseTest {
         mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
     }
 
+    /*
+     * If you find that this test is failing, it means that your database upgrade cannot be applied
+     * multiple times. Making a database upgrade idempotent can often be easily achieved by
+     * specifying e.g. 'IF NOT EXISTS'.
+     */
     @Test
-    public void testCreateTable() {
+    public void migrationsAppliedMultipleTimes_eachOneIsIdempotent() {
         Truth.assertThat(mHealthConnectDatabase).isNotNull();
         Truth.assertThat(mSQLiteDatabase).isNotNull();
-        Cursor cursor =
-                mSQLiteDatabase.rawQuery(
-                        "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND"
-                                + " name != 'android_metadata' AND name != 'sqlite_sequence';",
-                        null);
 
-        cursor.moveToNext();
-        Truth.assertThat(cursor.getInt(0)).isEqualTo(NUM_OF_TABLES);
+        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, mHealthConnectDatabase, 0);
+        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, mHealthConnectDatabase, 0);
+
+        // The DB_VERSION_UUID_BLOB upgrade is a special case, as it triggers full schema
+        // recreation, and the remaining upgrades are not needed. It then returns immediately from
+        // the upgrade code. Due to this, we separately test upgrading from *after* this upgrade.
+        DatabaseUpgradeHelper.onUpgrade(
+                mSQLiteDatabase,
+                mHealthConnectDatabase,
+                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
+        DatabaseUpgradeHelper.onUpgrade(
+                mSQLiteDatabase,
+                mHealthConnectDatabase,
+                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
     }
 }

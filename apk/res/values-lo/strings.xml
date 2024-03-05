@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"ເຂົ້າເຖິງໃນ 24 ຊົ່ວໂມງທີ່ຜ່ານມາ"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ສິດເຂົ້າເຖິງແອັບ"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ຕອນນີ້ທ່ານບໍ່ມີແອັບໃດທີ່ເຂົ້າກັນໄດ້ຕິດຕັ້ງໄວ້ເລີຍ"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"ສິດເຂົ້າເຖິງເພີ່ມເຕີມ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ລຶບການອະນຸຍາດແອັບອອກແລ້ວ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ລຶບການອະນຸຍາດສຳລັບ <xliff:g id="APP_DATA">%s</xliff:g> ອອກແລ້ວ"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ລຶບການອະນຸຍາດສຳລັບ <xliff:g id="APP_DATA_0">%1$s</xliff:g> ແລະ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ອອກແລ້ວ"</string>
@@ -304,6 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ເປັນຫຍັງ Health Connect ຈຶ່ງລຶບການອະນຸຍາດແອັບອອກ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ຫາກມີແອັບຖືກລະງັບ ຫຼື ລຶບອອກຈາກ Google Play, Health Connect ຈະລຶບການອະນຸຍາດຂອງມັນອອກອັດຕະໂນມັດ.\n\nນີ້ໝາຍຄວາມວ່າແອັບຈະບໍ່ສາມາດເຂົ້າເຖິງຂໍ້ມູນທີ່ຈັດເກັບໄວ້ໃນ Health Connect ໄດ້ອີກຕໍ່ໄປ. ຫາກແອັບນີ້ມີຂໍ້ມູນທີ່ຂຽນໄວ້ກ່ອນໜ້າ, ມັນຈະປາກົດໃນລາຍຊື່ແອັບທີ່ບໍ່ເຄື່ອນໄຫວ."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ເຂົ້າໃຈແລ້ວ"</string>
+    <string name="export_settings_screen_title" msgid="887671826359158339">"ປະຢັດຂໍ້ມູນ"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"ບັນທຶກຂໍ້ມູນ ແລະ ການອະນຸຍາດ Health Connect ເພື່ອໃຫ້ທ່ານສາມາດສົ່ງອອກພວກມັນໄດ້ຖ້າທ່ານສະຫຼັບໄປໃຫ້ໂທລະສັບໜ່ວຍໃໝ່. ທ່ານສາມາດເລືອກບ່ອນທີ່ຈະຈັດເກັບຂໍ້ມູນນີ້ໄດ້ກ່ອນການບັນທຶກ."</string>
+    <string name="setup_button" msgid="1407942598553043961">"ຕັ້ງຄ່າ"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"ການຕັ້ງຄ່າ"</string>
+    <string name="auto_save" msgid="7146497593975616076">"ບັນທຶກອັດຕະໂນມັດ"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"ເລືອກຄວາມຖີ່"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ເລືອກເພື່ອບັນທຶກຂໍ້ມູນເທື່ອດຽວ ຫຼື ຕັ້ງມັນເພື່ອບັນທຶກໃນເວລາປົກກະຕິໂດຍອັດຕະໂນມັດ."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ປະຈຳວັນ"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ປະຈຳອາທິດ"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ທຸກເດືອນ"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"ກັບຄືນ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ຕໍ່ໄປ"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"ເລີ່ມຕົ້ນການນຳໃຊ້ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ຈະບັນທຶກຂໍ້ມູນສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຂອງທ່ານ, ເພື່ອມອບວິທີງ່າຍໆໃນການຊິ້ງຂໍ້ມູນແອັບຕ່າງໆຢູ່ໂທລະສັບຂອງທ່ານ"</string>
     <string name="share_data" msgid="3481932156368883946">"ແບ່ງປັນຂໍ້ມູນກັບແອັບຂອງທ່ານ"</string>
@@ -741,6 +754,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"ອະນຸຍາດເສັ້ນທາງນີ້"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"ອະນຸຍາດທັງໝົດ"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ບໍ່ອະນຸຍາດ"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ອະນຸຍາດທຸກເທື່ອ"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"ການແບ່ງປັນເສັ້ນທາງການອອກກຳລັງກາຍ"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ຄວບຄຸມວິທີທີ່ແອັບນີ້ເຂົ້າເຖິງເສັ້ນທາງການອອກກຳລັງກາຍຈາກແອັບທີ່ເຊື່ອມຕໍ່"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ຖາມທຸກເທື່ອ"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"ບໍ່ອະນຸຍາດ"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ເປີດການນຳໃຊ້ທັງສອງປະເພດຂໍ້ມູນບໍ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ປິດການນຳໃຊ້ທັງສອງປະເພດຂໍ້ມູນບໍ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ຕ້ອງການສິດເຂົ້າເຖິງການອ່ານເພື່ອອອກກໍາລັງກາຍເພື່ອໃຫ້ເສັ້ນທາງອອກກໍາລັງກາຍຖືກເປີດການນຳໃຊ້"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ຕ້ອງມີສິດເຂົ້າເຖິງການອອກກໍາລັງກາຍເພື່ອໃຫ້ເສັ້ນທາງອອກກໍາລັງກາຍຖືກເປີດການນຳໃຊ້"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ແມ່ນ"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ບໍ່"</string>
     <string name="back_button" msgid="780519527385993407">"ກັບຄືນ"</string>
     <string name="loading" msgid="2526615755685950317">"ກຳລັງໂຫຼດ…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ກຳລັງດຳເນີນການເຊື່ອມໂຍງ"</string>

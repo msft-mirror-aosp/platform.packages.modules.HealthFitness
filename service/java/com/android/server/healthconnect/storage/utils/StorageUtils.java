@@ -76,6 +76,7 @@ public final class StorageUtils {
     public static final String DELIMITER = ",";
     public static final String BLOB = "BLOB";
     public static final String BLOB_UNIQUE_NULL = "BLOB UNIQUE";
+    public static final String BLOB_NULL = "BLOB NULL";
     public static final String BLOB_UNIQUE_NON_NULL = "BLOB NOT NULL UNIQUE";
     public static final String BLOB_NON_NULL = "BLOB NOT NULL";
     public static final String SELECT_ALL = "SELECT * FROM ";
@@ -375,6 +376,42 @@ public final class StorageUtils {
         byteBuffer.putLong(uuid.getMostSignificantBits());
         byteBuffer.putLong(uuid.getLeastSignificantBits());
         return byteBuffer.array();
+    }
+
+    /** Convert a double value to bytes. */
+    public static byte[] convertDoubleToBytes(double value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8]);
+        byteBuffer.putDouble(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert bytes to a double. */
+    public static double convertBytesToDouble(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getDouble();
+    }
+
+    /** Convert an integer value to bytes. */
+    public static byte[] convertIntToBytes(int value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
+        byteBuffer.putInt(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert bytes to an integer. */
+    public static int convertBytesToInt(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getInt();
+    }
+
+    /** Convert bytes to a long. */
+    public static byte[] convertLongToBytes(long value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[8]);
+        byteBuffer.putLong(value);
+        return byteBuffer.array();
+    }
+
+    /** Convert a long value to bytes. */
+    public static long convertBytesToLong(byte[] bytes) {
+        return ByteBuffer.wrap(bytes).getLong();
     }
 
     public static String getHexString(byte[] value) {

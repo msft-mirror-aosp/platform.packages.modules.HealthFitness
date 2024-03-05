@@ -34,7 +34,7 @@ public abstract class ExerciseCompletionGoalInternal {
     public abstract ExerciseCompletionGoal toExternalObject();
 
     /** Subclass identifier used during serialization/deserialization. */
-    abstract int getTypeId();
+    public abstract int getTypeId();
 
     abstract void writeFieldsToParcel(Parcel parcel);
 
@@ -105,7 +105,7 @@ public abstract class ExerciseCompletionGoalInternal {
     }
 
     public static final class DistanceGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int DISTANCE_GOAL_TYPE_ID = 2;
+        public static final int DISTANCE_GOAL_TYPE_ID = 2;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -133,13 +133,13 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return DISTANCE_GOAL_TYPE_ID;
         }
     }
 
     public static final class StepsGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int STEPS_GOAL_TYPE_ID = 3;
+        public static final int STEPS_GOAL_TYPE_ID = 3;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -167,13 +167,13 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return STEPS_GOAL_TYPE_ID;
         }
     }
 
     public static final class DurationGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int DURATION_GOAL_TYPE_ID = 4;
+        public static final int DURATION_GOAL_TYPE_ID = 4;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -201,13 +201,13 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return DURATION_GOAL_TYPE_ID;
         }
     }
 
     public static final class RepetitionsGoalInternal extends ExerciseCompletionGoalInternal {
-        private static final int REPETITIONS_GOAL_TYPE_ID = 5;
+        public static final int REPETITIONS_GOAL_TYPE_ID = 5;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -235,14 +235,14 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return REPETITIONS_GOAL_TYPE_ID;
         }
     }
 
     public static final class TotalCaloriesBurnedGoalInternal
             extends ExerciseCompletionGoalInternal {
-        private static final int TOTAL_CALORIES_BURNED_GOAL_TYPE_ID = 6;
+        public static final int TOTAL_CALORIES_BURNED_GOAL_TYPE_ID = 6;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -270,14 +270,14 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return TOTAL_CALORIES_BURNED_GOAL_TYPE_ID;
         }
     }
 
     public static final class ActiveCaloriesBurnedGoalInternal
             extends ExerciseCompletionGoalInternal {
-        private static final int ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID = 7;
+        public static final int ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID = 7;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -305,7 +305,7 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return ACTIVE_CALORIES_BURNED_GOAL_TYPE_ID;
         }
     }
@@ -316,7 +316,7 @@ public abstract class ExerciseCompletionGoalInternal {
      * the current (older) version.
      */
     public static final class UnknownGoalInternal extends ExerciseCompletionGoalInternal {
-        static final int UNKNOWN_GOAL_TYPE_ID = 0;
+        public static final int UNKNOWN_GOAL_TYPE_ID = 0;
 
         public static final UnknownGoalInternal INSTANCE = new UnknownGoalInternal();
 
@@ -333,7 +333,7 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return UNKNOWN_GOAL_TYPE_ID;
         }
     }
@@ -343,7 +343,7 @@ public abstract class ExerciseCompletionGoalInternal {
      * the user to determine when the goal is complete.
      */
     public static final class UnspecifiedGoalInternal extends ExerciseCompletionGoalInternal {
-        static final int UNSPECIFIED_GOAL_TYPE_ID = 1;
+        public static final int UNSPECIFIED_GOAL_TYPE_ID = 1;
 
         public static final UnspecifiedGoalInternal INSTANCE = new UnspecifiedGoalInternal();
 
@@ -360,7 +360,7 @@ public abstract class ExerciseCompletionGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return UNSPECIFIED_GOAL_TYPE_ID;
         }
     }
