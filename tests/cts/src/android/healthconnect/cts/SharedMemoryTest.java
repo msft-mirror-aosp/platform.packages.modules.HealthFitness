@@ -234,7 +234,12 @@ public class SharedMemoryTest {
         Instant now = Instant.now();
 
         String changeLogToken =
-                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+                TestUtils.getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(HeightRecord.class)
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
 
         List<HeightRecord> heightRecords = new ArrayList<>(recordsToDeleteCount);
         for (int i = 0; i < recordsToDeleteCount; i++) {

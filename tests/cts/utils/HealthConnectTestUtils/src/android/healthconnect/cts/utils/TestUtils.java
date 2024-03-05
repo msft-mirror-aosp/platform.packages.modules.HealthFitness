@@ -27,6 +27,7 @@ import static android.health.connect.HealthDataCategory.VITALS;
 import static android.health.connect.HealthPermissionCategory.BASAL_METABOLIC_RATE;
 import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
+import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
@@ -105,6 +106,7 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.OvulationTestRecord;
 import android.health.connect.datatypes.OxygenSaturationRecord;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RespiratoryRateRecord;
@@ -741,6 +743,9 @@ public final class TestUtils {
                 BasalMetabolicRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                PlannedExerciseSessionRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, PLANNED_EXERCISE, new ArrayList<>()));
     }
 
     public static FetchDataOriginsPriorityOrderResponse fetchDataOriginsPriorityOrder(

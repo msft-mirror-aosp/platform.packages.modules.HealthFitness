@@ -264,7 +264,12 @@ public class HistoricAccessLimitTest {
 
     @Test
     public void testGetChangeLogs_expectCorrectResponse() throws InterruptedException {
-        String token = getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+        String token =
+                getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
         List<String> insertedRecentRecordIds =
                 List.of(
                         insertWeightRecord(daysBeforeNow(10), 10),
