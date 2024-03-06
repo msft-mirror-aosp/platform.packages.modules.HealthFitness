@@ -781,6 +781,7 @@ package android.health.connect.datatypes {
     method public int getExerciseType();
     method @NonNull public java.util.List<android.health.connect.datatypes.ExerciseLap> getLaps();
     method @Nullable public CharSequence getNotes();
+    method @FlaggedApi("com.android.healthconnect.flags.training_plans") @Nullable public String getPlannedExerciseSessionId();
     method @Nullable public android.health.connect.datatypes.ExerciseRoute getRoute();
     method @NonNull public java.util.List<android.health.connect.datatypes.ExerciseSegment> getSegments();
     method @Nullable public CharSequence getTitle();
@@ -796,6 +797,7 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setLaps(@NonNull java.util.List<android.health.connect.datatypes.ExerciseLap>);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setNotes(@Nullable CharSequence);
+    method @FlaggedApi("com.android.healthconnect.flags.training_plans") @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setPlannedExerciseSessionId(@Nullable String);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setRoute(@Nullable android.health.connect.datatypes.ExerciseRoute);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setSegments(@NonNull java.util.List<android.health.connect.datatypes.ExerciseSegment>);
     method @NonNull public android.health.connect.datatypes.ExerciseSessionRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);

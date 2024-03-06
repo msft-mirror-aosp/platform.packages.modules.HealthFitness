@@ -17,7 +17,6 @@
 package com.android.healthconnect.controller.export
 
 import android.os.Bundle
-import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
@@ -41,7 +40,7 @@ class ExportSettingsFragment : Hilt_ExportSettingsFragment() {
         setPreferencesFromResource(R.xml.export_settings_screen, rootKey)
 
         setupButtonPreference?.setOnButtonClickListener {
-            findNavController().navigate(R.id.action_exportSettingsFragment_to_exportFrequencyActivity)
+            findNavController().navigate(R.id.action_exportSettingsFragment_to_exportSetupActivity)
         }
     }
 }

@@ -65,7 +65,7 @@ class ExportSettingsFragmentTest {
     }
 
     @Test
-    fun exportSettingsFragment_clicksSetupButton_navigatesToExportFrequencyScreen() {
+    fun exportSettingsFragment_clicksSetupButton_navigatesToExportActivity() {
         launchFragment<ExportSettingsFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.exportSettingsFragment)
@@ -75,6 +75,6 @@ class ExportSettingsFragmentTest {
         onView(withText("Set up")).check(matches(isClickable()))
         onView(withText("Set up")).perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportFrequencyActivity)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
     }
 }

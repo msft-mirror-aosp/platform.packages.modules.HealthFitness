@@ -19,6 +19,7 @@ package android.health.connect.datatypes;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.validation.ValidationUtils.sortAndValidateTimeIntervalHolders;
 
+import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.datatypes.validation.ExerciseSessionTypesValidation;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -66,6 +68,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
 
     private final List<ExerciseSegment> mSegments;
     private final List<ExerciseLap> mLaps;
+    private final String mPlannedExerciseSessionId;
 
     /**
      * @param metadata Metadata to be associated with the record. See {@link Metadata}.
@@ -93,6 +96,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
             boolean hasRoute,
             @NonNull List<ExerciseSegment> segments,
             @NonNull List<ExerciseLap> laps,
+            @Nullable String plannedExerciseSessionId,
             boolean skipValidation) {
         super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
         mNotes = notes;
@@ -118,6 +122,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                 Collections.unmodifiableList(
                         (List<ExerciseLap>)
                                 sortAndValidateTimeIntervalHolders(startTime, endTime, laps));
+        mPlannedExerciseSessionId = plannedExerciseSessionId;
     }
 
     /** Returns exerciseType of this session. */
@@ -167,6 +172,16 @@ public final class ExerciseSessionRecord extends IntervalRecord {
         return mHasRoute;
     }
 
+    /**
+     * Returns the ID of the {@link PlannedExerciseSessionRecord} that this session was based upon.
+     * If not set, returns null.
+     */
+    @Nullable
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public String getPlannedExerciseSessionId() {
+        return mPlannedExerciseSessionId;
+    }
+
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @Override
     public boolean equals(Object o) {
@@ -208,6 +223,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
         private final List<ExerciseSegment> mSegments;
         private final List<ExerciseLap> mLaps;
         private boolean mHasRoute;
+        @Nullable private String mPlannedExerciseSessionId;
 
         /**
          * @param metadata Metadata to be associated with the record. See {@link Metadata}.
@@ -343,6 +359,14 @@ public final class ExerciseSessionRecord extends IntervalRecord {
             return this;
         }
 
+        /** Sets the {@link PlannedExerciseSessionRecord} that this session was based upon. */
+        @NonNull
+        @FlaggedApi("com.android.healthconnect.flags.training_plans")
+        public Builder setPlannedExerciseSessionId(@Nullable String id) {
+            mPlannedExerciseSessionId = id;
+            return this;
+        }
+
         /**
          * @return Object of {@link ExerciseSessionRecord} without validating the values.
          * @hide
@@ -362,6 +386,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                     mHasRoute,
                     mSegments,
                     mLaps,
+                    mPlannedExerciseSessionId,
                     true);
         }
 
@@ -381,6 +406,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                     mHasRoute,
                     mSegments,
                     mLaps,
+                    mPlannedExerciseSessionId,
                     false);
         }
     }
@@ -433,6 +459,9 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                             .collect(Collectors.toList()));
         }
         recordInternal.setExerciseType(mExerciseType);
+        if (mPlannedExerciseSessionId != null) {
+            recordInternal.setPlannedExerciseSessionId(UUID.fromString(mPlannedExerciseSessionId));
+        }
         return recordInternal;
     }
 }
