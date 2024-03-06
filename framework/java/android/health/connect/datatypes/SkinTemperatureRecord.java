@@ -118,7 +118,14 @@ public final class SkinTemperatureRecord extends IntervalRecord {
             @NonNull List<Delta> deltas,
             @SkinTemperatureMeasurementLocation int measurementLocation,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         if (!skipValidation) {
             if (baseline != null) {
                 ValidationUtils.requireInRange(baseline.getInCelsius(), 0.0, 100, "temperature");

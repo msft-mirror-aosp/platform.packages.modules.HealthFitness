@@ -26,7 +26,10 @@ import static android.health.connect.datatypes.AggregationType.AggregationTypeId
 import static com.android.server.healthconnect.storage.datatypehelpers.ExerciseLapRecordHelper.EXERCISE_LAPS_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.ExerciseRouteRecordHelper.EXERCISE_ROUTE_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.ExerciseSegmentRecordHelper.EXERCISE_SEGMENT_RECORD_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.COMPLETED_SESSION_ID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.SeriesRecordHelper.PARENT_KEY_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_TRUE_VALUE;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
@@ -35,6 +38,7 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getIntegerAndConvertToBoolean;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.isNullValue;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
@@ -58,6 +62,7 @@ import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.logging.ExerciseRoutesLogger;
 import com.android.server.healthconnect.logging.ExerciseRoutesLogger.Operations;
 import com.android.server.healthconnect.storage.request.AggregateParams;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
@@ -84,14 +89,14 @@ public final class ExerciseSessionRecordHelper
         extends IntervalRecordHelper<ExerciseSessionRecordInternal> {
     private static final String TAG = "ExerciseSessionRecordHelper";
 
-    private static final String EXERCISE_SESSION_RECORD_TABLE_NAME =
-            "exercise_session_record_table";
+    static final String EXERCISE_SESSION_RECORD_TABLE_NAME = "exercise_session_record_table";
 
     // Exercise Session columns names
     private static final String NOTES_COLUMN_NAME = "notes";
     private static final String EXERCISE_TYPE_COLUMN_NAME = "exercise_type";
     private static final String TITLE_COLUMN_NAME = "title";
     private static final String HAS_ROUTE_COLUMN_NAME = "has_route";
+    static final String PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME = "planned_exercise_session_id";
 
     private static final int ROUTE_READ_ACCESS_TYPE_NONE = 0;
     private static final int ROUTE_READ_ACCESS_TYPE_OWN = 1;
@@ -117,6 +122,10 @@ public final class ExerciseSessionRecordHelper
         exerciseSessionRecord.setHasRoute(
                 isExerciseRouteFeatureEnabled()
                         && getIntegerAndConvertToBoolean(cursor, HAS_ROUTE_COLUMN_NAME));
+        if (!isNullValue(cursor, PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME)) {
+            exerciseSessionRecord.setPlannedExerciseSessionId(
+                    StorageUtils.getCursorUUID(cursor, PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME));
+        }
 
         // The table might contain duplicates because of 2 left joins, use sets to remove them.
         ArraySet<ExerciseLapInternal> lapsSet = new ArraySet<>();
@@ -168,6 +177,12 @@ public final class ExerciseSessionRecordHelper
         contentValues.put(
                 HAS_ROUTE_COLUMN_NAME,
                 exerciseSessionRecord.hasRoute() ? BOOLEAN_TRUE_VALUE : BOOLEAN_FALSE_VALUE);
+        if (exerciseSessionRecord.getPlannedExerciseSessionId() != null) {
+            contentValues.put(
+                    PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME,
+                    StorageUtils.convertUUIDToBytes(
+                            exerciseSessionRecord.getPlannedExerciseSessionId()));
+        }
     }
 
     @Override
@@ -229,6 +244,25 @@ public final class ExerciseSessionRecordHelper
         if (!canWriteExerciseRoute(extraWritePermissionToStateMap)) {
             values.remove(HAS_ROUTE_COLUMN_NAME);
         }
+    }
+
+    @Override
+    List<String> getPostUpsertCommands(RecordInternal<?> record) {
+        ExerciseSessionRecordInternal session = (ExerciseSessionRecordInternal) record;
+        if (session.getPlannedExerciseSessionId() == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(
+                "UPDATE "
+                        + PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME
+                        + " SET "
+                        + COMPLETED_SESSION_ID_COLUMN_NAME
+                        + " = "
+                        + StorageUtils.getHexString(session.getUuid())
+                        + " WHERE "
+                        + UUID_COLUMN_NAME
+                        + " = "
+                        + StorageUtils.getHexString(session.getPlannedExerciseSessionId()));
     }
 
     @Override
@@ -378,6 +412,26 @@ public final class ExerciseSessionRecordHelper
         return isExerciseRouteFeatureEnabled()
                 && HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isExerciseRoutesReadAllFeatureEnabled();
+    }
+
+    /**
+     * Adds a column which points to the planned exercise session ID associated with this session.
+     */
+    public AlterTableRequest getAlterTableRequestForPlannedExerciseFeature() {
+        List<Pair<String, String>> columnInfo = new ArrayList<>();
+        columnInfo.add(new Pair<>(PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME, BLOB_NULL));
+        AlterTableRequest result = new AlterTableRequest(getMainTableName(), columnInfo);
+        result.addForeignKeyConstraint(
+                PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME,
+                PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME,
+                UUID_COLUMN_NAME);
+        return result;
+    }
+
+    @Override
+    @NonNull
+    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
+        return Collections.singletonList(getAlterTableRequestForPlannedExerciseFeature());
     }
 
     @Override

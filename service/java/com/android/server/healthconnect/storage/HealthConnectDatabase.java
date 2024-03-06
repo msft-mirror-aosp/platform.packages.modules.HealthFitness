@@ -28,12 +28,12 @@ import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelp
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.utils.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
@@ -42,6 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class to maintain the health connect DB. Actual operations are performed by {@link
@@ -50,11 +51,8 @@ import java.util.List;
  * @hide
  */
 public class HealthConnectDatabase extends SQLiteOpenHelper {
-    public static final int DB_VERSION_UUID_BLOB = 9;
-
-    public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
     private static final String TAG = "HealthConnectDatabase";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
     private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
     @NonNull private final Collection<RecordHelper<?>> mRecordHelpers;
     private final Context mContext;
@@ -74,18 +72,19 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
         for (CreateTableRequest createTableRequest : getCreateTableRequests()) {
             createTable(db, createTableRequest);
         }
+        // SQL does not support adding foreign keys after column creation. Thus, we must add the
+        // foreign keys when the column is created. To avoid attempting to create a foreign key
+        // constraint before the referenced table has been created, we add columns with foreign
+        // keys after all tables have been created.
+        for (AlterTableRequest alterTableRequest :
+                getAlterTableRequestsForColumnsWithForeignKeys()) {
+            db.execSQL(alterTableRequest.getAlterTableAddColumnsCommand());
+        }
     }
 
     @Override
     public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < DB_VERSION_UUID_BLOB) {
-            dropAllTables(db);
-            onCreate(db);
-            return;
-        }
-
-        mRecordHelpers.forEach(recordHelper -> recordHelper.onUpgrade(db, oldVersion, newVersion));
-        DatabaseHelper.onUpgrade(db, oldVersion, newVersion);
+        DatabaseUpgradeHelper.onUpgrade(db, this, oldVersion);
     }
 
     @Override
@@ -98,14 +97,13 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.i(TAG, "onDowngrade oldVersion = " + oldVersion + " newVersion = " + newVersion);
-        DatabaseHelper.onDowngrade(db, oldVersion, newVersion);
     }
 
     public File getDatabasePath() {
         return mContext.getDatabasePath(getDatabaseName());
     }
 
-    private void dropAllTables(SQLiteDatabase db) {
+    void dropAllTables(SQLiteDatabase db) {
         List<String> allTables =
                 getCreateTableRequests().stream().map(CreateTableRequest::getTableName).toList();
         for (String table : allTables) {
@@ -116,38 +114,35 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     private List<CreateTableRequest> getCreateTableRequests() {
         List<CreateTableRequest> requests = new ArrayList<>();
         mRecordHelpers.forEach(
-                (recordHelper) ->
-                        addCreateRequestsFor(recordHelper.getCreateTableRequest(), requests));
-        addCreateRequestsFor(DeviceInfoHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(AppInfoHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(ActivityDateHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(ChangeLogsHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(
-                ChangeLogsRequestHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(
-                HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(PreferenceHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(AccessLogsHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(MigrationEntityHelper.getInstance().getCreateTableRequest(), requests);
-        addCreateRequestsFor(
-                PriorityMigrationHelper.getInstance().getCreateTableRequest(), requests);
+                (recordHelper) -> requests.add(recordHelper.getCreateTableRequest()));
+        requests.add(DeviceInfoHelper.getInstance().getCreateTableRequest());
+        requests.add(AppInfoHelper.getInstance().getCreateTableRequest());
+        requests.add(ActivityDateHelper.getInstance().getCreateTableRequest());
+        requests.add(ChangeLogsHelper.getInstance().getCreateTableRequest());
+        requests.add(ChangeLogsRequestHelper.getInstance().getCreateTableRequest());
+        requests.add(HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest());
+        requests.add(PreferenceHelper.getInstance().getCreateTableRequest());
+        requests.add(AccessLogsHelper.getInstance().getCreateTableRequest());
+        requests.add(MigrationEntityHelper.getInstance().getCreateTableRequest());
+        requests.add(PriorityMigrationHelper.getInstance().getCreateTableRequest());
 
         return requests;
     }
 
-    private void addCreateRequestsFor(
-            CreateTableRequest createTableRequest, List<CreateTableRequest> tableRequests) {
-        tableRequests.add(createTableRequest);
-        createTableRequest
-                .getChildTableRequests()
-                .forEach(
-                        (childTableRequest) ->
-                                addCreateRequestsFor(childTableRequest, tableRequests));
+    private List<AlterTableRequest> getAlterTableRequestsForColumnsWithForeignKeys() {
+        return mRecordHelpers.stream()
+                .flatMap(
+                        recordHelper ->
+                                recordHelper.getColumnsToCreateWithForeignKeyConstraints().stream())
+                .collect(Collectors.toList());
     }
 
     /** Runs create table request on database. */
     public static void createTable(SQLiteDatabase db, CreateTableRequest createTableRequest) {
         db.execSQL(createTableRequest.getCreateCommand());
         createTableRequest.getCreateIndexStatements().forEach(db::execSQL);
+        for (CreateTableRequest childRequest : createTableRequest.getChildTableRequests()) {
+            createTable(db, childRequest);
+        }
     }
 }

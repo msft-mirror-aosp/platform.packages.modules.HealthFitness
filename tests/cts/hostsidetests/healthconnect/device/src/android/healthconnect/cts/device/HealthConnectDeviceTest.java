@@ -624,59 +624,64 @@ public class HealthConnectDeviceTest {
     }
 
     @Test
-    public void testAppCanReadChangeLogsUsingDataOriginFilters() throws Exception {
+    public void testAppWithReadPerms_getChangeTokensAndLogsOfOtherApps_expectSuccess()
+            throws Exception {
         String changeLogTokenForAppB =
                 APP_B_WITH_READ_WRITE_PERMS.getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
+                                .addRecordType(StepsRecord.class)
+                                .addRecordType(HeartRateRecord.class)
+                                .addRecordType(BasalMetabolicRateRecord.class)
+                                .addRecordType(ExerciseSessionRecord.class)
                                 .addDataOriginFilter(
                                         getDataOrigin(APP_A_WITH_READ_WRITE_PERMS.getPackageName()))
+                                .addRecordType(StepsRecord.class)
+                                .addRecordType(HeartRateRecord.class)
+                                .addRecordType(DistanceRecord.class)
+                                .addRecordType(TotalCaloriesBurnedRecord.class)
+                                .addRecordType(SleepSessionRecord.class)
+                                .addRecordType(ExerciseSessionRecord.class)
                                 .build());
         String changeLogTokenForAppA =
                 APP_A_WITH_READ_WRITE_PERMS.getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
+                                .addRecordType(StepsRecord.class)
+                                .addRecordType(HeartRateRecord.class)
+                                .addRecordType(BasalMetabolicRateRecord.class)
+                                .addRecordType(ExerciseSessionRecord.class)
                                 .addDataOriginFilter(
                                         getDataOrigin(APP_B_WITH_READ_WRITE_PERMS.getPackageName()))
                                 .build());
-
+        List<Record> recordsB = TEST_RECORDS;
         List<Record> recordsA =
                 List.of(
                         getStepsRecord(getEmptyMetadata()),
                         getHeartRateRecord(getEmptyMetadata()),
-                        getBasalMetabolicRateRecord(getEmptyMetadata()));
-
+                        getDistanceRecordWithEmptyMetadata(),
+                        buildExerciseSessionWithEmptyMetadata(),
+                        buildSleepSessionWithEmptyMetadata(),
+                        getTotalCaloriesBurnedRecordWithEmptyMetadata());
         List<String> recordIdsA = APP_A_WITH_READ_WRITE_PERMS.insertRecords(recordsA);
+        List<String> recordIdsB = APP_B_WITH_READ_WRITE_PERMS.insertRecords(recordsB);
+        APP_B_WITH_READ_WRITE_PERMS.deleteRecords(getRecordIdFilters(recordIdsB, recordsB));
 
-        List<Record> updatedRecordsA =
-                List.of(
-                        getStepsRecord(getMetadataForId(recordIdsA.get(0))),
-                        getHeartRateRecord(getMetadataForId(recordIdsA.get(1))),
-                        getBasalMetabolicRateRecord(getMetadataForId(recordIdsA.get(2))));
-        APP_A_WITH_READ_WRITE_PERMS.updateRecords(updatedRecordsA);
-
-        List<String> bRecordIds = APP_B_WITH_READ_WRITE_PERMS.insertRecords(TEST_RECORDS);
-
-        APP_B_WITH_READ_WRITE_PERMS.deleteRecords(getRecordIdFilters(bRecordIds, TEST_RECORDS));
-
-        ChangeLogsResponse response =
+        ChangeLogsResponse responseB =
                 APP_B_WITH_READ_WRITE_PERMS.getChangeLogs(
                         new ChangeLogsRequest.Builder(changeLogTokenForAppB).build());
+        ChangeLogsResponse responseA =
+                APP_A_WITH_READ_WRITE_PERMS.getChangeLogs(
+                        new ChangeLogsRequest.Builder(changeLogTokenForAppA).build());
 
-        assertThat(response.getUpsertedRecords()).hasSize(recordsA.size());
+        assertThat(responseB.getUpsertedRecords()).hasSize(recordsA.size());
         assertThat(
-                        response.getUpsertedRecords().stream()
+                        responseB.getUpsertedRecords().stream()
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
                 .containsExactlyElementsIn(recordIdsA);
-
-        assertThat(response.getDeletedLogs()).isEmpty();
-
-        response =
-                APP_A_WITH_READ_WRITE_PERMS.getChangeLogs(
-                        new ChangeLogsRequest.Builder(changeLogTokenForAppA).build());
-
-        assertThat(response.getUpsertedRecords()).isEmpty();
-        assertThat(response.getDeletedLogs()).hasSize(TEST_RECORDS.size());
+        assertThat(responseB.getDeletedLogs()).isEmpty();
+        assertThat(responseA.getUpsertedRecords()).isEmpty();
+        assertThat(responseA.getDeletedLogs()).hasSize(recordsB.size());
     }
 
     @Test
