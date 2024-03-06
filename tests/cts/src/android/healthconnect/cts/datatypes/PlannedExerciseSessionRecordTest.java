@@ -96,6 +96,21 @@ public class PlannedExerciseSessionRecordTest {
     }
 
     @Test
+    public void insertRecord_startTimeInFuture_bypassesFutureTimeRestrictions()
+            throws InterruptedException {
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setStartTime(Instant.now().plus(30, DAYS))
+                        .setEndTime(Instant.now().plus(30, DAYS).plus(1, HOURS));
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        verifyInsertSucceeds(builder.build());
+
+        verifyReadReturnsSameRecords(builder.build());
+    }
+
+    @Test
     public void insertRecord_noBlocks() throws InterruptedException {
         PlannedExerciseSessionRecord.Builder builder =
                 basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);

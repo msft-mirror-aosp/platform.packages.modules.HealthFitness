@@ -53,7 +53,14 @@ public final class PowerRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull List<PowerRecordSample> powerRecordSamples,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(powerRecordSamples);
         if (!skipValidation) {
             ValidationUtils.validateSampleStartAndEndTime(
