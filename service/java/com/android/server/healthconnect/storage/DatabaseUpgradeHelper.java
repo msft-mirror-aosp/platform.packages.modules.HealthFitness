@@ -16,11 +16,18 @@
 
 package com.android.server.healthconnect.storage;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 
+import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
+
 import android.annotation.NonNull;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
@@ -32,6 +39,8 @@ final class DatabaseUpgradeHelper {
     public static final int DB_VERSION_UUID_BLOB = 9;
     public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
     public static final int DB_VERSION_SKIN_TEMPERATURE = 11;
+    public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS = 12;
+    private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
 
     static void onUpgrade(
             @NonNull SQLiteDatabase db,
@@ -51,6 +60,9 @@ final class DatabaseUpgradeHelper {
                             RECORD_TYPE_SKIN_TEMPERATURE)
                     .applySkinTemperatureUpgrade(db);
         }
+        if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
+            applyPlannedExerciseDatabaseUpgrade(db);
+        }
     }
 
     private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {
@@ -60,5 +72,35 @@ final class DatabaseUpgradeHelper {
     @SuppressWarnings("unchecked")
     private static <T> T getRecordHelper(int recordTypeIdentifier) {
         return (T) RecordHelperProvider.getInstance().getRecordHelper(recordTypeIdentifier);
+    }
+
+    private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {
+        if (doesTableAlreadyExist(db, PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME)) {
+            // Upgrade has already been applied. Return early.
+            return;
+        }
+        PlannedExerciseSessionRecordHelper recordHelper =
+                getRecordHelper(RECORD_TYPE_PLANNED_EXERCISE_SESSION);
+        HealthConnectDatabase.createTable(db, recordHelper.getCreateTableRequest());
+        db.execSQL(
+                recordHelper
+                        .getAlterTableRequestForPlannedExerciseFeature()
+                        .getAlterTableAddColumnsCommand());
+        ExerciseSessionRecordHelper exerciseRecordHelper =
+                getRecordHelper(RECORD_TYPE_EXERCISE_SESSION);
+        db.execSQL(
+                exerciseRecordHelper
+                        .getAlterTableRequestForPlannedExerciseFeature()
+                        .getAlterTableAddColumnsCommand());
+    }
+
+    private static boolean doesTableAlreadyExist(SQLiteDatabase db, String tableName) {
+        long numEntries =
+                DatabaseUtils.queryNumEntries(
+                        db,
+                        SQLITE_MASTER_TABLE_NAME,
+                        /* selection= */ "type = 'table' AND name == '" + tableName + "'",
+                        /* selectionArgs= */ null);
+        return numEntries > 0;
     }
 }

@@ -92,6 +92,9 @@ public final class PlannedExerciseStepInternal {
         PlannedExerciseStep.Builder builder =
                 new PlannedExerciseStep.Builder(
                         mExerciseType, mExerciseCategory, mCompletionGoal.toExternalObject());
+        if (mDescription != null) {
+            builder.setDescription(mDescription);
+        }
         for (ExercisePerformanceGoalInternal goal : mPerformanceGoals) {
             builder.addPerformanceGoal(goal.toExternalObject());
         }
