@@ -13,6 +13,41 @@
     },
     {
       "name": "CtsHealthFitnessDeviceTestCasesNoPermission[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerDataScreensNewTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerDataScreensOldTests[com.google.android.healthfitness.apex]",
+       "options": [
+                 {
+                      "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
+                  }
+       ]
+    },
+    {
+       "name": "HealthConnectControllerDeletionTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerExerciseRouteTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerHomePageAndOnboardingTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerManageDataTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerMigrationTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerNavigationTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerPermissionTests[com.google.android.healthfitness.apex]"
+    },
+    {
+       "name": "HealthConnectControllerExtraTests[com.google.android.healthfitness.apex]"
     }
   ],
   "presubmit": [
@@ -21,6 +56,9 @@
        "options": [
                 {
                     "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
+                },
+                {
+                    "exclude-annotation": "androidx.test.filters.FlakyTest"
                 }
         ]
     },
@@ -64,6 +102,41 @@
     },
     {
       "name": "CtsHealthFitnessDeviceTestCasesHistoricAccessLimitWithPermission"
+    },
+    {
+       "name": "HealthConnectControllerDataScreensNewTests"
+    },
+    {
+       "name": "HealthConnectControllerDataScreensOldTests",
+       "options": [
+               {
+                   "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
+               }
+       ]
+    },
+    {
+       "name": "HealthConnectControllerDeletionTests"
+    },
+    {
+       "name": "HealthConnectControllerExerciseRouteTests"
+    },
+    {
+       "name": "HealthConnectControllerHomePageAndOnboardingTests"
+    },
+    {
+       "name": "HealthConnectControllerManageDataTests"
+    },
+    {
+       "name": "HealthConnectControllerMigrationTests"
+    },
+    {
+       "name": "HealthConnectControllerNavigationTests"
+    },
+    {
+       "name": "HealthConnectControllerPermissionTests"
+    },
+    {
+       "name": "HealthConnectControllerExtraTests"
     }
   ]
 }

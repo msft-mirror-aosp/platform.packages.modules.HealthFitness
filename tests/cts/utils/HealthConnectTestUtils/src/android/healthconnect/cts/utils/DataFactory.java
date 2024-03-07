@@ -367,7 +367,30 @@ public final class DataFactory {
 
     /** Creates and returns a {@link StepsRecord} with the specified arguments. */
     public static StepsRecord getCompleteStepsRecord(
-            Instant startTime, Instant endTime, String clientRecordId, int count) {
+            String id, Instant startTime, Instant endTime, long count) {
+        return getCompleteStepsRecord(
+                id,
+                startTime,
+                endTime,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0L,
+                count);
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            Instant startTime, Instant endTime, long count) {
+        return getCompleteStepsRecord(
+                startTime,
+                endTime,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0L,
+                count);
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            Instant startTime, Instant endTime, String clientRecordId, long count) {
         return getCompleteStepsRecord(
                 startTime, endTime, clientRecordId, /* clientRecordVersion= */ 0L, count);
     }
@@ -378,13 +401,28 @@ public final class DataFactory {
             Instant endTime,
             String clientRecordId,
             long clientRecordVersion,
-            int count) {
+            long count) {
+        return getCompleteStepsRecord(
+                /* id= */ null, startTime, endTime, clientRecordId, clientRecordVersion, count);
+    }
+
+    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
+    public static StepsRecord getCompleteStepsRecord(
+            String id,
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            long count) {
         Device device =
                 new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
         DataOrigin dataOrigin =
                 new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
 
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        if (id != null) {
+            testMetadataBuilder.setId(id);
+        }
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
         testMetadataBuilder.setClientRecordVersion(clientRecordVersion);
