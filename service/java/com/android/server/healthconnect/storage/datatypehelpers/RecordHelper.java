@@ -20,6 +20,7 @@ import static android.health.connect.Constants.DEFAULT_INT;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
@@ -298,9 +299,13 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             @NonNull ContentValues values,
             @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {}
 
-    public List<String> getChildTablesToDeleteOnRecordUpsert(
+    /**
+     * Returns child tables and the columns within them that references their parents. This is used
+     * during updates to determine which child rows should be deleted.
+     */
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
             ArrayMap<String, Boolean> extraWritePermissionToState) {
-        return getAllChildTables();
+        return getAllChildTables().stream().map(it -> new TableColumnPair(it, PARENT_KEY)).toList();
     }
 
     @NonNull
@@ -909,5 +914,24 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      */
     List<String> getPostUpsertCommands(RecordInternal<?> record) {
         return Collections.emptyList();
+    }
+
+    /** Represents a table and a column within that table. */
+    public static final class TableColumnPair {
+        TableColumnPair(String tableName, String columnName) {
+            this.mTableName = tableName;
+            this.mColumnName = columnName;
+        }
+
+        public String getTableName() {
+            return mTableName;
+        }
+
+        public String getColumnName() {
+            return mColumnName;
+        }
+
+        private final String mTableName;
+        private final String mColumnName;
     }
 }

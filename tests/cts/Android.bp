@@ -53,6 +53,7 @@ android_test {
         "modules-utils-build",
         "testng",
         "cts-healthconnect-utils",
+        "cts-healthconnect-lib"
     ],
     min_sdk_version: "34",
     sdk_version: "module_current",
@@ -60,6 +61,7 @@ android_test {
         ":HealthFitnessCtsTestApp",
         ":HealthFitnessCtsTestApp2",
         ":HealthFitnessPermsTestApp",
+        ":CtsHealthConnectTestAppWithWritePermissionsOnly",
     ],
 }
 

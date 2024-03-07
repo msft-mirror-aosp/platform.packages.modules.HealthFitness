@@ -29,6 +29,7 @@ import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
 import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
@@ -159,6 +160,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -843,14 +845,34 @@ public final class TestUtils {
     }
 
     /** Sets up the priority list for aggregation tests. */
-    public static void setupAggregation(String packageName, int dataCategory)
-            throws InterruptedException {
-        insertRecordsForPriority(packageName);
+    public static void setupAggregation(String packageName, int dataCategory) {
+        try {
+            setupAggregation(
+                    record -> insertRecords(Collections.singletonList(record)),
+                    packageName,
+                    dataCategory);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Sets up the priority list for aggregation tests.
+     *
+     * <p>This is mainly used to setup priority list for a test app, so a test can read aggregation
+     * of data inserted by a test app. It would be nicer if this method take an instance of a test
+     * app such as {@code TestAppProxy}, however, it would requires this TestUtils class depends on
+     * the dependency where the TestAppProxy comes from, which then would create a dependency cycle
+     * because TestAppProxy's dependency is already using this TestUtils class.
+     */
+    public static void setupAggregation(
+            ThrowingConsumer<Record> inserter, String packageName, int dataCategory)
+            throws Exception {
+        inserter.acceptOrThrow(getAnUnaggregatableRecord(packageName));
 
         // Add the packageName inserting the records to the priority list manually
         // Since CTS tests get their permissions granted at install time and skip
         // the Health Connect APIs that would otherwise add the packageName to the priority list
-
         updatePriorityWithManageHealthDataPermission(dataCategory, Arrays.asList(packageName));
         FetchDataOriginsPriorityOrderResponse newPriority =
                 getPriorityWithManageHealthDataPermission(dataCategory);
@@ -865,18 +887,21 @@ public final class TestUtils {
     /** Inserts a record that does not support aggregation to enable the priority list. */
     public static void insertRecordsForPriority(String packageName) throws InterruptedException {
         // Insert records that do not support aggregation so that the AppInfoTable is initialised
-        MenstruationPeriodRecord recordToInsert =
-                new MenstruationPeriodRecord.Builder(
-                                new Metadata.Builder()
-                                        .setDataOrigin(
-                                                new DataOrigin.Builder()
-                                                        .setPackageName(packageName)
-                                                        .build())
-                                        .build(),
-                                Instant.now(),
-                                Instant.now().plusMillis(1000))
-                        .build();
-        insertRecords(Arrays.asList(recordToInsert));
+        insertRecords(List.of(getAnUnaggregatableRecord(packageName)));
+    }
+
+    /** Returns a {@link Record} that does not support aggregation. */
+    private static Record getAnUnaggregatableRecord(String packageName) {
+        return new MenstruationPeriodRecord.Builder(
+                        new Metadata.Builder()
+                                .setDataOrigin(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(packageName)
+                                                .build())
+                                .build(),
+                        NOW,
+                        NOW.plusMillis(1000))
+                .build();
     }
 
     /** Updates the priority list after getting the MANAGE_HEALTH_DATA permission. */
@@ -1168,5 +1193,24 @@ public final class TestUtils {
     private static final class HealthConnectReceiver<T>
             extends TestReceiver<T, HealthConnectException> {}
 
-    private static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+    public static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+
+    /**
+     * A {@link Consumer} that allows throwing checked exceptions from its single abstract method.
+     */
+    @FunctionalInterface
+    @SuppressWarnings("FunctionalInterfaceMethodChanged")
+    public interface ThrowingConsumer<T> extends Consumer<T> {
+        /** Implementations of this method might throw exception. */
+        void acceptOrThrow(T t) throws Exception;
+
+        @Override
+        default void accept(T t) {
+            try {
+                acceptOrThrow(t);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 }

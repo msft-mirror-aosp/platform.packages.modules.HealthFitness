@@ -16,14 +16,21 @@
 
 package android.healthconnect.cts.nopermission;
 
+import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
+import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
-import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
+import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
+import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.health.connect.datatypes.TotalCaloriesBurnedRecord.ENERGY_TOTAL;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
 import static android.healthconnect.cts.utils.DataFactory.buildSleepSession;
+import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getDistanceRecordWithNonEmptyId;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
+import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -36,6 +43,8 @@ import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.LocalTimeRangeFilter;
@@ -43,11 +52,13 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
+import android.util.Pair;
 
 import androidx.test.runner.AndroidJUnit4;
 
@@ -61,7 +72,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -203,76 +213,105 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testAggregateNotAllowed() throws InterruptedException {
-        try {
-            List<Record> records =
-                    Arrays.asList(
-                            getHeartRateRecord(71), getHeartRateRecord(72), getHeartRateRecord(73));
-            getAggregateResponse(
-                    new AggregateRecordsRequest.Builder<Long>(
-                                    new TimeInstantRangeFilter.Builder()
-                                            .setStartTime(Instant.ofEpochMilli(0))
-                                            .setEndTime(Instant.now())
-                                            .build())
-                            .addAggregationType(BPM_MAX)
-                            .addAggregationType(BPM_MIN)
-                            .addDataOriginsFilter(
-                                    new DataOrigin.Builder().setPackageName("abc").build())
-                            .build(),
-                    records);
-            Assert.fail("Get Aggregations must be not allowed without right HC permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    public void testAggregate_noPermissions_expectError() throws InterruptedException {
+        List<Pair<Record, AggregationType<?>>> recordAndAggregationTypePairs =
+                List.of(
+                        new Pair<>(getHeartRateRecord(), BPM_MAX),
+                        new Pair<>(getStepsRecord(), STEPS_COUNT_TOTAL),
+                        new Pair<>(getDistanceRecord(), DISTANCE_TOTAL),
+                        new Pair<>(getTotalCaloriesBurnedRecordWithEmptyMetadata(), ENERGY_TOTAL),
+                        new Pair<>(buildSleepSession(), SLEEP_DURATION_TOTAL),
+                        new Pair<>(buildExerciseSession(), EXERCISE_DURATION_TOTAL));
+        for (var recordAndAggregationType : recordAndAggregationTypePairs) {
+            try {
+                List<Record> records = List.of(recordAndAggregationType.first);
+                AggregationType<?> aggregationType = recordAndAggregationType.second;
+                TimeInstantRangeFilter timeInstantRangeFilter =
+                        new TimeInstantRangeFilter.Builder()
+                                .setStartTime(Instant.ofEpochMilli(0))
+                                .setEndTime(NOW.plus(1000, DAYS))
+                                .build();
+                getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<>(timeInstantRangeFilter)
+                                .addAggregationType((AggregationType<Object>) aggregationType)
+                                .addDataOriginsFilter(
+                                        new DataOrigin.Builder().setPackageName("abc").build())
+                                .build(),
+                        records);
+                Assert.fail("Get Aggregations must be not allowed without right HC permission");
+            } catch (HealthConnectException healthConnectException) {
+                assertThat(healthConnectException.getErrorCode())
+                        .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            }
         }
     }
 
     @Test
-    public void testAggregateGroupByDurationNotAllowed() throws InterruptedException {
-        try {
-            Instant start = Instant.now().minusMillis(500);
-            Instant end = Instant.now().plusMillis(2500);
-            getAggregateResponseGroupByDuration(
-                    new AggregateRecordsRequest.Builder<Long>(
-                                    new TimeInstantRangeFilter.Builder()
-                                            .setStartTime(start)
-                                            .setEndTime(end)
-                                            .build())
-                            .addAggregationType(BPM_MAX)
-                            .addAggregationType(BPM_MIN)
-                            .build(),
-                    Duration.ofSeconds(1));
-            Assert.fail(
-                    "Aggregations group by duration must be not allowed without right HC"
-                            + " permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    public void testAggregateGroupByDuration_noPermissions_expectError()
+            throws InterruptedException {
+        List<AggregationType<?>> aggregationTypes =
+                List.of(
+                        BPM_MAX,
+                        STEPS_COUNT_TOTAL,
+                        DISTANCE_TOTAL,
+                        ENERGY_TOTAL,
+                        SLEEP_DURATION_TOTAL,
+                        EXERCISE_DURATION_TOTAL);
+        for (var aggregationType : aggregationTypes) {
+            try {
+                TimeInstantRangeFilter timeInstantRangeFilter =
+                        new TimeInstantRangeFilter.Builder()
+                                .setStartTime(NOW.minusMillis(500))
+                                .setEndTime(NOW.plusMillis(2500))
+                                .build();
+                getAggregateResponseGroupByDuration(
+                        new AggregateRecordsRequest.Builder<>(timeInstantRangeFilter)
+                                .addAggregationType((AggregationType<Object>) aggregationType)
+                                .addDataOriginsFilter(
+                                        new DataOrigin.Builder().setPackageName("abc").build())
+                                .build(),
+                        Duration.ofSeconds(1));
+                Assert.fail(
+                        "Aggregations group by duration must be not allowed without right HC"
+                                + " permission");
+            } catch (HealthConnectException healthConnectException) {
+                assertThat(healthConnectException.getErrorCode())
+                        .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            }
         }
     }
 
     @Test
-    public void testAggregateGroupByPeriodNotAllowed() throws InterruptedException {
-        try {
-            Instant start = Instant.now().minus(3, ChronoUnit.DAYS);
-            Instant end = start.plus(3, ChronoUnit.DAYS);
-            getAggregateResponseGroupByPeriod(
-                    new AggregateRecordsRequest.Builder<Long>(
-                                    new LocalTimeRangeFilter.Builder()
-                                            .setStartTime(
-                                                    LocalDateTime.ofInstant(start, ZoneOffset.UTC))
-                                            .setEndTime(
-                                                    LocalDateTime.ofInstant(end, ZoneOffset.UTC))
-                                            .build())
-                            .addAggregationType(BPM_MAX)
-                            .addAggregationType(BPM_MIN)
-                            .build(),
-                    Period.ofDays(1));
-            Assert.fail(
-                    "Aggregation group by period must be not allowed without right HC permission");
-        } catch (HealthConnectException healthConnectException) {
-            assertThat(healthConnectException.getErrorCode())
-                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
+    public void testAggregateGroupByPeriod_noPermissions_expectError() throws InterruptedException {
+        List<AggregationType<?>> aggregationTypes =
+                List.of(
+                        BPM_MAX,
+                        STEPS_COUNT_TOTAL,
+                        DISTANCE_TOTAL,
+                        ENERGY_TOTAL,
+                        SLEEP_DURATION_TOTAL,
+                        EXERCISE_DURATION_TOTAL);
+        for (var aggregationType : aggregationTypes) {
+            try {
+                Instant start = NOW.minus(3, DAYS);
+                Instant end = start.plus(3, DAYS);
+                LocalTimeRangeFilter localTimeRangeFilter =
+                        new LocalTimeRangeFilter.Builder()
+                                .setStartTime(LocalDateTime.ofInstant(start, ZoneOffset.UTC))
+                                .setEndTime(LocalDateTime.ofInstant(end, ZoneOffset.UTC))
+                                .build();
+                getAggregateResponseGroupByPeriod(
+                        new AggregateRecordsRequest.Builder<>(localTimeRangeFilter)
+                                .addAggregationType((AggregationType<Object>) aggregationType)
+                                .build(),
+                        Period.ofDays(1));
+                Assert.fail(
+                        "Aggregation group by period must be not allowed without right HC"
+                                + " permission");
+            } catch (HealthConnectException healthConnectException) {
+                assertThat(healthConnectException.getErrorCode())
+                        .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            }
         }
     }
 

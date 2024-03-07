@@ -218,6 +218,130 @@ public class PlannedExerciseSessionRecordTest {
     }
 
     @Test
+    public void updateTrainingPlan() throws InterruptedException {
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Block one");
+        PlannedExerciseStep.Builder stepBuilder = baseExerciseStep();
+        stepBuilder.setCompletionGoal(new ExerciseCompletionGoal.StepsGoal(2000));
+        stepBuilder.setDescription("Step one");
+        stepBuilder.addPerformanceGoal(
+                new ExercisePerformanceGoal.PowerGoal(Power.fromWatts(200), Power.fromWatts(240)));
+        stepBuilder.addPerformanceGoal(
+                new ExercisePerformanceGoal.WeightGoal(Mass.fromGrams(10_000)));
+        blockBuilder.addStep(stepBuilder.build());
+        blockBuilder.addStep(stepBuilder.build());
+        builder.addBlock(blockBuilder.build());
+        blockBuilder.clearSteps();
+        blockBuilder.setDescription("Block two");
+        blockBuilder.addStep(stepBuilder.setDescription("Step one").build());
+        blockBuilder.addStep(stepBuilder.setDescription("Step two").build());
+        blockBuilder.addStep(stepBuilder.setDescription("Step three").build());
+        builder.addBlock(blockBuilder.build());
+
+        verifyInsertSucceeds(builder.build());
+        verifyReadReturnsSameRecords(builder.build());
+
+        builder.setTitle("Updated training plan");
+        blockBuilder.setDescription("Updated block description");
+        stepBuilder.setDescription("Updated step");
+        blockBuilder.setSteps(Collections.singletonList(stepBuilder.build()));
+        builder.setBlocks(Collections.singletonList(blockBuilder.build()));
+
+        TestUtils.updateRecords(Collections.singletonList(builder.build()));
+        verifyReadReturnsSameRecords(builder.build());
+    }
+
+    @Test
+    public void updateExerciseSession_dropTheReferenceToTrainingPlan_trainingPlanAlsoUpdated()
+            throws InterruptedException {
+        // Insert a training plan.
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        Record insertedPlannedSession = verifyInsertSucceeds(builder.build());
+
+        verifyReadReturnsSameRecords(builder.build());
+
+        // Now insert an exercise session that completes it.
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(insertedPlannedSession.getMetadata().getId());
+        insertRecordAndGetId(exerciseSession.build());
+
+        // Now update the exercise session to drop the reference to the training plan.
+        ExerciseSessionRecord insertedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadataWithUuid(
+                                        insertedExerciseSession.getMetadata().getId()),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(null);
+        TestUtils.updateRecords(Collections.singletonList(exerciseSession.build()));
+        ExerciseSessionRecord updatedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        assertThat(updatedExerciseSession.getPlannedExerciseSessionId()).isNull();
+        // The training plan's reference to this exercise session should also be nullified.
+        PlannedExerciseSessionRecord updatedPlannedSession =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedPlannedSession.getCompletedExerciseSessionId()).isNull();
+    }
+
+    @Test
+    public void updateExerciseSession_introduceReferenceToTrainingPlan_trainingPlanAlsoUpdated()
+            throws InterruptedException {
+        // Insert a training plan.
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        Record insertedPlannedSession = verifyInsertSucceeds(builder.build());
+
+        verifyReadReturnsSameRecords(builder.build());
+
+        // Now insert an exercise session, but don't complete the training plan.
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                        buildMetadata(null),
+                        SESSION_START_TIME,
+                        SESSION_END_TIME,
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        insertRecordAndGetId(exerciseSession.build());
+
+        // Now update the exercise session to include a reference to the training plan.
+        ExerciseSessionRecord insertedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadataWithUuid(
+                                        insertedExerciseSession.getMetadata().getId()),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(insertedPlannedSession.getMetadata().getId());
+        TestUtils.updateRecords(Collections.singletonList(exerciseSession.build()));
+        ExerciseSessionRecord updatedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        assertThat(updatedExerciseSession.getPlannedExerciseSessionId()).isNotNull();
+        // The training plan's reference to this exercise session should be non-null.
+        PlannedExerciseSessionRecord updatedPlannedSession =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedPlannedSession.getCompletedExerciseSessionId())
+                .isEqualTo(updatedExerciseSession.getMetadata().getId());
+    }
+
+    @Test
     public void deleteRecords() throws InterruptedException {
         PlannedExerciseSessionRecord.Builder builder =
                 basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
@@ -321,6 +445,58 @@ public class PlannedExerciseSessionRecordTest {
         ExerciseSessionRecord updatedExerciseSession =
                 Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
         assertThat(updatedExerciseSession.getPlannedExerciseSessionId()).isNull();
+    }
+
+    @Test
+    public void bidirectionalReference_keptWhenTrainingPlanUpdated() throws InterruptedException {
+        PlannedExerciseSessionRecord.Builder plannedSession =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        Record insertedPlannedSession = verifyInsertSucceeds(plannedSession.build());
+        ExerciseSessionRecord exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(insertedPlannedSession.getMetadata().getId())
+                        .build();
+
+        insertRecords(Collections.singletonList(exerciseSession));
+
+        plannedSession.setTitle("Updated training plan");
+        TestUtils.updateRecords(Collections.singletonList(plannedSession.build()));
+        ExerciseSessionRecord updatedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        assertThat(updatedExerciseSession.getPlannedExerciseSessionId())
+                .isEqualTo(insertedPlannedSession.getMetadata().getId());
+    }
+
+    @Test
+    public void bidirectionalReference_keptWhenExerciseSessionUpdated()
+            throws InterruptedException {
+        PlannedExerciseSessionRecord.Builder plannedSession =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        Record insertedPlannedSession = verifyInsertSucceeds(plannedSession.build());
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(insertedPlannedSession.getMetadata().getId());
+
+        insertRecords(Collections.singletonList(exerciseSession.build()));
+
+        exerciseSession.setTitle("Updated exercise session");
+        TestUtils.updateRecords(Collections.singletonList(exerciseSession.build()));
+        ExerciseSessionRecord updatedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        PlannedExerciseSessionRecord updatedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedExerciseSession.getPlannedExerciseSessionId())
+                .isEqualTo(insertedPlannedSession.getMetadata().getId());
+        assertThat(updatedTrainingPlan.getCompletedExerciseSessionId())
+                .isEqualTo(updatedExerciseSession.getMetadata().getId());
     }
 
     @Test
@@ -558,6 +734,17 @@ public class PlannedExerciseSessionRecordTest {
                                 .build())
                 .setId(UUID.randomUUID().toString())
                 .setClientRecordId(clientRecordId)
+                .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
+                .build();
+    }
+
+    private static Metadata buildMetadataWithUuid(String uuid) {
+        return new Metadata.Builder()
+                .setDataOrigin(
+                        new DataOrigin.Builder()
+                                .setPackageName("android.healthconnect.cts")
+                                .build())
+                .setId(uuid)
                 .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
                 .build();
     }

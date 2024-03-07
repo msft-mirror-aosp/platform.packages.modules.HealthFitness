@@ -21,6 +21,9 @@
        "options": [
                 {
                     "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
+                },
+                {
+                    "exclude-annotation": "androidx.test.filters.FlakyTest"
                 }
         ]
     },

@@ -536,9 +536,11 @@ public final class PlannedExerciseSessionRecordHelper
     }
 
     @Override
-    public List<String> getChildTablesToDeleteOnRecordUpsert(
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
             ArrayMap<String, Boolean> extraWritePermissionToState) {
-        // Child table rows will get deleted automatically via cascading deletion.
-        return Collections.emptyList();
+        // Children of the block table will get automatically deleted via cascades.
+        return Collections.singletonList(
+                new TableColumnPair(
+                        PLANNED_EXERCISE_SESSION_BLOCKS_TABLE_NAME, BLOCK_PARENT_ID_COLUMN_NAME));
     }
 }
