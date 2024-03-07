@@ -15,19 +15,17 @@
   limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <com.android.settingslib.widget.TopIntroPreference
-        android:key="export_settings_top_intro"
-        android:title="@string/export_settings_screen_description" />
-    <!-- TODO: b/325914485 - Add the learn more link once the help page is available. -->
-    <com.android.healthconnect.controller.export.ExportSetupButtonPreference
-        android:key="export_setup_button" />
     <PreferenceCategory
         android:key="settings_category"
-        android:title="@string/export_settings_header">
-        <!-- TODO: b/325914485 - Add auto-save status. -->
+        android:title="@string/export_and_import_title">
         <com.android.healthconnect.controller.shared.preference.HealthPreference
-            android:key="auto_save_section"
+            android:key="recurring_export"
             android:icon="?attr/repeatIcon"
-            android:title="@string/auto_save" />
+            android:title="@string/recurring_export" />
+        <com.android.healthconnect.controller.shared.preference.HealthPreference
+            android:key="restore_data"
+            android:icon="?attr/settingsBackupRestoreIcon"
+            android:title="@string/restore_data"
+            android:summary="@string/restore_data_description" />
     </PreferenceCategory>
 </PreferenceScreen>
