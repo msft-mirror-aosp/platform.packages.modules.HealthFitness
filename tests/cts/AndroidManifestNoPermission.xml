@@ -33,4 +33,8 @@
     </instrumentation>
 
     <!--  self-instrumenting test package. -->
+
+    <queries>
+        <package android:name="android.healthconnect.cts.testapp.readWritePerms.A"/>
+    </queries>
 </manifest>

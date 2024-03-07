@@ -13,7 +13,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.android.healthconnect.controller.tests.utils
+package com.android.healthconnect.controller.tests.utiltests
 
 import com.android.healthconnect.controller.utils.atStartOfDay
 import com.android.healthconnect.controller.utils.getInstant

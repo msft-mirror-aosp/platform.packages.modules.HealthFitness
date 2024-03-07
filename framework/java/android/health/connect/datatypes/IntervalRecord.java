@@ -36,6 +36,8 @@ public abstract class IntervalRecord extends Record {
      * @param endTime End time of this activity
      * @param endZoneOffset Zone offset of the user when the activity finished
      * @param skipValidation Boolean flag to skip validation of record values.
+     * @param enforceFutureTimeRestrictions When {@code true}, start times in the future are
+     *     forbidden.
      */
     IntervalRecord(
             @NonNull Metadata metadata,
@@ -43,13 +45,14 @@ public abstract class IntervalRecord extends Record {
             @NonNull ZoneOffset startZoneOffset,
             @NonNull Instant endTime,
             @NonNull ZoneOffset endZoneOffset,
-            boolean skipValidation) {
+            boolean skipValidation,
+            boolean enforceFutureTimeRestrictions) {
         super(metadata);
         Objects.requireNonNull(startTime);
         Objects.requireNonNull(startZoneOffset);
         Objects.requireNonNull(endTime);
         Objects.requireNonNull(endZoneOffset);
-        if (!skipValidation && startTime.isAfter(Instant.now())) {
+        if (!skipValidation && startTime.isAfter(Instant.now()) && enforceFutureTimeRestrictions) {
             throw new IllegalArgumentException(
                     "Record start time must not be in the future, start time: "
                             + startTime

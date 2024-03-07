@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.tests.export
+package com.android.healthconnect.controller.tests.backuprestore
 
 import android.content.Context
 import android.os.Bundle
@@ -28,7 +28,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.export.ExportSettingsFragment
+import com.android.healthconnect.controller.backuprestore.BackupAndRestoreSettingsFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -38,7 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class ExportSettingsFragmentTest {
+class BackupAndRestoreSettingsFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -53,27 +53,26 @@ class ExportSettingsFragmentTest {
     }
 
     @Test
-    fun exportSettingsFragmentInit_showsFragmentCorrectly() {
-        launchFragment<ExportSettingsFragment>(Bundle())
+    fun backupAndRestoreSettingsFragmentInit_showsFragmentCorrectly() {
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Save Health\u00A0Connect data and permissions so you can import them if you switch to a new phone. You can choose where to store this data before saving.")).check(matches(isDisplayed()))
+        onView(withText("Export and import")).check(matches(isDisplayed()))
 
-        onView(withText("Set up")).check(matches(isDisplayed()))
+        onView(withText("Recurring export")).check(matches(isDisplayed()))
 
-        onView(withText("Settings")).check(matches(isDisplayed()))
-        onView(withText("Auto-save")).check(matches(isDisplayed()))
+        onView(withText("Restore data")).check(matches(isDisplayed()))
+        onView(withText("Load previously exported data")).check(matches(isDisplayed()))
     }
 
     @Test
-    fun exportSettingsFragment_clicksSetupButton_navigatesToExportActivity() {
-        launchFragment<ExportSettingsFragment>(Bundle()) {
+    fun backupAndRestoreSettingsFragment_clicksRecurringExport_navigatesToExportSetupActivity() {
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
-            navHostController.setCurrentDestination(R.id.exportSettingsFragment)
+            navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withText("Set up")).check(matches(isClickable()))
-        onView(withText("Set up")).perform(click())
+        onView(withText("Recurring export")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
     }

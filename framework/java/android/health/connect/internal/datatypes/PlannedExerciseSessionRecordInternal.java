@@ -102,6 +102,12 @@ public final class PlannedExerciseSessionRecordInternal
         return mExerciseBlocks;
     }
 
+    /** returns the UUID of the exercise session which completed this plan, if it exists. */
+    @Nullable
+    public UUID getCompletedExerciseSessionId() {
+        return mCompletedExerciseSessionId;
+    }
+
     /** returns whether this object has an explicit time set. */
     public boolean getHasExplicitTime() {
         return mHasExplicitTime;

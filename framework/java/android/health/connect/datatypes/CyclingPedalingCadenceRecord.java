@@ -90,7 +90,14 @@ public final class CyclingPedalingCadenceRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull List<CyclingPedalingCadenceRecordSample> cyclingPedalingCadenceRecordSamples,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(cyclingPedalingCadenceRecordSamples);
         if (!skipValidation) {
             ValidationUtils.validateSampleStartAndEndTime(
