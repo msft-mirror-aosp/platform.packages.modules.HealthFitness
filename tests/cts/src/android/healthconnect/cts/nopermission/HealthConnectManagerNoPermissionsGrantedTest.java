@@ -16,6 +16,12 @@
 
 package android.healthconnect.cts.nopermission;
 
+import static android.health.connect.HealthPermissions.READ_DISTANCE;
+import static android.health.connect.HealthPermissions.READ_EXERCISE;
+import static android.health.connect.HealthPermissions.READ_HEART_RATE;
+import static android.health.connect.HealthPermissions.READ_SLEEP;
+import static android.health.connect.HealthPermissions.READ_STEPS;
+import static android.health.connect.HealthPermissions.READ_TOTAL_CALORIES_BURNED;
 import static android.health.connect.datatypes.DistanceRecord.DISTANCE_TOTAL;
 import static android.health.connect.datatypes.ExerciseSessionRecord.EXERCISE_DURATION_TOTAL;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
@@ -31,6 +37,8 @@ import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTotalCaloriesBurnedRecordWithEmptyMetadata;
+import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
+import static android.healthconnect.cts.utils.PermissionHelper.revokeAllPermissions;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -52,9 +60,17 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.DistanceRecord;
+import android.health.connect.datatypes.ExerciseSessionRecord;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
+import android.health.connect.datatypes.SleepSessionRecord;
+import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
@@ -80,6 +96,8 @@ import java.util.List;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectManagerNoPermissionsGrantedTest {
+    private static final TestAppProxy APP_A_WITH_READ_WRITE_PERMS =
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A");
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -87,7 +105,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Test
-    public void testInsertNotAllowed() throws InterruptedException {
+    public void testInsert_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 insertRecords(Collections.singletonList(testRecord));
@@ -100,7 +118,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testUpdateNotAllowed() throws InterruptedException {
+    public void testUpdate_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 updateRecords(Collections.singletonList(testRecord));
@@ -113,7 +131,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testDeleteUsingIdNotAllowed() throws InterruptedException {
+    public void testDeleteUsingId_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 deleteRecords(Collections.singletonList(testRecord));
@@ -126,7 +144,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testDeleteUsingFilterNotAllowed() throws InterruptedException {
+    public void testDeleteUsingFilter_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 verifyDeleteRecords(
@@ -144,7 +162,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testChangeLogsTokenNotAllowed() throws InterruptedException {
+    public void testChangeLogsToken_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 getChangeLogToken(
@@ -161,7 +179,44 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testReadByFiltersNotAllowed() throws InterruptedException {
+    public void testGetChangeLogs_noPermissions_expectError() throws Exception {
+        TestAppProxy testApp = APP_A_WITH_READ_WRITE_PERMS;
+        String packageName = testApp.getPackageName();
+        revokeAllPermissions(packageName, /* reason= */ "for test");
+        List<Pair<String, Class<? extends Record>>> permissionAndRecordClassPairs =
+                List.of(
+                        new Pair<>(READ_STEPS, StepsRecord.class),
+                        new Pair<>(READ_DISTANCE, DistanceRecord.class),
+                        new Pair<>(READ_HEART_RATE, HeartRateRecord.class),
+                        new Pair<>(READ_SLEEP, SleepSessionRecord.class),
+                        new Pair<>(READ_EXERCISE, ExerciseSessionRecord.class),
+                        new Pair<>(READ_TOTAL_CALORIES_BURNED, TotalCaloriesBurnedRecord.class));
+
+        for (var permissionAndRecordClass : permissionAndRecordClassPairs) {
+            String permission = permissionAndRecordClass.first;
+            Class<? extends Record> recordClass = permissionAndRecordClass.second;
+            grantPermission(packageName, permission);
+            String token =
+                    testApp.getChangeLogToken(
+                            new ChangeLogTokenRequest.Builder().addRecordType(recordClass).build());
+            revokeAllPermissions(packageName, /* reason= */ "for test");
+
+            try {
+                testApp.getChangeLogs(new ChangeLogsRequest.Builder(token).build());
+
+                Assert.fail(
+                        String.format(
+                                "Getting change logs for %s must be not allowed with %s permission",
+                                recordClass.getSimpleName(), permission));
+            } catch (HealthConnectException healthConnectException) {
+                assertThat(healthConnectException.getErrorCode())
+                        .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            }
+        }
+    }
+
+    @Test
+    public void testReadByFilters_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 readRecords(
@@ -177,7 +232,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testReadByRecordIdsNotAllowed() throws InterruptedException {
+    public void testReadByRecordIds_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 readRecords(
@@ -195,7 +250,7 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
     }
 
     @Test
-    public void testReadByClientIdsNotAllowed() throws InterruptedException {
+    public void testReadByClientIds_noPermissions_expectError() throws InterruptedException {
         for (Record testRecord : getTestRecords()) {
             try {
                 readRecords(

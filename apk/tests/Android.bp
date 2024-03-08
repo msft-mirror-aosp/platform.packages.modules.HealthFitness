@@ -15,52 +15,21 @@ package {
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
-
-java_library {
-    name: "SafetyCenterTests",
+java_defaults {
+    name: "health-connect-controller-tests-default",
     srcs: [
-        "src/**/safetycenter/*.kt"
-    ],
-    sdk_version: "system_current",
-    min_sdk_version: "34",
-    static_libs: [
-        "kotlin-stdlib",
-        "hilt_android",
-        "androidx.test.core",
-        "androidx.test.rules",
-        "androidx.test.espresso.contrib",
-        "androidx.test.ext.junit",
-        "androidx.test.ext.truth",
-        "androidx.test.rules",
-        "HealthConnectLibrary",
-        "hilt_android_testing",
-        "mockito-target-minus-junit4",
-    ],
-    libs: [
-        "android.test.mock.stubs",
-        "android.test.mock",
-    ]
-}
-
-
-android_test {
-    name: "HealthConnectControllerUITests",
-    srcs: [
-        "src/**/*.java",
-        "src/**/*.kt",
-    ],
-    exclude_srcs: [
-        "src/**/safetycenter/*.kt"
+        "src/com/android/healthconnect/controller/tests/utils/**/*.java",
+        "src/com/android/healthconnect/controller/tests/utils/**/*.kt",
+        "src/**/HiltTestRunner.kt",
+        "src/**/TestActivity.kt",
     ],
     defaults: ["modules-utils-testable-device-config-defaults"],
     sdk_version: "module_current",
     min_sdk_version: "34",
     static_libs: [
-        "SafetyCenterTests",
         "androidx.test.core",
         "androidx.test.rules",
         "HealthConnectPermissionsApis",
-        "HealthConnectMigrationApis",
         "HealthConnectLibrary",
         "SettingsLibSettingsTheme",
         "kotlin-stdlib",
@@ -94,8 +63,8 @@ android_test {
     ],
     kotlincflags: ["-Xjvm-default=all"],
     test_suites: [
-      "general-tests",
-      "mts-healthfitness",
+        "general-tests",
+        "mts-healthfitness",
     ],
     test_mainline_modules: ["com.google.android.healthfitness.apex"],
     data: [
@@ -104,4 +73,257 @@ android_test {
         ":UnsupportedTestApp",
         ":OldPermissionsTestApp",
     ],
+    test_config_template: "AndroidTestTemplate.xml",
+    visibility: ["//visibility:private"]
+}
+
+
+java_library {
+    name: "SafetyCenterTests",
+    srcs: [
+        "src/**/safetycenter/*.kt"
+    ],
+    sdk_version: "system_current",
+    min_sdk_version: "34",
+    static_libs: [
+        "kotlin-stdlib",
+        "hilt_android",
+        "androidx.test.core",
+        "androidx.test.rules",
+        "androidx.test.espresso.contrib",
+        "androidx.test.ext.junit",
+        "androidx.test.ext.truth",
+        "androidx.test.rules",
+        "HealthConnectLibrary",
+        "hilt_android_testing",
+        "mockito-target-minus-junit4",
+    ],
+    libs: [
+        "android.test.mock.stubs",
+        "android.test.mock",
+    ],
+}
+
+filegroup {
+    name: "data-screens-new-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/data/**/*.java",
+        "src/com/android/healthconnect/controller/tests/data/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerDataScreensNewTests",
+    srcs: [":data-screens-new-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.data.screens.new",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.data.screens.new",
+}
+
+filegroup {
+    name: "data-screens-old-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/categories/**/*.java",
+        "src/com/android/healthconnect/controller/tests/categories/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/dataaccess/**/*.java",
+        "src/com/android/healthconnect/controller/tests/dataaccess/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/dataentries/**/*.java",
+        "src/com/android/healthconnect/controller/tests/dataentries/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/entrydetails/**/*.java",
+        "src/com/android/healthconnect/controller/tests/entrydetails/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/permissiontypes/**/*.java",
+        "src/com/android/healthconnect/controller/tests/permissiontypes/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerDataScreensOldTests",
+    srcs: [":data-screens-old-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.data.screens.old",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.data.screens.old",
+}
+
+filegroup {
+    name: "deletion-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/autodelete/**/*.java",
+        "src/com/android/healthconnect/controller/tests/autodelete/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/deletion/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/deletion/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/selectabledeletion/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/selectabledeletion/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerDeletionTests",
+    srcs: [":deletion-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.deletion",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.deletion",
+}
+
+filegroup {
+    name: "exercise-route-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/route/**/*.java",
+        "src/com/android/healthconnect/controller/tests/route/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerExerciseRouteTests",
+    srcs: [":exercise-route-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.exercise.routes",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.exercise.routes",
+}
+
+filegroup {
+    name: "home-and-onboarding-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/home/**/*.java",
+        "src/com/android/healthconnect/controller/tests/home/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/onboarding/**/*.java",
+        "src/com/android/healthconnect/controller/tests/onboarding/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/recentaccess/**/*.java",
+        "src/com/android/healthconnect/controller/tests/recentaccess/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerHomePageAndOnboardingTests",
+    srcs: [":home-and-onboarding-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.home.and.onboarding",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.home.and.onboarding",
+}
+
+filegroup {
+    name: "manage-data-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/datasources/**/*.java",
+        "src/com/android/healthconnect/controller/tests/datasources/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/managedata/**/*.java",
+        "src/com/android/healthconnect/controller/tests/managedata/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerManageDataTests",
+    srcs: [":manage-data-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.manage.data",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.manage.data",
+}
+
+filegroup {
+    name: "migration-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/migration/**/*.java",
+        "src/com/android/healthconnect/controller/tests/migration/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerMigrationTests",
+    srcs: [":migration-tests-srcs"],
+    static_libs: [
+        "HealthConnectMigrationApis"
+    ],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.migration",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.migration",
+}
+
+filegroup {
+    name: "navigation-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/navigation/**/*.java",
+        "src/com/android/healthconnect/controller/tests/navigation/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerNavigationTests",
+    srcs: [":navigation-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.navigation",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.navigation",
+}
+
+filegroup {
+    name: "permission-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/permissions/**/*.java",
+        "src/com/android/healthconnect/controller/tests/permissions/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/shared/**/*.java",
+        "src/com/android/healthconnect/controller/tests/shared/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerPermissionTests",
+    srcs: [":permission-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.permissions",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.permissions",
+}
+
+filegroup {
+    name: "extra-tests-srcs",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+    ],
+    exclude_srcs: [
+        ":deletion-tests-srcs",
+        ":data-screens-new-tests-srcs",
+        ":data-screens-old-tests-srcs",
+        ":exercise-route-tests-srcs",
+        ":home-and-onboarding-tests-srcs",
+        ":manage-data-tests-srcs",
+        ":migration-tests-srcs",
+        ":navigation-tests-srcs",
+        ":permission-tests-srcs",
+        "src/**/safetycenter/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerExtraTests",
+    srcs: [":extra-tests-srcs"],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.extras",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.extras",
+}
+
+
+android_test {
+    name: "HealthConnectControllerUITests",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+    ],
+    exclude_srcs: [
+        "src/**/safetycenter/*.kt"
+    ],
+    defaults: ["health-connect-controller-tests-default"],
+    static_libs: [
+        "SafetyCenterTests",
+        "HealthConnectMigrationApis",
+    ],
+    package_name: "com.android.healthconnect.controller.tests",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests",
 }
