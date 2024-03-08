@@ -305,30 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect, ಆ್ಯಪ್ ಅನುಮತಿಗಳನ್ನು ಏಕೆ ತೆಗೆದುಹಾಕುತ್ತದೆ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play ನಿಂದ ಆ್ಯಪ್ ಅನ್ನು ಅಮಾನತುಗೊಳಿಸಿದರೆ ಅಥವಾ ತೆಗೆದುಹಾಕಿದರೆ, Health Connect ಅದರ ಅನುಮತಿಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತೆಗೆದುಹಾಕುತ್ತದೆ.\n\nಇದರರ್ಥ Health Connect ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಆ್ಯಪ್‌ಗೆ ಇನ್ನು ಮುಂದೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. ಈ ಆ್ಯಪ್ ಈ ಹಿಂದೆ ಬರೆದ ಡೇಟಾವನ್ನು ಹೊಂದಿದ್ದರೆ, ಅದು ನಿಷ್ಕ್ರಿಯ ಆ್ಯಪ್‌ಗಳ ಪಟ್ಟಿಯಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ಅರ್ಥವಾಯಿತು"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
     <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
+    <!-- no translation found for recurring_export (111638340692746218) -->
     <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <!-- no translation found for restore_data (3401173690437871417) -->
     <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
     <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <string name="choose_frequency" msgid="1077467424225083246">"ಫ್ರೀಕ್ವೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ಒಂದು ಬಾರಿ ಡೇಟಾ ಸೇವ್ ಮಾಡುವ ಆಯ್ಕೆಯನ್ನು ಮಾಡಿ ಅಥವಾ ಸಾಮಾನ್ಯ ಸಮಯಗಳಲ್ಲಿ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೇವ್ ಆಗುವಂತೆ ಸೆಟ್ ಮಾಡಿ."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ಪ್ರತಿದಿನ"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ಸಾಪ್ತಾಹಿಕ"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ಮಾಸಿಕ"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
     <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
     <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
     <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
     <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
     <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
     <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"ಹಿಂದಕ್ಕೆ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ಮುಂದಿನದು"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ಬಳಕೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ನಿಮ್ಮ ಆರೋಗ್ಯ ಹಾಗೂ ಫಿಟ್‌ನೆಸ್ ಡೇಟಾವನ್ನು ಸಂಗ್ರಹಿಸುತ್ತದೆ, ಅದರಿಂದ ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿರುವ ವಿವಿಧ ಆ್ಯಪ್‌ಗಳನ್ನು ಸಿಂಕ್ ಮಾಡಲು ನಿಮಗೆ ಸರಳವಾದ ಮಾರ್ಗವನ್ನು ಒದಗಿಸುತ್ತದೆ"</string>
     <string name="share_data" msgid="3481932156368883946">"ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳೊಂದಿಗೆ ಡೇಟಾವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ"</string>
@@ -771,18 +776,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"ಈ ಆ್ಯಪ್ ಕನೆಕ್ಟ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ಗಳಿಂದ ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಹೇಗೆ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡುತ್ತದೆ ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ಪ್ರತಿ ಬಾರಿ ಕೇಳಿ"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"ಅನುಮತಿಸಬೇಡಿ"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ಎರಡೂ ಡೇಟಾ ಪ್ರಕಾರಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಬೇಕೇ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ಎರಡೂ ಡೇಟಾ ಪ್ರಕಾರಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬೇಕೇ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ, ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವುದಕ್ಕಾಗಿ ವ್ಯಾಯಾಮಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಡೇಟಾಗೆ ರೀಡ್ ಆ್ಯಕ್ಸೆಸ್ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ, ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವುದಕ್ಕಾಗಿ ವ್ಯಾಯಾಮಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಡೇಟಾಗೆ ಆ್ಯಕ್ಸೆಸ್ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ಹೌದು"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ಇಲ್ಲ"</string>
     <string name="back_button" msgid="780519527385993407">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="loading" msgid="2526615755685950317">"ಲೋಡ್ ಆಗುತ್ತಿದೆ…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ಇಂಟಿಗ್ರೇಶನ್ ಪ್ರಗತಿಯಲ್ಲಿದೆ"</string>
