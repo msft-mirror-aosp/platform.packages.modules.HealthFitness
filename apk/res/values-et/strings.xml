@@ -305,16 +305,33 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Miks eemaldab Health Connect rakenduste load?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Kui rakendus on Google Plays peatatud või sealt eemaldatud, eemaldab Health Connect automaatselt selle load.\n\nSee tähendab, et rakendus ei pääse enam Health Connecti salvestatud andmetele juurde. Kui rakendusel on varem kirjutatud andmeid, kuvatakse rakendus mitteaktiivsete rakenduste loendis."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Selge"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Salvestage andmed"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Salvestage Health Connecti andmed ja load, et saaksite need uue telefoni kasutuselevõtmisel importida. Saate enne salvestamist valida, kuhu need andmed talletada."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Seadista"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Seaded"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Automaatne salvestamine"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Valige sagedus"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Valige andmete ühekordne salvestamine või seadistage see regulaarsetel aegadel automaatselt salvestama."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Iga päev"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Iga nädal"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Iga kuu"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"Tagasi"</string>
     <string name="export_next_button" msgid="657930567137105172">"Järgmine"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Alustage Health Connecti kasutamist"</string>
@@ -755,8 +772,8 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Luba kõik marsruudid"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Ära luba"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Luba alati"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Treeningu marsruudi jagamine"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Valige, kuidas see rakendus ühendatud rakenduste treeningu marsruutidele juurde pääseb"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Treeningumarsruudi jagamine"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Valige, kuidas see rakendus ühendatud rakenduste treeningumarsruutidele juurde pääseb"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Küsi iga kord"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Ära luba"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Kas lubada mõlemad andmetüübid?"</string>

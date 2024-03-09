@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‎‏‏‏‏‎‏‎‏‎‏‏‏‎‎‏‎‏‎‎‏‎‏‎‎‎‎‏‎‏‎‎‎‏‏‎‎‏‏‎‎‎‏‎‏‏‏‏‎‎‏‏‏‎‎‏‏‎‏‏‎Why Health Connect removes app permissions‎‏‎‎‏‎"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‏‏‎‏‎‏‎‎‏‏‏‏‏‎‎‎‏‎‎‏‎‎‎‎‏‏‎‏‏‏‎‎‎‎‏‏‏‎‏‎‏‎‎‎‎‏‏‏‏‏‎‎‏‎‏‏‎‎‏‏‎If an app is suspended or removed from Google Play, Health Connect automatically removes its permissions.‎‏‎‎‏‏‎\n‎‏‎‎‏‏‏‎‎‏‎‎‏‏‎\n‎‏‎‎‏‏‏‎This means the app can no longer access data stored in Health Connect. If this app has previously written data, it appears in the inactive apps list.‎‏‎‎‏‎"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‎‎‏‎‎‏‏‎‎‏‎‏‎‏‎‏‎‎‏‎‏‎‎‏‏‏‎‏‎‏‏‏‎‏‏‏‏‎‎‎‏‎‏‏‎‏‎‎‏‎‎‎‏‏‏‎‏‏‏‎Got it‎‏‎‎‏‎"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‏‎‎‎‏‎‏‎‎‎‏‏‎‏‎‎‏‎‎‏‏‎‏‎‎‏‎‏‎‏‎‏‏‏‏‎‏‎‎‎‎‏‎‏‎‎‎‎‏‏‎‎‏‎‎‎‎‏‏‎Save data‎‏‎‎‏‎"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‏‏‎‎‎‎‎‎‎‏‎‎‎‏‏‎‏‎‎‎‏‎‏‏‎‎‏‏‎‎‎‏‏‏‏‏‏‏‎‎‏‏‎‏‎‏‏‏‏‏‎‎‏‏‎‏‏‏‎‏‎Save Health Connect data and permissions so you can import them if you switch to a new phone. You can choose where to store this data before saving.‎‏‎‎‏‎"</string>
-    <string name="setup_button" msgid="1407942598553043961">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‎‏‏‏‎‎‎‏‎‏‎‎‎‎‎‎‏‎‎‎‏‎‏‎‏‎‏‎‏‏‏‎‎‏‎‏‏‏‎‎‏‎‏‎‎‎‎‎‎‏‏‏‏‏‏‏‎‎‏‎Set up‎‏‎‎‏‎"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‎‎‎‎‏‏‏‎‎‏‏‎‏‎‏‏‏‏‎‏‎‏‏‏‏‎‎‏‎‎‎‎‏‎‎‎‎‎‏‎‎‎‎‎‏‎‎‎‏‏‏‎‎‏‏‎‏‏‎‏‏‎Settings‎‏‎‎‏‎"</string>
-    <string name="auto_save" msgid="7146497593975616076">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‎‎‏‏‎‎‏‎‏‏‎‏‎‏‏‏‎‏‎‏‏‎‏‏‎‎‏‎‏‎‏‎‏‏‎‏‎‎‎‏‏‎‎‏‏‎‏‏‎‎‏‎‎‏‎‎‏‏‎‎‎Auto-save‎‏‎‎‏‎"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‏‏‎‏‏‏‏‎‎‏‏‏‏‏‎‏‏‏‎‏‏‏‎‏‎‎‏‏‏‏‎‎‏‎‏‏‏‏‏‏‏‎‏‏‎‏‏‏‏‏‏‎‏‏‎‏‏‏‎‎Choose frequency‎‏‎‎‏‎"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‎‏‎‎‏‏‏‎‎‎‏‏‏‎‎‎‏‏‎‏‏‏‎‏‎‏‏‎‏‎‎‏‏‎‎‏‎‏‎‎‏‎‎‏‎‎‎‎‏‎‏‏‎‏‏‏‏‏‎‎Choose to save data once, or set it to save automatically at regular times.‎‏‎‎‏‎"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‏‎‎‎‏‏‏‏‎‏‎‎‏‎‎‎‎‎‏‎‏‏‏‏‏‏‏‎‎‎‎‎‎‎‏‎‏‏‎‎‏‏‏‎‏‎‎‎‎‎‏‎‏‎‎‎‏‏‏‏‏‎Daily‎‏‎‎‏‎"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‎‏‎‏‎‏‎‏‏‎‎‎‎‎‎‎‎‎‎‎‏‏‎‎‎‎‎‏‎‎‎‏‎‎‏‎‎‏‏‏‎‏‎‎‏‎‎‎‎‏‎‎‏‎‎‏‎‎‎‏‎Weekly‎‏‎‎‏‎"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‎‏‎‎‎‏‎‎‎‎‎‎‏‎‏‎‎‏‎‏‏‏‏‏‏‏‏‏‏‎‎‎‎‎‏‏‎‏‏‎‎‎‏‏‏‏‏‏‏‎‏‏‎‎‏‎‎‏‎‎Monthly‎‏‎‎‏‎"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‏‏‎‏‏‏‎‏‎‎‏‏‏‏‏‏‎‎‏‏‎‎‏‏‏‎‏‏‏‏‏‏‏‎‎‎‏‎‎‎‎‏‏‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‏‏‏‎Turn on encryption‎‏‎‎‏‎"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‏‏‎‏‎‏‎‎‎‏‎‏‎‎‎‏‎‎‏‎‎‏‎‎‎‏‎‎‎‎‎‏‏‎‎‏‎‏‏‎‏‏‎‎‎‏‏‎‏‎‎‎‎‎‎‏‎‎‎‎‎Data needs to be encrypted before it is saved. No one, not even Google or Health Connect, will be able to access it.‎‏‎‎‏‎"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‏‎‎‏‎‎‎‏‎‏‎‎‎‎‎‎‎‏‏‎‏‎‏‎‎‏‏‏‏‎‎‏‏‎‏‏‏‎‏‎‏‎‎‎‏‎‎‏‎‏‎‎‏‏‎‎‎‏‏‎Create a password to protect your encrypted data. You will need this password to import and restore your data.‎‏‎‎‏‎"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‎‎‏‎‎‏‏‏‏‎‎‏‏‎‏‎‏‏‏‎‏‏‏‏‎‎‏‎‎‎‏‎‎‎‎‎‎‏‎‏‎‏‏‎‎‏‎‎‏‏‎‎‎‏‏‏‎‏‏‎‎Password‎‏‎‎‏‎"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‎‎‎‎‎‎‏‎‏‎‎‎‎‎‏‎‏‎‎‏‏‎‏‏‎‏‏‏‏‎‏‎‏‏‏‏‎‎‎‎‏‏‎‏‏‏‎‏‏‏‎‎‎‎‎‏‏‎‏‎‎Repeat password‎‏‎‎‏‎"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‎‎‏‎‎‏‏‏‎‎‎‎‎‏‏‎‏‎‏‏‏‏‎‏‎‎‏‎‏‏‏‏‎‎‎‏‎‏‎‏‎‎‏‏‏‏‎‎‎‎‏‏‎‏‎‎‎‎‏‎If you forget your password and lose your phone, Health Connect cannot help you recover your saved data.‎‏‎‎‏‎"</string>
     <string name="export_back_button" msgid="3550795479165524982">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‏‎‎‎‏‎‏‎‎‎‏‏‎‏‏‏‏‎‏‎‏‏‎‏‎‏‏‎‎‏‏‏‎‎‏‎‏‏‎‏‏‏‎‎‏‎‏‎‏‏‎‏‏‏‏‏‏‎‏‏‎‎Back‎‏‎‎‏‎"</string>
     <string name="export_next_button" msgid="657930567137105172">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‎‎‏‎‎‏‎‎‎‎‏‎‏‏‏‎‎‎‎‎‏‎‏‏‏‎‏‎‏‏‎‏‏‎‏‎‎‎‏‎‏‎‎‎‎‎‏‎‏‎‏‎‎‎‏‎‏‎‎‎Next‎‏‎‎‏‎"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‏‎‏‏‎‏‎‏‎‏‎‏‎‎‎‎‎‏‎‎‎‏‎‎‎‎‏‎‏‎‏‎‏‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‏‏‎‎‏‎‎‏‏‏‎‎‎Get started with Health Connect‎‏‎‎‏‎"</string>

@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect колдонмолордун уруксаттарын эмне үчүн өчүрөт"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Эгер колдонмо Google Play\'де убактылуу токтотулуп же өчүрүлсө, Health Connect анын уруксаттарын автоматтык түрдө өчүрүп коёт.\n\nБул колдонмо Health Connect\'те сакталган маалыматыңызга мындан ары мүмкүнчүлүк ала албайт дегенди билдирет. Бул колдонмонун мурда жазылган маалыматы болсо, ал жигерсиз колдонмолордун тизмесинде көрүнөт."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Түшүндүм"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Трафикти үнөмдөңүз"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Жаңы телефонго которулсаңыз, Health Connect маалыматын жана уруксаттарын телефонго өткөрүп алуу үчүн, аларды сактаңыз. Сактоодон мурун бул нерселерди кайда сактоону тандай аласыз."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Тууралоо"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Параметрлер"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Автоматтык түрдө сактоо"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Жыштыкты тандаңыз"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Нерселерди бир жолу же аларды белгиленген убакта автоматтык түрдө сактоону тандаңыз."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Күн сайын"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Апта сайын"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ай сайын"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Шифрлөөнү күйгүзүү"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Маалыматтарды сактоодон мурда шифрлөө керек. Аны эч ким, Google же Health Connect да колдоно албайт."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Шифрленген маалыматтарды коргоо үчүн сырсөз түзүңүз. Бул сырсөз маалыматтарды импорттоо жана калыбына келтирүү үчүн керек болот."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Сырсөз"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Сырсөздү кайталаңыз"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Эгер сырсөздү унутуп калсаңыз же телефонду жоготуп алсаңыз, Health Connect сакталган маалыматтарды калыбына келтире албайт."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Артка"</string>
     <string name="export_next_button" msgid="657930567137105172">"Кийинки"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'ти колдонуп баштоо"</string>

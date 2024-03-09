@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pourquoi Santé Connect retire des autorisations d\'applis"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si une appli est suspendue ou retirée de Google Play, Santé Connect retire automatiquement les autorisations associées.\n\nL\'appli n\'a alors plus accès aux données stockées dans Santé Connect. Si cette appli a déjà écrit des données, elle figure dans la liste des applis inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Enregistrer les données"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Enregistrez les données et autorisations de Santé Connect afin de les importer si vous changez de téléphone. Vous pouvez choisir l\'emplacement de stockage de ces données avant de les enregistrer."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Configurer"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Paramètres"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Enregistrement automatique"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Choisir la fréquence"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vous pouvez choisir d\'enregistrer vos données une seule fois ou de les enregistrer automatiquement à intervalles réguliers."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Tous les jours"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Toutes les semaines"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Tous les mois"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Activer le chiffrement"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Les données doivent être chiffrées avant d\'être enregistrées. Personne, y compris Google ou Health Connect, ne pourra y accéder."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Créez un mot de passe pour protéger vos données chiffrées. Vous aurez besoin de ce mot de passe pour importer et restaurer vos données."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Mot de passe"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Répéter le mot de passe"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Health Connect ne pourra pas vous aider à récupérer vos données enregistrées."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
     <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Premiers pas avec Santé Connect"</string>

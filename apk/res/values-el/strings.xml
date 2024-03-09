@@ -305,16 +305,33 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Γιατί το Health Connect καταργεί άδειες εφαρμογών"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Αν μια εφαρμογή τεθεί σε αναστολή ή καταργηθεί από το Google Play, το Health Connect καταργεί αυτόματα τις άδειές της.\n\nΑυτό σημαίνει ότι η εφαρμογή δεν μπορεί πλέον να αποκτήσει πρόσβαση σε δεδομένα που έχουν αποθηκευτεί στο Health Connect. Εάν αυτή η εφαρμογή έχει εγγράψει στο παρελθόν δεδομένα, θα εμφανίζεται στη λίστα ανενεργών εφαρμογών."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Το κατάλαβα"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Αποθήκευση δεδομένων"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Αποθηκεύστε τα δεδομένα και τις άδειες του Health Connect για να μπορείτε να τα εισαγάγετε σε περίπτωση που κάνετε εναλλαγή σε νέο τηλέφωνο. Μπορείτε να επιλέξετε το σημείο στο οποίο θα αποθηκευτούν τα δεδομένα πριν τα αποθηκεύσετε."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Ρύθμιση"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Ρυθμίσεις"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Αυτόματη αποθήκευση"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Επιλογή συχνότητας"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Επιλέξτε αν θέλετε να αποθηκεύσετε τα δεδομένα μία φορά ή αν θα αποθηκεύονται αυτόματα ανά τακτά χρονικά διαστήματα."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ανά ημέρα"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ανά εβδομάδα"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ανά μήνα"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"Πίσω"</string>
     <string name="export_next_button" msgid="657930567137105172">"Επόμενο"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Ξεκινήστε με το Health Connect"</string>
@@ -782,7 +799,7 @@
     <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Απαιτείται ενημέρωση του Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Πριν συνεχίσετε, ενημερώστε την εφαρμογή Health Connect στην πιο πρόσφατη έκδοση."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Απαιτείται περισσότερος χρόνος"</string>
-    <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας προκειμένου να συνεχιστεί η ενσωμάτωση.\n\nΑπελευθερώσετε χώρο στο τηλέφωνό σας και δοκιμάστε ξανά."</string>
+    <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας προκειμένου να συνεχιστεί η ενσωμάτωση.\n\nΑποδεσμεύστε χώρο στο τηλέφωνό σας και δοκιμάστε ξανά."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Δοκιμάστε ξανά"</string>
     <string name="free_up_space_button" msgid="4141013808635654695">"Αποδεσμεύστε χώρο"</string>
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Απαιτείται περισσότερος χρόνος"</string>

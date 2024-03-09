@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zakaj Health Connect odstrani dovoljenja za aplikacije"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Če je aplikacija blokirana ali odstranjena iz Googla Play, Health Connect samodejno odstrani njena dovoljenja.\n\nTo pomeni, da aplikacija ne more več dostopati do podatkov, shranjenih v storitvi Health Connect. Če je ta aplikacija pred tem zapisovala podatke, je prikazana na seznamu neaktivnih aplikacij."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Razumem"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Shranjevanje podatkov"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Shranite podatke in dovoljenja aplikacije Health Connect, da jih lahko uvozite, če preklopite na nov telefon. Pred shranjevanjem lahko izberete, kam želite shraniti te podatke."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Nastavi"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Nastavitve"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Samodejno shranjevanje"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Izbira pogostosti"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Izberite enkratno shranjevanje podatkov ali samodejno shranjevanje ob rednih urah."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Tedensko"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mesečno"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Vklopite šifriranje"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podatke morate šifrirati, preden jih shranite. Nihče, niti Google ali Health Connect, ne bo imel dostopa do njih."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Ustvarite geslo za zaščito šifriranih podatkov. To geslo boste potrebovali za uvoz in obnovitev podatkov."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Geslo"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovite geslo"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Če pozabite geslo ali izgubite telefon, vam Health Connect ne more pomagati obnoviti shranjenih podatkov."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazaj"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprej"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Začetek uporabe storitve Health Connect"</string>

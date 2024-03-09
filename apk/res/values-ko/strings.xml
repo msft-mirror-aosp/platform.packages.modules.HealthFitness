@@ -305,16 +305,33 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"헬스 커넥트에서 앱 권한을 삭제하는 이유"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"앱이 Google Play에서 정지되거나 삭제되면 헬스 커넥트에서 해당 앱의 권한을 자동으로 삭제합니다.\n\n그러면 앱에서 더 이상 헬스 커넥트에 저장된 데이터에 액세스할 수 없게 됩니다. 이전에 데이터를 기록한 적이 있는 앱이라면 비활성 앱 목록에 표시됩니다."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"확인"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"데이터 저장"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"헬스 커넥트 데이터 및 권한을 저장하면 새 휴대전화로 바꿀 때 가져올 수 있습니다. 저장하기 전에 이 데이터를 저장할 위치를 선택할 수 있습니다."</string>
-    <string name="setup_button" msgid="1407942598553043961">"설정"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"설정"</string>
-    <string name="auto_save" msgid="7146497593975616076">"자동 저장"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"저장 빈도 선택"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"데이터를 한 번만 저장하도록 선택하거나 정기적으로 자동 저장하도록 설정합니다."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"매일"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"매주"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"매달"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"뒤로"</string>
     <string name="export_next_button" msgid="657930567137105172">"다음"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"헬스 커넥트 시작하기"</string>

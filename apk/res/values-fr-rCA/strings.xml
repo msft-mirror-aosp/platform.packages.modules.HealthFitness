@@ -305,16 +305,33 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pourquoi Connexion santé retire les autorisations des applications"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Lorsqu\'une application est suspendue ou retirée de Google Play, Connexion santé retire automatiquement ses autorisations.\n\nCela signifie que l\'application ne peut plus accéder aux données stockées dans Connexion santé. Si cette application a déjà écrit des données, elle apparaît dans la liste des applications inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Enregistrer les données"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Enregistrez les données et les autorisations de Connexion santé afin de pouvoir les importer si vous changez de téléphone. Vous pouvez choisir l\'endroit où ces données seront stockées avant de les enregistrer."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Configurer"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Paramètres"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Enregistrement automatique"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Choisir la fréquence"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vous pouvez choisir d\'enregistrer les données une seule fois ou de les enregistrer automatiquement à intervalles réguliers."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Chaque jour"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Chaque semaine"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Chaque mois"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
     <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Premiers pas avec Connexion santé"</string>

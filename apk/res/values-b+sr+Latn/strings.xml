@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zašto Povezivanje zdravlja uklanja dozvole za aplikacije"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ako je aplikacija suspendovana ili uklonjena sa Google Play-a, Povezivanje zdravlja automatski uklanja njene dozvole.\n\nTo znači da aplikacija više ne može da pristupa podacima sačuvanim u Povezivanju zdravlja. Ako je ova aplikacija prethodno upisivala podatke, pojaviće se na listi neaktivnih aplikacija."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Važi"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Sačuvajte podatke"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Sačuvajte podatke i dozvole Povezivanja zdravlja kako biste mogli da ih uvezete kada pređete na novi telefon. Možete da izaberete gde ćete čuvati ove podatke pre nego što ih sačuvate."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Podesi"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Podešavanja"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Automatsko čuvanje"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Izaberite učestalost"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Izaberite jednokratno čuvanje podataka ili podesite automatsko čuvanje u redovnim intervalima."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Jednom dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Jednom nedeljno"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Jednom mesečno"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Uključite šifrovanje"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci moraju da se šifruju pre čuvanja. Niko neće moći da im pristupi, čak ni Google ni Povezivanje zdravlja."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Napravite lozinku da biste zaštitili šifrovane podatke. Ova lozinka vam treba za uvoz i vraćanje podataka."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Lozinka"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovo unesite lozinku"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite lozinku ili izgubite telefon, Povezivanje zdravlja ne može da vam pomogne da vratite sačuvane podatke."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Započnite sa Povezivanjem zdravlja"</string>

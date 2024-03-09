@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ເປັນຫຍັງ Health Connect ຈຶ່ງລຶບການອະນຸຍາດແອັບອອກ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ຫາກມີແອັບຖືກລະງັບ ຫຼື ລຶບອອກຈາກ Google Play, Health Connect ຈະລຶບການອະນຸຍາດຂອງມັນອອກອັດຕະໂນມັດ.\n\nນີ້ໝາຍຄວາມວ່າແອັບຈະບໍ່ສາມາດເຂົ້າເຖິງຂໍ້ມູນທີ່ຈັດເກັບໄວ້ໃນ Health Connect ໄດ້ອີກຕໍ່ໄປ. ຫາກແອັບນີ້ມີຂໍ້ມູນທີ່ຂຽນໄວ້ກ່ອນໜ້າ, ມັນຈະປາກົດໃນລາຍຊື່ແອັບທີ່ບໍ່ເຄື່ອນໄຫວ."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ເຂົ້າໃຈແລ້ວ"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"ປະຢັດຂໍ້ມູນ"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"ບັນທຶກຂໍ້ມູນ ແລະ ການອະນຸຍາດ Health Connect ເພື່ອໃຫ້ທ່ານສາມາດສົ່ງອອກພວກມັນໄດ້ຖ້າທ່ານສະຫຼັບໄປໃຫ້ໂທລະສັບໜ່ວຍໃໝ່. ທ່ານສາມາດເລືອກບ່ອນທີ່ຈະຈັດເກັບຂໍ້ມູນນີ້ໄດ້ກ່ອນການບັນທຶກ."</string>
-    <string name="setup_button" msgid="1407942598553043961">"ຕັ້ງຄ່າ"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"ການຕັ້ງຄ່າ"</string>
-    <string name="auto_save" msgid="7146497593975616076">"ບັນທຶກອັດຕະໂນມັດ"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"ເລືອກຄວາມຖີ່"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ເລືອກເພື່ອບັນທຶກຂໍ້ມູນເທື່ອດຽວ ຫຼື ຕັ້ງມັນເພື່ອບັນທຶກໃນເວລາປົກກະຕິໂດຍອັດຕະໂນມັດ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ປະຈຳວັນ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ປະຈຳອາທິດ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ທຸກເດືອນ"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"ເປີດການເຂົ້າລະຫັດ"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ຂໍ້ມູນຕ້ອງໄດ້ຖືກເຂົ້າລະຫັດກ່ອນທີມັນຈະຖືກບັນທຶກ. ບໍ່ມີໃຜ, ແມ່ນແຕ່ Google ຫຼື Health Connect ທີ່ຈະສາມາດເຂົ້າເຖິງມັນໄດ້."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ສ້າງລະຫັດຜ່ານເພື່ອປົກປ້ອງຂໍ້ມູນທີ່ໄດ້ຖືກເຂົ້າລະຫັດຂອງທ່ານ. ທ່ານຈະຕ້ອງການລະຫັດຜ່ານນີ້ເພື່ອນຳເຂົ້າ ແລະ ກູ້ຄືນຂໍ້ມູນຂອງທ່ານ."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"ລະຫັດຜ່ານ"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ຊ້ຳຄືນລະຫັດຜ່ານ"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"ຫາກທ່ານລືມລະຫັດຜ່ານ ແລະ ໂທລະສັບຂອງທ່ານເສຍ, Health Connect ບໍ່ສາມາດຊ່ວຍທ່ານກູ້ຄືນຂໍ້ມູນທີ່ບັນທຶກໄວ້ຂອງທ່ານໄດ້."</string>
     <string name="export_back_button" msgid="3550795479165524982">"ກັບຄືນ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ຕໍ່ໄປ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ເລີ່ມຕົ້ນການນຳໃຊ້ Health Connect"</string>

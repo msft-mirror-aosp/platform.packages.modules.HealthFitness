@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Waarom Health Connect app-rechten verwijdert"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Als een app wordt opgeschort of verwijderd van Google Play, verwijdert Health Connect automatisch de rechten voor die app.\n\nDit betekent dat de app geen toegang meer heeft tot gegevens die zijn opgeslagen in Health Connect. Heeft de app eerder gegevens geschreven, dan verschijnt deze in de lijst met inactieve apps."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Gegevens opslaan"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Sla de gegevens en rechten van Health Connect zodat je ze kunt importeren als je overstapt op een nieuwe telefoon. Voordat je opslaat, kun je kiezen waar je de gegevens wilt opslaan."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Instellen"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Instellingen"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Automatisch opslaan"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Frequentie kiezen"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Kies of je gegevens eenmalig wilt opslaan of ze op regelmatige tijdstippen automatisch wilt laten opslaan."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dagelijks"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Wekelijks"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Maandelijks"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Versleuteling aanzetten"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Gegevens moeten worden versleuteld voordat ze worden opgeslagen. Niemand heeft er toegang toe, zelfs niet Google of Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Maak een wachtwoord om je versleutelde gegevens te beschermen. Je hebt dit wachtwoord nodig om je gegevens te importeren en te herstellen."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Wachtwoord"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Herhaal je wachtwoord"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Als je je wachtwoord bent vergeten en je telefoon kwijtraakt, kan Health Connect je niet helpen om je opgeslagen gegevens te herstellen."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Terug"</string>
     <string name="export_next_button" msgid="657930567137105172">"Volgende"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Aan de slag met Health Connect"</string>

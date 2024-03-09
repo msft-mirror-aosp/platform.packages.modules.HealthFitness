@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Perihal Health Connect mengalih keluar kebenaran apl"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Jika apl digantung atau dialih keluar daripada Google Play, Health Connect mengalih keluar kebenaran apl tersebut secara automatik.\n\nHal ini bermakna apl tersebut tidak lagi boleh mengakses data yang disimpan dalam Health Connect. Jika apl ini mempunyai data bertulis sebelum ini, apl ini akan muncul dalam senarai apl tidak aktif."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Simpan data"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Simpan data dan kebenaran Health Connect supaya anda boleh mengimport data dan kebenaran itu jika anda menggunakan telefon baharu. Anda boleh memilih lokasi penyimpanan data ini sebelum menyimpan data."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Sediakan"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Tetapan"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Autosimpan"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Pilih kekerapan"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Pilih untuk menyimpan data satu kali atau tetapkan penyimpanan data secara automatik pada masa biasa."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Harian"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Mingguan"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Bulanan"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Hidupkan penyulitan"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data perlu disulitkan sebelum disimpan. Tiada sesiapa termasuk Google atau Health Connect akan dapat mengakses data tersebut."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Buat kata laluan untuk melindungi data anda yang disulitkan. Anda akan memerlukan kata laluan ini untuk mengimport dan memulihkan data anda."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Kata laluan"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ulang kata laluan"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Jika anda terlupa kata laluan anda dan kehilangan telefon anda, Health Connect tidak dapat membantu anda memulihkan data anda yang disimpan."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Kembali"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seterusnya"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Bermula dengan Health Connect"</string>

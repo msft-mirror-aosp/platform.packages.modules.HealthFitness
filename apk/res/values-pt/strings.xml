@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Por que a plataforma Conexão Saúde remove as permissões de apps"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Se um app for suspenso ou removido do Google Play, a plataforma Conexão Saúde vai remover automaticamente as permissões dele.\n\nIsso significa que o app não poderá mais acessar seus dados armazenados na Conexão Saúde. Se esse app tiver gravado dados anteriormente, ele vai aparecer na lista de apps inativos."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendi"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Salvar dados"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Salve dados e permissões da Conexão Saúde para que você possa os importar se mudar para um novo smartphone. Você pode escolher onde salvar esses dados."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Configuração"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Configurações"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Salvar automaticamente"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Escolha a frequência"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Escolha salvar os dados uma vez ou configurar para serem salvos automaticamente em horários regulares."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensalmente"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Ative a criptografia"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Os dados precisam ser criptografados antes de serem salvos. Ninguém, nem mesmo o Google ou a Conexão Saúde, terá acesso a eles."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crie uma senha para proteger seus dados criptografados. Você vai precisar dela para importar e restaurar seus dados."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Senha"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Repita a senha"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Se você esquecer a senha e perder o smartphone, a Conexão Saúde não poderá ajudar na recuperação dos dados salvos."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Voltar"</string>
     <string name="export_next_button" msgid="657930567137105172">"Próxima"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comece a usar o app Conexão Saúde"</string>

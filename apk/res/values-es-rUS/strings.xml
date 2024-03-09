@@ -305,16 +305,33 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"¿Por qué Health Connect les quita permisos a las apps?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si una app está suspendida o ya no está disponible en Google Play, Health Connect le quita automáticamente los permisos.\n\nEsto significa que la app ya no podrá acceder a los datos almacenados en Health Connect. Si la app escribió datos, aparecerá en la lista de apps inactivas."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendido"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Guardar datos"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Guarda datos y permisos de Health Connect para que puedas importarlos si cambias a un teléfono nuevo. Puedes elegir dónde almacenar estos datos antes de guardar."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Configurar"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Configuración"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Guardar de forma automática"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Elegir frecuencia"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Elige guardar datos una vez o configúralo para que guarde automáticamente con determinada frecuencia."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensualmente"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
     <string name="export_next_button" msgid="657930567137105172">"Siguiente"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Empieza a usar Health Connect"</string>
@@ -762,7 +779,7 @@
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"¿Quieres habilitar los dos tipos de datos?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"¿Quieres inhabilitar los dos tipos de datos?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> necesita acceso de lectura para que se habiliten las rutas de ejercicio"</string>
-    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> requiere acceso a ejercicio para que se habiliten las rutas"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> requiere acceso al permiso de ejercicio para que se habiliten las rutas de ejercicio"</string>
     <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Sí"</string>
     <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"No"</string>
     <string name="back_button" msgid="780519527385993407">"Atrás"</string>

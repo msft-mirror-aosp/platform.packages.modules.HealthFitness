@@ -305,16 +305,33 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ហេតុអ្វីបានជា Health Connect ដកការអនុញ្ញាតកម្មវិធី"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ប្រសិនបើ​កម្មវិធីមួយ​ត្រូវបានផ្អាក ឬដកចេញពី Google Play នោះ Health Connect នឹងដកការអនុញ្ញាតរបស់ខ្លួនចេញ​ដោយស្វ័យប្រវត្តិ។\n\nនេះមានន័យថា កម្មវិធីមិនអាចចូលប្រើប្រាស់​ទិន្នន័យដែលរក្សាទុក​នៅក្នុង Health Connect បានទៀតទេ។ ប្រសិនបើកម្មវិធីនេះធ្លាប់បានសរសេរទិន្នន័យពីមុន នោះវានឹងបង្ហាញនៅក្នុងបញ្ជីកម្មវិធីអសកម្ម។"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"យល់ហើយ"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"រក្សាទុក​ទិន្នន័យ"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"រក្សាទុកការអនុញ្ញាត និងទិន្នន័យ Health Connect ដូច្នេះអ្នកអាចនាំចូលការអនុញ្ញាត និងទិន្នន័យទាំងនេះបាន ប្រសិនបើអ្នកប្ដូរទៅទូរសព្ទថ្មី។ អ្នកអាចជ្រើសរើសកន្លែងរក្សាទុកទិន្នន័យនេះ មុនពេលរក្សាទុក។"</string>
-    <string name="setup_button" msgid="1407942598553043961">"រៀបចំ"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"ការកំណត់"</string>
-    <string name="auto_save" msgid="7146497593975616076">"រក្សាទុកដោយស្វ័យប្រវត្តិ"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"ជ្រើសរើសកម្រិតញឹកញាប់"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ជ្រើសរើសរក្សាទុកទិន្នន័យម្ដង ឬកំណត់ឱ្យរក្សាទុកដោយស្វ័យប្រវត្តិតាមពេលវេលាទៀងទាត់។"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ប្រចាំថ្ងៃ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ប្រចាំសប្ដាហ៍"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ប្រចាំខែ"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"ថយក្រោយ"</string>
     <string name="export_next_button" msgid="657930567137105172">"បន្ទាប់"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ចាប់ផ្ដើមជាមួយ Health Connect"</string>

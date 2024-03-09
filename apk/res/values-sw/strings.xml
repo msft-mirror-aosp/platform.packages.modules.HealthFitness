@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Sababu zinazofanya Health Connect iondoe ruhusa za programu"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Endapo programu imesimamishwa au kuondolewa kwenye Google Play, Health Connect huondoa ruhusa zake kiotomatiki.\n\nHatua hii inamaanisha kwamba programu haiwezi tena kufikia data iliyohifadhiwa kwenye Health Connect. Ikiwa programu hii ina data iliyorekodiwa hapo awali, itaonekana kwenye orodha ya programu ambazo hazitumiki."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Nimeelewa"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Hifadhi data"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Hifadhi ruhusa na data ya Health Connect ili uweze kuipakia ikiwa utabadilisha ili utumie simu mpya. Unaweza kuchagua mahali pa kuhifadhi data hii kabla ya kuihifadhi."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Weka mipangilio"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Mipangilio"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Hifadhi kiotomatiki"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Kuchagua mara"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Chagua kuhifadhi data mara moja au uweke mipangilio ili ihifadhiwe kiotomatiki baada ya kila kipindi kilichobainiswa."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Kila siku"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Kila wiki"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Kila mwezi"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Washa mipangilio ya usimbaji fiche"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data inahitaji kusimbwa kwa njia fiche kabla ya kuhifadhiwa. Hakuna yeyote, hata iwe Google au programu ya Health Connect, atakayeweza kuifikia."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Tunga nenosiri ili kulinda data yako iliyosimbwa kwa njia fiche. Utahitaji nenosiri hili ili kupakia na kurejesha data yako."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Nenosiri"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Rudia nenosiri"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ukisahau nenosiri na upoteze simu yako, programu ya Health Connect haiwezi kukusaidia kurejesha data uliyohifadhi."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Rudi nyuma"</string>
     <string name="export_next_button" msgid="657930567137105172">"Endelea"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Anza kutumia Health Connect"</string>
