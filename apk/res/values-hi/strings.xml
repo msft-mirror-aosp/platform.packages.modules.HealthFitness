@@ -305,30 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect, ऐप्लिकेशन को मिली अनुमतियां क्यों हटाता है"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"अगर Google Play में किसी ऐप्लिकेशन पर रोक लगा दी गई है या उसे हटा दिया गया है, तो Health Connect उस ऐप्लिकेशन को मिली अनुमतियों को अपने-आप हटा देता है.\n\nइसका यह मतलब है कि अब वह ऐप्लिकेशन, Health Connect में सेव किए गए आपके डेटा को ऐक्सेस नहीं कर पाएगा. अगर इस ऐप्लिकेशन में पहले से डेटा सेव है, तो यह बंद किए गए ऐप्लिकेशन की सूची में दिखेगा."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ठीक है"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
     <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
+    <!-- no translation found for recurring_export (111638340692746218) -->
     <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <!-- no translation found for restore_data (3401173690437871417) -->
     <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
     <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"फ़्रीक्वेंसी चुनें"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एक बार सेव करने का विकल्प चुनें या इसे समय-समय पर अपने-आप सेव होने वाली सुविधा पर सेट करें."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"हर दिन"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"हर हफ़्ते"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"हर महीने"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"एन्क्रिप्ट करने की सुविधा चालू करें"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"डेटा सेव करने से पहले इसे एन्क्रिप्ट करना ज़रूरी है. इस डेटा को कोई ऐक्सेस नहीं कर सकेगा, चाहे Google हो या Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"अपना एन्क्रिप्ट किया गया डेटा सुरक्षित रखने के लिए पासवर्ड बनाएं. अपना डेटा इंपोर्ट करने और वापस लाने के लिए, आपको इस पासवर्ड की ज़रूरत पड़ेगी."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"पासवर्ड"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"पासवर्ड दोहराएं"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"अगर आपका फ़ोन खो जाता है और आपको पासवर्ड याद नहीं है, तो Health Connect सेव किया गया आपका डेटा वापस लाने में आपकी मदद नहीं कर सकेगा."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"वापस जाएं"</string>
+    <string name="export_next_button" msgid="657930567137105172">"आगे बढ़ें"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect का इस्तेमाल शुरू करें"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect में, सेहत और फ़िटनेस से जुड़ा आपका डेटा सेव किया जाता है. इससे, अपने फ़ोन में अलग-अलग ऐप्लिकेशन को आसानी से सिंक करने में मदद मिलती है"</string>
     <string name="share_data" msgid="3481932156368883946">"ऐप्लिकेशन के साथ डेटा शेयर करें"</string>
@@ -771,18 +770,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"कंट्रोल करें कि यह ऐप्लिकेशन, जुड़े हुए ऐप्लिकेशन के कसरत के रूट को कैसे ऐक्सेस करता है"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"हर बार पूछें"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"अनुमति न दें"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"क्या आपको दोनों टाइप के डेटा को ऐक्सेस करने की अनुमति देनी करनी है?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"क्या आपको दोनों टाइप के डेटा को ऐक्सेस करने की अनुमति रोकनी है?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"कसरत के रूट की सुविधा को चालू करने के लिए, <xliff:g id="APP_NAME">%1$s</xliff:g> को कसरत से जुड़ा डेटा देखने का ऐक्सेस देना ज़रूरी है"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"कसरत के रूट की सुविधा को चालू करने के लिए, <xliff:g id="APP_NAME">%1$s</xliff:g> को कसरत से जुड़े डेटा का ऐक्सेस देना ज़रूरी है"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"हां"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"नहीं"</string>
     <string name="back_button" msgid="780519527385993407">"वापस जाएं"</string>
     <string name="loading" msgid="2526615755685950317">"लोड हो रहा है…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"इंटिग्रेट किया जा रहा है"</string>

@@ -74,6 +74,8 @@
 
             <!-- Export -->
             <item type="drawable" name="ic_repeat"/>
+            <item type="drawable" name="ic_lock"/>
+            <item type="drawable" name="ic_warning"/>
 
             <!-- END REGION -->
 

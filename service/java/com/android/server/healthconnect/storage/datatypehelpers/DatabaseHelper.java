@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import android.annotation.NonNull;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -40,18 +39,6 @@ public abstract class DatabaseHelper {
         sDatabaseHelpers.add(this);
     }
 
-    public static void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
-            databaseHelper.onUpgrade(oldVersion, newVersion, db);
-        }
-    }
-
-    public static void onDowngrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
-            databaseHelper.onDowngrade(oldVersion, newVersion, db);
-        }
-    }
-
     /** Deletes all entries from the database for the helper class and clears the cache. */
     public static void clearAllData(@NonNull TransactionManager transactionManager) {
         for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
@@ -65,11 +52,6 @@ public abstract class DatabaseHelper {
             databaseHelper.clearCache();
         }
     }
-
-    /** Upgrades the database to the latest version. */
-    protected void onUpgrade(int oldVersion, int newVersion, @NonNull SQLiteDatabase db) {}
-
-    protected void onDowngrade(int oldVersion, int newVersion, @NonNull SQLiteDatabase db) {}
 
     protected void clearData(@NonNull TransactionManager transactionManager) {
         transactionManager.delete(new DeleteTableRequest(getMainTableName()));

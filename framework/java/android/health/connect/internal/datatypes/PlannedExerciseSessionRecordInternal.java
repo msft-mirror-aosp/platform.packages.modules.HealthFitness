@@ -26,6 +26,7 @@ import android.os.Parcel;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents a planned workout that should be completed by the user.
@@ -46,7 +47,7 @@ public final class PlannedExerciseSessionRecordInternal
 
     private List<PlannedExerciseBlockInternal> mExerciseBlocks = Collections.emptyList();
 
-    @Nullable private String mCompletedExerciseSessionId;
+    @Nullable private UUID mCompletedExerciseSessionId;
 
     @Nullable
     public String getNotes() {
@@ -90,7 +91,7 @@ public final class PlannedExerciseSessionRecordInternal
 
     /** returns this object with the specified completed exercise session id. */
     @NonNull
-    public PlannedExerciseSessionRecordInternal setCompletedExerciseSessionId(String id) {
+    public PlannedExerciseSessionRecordInternal setCompletedExerciseSessionId(UUID id) {
         this.mCompletedExerciseSessionId = id;
         return this;
     }
@@ -99,6 +100,12 @@ public final class PlannedExerciseSessionRecordInternal
     @NonNull
     public List<PlannedExerciseBlockInternal> getExerciseBlocks() {
         return mExerciseBlocks;
+    }
+
+    /** returns the UUID of the exercise session which completed this plan, if it exists. */
+    @Nullable
+    public UUID getCompletedExerciseSessionId() {
+        return mCompletedExerciseSessionId;
     }
 
     /** returns whether this object has an explicit time set. */
@@ -126,7 +133,8 @@ public final class PlannedExerciseSessionRecordInternal
         mTitle = parcel.readString();
         mHasExplicitTime = parcel.readBoolean();
         mExerciseBlocks = PlannedExerciseBlockInternal.readFromParcel(parcel);
-        mCompletedExerciseSessionId = parcel.readString();
+        String uuid = parcel.readString();
+        mCompletedExerciseSessionId = uuid == null ? null : UUID.fromString(uuid);
     }
 
     @Override
@@ -136,7 +144,10 @@ public final class PlannedExerciseSessionRecordInternal
         parcel.writeString(mTitle);
         parcel.writeBoolean(mHasExplicitTime);
         PlannedExerciseBlockInternal.writeToParcel(mExerciseBlocks, parcel);
-        parcel.writeString(mCompletedExerciseSessionId);
+        parcel.writeString(
+                mCompletedExerciseSessionId == null
+                        ? null
+                        : mCompletedExerciseSessionId.toString());
     }
 
     /** Convert this object to an external representation. */
@@ -164,11 +175,11 @@ public final class PlannedExerciseSessionRecordInternal
         if (getTitle() != null) {
             builder.setTitle(getTitle());
         }
-        if (mCompletedExerciseSessionId != null) {
-            builder.setCompletedExerciseSessionId(mCompletedExerciseSessionId);
-        }
         for (PlannedExerciseBlockInternal block : mExerciseBlocks) {
             builder.addBlock(block.toExternalObject());
+        }
+        if (mCompletedExerciseSessionId != null) {
+            builder.setCompletedExerciseSessionId(mCompletedExerciseSessionId.toString());
         }
         return builder.buildWithoutValidation();
     }
