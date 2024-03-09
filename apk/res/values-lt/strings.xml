@@ -305,30 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Kodėl „Health Connect“ pašalina programų leidimus"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Jei programa sustabdyta arba pašalinta iš „Google Play“, „Health Connect“ automatiškai pašalina jos leidimus.\n\nTai reiškia, kad programa nebegali pasiekti duomenų, saugomų sistemoje „Health Connect“. Jei šioje programoje yra anksčiau įrašytų duomenų, ji rodoma neaktyvių programų sąraše."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Supratau"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
     <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
+    <!-- no translation found for recurring_export (111638340692746218) -->
     <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <!-- no translation found for restore_data (3401173690437871417) -->
     <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
     <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Dažnio pasirinkimas"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Pasirinkite saugoti duomenis vieną kartą arba nustatykite reguliariai saugoti juos automatiškai."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Kasdien"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Kas savaitę"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Kas mėnesį"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Šifruotės įjungimas"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Duomenis reikia prieš išsaugant užšifruoti. Jų negalės pasiekti niekas, netgi „Google“ ar „Health Connect“."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Kurkite slaptažodį šifruotiems duomenims apsaugoti. Šio slaptažodžio reikės duomenims importuoti ir atkurti."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Slaptažodis"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Pakartokite slaptažodį"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Jei pamiršite slaptažodį ar prarasite telefoną, „Health Connect“ išsaugotų duomenų atkurti nepadės."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Atgal"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Kitas"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Darbo su klasikinės versijos „Health Connect“ pradžia"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sistemoje „Health Connect“ saugomi jūsų sveikatos ir kūno rengybos duomenys ir galite lengvai sinchronizuoti skirtingas programas telefone"</string>
     <string name="share_data" msgid="3481932156368883946">"Duomenų bendrinimas su programomis"</string>
