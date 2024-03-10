@@ -20,6 +20,7 @@ import static android.health.connect.Constants.DEFAULT_INT;
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
 import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
+import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.IntervalRecordHelper.END_TIME_COLUMN_NAME;
@@ -58,6 +59,7 @@ import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -116,17 +118,12 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                 .toEpochMilli());
     }
 
+    /** Database migration. Introduces automatic local time generation. */
+    public abstract void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db);
+
     @RecordTypeIdentifier.RecordType
     public int getRecordIdentifier() {
         return mRecordIdentifier;
-    }
-
-    /**
-     * Called on DB update. Inheriting classes should implement this if they need to add new columns
-     * or tables.
-     */
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        // empty
     }
 
     /**
@@ -290,6 +287,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                                     }
                                 })
                         .setChildTableRequests(getChildTableUpsertRequests((T) recordInternal))
+                        .setPostUpsertCommands(getPostUpsertCommands(recordInternal))
                         .setHelper(this)
                         .setExtraWritePermissionsStateMapping(extraWritePermissionToStateMap);
         Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
@@ -301,9 +299,13 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             @NonNull ContentValues values,
             @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {}
 
-    public List<String> getChildTablesToDeleteOnRecordUpsert(
+    /**
+     * Returns child tables and the columns within them that references their parents. This is used
+     * during updates to determine which child rows should be deleted.
+     */
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
             ArrayMap<String, Boolean> extraWritePermissionToState) {
-        return getAllChildTables();
+        return getAllChildTables().stream().map(it -> new TableColumnPair(it, PARENT_KEY)).toList();
     }
 
     @NonNull
@@ -318,6 +320,22 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     @NonNull
     protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * SQLite only permits FK constraints to be added at column creation time. This poses a problem
+     * however, as depending on the order (undefined) in which we ask record helpers to create their
+     * tables, the referenced column may not exist. The solution is to add columns with a FK in a
+     * separate step, after main table creation.
+     *
+     * <p>As a concrete example, the {@link
+     * android.health.connect.datatypes.PlannedExerciseSessionRecord} data type has references to
+     * exercise sessions, and thus necessitates a foreign key constraint to the ID column of the
+     * exercise session table.
+     */
+    @NonNull
+    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
         return Collections.emptyList();
     }
 
@@ -889,5 +907,31 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     /** Returns extra permissions required to write given record. */
     public List<String> getRequiredExtraWritePermissions(RecordInternal<?> recordInternal) {
         return Collections.emptyList();
+    }
+
+    /**
+     * Returns any SQL commands that should be executed after the provided record has been upserted.
+     */
+    List<String> getPostUpsertCommands(RecordInternal<?> record) {
+        return Collections.emptyList();
+    }
+
+    /** Represents a table and a column within that table. */
+    public static final class TableColumnPair {
+        TableColumnPair(String tableName, String columnName) {
+            this.mTableName = tableName;
+            this.mColumnName = columnName;
+        }
+
+        public String getTableName() {
+            return mTableName;
+        }
+
+        public String getColumnName() {
+            return mColumnName;
+        }
+
+        private final String mTableName;
+        private final String mColumnName;
     }
 }

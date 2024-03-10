@@ -264,7 +264,12 @@ public class HistoricAccessLimitTest {
 
     @Test
     public void testGetChangeLogs_expectCorrectResponse() throws InterruptedException {
-        String token = getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+        String token =
+                getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
         List<String> insertedRecentRecordIds =
                 List.of(
                         insertWeightRecord(daysBeforeNow(10), 10),
@@ -279,6 +284,160 @@ public class HistoricAccessLimitTest {
                                 .getUpsertedRecords());
 
         assertThat(logsRecordIds).containsExactlyElementsIn(insertedRecentRecordIds);
+    }
+
+    @Test
+    public void testReadAnotherAppsRecordsByIds_recordsAreAfterCutOff_expectAllRecordsReturned()
+            throws InterruptedException {
+        String ownRecordId1 = insertWeightRecordViaTestApp(daysBeforeNow(29), 10);
+        String ownRecordId2 = insertWeightRecordViaTestApp(daysBeforeNow(11), 11);
+        String ownRecordId3 = insertWeightRecordViaTestApp(daysBeforeNow(1), 12);
+
+        List<String> readIds =
+                getRecordIds(
+                        TestUtils.readRecords(
+                                new ReadRecordsRequestUsingIds.Builder<>(WeightRecord.class)
+                                        .addId(ownRecordId1)
+                                        .addId(ownRecordId2)
+                                        .addId(ownRecordId3)
+                                        .build()));
+
+        assertThat(readIds).containsExactly(ownRecordId1, ownRecordId2, ownRecordId3);
+    }
+
+    @Test
+    public void testReadAnotherAppsRecordsByIds_recordsAreBeforeCutOff_expectNoRecordsReturned()
+            throws InterruptedException {
+        String ownRecordId1 = insertWeightRecordViaTestApp(daysBeforeNow(31), 10);
+        String ownRecordId2 = insertWeightRecordViaTestApp(daysBeforeNow(60), 11);
+        String ownRecordId3 = insertWeightRecordViaTestApp(daysBeforeNow(100), 12);
+
+        List<String> readIds =
+                getRecordIds(
+                        TestUtils.readRecords(
+                                new ReadRecordsRequestUsingIds.Builder<>(WeightRecord.class)
+                                        .addId(ownRecordId1)
+                                        .addId(ownRecordId2)
+                                        .addId(ownRecordId3)
+                                        .build()));
+
+        assertThat(readIds).isEmpty();
+    }
+
+    @Test
+    public void testReadAnotherAppsRecordsByFilters_recordsAreAfterCutOff_expectAllRecordsReturned()
+            throws InterruptedException {
+        String ownRecordId1 = insertWeightRecordViaTestApp(daysBeforeNow(29), 10);
+        String ownRecordId2 = insertWeightRecordViaTestApp(daysBeforeNow(11), 11);
+        String ownRecordId3 = insertWeightRecordViaTestApp(daysBeforeNow(1), 12);
+
+        List<String> readIds =
+                getRecordIds(
+                        TestUtils.readRecords(
+                                new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class)
+                                        .build()));
+
+        assertThat(readIds).containsExactly(ownRecordId1, ownRecordId2, ownRecordId3);
+    }
+
+    @Test
+    public void testReadAnotherAppsRecordsByFilters_recordsAreBeforeCutOff_expectNoRecordsReturned()
+            throws InterruptedException {
+        insertWeightRecordViaTestApp(daysBeforeNow(31), 10);
+        insertWeightRecordViaTestApp(daysBeforeNow(60), 11);
+        insertWeightRecordViaTestApp(daysBeforeNow(100), 12);
+
+        List<String> readIds =
+                getRecordIds(
+                        TestUtils.readRecords(
+                                new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class)
+                                        .build()));
+
+        assertThat(readIds).isEmpty();
+    }
+
+    @Test
+    public void testAggregateAnotherAppsRecords_recordsAreAfterCutOff_expectCorrectAggregation()
+            throws InterruptedException {
+        insertWeightRecordViaTestApp(daysBeforeNow(29), 10);
+        insertWeightRecordViaTestApp(daysBeforeNow(11), 11);
+        insertWeightRecordViaTestApp(daysBeforeNow(1), 12);
+        TimeInstantRangeFilter timeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(daysBeforeNow(1000))
+                        .setEndTime(mNow.plus(1000, DAYS))
+                        .build();
+
+        AggregateRecordsResponse<Mass> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
+                                .addAggregationType(WEIGHT_AVG)
+                                .build());
+
+        assertThat(response.get(WEIGHT_AVG).getInGrams()).isEqualTo(11.0d);
+    }
+
+    @Test
+    public void testAggregateAnotherAppsRecords_recordsAreBeforeCutOff_expectNoAggregation()
+            throws InterruptedException {
+        insertWeightRecordViaTestApp(daysBeforeNow(31), 10);
+        insertWeightRecordViaTestApp(daysBeforeNow(60), 11);
+        insertWeightRecordViaTestApp(daysBeforeNow(100), 12);
+        TimeInstantRangeFilter timeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(daysBeforeNow(1000))
+                        .setEndTime(mNow.plus(1000, DAYS))
+                        .build();
+
+        AggregateRecordsResponse<Mass> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
+                                .addAggregationType(WEIGHT_AVG)
+                                .build());
+
+        assertThat(response.get(WEIGHT_AVG)).isNull();
+    }
+
+    @Test
+    public void testGetAnotherAppsChangeLogs_recordsAreAfterCutOff_expectAllRecordsReturned()
+            throws InterruptedException {
+        String token =
+                getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
+        String ownRecordId1 = insertWeightRecordViaTestApp(daysBeforeNow(29), 10);
+        String ownRecordId2 = insertWeightRecordViaTestApp(daysBeforeNow(11), 11);
+        String ownRecordId3 = insertWeightRecordViaTestApp(daysBeforeNow(1), 12);
+
+        List<String> logsRecordIds =
+                getRecordIds(
+                        getChangeLogs(new ChangeLogsRequest.Builder(token).build())
+                                .getUpsertedRecords());
+
+        assertThat(logsRecordIds).containsExactly(ownRecordId1, ownRecordId2, ownRecordId3);
+    }
+
+    @Test
+    public void testGetAnotherAppsChangeLogs_recordsAreBeforeCutOff_expectNoRecordsReturned()
+            throws InterruptedException {
+        String token =
+                getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
+        insertWeightRecordViaTestApp(daysBeforeNow(31), 10);
+        insertWeightRecordViaTestApp(daysBeforeNow(60), 11);
+        insertWeightRecordViaTestApp(daysBeforeNow(100), 12);
+
+        List<String> logsRecordIds =
+                getRecordIds(
+                        getChangeLogs(new ChangeLogsRequest.Builder(token).build())
+                                .getUpsertedRecords());
+
+        assertThat(logsRecordIds).isEmpty();
     }
 
     private String insertStepsRecord(Instant startTime, Instant endTime, long value)

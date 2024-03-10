@@ -305,30 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Por qué Salud conectada quita los permisos de las aplicaciones"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si una aplicación se suspende o se elimina de Google Play, Salud conectada quita automáticamente sus permisos.\n\nPor lo tanto, la aplicación ya no podrá acceder a tus datos almacenados en Salud conectada. Si la aplicación ya había escrito datos, aparecerá en la lista de aplicaciones inactivas."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendido"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
     <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
+    <!-- no translation found for recurring_export (111638340692746218) -->
     <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <!-- no translation found for restore_data (3401173690437871417) -->
     <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
     <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
+    <string name="choose_frequency" msgid="1077467424225083246">"Elegir frecuencia"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Decide si guardar los datos una vez o guardarlos automáticamente en intervalos regulares."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Cada día"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Cada semana"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Cada mes"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
     <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
     <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
     <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
     <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
     <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
     <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Siguiente"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Empieza a usar Salud conectada"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Salud conectada almacena tus datos de salud y actividad física, y te ofrece una forma sencilla de sincronizar las diferentes aplicaciones de tu teléfono"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparte datos con tus aplicaciones"</string>
@@ -771,18 +776,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Controla la forma en la que esta aplicación accede a las rutas de ejercicio de aplicaciones conectadas"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Preguntar siempre"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"No permitir"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"¿Habilitar ambos tipos de datos?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"¿Inhabilitar ambos tipos de datos?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> necesita acceso de lectura al ejercicio para habilitar rutas de ejercicio"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> necesita acceder al ejercicio para poder habilitar rutas de ejercicio"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Sí"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"No"</string>
     <string name="back_button" msgid="780519527385993407">"Atrás"</string>
     <string name="loading" msgid="2526615755685950317">"Cargando…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integración en curso"</string>

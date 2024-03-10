@@ -25,6 +25,7 @@ import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+import static android.healthconnect.cts.utils.DataFactory.getChangeLogTokenRequestForTestRecordTypes;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecordsByIdFilter;
@@ -37,6 +38,8 @@ import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -127,16 +130,17 @@ public class HealthConnectChangeLogsTests {
 
     @Test
     public void testBuildChangeLogTokenRequest_hasFieldsSet() {
-        ChangeLogTokenRequest changeLogTokenRequest = new ChangeLogTokenRequest.Builder().build();
+        ChangeLogTokenRequest changeLogTokenRequest =
+                new ChangeLogTokenRequest.Builder().addRecordType(StepsRecord.class).build();
 
-        assertThat(changeLogTokenRequest.getRecordTypes()).isEmpty();
+        assertThat(changeLogTokenRequest.getRecordTypes()).containsExactly(StepsRecord.class);
         assertThat(changeLogTokenRequest.getDataOriginFilters()).isEmpty();
     }
 
     @Test
     public void testBuildChangeLogsRequest_hasFieldsSet() throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -147,7 +151,7 @@ public class HealthConnectChangeLogsTests {
     @Test
     public void testChangeLogs_noOperations_returnsEmptyChangelogs() throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -160,7 +164,7 @@ public class HealthConnectChangeLogsTests {
     @Test
     public void testChangeLogs_insert_returnsUpsertedLogsOnly() throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -176,7 +180,7 @@ public class HealthConnectChangeLogsTests {
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
-                        new ChangeLogTokenRequest.Builder()
+                        getChangeLogTokenRequestForTestRecordTypes()
                                 .addDataOriginFilter(
                                         new DataOrigin.Builder().setPackageName("random").build())
                                 .build());
@@ -196,7 +200,7 @@ public class HealthConnectChangeLogsTests {
         Context context = ApplicationProvider.getApplicationContext();
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
-                        new ChangeLogTokenRequest.Builder()
+                        getChangeLogTokenRequestForTestRecordTypes()
                                 .addDataOriginFilter(
                                         new DataOrigin.Builder()
                                                 .setPackageName(context.getPackageName())
@@ -238,7 +242,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertAndDeleteDataById_returnsDeletedLogsOnly()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -256,7 +260,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertAndDeleteByClientId_returnsDeletedLogsOnly()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -276,7 +280,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertOldRecords_onlyReturnsUpsertedLogsAfterHistoricalAccess()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -302,7 +306,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertAndDeleteOldRecords_returnsAllDeletedLogs()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -325,7 +329,7 @@ public class HealthConnectChangeLogsTests {
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
-                        new ChangeLogTokenRequest.Builder()
+                        getChangeLogTokenRequestForTestRecordTypes()
                                 .addDataOriginFilter(
                                         new DataOrigin.Builder().setPackageName("random").build())
                                 .build());
@@ -348,7 +352,7 @@ public class HealthConnectChangeLogsTests {
         Context context = ApplicationProvider.getApplicationContext();
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
-                        new ChangeLogTokenRequest.Builder()
+                        getChangeLogTokenRequestForTestRecordTypes()
                                 .addDataOriginFilter(
                                         new DataOrigin.Builder()
                                                 .setPackageName(context.getPackageName())
@@ -400,7 +404,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertAndUpdateById_returnsUpdateChangeLogOnly()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -425,7 +429,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertAndUpdateByClientId_returnsUpdateChangeLogOnly()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -446,7 +450,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertUpdateAndDeleteById_returnsDeleteChangeLogOnly()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -472,7 +476,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insertUpdateAndDeleteByClientId_returnsDeleteChangeLogOnly()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -492,7 +496,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_noOperations_withPageSize_returnsEmptyChangeLogs()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).setPageSize(1).build();
 
@@ -505,7 +509,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insert_withPageSize_doesNotExceedPageSize()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).setPageSize(1).build();
 
@@ -519,7 +523,7 @@ public class HealthConnectChangeLogsTests {
     public void testChangeLogs_insert_withPageSize_paginatesThroughAllChangeLogs()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).setPageSize(1).build();
 
@@ -560,7 +564,7 @@ public class HealthConnectChangeLogsTests {
     @Test
     public void testChangeLogs_checkToken_hasMorePages_False() throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
@@ -580,6 +584,15 @@ public class HealthConnectChangeLogsTests {
         assertThat(newResponse.getUpsertedRecords()).isEmpty();
         assertThat(newResponse.hasMorePages()).isFalse();
         assertThat(newResponse.getNextChangesToken()).isEqualTo(newChangeLogsRequest.getToken());
+    }
+
+    @Test
+    public void testGetChangeLogToken_emptyRecordTypes_throwsException() throws Exception {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> getChangeLogToken(new ChangeLogTokenRequest.Builder().build()));
+        assertThat(thrown).hasMessageThat().contains("Requested record types must not be empty");
     }
 
     @Test
@@ -605,7 +618,11 @@ public class HealthConnectChangeLogsTests {
         String preExistingRecordId = insertRecordAndGetId(getDistanceRecord());
         // then get changes token. The above records shouldn't be included in the change logs.
         String changeToken =
-                getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+                getChangeLogToken(
+                                getChangeLogTokenRequestForTestRecordTypes()
+                                        .addRecordType(DistanceRecord.class)
+                                        .build())
+                        .getToken();
 
         ImmutableList.Builder<Record> recordBuilder = ImmutableList.builder();
         for (int i = 0; i < 50; i++) {
