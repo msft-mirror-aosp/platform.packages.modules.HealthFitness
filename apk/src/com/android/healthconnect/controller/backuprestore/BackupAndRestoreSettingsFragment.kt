@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export
+package com.android.healthconnect.controller.backuprestore
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint
 
-/** Fragment displaying export settings. */
+/** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
-class ExportSettingsFragment : Hilt_ExportSettingsFragment() {
+class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment() {
+    // TODO: b/325914485 - Add proper logging and navigations for the backup and restore settings fragment.
 
     companion object {
-        const val EXPORT_SETUP_BUTTON_PREFERENCE_KEY = "export_setup_button"
+        const val RECURRING_EXPORT_PREFERENCE_KEY = "recurring_export"
     }
 
-    private val setupButtonPreference: ExportSetupButtonPreference? by lazy {
-        preferenceScreen.findPreference(EXPORT_SETUP_BUTTON_PREFERENCE_KEY)
+    private val recurringExportPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(RECURRING_EXPORT_PREFERENCE_KEY)
     }
 
-    // TODO: b/325914485 - Add proper logging for the export settings fragment.
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
-        setPreferencesFromResource(R.xml.export_settings_screen, rootKey)
+        setPreferencesFromResource(R.xml.backup_and_restore_settings_screen, rootKey)
 
-        setupButtonPreference?.setOnButtonClickListener {
-            findNavController().navigate(R.id.action_exportSettingsFragment_to_exportSetupActivity)
+        recurringExportPreference?.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
+            true
         }
     }
 }

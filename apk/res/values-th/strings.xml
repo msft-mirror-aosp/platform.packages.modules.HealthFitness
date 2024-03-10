@@ -305,16 +305,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ทำไม Health Connect จึงนำสิทธิ์ของแอปออก"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"หากแอปถูกระงับหรือนำออกจาก Google Play, Health Connect จะนำสิทธิ์ของแอปนั้นออกโดยอัตโนมัติ\n\nซึ่งแปลว่าแอปดังกล่าวจะไม่สามารถเข้าถึงข้อมูลที่เก็บไว้ใน Health Connect ได้อีกต่อไป ข้อมูลที่แอปเคยเขียนไว้จะไปปรากฏในรายการข้อมูลแอปที่ไม่ได้ใช้งาน"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"รับทราบ"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"บันทึกข้อมูล"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"บันทึกข้อมูลและสิทธิ์ Health Connect เพื่อให้นำเข้าได้หากเปลี่ยนไปใช้โทรศัพท์เครื่องใหม่ คุณสามารถเลือกตำแหน่งที่จะจัดเก็บข้อมูลนี้ก่อนบันทึก"</string>
-    <string name="setup_button" msgid="1407942598553043961">"ตั้งค่า"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"การตั้งค่า"</string>
-    <string name="auto_save" msgid="7146497593975616076">"บันทึกอัตโนมัติ"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"เลือกความถี่"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"เลือกเพื่อบันทึกข้อมูลครั้งเดียว หรือตั้งค่าให้บันทึกโดยอัตโนมัติเป็นประจำเมื่อถึงเวลาที่ระบุ"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ทุกเดือน"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"เปิดการเข้ารหัส"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ต้องเข้ารหัสข้อมูลก่อนที่จะทำการบันทึก ไม่มีใครสามารถเข้าถึงข้อมูลได้ แม้แต่ Google หรือ Health Connect เอง"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"สร้างรหัสผ่านเพื่อปกป้องข้อมูลที่เข้ารหัส คุณต้องใช้รหัสผ่านนี้เพื่อนำเข้าและกู้คืนข้อคุณ"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"รหัสผ่าน"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ป้อนรหัสผ่านอีกครั้ง"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"หากลืมรหัสผ่านและทำโทรศัพท์สูญหาย Health Connect จะช่วยคุณกู้คืนข้อมูลที่บันทึกไว้ไม่ได้"</string>
     <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"เริ่มต้นใช้งาน Health Connect"</string>
@@ -759,18 +770,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"ควบคุมวิธีที่แอปนี้เข้าถึงเส้นทางออกกำลังกายจากแอปที่เชื่อมต่อ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ถามทุกครั้ง"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"ไม่อนุญาต"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"เปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงและอ่านข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ใช่"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ไม่"</string>
     <string name="back_button" msgid="780519527385993407">"กลับ"</string>
     <string name="loading" msgid="2526615755685950317">"กำลังโหลด…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"การผสานรวมอยู่ระหว่างดำเนินการ"</string>

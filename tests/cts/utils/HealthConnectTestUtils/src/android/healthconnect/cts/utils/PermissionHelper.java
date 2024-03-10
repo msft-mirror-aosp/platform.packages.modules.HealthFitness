@@ -42,6 +42,7 @@ import com.google.common.collect.Sets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -114,6 +115,13 @@ public final class PermissionHelper {
                                 .getMethod("grantHealthPermission", String.class, String.class)
                                 .invoke(service, pkgName, permission),
                 MANAGE_HEALTH_PERMISSIONS);
+    }
+
+    /** Grants {@code permissions} to the app with {@code pkgName}. */
+    public static void grantPermissions(String pkgName, Collection<String> permissions) {
+        for (String permission : permissions) {
+            grantPermission(pkgName, permission);
+        }
     }
 
     public static void revokePermission(String pkgName, String permission) {
