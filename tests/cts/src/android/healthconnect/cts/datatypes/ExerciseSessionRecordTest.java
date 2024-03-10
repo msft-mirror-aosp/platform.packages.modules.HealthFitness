@@ -22,9 +22,12 @@ import static android.healthconnect.cts.utils.DataFactory.buildExerciseRoute;
 import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
 import static android.healthconnect.cts.utils.DataFactory.buildLocationTimePoint;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
+import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflection;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -64,6 +67,7 @@ import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -693,6 +697,103 @@ public class ExerciseSessionRecordTest {
         }
     }
 
+    @Test
+    public void updateRecords_byId_readNewData() throws Exception {
+        Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+        List<Record> insertedRecords =
+                insertRecords(
+                        buildSession(
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                /* lat= */ 1,
+                                /* lng= */ -1),
+                        buildSession(
+                                now.minusMillis(3),
+                                now.minusMillis(2),
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                /* lat= */ 3,
+                                /* lng= */ -3));
+        List<String> ids = getRecordIds(insertedRecords);
+
+        List<Record> updatedRecords =
+                List.of(
+                        buildSession(
+                                ids.get(0),
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                /* lat= */ 10,
+                                /* lng= */ -10),
+                        buildSession(
+                                ids.get(1),
+                                now.minusMillis(30),
+                                now.minusMillis(20),
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                ids.get(2),
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                /* lat= */ 30,
+                                /* lng= */ -30));
+        updateRecords(updatedRecords);
+
+        readAndAssertEquals(updatedRecords);
+    }
+
+    @Test
+    public void updateRecords_byClientRecordId_readNewData() throws Exception {
+        Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+        List<Record> insertedRecords =
+                insertRecords(
+                        buildSession(
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                "id1",
+                                /* lat= */ 1,
+                                /* lng= */ -1),
+                        buildSession(
+                                now.minusMillis(3),
+                                now.minusMillis(2),
+                                "id2",
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                "id3",
+                                /* lat= */ 3,
+                                /* lng= */ -3));
+
+        List<Record> updatedRecords =
+                List.of(
+                        buildSession(
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                "id1",
+                                /* lat= */ 10,
+                                /* lng= */ -10),
+                        buildSession(
+                                now.minusMillis(30),
+                                now.minusMillis(20),
+                                "id2",
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                "id3",
+                                /* lat= */ 30,
+                                /* lng= */ -30));
+        updateRecords(updatedRecords);
+        copyRecordIdsViaReflection(insertedRecords, updatedRecords);
+
+        readAndAssertEquals(updatedRecords);
+    }
+
     private static void assertRoute(ExerciseSessionRecord record, double lat, double lng) {
         ExerciseRoute route = record.getRoute();
         assertThat(route).isNotNull();
@@ -793,6 +894,32 @@ public class ExerciseSessionRecordTest {
     }
 
     private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, double lat, double lng) {
+        return buildSession(/* id= */ null, startTime, endTime, lat, lng);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            String id, Instant startTime, Instant endTime, double lat, double lng) {
+        return buildSession(
+                id,
+                startTime,
+                endTime,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0,
+                new Location.Builder(startTime, lat, lng).build());
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, String clientRecordId, double lat, double lng) {
+        return buildSession(
+                startTime,
+                endTime,
+                clientRecordId,
+                /* clientRecordVersion= */ 0L,
+                new Location.Builder(startTime, lat, lng).build());
+    }
+
+    private static ExerciseSessionRecord buildSession(
             Instant startTime, Instant endTime, String clientRecordId, Location location) {
         return buildSession(
                 startTime, endTime, clientRecordId, /* clientRecordVersion= */ 0L, location);
@@ -804,8 +931,19 @@ public class ExerciseSessionRecordTest {
             String clientRecordId,
             long clientRecordVersion,
             Location location) {
+        return buildSession(
+                /* id= */ null, startTime, endTime, clientRecordId, clientRecordVersion, location);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            String id,
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            Location location) {
         return new ExerciseSessionRecord.Builder(
-                        buildMetadata(clientRecordId, clientRecordVersion),
+                        buildMetadata(id, clientRecordId, clientRecordVersion),
                         startTime,
                         endTime,
                         ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
@@ -831,12 +969,17 @@ public class ExerciseSessionRecordTest {
     }
 
     private static Metadata buildMetadata(String clientRecordId, long clientRecordVersion) {
+        return buildMetadata(UUID.randomUUID().toString(), clientRecordId, clientRecordVersion);
+    }
+
+    private static Metadata buildMetadata(
+            String id, String clientRecordId, long clientRecordVersion) {
         return new Metadata.Builder()
                 .setDataOrigin(
                         new DataOrigin.Builder()
                                 .setPackageName("android.healthconnect.cts")
                                 .build())
-                .setId(UUID.randomUUID().toString())
+                .setId(id != null ? id : "")
                 .setClientRecordId(clientRecordId)
                 .setClientRecordVersion(clientRecordVersion)
                 .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
