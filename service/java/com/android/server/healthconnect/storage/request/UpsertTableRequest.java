@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.OR;
+
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -62,6 +64,7 @@ public class UpsertTableRequest {
         this(table, contentValues, Collections.emptyList());
     }
 
+    @SuppressWarnings("NullAway.Init")
     public UpsertTableRequest(
             @NonNull String table,
             @NonNull ContentValues contentValues,
@@ -89,6 +92,7 @@ public class UpsertTableRequest {
      * Use this if you want to add row_id of the parent table to all the child entries in {@code
      * parentCol}
      */
+    @SuppressWarnings("NullAway")
     @NonNull
     public UpsertTableRequest setParentColumnForChildTables(@Nullable String parentCol) {
         mParentCol = parentCol;
@@ -158,7 +162,7 @@ public class UpsertTableRequest {
 
     @NonNull
     private WhereClauses getReadWhereClauses() {
-        WhereClauses readWhereClause = new WhereClauses().setUseOr(true);
+        WhereClauses readWhereClause = new WhereClauses(OR);
 
         for (Pair<String, Integer> uniqueColumn : mUniqueColumns) {
             switch (uniqueColumn.second) {

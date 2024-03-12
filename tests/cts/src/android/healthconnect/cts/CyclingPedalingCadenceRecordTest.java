@@ -16,11 +16,18 @@
 
 package android.healthconnect.cts;
 
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_AVG;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_MAX;
+import static android.health.connect.datatypes.CyclingPedalingCadenceRecord.RPM_MIN;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
+import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -29,11 +36,13 @@ import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
+import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -47,10 +56,12 @@ import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -58,11 +69,10 @@ import java.util.UUID;
 public class CyclingPedalingCadenceRecordTest {
 
     private static final String TAG = "CyclingPedalingCadenceRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
+    public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -518,6 +528,47 @@ public class CyclingPedalingCadenceRecordTest {
         assertThat(response.getDeletedLogs()).isEmpty();
     }
 
+    @Test
+    public void testRpmAggregation_getAggregationFromThreerecords_aggResponsesAreCorrect()
+            throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+        List<Record> records =
+                Arrays.asList(
+                        buildRecordForRpm(120, 100),
+                        buildRecordForRpm(100, 101),
+                        buildRecordForRpm(80, 102));
+        AggregateRecordsResponse<Double> response =
+                TestUtils.getAggregateResponse(
+                        new AggregateRecordsRequest.Builder<Double>(
+                                        new TimeInstantRangeFilter.Builder()
+                                                .setStartTime(Instant.ofEpochMilli(0))
+                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
+                                                .build())
+                                .addAggregationType(RPM_MAX)
+                                .addAggregationType(RPM_MIN)
+                                .addAggregationType(RPM_AVG)
+                                .build(),
+                        records);
+        checkAggregationResult(RPM_MIN, 80, response);
+        checkAggregationResult(RPM_AVG, 100, response);
+        checkAggregationResult(RPM_MAX, 120, response);
+    }
+
+    private void checkAggregationResult(
+            AggregationType<Double> type,
+            double expectedResult,
+            AggregateRecordsResponse<Double> response) {
+        assertThat(response.get(type)).isNotNull();
+        assertThat(response.get(type)).isEqualTo(expectedResult);
+        assertThat(response.getZoneOffset(type))
+                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+        Set<DataOrigin> dataOrigins = response.getDataOrigins(type);
+        assertThat(dataOrigins).hasSize(1);
+        for (DataOrigin itr : dataOrigins) {
+            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
+        }
+    }
+
     private void testReadCyclingPedalingCadenceRecordIds() throws InterruptedException {
         List<Record> recordList =
                 Arrays.asList(
@@ -602,7 +653,11 @@ public class CyclingPedalingCadenceRecordTest {
     }
 
     private static CyclingPedalingCadenceRecord getCompleteCyclingPedalingCadenceRecord() {
+        return buildRecordForRpm(1, 100);
+    }
 
+    private static CyclingPedalingCadenceRecord buildRecordForRpm(
+            double rpm, long millisFromStart) {
         Device device =
                 new Device.Builder()
                         .setManufacturer("google")
@@ -615,11 +670,12 @@ public class CyclingPedalingCadenceRecordTest {
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId("CPCR" + Math.random());
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
+        Instant recordStartTime = Instant.now();
 
         CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample
                 cyclingPedalingCadenceRecord =
                         new CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample(
-                                1, Instant.now().plusMillis(100));
+                                rpm, recordStartTime.plusMillis(millisFromStart));
 
         ArrayList<CyclingPedalingCadenceRecord.CyclingPedalingCadenceRecordSample>
                 cyclingPedalingCadenceRecords = new ArrayList<>();
@@ -628,8 +684,8 @@ public class CyclingPedalingCadenceRecordTest {
 
         return new CyclingPedalingCadenceRecord.Builder(
                         testMetadataBuilder.build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
+                        recordStartTime,
+                        recordStartTime.plusMillis(1000),
                         cyclingPedalingCadenceRecords)
                 .build();
     }

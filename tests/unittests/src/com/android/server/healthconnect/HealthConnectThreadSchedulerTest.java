@@ -25,8 +25,6 @@ import android.os.Process;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.server.healthconnect.storage.TestUtils;
-
 import com.google.common.truth.Truth;
 
 import org.junit.Before;
@@ -56,6 +54,8 @@ public class HealthConnectThreadSchedulerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        HealthConnectThreadScheduler.resetThreadPools();
 
         mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
         mInternalTaskSchedulerCompletedJobs = mInternalTaskScheduler.getCompletedTaskCount();
@@ -130,8 +130,6 @@ public class HealthConnectThreadSchedulerTest {
 
     @Test
     public void testHealthConnectSchedulerClear() {
-        HealthConnectThreadScheduler.resetThreadPools();
-        setUp();
         Truth.assertThat(mInternalTaskSchedulerCompletedJobs).isEqualTo(0);
         Truth.assertThat(mControllerTaskSchedulerCompletedJobs).isEqualTo(0);
         Truth.assertThat(mForegroundTaskSchedulerCompletedJobs).isEqualTo(0);

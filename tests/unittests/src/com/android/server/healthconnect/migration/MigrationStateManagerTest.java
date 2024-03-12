@@ -24,7 +24,6 @@ import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_IN_P
 import static android.health.connect.HealthConnectDataState.MIGRATION_STATE_MODULE_UPGRADE_REQUIRED;
 
 import static com.android.server.healthconnect.migration.MigrationConstants.CURRENT_STATE_START_TIME_KEY;
-import static com.android.server.healthconnect.migration.MigrationConstants.HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY;
 import static com.android.server.healthconnect.migration.MigrationConstants.HAVE_RESET_MIGRATION_STATE_KEY;
 import static com.android.server.healthconnect.migration.MigrationConstants.IDLE_TIMEOUT_REACHED_KEY;
 import static com.android.server.healthconnect.migration.MigrationConstants.IN_PROGRESS_TIMEOUT_REACHED_KEY;
@@ -72,7 +71,9 @@ import android.os.ext.SdkExtensions;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
+import com.android.server.healthconnect.TestUtils;
 import com.android.server.healthconnect.migration.MigrationStateManager.IllegalMigrationStateException;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
@@ -80,12 +81,10 @@ import libcore.util.HexEncoding;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.MockitoSession;
 import org.mockito.quality.Strictness;
 
 import java.time.Duration;
@@ -94,10 +93,22 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /** Test class for the MigrationStateManager class. */
 @RunWith(AndroidJUnit4.class)
 public class MigrationStateManagerTest {
+
+    @Rule
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(PreferenceHelper.class)
+                    .mockStatic(MigrationStateChangeJob.class)
+                    .mockStatic(HexEncoding.class)
+                    .mockStatic(HealthConnectDeviceConfigManager.class)
+                    .setStrictness(Strictness.LENIENT)
+                    .build();
+
     @Mock private Context mContext;
     @Mock private PackageManager mPackageManager;
     @Mock private PreferenceHelper mPreferenceHelper;
@@ -107,7 +118,7 @@ public class MigrationStateManagerTest {
     @Mock private MockListener mMockListener;
     @Mock private HealthConnectDeviceConfigManager mHealthConnectDeviceConfigManager;
     private MigrationStateManager mMigrationStateManager;
-    private MockitoSession mStaticMockSession;
+
     private static final UserHandle DEFAULT_USER_HANDLE = UserHandle.of(UserHandle.myUserId());
     private static final long EXECUTION_TIME_BUFFER_MOCK_VALUE =
             TimeUnit.MINUTES.toMillis(
@@ -122,15 +133,6 @@ public class MigrationStateManagerTest {
 
     @Before
     public void setUp() {
-        mStaticMockSession =
-                ExtendedMockito.mockitoSession()
-                        .mockStatic(PreferenceHelper.class)
-                        .mockStatic(MigrationStateChangeJob.class)
-                        .mockStatic(HexEncoding.class)
-                        .mockStatic(HealthConnectDeviceConfigManager.class)
-                        .strictness(Strictness.LENIENT)
-                        .startMocking();
-        MockitoAnnotations.initMocks(this);
         when(mContext.getResources()).thenReturn(mResources);
         when(mResources.getIdentifier(anyString(), anyString(), anyString())).thenReturn(1);
         when(mResources.getString(anyInt())).thenReturn(MOCK_CONFIGURED_PACKAGE);
@@ -144,17 +146,17 @@ public class MigrationStateManagerTest {
                 .thenReturn(NON_IDLE_STATE_TIMEOUT_MOCK_VALUE);
         when(mHealthConnectDeviceConfigManager.getMaxStartMigrationCalls())
                 .thenReturn(MAX_START_MIGRATION_CALLS_MOCK_VALUE);
-        MigrationStateManager.initializeInstance(DEFAULT_USER_HANDLE.getIdentifier());
-        mMigrationStateManager = MigrationStateManager.getInitialisedInstance();
-        mMigrationStateManager.clearListeners();
+        MigrationStateManager.resetInitializedInstanceForTest();
+        mMigrationStateManager =
+                MigrationStateManager.initializeInstance(DEFAULT_USER_HANDLE.getIdentifier());
         mMigrationStateManager.addStateChangedListener(mMockListener::onMigrationStateChanged);
     }
 
     @After
-    public void tearDown() {
-        mMigrationStateManager.clearListeners();
+    public void tearDown() throws TimeoutException {
+        TestUtils.waitForAllScheduledTasksToComplete();
+        MigrationStateManager.resetInitializedInstanceForTest();
         clearInvocations(mPreferenceHelper);
-        mStaticMockSession.finishMocking();
     }
 
     /**
@@ -621,7 +623,6 @@ public class MigrationStateManagerTest {
         ExtendedMockito.verify(() -> MigrationStateChangeJob.cancelAllJobs(eq(mContext)));
     }
 
-    @Ignore("b/294458689")
     @Test
     public void testPauseMigration_maxStartMigrationCountNotReached_shouldNotCompleteMigration() {
         int maxStartMigrationCount = MAX_START_MIGRATION_CALLS_MOCK_VALUE;
@@ -823,30 +824,6 @@ public class MigrationStateManagerTest {
         mMigrationStateManager.switchToSetupForUser(mContext);
         verifyNoJobScheduled();
         verifyCancelAllJobs();
-    }
-
-    @Test
-    public void testCancelOldMigrationJobs_haveNotCanceled() {
-        when(mPreferenceHelper.getPreference(eq(HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY)))
-                .thenReturn(null);
-        mMigrationStateManager.switchToSetupForUser(mContext);
-        ExtendedMockito.verify(
-                () -> MigrationStateChangeJob.cleanupOldPersistentMigrationJobs(eq(mContext)));
-        verify(mPreferenceHelper)
-                .insertOrReplacePreference(
-                        eq(HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY), eq(String.valueOf(true)));
-    }
-
-    @Test
-    public void testCancelOldMigrationJobs_haveAlreadyCanceled() {
-        when(mPreferenceHelper.getPreference(eq(HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY)))
-                .thenReturn(String.valueOf(true));
-        mMigrationStateManager.switchToSetupForUser(mContext);
-        ExtendedMockito.verify(
-                () -> MigrationStateChangeJob.cleanupOldPersistentMigrationJobs(eq(mContext)),
-                never());
-        verify(mPreferenceHelper, never())
-                .insertOrReplacePreference(eq(HAVE_CANCELED_OLD_MIGRATION_JOBS_KEY), any());
     }
 
     @Test

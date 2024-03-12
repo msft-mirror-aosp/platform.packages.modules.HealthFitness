@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
     <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_BASAL_METABOLIC_RATE"/>
+    <uses-permission android:name="android.permission.health.WRITE_MENSTRUATION"/>
 
     <application android:label="Health Connect Device Tests">
         <uses-library android:name="android.test.runner" />
@@ -40,7 +41,12 @@
     <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
                      android:label="CTS HealthConnect tests"
                      android:targetPackage="android.healthconnect.cts.device">
-        <meta-data android:name="listener"
-                   android:value="com.android.cts.runner.CtsTestRunListener"/>
     </instrumentation>
+
+    <queries>
+        <package android:name="android.healthconnect.cts.testapp.readWritePerms.A"/>
+        <package android:name="android.healthconnect.cts.testapp.readWritePerms.B"/>
+        <package android:name="android.healthconnect.cts.testapp.writePermsOnly"/>
+    </queries>
+
 </manifest>

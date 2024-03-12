@@ -16,9 +16,9 @@
 
 package android.healthconnect.cts;
 
-import static android.healthconnect.cts.TestUtils.SESSION_END_TIME;
-import static android.healthconnect.cts.TestUtils.SESSION_START_TIME;
-import static android.healthconnect.cts.TestUtils.buildSleepSession;
+import static android.healthconnect.cts.utils.TestUtils.SESSION_END_TIME;
+import static android.healthconnect.cts.utils.TestUtils.SESSION_START_TIME;
+import static android.healthconnect.cts.utils.TestUtils.buildSleepSession;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -38,12 +38,12 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -61,13 +61,6 @@ public class SleepSessionRecordTest {
     private static final Instant END_TIME = Instant.ofEpochMilli((long) 1e10 + 1000);
     private static final CharSequence NOTES = "felt sleepy";
     private static final CharSequence TITLE = "Afternoon nap";
-
-    @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
-        TestUtils.deleteAllStagedRemoteData();
-    }
 
     @After
     public void tearDown() throws InterruptedException {

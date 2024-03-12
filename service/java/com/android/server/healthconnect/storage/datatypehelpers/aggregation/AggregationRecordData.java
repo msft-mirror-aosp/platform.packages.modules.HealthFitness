@@ -44,6 +44,8 @@ public abstract class AggregationRecordData implements Comparable<AggregationRec
     private long mRecordEndTime;
     private int mPriority;
     private long mLastModifiedTime;
+
+    @SuppressWarnings("NullAway.Init")
     private ZoneOffset mStartTimeZoneOffset;
 
     long getStartTime() {
@@ -116,7 +118,8 @@ public abstract class AggregationRecordData implements Comparable<AggregationRec
      * may assume that it's will be called with non overlapping intervals. So (start time, end time)
      * input intervals of all calls will not overlap.
      */
-    abstract double getResultOnInterval(long startTime, long endTime);
+    abstract double getResultOnInterval(
+            AggregationTimestamp startPoint, AggregationTimestamp endPoint);
 
     abstract void populateSpecificAggregationData(Cursor cursor, boolean useLocalTime);
 
@@ -156,7 +159,7 @@ public abstract class AggregationRecordData implements Comparable<AggregationRec
         }
 
         return Double.compare(
-                getResultOnInterval(getStartTime(), getEndTime()),
-                o.getResultOnInterval(o.getStartTime(), o.getEndTime()));
+                getResultOnInterval(getStartTimestamp(), getEndTimestamp()),
+                o.getResultOnInterval(o.getStartTimestamp(), o.getEndTimestamp()));
     }
 }

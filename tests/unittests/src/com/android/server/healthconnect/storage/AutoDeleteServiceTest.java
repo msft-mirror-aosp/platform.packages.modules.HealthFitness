@@ -20,12 +20,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.content.Context;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.ArrayMap;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.dx.mockito.inline.extended.ExtendedMockito;
+import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
@@ -48,6 +49,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DistanceRecordHe
 import com.android.server.healthconnect.storage.datatypehelpers.ElevationGainedRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.FloorsClimbedRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HeartRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HeartRateVariabilityRmssdHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HeightRecordHelper;
@@ -76,14 +78,11 @@ import com.android.server.healthconnect.storage.datatypehelpers.WheelchairPushes
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.MockitoSession;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,32 +95,26 @@ import java.util.Set;
 public class AutoDeleteServiceTest {
     private static final String AUTO_DELETE_DURATION_RECORDS_KEY =
             "auto_delete_duration_records_key";
+
+    @Rule
+    public final ExtendedMockitoRule mExtendedMockitoRule =
+            new ExtendedMockitoRule.Builder(this)
+                    .mockStatic(PreferenceHelper.class)
+                    .mockStatic(TransactionManager.class)
+                    .mockStatic(RecordHelperProvider.class)
+                    .mockStatic(AppInfoHelper.class)
+                    .mockStatic(ActivityDateHelper.class)
+                    .mockStatic(HealthDataCategoryPriorityHelper.class)
+                    .build();
+
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private TransactionManager mTransactionManager;
     @Mock private RecordHelperProvider mRecordHelperProvider;
 
     @Mock private AppInfoHelper mAppInfoHelper;
     @Mock private ActivityDateHelper mActivityDateHelper;
-    private MockitoSession mStaticMockSession;
-
-    @Before
-    public void setUp() {
-        mStaticMockSession =
-                ExtendedMockito.mockitoSession()
-                        .mockStatic(PreferenceHelper.class)
-                        .mockStatic(TransactionManager.class)
-                        .mockStatic(RecordHelperProvider.class)
-                        .mockStatic(AppInfoHelper.class)
-                        .mockStatic(ActivityDateHelper.class)
-                        .startMocking();
-
-        MockitoAnnotations.initMocks(this);
-    }
-
-    @After
-    public void tearDown() {
-        mStaticMockSession.finishMocking();
-    }
+    @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
+    @Mock Context mContext;
 
     @Test
     public void testSetRecordRetentionPeriodInDays() {
@@ -141,8 +134,10 @@ public class AutoDeleteServiceTest {
         when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(ActivityDateHelper.getInstance()).thenReturn(mActivityDateHelper);
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY)).thenReturn(null);
+        when(HealthDataCategoryPriorityHelper.getInstance())
+                .thenReturn(mHealthDataCategoryPriorityHelper);
 
-        AutoDeleteService.startAutoDelete();
+        AutoDeleteService.startAutoDelete(mContext);
 
         verify(mRecordHelperProvider, never()).getRecordHelpers();
         verify(mTransactionManager, Mockito.times(2))
@@ -153,6 +148,7 @@ public class AutoDeleteServiceTest {
                                                 deleteTableRequestsList)));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
         verify(mActivityDateHelper).reSyncForAllRecords();
+        verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
     }
 
     @Test
@@ -162,12 +158,14 @@ public class AutoDeleteServiceTest {
         when(RecordHelperProvider.getInstance()).thenReturn(mRecordHelperProvider);
         when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(ActivityDateHelper.getInstance()).thenReturn(mActivityDateHelper);
+        when(HealthDataCategoryPriorityHelper.getInstance())
+                .thenReturn(mHealthDataCategoryPriorityHelper);
 
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
         when(mRecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
 
-        AutoDeleteService.startAutoDelete();
+        AutoDeleteService.startAutoDelete(mContext);
 
         verify(mTransactionManager, Mockito.times(3))
                 .deleteWithoutChangeLogs(
@@ -177,6 +175,7 @@ public class AutoDeleteServiceTest {
                                                 deleteTableRequestsList)));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
         verify(mActivityDateHelper).reSyncForAllRecords();
+        verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
     }
 
     private boolean checkTableNames_getPreferenceReturnNull(List<DeleteTableRequest> list) {

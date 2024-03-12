@@ -34,11 +34,13 @@ package com.android.healthconnect.controller.permissions.app
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
@@ -63,6 +65,8 @@ import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPr
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.AttributeResolver
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
@@ -71,7 +75,6 @@ import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
-import com.android.settingslib.widget.OnMainSwitchChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -84,7 +87,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         private const val ALLOW_ALL_PREFERENCE = "allow_all_preference"
         private const val READ_CATEGORY = "read_permission_category"
         private const val WRITE_CATEGORY = "write_permission_category"
-        private const val DELETE_APP_DATA_PREFERENCE = "delete_app_data"
+        private const val MANAGE_DATA_PREFERENCE_KEY = "manage_app"
         private const val FOOTER_KEY = "connected_app_footer"
         private const val PARAGRAPH_SEPARATOR = "\n\n"
     }
@@ -93,6 +96,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         this.setPageName(PageName.APP_ACCESS_PAGE)
     }
 
+    @Inject lateinit var featureUtils: FeatureUtils
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
@@ -118,8 +122,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         preferenceScreen.findPreference(WRITE_CATEGORY)
     }
 
-    private val mDeleteAppDataPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(DELETE_APP_DATA_PREFERENCE)
+    private val mManageDataCategory: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(MANAGE_DATA_PREFERENCE_KEY)
     }
 
     private val mConnectedAppFooter: FooterPreference? by lazy {
@@ -134,7 +138,6 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.connected_app_screen, rootKey)
 
-        mDeleteAppDataPreference?.logName = AppAccessElement.DELETE_APP_DATA_BUTTON
         allowAllPreference?.logNameActive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_ACTIVE
         allowAllPreference?.logNameInactive = AppAccessElement.ALLOW_ALL_PERMISSIONS_SWITCH_INACTIVE
 
@@ -183,7 +186,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         }
 
         setupAllowAllPreference()
-        setupDeleteAllPreference()
+        setupManageDataPreferenceCategory()
         setupHeader()
         setupFooter()
     }
@@ -197,20 +200,43 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         }
     }
 
-    private fun setupDeleteAllPreference() {
-        mDeleteAppDataPreference?.setOnPreferenceClickListener {
-            val deletionType = DeletionType.DeletionTypeAppData(packageName, appName)
-            childFragmentManager.setFragmentResult(
-                START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
-            true
+    private fun setupManageDataPreferenceCategory() {
+        mManageDataCategory?.removeAll()
+        if (featureUtils.isNewInformationArchitectureEnabled()) {
+            mManageDataCategory?.addPreference(
+                HealthPreference(requireContext()).also {
+                    it.title = getString(R.string.see_app_data)
+                    it.icon =
+                        AttributeResolver.getDrawable(requireContext(), R.attr.dataAndAccessIcon)
+                    it.setOnPreferenceClickListener {
+                        findNavController()
+                            .navigate(
+                                R.id.action_connectedApp_to_appData,
+                                bundleOf(
+                                    EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName))
+                        true
+                    }
+                })
+        } else {
+            mManageDataCategory?.addPreference(
+                HealthPreference(requireContext()).also {
+                    it.title = getString(R.string.delete_app_data)
+                    it.icon = AttributeResolver.getDrawable(requireContext(), R.attr.deleteIcon)
+                    it.setOnPreferenceClickListener {
+                        val deletionType = DeletionType.DeletionTypeAppData(packageName, appName)
+                        childFragmentManager.setFragmentResult(
+                            START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
+                        true
+                    }
+                })
         }
     }
 
-    private val onSwitchChangeListener = OnMainSwitchChangeListener { switchView, isChecked ->
+    private val onSwitchChangeListener = OnCheckedChangeListener { buttonView, isChecked ->
         if (isChecked) {
             val permissionsUpdated = appPermissionViewModel.grantAllPermissions(packageName)
             if (!permissionsUpdated) {
-                switchView.isChecked = false
+                buttonView.isChecked = false
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
         } else {

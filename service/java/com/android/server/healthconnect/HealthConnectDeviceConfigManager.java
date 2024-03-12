@@ -17,6 +17,7 @@
 package com.android.server.healthconnect;
 
 import android.annotation.NonNull;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.ratelimiter.RateLimiter.QuotaBucket;
@@ -39,6 +40,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @hide
  */
+@SuppressLint("MissingPermission")
 public class HealthConnectDeviceConfigManager implements DeviceConfig.OnPropertiesChangedListener {
     private static Set<String> sFlagsToTrack = new ArraySet<>();
     private static final String EXERCISE_ROUTE_FEATURE_FLAG = "exercise_routes_enable";
@@ -59,6 +61,10 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
             "max_write_requests_per_15m_foreground";
     private static final String MAX_WRITE_REQUESTS_PER_15M_BACKGROUND_FLAG =
             "max_write_requests_per_15m_background";
+    private static final String MAX_DATA_PUSH_LIMIT_PER_APP_15M_BACKGROUND_FLAG =
+            "max_data_push_limit_per_app_15m_background";
+    private static final String MAX_DATA_PUSH_LIMIT_ACROSS_APPS_15M_BACKGROUND_FLAG =
+            "max_data_push_limit_across_apps_15m_background";
     private static final String MAX_WRITE_CHUNK_SIZE_FLAG = "max_write_chunk_size";
     private static final String MAX_WRITE_SINGLE_RECORD_SIZE_FLAG = "max_write_single_record_size";
 
@@ -109,15 +115,28 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     public static final String ENABLE_MIGRATION_NOTIFICATIONS_FLAG =
             "enable_migration_notifications";
 
+    @VisibleForTesting
+    public static final String BACKGROUND_READ_FEATURE_FLAG = "background_read_enable";
+
+    @VisibleForTesting
+    public static final String ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG =
+            "aggregation_source_controls_enable";
+
     private static final boolean SESSION_DATATYPE_DEFAULT_FLAG_VALUE = true;
     private static final boolean EXERCISE_ROUTE_DEFAULT_FLAG_VALUE = true;
     public static final boolean ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE = true;
-    public static final int QUOTA_BUCKET_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 1000;
-    public static final int QUOTA_BUCKET_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 8000;
-    public static final int QUOTA_BUCKET_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE = 1000;
-    public static final int QUOTA_BUCKET_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE = 8000;
+    public static final int QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 2000;
+    public static final int QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 16000;
+    public static final int QUOTA_BUCKET_READS_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE = 1000;
+    public static final int QUOTA_BUCKET_READS_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE = 8000;
+    public static final int QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 1000;
+    public static final int QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 8000;
+    public static final int QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE = 1000;
+    public static final int QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE = 8000;
     public static final int CHUNK_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE = 5000000;
     public static final int RECORD_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE = 1000000;
+    public static final int DATA_PUSH_LIMIT_PER_APP_15M_DEFAULT_FLAG_VALUE = 35000000;
+    public static final int DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE = 100000000;
 
     @VisibleForTesting
     public static final int MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE = 5;
@@ -148,7 +167,14 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @VisibleForTesting
     public static final boolean ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE = true;
 
+    @VisibleForTesting public static final boolean BACKGROUND_READ_DEFAULT_FLAG_VALUE = false;
+
+    @VisibleForTesting
+    public static final boolean ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE = true;
+
+    @SuppressWarnings("NullAway.Init")
     private static HealthConnectDeviceConfigManager sDeviceConfigManager;
+
     private final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
     private static final String HEALTH_FITNESS_NAMESPACE = DeviceConfig.NAMESPACE_HEALTH_FITNESS;
 
@@ -250,6 +276,16 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
                     ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
 
+    @GuardedBy("mLock")
+    private boolean mBackgroundReadFeatureEnabled =
+            DeviceConfig.getBoolean(
+                    HEALTH_FITNESS_NAMESPACE,
+                    BACKGROUND_READ_FEATURE_FLAG,
+                    BACKGROUND_READ_DEFAULT_FLAG_VALUE);
+
+    @GuardedBy("mLock")
+    private boolean mAggregationSourceControlsEnabled = true;
+
     @NonNull
     @VisibleForTesting(visibility = VisibleForTesting.Visibility.PACKAGE)
     public static void initializeInstance(Context context) {
@@ -286,6 +322,8 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         sFlagsToTrack.add(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_MIGRATION_NOTIFICATIONS_FLAG);
+        sFlagsToTrack.add(BACKGROUND_READ_FEATURE_FLAG);
+        sFlagsToTrack.add(ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG);
     }
 
     /** Returns if operations with exercise route are enabled. */
@@ -447,58 +485,90 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         }
     }
 
+    /** Returns whether reading in background is enabled or not. */
+    public boolean isBackgroundReadFeatureEnabled() {
+        mLock.readLock().lock();
+        try {
+            return mBackgroundReadFeatureEnabled;
+        } finally {
+            mLock.readLock().unlock();
+        }
+    }
+
+    /** Returns whether the new aggregation source control feature is enabled or not. */
+    public boolean isAggregationSourceControlsEnabled() {
+        mLock.readLock().lock();
+        try {
+            return mAggregationSourceControlsEnabled;
+        } finally {
+            mLock.readLock().unlock();
+        }
+    }
+
     /** Updates rate limiting quota values. */
     public void updateRateLimiterValues() {
-        Map<Integer, Integer> quotaBucketToMaxApiCallQuotaMap = new HashMap<>();
+        Map<Integer, Integer> quotaBucketToMaxRollingQuotaMap = new HashMap<>();
         Map<String, Integer> quotaBucketToMaxMemoryQuotaMap = new HashMap<>();
-        quotaBucketToMaxApiCallQuotaMap.put(
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_24H_FOREGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_READ_REQUESTS_PER_24H_FOREGROUND_FLAG,
-                        QUOTA_BUCKET_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_24H_BACKGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_READ_REQUESTS_PER_24H_BACKGROUND_FLAG,
-                        QUOTA_BUCKET_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_READS_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_15M_FOREGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_READ_REQUESTS_PER_15M_FOREGROUND_FLAG,
-                        QUOTA_BUCKET_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_15M_BACKGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_READ_REQUESTS_PER_15M_BACKGROUND_FLAG,
-                        QUOTA_BUCKET_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_READS_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_WRITE_REQUESTS_PER_24H_FOREGROUND_FLAG,
-                        QUOTA_BUCKET_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_WRITE_REQUESTS_PER_24H_BACKGROUND_FLAG,
-                        QUOTA_BUCKET_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_WRITE_REQUESTS_PER_15M_FOREGROUND_FLAG,
-                        QUOTA_BUCKET_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE));
-        quotaBucketToMaxApiCallQuotaMap.put(
+                        QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND,
                 DeviceConfig.getInt(
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_WRITE_REQUESTS_PER_15M_BACKGROUND_FLAG,
-                        QUOTA_BUCKET_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE));
+                        QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
+                QuotaBucket.QUOTA_BUCKET_DATA_PUSH_LIMIT_PER_APP_15M,
+                DeviceConfig.getInt(
+                        DeviceConfig.NAMESPACE_HEALTH_FITNESS,
+                        MAX_DATA_PUSH_LIMIT_PER_APP_15M_BACKGROUND_FLAG,
+                        DATA_PUSH_LIMIT_PER_APP_15M_DEFAULT_FLAG_VALUE));
+        quotaBucketToMaxRollingQuotaMap.put(
+                QuotaBucket.QUOTA_BUCKET_DATA_PUSH_LIMIT_ACROSS_APPS_15M,
+                DeviceConfig.getInt(
+                        DeviceConfig.NAMESPACE_HEALTH_FITNESS,
+                        MAX_DATA_PUSH_LIMIT_ACROSS_APPS_15M_BACKGROUND_FLAG,
+                        DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE));
         quotaBucketToMaxMemoryQuotaMap.put(
                 RateLimiter.CHUNK_SIZE_LIMIT_IN_BYTES,
                 DeviceConfig.getInt(
@@ -511,7 +581,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                         DeviceConfig.NAMESPACE_HEALTH_FITNESS,
                         MAX_WRITE_SINGLE_RECORD_SIZE_FLAG,
                         RECORD_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE));
-        RateLimiter.updateApiCallQuotaMap(quotaBucketToMaxApiCallQuotaMap);
+        RateLimiter.updateMaxRollingQuotaMap(quotaBucketToMaxRollingQuotaMap);
         RateLimiter.updateMemoryQuotaMap(quotaBucketToMaxMemoryQuotaMap);
         mLock.readLock().lock();
         try {
@@ -531,156 +601,111 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         changedFlags.retainAll(sFlagsToTrack);
 
         for (String name : changedFlags) {
-            if (name.equals(EXERCISE_ROUTE_FEATURE_FLAG)) {
+            try {
                 mLock.writeLock().lock();
-                try {
-                    mExerciseRouteEnabled =
-                            properties.getBoolean(
-                                    EXERCISE_ROUTE_FEATURE_FLAG, EXERCISE_ROUTE_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
+                switch (name) {
+                    case EXERCISE_ROUTE_FEATURE_FLAG:
+                        mExerciseRouteEnabled =
+                                properties.getBoolean(
+                                        EXERCISE_ROUTE_FEATURE_FLAG,
+                                        EXERCISE_ROUTE_DEFAULT_FLAG_VALUE);
+                        break;
+                    case SESSION_DATATYPE_FEATURE_FLAG:
+                        mSessionDatatypeEnabled =
+                                properties.getBoolean(
+                                        SESSION_DATATYPE_FEATURE_FLAG,
+                                        SESSION_DATATYPE_DEFAULT_FLAG_VALUE);
+                        break;
+                    case ENABLE_RATE_LIMITER_FLAG:
+                        mRateLimiterEnabled =
+                                properties.getBoolean(
+                                        ENABLE_RATE_LIMITER_FLAG,
+                                        ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE);
+                        RateLimiter.updateEnableRateLimiterFlag(mRateLimiterEnabled);
+                        break;
+                    case COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG:
+                        mMigrationStateInProgressCount =
+                                properties.getInt(
+                                        COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG,
+                                        MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE);
+                        break;
+                    case COUNT_MIGRATION_STATE_ALLOWED_FLAG:
+                        mMigrationStateAllowedCount =
+                                properties.getInt(
+                                        COUNT_MIGRATION_STATE_ALLOWED_FLAG,
+                                        MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE);
+                        break;
+                    case MAX_START_MIGRATION_CALLS_ALLOWED_FLAG:
+                        mMaxStartMigrationCalls =
+                                properties.getInt(
+                                        MAX_START_MIGRATION_CALLS_ALLOWED_FLAG,
+                                        MAX_START_MIGRATION_CALLS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case IDLE_STATE_TIMEOUT_DAYS_FLAG:
+                        mIdleStateTimeoutPeriod =
+                                properties.getInt(
+                                        IDLE_STATE_TIMEOUT_DAYS_FLAG,
+                                        IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case NON_IDLE_STATE_TIMEOUT_DAYS_FLAG:
+                        mNonIdleStateTimeoutPeriod =
+                                properties.getInt(
+                                        NON_IDLE_STATE_TIMEOUT_DAYS_FLAG,
+                                        NON_IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case IN_PROGRESS_STATE_TIMEOUT_HOURS_FLAG:
+                        mInProgressStateTimeoutPeriod =
+                                properties.getInt(
+                                        IN_PROGRESS_STATE_TIMEOUT_HOURS_FLAG,
+                                        IN_PROGRESS_STATE_TIMEOUT_HOURS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case EXECUTION_TIME_BUFFER_MINUTES_FLAG:
+                        mExecutionTimeBuffer =
+                                properties.getInt(
+                                        EXECUTION_TIME_BUFFER_MINUTES_FLAG,
+                                        EXECUTION_TIME_BUFFER_MINUTES_DEFAULT_FLAG_VALUE);
+                        break;
+                    case MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS_FLAG:
+                        mMigrationCompletionJobRunInterval =
+                                properties.getInt(
+                                        MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS_FLAG,
+                                        MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS_FLAG:
+                        mMigrationPauseJobRunInterval =
+                                properties.getInt(
+                                        MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS_FLAG,
+                                        MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG:
+                        mEnablePauseStateChangeJob =
+                                properties.getBoolean(
+                                        ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG,
+                                        ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
+                        break;
+                    case ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG:
+                        mEnableCompleteStateChangeJob =
+                                properties.getBoolean(
+                                        ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG,
+                                        ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
+                        break;
+                    case ENABLE_MIGRATION_NOTIFICATIONS_FLAG:
+                        mEnableMigrationNotifications =
+                                properties.getBoolean(
+                                        ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
+                                        ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
+                        break;
+                    case BACKGROUND_READ_FEATURE_FLAG:
+                        mBackgroundReadFeatureEnabled =
+                                properties.getBoolean(
+                                        BACKGROUND_READ_FEATURE_FLAG,
+                                        BACKGROUND_READ_DEFAULT_FLAG_VALUE);
+                        break;
+                    case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
+                        mAggregationSourceControlsEnabled = true;
                 }
-            } else if (name.equals(SESSION_DATATYPE_FEATURE_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mSessionDatatypeEnabled =
-                            properties.getBoolean(
-                                    SESSION_DATATYPE_FEATURE_FLAG,
-                                    SESSION_DATATYPE_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(ENABLE_RATE_LIMITER_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mRateLimiterEnabled =
-                            properties.getBoolean(
-                                    ENABLE_RATE_LIMITER_FLAG,
-                                    ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE);
-                    RateLimiter.updateEnableRateLimiterFlag(mRateLimiterEnabled);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mMigrationStateInProgressCount =
-                            properties.getInt(
-                                    COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG,
-                                    MIGRATION_STATE_IN_PROGRESS_COUNT_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(COUNT_MIGRATION_STATE_ALLOWED_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mMigrationStateAllowedCount =
-                            properties.getInt(
-                                    COUNT_MIGRATION_STATE_ALLOWED_FLAG,
-                                    MIGRATION_STATE_ALLOWED_COUNT_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(MAX_START_MIGRATION_CALLS_ALLOWED_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mMaxStartMigrationCalls =
-                            properties.getInt(
-                                    MAX_START_MIGRATION_CALLS_ALLOWED_FLAG,
-                                    MAX_START_MIGRATION_CALLS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(IDLE_STATE_TIMEOUT_DAYS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mIdleStateTimeoutPeriod =
-                            properties.getInt(
-                                    IDLE_STATE_TIMEOUT_DAYS_FLAG,
-                                    IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(NON_IDLE_STATE_TIMEOUT_DAYS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mNonIdleStateTimeoutPeriod =
-                            properties.getInt(
-                                    NON_IDLE_STATE_TIMEOUT_DAYS_FLAG,
-                                    NON_IDLE_STATE_TIMEOUT_DAYS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(IN_PROGRESS_STATE_TIMEOUT_HOURS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mInProgressStateTimeoutPeriod =
-                            properties.getInt(
-                                    IN_PROGRESS_STATE_TIMEOUT_HOURS_FLAG,
-                                    IN_PROGRESS_STATE_TIMEOUT_HOURS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(EXECUTION_TIME_BUFFER_MINUTES_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mExecutionTimeBuffer =
-                            properties.getInt(
-                                    EXECUTION_TIME_BUFFER_MINUTES_FLAG,
-                                    EXECUTION_TIME_BUFFER_MINUTES_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mMigrationCompletionJobRunInterval =
-                            properties.getInt(
-                                    MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS_FLAG,
-                                    MIGRATION_COMPLETION_JOB_RUN_INTERVAL_DAYS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mMigrationPauseJobRunInterval =
-                            properties.getInt(
-                                    MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS_FLAG,
-                                    MIGRATION_PAUSE_JOB_RUN_INTERVAL_HOURS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mEnablePauseStateChangeJob =
-                            properties.getBoolean(
-                                    ENABLE_PAUSE_STATE_CHANGE_JOBS_FLAG,
-                                    ENABLE_PAUSE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mEnableCompleteStateChangeJob =
-                            properties.getBoolean(
-                                    ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG,
-                                    ENABLE_COMPLETE_STATE_CHANGE_JOB_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
-            } else if (name.equals(ENABLE_MIGRATION_NOTIFICATIONS_FLAG)) {
-                mLock.writeLock().lock();
-                try {
-                    mEnableMigrationNotifications =
-                            properties.getBoolean(
-                                    ENABLE_MIGRATION_NOTIFICATIONS_FLAG,
-                                    ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
-                } finally {
-                    mLock.writeLock().unlock();
-                }
+            } finally {
+                mLock.writeLock().unlock();
             }
         }
     }

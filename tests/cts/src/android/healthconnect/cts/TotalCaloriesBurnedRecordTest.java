@@ -24,6 +24,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
@@ -38,6 +39,7 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
@@ -63,11 +65,10 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class TotalCaloriesBurnedRecordTest {
     private static final String TAG = "TotalCaloriesBurnedRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
+    public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -479,6 +480,7 @@ public class TotalCaloriesBurnedRecordTest {
 
     @Test
     public void testAggregation_totalCaloriesBurnt() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -521,8 +523,9 @@ public class TotalCaloriesBurnedRecordTest {
         Energy totEnergyAfter = newResponse.get(TotalCaloriesBurnedRecord.ENERGY_TOTAL);
         assertThat(totEnergyBefore).isNotNull();
         assertThat(totEnergyAfter).isNotNull();
-        assertThat(totEnergyBefore.getInCalories()).isWithin(1).of(4693520);
-        assertThat(totEnergyAfter.getInCalories()).isWithin(1).of(1564540);
+        // The default total calories burned for one day is approx 1564.5 kCals
+        assertThat(totEnergyBefore.getInCalories()).isWithin(1).of(4_693_520);
+        assertThat(totEnergyAfter.getInCalories()).isWithin(1).of(1_564_540);
         Set<DataOrigin> newDataOrigin =
                 newResponse.getDataOrigins(TotalCaloriesBurnedRecord.ENERGY_TOTAL);
         for (DataOrigin itr : newDataOrigin) {
@@ -537,6 +540,7 @@ public class TotalCaloriesBurnedRecordTest {
 
     @Test
     public void testAggregation_totalCaloriesBurnt_activeCalories() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -567,6 +571,8 @@ public class TotalCaloriesBurnedRecordTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         TestUtils.getAggregateResponseGroupByPeriod(
@@ -587,6 +593,8 @@ public class TotalCaloriesBurnedRecordTest {
     @Test
     public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy_duration()
             throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         List<Record> records =
@@ -633,6 +641,8 @@ public class TotalCaloriesBurnedRecordTest {
     @Test
     public void testAggregation_groupByDurationLocalFilter_shiftRecordsAndFilterWithOffset()
             throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
+
         Context context = ApplicationProvider.getApplicationContext();
         Instant now = Instant.now();
         ZoneOffset offset = ZoneOffset.ofHours(-1);

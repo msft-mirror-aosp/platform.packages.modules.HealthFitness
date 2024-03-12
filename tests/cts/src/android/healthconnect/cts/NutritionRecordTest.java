@@ -48,6 +48,7 @@ import static android.health.connect.datatypes.NutritionRecord.SUGAR_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.THIAMIN_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.TOTAL_CARBOHYDRATE_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.TOTAL_FAT_TOTAL;
+import static android.health.connect.datatypes.NutritionRecord.TRANS_FAT_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.UNSATURATED_FAT_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.VITAMIN_A_TOTAL;
 import static android.health.connect.datatypes.NutritionRecord.VITAMIN_B12_TOTAL;
@@ -65,6 +66,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -81,6 +83,7 @@ import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
@@ -104,13 +107,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class NutritionRecordTest {
     private static final String TAG = "NutritionRecordTest";
-
-    @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
-        TestUtils.deleteAllStagedRemoteData();
-    }
 
     private List<AggregationType<Mass>> mMassAggregateTypesList =
             Arrays.asList(
@@ -143,6 +139,7 @@ public class NutritionRecordTest {
                     SUGAR_TOTAL,
                     THIAMIN_TOTAL,
                     TOTAL_CARBOHYDRATE_TOTAL,
+                    TRANS_FAT_TOTAL,
                     TOTAL_FAT_TOTAL,
                     UNSATURATED_FAT_TOTAL,
                     VITAMIN_A_TOTAL,
@@ -153,6 +150,13 @@ public class NutritionRecordTest {
                     VITAMIN_E_TOTAL,
                     VITAMIN_K_TOTAL,
                     ZINC_TOTAL);
+
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Before
+    public void setUp() throws InterruptedException {
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -419,6 +423,7 @@ public class NutritionRecordTest {
 
     @Test
     public void testAggregation_NutritionValuesTotal() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.NUTRITION);
         List<Record> records =
                 Arrays.asList(getCompleteNutritionRecord(), getCompleteNutritionRecord());
         AggregateRecordsResponse<Mass> oldResponse =
@@ -458,6 +463,7 @@ public class NutritionRecordTest {
                                 .addAggregationType(THIAMIN_TOTAL)
                                 .addAggregationType(TOTAL_CARBOHYDRATE_TOTAL)
                                 .addAggregationType(TOTAL_FAT_TOTAL)
+                                .addAggregationType(TRANS_FAT_TOTAL)
                                 .addAggregationType(UNSATURATED_FAT_TOTAL)
                                 .addAggregationType(VITAMIN_A_TOTAL)
                                 .addAggregationType(VITAMIN_B12_TOTAL)
@@ -509,6 +515,7 @@ public class NutritionRecordTest {
                                 .addAggregationType(TOTAL_CARBOHYDRATE_TOTAL)
                                 .addAggregationType(TOTAL_FAT_TOTAL)
                                 .addAggregationType(UNSATURATED_FAT_TOTAL)
+                                .addAggregationType(TRANS_FAT_TOTAL)
                                 .addAggregationType(VITAMIN_A_TOTAL)
                                 .addAggregationType(VITAMIN_B12_TOTAL)
                                 .addAggregationType(VITAMIN_B6_TOTAL)
@@ -538,6 +545,8 @@ public class NutritionRecordTest {
 
     @Test
     public void testAggregation_NutritionEnergyValuesTotal() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.NUTRITION);
+
         List<Record> records = Arrays.asList(getCompleteNutritionRecord());
         AggregateRecordsResponse<Energy> oldResponse =
                 TestUtils.getAggregateResponse(

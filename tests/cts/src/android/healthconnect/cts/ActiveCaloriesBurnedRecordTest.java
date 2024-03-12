@@ -25,6 +25,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.HealthDataCategory;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -39,6 +40,7 @@ import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Energy;
+import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -64,11 +66,10 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class ActiveCaloriesBurnedRecordTest {
     private static final String TAG = "ActiveCaloriesBurnedRecordTest";
+    private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
     @Before
-    public void setUp() {
-        // TODO(b/283737434): Update the HC code to use user aware context on permission change.
-        // Temporary fix to set firstGrantTime for the correct user in HSUM.
+    public void setUp() throws InterruptedException {
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -325,6 +326,7 @@ public class ActiveCaloriesBurnedRecordTest {
 
     @Test
     public void testAggregation_ActiveCaloriesBurntTotal() throws Exception {
+        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.ACTIVITY);
         List<Record> records =
                 Arrays.asList(
                         ActiveCaloriesBurnedRecordTest.getBaseActiveCaloriesBurnedRecord(74.0, 1),
