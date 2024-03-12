@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Đã truy cập trong 24 giờ qua"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Quyền truy cập của ứng dụng"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Hiện bạn chưa cài đặt ứng dụng nào tương thích"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Quyền truy cập bổ sung"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Đã xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA_0">%1$s</xliff:g> và <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Lý do Health Connect xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Nếu một ứng dụng bị tạm ngưng hoặc bị xoá khỏi Google Play, Health Connect sẽ tự động xoá các quyền của ứng dụng đó.\n\nĐiều này có nghĩa là ứng dụng đó không thể truy cập vào dữ liệu được lưu trữ trên Health Connect nữa. Nếu đã ghi dữ liệu trước đó thì ứng dụng này sẽ xuất hiện trong danh sách ứng dụng không hoạt động."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Tôi hiểu"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Chọn tần suất"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Chọn lưu dữ liệu một lần hoặc thiết lập để tự động lưu định kỳ."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Hằng ngày"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Hằng tuần"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Hằng tháng"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"Quay lại"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Tiếp theo"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Làm quen với Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>
@@ -741,6 +771,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Cho phép lộ trình này"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Cho phép tất cả lộ trình"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Không cho phép"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Luôn cho phép"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Chia sẻ lộ trình tập luyện"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Kiểm soát cách ứng dụng này truy cập vào lộ trình tập luyện từ các ứng dụng đã kết nối"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Luôn hỏi"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Không cho phép"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Bật quyền truy cập cả hai loại dữ liệu?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Tắt quyền truy cập cả hai loại dữ liệu?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> cần quyền đọc dữ liệu tập thể dục để bật lộ trình tập thể dục"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> yêu cầu quyền truy cập vào dữ liệu tập thể dục để bật lộ trình tập luyện"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Có"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Không"</string>
     <string name="back_button" msgid="780519527385993407">"Quay lại"</string>
     <string name="loading" msgid="2526615755685950317">"Đang tải…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Đang trong quá trình tích hợp"</string>

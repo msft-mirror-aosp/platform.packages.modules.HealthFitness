@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"ਪਿਛਲੇ 24 ਘੰਟਿਆਂ ਵਿੱਚ ਪਹੁੰਚ ਕੀਤੀ ਗਈ"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ਐਪ ਤੱਕ ਪਹੁੰਚ"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ਫ਼ਿਲਹਾਲ ਤੁਹਾਡੇ ਕੋਲ ਕੋਈ ਵੀ ਅਨੁਰੂਪ ਐਪ ਸਥਾਪਤ ਨਹੀਂ ਹੈ"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"ਵਧੀਕ ਪਹੁੰਚ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ਐਪ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਹਟਾਇਆ ਗਿਆ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ਨੇ <xliff:g id="APP_DATA">%s</xliff:g> ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਹਟਾ ਦਿੱਤਾ ਹੈ"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ਨੇ <xliff:g id="APP_DATA_0">%1$s</xliff:g> ਅਤੇ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਹਟਾ ਦਿੱਤਾ ਹੈ"</string>
@@ -304,6 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ਨੇ ਐਪ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਕਿਉਂ ਹਟਾ ਦਿੱਤਾ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ਜੇ ਕਿਸੇ ਐਪ ਨੂੰ Google Play ਤੋਂ ਮੁਅੱਤਲ ਕਰ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ ਜਾਂ ਹਟਾ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ, ਤਾਂ Health Connect ਐਪ ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਇਸ ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਹਟਾ ਦਿੰਦੀ ਹੈ।\n\nਇਸਦਾ ਮਤਲਬ ਹੈ ਕਿ ਐਪ ਹੁਣ Health Connect ਵਿੱਚ ਸਟੋਰ ਕੀਤੇ ਡਾਟੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀ। ਜੇ ਇਸ ਐਪ ਵਿੱਚ ਪਹਿਲਾਂ ਤੋਂ ਰੱਖਿਅਤ ਕੀਤਾ ਹੋਇਆ ਡਾਟਾ ਹੈ, ਤਾਂ ਇਹ ਅਕਿਰਿਆਸ਼ੀਲ ਐਪਾਂ ਦੀ ਸੂਚੀ ਵਿੱਚ ਦਿਸੇਗਾ।"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ਸਮਝ ਲਿਆ"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"ਵਾਰਵਾਰਤਾ ਚੁਣੋ"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ਡਾਟੇ ਨੂੰ ਇੱਕ ਵਾਰ ਰੱਖਿਅਤ ਕਰਨਾ ਚੁਣੋ, ਜਾਂ ਨਿਯਮਿਤ ਸਮਿਆਂ \'ਤੇ ਆਪਣੇ ਆਪ ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਸੈੱਟ ਕਰੋ।"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ਰੋਜ਼ਾਨਾ"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ਹਫ਼ਤਾਵਾਰੀ"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ਮਹੀਨਾਵਾਰ"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"ਪਿੱਛੇ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ਅੱਗੇ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ਨਾਲ ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ਤੁਹਾਨੂੰ ਆਪਣੇ ਫ਼ੋਨ \'ਤੇ ਵੱਖ-ਵੱਖ ਐਪਾਂ ਨੂੰ ਸਿੰਕ ਕਰਨ ਦਾ ਸਰਲ ਤਰੀਕਾ ਦੇ ਕੇ, ਤੁਹਾਡੇ ਸਿਹਤ ਅਤੇ ਫਿੱਟਨੈੱਸ ਸੰਬੰਧੀ ਡਾਟੇ ਨੂੰ ਸਟੋਰ ਕਰਦੀ ਹੈ"</string>
     <string name="share_data" msgid="3481932156368883946">"ਆਪਣੀਆਂ ਐਪਾਂ ਨਾਲ ਡਾਟਾ ਸਾਂਝਾ ਕਰੋ"</string>
@@ -741,6 +771,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"ਇਸ ਰਸਤੇ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"ਸਾਰੇ ਰੂਟਾਂ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ਆਗਿਆ ਨਾ ਦਿਓ"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ਹਮੇਸ਼ਾਂ ਇਜਾਜ਼ਤ ਦਿਓ"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"ਕਸਰਤ ਦਾ ਰਸਤਾ ਸਾਂਝਾ ਕਰਨਾ"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ਇਸ ਗੱਲ ਨੂੰ ਕੰਟਰੋਲ ਕਰੋ ਕਿ ਇਹ ਐਪ ਕਨੈਕਟ ਕੀਤੀਆਂ ਐਪਾਂ ਤੋਂ ਕਸਰਤ ਦੇ ਰਸਤਿਆਂ ਤੱਕ ਕਿਵੇਂ ਪਹੁੰਚ ਕਰਦੀ ਹੈ"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ਹਰ ਵਾਰ ਪੁੱਛੋ"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"ਇਜਾਜ਼ਤ ਨਾ ਦਿਓ"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ਕੀ ਡਾਟੇ ਦੀਆਂ ਦੋਵਾਂ ਕਿਸਮਾਂ ਨੂੰ ਚਾਲੂ ਕਰਨਾ ਹੈ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ਕੀ ਡਾਟੇ ਦੀਆਂ ਦੋਵਾਂ ਕਿਸਮਾਂ ਨੂੰ ਬੰਦ ਕਰਨਾ ਹੈ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਕਸਰਤ ਦੇ ਤਰੀਕਿਆਂ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ ਕਸਰਤ ਤੱਕ ਪੜ੍ਹਨ ਦੀ ਪਹੁੰਚ ਦੀ ਲੋੜ ਹੈ"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਕਸਰਤ ਦੇ ਤਰੀਕਿਆਂ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ ਕਸਰਤ ਤੱਕ ਪਹੁੰਚ ਦੀ ਲੋੜ ਹੈ"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ਹਾਂ"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ਨਹੀਂ"</string>
     <string name="back_button" msgid="780519527385993407">"ਪਿੱਛੇ ਜਾਓ"</string>
     <string name="loading" msgid="2526615755685950317">"ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ਏਕੀਕਰਨ ਜਾਰੀ ਹੈ"</string>

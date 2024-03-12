@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"കഴിഞ്ഞ 24 മണിക്കൂറിനിടെ ആക്‌സസ് ചെയ്‌തു"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ആപ്പ് ആക്‌സസ്"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"നിലവിൽ നിങ്ങൾ അനുയോജ്യമായ ആപ്പുകളൊന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"അധിക ആക്‌സസ്"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"നീക്കം ചെയ്ത ആപ്പ് അനുമതികൾ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> ആപ്പിനുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> എന്നീ ആപ്പുകൾക്കുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
@@ -304,6 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"എന്തുകൊണ്ടാണ് Health Connect ആപ്പ് അനുമതികൾ നീക്കം ചെയ്യുന്നത്"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play-യിൽ നിന്ന് ഒരു ആപ്പ് താൽക്കാലികമായി റദ്ദാക്കുകയോ നീക്കം ചെയ്യുകയോ ചെയ്താൽ, അതിനുള്ള അനുമതികൾ Health Connect സ്വയമേവ നീക്കം ചെയ്യുന്നു.\n\nഈ ആപ്പിന് Health Connect-ൽ സംഭരിച്ച ഡാറ്റ തുടർന്ന് ആക്‌സസ് ചെയ്യാനാകില്ല എന്നാണ് ഇതിനർത്ഥം. ആപ്പിൽ മുമ്പ് രേഖപ്പെടുത്തിയ ഡാറ്റയുണ്ടെങ്കിൽ, അത് നിഷ്ക്രിയ ആപ്പുകളുടെ ലിസ്റ്റിൽ ദൃശ്യമാകും."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"മനസ്സിലായി"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"ആവൃത്തി തിരഞ്ഞെടുക്കുക"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ഡാറ്റ ഒരിക്കൽ സംരക്ഷിക്കാൻ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ പതിവ് സമയങ്ങളിൽ അത് സ്വയമേവ സംരക്ഷിക്കാൻ സജ്ജീകരിക്കുക."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"എല്ലാ ദിവസവും"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"പ്രതിവാരം"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"പ്രതിമാസം"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"എൻക്രിപ്‌ഷൻ ഓണാക്കുക"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ഡാറ്റ സംരക്ഷിക്കുന്നതിന് മുമ്പ് അത് എൻക്രിപ്റ്റ് ചെയ്യേണ്ടതുണ്ട്. ആർക്കും, Google-നോ Health Connect-നോ പോലും, അത് ആക്സസ് ചെയ്യാനാകില്ല."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"നിങ്ങളുടെ എൻ‍ക്രിപ്റ്റ് ചെയ്ത ഡാറ്റ പരിരക്ഷിക്കുന്നതിന് പാസ്‌വേഡ് സൃഷ്ടിക്കുക. നിങ്ങളുടെ ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യാനും പുനഃസ്ഥാപിക്കാനും നിങ്ങൾക്ക് ഈ പാസ്‌വേഡ് ആവശ്യമാണ്."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"പാസ്‌വേഡ്"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"പാസ്‌വേഡ് ആവർത്തിക്കുക"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"നിങ്ങൾ പാസ്‌വേഡ് മറക്കുകയും ഫോൺ നഷ്ടപ്പെടുകയും ചെയ്യുകയാണെങ്കിൽ, Health Connect-ന് നിങ്ങളുടെ സംരക്ഷിച്ച ഡാറ്റ വീണ്ടെടുക്കാൻ നിങ്ങളെ സഹായിക്കാനാകില്ല."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"മടങ്ങുക"</string>
+    <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‌നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഫോണിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
@@ -741,6 +765,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"ഈ വഴി അനുവദിക്കുക"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"എല്ലാ വഴികളും അനുവദിക്കുക"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"അനുവദിക്കരുത്"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"എപ്പോഴും അനുവദിക്കുക"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"വ്യായാമ സെഷന്റെ വഴി പങ്കിടൽ"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"കണക്റ്റ് ചെയ്‌ത ആപ്പുകളിൽ നിന്ന് ഈ ആപ്പ് എങ്ങനെ വ്യായാമ സെഷന്റെ വഴി ആക്‌സസ് ചെയ്യുന്നു എന്നത് നിയന്ത്രിക്കുക"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"എല്ലായ്‌പ്പോഴും ചോദിക്കുക"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"അനുവദിക്കരുത്"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"രണ്ട് ഡാറ്റ തരങ്ങളും പ്രവർത്തനക്ഷമമാക്കണോ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"രണ്ട് ഡാറ്റ തരങ്ങളും പ്രവർത്തനരഹിതമാക്കണോ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"വ്യായാമ സെഷന്റെ വഴികൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന്, <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് വ്യായാമ ഡാറ്റ വായിക്കുന്നതിനുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"വ്യായാമ സെഷന്റെ വഴികൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന് <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് വ്യായാമ ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ഉവ്വ്"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ഇല്ല"</string>
     <string name="back_button" msgid="780519527385993407">"മടങ്ങുക"</string>
     <string name="loading" msgid="2526615755685950317">"ലോഡ് ചെയ്യുന്നു…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"സംയോജനം പുരോഗമിക്കുന്നു"</string>

@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Соңғы 24 сағатта пайдаланылды."</string>
     <string name="app_access_title" msgid="7137018424885371763">"Қолданба рұқсаты"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Орнатылған үйлесімді қолданбалар жоқ"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Қосымша пайдалану рұқсаты"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Қолданба рұқсаттары өшірілді"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect платформасы <xliff:g id="APP_DATA">%s</xliff:g> қолданбасы үшін рұқсаттарды өшірді."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect платформасы <xliff:g id="APP_DATA_0">%1$s</xliff:g> және <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> қолданбалары үшін рұқсаттарды өшірді."</string>
@@ -304,6 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect неліктен қолданба рұқсаттарын өшіреді?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Қолданба уақытша тоқтатылса немесе Google Play-ден өшірілсе, Health Connect оның рұқсаттарын автоматты түрде өшіреді.\n\nЯғни қолданба бұдан кейін Health Connect-те сақталған деректерді пайдалана алмайды. Егер бұл қолданбада бұрын жазылған дерек болса, ол белсенді емес қолданбалар тізімінде көрсетіледі."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Түсінікті"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Жиілікті таңдау"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Деректерді сақтау мүмкіндігін бір рет таңдаңыз немесе белгілі бір уақытта автоматты түрде сақталатын етіп реттеңіз."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Күн сайын"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Апта сайын"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Ай сайын"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Шифрлауды қосу"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Деректер сақталмас бұрын шифрлануы керек. Оларды ешкім, тіпті Google немесе Health Connect пайдалана алмайтын болады."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Шифрланған деректерді басқару үшін құпия сөз жасаңыз. Деректерді импорттау және қалпына келтіру үшін құпия сөз қажет болады."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Құпия сөз"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Құпия сөзді қайталау"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Телефоныңызды ұмытып немесе жоғалтып алсаңыз, Health Connect сақталған деректерді қалпына келтіруге көмектесе алмайды."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Артқа"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Келесі"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect қолданбасымен жұмысты бастау"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect денсаулық және фитнес деректерін сақтап, телефонда әртүрлі қолданбаны синхрондаудың қарапайым жолын ұсынады."</string>
     <string name="share_data" msgid="3481932156368883946">"Деректерді қолданбалармен бөлісу"</string>
@@ -741,6 +765,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Осы бағытқа рұқсат ету"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Барлық бағытқа рұқсат ету"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Рұқсат етпеу"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Әрқашан рұқсат беру"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Жаттығу маршрутын бөлісу"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Осы қолданбаның байланыстырылған қолданбалардағы жаттығу маршрутын пайдалану жолын басқарыңыз."</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Әрдайым сұрау"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Рұқсат бермеу"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Екі дерек түрін де қосу керек пе?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Екі дерек түрін де өшіру керек пе?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына жаттығу бағыттарын қосу үшін жаттығу деректерін оқу рұқсаты қажет."</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына жаттығу бағыттарын қосу үшін жаттығу деректерін пайдалану рұқсаты қажет."</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Иә"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Жоқ"</string>
     <string name="back_button" msgid="780519527385993407">"Артқа"</string>
     <string name="loading" msgid="2526615755685950317">"Жүктеліп жатыр…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Біріктіру процесі орындалып жатыр"</string>

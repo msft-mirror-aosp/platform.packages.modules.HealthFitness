@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Ilifikiwa katika saa 24 zilizopita"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Ufikiaji wa programu"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Kwa sasa hujasakinisha programu zozote zinazooana"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Ufikiaji wa ziada"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Imeondoa ruhusa za programu"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect imeondoa ruhusa za <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect imeondoa ruhusa za <xliff:g id="APP_DATA_0">%1$s</xliff:g> na <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Sababu zinazofanya Health Connect iondoe ruhusa za programu"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Endapo programu imesimamishwa au kuondolewa kwenye Google Play, Health Connect huondoa ruhusa zake kiotomatiki.\n\nHatua hii inamaanisha kwamba programu haiwezi tena kufikia data iliyohifadhiwa kwenye Health Connect. Ikiwa programu hii ina data iliyorekodiwa hapo awali, itaonekana kwenye orodha ya programu ambazo hazitumiki."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Nimeelewa"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Kuchagua mara"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Chagua kuhifadhi data mara moja au uweke mipangilio ili ihifadhiwe kiotomatiki baada ya kila kipindi kilichobainiswa."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Kila siku"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Kila wiki"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Kila mwezi"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Washa mipangilio ya usimbaji fiche"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data inahitaji kusimbwa kwa njia fiche kabla ya kuhifadhiwa. Hakuna yeyote, hata iwe Google au programu ya Health Connect, atakayeweza kuifikia."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Tunga nenosiri ili kulinda data yako iliyosimbwa kwa njia fiche. Utahitaji nenosiri hili ili kupakia na kurejesha data yako."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Nenosiri"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Rudia nenosiri"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ukisahau nenosiri na upoteze simu yako, programu ya Health Connect haiwezi kukusaidia kurejesha data uliyohifadhi."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Rudi nyuma"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Endelea"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Anza kutumia Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect huhifadhi data yako ya afya na siha, hivyo kukupatia njia rahisi ya kusawazisha programu tofauti kwenye simu yako"</string>
     <string name="share_data" msgid="3481932156368883946">"Shiriki data na programu zako"</string>
@@ -741,6 +765,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Ruhusu njia hii"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Ruhusu njia zote"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Usiruhusu"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Ruhusu kila wakati"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Kuruhusu maelezo ya njia ya mazoezi ya mwili yafikiwe"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Dhibiti jinsi programu hii inavyofikia maelezo ya njia ya mazoezi kutoka kwenye programu zilizounganishwa"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Uliza kila wakati"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Usiruhusu"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Ungependa kuwasha aina zote za data?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Ungependa kuzima aina zote za data?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> inahitaji ruhusa ya kusoma data ya mazoezi ili njia za mazoezi ziwashwe"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> inahitaji kufikia data ya mazoezi ili njia za mazoezi ziwashwe"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ndiyo"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Hapana"</string>
     <string name="back_button" msgid="780519527385993407">"Nyuma"</string>
     <string name="loading" msgid="2526615755685950317">"Inapakia…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Shughuli ya ujumuishaji inaendelea"</string>

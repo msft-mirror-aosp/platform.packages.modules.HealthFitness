@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Opnað síðasta sólarhringinn"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Aðgangur forrita"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Engin samhæf forrit eru uppsett eins og stendur"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Aukinn aðgangur"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Fjarlægðar heimildir forrits"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Heilsutenging fjarlægði heimildir fyrir <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Heilsutenging fjarlægði heimildir fyrir <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Ástæða þess að Heilsutenging fjarlægir heimildir forrita"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ef Google Play fjarlægir eða lokar tímabundið á forrit fjarlægir Heilsutenging sjálfkrafa heimildir þess.\n\nÞað þýðir að forritið getur ekki nálgast gögn sem eru vistuð í Heilsutengingu. Ef viðkomandi forrit hefur skrifað gögn áður birtist það á listanum yfir óvirk forrit."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ég skil"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Velja tíðni"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Veldu til að vista gögn einu sinni eða stilltu til að vista sjálfkrafa með vissu millibili."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Daglega"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Vikulega"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mánaðarlega"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Kveikja á dulkóðun"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Dulkóða þarf gögn áður en þau eru vistuð. Enginn, ekki einu sinni Google eða Heilsutenging, hefur aðgang að þeim."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Búðu til aðgangsorð til að vernda dulkóðuðu gögnin þín. Þú þarft þetta aðgangsorð til að flytja inn og endurheimta gögnin þín."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Aðgangsorð"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Endurtaktu aðgangsorðið"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ef þú gleymir aðgangsorðinu þínu og týnir símanum þínum getur Heilsutenging ekki hjálpað þér að endurheimta vistuðu gögnin þín."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Til baka"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Áfram"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Byrjaðu að nota Heilsutengingu"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í símanum á einfaldan hátt"</string>
     <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
@@ -741,6 +765,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Leyfa þessa leið"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Leyfa allar leiðir"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Ekki leyfa"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Alltaf leyfa"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Deiling æfingaleiðar"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Stjórnaðu aðgangi forritsins að æfingaleiðum í tengdum forritum"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Spyrja í hvert skipti"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Ekki leyfa"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Virkja báðar gagnagerðir?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Gera báðar gagnagerðir óvirkar?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> þarf lesaðgang að æfingum svo hægt sé að virkja æfingaleiðir"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> krefst aðgangs að æfingum svo hægt sé að virkja æfingaleiðir"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Já"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nei"</string>
     <string name="back_button" msgid="780519527385993407">"Til baka"</string>
     <string name="loading" msgid="2526615755685950317">"Hleður…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Samþætting í gangi"</string>

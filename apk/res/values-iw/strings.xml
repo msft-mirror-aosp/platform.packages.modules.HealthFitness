@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"הייתה גישה ב-24 השעות האחרונות"</string>
     <string name="app_access_title" msgid="7137018424885371763">"גישה לאפליקציות"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"כרגע אין לך אפליקציות תואמות מותקנות"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"הרשאת גישה נוספת"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ההרשאות שניתנו לאפליקציה הוסרו"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"אפליקציית Health Connect הסירה את ההרשאות של <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"אפליקציית Health Connect הסירה את ההרשאות של <xliff:g id="APP_DATA_0">%1$s</xliff:g> ושל <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"למה אפליקציית Health Connect מסירה הרשאות הניתנות לאפליקציות"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"אם אפליקציה הושעתה מ-Google Play או הוסרה משם, Health Connect מסירה אוטומטית את ההרשאות שניתנו לאפליקציה.\n\nכלומר, האפליקציה הזו כבר לא יכולה לגשת לנתונים שאוחסנו ב-Health Connect. אם לאפליקציה הזו יש נתונים שנכתבו לפני כן, היא תופיע ברשימת האפליקציות הלא פעילות."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"הבנתי"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"בחירת תדירות"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"אפשר לבחור לשמור נתונים פעם אחת או להגדיר שמירה אוטומטית בזמנים קבועים."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"כל יום"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"כל שבוע"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"כל חודש"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"הפעלת ההצפנה"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"צריך להצפין את הנתונים לפני שהם נשמרים. אף אחד לא יוכל לגשת אליהם, אפילו לא Google או אפליקציית Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"צריך ליצור סיסמה כדי להגן על הנתונים המוצפנים. הסיסמה הזו תשמש לייבוא ולשחזור של הנתונים."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"סיסמה"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"חזרה על הסיסמה"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"אם שכחת את הסיסמה ואיבדת את הטלפון, לא תהיה לך אפשרות להיעזר ב-Health Connect כדי לשחזר את הנתונים ששמרת."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"חזרה"</string>
+    <string name="export_next_button" msgid="657930567137105172">"הבא"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"איך מתחילים להשתמש ב-Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"אפליקציית Health Connect מאחסנת את נתוני הבריאות והכושר שלך, ומאפשרת לך לסנכרן בקלות את האפליקציות השונות בטלפון"</string>
     <string name="share_data" msgid="3481932156368883946">"שיתוף נתונים עם האפליקציות שלך"</string>
@@ -741,6 +765,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"מתן הרשאה למסלול הזה"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"מתן הרשאה לכל המסלולים"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"אין אישור"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ללא הגבלת שימוש"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"שיתוף של מסלול אימון כושר"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"שליטה באופן שבו האפליקציה ניגשת לנתונים של מסלולי אימון כושר מאפליקציות מקושרות"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"אני רוצה לבחור בכל פעם"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"אין אישור"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"להפעיל את שני סוגי הנתונים?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"להשבית את שני סוגי הנתונים?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"לאפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> נדרשת גישה לקריאת נתוני הפעילות הגופנית כדי להפעיל מסלולי אימון"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"לאפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> נדרשת גישה לנתוני הפעילות הגופנית כדי להפעיל מסלולי אימון"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"כן"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"לא"</string>
     <string name="back_button" msgid="780519527385993407">"חזרה"</string>
     <string name="loading" msgid="2526615755685950317">"בטעינה…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"השילוב מתבצע"</string>

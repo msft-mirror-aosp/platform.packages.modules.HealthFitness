@@ -80,8 +80,14 @@
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
 
-        <!-- Export -->
+        <!-- Backup and restore -->
+
         <item name="repeatIcon">@drawable/ic_repeat</item>
+        <item name="uploadIcon">@drawable/ic_upload</item>
+        <item name="settingsBackupRestoreIcon">@drawable/ic_settings_backup_restore</item>
+
+        <item name="lockIcon">@drawable/ic_lock</item>
+        <item name="warningIcon">@drawable/ic_warning</item>
 
         <!-- END REGION -->
 

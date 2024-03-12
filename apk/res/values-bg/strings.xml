@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Осъществен бе достъп през последните 24 часа"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Достъп на приложението"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Понастоящем нямате инсталирани съвместими приложения"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Допълнителен достъп"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Премахнати разрешения за приложенията"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect премахна разрешенията за <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect премахна разрешенията за <xliff:g id="APP_DATA_0">%1$s</xliff:g> и <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Защо Health Connect премахва разрешенията за приложенията"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ако дадено приложение бъде спряно или премахнато от Google Play, Health Connect автоматично премахва разрешенията му.\n\nТова означава, че приложението повече няма да има достъп до данните, съхранявани в Health Connect. Ако по-рано е записало данни, то ще се показва в списъка с неактивни приложения."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Разбрах"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Избиране на честота"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Изберете еднократно запазване на данните или задайте да се запазват автоматично през редовни интервали."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Ежеседмично"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Ежемесечно"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Напред"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Първи стъпки с Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на телефона си"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделяне на данни с приложенията ви"</string>
@@ -741,6 +771,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Разрешаване на този маршрут"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Разрешаване на всички маршрути"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Забраняване"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Разрешаване винаги"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Споделяне на маршрутите за упражнения"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Контролирайте достъпа на това приложение до маршрутите за упражнения от свързаните приложения"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Запитване всеки път"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Забраняване"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Да се активират ли и двата типа данни?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Да се деактивират ли и двата типа данни?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> изисква достъп за четене до упражненията, за да бъдат активирани съответните маршрути"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> изисква достъп до упражненията, за да бъдат активирани съответните маршрути"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Да"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Не"</string>
     <string name="back_button" msgid="780519527385993407">"Назад"</string>
     <string name="loading" msgid="2526615755685950317">"Зарежда се…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Интегрирането е в ход"</string>

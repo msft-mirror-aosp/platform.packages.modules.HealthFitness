@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Апошні доступ у папярэднія 24 гадзіны"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Доступы праграмы"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"У вас не ўсталяваны сумяшчальныя праграмы"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Пашыраны доступ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Выдаленыя дазволы праграм"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграмы \"<xliff:g id="APP_DATA">%s</xliff:g>\""</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграм \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" і \"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\""</string>
@@ -304,6 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Чаму выдаляюцца дазволы праграм на доступ да даных праграмы \"Здароўе і спорт\""</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Калі праграма блакіруецца ці выдаляецца з Google Play, аўтаматычна выдаляюцца яе дазволы на доступ да даных у праграме \"Здароўе і спорт\".\n\nТакім чынам, заблакіраваная ці выдаленая праграма страчвае доступ да даных, захаваных у праграме \"Здароўе і спорт\". Калі такая праграма раней запісвала даныя, яна з\'явіцца ў спісе неактыўных праграм."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Выберыце перыядычнасць захавання"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Укажыце, як трэба захоўваць даныя: адзін раз або аўтаматычна праз пэўныя прамежкі часу."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Штодзень"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Штотыдзень"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Штомесяц"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Далей"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на тэлефоне"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>
@@ -741,6 +771,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Дазволіць гэты маршрут"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Дазволіць усе маршруты"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дазваляць"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Заўсёды дазваляць"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Абагульванне маршрутаў трэніровак"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Наладзьце доступ гэтай праграмы да даных пра маршруты трэніровак з падключаных праграм"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Заўсёды пытацца"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Не дазваляць"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Уключыць абодва тыпы даных?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Адключыць абодва тыпы даных?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Каб маршруты трэніровак былі ўключаны, праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" патрабуецца доступ да трэніровак (доступ для чытання)"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Каб маршруты трэніровак былі ўключаны, праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" патрабуецца доступ да трэніровак"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Так"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Не"</string>
     <string name="back_button" msgid="780519527385993407">"Назад"</string>
     <string name="loading" msgid="2526615755685950317">"Ідзе загрузка…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Выконваецца інтэграцыя"</string>

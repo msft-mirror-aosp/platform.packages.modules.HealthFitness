@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Diakses dalam 24 jam terakhir"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Akses aplikasi"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Anda saat ini tidak memiliki aplikasi terinstal yang kompatibel"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Akses tambahan"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Izin aplikasi yang dihapus"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect menghapus izin untuk <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect menghapus izin untuk <xliff:g id="APP_DATA_0">%1$s</xliff:g> dan <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Alasan Health Connect menghapus izin aplikasi"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Jika aplikasi ditangguhkan atau dihapus dari Google Play, Health Connect akan otomatis menghapus izinnya.\n\nArtinya, aplikasi tidak dapat lagi mengakses data yang disimpan di Health Connect. Jika sebelumnya aplikasi telah menulis data, aplikasi akan ditampilkan di daftar aplikasi tidak aktif."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Oke"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Pilih frekuensi"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Pilih untuk menyimpan data sekali, atau tetapkan ke simpan otomatis pada waktu rutin."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Setiap hari"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Setiap minggu"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Setiap bulan"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Aktifkan enkripsi"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data harus dienkripsi sebelum disimpan. Tidak seorang pun, bahkan Google atau Health Connect, yang akan dapat mengaksesnya."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Buat sandi untuk melindungi data terenkripsi. Anda akan memerlukan sandi ini untuk mengimpor dan memulihkan data Anda."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Sandi"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ulangi sandi"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Jika Anda lupa sandi dan kehilangan ponsel Anda, Health Connect tidak dapat membantu Anda memulihkan data tersimpan."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Kembali"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Berikutnya"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Mulai menggunakan Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect menyimpan data kesehatan dan kebugaran Anda supaya Anda dapat menyinkronkan berbagai aplikasi di ponsel dengan mudah"</string>
     <string name="share_data" msgid="3481932156368883946">"Berbagi data dengan aplikasi lainnya"</string>
@@ -741,6 +765,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Izinkan rute ini"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Izinkan semua rute"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Jangan izinkan"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Selalu izinkan"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Berbagi rute olahraga"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Mengontrol cara aplikasi ini mengakses rute olahraga dari aplikasi yang terhubung"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Selalu tanya"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Jangan izinkan"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Aktifkan kedua jenis data?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Nonaktifkan kedua jenis data?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> memerlukan akses baca ke olahraga agar dapat mengaktifkan rute olahraga"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> memerlukan akses olahraga agar dapat mengaktifkan rute olahraga"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ya"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Tidak"</string>
     <string name="back_button" msgid="780519527385993407">"Kembali"</string>
     <string name="loading" msgid="2526615755685950317">"Memuat …"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrasi sedang berlangsung"</string>

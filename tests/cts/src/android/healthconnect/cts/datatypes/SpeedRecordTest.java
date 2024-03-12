@@ -19,9 +19,12 @@ package android.healthconnect.cts.datatypes;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_AVG;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MAX;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MIN;
+import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflection;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -106,7 +109,10 @@ public class SpeedRecordTest {
 
     @Test
     public void testReadSpeedRecord_usingIds() throws InterruptedException {
-        testReadSpeedRecordIds();
+        List<Record> recordList = Arrays.asList(getCompleteSpeedRecord(), getCompleteSpeedRecord());
+        insertRecords(recordList);
+
+        readSpeedRecordUsingIds(recordList);
     }
 
     @Test
@@ -402,12 +408,7 @@ public class SpeedRecordTest {
         }
     }
 
-    private void testReadSpeedRecordIds() throws InterruptedException {
-        List<Record> recordList = Arrays.asList(getCompleteSpeedRecord(), getCompleteSpeedRecord());
-        readSpeedRecordUsingIds(recordList);
-    }
-
-    private void readSpeedRecordUsingClientId(List<Record> insertedRecord)
+    private void readSpeedRecordUsingClientId(List<? extends Record> insertedRecord)
             throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<SpeedRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SpeedRecord.class);
@@ -419,19 +420,19 @@ public class SpeedRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readSpeedRecordUsingIds(List<Record> recordList) throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+    private void readSpeedRecordUsingIds(List<? extends Record> recordList)
+            throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<SpeedRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SpeedRecord.class);
-        for (Record record : insertedRecords) {
+        for (Record record : recordList) {
             request.addId(record.getMetadata().getId());
         }
         ReadRecordsRequestUsingIds requestUsingIds = request.build();
         assertThat(requestUsingIds.getRecordType()).isEqualTo(SpeedRecord.class);
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<SpeedRecord> result = TestUtils.readRecords(requestUsingIds);
-        assertThat(result).hasSize(insertedRecords.size());
-        assertThat(result.containsAll(insertedRecords)).isTrue();
+        assertThat(result).hasSize(recordList.size());
+        assertThat(result.containsAll(recordList)).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -651,6 +652,49 @@ public class SpeedRecordTest {
         }
     }
 
+    @Test
+    public void updateRecords_byId_readNewData() throws Exception {
+        Instant now = Instant.now();
+        List<Record> insertedRecords =
+                insertRecords(
+                        buildRecordForSpeed(1, now.minusMillis(2), now.minusMillis(1)),
+                        buildRecordForSpeed(2, now.minusMillis(3), now.minusMillis(2)),
+                        buildRecordForSpeed(3, now.minusMillis(4), now.minusMillis(3)));
+        List<String> insertedIds = getRecordIds(insertedRecords);
+
+        List<Record> updatedRecords =
+                List.of(
+                        buildRecordForSpeed(
+                                insertedIds.get(0), 10, now.minusMillis(2), now.minusMillis(1)),
+                        buildRecordForSpeed(
+                                insertedIds.get(1), 2, now.minusMillis(30), now.minusMillis(20)),
+                        buildRecordForSpeed(
+                                insertedIds.get(2), 30, now.minusMillis(4), now.minusMillis(3)));
+        updateRecords(updatedRecords);
+
+        readSpeedRecordUsingIds(updatedRecords);
+    }
+
+    @Test
+    public void updateRecords_byClientRecordId_readNewData() throws Exception {
+        Instant now = Instant.now();
+        List<Record> insertedRecords =
+                insertRecords(
+                        buildRecordForSpeed(1, now.minusMillis(2), now.minusMillis(1), "id1"),
+                        buildRecordForSpeed(2, now.minusMillis(3), now.minusMillis(2), "id2"),
+                        buildRecordForSpeed(3, now.minusMillis(4), now.minusMillis(3), "id3"));
+
+        List<SpeedRecord> updatedRecords =
+                List.of(
+                        buildRecordForSpeed(10, now.minusMillis(2), now.minusMillis(1), "id1"),
+                        buildRecordForSpeed(2, now.minusMillis(30), now.minusMillis(20), "id2"),
+                        buildRecordForSpeed(30, now.minusMillis(4), now.minusMillis(3), "id3"));
+        updateRecords(updatedRecords);
+        copyRecordIdsViaReflection(insertedRecords, updatedRecords);
+
+        readSpeedRecordUsingIds(updatedRecords);
+    }
+
     private static void assertRecord(SpeedRecord record, double speed) {
         assertThat(
                         record.getSamples().stream()
@@ -760,6 +804,53 @@ public class SpeedRecordTest {
     }
 
     private static SpeedRecord buildRecordForSpeed(
+            double speed, Instant startTime, Instant endTime) {
+        return buildRecordForSpeed(speed, startTime, endTime, /* clientRecordId= */ null);
+    }
+
+    private static SpeedRecord buildRecordForSpeed(
+            double speed, Instant startTime, Instant endTime, String clientRecordId) {
+        return buildRecordForSpeed(
+                /* id= */ null,
+                speed,
+                /* millisFromStart= */ 0,
+                startTime,
+                endTime,
+                clientRecordId,
+                /* clientRecordVersion= */ 0L);
+    }
+
+    private static SpeedRecord buildRecordForSpeed(
+            String id, double speed, Instant startTime, Instant endTime) {
+        return buildRecordForSpeed(
+                id,
+                speed,
+                /* millisFromStart= */ 0,
+                startTime,
+                endTime,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0L);
+    }
+
+    private static SpeedRecord buildRecordForSpeed(
+            double speed,
+            long millisFromStart,
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion) {
+        return buildRecordForSpeed(
+                null,
+                speed,
+                millisFromStart,
+                startTime,
+                endTime,
+                clientRecordId,
+                clientRecordVersion);
+    }
+
+    private static SpeedRecord buildRecordForSpeed(
+            String id,
             double speed,
             long millisFromStart,
             Instant startTime,
@@ -776,6 +867,9 @@ public class SpeedRecordTest {
         DataOrigin dataOrigin =
                 new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        if (id != null) {
+            testMetadataBuilder.setId(id);
+        }
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
         testMetadataBuilder.setClientRecordVersion(clientRecordVersion);

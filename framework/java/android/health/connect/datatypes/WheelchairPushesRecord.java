@@ -68,7 +68,14 @@ public final class WheelchairPushesRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             long count,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(metadata);
         Objects.requireNonNull(startTime);
         Objects.requireNonNull(startZoneOffset);

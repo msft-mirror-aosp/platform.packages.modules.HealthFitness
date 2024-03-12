@@ -42,7 +42,14 @@ public final class MenstruationPeriodRecord extends IntervalRecord {
             @NonNull Instant endTime,
             @NonNull ZoneOffset endZoneOffset,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
     }
 
     /**

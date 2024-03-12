@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"గత 24 గంటల్లో యాక్సెస్ చేయబడింది"</string>
     <string name="app_access_title" msgid="7137018424885371763">"యాప్ యాక్సెస్"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"మీ వద్ద ప్రస్తుతం అనుకూలమైన యాప్‌లు ఏవీ ఇన్‌స్టాల్ అయి లేవు"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"అదనపు యాక్సెస్‌"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"యాప్ అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>‌కు అనుమతులను తీసివేసింది"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>‌కు అనుమతులను తీసివేసింది"</string>
@@ -304,6 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect యాప్ అనుమతులను ఎందుకు తీసివేస్తుంది"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play నుండి యాప్ సస్పెండ్ చేయబడినా లేదా తీసివేయబడినా, Health Connect దాని అనుమతులను ఆటోమేటిక్‌గా తీసివేస్తుంది.\n\nయాప్ ఇకపై Health Connectలో స్టోర్ చేసిన డేటాను యాక్సెస్ చేయలేదని దీని అర్థం. ఈ యాప్ మునుపు రాసిన డేటాను కలిగి ఉంటే, అది ఇన్‌యాక్టివ్ యాప్‌ల లిస్ట్‌లో కనిపిస్తుంది."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"అర్థమైంది"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"ఫ్రీక్వెన్సీని ఎంచుకోండి"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ఒకసారి డేటాను సేవ్ చేయడానికి ఎంచుకోండి లేదా ప్రతిసారీ ఆటోమేటిక్‌గా సేవ్ చేయడానికి సెట్ చేయండి."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"రోజుకు ఒకసారి"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"వారానికి ఒకసారి"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"నెలకు ఒకసారి"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
+    <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connectను ప్రారంభించండి"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు సంబంధించిన డేటాను స్టోర్ చేస్తుంది, తద్వారా మీరు మీ డేటాను ఫోన్​లోని విభిన్న రకాల యాప్‌లతో సులభంగా సింక్ చేయవచ్చు"</string>
     <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>
@@ -741,6 +771,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"ఈ మార్గాన్ని అనుమతించండి"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"అన్ని మార్గాలను అనుమతించండి"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"అనుమతించవద్దు"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ఎల్లవేళలా అనుమతించబడుతుంది"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"వ్యాయామం మార్గం షేరింగ్"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"కనెక్ట్ చేయబడిన యాప్‌ల నుండి వ్యాయామం మార్గాలను ఈ యాప్ ఎలా యాక్సెస్ చేస్తుందో కంట్రోల్ చేయండి"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగండి"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"అనుమతించవద్దు"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"రెండు రకాల డేటాను ఎనేబుల్ చేయాలా?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"రెండు రకాల డేటాను డిజేబుల్ చేయాలా?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"వ్యాయామ సెషన్‌కు సంబంధించిన మార్గాలను ఎనేబుల్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌కు వ్యాయామం సంబంధిత డేటాకు రీడ్ యాక్సెస్ అవసరం"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> వ్యాయామ సెషన్‌కు సంబంధించిన మార్గాలను ఎనేబుల్ చేయడానికి వ్యాయామ సెషన్‌కు యాక్సెస్ అవసరం"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"రద్దు చేయండి"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"రద్దు చేయవద్దు"</string>
     <string name="back_button" msgid="780519527385993407">"వెనుకకు"</string>
     <string name="loading" msgid="2526615755685950317">"లోడ్ అవుతోంది…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ఇంటిగ్రేషన్ ప్రోగ్రెస్‌లో ఉంది"</string>

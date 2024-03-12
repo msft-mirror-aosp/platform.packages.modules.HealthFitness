@@ -295,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次存取時間：過去 24 小時內"</string>
     <string name="app_access_title" msgid="7137018424885371763">"應用程式存取權"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"你目前未安裝任何兼容的應用程式"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"其他存取權"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"已移除應用程式權限"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect 已移除 <xliff:g id="APP_DATA">%s</xliff:g> 的權限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect 已移除 <xliff:g id="APP_DATA_0">%1$s</xliff:g> 和 <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> 的權限"</string>
@@ -304,6 +305,35 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect 移除應用程式權限的原因"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"如果 Google Play 已移除某個應用程式或將其停權，Health Connect 會自動移除該應用程式的權限。\n\n這代表該應用程式無法再存取儲存於 Health Connect 的資料。該應用程式如曾寫入資料，則會在已停用的應用程式清單中顯示。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"知道了"</string>
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
+    <skip />
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
+    <skip />
+    <!-- no translation found for recurring_export (111638340692746218) -->
+    <skip />
+    <!-- no translation found for restore_data (3401173690437871417) -->
+    <skip />
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"選擇儲存頻率"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"你可以選擇儲存資料一次，也可以設定為定期自動儲存。"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"每日"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"每週"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
+    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <skip />
+    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
+    <skip />
+    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
+    <skip />
+    <!-- no translation found for export_password_hint (7095895042846772342) -->
+    <skip />
+    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
+    <skip />
+    <!-- no translation found for export_encryption_warning (664340221905199521) -->
+    <skip />
+    <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
+    <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"開始使用 Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect 能儲存健康和健身資料，方便你同步處理手機上各個應用程式的資料"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>
@@ -741,6 +771,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"允許存取此路線"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"允許存取所有路線"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"不允許"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"一律允許"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"分享運動路線"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"控制此應用程式如何存取連結應用程式中的運動路線資料"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"每次都詢問"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"不允許"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"要啟用這兩種資料類型嗎？"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"要停用這兩種資料類型嗎？"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> 需要運動資料讀取權限，才能啟用運動路線"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> 運動資料存取權，才能啟用運動路線"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"是"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"否"</string>
     <string name="back_button" msgid="780519527385993407">"返回"</string>
     <string name="loading" msgid="2526615755685950317">"正在載入…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"整合中"</string>
