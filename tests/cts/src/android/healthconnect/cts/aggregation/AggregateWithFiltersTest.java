@@ -18,10 +18,15 @@ package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.datatypes.ElevationGainedRecord.ELEVATION_GAINED_TOTAL;
+import static android.health.connect.datatypes.HeartRateRecord.BPM_AVG;
+import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
+import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
+import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENTS_COUNT;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.aggregation.DataFactory.getTimeFilter;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
+import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.TestUtils.PKG_TEST_APP;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
@@ -45,6 +50,7 @@ import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.units.Length;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
@@ -304,6 +310,51 @@ public class AggregateWithFiltersTest {
         assertThat(groupedByPeriodResponses).hasSize(1);
         assertThat(groupedByPeriodResponses.get(0).get(STEPS_COUNT_TOTAL)).isNull();
         assertThat(groupedByPeriodResponses.get(0).getDataOrigins(STEPS_COUNT_TOTAL)).isEmpty();
+    }
+
+    @Test
+    public void aggregationTypeFilter_multipleTypesForDifferentRecordTypes_correctResults()
+            throws Exception {
+        Instant startTime = Instant.now().minus(1, DAYS);
+        ImmutableList.Builder<HeartRateRecord.HeartRateSample> inRangeSamples =
+                new ImmutableList.Builder<>();
+        inRangeSamples.add(new HeartRateRecord.HeartRateSample(123, startTime.plusMillis(1000)));
+        inRangeSamples.add(new HeartRateRecord.HeartRateSample(80, startTime.plusMillis(2000)));
+        inRangeSamples.add(new HeartRateRecord.HeartRateSample(75, startTime.plusMillis(3000)));
+        inRangeSamples.add(new HeartRateRecord.HeartRateSample(96, startTime.plusMillis(4000)));
+        ImmutableList.Builder<HeartRateRecord.HeartRateSample> outOfRangeSamples =
+                new ImmutableList.Builder<>();
+        outOfRangeSamples.add(new HeartRateRecord.HeartRateSample(55, startTime.plusMillis(6000)));
+        outOfRangeSamples.add(new HeartRateRecord.HeartRateSample(147, startTime.plusMillis(7000)));
+        insertRecords(
+                List.of(
+                        getStepsRecord(43, startTime, startTime.plusMillis(1000)),
+                        getStepsRecord(76, startTime.plusMillis(3000), startTime.plusMillis(4000)),
+                        // out of query interval
+                        getStepsRecord(76, startTime.plusMillis(8000), startTime.plusMillis(9000)),
+                        getHeartRateRecord(
+                                inRangeSamples.build(), startTime, startTime.plusMillis(5000)),
+                        // out of query interval
+                        getHeartRateRecord(
+                                outOfRangeSamples.build(),
+                                startTime.plusMillis(6000),
+                                startTime.plusMillis(8000))));
+
+        AggregateRecordsRequest<Long> request =
+                new AggregateRecordsRequest.Builder<Long>(
+                                getTimeFilter(startTime, startTime.plusMillis(6000)))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .addAggregationType(HEART_MEASUREMENTS_COUNT)
+                        .addAggregationType(BPM_MAX)
+                        .addAggregationType(BPM_AVG)
+                        .addAggregationType(BPM_MIN)
+                        .build();
+        AggregateRecordsResponse<Long> response = getAggregateResponse(request);
+        assertThat(response.get(STEPS_COUNT_TOTAL)).isEqualTo(119); // 43 + 76
+        assertThat(response.get(HEART_MEASUREMENTS_COUNT)).isEqualTo(inRangeSamples.build().size());
+        assertThat(response.get(BPM_MAX)).isEqualTo(123);
+        assertThat(response.get(BPM_AVG)).isEqualTo(93); // avg(123, 80, 75, 96)
+        assertThat(response.get(BPM_MIN)).isEqualTo(75);
     }
 
     @Test

@@ -63,6 +63,16 @@ sealed class FormattedEntry(open val uuid: String) {
 
     data class SessionHeader(val header: String) : FormattedEntry(uuid = "")
 
+    data class FormattedSectionTitle(val title: String) : FormattedEntry(uuid = "")
+
+    data class ReverseSessionDetail(
+        override val uuid: String,
+        val header: String,
+        val headerA11y: String,
+        val title: String,
+        val titleA11y: String,
+    ) : FormattedEntry(uuid)
+
     data class FormattedSessionDetail(
         override val uuid: String,
         val header: String,

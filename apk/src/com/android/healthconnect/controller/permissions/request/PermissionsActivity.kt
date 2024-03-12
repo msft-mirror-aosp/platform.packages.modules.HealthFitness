@@ -27,6 +27,7 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
@@ -54,7 +55,8 @@ import javax.inject.Inject
 
 /** Permissions activity for Health Connect. */
 @AndroidEntryPoint(FragmentActivity::class)
-class PermissionsActivity : Hilt_PermissionsActivity() {
+class
+PermissionsActivity : Hilt_PermissionsActivity() {
 
     companion object {
         private const val TAG = "PermissionsActivity"
@@ -79,6 +81,9 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
 
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
