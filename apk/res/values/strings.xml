@@ -866,6 +866,20 @@
     <string name="temperature_fahrenheit" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 ℉} other {# ℉}}</string>
     <string name="temperature_fahrenheit_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 degree Fahrenheit} other {# degrees Fahrenheit}}</string>
 
+    <string name="temperatureDelta_celsius" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℃} other {{formattedValue} ℃}}</string>
+    <string name="temperatureDelta_celsius_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Celsius} other {{formattedValue} degrees Celsius}}</string>
+    <string name="temperatureDelta_fahrenheit" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℉} other {{formattedValue} ℉}}</string>
+    <string name="temperatureDelta_fahrenheit_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Fahrenheit} other {{formattedValue} degrees Fahrenheit}}</string>
+    <string name="temperatureDelta_kelvin" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} K} other {{formattedValue} K}}</string>
+    <string name="temperatureDelta_kelvin_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} kelvin} other {{formattedValue} kelvins}}</string>
+
+    <string name="temperatureDelta_average_celsius" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℃ (avg variation)} other {{formattedValue} ℃ (avg variation)}}</string>
+    <string name="temperatureDelta_average_celsius_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Celsius (average variation)} other {{formattedValue} degrees Celsius (average variation)}}</string>
+    <string name="temperatureDelta_average_fahrenheit" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℉ (avg variation)} other {{formattedValue} ℉ (avg variation)}}</string>
+    <string name="temperatureDelta_average_fahrenheit_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Fahrenheit (average variation)} other {{formattedValue} degrees Fahrenheit (average variation)}}</string>
+    <string name="temperatureDelta_average_kelvin" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} K (avg variation)} other {{formattedValue} K (avg variation)}}</string>
+    <string name="temperatureDelta_average_kelvin_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} kelvin (average variation)} other {{formattedValue} kelvins (average variation)}}</string>
+
     <string name="temperature_location_armpit" description="Where the body temperature measurement was taken - armpit. [CHAR LIMIT=50]">Armpit</string>
     <string name="temperature_location_finger" description="Where the body temperature measurement was taken - finger. [CHAR LIMIT=50]">Finger</string>
     <string name="temperature_location_forehead" description="Where the body temperature measurement was taken - forehead. [CHAR LIMIT=50]">Forehead</string>
@@ -876,6 +890,10 @@
     <string name="temperature_location_ear" description="Where the body temperature measurement was taken - ear. [CHAR LIMIT=50]">Ear</string>
     <string name="temperature_location_wrist" description="Where the body temperature measurement was taken - wrist. [CHAR LIMIT=50]">Wrist</string>
     <string name="temperature_location_vagina" description="Where the body temperature measurement was taken - vagina. [CHAR LIMIT=50]">Vagina</string>
+
+    <string name="skin_temperature_measurement_location_title" description="Title for the location where the body temperature measurement was taken. [CHAR LIMIT=50]">Measurement location</string>
+    <string name="skin_temperature_baseline_title" description="Title for the skin temperature record baseline temperature reading. [CHAR LIMIT=50]">Baseline</string>
+    <string name="skin_temperature_delta_details_heading" description="Heading for the list of individual delta readings. [CHAR LIMIT=160]">Variation from baseline</string>
     <!--endregion-->
 
     <string name="distance_miles" translation_description="miles formatted. [ICU SYNTAX][CHAR LIMIT=60]">{dist, plural, =1 {1 mile} other {# miles}}</string>
