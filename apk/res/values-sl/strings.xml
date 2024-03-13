@@ -305,30 +305,29 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zakaj Health Connect odstrani dovoljenja za aplikacije"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Če je aplikacija blokirana ali odstranjena iz Googla Play, Health Connect samodejno odstrani njena dovoljenja.\n\nTo pomeni, da aplikacija ne more več dostopati do podatkov, shranjenih v storitvi Health Connect. Če je ta aplikacija pred tem zapisovala podatke, je prikazana na seznamu neaktivnih aplikacij."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Razumem"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
+    <!-- no translation found for export_and_import_title (3241901922222465397) -->
     <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
+    <!-- no translation found for recurring_export (111638340692746218) -->
     <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
+    <!-- no translation found for restore_data (3401173690437871417) -->
     <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
+    <!-- no translation found for restore_data_description (6505730490741240861) -->
     <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Izbira pogostosti"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Izberite enkratno shranjevanje podatkov ali samodejno shranjevanje ob rednih urah."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Tedensko"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mesečno"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Vklopite šifriranje"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podatke morate šifrirati, preden jih shranite. Nihče, niti Google ali Health Connect, ne bo imel dostopa do njih."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Ustvarite geslo za zaščito šifriranih podatkov. To geslo boste potrebovali za uvoz in obnovitev podatkov."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Geslo"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovite geslo"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Če pozabite geslo ali izgubite telefon, vam Health Connect ne more pomagati obnoviti shranjenih podatkov."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Nazaj"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Naprej"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Začnite uporabljati Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect shranjuje vaše podatke o zdravju in telesni pripravljenosti ter vam omogoča, da na preprost način sinhronizirate različne aplikacije v telefonu."</string>
     <string name="share_data" msgid="3481932156368883946">"Deljenje podatkov z aplikacijami"</string>
@@ -771,18 +770,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Nadzorujte, kako ta aplikacija dostopa do vadbenih poti iz povezanih aplikacij"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Vedno vprašaj"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Ne dovoli"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Želite omogočiti obe vrsti podatkov?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Želite onemogočiti obe vrsti podatkov?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Za omogočanje vadbenih poti potrebuje aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> dostop za branje vadbe"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Za omogočanje vadbenih poti potrebuje aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> dostop do vadb"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Da"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Ne"</string>
     <string name="back_button" msgid="780519527385993407">"Nazaj"</string>
     <string name="loading" msgid="2526615755685950317">"Nalaganje …"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integracija je v teku"</string>

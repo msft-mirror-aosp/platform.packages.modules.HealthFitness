@@ -238,10 +238,9 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                         }
                     }
                 manageDataCategory.addPreference(additionalAccessPref)
-            } else {
-                manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                    false
             }
+            manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
+                state.isValid()
         }
     }
 
