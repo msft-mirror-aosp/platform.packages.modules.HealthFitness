@@ -3,6 +3,7 @@ container: "com.android.healthconnect"
 
 flag {
     name: "read_exercise_routes_all_enabled"
+    is_exported: true
     namespace: "healthconnect"
     description: "Enables reading third-party exercise routes by apps who hold the corresponding permission."
     bug: "232379924"
@@ -11,6 +12,7 @@ flag {
 
 flag {
     name: "skin_temperature"
+    is_exported: true
     namespace: "healthconnect"
     description: "Flag for adding the new data type skin temperature."
     bug: "319602927"
@@ -18,6 +20,7 @@ flag {
 
 flag {
     name: "training_plans"
+    is_exported: true
     namespace: "healthconnect"
     description: "Flag for adding the new data type planned exercise sessions."
     bug: "319604661"

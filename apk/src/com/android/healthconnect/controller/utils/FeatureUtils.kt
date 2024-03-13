@@ -22,6 +22,8 @@ interface FeatureUtils {
 
     fun isBackgroundReadEnabled(): Boolean
 
+    fun isHistoryReadEnabled(): Boolean
+
     fun isImportExportEnabled(): Boolean
 }
 
@@ -98,6 +100,12 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     }
 
     override fun isBackgroundReadEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
+    override fun isHistoryReadEnabled(): Boolean {
         synchronized(lock) {
             return false
         }

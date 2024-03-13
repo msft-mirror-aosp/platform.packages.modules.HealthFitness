@@ -29,6 +29,7 @@ import com.android.healthconnect.controller.permissions.api.GrantHealthPermissio
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +44,8 @@ constructor(
     private val appInfoReader: AppInfoReader,
     private val grantHealthPermissionUseCase: GrantHealthPermissionUseCase,
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
-    private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase
+    private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
+    private val healthPermissionReader: HealthPermissionReader
 ) : ViewModel() {
 
     companion object {
@@ -101,6 +103,7 @@ constructor(
         val filteredPermissions =
             permissions
                 .filter { permissionString -> !grantedPermissions.contains(permissionString) }
+                .filter { permissionString -> !healthPermissionReader.isAdditionalPermission(permissionString)}
                 .mapNotNull { permissionString ->
                     try {
                         HealthPermission.fromPermissionString(permissionString)

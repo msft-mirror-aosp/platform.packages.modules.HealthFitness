@@ -14,15 +14,13 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
 
 @HiltAndroidTest
-@OptIn(ExperimentalCoroutinesApi::class)
 class HealthPermissionReaderTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -49,8 +47,9 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getDeclaredPermissions_filtersOutBackgroundReadPermission() = runTest {
+    fun getDeclaredPermissions_filtersOutAdditionalPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
 
         assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
