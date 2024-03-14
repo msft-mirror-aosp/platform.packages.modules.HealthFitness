@@ -83,6 +83,8 @@ package android.health.connect {
     field public static final String READ_EXERCISE = "android.permission.health.READ_EXERCISE";
     field @FlaggedApi("com.android.healthconnect.flags.read_exercise_routes_all_enabled") public static final String READ_EXERCISE_ROUTES = "android.permission.health.READ_EXERCISE_ROUTES";
     field public static final String READ_FLOORS_CLIMBED = "android.permission.health.READ_FLOORS_CLIMBED";
+    field @FlaggedApi("com.android.healthconnect.flags.history_read") public static final String READ_HEALTH_DATA_HISTORY = "android.permission.health.READ_HEALTH_DATA_HISTORY";
+    field @FlaggedApi("com.android.healthconnect.flags.background_read") public static final String READ_HEALTH_DATA_IN_BACKGROUND = "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
     field public static final String READ_HEART_RATE = "android.permission.health.READ_HEART_RATE";
     field public static final String READ_HEART_RATE_VARIABILITY = "android.permission.health.READ_HEART_RATE_VARIABILITY";
     field public static final String READ_HEIGHT = "android.permission.health.READ_HEIGHT";
@@ -584,6 +586,12 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.units.Length getDistance();
   }
 
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.DistanceWithVariableRestGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
+    ctor public ExerciseCompletionGoal.DistanceWithVariableRestGoal(@NonNull android.health.connect.datatypes.units.Length, @NonNull java.time.Duration);
+    method @NonNull public android.health.connect.datatypes.units.Length getDistance();
+    method @NonNull public java.time.Duration getDuration();
+  }
+
   @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExerciseCompletionGoal.DurationGoal extends android.health.connect.datatypes.ExerciseCompletionGoal {
     ctor public ExerciseCompletionGoal.DurationGoal(@NonNull java.time.Duration);
     method @NonNull public java.time.Duration getDuration();
@@ -625,6 +633,10 @@ package android.health.connect.datatypes {
   }
 
   @FlaggedApi("com.android.healthconnect.flags.training_plans") public abstract class ExercisePerformanceGoal {
+  }
+
+  @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.AmrapGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {
+    field @NonNull public static final android.health.connect.datatypes.ExercisePerformanceGoal.AmrapGoal INSTANCE;
   }
 
   @FlaggedApi("com.android.healthconnect.flags.training_plans") public static final class ExercisePerformanceGoal.CadenceGoal extends android.health.connect.datatypes.ExercisePerformanceGoal {

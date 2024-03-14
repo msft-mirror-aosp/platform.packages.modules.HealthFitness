@@ -26,6 +26,7 @@
 
     <permission
         android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"
+        android:label="@string/history_read_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 

@@ -16,6 +16,7 @@ class FakeFeatureUtils : FeatureUtils {
     private var isNewAppPriorityEnabled = false
     private var isNewInformationArchitectureEnabled = false
     private var isBackgroundReadEnabled = false
+    private var isHistoryReadEnabled = false
     private var isImportExportEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
@@ -40,6 +41,10 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsBackgroundReadEnabled(isBackgroundReadEnabled: Boolean) {
         this.isBackgroundReadEnabled = isBackgroundReadEnabled
+    }
+
+    fun setIsHistoryReadEnabled(isHistoryReadEnabled: Boolean) {
+        this.isHistoryReadEnabled = isHistoryReadEnabled
     }
 
     fun setIsImportExportEnabled(isImportExportEnabled: Boolean) {
@@ -68,6 +73,10 @@ class FakeFeatureUtils : FeatureUtils {
 
     override fun isBackgroundReadEnabled(): Boolean {
         return isBackgroundReadEnabled
+    }
+
+    override fun isHistoryReadEnabled(): Boolean {
+        return isHistoryReadEnabled
     }
 
     override fun isImportExportEnabled(): Boolean {

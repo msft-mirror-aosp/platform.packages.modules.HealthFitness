@@ -54,18 +54,18 @@ constructor(
                 HealthPermissions.WRITE_SLEEP,
             )
 
-        private val backgroundReadPermissions =
-            listOf(
-                // TODO (b/300270771) use the permission reference.
-                "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND",
-            )
+        private val backgroundReadPermission =
+            listOf(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+
+        private val historyReadPermission =
+            listOf(HealthPermissions.READ_HEALTH_DATA_HISTORY)
 
         /** Special health permissions that don't represent health data types. */
         private val additionalPermissions =
             setOf(
                 HealthPermissions.READ_EXERCISE_ROUTES,
-                // TODO (b/300270771) use the permission reference.
-                "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND",
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+                HealthPermissions.READ_HEALTH_DATA_HISTORY
             )
     }
 
@@ -177,7 +177,8 @@ constructor(
         return shouldHideSessionTypes(permission) ||
             shouldHideBackgroundReadPermission(permission) ||
             shouldHideSkinTemperaturePermissions(permission) ||
-            shouldHidePlannedExercisePermissions(permission)
+            shouldHidePlannedExercisePermissions(permission) ||
+            shouldHideHistoryReadPermission(permission)
     }
 
     private fun shouldHideSkinTemperaturePermissions(permission: String): Boolean {
@@ -195,7 +196,11 @@ constructor(
     }
 
     private fun shouldHideBackgroundReadPermission(permission: String): Boolean {
-        return permission in backgroundReadPermissions && !featureUtils.isBackgroundReadEnabled()
+        return permission in backgroundReadPermission && !featureUtils.isBackgroundReadEnabled()
+    }
+
+    private fun shouldHideHistoryReadPermission(permission: String): Boolean {
+        return permission in historyReadPermission && !featureUtils.isHistoryReadEnabled()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

@@ -16,6 +16,7 @@
 
 package com.android.healthconnect.controller.tests.permissions.request
 
+import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_HEART_RATE
 import android.health.connect.HealthPermissions.READ_STEPS
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
@@ -26,6 +27,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
@@ -70,6 +72,7 @@ class RequestPermissionViewModelTest {
     @Inject lateinit var grantHealthPermissionUseCase: GrantHealthPermissionUseCase
     @Inject lateinit var revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase
     @Inject lateinit var getGrantHealthPermissionUseCase: GetGrantedHealthPermissionsUseCase
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     lateinit var viewModel: RequestPermissionViewModel
 
@@ -83,7 +86,8 @@ class RequestPermissionViewModelTest {
                 appInfoReader,
                 grantHealthPermissionUseCase,
                 revokeHealthPermissionUseCase,
-                getGrantHealthPermissionUseCase)
+                getGrantHealthPermissionUseCase,
+                healthPermissionReader)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
     }
 
@@ -104,6 +108,17 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun init_initPermissions() = runTest {
+        val testObserver = TestObserver<List<HealthPermission>>()
+        viewModel.permissionsList.observeForever(testObserver)
+        advanceUntilIdle()
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(
+                listOf(fromPermissionString(READ_STEPS), fromPermissionString(READ_HEART_RATE)))
+    }
+
+    @Test
+    fun initPermissions_filtersOutAdditionalPermissions() = runTest {
+        viewModel.init(TEST_APP_PACKAGE_NAME, arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
         val testObserver = TestObserver<List<HealthPermission>>()
         viewModel.permissionsList.observeForever(testObserver)
         advanceUntilIdle()
