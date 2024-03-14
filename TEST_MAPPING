@@ -24,6 +24,9 @@
        "name": "HealthConnectControllerExerciseRouteTests[com.google.android.healthfitness.apex]"
     },
     {
+       "name": "HealthConnectControllerExportTests[com.google.android.healthfitness.apex]"
+    },
+    {
        "name": "HealthConnectControllerHomePageAndOnboardingTests[com.google.android.healthfitness.apex]"
     },
     {
@@ -100,6 +103,9 @@
     },
     {
        "name": "HealthConnectControllerExerciseRouteTests"
+    },
+    {
+       "name": "HealthConnectControllerExportTests"
     },
     {
        "name": "HealthConnectControllerHomePageAndOnboardingTests"

@@ -55,8 +55,7 @@ import javax.inject.Inject
 
 /** Permissions activity for Health Connect. */
 @AndroidEntryPoint(FragmentActivity::class)
-class
-PermissionsActivity : Hilt_PermissionsActivity() {
+class PermissionsActivity : Hilt_PermissionsActivity() {
 
     companion object {
         private const val TAG = "PermissionsActivity"
@@ -116,6 +115,12 @@ PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
+        if (requestPermissionsViewModel.isAnyPermissionUserFixed(
+            getPackageNameExtra(), getPermissionStrings())) {
+            Log.i(TAG, "App has at least one USER_FIXED permission.")
+            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+        }
+
         requestPermissionsViewModel.permissionsList.observe(this) { notGrantedPermissions ->
             if (notGrantedPermissions.isEmpty()) {
                 handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))

@@ -18,6 +18,7 @@
 
 package com.android.healthconnect.controller.permissions.request
 
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -25,6 +26,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -45,6 +47,7 @@ constructor(
     private val grantHealthPermissionUseCase: GrantHealthPermissionUseCase,
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
     private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
+    private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
     private val healthPermissionReader: HealthPermissionReader
 ) : ViewModel() {
 
@@ -76,6 +79,9 @@ constructor(
     val allPermissionsGranted: LiveData<Boolean>
         get() = _allPermissionsGranted
 
+    /** Retains the originally requested permissions and their state. */
+    private var requestedPermissions: MutableMap<HealthPermission, PermissionState> = mutableMapOf()
+
     private fun isAllPermissionsGranted(
         permissionsListLiveData: LiveData<List<HealthPermission>>,
         grantedPermissionsLiveData: LiveData<Set<HealthPermission>>
@@ -94,16 +100,25 @@ constructor(
         loadPermissions(packageName, permissions)
     }
 
-    fun isPermissionGranted(permission: HealthPermission): Boolean {
+    /** Whether the user has enabled this permission in the Permission Request screen. */
+    fun isPermissionLocallyGranted(permission: HealthPermission): Boolean {
         return _grantedPermissions.value.orEmpty().contains(permission)
+    }
+
+    /** Returns true if any of the requested permissions is USER_FIXED, false otherwise. */
+    fun isAnyPermissionUserFixed(packageName: String, permissions: Array<out String>): Boolean {
+        return getHealthPermissionsFlagsUseCase.invoke(packageName, permissions.toList()).any {
+            (_, flags) ->
+            flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0
+        }
     }
 
     private fun loadPermissions(packageName: String, permissions: Array<out String>) {
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
+
         val filteredPermissions =
             permissions
-                .filter { permissionString -> !grantedPermissions.contains(permissionString) }
-                .filter { permissionString -> !healthPermissionReader.isAdditionalPermission(permissionString)}
+                // Filter invalid health permissions
                 .mapNotNull { permissionString ->
                     try {
                         HealthPermission.fromPermissionString(permissionString)
@@ -112,8 +127,29 @@ constructor(
                         null
                     }
                 }
+                // Add the requested permissions and their states to requestedPermissions
+                .onEach { permission -> addToRequestedPermissions(grantedPermissions, permission) }
+                // Finally, filter out the granted permissions
+                .filter { permission -> !grantedPermissions.contains(permission.toString()) }
+                // TODO (b/295490462) Additional permissions will be requested separately
+                .filter { permission ->
+                    !healthPermissionReader.isAdditionalPermission(permission.toString())
+                }
 
-        _permissionsList.postValue(filteredPermissions)
+        _permissionsList.value = filteredPermissions
+    }
+
+    // Adds a permission to the requested permissions map with its original granted state
+    private fun addToRequestedPermissions(
+        grantedPermissions: List<String>,
+        permission: HealthPermission
+    ) {
+        val isPermissionGranted = grantedPermissions.contains(permission.toString())
+        if (isPermissionGranted) {
+            requestedPermissions[permission] = PermissionState.GRANTED
+        } else {
+            requestedPermissions[permission] = PermissionState.NOT_GRANTED
+        }
     }
 
     fun updatePermission(permission: HealthPermission, grant: Boolean) {
@@ -140,8 +176,9 @@ constructor(
 
     fun request(packageName: String): MutableMap<HealthPermission, PermissionState> {
         val grants: MutableMap<HealthPermission, PermissionState> = mutableMapOf()
-        _permissionsList.value.orEmpty().forEach { permission ->
-            val granted = isPermissionGranted(permission)
+        requestedPermissions.forEach { (permission, permissionState) ->
+            val granted =
+                isPermissionLocallyGranted(permission) || permissionState == PermissionState.GRANTED
             try {
                 if (granted) {
                     grantHealthPermissionUseCase.invoke(packageName, permission.toString())

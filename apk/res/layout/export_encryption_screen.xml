@@ -68,12 +68,14 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <!-- TODO: b/325917283 - Add proper auto fill functionality. -->
         <EditText
             android:id="@+id/export_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
             android:hint="@string/export_password_hint"
+            android:importantForAutofill="no"
             android:inputType="textPassword" />
 
         <EditText
@@ -81,6 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/export_repeat_password_hint"
+            android:importantForAutofill="no"
             android:inputType="textPassword" />
 
     </LinearLayout>
@@ -97,8 +100,8 @@
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:importantForAccessibility="no"
-            android:layout_marginRight="@dimen/spacing_normal"
-            android:layout_alignParentLeft="true"
+            android:layout_marginEnd="@dimen/spacing_normal"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:src="?attr/warningIcon"/>
 
@@ -106,7 +109,7 @@
             android:id="@+id/export_encryption_warning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/export_encryption_warning_icon"
+            android:layout_toEndOf="@id/export_encryption_warning_icon"
             android:layout_alignParentTop="true"
             android:text="@string/export_encryption_warning"
             android:textAppearance="?attr/textAppearanceSummaryLarge" />
