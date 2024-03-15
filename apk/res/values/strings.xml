@@ -424,6 +424,8 @@
     <string name="frequency_weekly" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data weekly.">Weekly</string>
     <string name="frequency_monthly" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data monthly.">Monthly</string>
 
+    <string name="export_location_title" description="Title of the 'export location' screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Export location</string>
+
     <string name="export_encryption_title" description="Title of the 'turn on encryption' screen where users can set up their passwords for data encryption. [CHAR_LIMIT=40]">Turn on encryption</string>
     <string name="export_encryption_safety_description" description="The safety description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Data needs to be encrypted before it is saved. No one, not even Google or Health&#160;Connect, will be able to access it.</string>
     <string name="export_encryption_instruction_description" description="The instruction description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Create a password to protect your encrypted data. You will need this password to import and restore your data.</string>

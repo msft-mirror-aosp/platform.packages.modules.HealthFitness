@@ -54,6 +54,7 @@ class PermissionsFragment : Hilt_PermissionsFragment() {
         private const val WRITE_CATEGORY = "write_permission_category"
         private const val HEADER = "request_permissions_header"
     }
+
     private val pageName = PageName.REQUEST_PERMISSIONS_PAGE
     @Inject lateinit var logger: HealthConnectLogger
 
@@ -153,7 +154,7 @@ class PermissionsFragment : Hilt_PermissionsFragment() {
                     .getString(fromPermissionType(it.healthPermissionType).uppercaseLabel)
             }
             .forEach { permission ->
-                val value = viewModel.isPermissionGranted(permission)
+                val value = viewModel.isPermissionLocallyGranted(permission)
                 if (PermissionsAccessType.READ == permission.permissionsAccessType) {
                     mReadPermissionCategory?.addPreference(
                         getPermissionPreference(value, permission))

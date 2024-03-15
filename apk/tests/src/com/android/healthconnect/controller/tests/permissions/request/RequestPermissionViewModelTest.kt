@@ -16,10 +16,12 @@
 
 package com.android.healthconnect.controller.tests.permissions.request
 
+import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_HEART_RATE
 import android.health.connect.HealthPermissions.READ_STEPS
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
@@ -40,6 +42,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -51,7 +54,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @UninstallModules(HealthPermissionManagerModule::class)
@@ -72,6 +74,7 @@ class RequestPermissionViewModelTest {
     @Inject lateinit var grantHealthPermissionUseCase: GrantHealthPermissionUseCase
     @Inject lateinit var revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase
     @Inject lateinit var getGrantHealthPermissionUseCase: GetGrantedHealthPermissionsUseCase
+    @Inject lateinit var getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     lateinit var viewModel: RequestPermissionViewModel
@@ -87,6 +90,7 @@ class RequestPermissionViewModelTest {
                 grantHealthPermissionUseCase,
                 revokeHealthPermissionUseCase,
                 getGrantHealthPermissionUseCase,
+                getHealthPermissionsFlagsUseCase,
                 healthPermissionReader)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
     }
@@ -118,7 +122,9 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun initPermissions_filtersOutAdditionalPermissions() = runTest {
-        viewModel.init(TEST_APP_PACKAGE_NAME, arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
+        viewModel.init(
+            TEST_APP_PACKAGE_NAME,
+            arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
         val testObserver = TestObserver<List<HealthPermission>>()
         viewModel.permissionsList.observeForever(testObserver)
         advanceUntilIdle()
@@ -132,7 +138,7 @@ class RequestPermissionViewModelTest {
         val readStepsPermission = fromPermissionString(READ_STEPS)
         viewModel.updatePermission(readStepsPermission, grant = true)
 
-        assertThat(viewModel.isPermissionGranted(readStepsPermission)).isTrue()
+        assertThat(viewModel.isPermissionLocallyGranted(readStepsPermission)).isTrue()
     }
 
     @Test
@@ -140,7 +146,7 @@ class RequestPermissionViewModelTest {
         val readStepsPermission = fromPermissionString(READ_STEPS)
         viewModel.updatePermission(readStepsPermission, grant = false)
 
-        assertThat(viewModel.isPermissionGranted(fromPermissionString(READ_STEPS))).isFalse()
+        assertThat(viewModel.isPermissionLocallyGranted(fromPermissionString(READ_STEPS))).isFalse()
     }
 
     @Test
@@ -162,8 +168,7 @@ class RequestPermissionViewModelTest {
         viewModel.updatePermission(readStepsPermission, grant = false)
         advanceUntilIdle()
 
-        assertThat(testObserver.getLastValue())
-            .doesNotContain(readStepsPermission)
+        assertThat(testObserver.getLastValue()).doesNotContain(readStepsPermission)
     }
 
     @Test
@@ -205,5 +210,35 @@ class RequestPermissionViewModelTest {
         viewModel.request(TEST_APP_PACKAGE_NAME)
 
         assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME)).isEmpty()
+    }
+
+    @Test
+    fun isAnyPermissionUserFixed_whenNoPermissionUserFixed_returnsFalse() {
+        val permissionFlags =
+            mapOf(
+                READ_STEPS to PackageManager.FLAG_PERMISSION_USER_SET,
+                READ_HEART_RATE to PackageManager.FLAG_PERMISSION_GRANTED_BY_DEFAULT)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            TEST_APP_PACKAGE_NAME, permissionFlags)
+
+        val result =
+            viewModel.isAnyPermissionUserFixed(
+                TEST_APP_PACKAGE_NAME, arrayOf(READ_STEPS, READ_HEART_RATE))
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun isAnyPermissionUserFixed_whenAtLeastOnePermissionIsUserFixed_returnsTrue() {
+        val permissionFlags =
+            mapOf(
+                READ_STEPS to PackageManager.FLAG_PERMISSION_USER_SET,
+                READ_HEART_RATE to PackageManager.FLAG_PERMISSION_USER_FIXED)
+        (permissionManager as FakeHealthPermissionManager).setHealthPermissionFlags(
+            TEST_APP_PACKAGE_NAME, permissionFlags)
+
+        val result =
+            viewModel.isAnyPermissionUserFixed(
+                TEST_APP_PACKAGE_NAME, arrayOf(READ_STEPS, READ_HEART_RATE))
+        assertThat(result).isTrue()
     }
 }

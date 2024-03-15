@@ -26,24 +26,22 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import dagger.hilt.android.AndroidEntryPoint
 
-/** Export encryption fragment for Health Connect. */
-// TODO: b/325917283 - Save the user created password.
+/** Export destination fragment for Health Connect. */
 @AndroidEntryPoint(Fragment::class)
-class ExportEncryptionFragment : Hilt_ExportEncryptionFragment() {
-
-    // TODO: b/325917283 - Add proper logging for export encryption fragment.
+class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.export_encryption_screen, container, false)
-        // TODO: b/325917283 - Add proper navigation to the next screen.
+        val view = inflater.inflate(R.layout.export_destination_screen, container, false)
+        // TODO: b/325917283 - Add proper navigation to the next screen (either file picker or
+        // document UI).
         val backButton = view.findViewById<Button>(R.id.export_back_button)
 
         backButton.setOnClickListener {
             findNavController()
-                .navigate(R.id.action_exportEncryptionFragment_to_exportDestinationFragment)
+                .navigate(R.id.action_exportDestinationFragment_to_exportFrequencyFragment)
         }
         return view
     }

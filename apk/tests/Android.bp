@@ -185,6 +185,26 @@ android_test {
 }
 
 filegroup {
+    name: "export-tests-srcs",
+    srcs: [
+        "src/com/android/healthconnect/controller/tests/export/**/*.java",
+        "src/com/android/healthconnect/controller/tests/export/**/*.kt",
+    ],
+    visibility: ["//visibility:private"]
+}
+
+android_test {
+    name: "HealthConnectControllerExportTests",
+    srcs: [":export-tests-srcs"],
+    static_libs: [
+        "HealthConnectExportApis"
+    ],
+    defaults: ["health-connect-controller-tests-default"],
+    package_name: "com.android.healthconnect.controller.tests.export",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.export",
+}
+
+filegroup {
     name: "home-and-onboarding-tests-srcs",
     srcs: [
         "src/com/android/healthconnect/controller/tests/home/**/*.java",
@@ -323,6 +343,7 @@ android_test {
     static_libs: [
         "SafetyCenterTests",
         "HealthConnectMigrationApis",
+        "HealthConnectExportApis",
     ],
     package_name: "com.android.healthconnect.controller.tests",
     instrumentation_target_package: "com.android.healthconnect.controller.tests",
