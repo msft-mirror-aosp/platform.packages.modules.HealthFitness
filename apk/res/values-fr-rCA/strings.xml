@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lecture en arrière-plan"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lecture en arrière-plan"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Lire données relatives à la santé en arrière-plan"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories actives brûlées"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"les calories actives brûlées"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lecture des données relatives aux calories actives brûlées"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pourquoi Connexion santé retire les autorisations des applications"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Lorsqu\'une application est suspendue ou retirée de Google Play, Connexion santé retire automatiquement ses autorisations.\n\nCela signifie que l\'application ne peut plus accéder aux données stockées dans Connexion santé. Si cette application a déjà écrit des données, elle apparaît dans la liste des applications inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sauvegarder et restaurer"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Exporter et importer"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Exportation récurrente"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Restaurer les données"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Chargez les données précédemment exportées"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Choisir la fréquence"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vous pouvez choisir d\'enregistrer les données une seule fois ou de les enregistrer automatiquement à intervalles réguliers."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Chaque jour"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Chaque semaine"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Chaque mois"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Activer le chiffrement"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Les données doivent être chiffrées avant d\'être enregistrées. Personne, pas même Google ou Connexion santé, ne pourra y accéder."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Créez un mot de passe pour protéger vos données chiffrées. Vous aurez besoin de ce mot de passe pour importer et restaurer vos données."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Mot de passe"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Répéter le mot de passe"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Connexion santé ne peut pas vous aider à récupérer vos données enregistrées."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
     <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Premiers pas avec Connexion santé"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}other{# kelvins}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 degré Fahrenheit}one{# degré Fahrenheit}other{# degrés Fahrenheit}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Aisselle"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Doigt"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Front"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Oreille"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Poignet"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagin"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>

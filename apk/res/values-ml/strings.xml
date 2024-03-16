@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"പശ്ചാത്തലത്തിലെ വായന"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"പശ്ചാത്തലത്തിലെ വായന"</string>
     <string name="background_read_description" msgid="5263745158443722174">"പശ്ചാത്തലത്തിൽ ആരോഗ്യ ഡാറ്റ വായിക്കുക"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"സജീവമായിരിക്കുമ്പോൾ കത്തിച്ചുകളഞ്ഞ കലോറി"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"സജീവമായിരിക്കുമ്പോൾ കത്തിച്ചുകളഞ്ഞ കലോറി"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"സജീവമായിരിക്കുമ്പോൾ കത്തിച്ചുകളഞ്ഞ കലോറി സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
@@ -305,21 +307,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"എന്തുകൊണ്ടാണ് Health Connect ആപ്പ് അനുമതികൾ നീക്കം ചെയ്യുന്നത്"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play-യിൽ നിന്ന് ഒരു ആപ്പ് താൽക്കാലികമായി റദ്ദാക്കുകയോ നീക്കം ചെയ്യുകയോ ചെയ്താൽ, അതിനുള്ള അനുമതികൾ Health Connect സ്വയമേവ നീക്കം ചെയ്യുന്നു.\n\nഈ ആപ്പിന് Health Connect-ൽ സംഭരിച്ച ഡാറ്റ തുടർന്ന് ആക്‌സസ് ചെയ്യാനാകില്ല എന്നാണ് ഇതിനർത്ഥം. ആപ്പിൽ മുമ്പ് രേഖപ്പെടുത്തിയ ഡാറ്റയുണ്ടെങ്കിൽ, അത് നിഷ്ക്രിയ ആപ്പുകളുടെ ലിസ്റ്റിൽ ദൃശ്യമാകും."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"മനസ്സിലായി"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ബാക്കപ്പ് ചെയ്ത് പുനഃസ്ഥാപിക്കൂ"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"എക്‌സ്‌പോർട്ട് ചെയ്യൂ, ഇമ്പോർട്ട് ചെയ്യൂ"</string>
+    <string name="recurring_export" msgid="111638340692746218">"ആവർത്തിക്കുന്ന എക്‌സ്പോർട്ട്"</string>
+    <string name="restore_data" msgid="3401173690437871417">"ഡാറ്റ പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"മുമ്പ് എക്‌സ്പോർട്ട് ചെയ്ത ഡാറ്റ ലോഡ് ചെയ്യുക"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ആവൃത്തി തിരഞ്ഞെടുക്കുക"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ഡാറ്റ ഒരിക്കൽ സംരക്ഷിക്കാൻ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ പതിവ് സമയങ്ങളിൽ അത് സ്വയമേവ സംരക്ഷിക്കാൻ സജ്ജീകരിക്കുക."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"എല്ലാ ദിവസവും"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"പ്രതിവാരം"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"പ്രതിമാസം"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"എൻക്രിപ്‌ഷൻ ഓണാക്കുക"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ഡാറ്റ സംരക്ഷിക്കുന്നതിന് മുമ്പ് അത് എൻക്രിപ്റ്റ് ചെയ്യേണ്ടതുണ്ട്. ആർക്കും, Google-നോ Health Connect-നോ പോലും, അത് ആക്സസ് ചെയ്യാനാകില്ല."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"നിങ്ങളുടെ എൻ‍ക്രിപ്റ്റ് ചെയ്ത ഡാറ്റ പരിരക്ഷിക്കുന്നതിന് പാസ്‌വേഡ് സൃഷ്ടിക്കുക. നിങ്ങളുടെ ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യാനും പുനഃസ്ഥാപിക്കാനും നിങ്ങൾക്ക് ഈ പാസ്‌വേഡ് ആവശ്യമാണ്."</string>
@@ -663,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 കെൽവിൻ}other{# കെൽവിൻ}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ഡിഗ്രി ഫാരൻഹീറ്റ്}other{# ഡിഗ്രി ഫാരൻഹീറ്റ്}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"കക്ഷം"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"വിരൽ"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"നെറ്റി"</string>
@@ -673,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"ചെവി"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"കണങ്കൈ"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"യോനി"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{ഒരു മൈൽ}other{# മൈൽ}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{ഒരു കി.മീ}other{# കി.മീ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{ഒരു മൈൽ}other{# മൈൽ}}"</string>

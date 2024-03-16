@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಓದುವಿಕೆ"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಓದುವಿಕೆ"</string>
     <string name="background_read_description" msgid="5263745158443722174">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಆರೋಗ್ಯ ಡೇಟಾವನ್ನು ಓದಿರಿ"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ಕರಗಿಸಿದ ಸಕ್ರಿಯ ಕ್ಯಾಲೋರಿಗಳು"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ಸಕ್ರಿಯ ಕ್ಯಾಲೋರಿಗಳನ್ನು ಕಳೆದುಕೊಳ್ಳಲಾಗಿದೆ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ಸಕ್ರಿಯ ಕ್ಯಾಲೋರಿಗಳನ್ನು ಕಳೆದುಕೊಂಡಿರುವುದರ ಕುರಿತು ಓದಿರಿ"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect, ಆ್ಯಪ್ ಅನುಮತಿಗಳನ್ನು ಏಕೆ ತೆಗೆದುಹಾಕುತ್ತದೆ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play ನಿಂದ ಆ್ಯಪ್ ಅನ್ನು ಅಮಾನತುಗೊಳಿಸಿದರೆ ಅಥವಾ ತೆಗೆದುಹಾಕಿದರೆ, Health Connect ಅದರ ಅನುಮತಿಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತೆಗೆದುಹಾಕುತ್ತದೆ.\n\nಇದರರ್ಥ Health Connect ನಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಆ್ಯಪ್‌ಗೆ ಇನ್ನು ಮುಂದೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. ಈ ಆ್ಯಪ್ ಈ ಹಿಂದೆ ಬರೆದ ಡೇಟಾವನ್ನು ಹೊಂದಿದ್ದರೆ, ಅದು ನಿಷ್ಕ್ರಿಯ ಆ್ಯಪ್‌ಗಳ ಪಟ್ಟಿಯಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ಅರ್ಥವಾಯಿತು"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ಬ್ಯಾಕಪ್ ಮಾಡಿ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿ ಹಾಗೂ ಇಂಪೋರ್ಟ್ ಮಾಡಿಕೊಳ್ಳಿ"</string>
+    <string name="recurring_export" msgid="111638340692746218">"ಮರುಕಳಿಸುವ ಎಕ್ಸ್‌ಪೋರ್ಟ್"</string>
+    <string name="restore_data" msgid="3401173690437871417">"ಡೇಟಾವನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"ಈ ಹಿಂದೆ ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಿ"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ಫ್ರೀಕ್ವೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ಒಂದು ಬಾರಿ ಡೇಟಾ ಸೇವ್ ಮಾಡುವ ಆಯ್ಕೆಯನ್ನು ಮಾಡಿ ಅಥವಾ ಸಾಮಾನ್ಯ ಸಮಯಗಳಲ್ಲಿ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೇವ್ ಆಗುವಂತೆ ಸೆಟ್ ಮಾಡಿ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ಪ್ರತಿದಿನ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ಸಾಪ್ತಾಹಿಕ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ಮಾಸಿಕ"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಆನ್ ಮಾಡಿ"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ಡೇಟಾವನ್ನು ಸೇವ್ ಮಾಡುವ ಮೊದಲು ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಬೇಕಾಗಿದೆ. ಯಾರೂ, Google ಅಥವಾ Health Connect ಸಹ ಇದನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ನಿಮ್ಮ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ರಕ್ಷಿಸಲು ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ. ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಇಂಪೋರ್ಟ್ ಮಾಡಿಕೊಳ್ಳಲು ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಲು ನಿಮಗೆ ಈ ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯವಿದೆ."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"ಪಾಸ್‌ವರ್ಡ್"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ಪಾಸ್‌ವರ್ಡ್ ಪುನರಾವರ್ತಿಸಿ"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನೀವು ಮರೆತರೆ ಮತ್ತು ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಕಳೆದುಕೊಂಡರೆ, ನಿಮ್ಮ ಸೇವ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ರಿಕವರ್ ಮಾಡಲು Health Connect ನಿಮಗೆ ಸಹಾಯ ಮಾಡುವುದಿಲ್ಲ."</string>
     <string name="export_back_button" msgid="3550795479165524982">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ಮುಂದಿನದು"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ಬಳಕೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 ಕೆಲ್ವಿನ್}one{# ಕೆಲ್ವಿನ್‌ಗಳು}other{# ಕೆಲ್ವಿನ್‌ಗಳು}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ಡಿಗ್ರಿ ಫ್ಯಾರನ್‌ಹೀಟ್}one{# ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್}other{# ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"ಕಂಕುಳು"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"ಬೆರಳು"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"ಹಣೆಯ ಉಷ್ಣಾಂಶ"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"ಕಿವಿ"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"ಮಣಿಕಟ್ಟು"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"ಯೋನಿ"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ಮೈಲಿ}one{# ಮೈಲಿಗಳು}other{# ಮೈಲಿಗಳು}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 ಕಿ.ಮೀ}one{# ಕಿ.ಮೀ}other{# ಕಿ.ಮೀ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ಮೈಲಿ}one{# ಮೈಲಿಗಳು}other{# ಮೈಲಿಗಳು}}"</string>

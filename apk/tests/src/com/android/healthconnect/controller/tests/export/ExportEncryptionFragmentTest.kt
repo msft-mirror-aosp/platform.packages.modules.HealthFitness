@@ -41,12 +41,10 @@ import org.junit.Test
 
 @HiltAndroidTest
 class ExportEncryptionFragmentTest {
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
-
 
     @Before
     fun setup() {
@@ -61,21 +59,29 @@ class ExportEncryptionFragmentTest {
 
         onView(withId(R.id.export_encryption_header_lock_icon)).check(matches(isDisplayed()))
         onView(withText("Turn on encryption")).check(matches(isDisplayed()))
-        onView(withText("Data needs to be encrypted before it is saved. No one, not even Google or Health\u00A0Connect, will be able to access it.")).check(matches(isDisplayed()))
-        onView(withText("Create a password to protect your encrypted data. You will need this password to import and restore your data.")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Data needs to be encrypted before it is saved. No one, not even Google or Health\u00A0Connect, will be able to access it."))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Create a password to protect your encrypted data. You will need this password to import and restore your data."))
+            .check(matches(isDisplayed()))
 
         onView(withId(R.id.export_password)).check(matches(withHint("Password")))
         onView(withId(R.id.export_repeat_password)).check(matches(withHint("Repeat password")))
 
-
-        onView(withText("If you forget your password and lose your phone, Health\u00A0Connect cannot help you recover your saved data.")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "If you forget your password and lose your phone, Health\u00A0Connect cannot help you recover your saved data."))
+            .check(matches(isDisplayed()))
 
         onView(withText("Back")).check(matches(isDisplayed()))
         onView(withText("Next")).check(matches(isDisplayed()))
     }
 
     @Test
-    fun exportEncryptionFragment_clicksBackButton_navigatesBackToFrequencyFragment() {
+    fun exportEncryptionFragment_clicksBackButton_navigatesBackToDestinationFragment() {
         launchFragment<ExportEncryptionFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.export_nav_graph)
             navHostController.setCurrentDestination(R.id.exportEncryptionFragment)
@@ -85,7 +91,8 @@ class ExportEncryptionFragmentTest {
         onView(withId(R.id.export_back_button)).check(matches(isClickable()))
         onView(withId(R.id.export_back_button)).perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportFrequencyFragment)
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.exportDestinationFragment)
     }
 
     @Test

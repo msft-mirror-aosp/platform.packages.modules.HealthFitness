@@ -48,6 +48,7 @@ import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -86,6 +87,7 @@ import com.android.healthconnect.controller.dataentries.formatters.PowerFormatte
 import com.android.healthconnect.controller.dataentries.formatters.RespiratoryRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.RestingHeartRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SexualActivityFormatter
+import com.android.healthconnect.controller.dataentries.formatters.SkinTemperatureFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SpeedFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsCadenceFormatter
@@ -140,6 +142,7 @@ constructor(
     private val bodyWaterMassFormatter: BodyWaterMassFormatter,
     private val intermenstrualBleedingFormatter: IntermenstrualBleedingFormatter,
     private val heartRateVariabilityRmssdFormatter: HeartRateVariabilityRmssdFormatter,
+    private val skinTemperatureFormatter: SkinTemperatureFormatter,
 ) {
 
     suspend fun format(record: Record, showDataOrigin: Boolean = true): FormattedEntry {
@@ -185,6 +188,7 @@ constructor(
                 intermenstrualBleedingFormatter.format(record, appName)
             is HeartRateVariabilityRmssdRecord ->
                 heartRateVariabilityRmssdFormatter.format(record, appName)
+            is SkinTemperatureRecord -> skinTemperatureFormatter.format(record, appName)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }
