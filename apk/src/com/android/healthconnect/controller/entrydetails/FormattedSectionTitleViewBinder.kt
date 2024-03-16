@@ -46,6 +46,6 @@ class FormattedSectionTitleViewBinder : ViewBinder<FormattedSectionTitle, View> 
     override fun bind(view: View, data: FormattedSectionTitle, index: Int) {
         val title = view.findViewById<TextView>(android.R.id.title)
         title.text = data.title
-        logger.logImpression(EntryDetailsElement.SESSION_DETAIL_HEADER_VIEW)
+        logger.logImpression(EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW)
     }
 }

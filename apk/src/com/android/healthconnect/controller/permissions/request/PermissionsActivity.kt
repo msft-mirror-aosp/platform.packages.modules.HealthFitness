@@ -42,7 +42,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
@@ -214,7 +214,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
     }
 
-    fun handleResults(results: Map<HealthPermission, PermissionState>) {
+    fun handleResults(results: Map<DataTypePermission, PermissionState>) {
         val grants =
             results.values
                 .map { permissionSelection ->

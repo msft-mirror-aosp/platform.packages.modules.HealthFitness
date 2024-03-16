@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Leximi në sfond"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"leximi në sfond"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Të lexojë të dhënat e shëndetit në sfond"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalori aktive të djegura"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalori aktive të djegura"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Të lexojë të dhënat për kaloritë aktive të djegura"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pse i heq Health Connect lejet e aplikacioneve"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Nëse një aplikacion pezullohet ose hiqet nga Google Play, Health Connect i heq automatikisht lejet e tij.\n\nKjo do të thotë që aplikacioni nuk mund të ketë më qasje te të dhënat e ruajtura në Health Connect. Nëse ky aplikacion ka të dhëna që janë shkruar më herët, ai shfaqet në listën e aplikacioneve joaktive."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"E kuptova"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Rezervo dhe restauro"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Eksporto dhe importo"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Eksportimi periodik"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Restauro të dhënat"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Ngarko të dhënat e eksportuara më parë"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Zgjidh shpeshtësinë"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Zgjidh t\'i ruash të dhënat një herë ose caktoje atë për t\'i ruajtur automatikisht në intervale të rregullta"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Çdo ditë"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Çdo javë"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Çdo muaj"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Aktivizo enkriptimin"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Të dhënat duhet të enkriptohen para se të ruhen. Asnjë, as edhe Google apo Health Connect, nuk do të mund të kenë qasje në to."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Krijo një fjalëkalim për të mbrojtur të dhënat e tua të enkriptuara. Do të të duhet ky fjalëkalim për të importuar dhe restauruar të dhënat e tua."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Fjalëkalimi"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Përsërit fjalëkalimin"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Nëse e harron fjalëkalimin dhe e humb telefonin, Health Connect nuk mund të të ndihmojë të rikuperosh të dhënat e ruajtura."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Pas"</string>
     <string name="export_next_button" msgid="657930567137105172">"Para"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Fillo me Health Connect"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 gradë Kelvin}other{# gradë Kelvin}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 gradë Farenhait}other{# gradë Farenhait}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Sqetull"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Gisht"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Ballë"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Vesh"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Kyç dore"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vaginë"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milje}other{# milje}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milje}other{# milje}}"</string>

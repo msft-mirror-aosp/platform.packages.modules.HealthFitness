@@ -25,7 +25,7 @@ import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermi
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -84,13 +84,13 @@ class AppPermissionViewModelTest {
     @Inject lateinit var featureUtils: FeatureUtils
 
     private val readExercisePermission =
-        HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+        DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
     private val readNutritionPermission =
-        HealthPermission(HealthPermissionType.NUTRITION, PermissionsAccessType.READ)
+        DataTypePermission(HealthPermissionType.NUTRITION, PermissionsAccessType.READ)
     private val writeSleepPermission =
-        HealthPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+        DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
     private val writeDistancePermission =
-        HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
+        DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
 
     @Captor lateinit var appDataCaptor: ArgumentCaptor<DeletionType.DeletionTypeAppData>
     @Captor lateinit var timeFilterCaptor: ArgumentCaptor<TimeInstantRangeFilter>
@@ -146,8 +146,8 @@ class AppPermissionViewModelTest {
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
 
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -181,8 +181,8 @@ class AppPermissionViewModelTest {
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
 
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -199,9 +199,9 @@ class AppPermissionViewModelTest {
 
     @Test
     fun updatePermissions_grant_whenSuccessful_returnsTrue() = runTest {
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         val readExercisePermission =
-            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
         val result =
@@ -216,9 +216,9 @@ class AppPermissionViewModelTest {
 
     @Test
     fun updatePermissions_grant_whenUnsuccessful_returnsFalse() = runTest {
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         val readExercisePermission =
-            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
+            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
         whenever(grantPermissionsUseCase.invoke(any(), any())).thenThrow(RuntimeException("Error!"))
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -234,8 +234,8 @@ class AppPermissionViewModelTest {
     @Test
     fun updatePermissions_deny_whenSuccessful_returnsTrue() = runTest {
         setupDeclaredAndGrantedPermissions()
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -269,8 +269,8 @@ class AppPermissionViewModelTest {
     fun updatePermissions_deny_whenUnsuccessful_returnsFalse() = runTest {
         setupDeclaredAndGrantedPermissions()
 
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -305,8 +305,8 @@ class AppPermissionViewModelTest {
     fun grantAllPermissions_whenSuccessful_returnsTrue() = runTest {
         setupDeclaredAndGrantedPermissions()
 
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -343,8 +343,8 @@ class AppPermissionViewModelTest {
     fun grantAllPermissions_whenUnsuccessful_returnsFalse() = runTest {
         setupDeclaredAndGrantedPermissions()
 
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 
@@ -377,8 +377,8 @@ class AppPermissionViewModelTest {
     fun revokeAllPermissions_whenSuccessful_returnsTrue() = runTest {
         setupDeclaredAndGrantedPermissions()
 
-        val appPermissionsObserver = TestObserver<List<HealthPermission>>()
-        val grantedPermissionsObserver = TestObserver<Set<HealthPermission>>()
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
         appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
         appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
 

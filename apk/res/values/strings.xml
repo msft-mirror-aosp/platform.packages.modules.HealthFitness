@@ -863,25 +863,25 @@
     <!-- endregion -->
 
     <!-- region Temperature units -->
-    <string name="temperature_celsius" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 ℃} other {# ℃}}</string>
+    <string name="temperature_celsius" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1℃} other {#℃}}</string>
     <string name="temperature_celsius_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 degree Celsius} other {# degrees Celsius}}</string>
-    <string name="temperature_kelvin" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 K} other {# K}}</string>
+    <string name="temperature_kelvin" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1K} other {#K}}</string>
     <string name="temperature_kelvin_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 kelvin} other {# kelvins}}</string>
-    <string name="temperature_fahrenheit" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 ℉} other {# ℉}}</string>
+    <string name="temperature_fahrenheit" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1℉} other {#℉}}</string>
     <string name="temperature_fahrenheit_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 degree Fahrenheit} other {# degrees Fahrenheit}}</string>
 
-    <string name="temperatureDelta_celsius" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℃} other {{formattedValue} ℃}}</string>
+    <string name="temperatureDelta_celsius" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℃} other {{formattedValue}℃}}</string>
     <string name="temperatureDelta_celsius_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Celsius} other {{formattedValue} degrees Celsius}}</string>
-    <string name="temperatureDelta_fahrenheit" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℉} other {{formattedValue} ℉}}</string>
+    <string name="temperatureDelta_fahrenheit" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℉} other {{formattedValue}℉}}</string>
     <string name="temperatureDelta_fahrenheit_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Fahrenheit} other {{formattedValue} degrees Fahrenheit}}</string>
-    <string name="temperatureDelta_kelvin" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} K} other {{formattedValue} K}}</string>
+    <string name="temperatureDelta_kelvin" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}K} other {{formattedValue}K}}</string>
     <string name="temperatureDelta_kelvin_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} kelvin} other {{formattedValue} kelvins}}</string>
 
-    <string name="temperatureDelta_average_celsius" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℃ (avg variation)} other {{formattedValue} ℃ (avg variation)}}</string>
+    <string name="temperatureDelta_average_celsius" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℃ (avg variation)} other {{formattedValue}℃ (avg variation)}}</string>
     <string name="temperatureDelta_average_celsius_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Celsius (average variation)} other {{formattedValue} degrees Celsius (average variation)}}</string>
-    <string name="temperatureDelta_average_fahrenheit" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} ℉ (avg variation)} other {{formattedValue} ℉ (avg variation)}}</string>
+    <string name="temperatureDelta_average_fahrenheit" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℉ (avg variation)} other {{formattedValue}℉ (avg variation)}}</string>
     <string name="temperatureDelta_average_fahrenheit_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Fahrenheit (average variation)} other {{formattedValue} degrees Fahrenheit (average variation)}}</string>
-    <string name="temperatureDelta_average_kelvin" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue} K (avg variation)} other {{formattedValue} K (avg variation)}}</string>
+    <string name="temperatureDelta_average_kelvin" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}K (avg variation)} other {{formattedValue}K (avg variation)}}</string>
     <string name="temperatureDelta_average_kelvin_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} kelvin (average variation)} other {{formattedValue} kelvins (average variation)}}</string>
 
     <string name="temperature_location_armpit" description="Where the body temperature measurement was taken - armpit. [CHAR LIMIT=50]">Armpit</string>

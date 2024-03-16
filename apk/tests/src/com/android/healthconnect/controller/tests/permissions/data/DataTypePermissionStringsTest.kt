@@ -13,20 +13,20 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
-class HealthPermissionStringsTest {
+class DataTypePermissionStringsTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -40,19 +40,19 @@ class HealthPermissionStringsTest {
     @Test
     fun allHealthPermissionTypesHaveStrings() {
         for (type in HealthPermissionType.values()) {
-            assertThat(HealthPermissionStrings.fromPermissionType(type)).isNotNull()
+            assertThat(DataTypePermissionStrings.fromPermissionType(type)).isNotNull()
         }
     }
 
     @Test
-    fun allHealthPermissionsHaveStrings() {
+    fun allDataTypePermissionsHaveStrings() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
                 healthPermissionReader.isAdditionalPermission(perm)
             }
         for (permission in allPermissions) {
-            val type = HealthPermission.fromPermissionString(permission).healthPermissionType
-            assertThat(HealthPermissionStrings.fromPermissionType(type)).isNotNull()
+            val type = DataTypePermission.fromPermissionString(permission).healthPermissionType
+            assertThat(DataTypePermissionStrings.fromPermissionType(type)).isNotNull()
         }
     }
 }

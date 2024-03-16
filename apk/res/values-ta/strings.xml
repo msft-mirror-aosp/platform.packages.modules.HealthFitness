@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"பின்னணி வாசிப்பு"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"பின்னணி வாசிப்பு"</string>
     <string name="background_read_description" msgid="5263745158443722174">"பின்னணியில் உடல்நலம் தொடர்பான தரவை வாசிக்கும்"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"செயல்பாட்டின்போது எரிக்கப்பட்ட கலோரிகள்"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"செயல்பாட்டின் மூலம் எரிக்கப்பட்ட கலோரிகள்"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"செயல்பாட்டின்போது எரிக்கப்பட்ட கலோரிகள் தொடர்பான தரவை வாசிக்கும்"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ஏன் ஆப்ஸ் அனுமதிகளை அகற்றுகிறது?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Playயில் இருந்து ஓர் ஆப்ஸ் இடைநிறுத்தப்பட்டாலோ அகற்றப்பட்டாலோ அதன் அனுமதிகளை Health Connect தானாக அகற்றிவிடும்.\n\nஅதாவது Health Connectடில் சேமிக்கப்பட்டிருக்கும் தரவை அந்த ஆப்ஸால் அணுக முடியாது. ஏற்கெனவே இந்த ஆப்ஸில் ஏதேனும் தரவு பதிவாகியிருந்தால், இது செயலற்ற ஆப்ஸ் பட்டியலில் காட்டப்படும்."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"சரி"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"காப்புப் பிரதி மற்றும் மீட்டெடுத்தல்"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ஏற்றுதல் மற்றும் இறக்குதல்"</string>
+    <string name="recurring_export" msgid="111638340692746218">"தொடர்ச்சியான ஏற்றுதல்"</string>
+    <string name="restore_data" msgid="3401173690437871417">"தரவை மீட்டெடுத்தல்"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"முன்பு ஏற்றிய தரவைக் காட்டும்"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"கால அளவைத் தேர்வுசெய்யுங்கள்"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"தரவை ஒருமுறை சேமிக்கத் தேர்வுசெய்யலாம்/குறிப்பிட்ட நேரங்களில் தானாகச் சேமிக்கும்படி அதை அமைக்கலாம்."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"தினமும்"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"வாரந்தோறும்"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"மாதந்தோறும்"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"என்க்ரிப்ஷனை இயக்குதல்"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"தரவு சேமிக்கப்படுவதற்கு முன்பு என்க்ரிப்ஷன் செய்யப்பட்டிருக்க வேண்டும். Google, Health Connect உட்பட யாராலும் அதை அணுக முடியாது."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"என்க்ரிப்ஷன் செய்யப்பட்ட உங்கள் தரவைப் பாதுகாக்க கடவுச்சொல்லை உருவாக்கவும். உங்கள் தரவை பதிவிறக்குவதற்கும் மீட்டெடுப்பதற்கும் இந்தக் கடவுச்சொல் உங்களுக்குத் தேவைப்படும்."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"கடவுச்சொல்"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"கடவுச்சொல்லை மீண்டும் டைப் செய்யவும்"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"உங்கள் கடவுச்சொல்லை மறந்துவிட்டாலோ மொபைலைத் தொலைத்துவிட்டாலோ, சேமிக்கப்பட்ட உங்கள் தரவை மீட்டெடுக்க Health Connect உதவாது."</string>
     <string name="export_back_button" msgid="3550795479165524982">"பின்செல்"</string>
     <string name="export_next_button" msgid="657930567137105172">"அடுத்து"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 கெல்வின்}other{# கெல்வின்}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 டிகிரி ஃபாரன்ஹீட்}other{# டிகிரி ஃபாரன்ஹீட்}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"அக்குள்"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"விரல்"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"நெற்றி"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"காது"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"மணிக்கட்டு"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"பெண்ணுறுப்பு"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 மைல்}other{# மைல்கள்}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 கிமீ}other{# கிமீ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 மைல்}other{# மைல்கள்}}"</string>

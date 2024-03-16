@@ -52,6 +52,6 @@ class ReverseSessionDetailViewBinder : ViewBinder<ReverseSessionDetail, View> {
         header.text = data.header
         header.contentDescription = data.headerA11y
 
-        logger.logImpression(EntryDetailsElement.SESSION_DETAIL_ENTRY_VIEW)
+        logger.logImpression(EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW)
     }
 }

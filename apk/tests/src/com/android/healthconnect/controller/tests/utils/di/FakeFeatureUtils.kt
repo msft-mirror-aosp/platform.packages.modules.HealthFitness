@@ -18,6 +18,8 @@ class FakeFeatureUtils : FeatureUtils {
     private var isBackgroundReadEnabled = false
     private var isHistoryReadEnabled = false
     private var isImportExportEnabled = false
+    private var isSkinTemperatureEnabled = false
+    private var isPlannedExerciseEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
@@ -51,6 +53,14 @@ class FakeFeatureUtils : FeatureUtils {
         this.isImportExportEnabled = isImportExportEnabled
     }
 
+    fun setIsSkinTemperatureEnabled(isSkinTemperatureEnabled: Boolean) {
+        this.isSkinTemperatureEnabled = isSkinTemperatureEnabled
+    }
+
+    fun setIsPlannedExerciseEnabled(isPlannedExerciseEnabled: Boolean) {
+        this.isPlannedExerciseEnabled = isPlannedExerciseEnabled
+    }
+
     override fun isNewAppPriorityEnabled(): Boolean {
         return isNewAppPriorityEnabled
     }
@@ -81,6 +91,14 @@ class FakeFeatureUtils : FeatureUtils {
 
     override fun isImportExportEnabled(): Boolean {
         return isImportExportEnabled
+    }
+
+    override fun isPlannedExerciseEnabled(): Boolean {
+        return isPlannedExerciseEnabled
+    }
+
+    override fun isSkinTemperatureEnabled(): Boolean {
+        return isSkinTemperatureEnabled
     }
 }
 
