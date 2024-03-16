@@ -38,8 +38,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry.*
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.request.PermissionsFragment
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
@@ -87,7 +87,9 @@ class PermissionsFragmentTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         `when`(viewModel.allPermissionsGranted).then { MutableLiveData(false) }
-        `when`(viewModel.grantedPermissions).then { MutableLiveData(emptySet<HealthPermission>()) }
+        `when`(viewModel.grantedPermissions).then {
+            MutableLiveData(emptySet<DataTypePermission>())
+        }
     }
 
     @After
@@ -208,7 +210,7 @@ class PermissionsFragmentTest {
         Espresso.onIdle()
         onView(withText("Distance")).perform(click())
 
-        verify(viewModel).updatePermission(any(HealthPermission::class.java), eq(true))
+        verify(viewModel).updatePermission(any(DataTypePermission::class.java), eq(true))
         verify(healthConnectLogger)
             .logInteraction(PermissionsElement.PERMISSION_SWITCH, UIAction.ACTION_TOGGLE_ON)
     }

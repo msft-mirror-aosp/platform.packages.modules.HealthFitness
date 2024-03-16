@@ -27,6 +27,7 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
@@ -41,7 +42,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
@@ -80,6 +81,9 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
             Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
@@ -111,6 +115,12 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
+        if (requestPermissionsViewModel.isAnyPermissionUserFixed(
+            getPackageNameExtra(), getPermissionStrings())) {
+            Log.i(TAG, "App has at least one USER_FIXED permission.")
+            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+        }
+
         requestPermissionsViewModel.permissionsList.observe(this) { notGrantedPermissions ->
             if (notGrantedPermissions.isEmpty()) {
                 handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
@@ -204,7 +214,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
     }
 
-    fun handleResults(results: Map<HealthPermission, PermissionState>) {
+    fun handleResults(results: Map<DataTypePermission, PermissionState>) {
         val grants =
             results.values
                 .map { permissionSelection ->

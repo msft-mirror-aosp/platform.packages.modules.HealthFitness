@@ -40,12 +40,10 @@ import org.junit.Test
 
 @HiltAndroidTest
 class ExportFrequencyFragmentTest {
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule val hiltRule = HiltAndroidRule(this)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
-
 
     @Before
     fun setup() {
@@ -61,7 +59,10 @@ class ExportFrequencyFragmentTest {
         onView(withId(R.id.export_frequency_header_repeat_icon)).check(matches(isDisplayed()))
 
         onView(withText("Choose frequency")).check(matches(isDisplayed()))
-        onView(withText("Choose to save data once, or set it to save automatically at regular times.")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Choose to save data once, or set it to save automatically at regular times."))
+            .check(matches(isDisplayed()))
 
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
@@ -79,7 +80,7 @@ class ExportFrequencyFragmentTest {
     }
 
     @Test
-    fun exportFrequencyFragment_clicksNextButton_navigatesToEncryptionFragment() {
+    fun exportFrequencyFragment_clicksNextButton_navigatesToDestinationFragment() {
         launchFragment<ExportFrequencyFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.export_nav_graph)
             navHostController.setCurrentDestination(R.id.exportFrequencyFragment)
@@ -89,6 +90,7 @@ class ExportFrequencyFragmentTest {
         onView(withId(R.id.export_next_button)).check(matches(isClickable()))
         onView(withId(R.id.export_next_button)).perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportEncryptionFragment)
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.exportDestinationFragment)
     }
 }

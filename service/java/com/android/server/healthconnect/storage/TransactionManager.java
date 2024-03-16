@@ -544,6 +544,9 @@ public final class TransactionManager {
         long rowId = db.insertOrThrow(request.getTable(), null, request.getContentValues());
         request.getChildTableRequests()
                 .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
+        for (String postUpsertCommand : request.getPostUpsertCommands()) {
+            db.execSQL(postUpsertCommand);
+        }
 
         return rowId;
     }
@@ -566,6 +569,9 @@ public final class TransactionManager {
         if (rowId != -1) {
             request.getChildTableRequests()
                     .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
         }
 
         return rowId;

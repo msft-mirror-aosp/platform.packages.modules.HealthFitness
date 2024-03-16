@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.tests.permissions;
+package com.android.healthconnect.controller.export.api
 
-/** Temporary copy-pasted permission constants to allow some tests passing. */
-// TODO(b/325434006): Remove when UI implementation for Background Reads is done
-public final class HealthPermissionConstants {
+/** User configured settings for scheduled export of Health Connect data. */
+sealed class ExportSettings {
+    object Loading : ExportSettings()
 
-    public static final String READ_HEALTH_DATA_HISTORY =
-            "android.permission.health.READ_HEALTH_DATA_HISTORY";
+    object LoadingFailed : ExportSettings()
 
-    private HealthPermissionConstants() {}
+    data class WithData(val frequency: ExportFrequency) : ExportSettings()
 }

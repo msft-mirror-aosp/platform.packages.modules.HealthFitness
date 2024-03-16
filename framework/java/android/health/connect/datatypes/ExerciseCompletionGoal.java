@@ -61,6 +61,58 @@ public abstract class ExerciseCompletionGoal {
         }
     }
 
+    /**
+     * An {@link ExerciseCompletionGoal} that requires covering a specified distance. Additionally,
+     * the step is not complete until the specified time has elapsed. Time remaining after the
+     * specified distance has been completed should be spent resting. In the context of swimming,
+     * this is sometimes referred to as 'interval training'.
+     *
+     * <p>For example, a swimming coach may specify '100m @ 1min40s'. This implies: complete 100m
+     * and if you manage it in 1min30s, you will have 10s of rest prior to the next set.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final class DistanceWithVariableRestGoal extends ExerciseCompletionGoal {
+        private final Length mDistance;
+        private final Duration mDuration;
+
+        /**
+         * @param distance The total distance that must be covered to complete the goal.
+         * @param duration The total duration that must elapse to complete the goal.
+         */
+        public DistanceWithVariableRestGoal(@NonNull Length distance, @NonNull Duration duration) {
+            Objects.requireNonNull(distance);
+            Objects.requireNonNull(duration);
+            this.mDistance = distance;
+            this.mDuration = duration;
+        }
+
+        /** Returns the total distance that must be covered to complete this goal. */
+        @NonNull
+        public Length getDistance() {
+            return mDistance;
+        }
+
+        /** Returns the total duration that must elapse to complete this goal. */
+        @NonNull
+        public Duration getDuration() {
+            return mDuration;
+        }
+
+        @Override
+        public boolean equals(@Nullable Object o) {
+            if (this == o) return true;
+            if (!(o instanceof DistanceWithVariableRestGoal)) return false;
+            DistanceWithVariableRestGoal that = (DistanceWithVariableRestGoal) o;
+            return this.getDistance().equals(that.getDistance())
+                    && this.getDuration().equals(that.getDuration());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(mDistance, mDuration);
+        }
+    }
+
     /** An {@link ExerciseCompletionGoal} that requires completing a specified number of steps. */
     @FlaggedApi("com.android.healthconnect.flags.training_plans")
     public static final class StepsGoal extends ExerciseCompletionGoal {

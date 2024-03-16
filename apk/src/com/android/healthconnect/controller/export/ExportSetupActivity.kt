@@ -17,6 +17,7 @@
 package com.android.healthconnect.controller.export
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class ExportSetupActivity: Hilt_ExportSetupActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         setContentView(R.layout.activity_export)
     }
 }

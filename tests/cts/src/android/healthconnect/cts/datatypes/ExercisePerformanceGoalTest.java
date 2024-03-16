@@ -284,6 +284,19 @@ public class ExercisePerformanceGoalTest {
                 .isEqualTo(record);
     }
 
+    @Test
+    public void amrapGoal_insertAndRead() throws InterruptedException {
+        PlannedExerciseSessionRecord record =
+                createPlannedSessionWithPerformanceGoal(ExercisePerformanceGoal.AmrapGoal.INSTANCE);
+
+        TestUtils.insertRecordAndGetId(record);
+
+        assertThat(
+                        Iterables.getOnlyElement(
+                                TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
+                .isEqualTo(record);
+    }
+
     private PlannedExerciseSessionRecord createPlannedSessionWithPerformanceGoal(
             ExercisePerformanceGoal goal) {
         PlannedExerciseSessionRecord.Builder builder =

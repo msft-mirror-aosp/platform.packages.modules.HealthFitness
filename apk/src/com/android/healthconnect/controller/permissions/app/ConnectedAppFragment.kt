@@ -50,8 +50,8 @@ import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_ALL_EVENT
@@ -110,7 +110,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
     private val additionalAccessViewModel: AdditionalAccessViewModel by activityViewModels()
-    private val permissionMap: MutableMap<HealthPermission, HealthSwitchPreference> = mutableMapOf()
+    private val permissionMap: MutableMap<DataTypePermission, HealthSwitchPreference> =
+        mutableMapOf()
 
     private val header: AppHeaderPreference by pref(PERMISSION_HEADER)
     private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
@@ -238,10 +239,9 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                         }
                     }
                 manageDataCategory.addPreference(additionalAccessPref)
-            } else {
-                manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
-                    false
             }
+            manageDataCategory.children.find { it.key == KEY_ADDITIONAL_ACCESS }?.isVisible =
+                state.isValid()
         }
     }
 
@@ -289,7 +289,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         DisconnectDialogFragment(appName).show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
 
-    private fun updatePermissions(permissions: List<HealthPermission>) {
+    private fun updatePermissions(permissions: List<DataTypePermission>) {
         readPermissionCategory.removeAll()
         writePermissionCategory.removeAll()
         permissionMap.clear()
