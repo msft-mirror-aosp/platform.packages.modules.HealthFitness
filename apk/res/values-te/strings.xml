@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"బ్యాక్ గ్రౌండ్ రీడింగ్"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"బ్యాక్ గ్రౌండ్ రీడింగ్"</string>
     <string name="background_read_description" msgid="5263745158443722174">"బ్యాక్‌గ్రౌండ్‌లో ఆరోగ్య డేటాను చదవండి"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటా"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటా"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటాను చదువుతుంది"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect యాప్ అనుమతులను ఎందుకు తీసివేస్తుంది"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play నుండి యాప్ సస్పెండ్ చేయబడినా లేదా తీసివేయబడినా, Health Connect దాని అనుమతులను ఆటోమేటిక్‌గా తీసివేస్తుంది.\n\nయాప్ ఇకపై Health Connectలో స్టోర్ చేసిన డేటాను యాక్సెస్ చేయలేదని దీని అర్థం. ఈ యాప్ మునుపు రాసిన డేటాను కలిగి ఉంటే, అది ఇన్‌యాక్టివ్ యాప్‌ల లిస్ట్‌లో కనిపిస్తుంది."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"అర్థమైంది"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"బ్యాకప్, రీస్టోర్"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ఎగుమతి, దిగుమతి"</string>
+    <string name="recurring_export" msgid="111638340692746218">"రిపీట్ అయ్యే ఎగుమతి"</string>
+    <string name="restore_data" msgid="3401173690437871417">"డేటాను రీస్టోర్ చేయండి"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"మునుపు ఎగుమతి చేసిన డేటాను లోడ్ చేయండి"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ఫ్రీక్వెన్సీని ఎంచుకోండి"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ఒకసారి డేటాను సేవ్ చేయడానికి ఎంచుకోండి లేదా ప్రతిసారీ ఆటోమేటిక్‌గా సేవ్ చేయడానికి సెట్ చేయండి."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"రోజుకు ఒకసారి"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"వారానికి ఒకసారి"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"నెలకు ఒకసారి"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"ఎన్‌క్రిప్షన్‌ను ఆన్ చేయండి"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"డేటాను సేవ్ చేసే ముందు, దాన్ని ఎన్‌క్రిప్ట్ చేయాలి. Google లేదా Health Connectతో సహా ఎవ్వరూ కూడా దీన్ని యాక్సెస్ చేయలేరు."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ఎన్‌క్రిప్ట్ చేసిన మీ డేటాను రక్షించుకోవడానికి పాస్‌వర్డ్‌ను క్రియేట్ చేయండి. మీ డేటాను దిగుమతి చేసుకోవడానికి, రీస్టోర్ చేయడానికి మీకు ఈ పాస్‌వర్డ్ అవసరం."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"పాస్‌వర్డ్"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"పాస్‌వర్డ్‌ను మళ్లీ ఎంటర్ చేయండి"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"మీరు పాస్‌వర్డ్‌ను మర్చిపోయి, ఫోన్ పోగొట్టుకుంటే, సేవ్ చేయబడిన మీ డేటాను రికవర్ చేయడంలో Health Connect సహాయపడలేదు."</string>
     <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
     <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connectను ప్రారంభించండి"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 కెల్విన్}other{# కెల్విన్‌లు}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 డిగ్రీ ఫారెన్‌హీట్}other{# డిగ్రీల ఫారన్‌హీట్}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"చంక"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"వేలు"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"నుదురు"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"చెవి"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"మణికట్టు"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"యోని"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 మైలు}other{# మైళ్లు}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 కి.మీ.}other{# కి.మీ.}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 మైలు}other{# మైళ్లు}}"</string>

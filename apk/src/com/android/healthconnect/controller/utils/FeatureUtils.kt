@@ -22,7 +22,13 @@ interface FeatureUtils {
 
     fun isBackgroundReadEnabled(): Boolean
 
+    fun isHistoryReadEnabled(): Boolean
+
     fun isImportExportEnabled(): Boolean
+
+    fun isSkinTemperatureEnabled(): Boolean
+
+    fun isPlannedExerciseEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -103,9 +109,27 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         }
     }
 
+    override fun isHistoryReadEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
     override fun isImportExportEnabled(): Boolean {
         synchronized(lock) {
             return isImportExportEnabled
+        }
+    }
+
+    override fun isPlannedExerciseEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
+    override fun isSkinTemperatureEnabled(): Boolean {
+        synchronized(lock) {
+            return true
         }
     }
 

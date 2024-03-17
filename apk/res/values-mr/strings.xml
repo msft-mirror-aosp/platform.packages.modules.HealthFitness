@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"बॅकग्राउंडमध्ये वाचन"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"बॅकग्राउंडमध्ये वाचन"</string>
     <string name="background_read_description" msgid="5263745158443722174">"बॅकग्राउंडमध्ये आरोग्याशी संबंधित डेटा वाचा"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"घटवलेल्या अ‍ॅक्टिव्ह कॅलरी"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"घटवलेल्या अ‍ॅक्टिव्ह कॅलरी"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"घटवलेल्या अ‍ॅक्टिव्ह कॅलरी रीड करा"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect हे अ‍ॅप परवानग्या का काढून टाकते"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"एखादे अ‍ॅप Google Play वरून निलंबित केल्यास किंवा काढून टाकल्यास, Health Connect हे आपोआप त्याच्या परवानग्या काढून टाकते.\n\nयाचा अर्थ असा, की अ‍ॅप यापुढे Health Connect मध्ये स्टोअर केलेला डेटा अ‍ॅक्सेस करू शकत नाही. या अ‍ॅपने याआधी डेटा राइट केलेला असल्यास, ते इनॅक्टिव्ह अ‍ॅप्सच्या सूचीमध्ये दिसते."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"समजले"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"बॅकअप घ्या आणि रिस्टोअर करा"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"एक्सपोर्ट आणि इंपोर्ट करा"</string>
+    <string name="recurring_export" msgid="111638340692746218">"आवर्ती एक्सपोर्ट"</string>
+    <string name="restore_data" msgid="3401173690437871417">"डेटा रिस्टोअर करा"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"यापूर्वी एक्सपोर्ट केलेला डेटा लोड करा"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"वारंवारता निवडा"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एकदा सेव्ह करणे निवडा किंवा तो नियमित वेळी आपोआप सेव्ह करणे सेट करा."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"दररोज"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"दर आठवड्याला"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"दर महिन्याला"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"एन्क्रिप्शन सुरू करा"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"डेटा सेव्ह केला जाण्यापूर्वी तो एन्क्रिप्ट केला जाणे आवश्यक आहे. कोणालाही, अगदी Google किंवा Health Connect लादेखील तो ॲक्सेस करता येणार नाही."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"तुमच्या एन्क्रिप्ट केलेला डेटाचे संरक्षण करण्यासाठी पासवर्ड तयार करा. तुमचा डेटा इंपोर्ट आणि रिस्टोअर करण्यासाठी तुम्हाला हा पासवर्ड आवश्यक असेल."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"पासवर्ड"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"पासवर्ड रिपीट करा"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"तुम्ही तुमचा पासवर्ड विसरल्यास आणि तुमचा फोन गमवल्यास, Health Connect हे तुमचा सेव्ह केलेला डेटा रिकव्हर करण्यात तुम्हाला मदत करू शकत नाही."</string>
     <string name="export_back_button" msgid="3550795479165524982">"मागे जा"</string>
     <string name="export_next_button" msgid="657930567137105172">"पुढे जा"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect सह सुरुवात करा"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{१ केल्विन}other{# केल्विन}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{१ ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{१ अंश फेरनहाइट}other{# अंश फेरनहाइट}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"काख"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"बोट"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"कपाळ"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"कान"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"मनगट"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"योनिमार्ग"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{एक मैल}other{# मैल}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{एक किमी}other{# किमी}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{एक मैल}other{# मैल}}"</string>

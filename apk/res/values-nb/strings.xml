@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lesing i bakgrunnen"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lesing i bakgrunnen"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Les helsedata i bakgrunnen"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktive forbrente kalorier"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktive forbrente kalorier"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Les aktive forbrente kalorier"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Grunnen til at Health Connect fjerner apptillatelser"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Hvis en app suspenderes eller fjernes fra Google Play, fjerner Health Connect automatisk tillatelsene den har.\n\nDette betyr at appen ikke lenger har tilgang til data som er lagret i Health Connect. Hvis denne appen har skrevet data tidligere, vises den i listen over inaktive apper."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Greit"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sikkerhetskopiering og gjenoppretting"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Eksport og import"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Gjentakende eksport"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Gjenopprett data"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Last inn tidligere eksporterte data"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Velg frekvens"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Velg å lagre data én gang eller automatisk på bestemte tidspunkter."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Daglig"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ukentlig"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Månedlig"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Slå på kryptering"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data må krypteres før de lagres. Ingen, ikke engang Google eller Health Connect, kommer til å ha tilgang til dem."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Opprett et passord for å beskytte de krypterte dataene dine. Du trenger dette passordet for å importere og gjenopprette dataene dine."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Passord"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Gjenta passord"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Hvis du glemmer passordet og mister telefonen, kan ikke Health Connect hjelpe deg med å gjenopprette lagrede data."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tilbake"</string>
     <string name="export_next_button" msgid="657930567137105172">"Neste"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Kom i gang med Health Connect"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 grad fahrenheit}other{# grader fahrenheit}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Armhule"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Finger"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Panne"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Øre"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Håndledd"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 engelsk mil}other{# engelske mil}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 engelsk mil}other{# engelske mil}}"</string>

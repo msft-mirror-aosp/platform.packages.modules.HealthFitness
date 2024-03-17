@@ -19,7 +19,7 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEIGHT
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import org.junit.Before
@@ -41,7 +41,7 @@ class GrantHealthPermissionUseCaseTest {
 
     @Test
     fun invoke_callsHealthPermissionManager() {
-        useCase.invoke("TEST_APP", HealthPermission(HEIGHT, WRITE).toString())
+        useCase.invoke("TEST_APP", DataTypePermission(HEIGHT, WRITE).toString())
 
         verify(healthPermissionManager)
             .grantHealthPermission("TEST_APP", "android.permission.health.WRITE_HEIGHT")

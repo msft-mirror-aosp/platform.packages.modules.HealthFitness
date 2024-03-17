@@ -32,6 +32,7 @@ import static android.healthconnect.cts.aggregation.Utils.assertMassWithToleranc
 import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
+import static android.healthconnect.cts.utils.DataFactory.getWeightRecord;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -60,7 +61,6 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.StepsCadenceRecord;
-import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
@@ -467,16 +467,6 @@ public class AggregationApisTest {
                                                 .build(),
                                         Duration.ofSeconds(1)));
         assertThat(thrown).hasMessageThat().contains("Number of buckets");
-    }
-
-    private static WeightRecord getWeightRecord(double weight, Instant time) {
-        return new WeightRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(weight)).build();
-    }
-
-    private static WeightRecord getWeightRecord(double weight, Instant time, ZoneOffset offset) {
-        return new WeightRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(weight))
-                .setZoneOffset(offset)
-                .build();
     }
 
     private static StepsCadenceRecord getStepsCadenceRecord(

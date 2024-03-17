@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package android.healthconnect.tests.backgroundread;
+package android.healthconnect.cts.backgroundread;
 
 import static android.health.connect.HealthConnectException.ERROR_SECURITY;
 import static android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
-import static android.healthconnect.cts.utils.TestUtils.getDeviceConfigValue;
 import static android.healthconnect.cts.utils.TestUtils.sendCommandToTestAppReceiver;
-import static android.healthconnect.cts.utils.TestUtils.setDeviceConfigValue;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_GET_CHANGE_LOGS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_GET_CHANGE_LOG_TOKEN;
@@ -43,6 +41,7 @@ import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.units.Energy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.DeviceConfigRule;
 import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.healthconnect.test.app.DefaultOutcomeReceiver;
@@ -65,12 +64,14 @@ import java.util.concurrent.Executors;
 public class BackgroundReadTest {
 
     private static final String PKG_TEST_APP = "android.healthconnect.test.app";
-    private static final String FEATURE_FLAG = "background_read_enable";
+
+    @Rule
+    public final DeviceConfigRule mDeviceConfigRule =
+            new DeviceConfigRule("background_read_enable", "true");
 
     private Context mContext;
     private PackageManager mPackageManager;
     private HealthConnectManager mManager;
-    private String mInitialFeatureFlagValue;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -82,9 +83,7 @@ public class BackgroundReadTest {
         mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         mPackageManager = mContext.getPackageManager();
         mManager = requireNonNull(mContext.getSystemService(HealthConnectManager.class));
-        mInitialFeatureFlagValue = getDeviceConfigValue(FEATURE_FLAG);
 
-        setDeviceConfigValue(FEATURE_FLAG, "true");
         deleteAllStagedRemoteData();
         TestReceiver.reset();
     }
@@ -92,7 +91,6 @@ public class BackgroundReadTest {
     @After
     public void tearDown() throws Exception {
         deleteAllStagedRemoteData();
-        setDeviceConfigValue(FEATURE_FLAG, mInitialFeatureFlagValue);
     }
 
     @Test
