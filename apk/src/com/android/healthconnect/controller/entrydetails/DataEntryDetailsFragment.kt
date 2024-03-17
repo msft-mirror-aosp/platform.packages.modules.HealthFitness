@@ -25,8 +25,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionTitle
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSessionDetail
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ReverseSessionDetail
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
@@ -118,6 +121,8 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
     }
     private val sessionDetailViewBinder by lazy { SessionDetailViewBinder() }
     private val sessionHeaderViewBinder by lazy { SessionHeaderViewBinder() }
+    private val reverseSessionDetailViewBinder by lazy { ReverseSessionDetailViewBinder() }
+    private val formattedSectionTitleViewBinder by lazy { FormattedSectionTitleViewBinder() }
 
     private val pageName = PageName.ENTRY_DETAILS_PAGE
 
@@ -160,6 +165,10 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 .setViewBinder(SeriesDataEntry::class.java, heartRateItemViewBinder)
                 .setViewBinder(FormattedSessionDetail::class.java, sessionDetailViewBinder)
                 .setViewBinder(SessionHeader::class.java, sessionHeaderViewBinder)
+                .setViewBinder(ReverseSessionDetail::class.java, reverseSessionDetailViewBinder)
+                .setViewBinder(
+                    FormattedEntry.FormattedSectionTitle::class.java,
+                    formattedSectionTitleViewBinder)
                 .build()
         recyclerView =
             view.findViewById<RecyclerView?>(R.id.data_entries_list).apply {

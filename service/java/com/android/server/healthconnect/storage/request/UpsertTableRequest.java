@@ -206,10 +206,10 @@ public class UpsertTableRequest {
     }
 
     @NonNull
-    public List<String> getAllChildTablesToDelete() {
+    public List<RecordHelper.TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate() {
         return mRecordHelper == null
                 ? Collections.emptyList()
-                : mRecordHelper.getChildTablesToDeleteOnRecordUpsert(
+                : mRecordHelper.getChildTablesWithRowsToBeDeletedDuringUpdate(
                         mExtraWritePermissionsStateMapping);
     }
 

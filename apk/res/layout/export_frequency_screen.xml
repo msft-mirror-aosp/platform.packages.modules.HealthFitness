@@ -56,7 +56,8 @@
         <RadioGroup
             android:id="@+id/radio_group_frequency"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/radio_button_daily">
             <RadioButton
                 android:id="@+id/radio_button_daily"
                 android:text="@string/frequency_daily"
@@ -87,43 +88,5 @@
         </RadioGroup>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/spacing_large"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-            <Button
-                android:id="@+id/export_back_button"
-                android:minHeight="@dimen/button_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:gravity="center"
-                android:maxLines="2"
-                android:text="@string/export_back_button"
-                style="@style/Widget.HealthConnect.Button.Borderless" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/export_next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/button_size"
-                android:layout_gravity="end|center_vertical"
-                android:text="@string/export_next_button"
-                style="@style/Widget.HealthConnect.DialogButton.Full" />
-
-        </FrameLayout>
-    </LinearLayout>
+    <include layout="@layout/widget_export_navigation_buttons" />
 </LinearLayout>

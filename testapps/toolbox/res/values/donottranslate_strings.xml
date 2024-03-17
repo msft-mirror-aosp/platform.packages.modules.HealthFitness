@@ -104,6 +104,7 @@
   <string name="oxygen_saturation_label" description="Label used to show the user's oxygen saturation data [CHAR_LIMIT=50]">Oxygen saturation</string>
   <string name="respiratory_rate_label" description="Label used to show the user's respiratory rate data [CHAR_LIMIT=50]">Respiratory rate</string>
   <string name="resting_heart_rate_label" description="Label used to show the user's resting heart rate data [CHAR_LIMIT=50]">Resting heart rate</string>
+  <string name="skin_temperature_label" description="Label used to show the user's skin temperature data [CHAR_LIMIT=50]">Skin temperature</string>
   <!--endregion-->
   <!--endregion-->
 

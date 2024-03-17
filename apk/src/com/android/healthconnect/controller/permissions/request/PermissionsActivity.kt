@@ -42,7 +42,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
@@ -81,10 +81,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // This flag ensures an app requesting permissions cannot show an overlay to deceive the
-        // user. For example, an app requesting permission for Sexual Activity, can overlay and
-        // replace the text with Body Weight, thus deceiving the user. b/313425281
-        getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
 
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
@@ -117,6 +115,12 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
+        if (requestPermissionsViewModel.isAnyPermissionUserFixed(
+            getPackageNameExtra(), getPermissionStrings())) {
+            Log.i(TAG, "App has at least one USER_FIXED permission.")
+            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+        }
+
         requestPermissionsViewModel.permissionsList.observe(this) { notGrantedPermissions ->
             if (notGrantedPermissions.isEmpty()) {
                 handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
@@ -210,7 +214,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
     }
 
-    fun handleResults(results: Map<HealthPermission, PermissionState>) {
+    fun handleResults(results: Map<DataTypePermission, PermissionState>) {
         val grants =
             results.values
                 .map { permissionSelection ->

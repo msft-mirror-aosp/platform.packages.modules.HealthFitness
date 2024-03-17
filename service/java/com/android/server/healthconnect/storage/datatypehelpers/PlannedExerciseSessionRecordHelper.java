@@ -48,12 +48,14 @@ import android.health.connect.datatypes.units.Velocity;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.ActiveCaloriesBurnedGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.DistanceGoalInternal;
+import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.DistanceWithVariableRestGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.DurationGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.RepetitionsGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.StepsGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.TotalCaloriesBurnedGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.UnspecifiedGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal;
+import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.AmrapGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.CadenceGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.HeartRateGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.PowerGoalInternal;
@@ -329,6 +331,8 @@ public final class PlannedExerciseSessionRecordHelper
                 return new ActiveCaloriesBurnedGoalInternal(
                         Energy.fromCalories(
                                 convertBytesToDouble(getCursorBlob(cursor, GOAL_MIN_COLUMN_NAME))));
+            case DistanceWithVariableRestGoalInternal.DISTANCE_WITH_VARIABLE_REST_GOAL_TYPE_ID:
+                return extractDistanceWithVariableRestGoal(cursor);
             case ExerciseCompletionGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
                 // Fall through.
             default:
@@ -366,6 +370,8 @@ public final class PlannedExerciseSessionRecordHelper
             case RateOfPerceivedExertionGoalInternal.RATE_OF_PERCEIVED_EXERTION_TYPE_ID:
                 return new RateOfPerceivedExertionGoalInternal(
                         convertBytesToInt(getCursorBlob(cursor, GOAL_MIN_COLUMN_NAME)));
+            case AmrapGoalInternal.AMRAP_GOAL_TYPE_ID:
+                return AmrapGoalInternal.INSTANCE;
             case ExercisePerformanceGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
                 // Fall through.
             default:
@@ -473,6 +479,10 @@ public final class PlannedExerciseSessionRecordHelper
                             ((ActiveCaloriesBurnedGoalInternal) completionGoal)
                                     .getActiveCalories()
                                     .getInCalories()));
+        } else if (completionGoal instanceof DistanceWithVariableRestGoalInternal) {
+            populateContentValuesForDistanceWithVariableRestGoal(
+                    completionGoalContentValues,
+                    (DistanceWithVariableRestGoalInternal) completionGoal);
         }
         return new UpsertTableRequest(
                         PLANNED_EXERCISE_SESSION_GOALS_TABLE_NAME, completionGoalContentValues)
@@ -535,10 +545,39 @@ public final class PlannedExerciseSessionRecordHelper
                 .setParentColumnForChildTables(GOAL_PARENT_ID_COLUMN_NAME);
     }
 
+    private static DistanceWithVariableRestGoalInternal extractDistanceWithVariableRestGoal(
+            Cursor cursor) {
+        byte[] bytes = getCursorBlob(cursor, GOAL_MIN_COLUMN_NAME);
+        Length distance =
+                Length.fromMeters(convertBytesToDouble(Arrays.copyOfRange(bytes, 0, Double.BYTES)));
+        Duration duration =
+                Duration.ofMillis(
+                        convertBytesToLong(
+                                Arrays.copyOfRange(
+                                        bytes, Double.BYTES, Double.BYTES + Long.BYTES)));
+        return new DistanceWithVariableRestGoalInternal(distance, duration);
+    }
+
+    private static void populateContentValuesForDistanceWithVariableRestGoal(
+            ContentValues contentValues,
+            DistanceWithVariableRestGoalInternal distanceWithVariableRestGoalInternal) {
+        byte[] distanceBytes =
+                convertDoubleToBytes(
+                        distanceWithVariableRestGoalInternal.getDistance().getInMeters());
+        byte[] durationBytes =
+                convertLongToBytes(distanceWithVariableRestGoalInternal.getDuration().toMillis());
+        byte[] bytes = new byte[16];
+        System.arraycopy(distanceBytes, 0, bytes, 0, Double.BYTES);
+        System.arraycopy(durationBytes, 0, bytes, Double.BYTES, Long.BYTES);
+        contentValues.put(GOAL_MIN_COLUMN_NAME, bytes);
+    }
+
     @Override
-    public List<String> getChildTablesToDeleteOnRecordUpsert(
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
             ArrayMap<String, Boolean> extraWritePermissionToState) {
-        // Child table rows will get deleted automatically via cascading deletion.
-        return Collections.emptyList();
+        // Children of the block table will get automatically deleted via cascades.
+        return Collections.singletonList(
+                new TableColumnPair(
+                        PLANNED_EXERCISE_SESSION_BLOCKS_TABLE_NAME, BLOCK_PARENT_ID_COLUMN_NAME));
     }
 }

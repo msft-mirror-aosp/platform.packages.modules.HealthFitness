@@ -84,6 +84,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Odczytywanie w tle"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"odczytywanie w tle"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Odczytuj dane dotyczące zdrowia w tle"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Odczytuj wcześniejsze dane dotyczące zdrowia"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorie spalone podczas aktywności"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorie spalone podczas aktywności"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Odczytuj informacje o kaloriach spalonych podczas aktywności"</string>
@@ -305,30 +306,26 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Dlaczego Health Connect usuwa uprawnienia aplikacji"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Jeśli aplikacja zostanie zawieszona lub usunięta z Google Play, Health Connect automatycznie usunie jej uprawnienia.\n\nOznacza to, że aplikacja utraci dostęp do informacji przechowywanych w Health Connect. Jeśli aplikacja zapisywała wcześniej dane, pojawi się na liście nieaktywnych aplikacji."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Tworzenie i przywracanie kopii zapasowej"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Eksportowanie i importowanie"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Eksport cykliczny"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Przywróć dane"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Wczytaj wyeksportowane wcześniej dane"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Wybierz częstotliwość"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Wybierz, czy chcesz zapisać dane raz, czy zapisywać je automatycznie w regularnych odstępach czasu."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Codziennie"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Co tydzień"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Co miesiąc"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Włącz szyfrowanie"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Przed zapisaniem dane trzeba zaszyfrować. Nikt nie będzie mieć do nich dostępu, nawet Google i Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Utwórz hasło, aby chronić swoje zaszyfrowane dane. Będziesz go potrzebować do zaimportowania i przywrócenia danych."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Hasło"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Powtórz hasło"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Jeśli zapomnisz hasło lub zgubisz telefon, Health Connect nie będzie w stanie Ci pomóc odzyskać zapisanych danych."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Wstecz"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Dalej"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Pierwsze kroki z Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect przechowuje Twoje dane o zdrowiu i aktywności fizycznej oraz ułatwia synchronizację danych z różnych aplikacji na telefonie"</string>
     <string name="share_data" msgid="3481932156368883946">"Udostępniaj dane aplikacjom"</string>
@@ -664,6 +661,18 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelwin}few{# kelwiny}many{# kelwinów}other{# kelwina}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1℉}few{#℉}many{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stopień Fahrenheita}few{# stopnie Fahrenheita}many{# stopni Fahrenheita}other{# stopnia Fahrenheita}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4027139004654243248">"{value,plural, =1{{formattedValue}℃}few{{formattedValue}℃}many{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} stopień Celsjusza}few{{formattedValue} stopnie Celsjusza}many{{formattedValue} stopni Celsjusza}other{{formattedValue} stopnia Celsjusza}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="3958333818549407912">"{value,plural, =1{{formattedValue}℉}few{{formattedValue}℉}many{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} stopień Fahrenheita}few{{formattedValue} stopnie Fahrenheita}many{{formattedValue} stopni Fahrenheita}other{{formattedValue} stopnia Fahrenheita}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="8956765298317364018">"{value,plural, =1{{formattedValue} K}few{{formattedValue} K}many{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelwin}few{{formattedValue} kelwiny}many{{formattedValue} kelwinów}other{{formattedValue} kelwina}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="4396290848174994509">"{value,plural, =1{{formattedValue}℃ (śr. odchylenie)}few{{formattedValue}℃ (śr. odchylenie)}many{{formattedValue}℃ (śr. odchylenie)}other{{formattedValue}℃ (śr. odchylenie)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} stopień Celsjusza (średnie odchylenie)}few{{formattedValue} stopnie Celsjusza (średnie odchylenie)}many{{formattedValue} stopni Celsjusza (średnie odchylenie)}other{{formattedValue} stopnia Celsjusza (średnie odchylenie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="2033143518773987747">"{value,plural, =1{{formattedValue}℉ (śr. odchylenie)}few{{formattedValue}℉ (śr. odchylenie)}many{{formattedValue}℉ (śr. odchylenie)}other{{formattedValue}℉ (śr. odchylenie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} stopień Fahrenheita (średnie odchylenie)}few{{formattedValue} stopnie Fahrenheita (średnie odchylenie)}many{{formattedValue} stopni Fahrenheita (średnie odchylenie)}other{{formattedValue} stopnia Fahrenheita (średnie odchylenie)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="6068752736609778866">"{value,plural, =1{{formattedValue} K (śr. odchylenie)}few{{formattedValue} K (śr. odchylenie)}many{{formattedValue} K (śr. odchylenie)}other{{formattedValue} K (śr. odchylenie)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelwin (średnie odchylenie)}few{{formattedValue} kelwiny (średnie odchylenie)}many{{formattedValue} kelwinów (średnie odchylenie)}other{{formattedValue} kelwina (średnie odchylenie)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Pacha"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Palec"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Czoło"</string>
@@ -674,6 +683,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ucho"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Nadgarstek"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Pochwa"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Miejsce pomiaru"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Wartość bazowa"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Odchylenie od wartości bazowej"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mila}few{# mile}many{# mil}other{# mili}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}few{# km}many{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mila}few{# mile}many{# mil}other{# mili}}"</string>
@@ -771,18 +783,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Określ, jak aplikacja ma uzyskiwać dostęp do tras ćwiczeń z połączonych aplikacji"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Zawsze pytaj"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Nie zezwalaj"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Włączyć oba typy danych?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Wyłączyć oba typy danych?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Aby można było korzystać z tras ćwiczeń, <xliff:g id="APP_NAME">%1$s</xliff:g> wymaga dostępu do odczytywania ćwiczeń"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Aby można było korzystać z tras ćwiczeń, <xliff:g id="APP_NAME">%1$s</xliff:g> wymaga dostępu do ćwiczeń"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Tak"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nie"</string>
     <string name="back_button" msgid="780519527385993407">"Wstecz"</string>
     <string name="loading" msgid="2526615755685950317">"Ładuję…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Trwa integracja"</string>

@@ -25,6 +25,7 @@ filegroup {
     exclude_srcs: [
         ":healthconnectController-permissions-apis",
         ":healthconnectController-migration-apis",
+        ":healthconnectController-export-apis",
         "src/**/HealthConnectApplication.kt"
     ]
 }
@@ -42,6 +43,14 @@ filegroup {
         "src/com/android/healthconnect/controller/migration/api/**/*.kt"
     ]
 }
+
+filegroup {
+    name: "healthconnectController-export-apis",
+    srcs: [
+        "src/com/android/healthconnect/controller/export/api/**/*.kt"
+    ]
+}
+
 
 java_library {
     name: "HealthConnectPermissionsApis",
@@ -69,6 +78,25 @@ java_library {
     libs: [
         "kotlin-annotations",
         "framework-healthfitness.impl" // migration ui needs access to healthfitness hidden apis.
+    ],
+    static_libs: [
+        "kotlin-stdlib",
+        "hilt_android",
+        "kotlinx-coroutines-android",
+        "guava",
+    ],
+    kotlincflags: ["-Xjvm-default=all"],
+    apex_available: ["com.android.healthfitness"],
+}
+
+java_library {
+    name: "HealthConnectExportApis",
+    srcs: [":healthconnectController-export-apis"],
+    sdk_version: "module_current",
+    min_sdk_version: "34",
+    libs: [
+        "kotlin-annotations",
+        "framework-healthfitness.impl" // export ui needs access to healthfitness hidden apis.
     ],
     static_libs: [
         "kotlin-stdlib",
@@ -131,6 +159,7 @@ android_library {
         "com.google.android.material_material",
         "HealthConnectPermissionsApis",
         "HealthConnectMigrationApis",
+        "HealthConnectExportApis",
         "SettingsLibSettingsTheme",
         "kotlin-stdlib",
         "kotlinx-coroutines-android",
@@ -178,6 +207,7 @@ android_app {
         "HealthConnectLibrary",
         "HealthConnectPermissionsApis",
         "HealthConnectMigrationApis",
+        "HealthConnectExportApis",
         "hilt_android"
     ],
     libs: [

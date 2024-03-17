@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"ପୃଷ୍ଠପଟରେ ପଢ଼ିବା"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"ପୃଷ୍ଠପଟରେ ପଢ଼ିବା"</string>
     <string name="background_read_description" msgid="5263745158443722174">"ପୃଷ୍ଠପଟରେ ସ୍ୱାସ୍ଥ୍ୟ ଡାଟା ପଢ଼ନ୍ତୁ"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ଖର୍ଚ୍ଚ ହୋଇଥିବା ସକ୍ରିୟ କେଲୋରୀ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ଖର୍ଚ୍ଚ ହୋଇଥିବା ସକ୍ରିୟ କେଲୋରୀ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ଖର୍ଚ୍ଚ ହୋଇଥିବା ସକ୍ରିୟ କେଲୋରୀର ଡାଟା ପଢ଼ନ୍ତୁ"</string>
@@ -305,30 +307,26 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ଆପ ଅନୁମତିଗୁଡ଼ିକୁ କାହିଁକି କାଢ଼ି ଦିଏ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ଯଦି ଏକ ଆପକୁ Google Playରୁ ସସପେଣ୍ଡ କରାଯାଏ କିମ୍ବା କାଢ଼ି ଦିଆଯାଏ, ତେବେ Health Connect ସ୍ୱଚାଳିତ ଭାବେ ଏହାର ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦିଏ।\n\nଏହାର ଅର୍ଥ ହେଉଛି ଏହି ଆପଟି Health Connectରେ ଷ୍ଟୋର କରାଯାଇଥିବା ଡାଟାକୁ ଆଉ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ। ଯଦି ଏହି ଆପରେ ପୂର୍ବରୁ ଲିଖିତ ଡାଟା ଅଛି, ତେବେ ଏହା ନିଷ୍କ୍ରିୟ ଆପ୍ସ ତାଲିକାରେ ଦେଖାଯାଏ।"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ବୁଝିଗଲି"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ବେକଅପ ନେଇ ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ଏକ୍ସପୋର୍ଟ ଏବଂ ଇମ୍ପୋର୍ଟ"</string>
+    <string name="recurring_export" msgid="111638340692746218">"ରିକରିଂ ଏକ୍ସପୋର୍ଟ"</string>
+    <string name="restore_data" msgid="3401173690437871417">"ଡାଟା ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଡାଟାକୁ ଲୋଡ କରନ୍ତୁ"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"ବାରମ୍ବାରତା ବାଛନ୍ତୁ"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ଥରେ ଡାଟା ସେଭ କରିବାକୁ ବାଛନ୍ତୁ କିମ୍ବା ନିୟମିତ ସମୟରେ ସ୍ୱତଃ ସେଭ କରିବାକୁ ଏହାକୁ ସେଟ କରନ୍ତୁ।"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ଦୈନିକ"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ସାପ୍ତାହିକ"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ମାସିକ"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"ଏନକ୍ରିପସନ୍ ଚାଲୁ କରନ୍ତୁ"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ଡାଟା ସେଭ ହେବା ପୂର୍ବରୁ ଏହାକୁ ଏନକ୍ରିପ୍ଟ କରାଯିବା ଆବଶ୍ୟକ। Google କିମ୍ବା Health Connect ସମେତ କେହି ବି ଏହାକୁ ଆକ୍ସେସ କରିବାକୁ ସକ୍ଷମ ହେବେ ନାହିଁ।"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ଆପଣଙ୍କ ଏନକ୍ରିପ୍ଟ କରାଯାଇଥିବା ଡାଟାକୁ ସୁରକ୍ଷିତ ରଖିବା ପାଇଁ ଏକ ପାସୱାର୍ଡ ତିଆରି କରନ୍ତୁ। ଆପଣଙ୍କ ଡାଟା ଇମ୍ପୋର୍ଟ କରି ରିଷ୍ଟୋର କରିବା ପାଇଁ ଆପଣ ଏହି ପାସୱାର୍ଡ ଅବଶ୍ୟକ କରିବେ।"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"ପାସୱାର୍ଡ"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ପାସୱାର୍ଡ ରିପିଟ କରନ୍ତୁ"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"ଯଦି ଆପଣ ଆପଣଙ୍କ ପାସୱାର୍ଡକୁ ଭୁଲି ଯାଆନ୍ତି ଏବଂ ଆପଣଙ୍କ ଫୋନକୁ ହରାନ୍ତି, Health Connect ଆପଣଙ୍କୁ ଆପଣଙ୍କର ସେଭ ହୋଇଥିବା ଡାଟାକୁ ରିକଭର କରିବାରେ ସାହାଯ୍ୟ କରିପାରିବ ନାହିଁ।"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"ପଛକୁ ଫେରନ୍ତୁ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ପରବର୍ତ୍ତୀ"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଆପଣଙ୍କ ଫୋନରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
     <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>
@@ -664,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 କେଲଭିନ}other{# କେଲଭିନ}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ଡିଗ୍ରୀ ଫାରେନହାଇଟ}other{# ଡିଗ୍ରୀ ଫାରେନହାଇଟ}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"କାଖ"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"ଆଙ୍ଗୁଠି"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"କପାଳ"</string>
@@ -674,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"କାନ"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"ରିଷ୍ଟ"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"ଯୋନି"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ମାଇଲ}other{# ମାଇଲ}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 କିମି}other{# କିମି}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ମାଇଲ}other{# ମାଇଲ}}"</string>
@@ -771,18 +799,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"କନେକ୍ଟ ହୋଇଥିବା ଆପ୍ସରୁ ଏହି ଆପ ବ୍ୟାୟାମ ରୁଟଗୁଡ଼ିକୁ କିପରି ଆକ୍ସେସ କରିବ ତାହା ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ପ୍ରତ୍ୟେକ ଥର ପଚାରନ୍ତୁ"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"ଅନୁମତି ଦିଅନ୍ତୁ ନାହିଁ"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ଉଭୟ ଡାଟା ପ୍ରକାରକୁ ସକ୍ଷମ କରିବେ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ଉଭୟ ଡାଟା ପ୍ରକାରକୁ ଅକ୍ଷମ କରିବେ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"ବ୍ୟାୟମ ରୁଟଗୁଡ଼ିକୁ ସକ୍ଷମ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g> ବ୍ୟାୟାମ ଡାଟାକୁ ପଢ|‌ଇବା ଆକ୍ସେସ ଆବଶ୍ୟକ କରେ"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"ବ୍ୟାୟମ ରୁଟଗୁଡ଼ିକୁ ସକ୍ଷମ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g> ବ୍ୟାୟାମ ଡାଟାକୁ ଆକ୍ସେସ ଆବଶ୍ୟକ କରେ"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ହଁ"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ନା"</string>
     <string name="back_button" msgid="780519527385993407">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="loading" msgid="2526615755685950317">"ଲୋଡ ହେଉଛି…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ଇଣ୍ଟିଗ୍ରେସନ ଚାଲିଛି"</string>

@@ -19,9 +19,12 @@ package android.healthconnect.cts.datatypes;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_AVG;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_MAX;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_MIN;
+import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflection;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -210,7 +213,7 @@ public class HeightRecordTest {
         assertThat(newHeightRecords.size()).isEqualTo(0);
     }
 
-    private void readHeightRecordUsingClientId(List<Record> insertedRecord)
+    private void readHeightRecordUsingClientId(List<? extends Record> insertedRecord)
             throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<HeightRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeightRecord.class);
@@ -222,7 +225,8 @@ public class HeightRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readHeightRecordUsingIds(List<Record> recordList) throws InterruptedException {
+    private void readHeightRecordUsingIds(List<? extends Record> recordList)
+            throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<HeightRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeightRecord.class);
         for (Record record : recordList) {
@@ -612,6 +616,50 @@ public class HeightRecordTest {
         }
     }
 
+    @Test
+    public void updateRecords_byId_readNewData() throws Exception {
+        Instant now = Instant.now();
+        List<Record> insertedRecords =
+                insertRecords(
+                        getCompleteHeightRecord(now.minusMillis(1), Length.fromMeters(1.1)),
+                        getCompleteHeightRecord(now.minusMillis(2), Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(now.minusMillis(3), Length.fromMeters(1.3)));
+        List<String> insertedIds = getRecordIds(insertedRecords);
+
+        List<Record> updatedRecords =
+                List.of(
+                        getCompleteHeightRecord(
+                                insertedIds.get(0), now.minusMillis(1), Length.fromMeters(2.1)),
+                        getCompleteHeightRecord(
+                                insertedIds.get(1), now.minusMillis(20), Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(
+                                insertedIds.get(2), now.minusMillis(30), Length.fromMeters(2.3)));
+        updateRecords(updatedRecords);
+
+        readHeightRecordUsingIds(updatedRecords);
+    }
+
+    @Test
+    public void updateRecords_byClientRecordId_readNewData() throws Exception {
+        Instant now = Instant.now();
+        List<Record> insertedRecords =
+                insertRecords(
+                        getCompleteHeightRecord(now.minusMillis(1), "id1", Length.fromMeters(1.1)),
+                        getCompleteHeightRecord(now.minusMillis(2), "id2", Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(now.minusMillis(3), "id3", Length.fromMeters(1.3)));
+
+        List<HeightRecord> updatedRecords =
+                List.of(
+                        getCompleteHeightRecord(now.minusMillis(1), "id1", Length.fromMeters(2.1)),
+                        getCompleteHeightRecord(now.minusMillis(20), "id2", Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(
+                                now.minusMillis(30), "id3", Length.fromMeters(2.3)));
+        updateRecords(updatedRecords);
+        copyRecordIdsViaReflection(insertedRecords, updatedRecords);
+
+        readHeightRecordUsingIds(updatedRecords);
+    }
+
     private static List<HeightRecord> insertAndReadRecords(int count, Length height)
             throws Exception {
         return insertAndReadRecords(count, /* version= */ 0L, height);
@@ -675,6 +723,16 @@ public class HeightRecordTest {
         return getCompleteHeightRecord(time, clientRecordId, Length.fromMeters(1.0));
     }
 
+    private static HeightRecord getCompleteHeightRecord(String id, Instant time, Length height) {
+        return getCompleteHeightRecord(
+                id, time, /* clientRecordId= */ null, /* clientRecordVersion= */ 0L, height);
+    }
+
+    private static HeightRecord getCompleteHeightRecord(Instant time, Length height) {
+        return getCompleteHeightRecord(
+                time, /* clientRecordId= */ null, /* clientRecordVersion= */ 0L, height);
+    }
+
     private static HeightRecord getCompleteHeightRecord(
             Instant time, String clientRecordId, Length height) {
         return getCompleteHeightRecord(time, clientRecordId, /* clientRecordVersion= */ 0L, height);
@@ -682,6 +740,15 @@ public class HeightRecordTest {
 
     private static HeightRecord getCompleteHeightRecord(
             Instant time, String clientRecordId, long clientRecordVersion, Length height) {
+        return getCompleteHeightRecord(null, time, clientRecordId, clientRecordVersion, height);
+    }
+
+    private static HeightRecord getCompleteHeightRecord(
+            String id,
+            Instant time,
+            String clientRecordId,
+            long clientRecordVersion,
+            Length height) {
         Device device =
                 new Device.Builder()
                         .setManufacturer("google")
@@ -691,6 +758,9 @@ public class HeightRecordTest {
         DataOrigin dataOrigin =
                 new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        if (id != null) {
+            testMetadataBuilder.setId(id);
+        }
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
         testMetadataBuilder.setClientRecordVersion(clientRecordVersion);

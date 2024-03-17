@@ -53,6 +53,7 @@ import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.SpeedRecord.SpeedRecordSample
@@ -134,6 +135,13 @@ class InsertOrUpdateRecords {
             fieldName: String,
         ): Mass {
             return Mass.fromGrams(getDoubleValue(mFieldNameToFieldInput, fieldName))
+        }
+
+        private fun getTemperature(
+            mFieldNameToFieldInput: HashMap<String, InputFieldView>,
+            fieldName: String
+        ): Temperature {
+            return Temperature.fromCelsius(getDoubleValue(mFieldNameToFieldInput, fieldName))
         }
 
         fun createRecordObject(
@@ -466,6 +474,29 @@ class InsertOrUpdateRecords {
                                 metaData,
                                 getTime(mFieldNameToFieldInput),
                                 getLongValue(mFieldNameToFieldInput, "mBeatsPerMinute"))
+                            .build()
+                }
+                SkinTemperatureRecord::class -> {
+                    record =
+                        SkinTemperatureRecord.Builder(
+                                metaData,
+                                getStartTime(mFieldNameToFieldInput),
+                                getEndTime(mFieldNameToFieldInput))
+                            .apply {
+                                if (!mFieldNameToFieldInput["mDeltas"]!!.isEmpty()) {
+                                    setDeltas(
+                                        mFieldNameToFieldInput["mDeltas"]?.getFieldValue()
+                                            as List<SkinTemperatureRecord.Delta>)
+                                }
+                                if (!mFieldNameToFieldInput["mBaseline"]!!.isEmpty()) {
+                                    setBaseline(getTemperature(mFieldNameToFieldInput, "mBaseline"))
+                                }
+                                if (!mFieldNameToFieldInput["mMeasurementLocation"]!!.isEmpty()) {
+                                    setMeasurementLocation(
+                                        getIntegerValue(
+                                            mFieldNameToFieldInput, "mMeasurementLocation"))
+                                }
+                            }
                             .build()
                 }
                 SleepSessionRecord::class -> {
