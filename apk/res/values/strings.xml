@@ -117,7 +117,9 @@
     <!-- Other health permissions -->
     <string name="background_read_uppercase_label" description="Uppercase label used to show background reading permission. [CHAR_LIMIT=50]">Background reading</string>
     <string name="background_read_lowercase_label" description="Lowercase label used to show background reading permission. [CHAR_LIMIT=50]">background reading</string>
-    <string name="background_read_description" description="Content description for switch that enables permissions for reading health data in the background  [CHAR_LIMIT=50]">Read health data in the background</string>
+    <string name="background_read_description" description="Content description for switch that enables permissions for reading health data in the background. [CHAR_LIMIT=50]">Read health data in the background</string>
+
+    <string name="history_read_description" description="Content description for switch that enables permissions for reading historic health data. [CHAR_LIMIT=50]">Read past health data</string>
     <!--endregion-->
 
     <!-- region Activity data types -->
@@ -421,6 +423,8 @@
     <string name="frequency_daily" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data daily.">Daily</string>
     <string name="frequency_weekly" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data weekly.">Weekly</string>
     <string name="frequency_monthly" description="Item in a list of possible data saving frequencies. Choosing this will auto-save data monthly.">Monthly</string>
+
+    <string name="export_location_title" description="Title of the 'export location' screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Export location</string>
 
     <string name="export_encryption_title" description="Title of the 'turn on encryption' screen where users can set up their passwords for data encryption. [CHAR_LIMIT=40]">Turn on encryption</string>
     <string name="export_encryption_safety_description" description="The safety description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Data needs to be encrypted before it is saved. No one, not even Google or Health&#160;Connect, will be able to access it.</string>
@@ -859,12 +863,26 @@
     <!-- endregion -->
 
     <!-- region Temperature units -->
-    <string name="temperature_celsius" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 ℃} other {# ℃}}</string>
+    <string name="temperature_celsius" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1℃} other {#℃}}</string>
     <string name="temperature_celsius_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 degree Celsius} other {# degrees Celsius}}</string>
-    <string name="temperature_kelvin" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 K} other {# K}}</string>
+    <string name="temperature_kelvin" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1K} other {#K}}</string>
     <string name="temperature_kelvin_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 kelvin} other {# kelvins}}</string>
-    <string name="temperature_fahrenheit" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1 ℉} other {# ℉}}</string>
+    <string name="temperature_fahrenheit" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {1℉} other {#℉}}</string>
     <string name="temperature_fahrenheit_long" description="Temperature value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {1 degree Fahrenheit} other {# degrees Fahrenheit}}</string>
+
+    <string name="temperatureDelta_celsius" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℃} other {{formattedValue}℃}}</string>
+    <string name="temperatureDelta_celsius_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Celsius} other {{formattedValue} degrees Celsius}}</string>
+    <string name="temperatureDelta_fahrenheit" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℉} other {{formattedValue}℉}}</string>
+    <string name="temperatureDelta_fahrenheit_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Fahrenheit} other {{formattedValue} degrees Fahrenheit}}</string>
+    <string name="temperatureDelta_kelvin" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}K} other {{formattedValue}K}}</string>
+    <string name="temperatureDelta_kelvin_long" description="Difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} kelvin} other {{formattedValue} kelvins}}</string>
+
+    <string name="temperatureDelta_average_celsius" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℃ (avg variation)} other {{formattedValue}℃ (avg variation)}}</string>
+    <string name="temperatureDelta_average_celsius_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Celsius (average variation)} other {{formattedValue} degrees Celsius (average variation)}}</string>
+    <string name="temperatureDelta_average_fahrenheit" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}℉ (avg variation)} other {{formattedValue}℉ (avg variation)}}</string>
+    <string name="temperatureDelta_average_fahrenheit_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} degree Fahrenheit (average variation)} other {{formattedValue} degrees Fahrenheit (average variation)}}</string>
+    <string name="temperatureDelta_average_kelvin" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=80]">{value, plural, =1 {{formattedValue}K (avg variation)} other {{formattedValue}K (avg variation)}}</string>
+    <string name="temperatureDelta_average_kelvin_long" description="Average difference from baseline temperature, value with sign and unit. [ICU SYNTAX][CHAR LIMIT=160]">{value, plural, =1 {{formattedValue} kelvin (average variation)} other {{formattedValue} kelvins (average variation)}}</string>
 
     <string name="temperature_location_armpit" description="Where the body temperature measurement was taken - armpit. [CHAR LIMIT=50]">Armpit</string>
     <string name="temperature_location_finger" description="Where the body temperature measurement was taken - finger. [CHAR LIMIT=50]">Finger</string>
@@ -876,6 +894,10 @@
     <string name="temperature_location_ear" description="Where the body temperature measurement was taken - ear. [CHAR LIMIT=50]">Ear</string>
     <string name="temperature_location_wrist" description="Where the body temperature measurement was taken - wrist. [CHAR LIMIT=50]">Wrist</string>
     <string name="temperature_location_vagina" description="Where the body temperature measurement was taken - vagina. [CHAR LIMIT=50]">Vagina</string>
+
+    <string name="skin_temperature_measurement_location_title" description="Title for the location where the body temperature measurement was taken. [CHAR LIMIT=50]">Measurement location</string>
+    <string name="skin_temperature_baseline_title" description="Title for the skin temperature record baseline temperature reading. [CHAR LIMIT=50]">Baseline</string>
+    <string name="skin_temperature_delta_details_heading" description="Heading for the list of individual delta readings. [CHAR LIMIT=160]">Variation from baseline</string>
     <!--endregion-->
 
     <string name="distance_miles" translation_description="miles formatted. [ICU SYNTAX][CHAR LIMIT=60]">{dist, plural, =1 {1 mile} other {# miles}}</string>

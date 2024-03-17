@@ -2,8 +2,12 @@ package com.android.healthconnect.controller.tests.shared
 
 import android.content.Context
 import android.health.connect.HealthPermissions
+import android.health.connect.HealthPermissions.READ_PLANNED_EXERCISE
+import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
+import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
+import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -15,14 +19,12 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-@OptIn(ExperimentalCoroutinesApi::class)
 class HealthPermissionReaderTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -49,8 +51,9 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getDeclaredPermissions_filtersOutBackgroundReadPermission() = runTest {
+    fun getDeclaredPermissions_filtersOutAdditionalPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
 
         assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
@@ -131,7 +134,29 @@ class HealthPermissionReaderTest {
         assertThat(apps).isEqualTo(apps.distinct())
     }
 
-    private fun String.toHealthPermission(): HealthPermission {
-        return HealthPermission.fromPermissionString(this)
+    @Test
+    fun shouldHidePermission_whenFeatureNotEnabled_returnsTrue() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(false)
+        assertThat(permissionReader.shouldHidePermission(READ_SKIN_TEMPERATURE)).isTrue()
+        assertThat(permissionReader.shouldHidePermission(WRITE_SKIN_TEMPERATURE)).isTrue()
+
+        assertThat(permissionReader.shouldHidePermission(READ_PLANNED_EXERCISE)).isTrue()
+        assertThat(permissionReader.shouldHidePermission(WRITE_PLANNED_EXERCISE)).isTrue()
+    }
+
+    @Test
+    fun shouldHidePermission_whenFeatureEnabled_returnsFalse() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(true)
+        assertThat(permissionReader.shouldHidePermission(READ_SKIN_TEMPERATURE)).isFalse()
+        assertThat(permissionReader.shouldHidePermission(WRITE_SKIN_TEMPERATURE)).isFalse()
+
+        assertThat(permissionReader.shouldHidePermission(READ_PLANNED_EXERCISE)).isFalse()
+        assertThat(permissionReader.shouldHidePermission(WRITE_PLANNED_EXERCISE)).isFalse()
+    }
+
+    private fun String.toHealthPermission(): DataTypePermission {
+        return DataTypePermission.fromPermissionString(this)
     }
 }
