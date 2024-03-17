@@ -84,6 +84,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Четене на заден план"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"четене на заден план"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Четене на здравните данни на заден план"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Четене на предишните здравни данни"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Изгорени калории от активност"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"изгорени калории от активност"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Четене на изгорените калории от активност"</string>
@@ -305,33 +306,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Защо Health Connect премахва разрешенията за приложенията"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ако дадено приложение бъде спряно или премахнато от Google Play, Health Connect автоматично премахва разрешенията му.\n\nТова означава, че приложението повече няма да има достъп до данните, съхранявани в Health Connect. Ако по-рано е записало данни, то ще се показва в списъка с неактивни приложения."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Разбрах"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервно копие и възстановяване"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Експортиране и импортиране"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Периодично експортиране"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Възстановяване на данни"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Зареждане на по-рано експортираните данни"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Избиране на честота"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Изберете еднократно запазване на данните или задайте да се запазват автоматично през редовни интервали."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ежеседмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ежемесечно"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Включване на шифроването"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Данните трябва да бъдат шифровани, преди да бъдат запазени. Никой, включително Google и Health Connect, няма да има достъп до тях."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Създайте парола, за да защитите шифрованите си данни. Тя ще ви е нужна при импортиране и възстановяване на данните."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Парола"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Повторете паролата"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ако забравите паролата си или изгубите телефона си, Health Connect не може да ви помогне да възстановите запазените данни."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Напред"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Първи стъпки с Health Connect"</string>
@@ -669,6 +661,18 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 келвин}other{# келвина}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 градус по Фаренхайт}other{# градуса по Фаренхайт}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4027139004654243248">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} градус по Целзий}other{{formattedValue} градуса по Целзий}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="3958333818549407912">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} градус по Фаренхайт}other{{formattedValue} градуса по Фаренхайт}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="8956765298317364018">"{value,plural, =1{{formattedValue}°K}other{{formattedValue}°K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} градус по Келвин}other{{formattedValue} градуса по Келвин}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="4396290848174994509">"{value,plural, =1{{formattedValue}℃ (средно отклонение)}other{{formattedValue}℃ (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} градус по Целзий (средно отклонение)}other{{formattedValue} градуса по Целзий (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="2033143518773987747">"{value,plural, =1{{formattedValue}℉ (средно отклонение)}other{{formattedValue}℉ (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} градус по Фаренхайт (средно отклонение)}other{{formattedValue} градуса по Фаренхайт (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="6068752736609778866">"{value,plural, =1{{formattedValue}°K (средно отклонение)}other{{formattedValue}°K (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} градус по Келвин (средно отклонение)}other{{formattedValue} градуса по Келвин (средно отклонение)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Мишница"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Пръст"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Чело"</string>
@@ -679,6 +683,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ухо"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Китка"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Вагина"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Местоположение на измерването"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Основна стойност"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Отклонение от основната стойност"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миля}other{# мили}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 км}other{# км}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 миля}other{# мили}}"</string>

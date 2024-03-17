@@ -15,13 +15,12 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
-import com.android.healthconnect.controller.tests.permissions.HealthPermissionConstants
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -32,7 +31,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class HealthPermissionTest {
+class DataTypePermissionTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -46,13 +45,13 @@ class HealthPermissionTest {
     @Test
     fun fromPermission_returnsCorrectReadHealthPermission() {
         assertThat(fromPermissionString("android.permission.health.READ_ACTIVE_CALORIES_BURNED"))
-            .isEqualTo(HealthPermission(ACTIVE_CALORIES_BURNED, PermissionsAccessType.READ))
+            .isEqualTo(DataTypePermission(ACTIVE_CALORIES_BURNED, PermissionsAccessType.READ))
     }
 
     @Test
     fun fromPermission_returnsCorrectWriteHealthPermission() {
         assertThat(fromPermissionString("android.permission.health.WRITE_BLOOD_GLUCOSE"))
-            .isEqualTo(HealthPermission(BLOOD_GLUCOSE, PermissionsAccessType.WRITE))
+            .isEqualTo(DataTypePermission(BLOOD_GLUCOSE, PermissionsAccessType.WRITE))
     }
 
     @Test
@@ -62,12 +61,6 @@ class HealthPermissionTest {
                 healthPermissionReader.isAdditionalPermission(perm)
             }
         for (permissionString in allPermissions) {
-            if (permissionString == HealthPermissionConstants.READ_HEALTH_DATA_HISTORY) {
-                // TODO(b/325434006): Remove this exception case when we have strings properly
-                //  defined for the Background Read permission
-                continue
-            }
-
             assertThat(fromPermissionString(permissionString).toString())
                 .isEqualTo(permissionString)
         }

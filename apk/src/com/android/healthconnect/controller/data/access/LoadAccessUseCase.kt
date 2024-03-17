@@ -16,7 +16,7 @@
 package com.android.healthconnect.controller.data.access
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
@@ -60,12 +60,14 @@ constructor(
 
                     // Apps that can READ the given healthPermissionType.
                     if (permissionsPerPackage.contains(
-                        HealthPermission(permissionType, PermissionsAccessType.READ).toString())) {
+                        DataTypePermission(permissionType, PermissionsAccessType.READ)
+                            .toString())) {
                         readAppMetadataSet.add(appInfoReader.getAppMetadata(it))
                     }
                     // Apps that can WRITE the given healthPermissionType.
                     if (permissionsPerPackage.contains(
-                        HealthPermission(permissionType, PermissionsAccessType.WRITE).toString())) {
+                        DataTypePermission(permissionType, PermissionsAccessType.WRITE)
+                            .toString())) {
                         writeAppMetadataSet.add(appInfoReader.getAppMetadata(it))
                         writeAppPackageNameSet.add(it)
                     }

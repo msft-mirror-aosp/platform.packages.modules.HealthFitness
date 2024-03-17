@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Kusoma chinichini"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"kusoma chinichini"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Kusoma data ya afya chinichini"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalori ulizotumia"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalori ulizotumia"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Isome data ya kalori ulizotumia"</string>
@@ -305,21 +307,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Sababu zinazofanya Health Connect iondoe ruhusa za programu"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Endapo programu imesimamishwa au kuondolewa kwenye Google Play, Health Connect huondoa ruhusa zake kiotomatiki.\n\nHatua hii inamaanisha kwamba programu haiwezi tena kufikia data iliyohifadhiwa kwenye Health Connect. Ikiwa programu hii ina data iliyorekodiwa hapo awali, itaonekana kwenye orodha ya programu ambazo hazitumiki."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Nimeelewa"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Kuhifadhi nakala na kurejesha data"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Kuhamisha na kupakia data"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Uhamishaji unaorudiwa"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Rejesha data"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Pakia data iliyohamishwa awali"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Kuchagua mara"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Chagua kuhifadhi data mara moja au uweke mipangilio ili ihifadhiwe kiotomatiki baada ya kila kipindi kilichobainiswa."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Kila siku"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Kila wiki"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Kila mwezi"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Washa mipangilio ya usimbaji fiche"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data inahitaji kusimbwa kwa njia fiche kabla ya kuhifadhiwa. Hakuna yeyote, hata iwe Google au programu ya Health Connect, atakayeweza kuifikia."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Tunga nenosiri ili kulinda data yako iliyosimbwa kwa njia fiche. Utahitaji nenosiri hili ili kupakia na kurejesha data yako."</string>
@@ -663,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{Kelvin 1}other{Kelvin #}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{Farenhaiti 1}other{Farenhaiti #}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{Digrii 1 ya Farenhaiti}other{Digrii # ya Farenhaiti}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Kwapa"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Kidole"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Paji la uso"</string>
@@ -673,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Sikio"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Kifundo cha mkono"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Uke"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{Maili 1}other{Maili #}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{Km 1}other{Km #}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{Maili 1}other{Maili #}}"</string>

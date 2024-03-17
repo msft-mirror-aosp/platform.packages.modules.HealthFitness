@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"ການອ່ານໃນພື້ນຫຼັງ"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"ການອ່ານໃນພື້ນຫຼັງ"</string>
     <string name="background_read_description" msgid="5263745158443722174">"ອ່ານຂໍ້ມູນສຸຂະພາບໃນພື້ນຫຼັງ"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ແຄລໍຣີທີ່ໃຊ້ໄປໃນການເຄື່ອນໄຫວຮ່າງກາຍ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ແຄລໍຣີທີ່ໃຊ້ໄປໃນການເຄື່ອນໄຫວຮ່າງກາຍ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ອ່ານຂໍ້ມູນແຄລໍຣີທີ່ໃຊ້ໄປໃນການເຄື່ອນໄຫວຮ່າງກາຍ"</string>
@@ -305,21 +307,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ເປັນຫຍັງ Health Connect ຈຶ່ງລຶບການອະນຸຍາດແອັບອອກ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ຫາກມີແອັບຖືກລະງັບ ຫຼື ລຶບອອກຈາກ Google Play, Health Connect ຈະລຶບການອະນຸຍາດຂອງມັນອອກອັດຕະໂນມັດ.\n\nນີ້ໝາຍຄວາມວ່າແອັບຈະບໍ່ສາມາດເຂົ້າເຖິງຂໍ້ມູນທີ່ຈັດເກັບໄວ້ໃນ Health Connect ໄດ້ອີກຕໍ່ໄປ. ຫາກແອັບນີ້ມີຂໍ້ມູນທີ່ຂຽນໄວ້ກ່ອນໜ້າ, ມັນຈະປາກົດໃນລາຍຊື່ແອັບທີ່ບໍ່ເຄື່ອນໄຫວ."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ເຂົ້າໃຈແລ້ວ"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ການສຳຮອງຂໍ້ມູນ ແລະ ກູ້ຄືນ"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ສົ່ງອອກ ແລະ ນຳເຂົ້າ"</string>
+    <string name="recurring_export" msgid="111638340692746218">"ສົ່ງອອກຕາມຮອບ"</string>
+    <string name="restore_data" msgid="3401173690437871417">"ກູ້ຄືນຂໍ້ມູນ"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"ໂຫຼດຂໍ້ມູນທີ່ສົ່ງອອກກ່ອນໜ້ານີ້"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ເລືອກຄວາມຖີ່"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ເລືອກເພື່ອບັນທຶກຂໍ້ມູນເທື່ອດຽວ ຫຼື ຕັ້ງມັນເພື່ອບັນທຶກໃນເວລາປົກກະຕິໂດຍອັດຕະໂນມັດ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ປະຈຳວັນ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ປະຈຳອາທິດ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ທຸກເດືອນ"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"ເປີດການເຂົ້າລະຫັດ"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ຂໍ້ມູນຕ້ອງໄດ້ຖືກເຂົ້າລະຫັດກ່ອນທີມັນຈະຖືກບັນທຶກ. ບໍ່ມີໃຜ, ແມ່ນແຕ່ Google ຫຼື Health Connect ທີ່ຈະສາມາດເຂົ້າເຖິງມັນໄດ້."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ສ້າງລະຫັດຜ່ານເພື່ອປົກປ້ອງຂໍ້ມູນທີ່ໄດ້ຖືກເຂົ້າລະຫັດຂອງທ່ານ. ທ່ານຈະຕ້ອງການລະຫັດຜ່ານນີ້ເພື່ອນຳເຂົ້າ ແລະ ກູ້ຄືນຂໍ້ມູນຂອງທ່ານ."</string>
@@ -663,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 ເຄວິນ}other{# ເຄວິນ}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ອົງສາຟາເຣນຮາຍ}other{# ອົງສາຟາເຣນຮາຍ}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"ຂີ້ແຮ້"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"ນິ້ວມື"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"ໜ້າຜາກ"</string>
@@ -673,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"ຫູ"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"ຂໍ້ມື"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"ຊ່ອງຄອດ"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ໄມລ໌}other{# ໄມລ໌}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 ກມ}other{# ກມ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ໄມລ໌}other{# ໄມລ໌}}"</string>

@@ -191,6 +191,26 @@ public class ExerciseCompletionGoalTest {
     }
 
     @Test
+    public void distanceWithVariableRestGoal_insertionAndRead() throws InterruptedException {
+        PlannedExerciseSessionRecord record =
+                createPlannedSessionWithCompletionGoal(
+                        new ExerciseCompletionGoal.DistanceWithVariableRestGoal(
+                                Length.fromMeters(100), Duration.ofMinutes(2)));
+
+        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord restored =
+                Iterables.getOnlyElement(
+                        TestUtils.readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(restored).isEqualTo(record);
+
+        ExerciseCompletionGoal.DistanceWithVariableRestGoal goal =
+                (ExerciseCompletionGoal.DistanceWithVariableRestGoal)
+                        restored.getBlocks().get(0).getSteps().get(0).getCompletionGoal();
+        assertThat(goal.getDistance()).isEqualTo(Length.fromMeters(100));
+        assertThat(goal.getDuration()).isEqualTo(Duration.ofMinutes(2));
+    }
+
+    @Test
     public void stepsGoal_insertionAndRead() throws InterruptedException {
         PlannedExerciseSessionRecord record =
                 createPlannedSessionWithCompletionGoal(new ExerciseCompletionGoal.StepsGoal(250));

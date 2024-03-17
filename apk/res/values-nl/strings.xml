@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lezen op de achtergrond"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lezen op de achtergrond"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Gezondheidsgegevens lezen op de achtergrond"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Verbrande actieve calorieën"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"verbrande actieve calorieën"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Gegevens over verbrande actieve calorieën lezen"</string>
@@ -305,21 +307,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Waarom Health Connect app-rechten verwijdert"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Als een app wordt opgeschort of verwijderd van Google Play, verwijdert Health Connect automatisch de rechten voor die app.\n\nDit betekent dat de app geen toegang meer heeft tot gegevens die zijn opgeslagen in Health Connect. Heeft de app eerder gegevens geschreven, dan verschijnt deze in de lijst met inactieve apps."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up maken en terugzetten"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Exporteren en importeren"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Terugkerende export"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Gegevens herstellen"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Eerder geëxporteerde gegevens laden"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Frequentie kiezen"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Kies of je gegevens eenmalig wilt opslaan of ze op regelmatige tijdstippen automatisch wilt laten opslaan."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dagelijks"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Wekelijks"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Maandelijks"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Versleuteling aanzetten"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Gegevens moeten worden versleuteld voordat ze worden opgeslagen. Niemand heeft er toegang toe, zelfs niet Google of Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Maak een wachtwoord om je versleutelde gegevens te beschermen. Je hebt dit wachtwoord nodig om je gegevens te importeren en te herstellen."</string>
@@ -663,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 graad Fahrenheit}other{# graden Fahrenheit}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Oksel"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Vinger"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Voorhoofd"</string>
@@ -673,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Oor"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pols"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mijl}other{# mijl}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mijl}other{# mijl}}"</string>

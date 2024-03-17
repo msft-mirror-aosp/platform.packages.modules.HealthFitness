@@ -26,6 +26,7 @@ import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflecti
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
@@ -66,6 +67,7 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
@@ -94,6 +96,8 @@ public class StepsRecordTest {
     private static final String TAG = "StepsRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
+    private Context mContext;
+
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
@@ -101,6 +105,7 @@ public class StepsRecordTest {
 
     @Before
     public void setUp() throws InterruptedException {
+        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -1569,6 +1574,34 @@ public class StepsRecordTest {
         copyRecordIdsViaReflection(insertedRecords, updatedRecords);
 
         readStepsRecordsUsingId(updatedRecords);
+    }
+
+    @Test
+    public void updateRecordsFromAnotherApp_byId_fail() {
+        Instant now = Instant.now();
+        String insertedId =
+                insertStepsRecordViaTestApp(mContext, now.minusMillis(2), now.minusMillis(1), 1);
+
+        List<Record> updatedRecords =
+                List.of(
+                        getCompleteStepsRecord(
+                                insertedId, now.minusMillis(2), now.minusMillis(1), 10));
+        HealthConnectException error =
+                assertThrows(HealthConnectException.class, () -> updateRecords(updatedRecords));
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void updateRecordsFromAnotherApp_byClientRecordId_fail() {
+        Instant now = Instant.now();
+        insertStepsRecordViaTestApp(mContext, now.minusMillis(2), now.minusMillis(1), "id1", 1);
+
+        List<Record> updatedRecords =
+                List.of(getCompleteStepsRecord(now.minusMillis(2), now.minusMillis(1), "id1", 10));
+        HealthConnectException error =
+                assertThrows(HealthConnectException.class, () -> updateRecords(updatedRecords));
+
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     private static List<StepsRecord> insertAndReadRecords(int recordCount, int stepCount)
