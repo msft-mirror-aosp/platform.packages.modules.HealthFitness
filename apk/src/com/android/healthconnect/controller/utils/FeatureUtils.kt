@@ -129,7 +129,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     override fun isSkinTemperatureEnabled(): Boolean {
         synchronized(lock) {
-            return true
+            return false
         }
     }
 

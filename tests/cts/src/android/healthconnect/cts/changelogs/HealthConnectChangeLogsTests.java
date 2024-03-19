@@ -19,13 +19,13 @@ package android.healthconnect.cts.changelogs;
 import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
 import static android.healthconnect.cts.utils.DataFactory.getBasalMetabolicRateRecord;
+import static android.healthconnect.cts.utils.DataFactory.getChangeLogTokenRequestForTestRecordTypes;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getMetadataForId;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
-import static android.healthconnect.cts.utils.DataFactory.getChangeLogTokenRequestForTestRecordTypes;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecords;
 import static android.healthconnect.cts.utils.TestUtils.deleteRecordsByIdFilter;
@@ -97,11 +97,11 @@ public class HealthConnectChangeLogsTests {
                             "has matching id");
 
     private static final Correspondence<ChangeLogsResponse.DeletedLog, String>
-            DELETED_LOG_TO_STRING_CORRESPONDENCE =
+            DELETED_LOG_TO_STRING_ID_CORRESPONDENCE =
                     Correspondence.from(
-                            (deletedLog, stringValue) ->
-                                    deletedLog.getDeletedRecordId().equals(stringValue),
-                            "has matching string");
+                            (deletedLog, stringId) ->
+                                    deletedLog.getDeletedRecordId().equals(stringId),
+                            "has matching string id");
 
     private static final Correspondence<StepsRecord, StepsRecord> STEPS_RECORD_CORRESPONDENCE =
             Correspondence.from(
@@ -176,7 +176,7 @@ public class HealthConnectChangeLogsTests {
     }
 
     @Test
-    public void testChangeLogs_insert_filterWithNonExistingDataOrigin_returnsEmptyLogs()
+    public void testChangeLogs_insert_filterNonExistingDataOrigin_returnsEmptyLogs()
             throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
@@ -193,30 +193,29 @@ public class HealthConnectChangeLogsTests {
         assertThat(response.getUpsertedRecords()).isEmpty();
     }
 
-    // TODO(b/322305654): insert data from other apps
     @Test
-    public void testChangeLogs_insert_filterWithExistingDataOrigin_returnsUpsertedLogs()
+    public void testChangeLogs_insertAndDelete_filterNonExistingDataOrigin_returnsEmptyLogs()
             throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
                         getChangeLogTokenRequestForTestRecordTypes()
                                 .addDataOriginFilter(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(context.getPackageName())
-                                                .build())
+                                        new DataOrigin.Builder().setPackageName("random").build())
                                 .build());
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
-        List<Record> testRecords = insertRecords(getTestRecords());
+        List<Record> testRecords = getTestRecords();
+        insertRecords(testRecords);
+        deleteRecords(testRecords);
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
-        assertThat(response.getUpsertedRecords()).containsExactlyElementsIn(testRecords);
+        assertThat(response.getUpsertedRecords()).isEmpty();
+        assertThat(response.getDeletedLogs()).isEmpty();
     }
 
     @Test
-    public void testChangeLogs_insert_filterRecordType_returnsOnlyUpsertedLogForRecordType()
+    public void testChangeLogs_insert_filterRecordType_returnsUpsertedLogs()
             throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         ChangeLogTokenResponse tokenResponse =
@@ -345,36 +344,9 @@ public class HealthConnectChangeLogsTests {
         assertThat(response.getDeletedLogs()).isEmpty();
     }
 
-    // TODO(b/322305654): insert data from other apps
     @Test
-    public void testChangeLogs_insertAndDelete_existingDataOriginFilter_onlyReturnsDeletedLogs()
+    public void testChangeLogs_insertAndDelete_recordFilter_onlyReturnsDeletedLogsForRecordType()
             throws InterruptedException {
-        Context context = ApplicationProvider.getApplicationContext();
-        ChangeLogTokenResponse tokenResponse =
-                getChangeLogToken(
-                        getChangeLogTokenRequestForTestRecordTypes()
-                                .addDataOriginFilter(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(context.getPackageName())
-                                                .build())
-                                .build());
-        ChangeLogsRequest changeLogsRequest =
-                new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
-
-        List<Record> testRecords = insertRecords(getTestRecords());
-        deleteRecords(testRecords);
-        ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
-
-        assertThat(response.getUpsertedRecords()).isEmpty();
-        assertThat(response.getDeletedLogs())
-                .comparingElementsUsing(DELETED_LOG_TO_RECORD_CORRESPONDENCE)
-                .containsExactlyElementsIn(testRecords);
-    }
-
-    @Test
-    public void
-            testChangeLogs_insertAndDelete_recordFilter_onlyReturnsDeletedLogsForFilteredRecord()
-                    throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(
@@ -468,7 +440,7 @@ public class HealthConnectChangeLogsTests {
 
         assertThat(response.getUpsertedRecords()).isEmpty();
         assertThat(response.getDeletedLogs())
-                .comparingElementsUsing(DELETED_LOG_TO_STRING_CORRESPONDENCE)
+                .comparingElementsUsing(DELETED_LOG_TO_STRING_ID_CORRESPONDENCE)
                 .containsExactly(insertedRecordMetadata.getId());
     }
 
@@ -488,7 +460,7 @@ public class HealthConnectChangeLogsTests {
 
         assertThat(response.getUpsertedRecords()).isEmpty();
         assertThat(response.getDeletedLogs())
-                .comparingElementsUsing(DELETED_LOG_TO_STRING_CORRESPONDENCE)
+                .comparingElementsUsing(DELETED_LOG_TO_STRING_ID_CORRESPONDENCE)
                 .containsExactly(insertedRecordId);
     }
 
