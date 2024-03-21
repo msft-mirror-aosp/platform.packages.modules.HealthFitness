@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Taustal lugemine"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"taustal lugemine"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Terviseandmete lugemine taustal"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktiivse tegevuse käigus põletatud kalorite arv"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktiivse tegevuse käigus põletatud kalorite arv"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Aktiivse tegevuse käigus põletatud kalorite arvu lugemine"</string>
@@ -305,33 +307,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Miks eemaldab Health Connect rakenduste load?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Kui rakendus on Google Plays peatatud või sealt eemaldatud, eemaldab Health Connect automaatselt selle load.\n\nSee tähendab, et rakendus ei pääse enam Health Connecti salvestatud andmetele juurde. Kui rakendusel on varem kirjutatud andmeid, kuvatakse rakendus mitteaktiivsete rakenduste loendis."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Selge"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Varundamine ja taastamine"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Eksportimine ja importimine"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Korduv eksportimine"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Andmete taastamine"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Varem eksporditud andmete laadimine"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Valige sagedus"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Valige andmete ühekordne salvestamine või seadistage see regulaarsetel aegadel automaatselt salvestama."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Iga päev"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Iga nädal"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Iga kuu"</string>
-    <!-- no translation found for export_encryption_title (8910343790595514359) -->
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_encryption_safety_description (7873719607220791312) -->
-    <skip />
-    <!-- no translation found for export_encryption_instruction_description (1479999086015040099) -->
-    <skip />
-    <!-- no translation found for export_password_hint (7095895042846772342) -->
-    <skip />
-    <!-- no translation found for export_repeat_password_hint (6928833895602183194) -->
-    <skip />
-    <!-- no translation found for export_encryption_warning (664340221905199521) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Lülita krüpteerimine sisse"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Andmed tuleb enne salvestamist krüpteerida. Mitte keegi, isegi mitte Google ega Health Connect, ei pääse nendele juurde."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Looge parool, et oma krüpteeritud andmeid kaitsta. Vajate seda parooli oma andmete importimiseks ja taastamiseks."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Parool"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Korrake parooli"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Kui unustate oma parooli või kaotate telefoni, ei saa Health Connect aidata teil oma salvestatud andmeid taastada."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tagasi"</string>
     <string name="export_next_button" msgid="657930567137105172">"Järgmine"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Alustage Health Connecti kasutamist"</string>
@@ -669,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvinit}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 kraad Fahrenheiti järgi}other{# kraadi Fahrenheiti järgi}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Kaenlaalune"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Sõrm"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Laup"</string>
@@ -679,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Kõrv"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Ranne"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Tupp"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 miil}other{# miili}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 miil}other{# miili}}"</string>

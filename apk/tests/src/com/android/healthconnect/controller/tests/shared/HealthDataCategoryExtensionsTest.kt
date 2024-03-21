@@ -25,7 +25,7 @@ import android.health.connect.HealthDataCategory.NUTRITION
 import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -36,11 +36,11 @@ import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 @HiltAndroidTest
 class HealthDataCategoryExtensionsTest {
@@ -61,10 +61,10 @@ class HealthDataCategoryExtensionsTest {
                 healthPermissionReader.isAdditionalPermission(perm)
             }
         for (permissionString in allPermissions) {
-            val healthPermission = HealthPermission.fromPermissionString(permissionString)
+            val dataTypePermission = DataTypePermission.fromPermissionString(permissionString)
             assertThat(
                     HEALTH_DATA_CATEGORIES.any {
-                        it.healthPermissionTypes().contains(healthPermission.healthPermissionType)
+                        it.healthPermissionTypes().contains(dataTypePermission.healthPermissionType)
                     })
                 .isEqualTo(true)
         }

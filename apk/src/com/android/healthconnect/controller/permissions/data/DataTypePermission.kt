@@ -15,8 +15,8 @@
  */
 package com.android.healthconnect.controller.permissions.data
 
-/** Pair of {@link HealthPermission} and {@link PermissionsAccessType}. */
-data class HealthPermission(
+/** Pair of {@link HealthPermissionType} and {@link PermissionsAccessType}. */
+data class DataTypePermission(
     val healthPermissionType: HealthPermissionType,
     val permissionsAccessType: PermissionsAccessType
 ) {
@@ -24,15 +24,15 @@ data class HealthPermission(
         private const val READ_PERMISSION_PREFIX = "android.permission.health.READ_"
         private const val WRITE_PERMISSION_PREFIX = "android.permission.health.WRITE_"
 
-        fun fromPermissionString(permission: String): HealthPermission {
+        fun fromPermissionString(permission: String): DataTypePermission {
             return if (permission.startsWith(READ_PERMISSION_PREFIX)) {
                 val type =
                     getHealthPermissionType(permission.substring(READ_PERMISSION_PREFIX.length))
-                HealthPermission(type, PermissionsAccessType.READ)
+                DataTypePermission(type, PermissionsAccessType.READ)
             } else if (permission.startsWith(WRITE_PERMISSION_PREFIX)) {
                 val type =
                     getHealthPermissionType(permission.substring(WRITE_PERMISSION_PREFIX.length))
-                HealthPermission(type, PermissionsAccessType.WRITE)
+                DataTypePermission(type, PermissionsAccessType.WRITE)
             } else {
                 throw IllegalArgumentException("Permission not supported! $permission")
             }

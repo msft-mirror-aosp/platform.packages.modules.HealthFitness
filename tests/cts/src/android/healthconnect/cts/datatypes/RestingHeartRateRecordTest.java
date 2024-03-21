@@ -140,8 +140,10 @@ public class RestingHeartRateRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RestingHeartRateRecord.class)
                                 .build());
-        RestingHeartRateRecord testRecord = getCompleteRestingHeartRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        RestingHeartRateRecord testRecord =
+                (RestingHeartRateRecord)
+                        TestUtils.insertRecord(getCompleteRestingHeartRateRecord());
         List<RestingHeartRateRecord> newRestingHeartRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RestingHeartRateRecord.class)
@@ -163,8 +165,10 @@ public class RestingHeartRateRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        RestingHeartRateRecord testRecord = getCompleteRestingHeartRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        RestingHeartRateRecord testRecord =
+                (RestingHeartRateRecord)
+                        TestUtils.insertRecord(getCompleteRestingHeartRateRecord());
         List<RestingHeartRateRecord> newRestingHeartRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RestingHeartRateRecord.class)
@@ -190,8 +194,10 @@ public class RestingHeartRateRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        RestingHeartRateRecord testRecord = getCompleteRestingHeartRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        RestingHeartRateRecord testRecord =
+                (RestingHeartRateRecord)
+                        TestUtils.insertRecord(getCompleteRestingHeartRateRecord());
         List<RestingHeartRateRecord> newRestingHeartRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RestingHeartRateRecord.class)
@@ -274,8 +280,10 @@ public class RestingHeartRateRecordTest {
     @Test
     public void testDeleteRestingHeartRateRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseRestingHeartRateRecord(), getCompleteRestingHeartRateRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseRestingHeartRateRecord(),
+                                getCompleteRestingHeartRateRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -314,10 +322,12 @@ public class RestingHeartRateRecordTest {
     @Test
     public void testDeleteRestingHeartRateRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseRestingHeartRateRecord(), getCompleteRestingHeartRateRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseRestingHeartRateRecord(),
+                                getCompleteRestingHeartRateRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -542,7 +552,7 @@ public class RestingHeartRateRecordTest {
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         List<Record> testRecord = Collections.singletonList(getCompleteRestingHeartRateRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> insertedRecords = TestUtils.insertRecords(testRecord);
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -551,7 +561,10 @@ public class RestingHeartRateRecordTest {
                                 .map(Metadata::getId)
                                 .toList())
                 .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+                        insertedRecords.stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList());
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(

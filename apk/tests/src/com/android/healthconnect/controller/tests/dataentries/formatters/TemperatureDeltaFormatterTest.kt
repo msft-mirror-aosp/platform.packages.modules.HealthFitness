@@ -64,7 +64,7 @@ class TemperatureDeltaFormatterTest {
     fun formatSingleValue_celsius() = runBlocking {
         preferences.setTemperatureUnit(TemperatureUnit.CELSIUS)
         val expectedFormattedTempStrings =
-            listOf("-2.5 ℃", "-1 ℃", "0 ℃", "+1 ℃", "+1.3 ℃", "+2.5 ℃")
+            listOf("-2.5℃", "-1℃", "0℃", "+1℃", "+1.3℃", "+2.5℃")
 
         allTestTemps.forEachIndexed { index: Int, tempDelta: Delta ->
             val actual = getFormattedTemperatureDelta_singleValue(tempDelta, false)
@@ -76,7 +76,7 @@ class TemperatureDeltaFormatterTest {
     fun formatSingleValue_fahrenheit() = runBlocking {
         preferences.setTemperatureUnit(TemperatureUnit.FAHRENHEIT)
         val expectedFormattedTempStrings =
-            listOf("-4.5 ℉", "-1.8 ℉", "0 ℉", "+1.8 ℉", "+2.4 ℉", "+4.5 ℉")
+            listOf("-4.5℉", "-1.8℉", "0℉", "+1.8℉", "+2.4℉", "+4.5℉")
 
         allTestTemps.forEachIndexed { index: Int, tempDelta: Delta ->
             val actual = getFormattedTemperatureDelta_singleValue(tempDelta, false)
@@ -88,7 +88,7 @@ class TemperatureDeltaFormatterTest {
     fun formatSingleValue_kelvin() = runBlocking {
         preferences.setTemperatureUnit(TemperatureUnit.KELVIN)
         val expectedFormattedTempStrings =
-            listOf("-2.5 K", "-1 K", "0 K", "+1 K", "+1.3 K", "+2.5 K")
+            listOf("-2.5K", "-1K", "0K", "+1K", "+1.3K", "+2.5K")
 
         allTestTemps.forEachIndexed { index: Int, tempDelta: Delta ->
             val actual = getFormattedTemperatureDelta_singleValue(tempDelta, false)
@@ -101,12 +101,12 @@ class TemperatureDeltaFormatterTest {
         preferences.setTemperatureUnit(TemperatureUnit.CELSIUS)
         val expectedFormattedTempStrings =
             listOf(
-                "-2.5 ℃ (avg variation)",
-                "-1 ℃ (avg variation)",
-                "0 ℃ (avg variation)",
-                "+1 ℃ (avg variation)",
-                "+1.3 ℃ (avg variation)",
-                "+2.5 ℃ (avg variation)")
+                "-2.5℃ (avg variation)",
+                "-1℃ (avg variation)",
+                "0℃ (avg variation)",
+                "+1℃ (avg variation)",
+                "+1.3℃ (avg variation)",
+                "+2.5℃ (avg variation)")
 
         allTestTemps.forEachIndexed { index: Int, tempDelta: Delta ->
             val actual = getFormattedTemperatureDelta_averageValue(tempDelta, false)
@@ -119,12 +119,12 @@ class TemperatureDeltaFormatterTest {
         preferences.setTemperatureUnit(TemperatureUnit.FAHRENHEIT)
         val expectedFormattedTempStrings =
             listOf(
-                "-4.5 ℉ (avg variation)",
-                "-1.8 ℉ (avg variation)",
-                "0 ℉ (avg variation)",
-                "+1.8 ℉ (avg variation)",
-                "+2.4 ℉ (avg variation)",
-                "+4.5 ℉ (avg variation)")
+                "-4.5℉ (avg variation)",
+                "-1.8℉ (avg variation)",
+                "0℉ (avg variation)",
+                "+1.8℉ (avg variation)",
+                "+2.4℉ (avg variation)",
+                "+4.5℉ (avg variation)")
 
         allTestTemps.forEachIndexed { index: Int, tempDelta: Delta ->
             val actual = getFormattedTemperatureDelta_averageValue(tempDelta, false)
@@ -137,12 +137,12 @@ class TemperatureDeltaFormatterTest {
         preferences.setTemperatureUnit(TemperatureUnit.KELVIN)
         val expectedFormattedTempStrings =
             listOf(
-                "-2.5 K (avg variation)",
-                "-1 K (avg variation)",
-                "0 K (avg variation)",
-                "+1 K (avg variation)",
-                "+1.3 K (avg variation)",
-                "+2.5 K (avg variation)")
+                "-2.5K (avg variation)",
+                "-1K (avg variation)",
+                "0K (avg variation)",
+                "+1K (avg variation)",
+                "+1.3K (avg variation)",
+                "+2.5K (avg variation)")
 
         allTestTemps.forEachIndexed { index: Int, tempDelta: Delta ->
             val actual = getFormattedTemperatureDelta_averageValue(tempDelta, false)

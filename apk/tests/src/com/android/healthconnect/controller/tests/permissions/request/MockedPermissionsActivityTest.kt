@@ -67,8 +67,8 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiError
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.request.PermissionsActivity
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
@@ -186,7 +186,7 @@ class MockedPermissionsActivityTest {
     fun allowButton_noPermissionsSelected_isDisabled() {
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData(emptySet<HealthPermission>())
+            MutableLiveData(emptySet<DataTypePermission>())
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -308,7 +308,7 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED)
         }
         whenever(viewModel.permissionsList).then {
-            MutableLiveData<List<HealthPermission>>(emptyList())
+            MutableLiveData<List<DataTypePermission>>(emptyList())
         }
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
 

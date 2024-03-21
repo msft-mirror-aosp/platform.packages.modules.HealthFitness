@@ -60,6 +60,7 @@ import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.EntryDetailsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
@@ -76,7 +77,9 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenever
 import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.atMost
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @HiltAndroidTest
@@ -207,12 +210,16 @@ class DataEntryDetailsFragmentTest {
             DataEntryDetailsFragment.createBundle(
                 permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
 
-        onView(withText("+0.5 ℃ (avg variation)")).check(matches(isDisplayed()))
+        onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
         onView(withText("Measurement location")).check(matches(isDisplayed()))
         onView(withText("Toe")).check(matches(isDisplayed()))
         onView(withText("Baseline")).check(matches(isDisplayed()))
-        onView(withText("25 ℃")).check(matches(isDisplayed()))
+        onView(withText("25℃")).check(matches(isDisplayed()))
         onView(withText("Variation from baseline")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression((EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW))
     }
 
     @Test
@@ -227,12 +234,16 @@ class DataEntryDetailsFragmentTest {
             DataEntryDetailsFragment.createBundle(
                 permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
 
-        onView(withText("+0.5 ℃ (avg variation)")).check(matches(isDisplayed()))
+        onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
         onView(withText("Measurement location")).check(doesNotExist())
         onView(withText("Toe")).check(doesNotExist())
         onView(withText("Baseline")).check(matches(isDisplayed()))
-        onView(withText("25 ℃")).check(matches(isDisplayed()))
+        onView(withText("25℃")).check(matches(isDisplayed()))
         onView(withText("Variation from baseline")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atMost(1))
+            .logImpression((EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW))
     }
 
     @Test
@@ -247,12 +258,16 @@ class DataEntryDetailsFragmentTest {
             DataEntryDetailsFragment.createBundle(
                 permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
 
-        onView(withText("+0.5 ℃ (avg variation)")).check(matches(isDisplayed()))
+        onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
         onView(withText("Measurement location")).check(matches(isDisplayed()))
         onView(withText("Toe")).check(matches(isDisplayed()))
         onView(withText("Baseline")).check(doesNotExist())
-        onView(withText("25 ℃")).check(doesNotExist())
+        onView(withText("25℃")).check(doesNotExist())
         onView(withText("Variation from baseline")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atMost(1))
+            .logImpression((EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW))
     }
 
     @Test
@@ -305,7 +320,7 @@ class DataEntryDetailsFragmentTest {
             uuid = "1",
             header = "16:00 - 17:00 • TEST_APP_NAME",
             headerA11y = "16:00 - 17:00 • TEST_APP_NAME",
-            title = "+0.5 ℃ (avg variation)",
+            title = "+0.5℃ (avg variation)",
             titleA11y = "+0.5 degrees Celsius (average variation)",
             dataType = DataType.SKIN_TEMPERATURE)
     }
@@ -328,7 +343,7 @@ class DataEntryDetailsFragmentTest {
                 uuid = "1",
                 header = "Baseline",
                 headerA11y = "Baseline",
-                title = "25 ℃",
+                title = "25℃",
                 titleA11y = "25 degrees Celsius",
             )
 
@@ -339,14 +354,14 @@ class DataEntryDetailsFragmentTest {
                     uuid = "1",
                     header = "16:10 AM",
                     headerA11y = "16:10 AM",
-                    title = "+1.5 ℃",
+                    title = "+1.5℃",
                     titleA11y = "+1.5 degrees Celsius",
                 ),
                 FormattedEntry.FormattedSessionDetail(
                     uuid = "1",
                     header = "16:40 AM",
                     headerA11y = "16:40 AM",
-                    title = "-0.5 ℃",
+                    title = "-0.5℃",
                     titleA11y = "-0.5 degrees Celsius",
                 ))
 

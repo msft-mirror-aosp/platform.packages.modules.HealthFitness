@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"后台读取"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"后台读取"</string>
     <string name="background_read_description" msgid="5263745158443722174">"在后台读取健康数据"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"运动消耗的卡路里"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"运动消耗的卡路里"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"读取运动消耗的卡路里数据"</string>
@@ -305,21 +307,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"健康数据共享为何会撤消应用权限"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"如果应用在 Google Play 中被暂停或下架，健康数据共享将自动撤消其权限。\n\n这表示此应用无法再访问健康数据共享中存储的数据。此应用如果之前写入过数据，则会列在已停用应用的列表中。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"知道了"</string>
-    <!-- no translation found for backup_and_restore_settings_screen_title (5391086732955348809) -->
-    <skip />
-    <!-- no translation found for export_and_import_title (3241901922222465397) -->
-    <skip />
-    <!-- no translation found for recurring_export (111638340692746218) -->
-    <skip />
-    <!-- no translation found for restore_data (3401173690437871417) -->
-    <skip />
-    <!-- no translation found for restore_data_description (6505730490741240861) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"备份和恢复"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"导出和导入"</string>
+    <string name="recurring_export" msgid="111638340692746218">"定期导出"</string>
+    <string name="restore_data" msgid="3401173690437871417">"恢复数据"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"加载导出过的数据"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"选择频率"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"选择一次保存数据，还是设为定期自动保存。"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每周"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"开启加密功能"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"数据在保存前需要进行加密。任何人都无法访问数据，包括 Google 或“健康数据共享”在内。"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"创建密码可保护已加密的数据。导入和恢复数据时需要此密码。"</string>
@@ -663,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 开尔文}other{# 开尔文}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 华氏度}other{# 华氏度}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"腋下"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"手指"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"前额"</string>
@@ -673,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"耳朵"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"手腕"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"阴道"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 英里}other{# 英里}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 公里}other{# 公里}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 英里}other{# 英里}}"</string>

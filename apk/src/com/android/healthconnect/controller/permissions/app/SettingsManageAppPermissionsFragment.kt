@@ -50,8 +50,8 @@ import com.android.healthconnect.controller.migration.MigrationViewModel.Migrati
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -95,7 +95,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     private var appName: String = ""
 
     private val viewModel: AppPermissionViewModel by activityViewModels()
-    private val permissionMap: MutableMap<HealthPermission, TwoStatePreference> = mutableMapOf()
+    private val permissionMap: MutableMap<DataTypePermission, TwoStatePreference> = mutableMapOf()
     private val additionalAccessViewModel: AdditionalAccessViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by viewModels()
     private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
@@ -262,7 +262,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             .show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
 
-    private fun updatePermissions(permissions: List<HealthPermission>) {
+    private fun updatePermissions(permissions: List<DataTypePermission>) {
         readPermissionCategory.removeAll()
         writePermissionCategory.removeAll()
 
