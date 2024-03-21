@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.HealthConnectException.ERROR_UNSUPPORTED_OPERATION;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES;
@@ -182,6 +183,8 @@ public final class ExerciseSessionRecordHelper
                     PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME,
                     StorageUtils.convertUUIDToBytes(
                             exerciseSessionRecord.getPlannedExerciseSessionId()));
+        } else {
+            contentValues.putNull(PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME);
         }
     }
 
@@ -217,15 +220,17 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    public List<String> getChildTablesToDeleteOnRecordUpsert(
+    public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
             ArrayMap<String, Boolean> extraWritePermissionToState) {
-        ArrayList<String> childTablesToDelete = new ArrayList<>();
-        childTablesToDelete.add(EXERCISE_LAPS_RECORD_TABLE_NAME);
-        childTablesToDelete.add(EXERCISE_SEGMENT_RECORD_TABLE_NAME);
+        ArrayList<TableColumnPair> childTablesToDelete = new ArrayList<>();
+        childTablesToDelete.add(new TableColumnPair(EXERCISE_LAPS_RECORD_TABLE_NAME, PARENT_KEY));
+        childTablesToDelete.add(
+                new TableColumnPair(EXERCISE_SEGMENT_RECORD_TABLE_NAME, PARENT_KEY));
 
         // If on session update app doesn't have granted write_route, then we leave the route as is.
         if (canWriteExerciseRoute(extraWritePermissionToState)) {
-            childTablesToDelete.add(EXERCISE_ROUTE_RECORD_TABLE_NAME);
+            childTablesToDelete.add(
+                    new TableColumnPair(EXERCISE_ROUTE_RECORD_TABLE_NAME, PARENT_KEY));
         }
         return childTablesToDelete;
     }
@@ -249,20 +254,36 @@ public final class ExerciseSessionRecordHelper
     @Override
     List<String> getPostUpsertCommands(RecordInternal<?> record) {
         ExerciseSessionRecordInternal session = (ExerciseSessionRecordInternal) record;
-        if (session.getPlannedExerciseSessionId() == null) {
+        // This is only relevant for updates where a UUID already exists.
+        if (session.getPlannedExerciseSessionId() == null && record.getUuid() != null) {
+            // Nullify the reference in the training plan that points back to this record.
+            return Collections.singletonList(
+                    "UPDATE "
+                            + PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME
+                            + " SET "
+                            + COMPLETED_SESSION_ID_COLUMN_NAME
+                            + " = "
+                            + "NULL"
+                            + " WHERE "
+                            + COMPLETED_SESSION_ID_COLUMN_NAME
+                            + " = "
+                            + StorageUtils.getHexString(record.getUuid()));
+        } else if (session.getPlannedExerciseSessionId() != null) {
+            // Set the reference in the training plan so it points back to this record.
+            return Collections.singletonList(
+                    "UPDATE "
+                            + PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME
+                            + " SET "
+                            + COMPLETED_SESSION_ID_COLUMN_NAME
+                            + " = "
+                            + StorageUtils.getHexString(session.getUuid())
+                            + " WHERE "
+                            + UUID_COLUMN_NAME
+                            + " = "
+                            + StorageUtils.getHexString(session.getPlannedExerciseSessionId()));
+        } else {
             return Collections.emptyList();
         }
-        return Collections.singletonList(
-                "UPDATE "
-                        + PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME
-                        + " SET "
-                        + COMPLETED_SESSION_ID_COLUMN_NAME
-                        + " = "
-                        + StorageUtils.getHexString(session.getUuid())
-                        + " WHERE "
-                        + UUID_COLUMN_NAME
-                        + " = "
-                        + StorageUtils.getHexString(session.getPlannedExerciseSessionId()));
     }
 
     @Override

@@ -79,6 +79,7 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 context,
                 isInsertRequest,
+                false /* useProvidedUuid */,
                 false /* skipPackageNameAndLogs */,
                 extraPermsStateMap);
     }
@@ -88,22 +89,26 @@ public class UpsertTransactionRequest {
             @NonNull List<RecordInternal<?>> recordInternals,
             Context context,
             boolean isInsertRequest,
+            boolean useProvidedUuid,
             boolean skipPackageNameAndLogs) {
         this(
                 packageName,
                 recordInternals,
                 context,
                 isInsertRequest,
+                useProvidedUuid,
                 skipPackageNameAndLogs,
                 Collections.emptyMap());
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public UpsertTransactionRequest(
+    private UpsertTransactionRequest(
             @Nullable String packageName,
             @NonNull List<RecordInternal<?>> recordInternals,
             Context context,
             boolean isInsertRequest,
+            // TODO(b/329237732): Use builder pattern for this class.
+            boolean useProvidedUuid,
             boolean skipPackageNameAndLogs,
             Map<String, Boolean> extraPermsStateMap) {
         mPackageName = packageName;
@@ -122,9 +127,13 @@ public class UpsertTransactionRequest {
             DeviceInfoHelper.getInstance().populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {
-                // Always generate an uuid field for insert requests, we should not trust what is
-                // already present.
-                StorageUtils.addNameBasedUUIDTo(recordInternal);
+                if (useProvidedUuid && recordInternal.getUuid() != null) {
+                    // Do nothing i.e. leave the UUID as provided. This is desired for backup and
+                    // restore to ensure references between records remain intact.
+                } else {
+                    // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
+                    StorageUtils.addNameBasedUUIDTo(recordInternal);
+                }
                 mRecordTypes.add(recordInternal.getRecordType());
             } else {
                 // For update requests, generate uuid if the clientRecordID is present, else use the

@@ -18,6 +18,7 @@
 
 package com.android.healthconnect.controller.permissions.request
 
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -25,10 +26,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +46,9 @@ constructor(
     private val appInfoReader: AppInfoReader,
     private val grantHealthPermissionUseCase: GrantHealthPermissionUseCase,
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
-    private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase
+    private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
+    private val getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
+    private val healthPermissionReader: HealthPermissionReader
 ) : ViewModel() {
 
     companion object {
@@ -54,12 +59,12 @@ constructor(
     val appMetadata: LiveData<AppMetadata>
         get() = _appMetaData
 
-    private val _permissionsList = MutableLiveData<List<HealthPermission>>()
-    val permissionsList: LiveData<List<HealthPermission>>
+    private val _permissionsList = MutableLiveData<List<DataTypePermission>>()
+    val permissionsList: LiveData<List<DataTypePermission>>
         get() = _permissionsList
 
-    private val _grantedPermissions = MutableLiveData<Set<HealthPermission>>(emptySet())
-    val grantedPermissions: LiveData<Set<HealthPermission>>
+    private val _grantedPermissions = MutableLiveData<Set<DataTypePermission>>(emptySet())
+    val grantedPermissions: LiveData<Set<DataTypePermission>>
         get() = _grantedPermissions
 
     private val _allPermissionsGranted =
@@ -74,9 +79,13 @@ constructor(
     val allPermissionsGranted: LiveData<Boolean>
         get() = _allPermissionsGranted
 
+    /** Retains the originally requested permissions and their state. */
+    private var requestedPermissions: MutableMap<DataTypePermission, PermissionState> =
+        mutableMapOf()
+
     private fun isAllPermissionsGranted(
-        permissionsListLiveData: LiveData<List<HealthPermission>>,
-        grantedPermissionsLiveData: LiveData<Set<HealthPermission>>
+        permissionsListLiveData: LiveData<List<DataTypePermission>>,
+        grantedPermissionsLiveData: LiveData<Set<DataTypePermission>>
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()
@@ -92,28 +101,63 @@ constructor(
         loadPermissions(packageName, permissions)
     }
 
-    fun isPermissionGranted(permission: HealthPermission): Boolean {
+    /** Whether the user has enabled this permission in the Permission Request screen. */
+    fun isPermissionLocallyGranted(permission: DataTypePermission): Boolean {
         return _grantedPermissions.value.orEmpty().contains(permission)
+    }
+
+    /** Returns true if any of the requested permissions is USER_FIXED, false otherwise. */
+    fun isAnyPermissionUserFixed(packageName: String, permissions: Array<out String>): Boolean {
+        return getHealthPermissionsFlagsUseCase.invoke(packageName, permissions.toList()).any {
+            (_, flags) ->
+            flags.and(PackageManager.FLAG_PERMISSION_USER_FIXED) != 0
+        }
     }
 
     private fun loadPermissions(packageName: String, permissions: Array<out String>) {
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
+
         val filteredPermissions =
             permissions
-                .filter { permissionString -> !grantedPermissions.contains(permissionString) }
+                // Filter invalid health permissions
                 .mapNotNull { permissionString ->
                     try {
-                        HealthPermission.fromPermissionString(permissionString)
+                        DataTypePermission.fromPermissionString(permissionString)
                     } catch (exception: IllegalArgumentException) {
                         Log.e(TAG, "Unrecognized health exception!", exception)
                         null
                     }
                 }
+                // Do not show hidden permissions
+                .filterNot { permission ->
+                    healthPermissionReader.shouldHidePermission(permission.toString())
+                }
+                // Add the requested permissions and their states to requestedPermissions
+                .onEach { permission -> addToRequestedPermissions(grantedPermissions, permission) }
+                // Finally, filter out the granted permissions
+                .filterNot { permission -> grantedPermissions.contains(permission.toString()) }
+                // TODO (b/295490462) Additional permissions will be requested separately
+                .filterNot { permission ->
+                    healthPermissionReader.isAdditionalPermission(permission.toString())
+                }
 
-        _permissionsList.postValue(filteredPermissions)
+        _permissionsList.value = filteredPermissions
     }
 
-    fun updatePermission(permission: HealthPermission, grant: Boolean) {
+    // Adds a permission to the requested permissions map with its original granted state
+    private fun addToRequestedPermissions(
+        grantedPermissions: List<String>,
+        permission: DataTypePermission
+    ) {
+        val isPermissionGranted = grantedPermissions.contains(permission.toString())
+        if (isPermissionGranted) {
+            requestedPermissions[permission] = PermissionState.GRANTED
+        } else {
+            requestedPermissions[permission] = PermissionState.NOT_GRANTED
+        }
+    }
+
+    fun updatePermission(permission: DataTypePermission, grant: Boolean) {
         val updatedGrantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
         if (grant) {
             updatedGrantedPermissions.add(permission)
@@ -135,10 +179,11 @@ constructor(
         viewModelScope.launch { _appMetaData.postValue(appInfoReader.getAppMetadata(packageName)) }
     }
 
-    fun request(packageName: String): MutableMap<HealthPermission, PermissionState> {
-        val grants: MutableMap<HealthPermission, PermissionState> = mutableMapOf()
-        _permissionsList.value.orEmpty().forEach { permission ->
-            val granted = isPermissionGranted(permission)
+    fun request(packageName: String): MutableMap<DataTypePermission, PermissionState> {
+        val grants: MutableMap<DataTypePermission, PermissionState> = mutableMapOf()
+        requestedPermissions.forEach { (permission, permissionState) ->
+            val granted =
+                isPermissionLocallyGranted(permission) || permissionState == PermissionState.GRANTED
             try {
                 if (granted) {
                     grantHealthPermissionUseCase.invoke(packageName, permission.toString())

@@ -17,7 +17,6 @@
 package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
-import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
@@ -545,6 +544,9 @@ public final class TransactionManager {
         long rowId = db.insertOrThrow(request.getTable(), null, request.getContentValues());
         request.getChildTableRequests()
                 .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
+        for (String postUpsertCommand : request.getPostUpsertCommands()) {
+            db.execSQL(postUpsertCommand);
+        }
 
         return rowId;
     }
@@ -567,6 +569,9 @@ public final class TransactionManager {
         if (rowId != -1) {
             request.getChildTableRequests()
                     .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
         }
 
         return rowId;
@@ -621,6 +626,9 @@ public final class TransactionManager {
                             request.getContentValues(),
                             request.getUpdateWhereClauses().get(/* withWhereKeyword */ false),
                             /* WHERE args */ null);
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
 
             // throw an exception if the no row was updated, i.e. the uuid with corresponding
             // app_id_info for this request is not found in the table.
@@ -705,7 +713,11 @@ public final class TransactionManager {
                             ERROR_INTERNAL, "Conflict found, but couldn't read the entry.");
                 }
 
-                return updateEntriesIfRequired(db, request, cursor);
+                long updateResult = updateEntriesIfRequired(db, request, cursor);
+                for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                    db.execSQL(postUpsertCommand);
+                }
+                return updateResult;
             }
         }
     }
@@ -737,9 +749,11 @@ public final class TransactionManager {
 
     private void deleteChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
-        for (String childTable : request.getAllChildTablesToDelete()) {
+        for (RecordHelper.TableColumnPair childTableAndColumn :
+                request.getChildTablesWithRowsToBeDeletedDuringUpdate()) {
             DeleteTableRequest deleteTableRequest =
-                    new DeleteTableRequest(childTable).setId(PARENT_KEY, String.valueOf(rowId));
+                    new DeleteTableRequest(childTableAndColumn.getTableName())
+                            .setId(childTableAndColumn.getColumnName(), String.valueOf(rowId));
             db.execSQL(deleteTableRequest.getDeleteCommand());
         }
     }

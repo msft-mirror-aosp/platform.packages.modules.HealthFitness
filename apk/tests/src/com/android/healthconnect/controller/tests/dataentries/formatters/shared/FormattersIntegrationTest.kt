@@ -30,11 +30,11 @@ class FormattersIntegrationTest {
             RecordMapper.getInstance().recordIdToExternalRecordClassMap.values.sortedBy { it.name }
         val supportedUIRecords =
             HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
-        // TODO(b/320676565): Add formatter for SkinTemperatureRecord
-        assertThat(recordClasses.filterNot { record ->
-            record.name.equals("android.health.connect.datatypes.SkinTemperatureRecord")
-                    || record.name.equals(
-                    "android.health.connect.datatypes.PlannedExerciseSessionRecord")
-        } ).isEqualTo(supportedUIRecords)
+        assertThat(
+                recordClasses.filterNot { record ->
+                    record.name.equals(
+                        "android.health.connect.datatypes.PlannedExerciseSessionRecord")
+                })
+            .isEqualTo(supportedUIRecords)
     }
 }

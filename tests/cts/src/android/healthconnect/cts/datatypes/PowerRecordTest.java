@@ -135,8 +135,8 @@ public class PowerRecordTest {
         List<PowerRecord> oldPowerRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(PowerRecord.class).build());
-        PowerRecord testRecord = getCompletePowerRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        PowerRecord testRecord = (PowerRecord) TestUtils.insertRecord(getCompletePowerRecord());
         List<PowerRecord> newPowerRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(PowerRecord.class).build());
@@ -151,8 +151,8 @@ public class PowerRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        PowerRecord testRecord = getCompletePowerRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        PowerRecord testRecord = (PowerRecord) TestUtils.insertRecord(getCompletePowerRecord());
         List<PowerRecord> newPowerRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(PowerRecord.class)
@@ -172,8 +172,8 @@ public class PowerRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        PowerRecord testRecord = getCompletePowerRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        PowerRecord testRecord = (PowerRecord) TestUtils.insertRecord(getCompletePowerRecord());
         List<PowerRecord> newPowerRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(PowerRecord.class)
@@ -231,8 +231,8 @@ public class PowerRecordTest {
 
     @Test
     public void testDeletePowerRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBasePowerRecord(), getCompletePowerRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBasePowerRecord(), getCompletePowerRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -269,10 +269,10 @@ public class PowerRecordTest {
 
     @Test
     public void testDeletePowerRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBasePowerRecord(), getCompletePowerRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBasePowerRecord(), getCompletePowerRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -483,8 +483,8 @@ public class PowerRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompletePowerRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompletePowerRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

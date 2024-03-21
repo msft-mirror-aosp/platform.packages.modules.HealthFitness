@@ -137,8 +137,10 @@ public class IntermenstrualBleedingRecordTest {
                         new ReadRecordsRequestUsingFilters.Builder<>(
                                         IntermenstrualBleedingRecord.class)
                                 .build());
-        IntermenstrualBleedingRecord testRecord = getCompleteIntermenstrualBleedingRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        IntermenstrualBleedingRecord testRecord =
+                (IntermenstrualBleedingRecord)
+                        TestUtils.insertRecord(getCompleteIntermenstrualBleedingRecord());
         List<IntermenstrualBleedingRecord> newIntermenstrualBleedingRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -161,8 +163,10 @@ public class IntermenstrualBleedingRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        IntermenstrualBleedingRecord testRecord = getCompleteIntermenstrualBleedingRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        IntermenstrualBleedingRecord testRecord =
+                (IntermenstrualBleedingRecord)
+                        TestUtils.insertRecord(getCompleteIntermenstrualBleedingRecord());
         List<IntermenstrualBleedingRecord> newIntermenstrualBleedingRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -190,8 +194,10 @@ public class IntermenstrualBleedingRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        IntermenstrualBleedingRecord testRecord = getCompleteIntermenstrualBleedingRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        IntermenstrualBleedingRecord testRecord =
+                (IntermenstrualBleedingRecord)
+                        TestUtils.insertRecord(getCompleteIntermenstrualBleedingRecord());
         List<IntermenstrualBleedingRecord> newIntermenstrualBleedingRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -252,10 +258,10 @@ public class IntermenstrualBleedingRecordTest {
     public void testDeleteIntermenstrualBleedingRecord_recordId_filters()
             throws InterruptedException {
         List<Record> records =
-                List.of(
-                        getBaseIntermenstrualBleedingRecord(),
-                        getCompleteIntermenstrualBleedingRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseIntermenstrualBleedingRecord(),
+                                getCompleteIntermenstrualBleedingRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -295,12 +301,12 @@ public class IntermenstrualBleedingRecordTest {
     @Test
     public void testDeleteIntermenstrualBleedingRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(
-                        getBaseIntermenstrualBleedingRecord(),
-                        getCompleteIntermenstrualBleedingRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseIntermenstrualBleedingRecord(),
+                                getCompleteIntermenstrualBleedingRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -392,8 +398,8 @@ public class IntermenstrualBleedingRecordTest {
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         List<Record> testRecord =
-                Collections.singletonList(getCompleteIntermenstrualBleedingRecord());
-        TestUtils.insertRecords(testRecord);
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteIntermenstrualBleedingRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -549,7 +555,7 @@ public class IntermenstrualBleedingRecordTest {
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<IntermenstrualBleedingRecord> result = TestUtils.readRecords(requestUsingIds);
         assertThat(result).hasSize(insertedRecords.size());
-        assertThat(result).containsExactlyElementsIn(recordList);
+        assertThat(result).containsExactlyElementsIn(insertedRecords);
     }
 
     IntermenstrualBleedingRecord getIntermenstrualBleedingRecord_update(

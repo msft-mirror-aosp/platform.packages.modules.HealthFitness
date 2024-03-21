@@ -159,7 +159,14 @@ public final class ElevationGainedRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull Length elevation,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(elevation);
         if (!skipValidation) {
             ValidationUtils.requireInRange(

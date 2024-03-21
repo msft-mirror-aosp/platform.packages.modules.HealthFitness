@@ -284,11 +284,11 @@ public class HistoricAccessLimitWithPermissionTest {
     }
 
     private String insertStepsRecordViaTestApp(Instant startTime, Instant endTime, long value) {
-        return TestUtils.insertStepsRecordViaTestApp(mContext, startTime, endTime, value).get(0);
+        return TestUtils.insertStepsRecordViaTestApp(mContext, startTime, endTime, value);
     }
 
     private String insertWeightRecordViaTestApp(Instant startTime, double value) {
-        return TestUtils.insertWeightRecordViaTestApp(mContext, startTime, value).get(0);
+        return TestUtils.insertWeightRecordViaTestApp(mContext, startTime, value);
     }
 
     private Instant daysBeforeNow(int days) {

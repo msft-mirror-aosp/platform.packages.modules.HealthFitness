@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Čitanje u pozadini"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"čitanje u pozadini"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Čitanje podataka o zdravlju u pozadini"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorije potrošene kroz aktivnost"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorije potrošene kroz aktivnost"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Čitanje kalorija potrošenih kroz aktivnost"</string>
@@ -305,18 +307,26 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zašto Health Connect uklanja odobrenja za aplikaciju"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ako se aplikacija obustavi ili ukloni s Google Playa, Health Connect automatski uklanja njena odobrenja.\n\nTo znači da aplikacija više neće moći pristupati podacima koji su pohranjeni u Health Connectu. Ako je ova aplikacija prethodno bilježila podatke, pojavit će se na listi neaktivnih aplikacija."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Razumijem"</string>
-    <string name="export_settings_screen_title" msgid="887671826359158339">"Spremanje podataka"</string>
-    <string name="export_settings_screen_description" msgid="5477618165331360989">"Spremite Health Connect podatke i dopuštenja kako biste ih mogli uvesti ako se prebacite na novi telefon. Možete odabrati gdje će se ti podaci pohraniti prije spremanja."</string>
-    <string name="setup_button" msgid="1407942598553043961">"Postavi"</string>
-    <string name="export_settings_header" msgid="2435738153550683355">"Postavke"</string>
-    <string name="auto_save" msgid="7146497593975616076">"Automatsko spremanje"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Izrada sigurnosne kopije i vraćanje"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Izvoz i uvoz"</string>
+    <string name="recurring_export" msgid="111638340692746218">"Ponavljajući izvoz"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Vrati podatke"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Učitavanje prethodno izvezenih podataka"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Odaberite učestalost"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Odaberite jednokratno spremanje podataka ili postavite automatsko spremanje u određenim intervalima."</string>
-    <string name="frequency_daily" msgid="3596412357416125727">"Svakodnevno"</string>
-    <string name="frequency_weekly" msgid="7302587625019573393">"Tjedno"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Odaberite da sačuvate podatke jedanput ili postavite da se automatski pohranjuju u redovnim intervalima."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Sedmično"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mjesečno"</string>
-    <string name="export_back_button" msgid="3550795479165524982">"Natrag"</string>
-    <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
+    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"Uključite šifriranje"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci se trebaju šifrirati prije pohranjivanja. Neće im moći pristupiti niko, čak ni Google ni Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Kreirajte lozinku da zaštitite šifrirane podatke. Trebat ćete tu lozinku da uvezete i vratite podatke."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Lozinka"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovite lozinku"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite lozinku i izgubite telefon, Health Connect vam neće moći pomoći da vratite sačuvane podatke."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Naprijed"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Počnite koristiti Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke sa svojim aplikacijama"</string>
@@ -652,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}few{# kelvina}other{# kelvina}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stepen Farenhajta}one{# stepen Farenhajta}few{# stepena Farenhajta}other{# stepeni Farenhajta}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Pazuh"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Prst"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Čelo"</string>
@@ -662,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Uho"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Zglob šake"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milja}one{# milja}few{# milje}other{# milja}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}few{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milja}one{# milja}few{# milje}other{# milja}}"</string>
@@ -759,18 +799,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Upravljajte načinom na koji ova aplikacija pristupa rutama za vježbanje iz povezanih aplikacija"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pitaj svaki put"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Nemoj dozvoliti"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Omogućiti obje vrste podataka?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Onemogućiti obje vrste podataka?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> treba pristup čitanju podataka o vježbanju radi omogućavanja ruta vježbanja"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> zahtijeva pristup vježbanju radi omogućavanja ruta vježbanja"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Da"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Ne"</string>
     <string name="back_button" msgid="780519527385993407">"Nazad"</string>
     <string name="loading" msgid="2526615755685950317">"Učitavanje…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integracija je u toku"</string>

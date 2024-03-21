@@ -23,6 +23,7 @@ import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -31,6 +32,7 @@ import com.android.healthconnect.controller.dataentries.formatters.CyclingPedali
 import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.HeartRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.PowerFormatter
+import com.android.healthconnect.controller.dataentries.formatters.SkinTemperatureFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SpeedFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsCadenceFormatter
@@ -47,7 +49,8 @@ constructor(
     private val speedRecordFormatter: SpeedFormatter,
     private val stepsCadenceFormatter: StepsCadenceFormatter,
     private val powerFormatter: PowerFormatter,
-    private val cyclingPedalingCadenceFormatter: CyclingPedalingCadenceFormatter
+    private val cyclingPedalingCadenceFormatter: CyclingPedalingCadenceFormatter,
+    private val skinTemperatureFormatter: SkinTemperatureFormatter
 ) {
     suspend fun formatDetails(record: Record): List<FormattedEntry> {
         return when (record) {
@@ -59,6 +62,7 @@ constructor(
             is PowerRecord -> powerFormatter.formatRecordDetails(record)
             is CyclingPedalingCadenceRecord ->
                 cyclingPedalingCadenceFormatter.formatRecordDetails(record)
+            is SkinTemperatureRecord -> skinTemperatureFormatter.formatRecordDetails(record)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }

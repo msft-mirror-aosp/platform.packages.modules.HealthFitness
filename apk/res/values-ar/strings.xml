@@ -84,6 +84,8 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"القراءة في الخلفية"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"القراءة في الخلفية"</string>
     <string name="background_read_description" msgid="5263745158443722174">"قراءة البيانات الصحية في الخلفية"</string>
+    <!-- no translation found for history_read_description (7347109472601749963) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"قراءة بيانات السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني"</string>
@@ -305,30 +307,26 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"سبب إزالة تطبيق Health Connect لأذونات التطبيقات"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"في حال تعليق أحد التطبيقات أو إزالته من Google Play، يزيل تطبيق Health Connect تلقائيًا أذونات هذا التطبيق.\n\nويعني هذا أنه لم يُعد بإمكان هذا التطبيق الوصول إلى البيانات المخزَّنة في Health Connect. إذا كتب هذا التطبيق البيانات في وقت سابق، سيظهر في قائمة التطبيقات غير النشطة."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"حسنًا"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"الاحتفاظ بنسخة احتياطية والاستعادة"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"التصدير والاستيراد"</string>
+    <string name="recurring_export" msgid="111638340692746218">"التصدير المتكرّر"</string>
+    <string name="restore_data" msgid="3401173690437871417">"استعادة البيانات"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"تحميل البيانات التي تم تصديرها سابقًا"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"اختيار معدّل حفظ البيانات"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"يمكنك اختيار حفظ البيانات مرة واحدة أو الضبط على حفظها تلقائيًا في أوقات منتظمة."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"يوميًا"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"أسبوعيًا"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"شهريًا"</string>
+    <!-- no translation found for export_location_title (9016990510649325641) -->
     <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="export_encryption_title" msgid="8910343790595514359">"تفعيل التشفير"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"يجب تشفير البيانات قبل حفظها. لا يمكن لأحد الوصول إلى بياناتك، بما في ذلك Google أو تطبيق Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"أنشئ كلمة مرور لحماية بياناتك المشفّرة. ستحتاج إليها عند استيراد بياناتك أو استعادتها."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"أدخِل كلمة المرور"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"أدخِل كلمة المرور مرة أخرى"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"في حال نسيان كلمة المرور وفقدان الهاتف، لا يمكن لتطبيق Health Connect المساعدة في استرداد بياناتك المحفوظة."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"رجوع"</string>
+    <string name="export_next_button" msgid="657930567137105172">"التالي"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على هاتفك."</string>
     <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
@@ -664,6 +662,30 @@
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 درجة كلفن}zero{# درجة كلفن}two{# درجة كلفن}few{# درجة كلفن}many{# درجة كلفن}other{# درجة كلفن}}"</string>
     <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 درجة فهرنهايت}zero{# درجة فهرنهايت}two{# درجة فهرنهايت}few{# درجة فهرنهايت}many{# درجة فهرنهايت}other{# درجة فهرنهايت}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 درجة فهرنهايت}zero{# درجة فهرنهايت}two{# درجة فهرنهايت}few{# درجة فهرنهايت}many{# درجة فهرنهايت}other{# درجة فهرنهايت}}"</string>
+    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
+    <skip />
+    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
+    <skip />
     <string name="temperature_location_armpit" msgid="8359661261125563155">"الإبط"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"الإصبع"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"الجبهة"</string>
@@ -674,6 +696,12 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"الأذن"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"المعصم"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"المهبل"</string>
+    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
+    <skip />
+    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
+    <skip />
+    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
+    <skip />
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ميل}zero{# ميل}two{# ميل}few{# ميل}many{# ميل}other{# ميل}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 كم}zero{# كم}two{# كم}few{# كم}many{# كم}other{# كم}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ميل}zero{# ميل}two{# ميل}few{# ميل}many{# ميل}other{# ميل}}"</string>
@@ -771,18 +799,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"يمكنك التحكُّم في كيفية وصول هذا التطبيق إلى مسارات التمارين الرياضية من التطبيقات المرتبطة."</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"السؤال في كل مرّة"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"عدم السماح"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"هل تريد تفعيل كلا نوعَي البيانات؟"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"هل تريد إيقاف كلا نوعَي البيانات؟"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"يتطلّب تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذنًا بقراءة التمارين الرياضية حتى يتم تفعيل مساراتها."</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"يتطلّب تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذنًا بالوصول إلى التمارين الرياضية حتى يتم تفعيل مساراتها."</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"نعم"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"لا"</string>
     <string name="back_button" msgid="780519527385993407">"رجوع"</string>
     <string name="loading" msgid="2526615755685950317">"جارٍ التحميل…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"جارٍ تنفيذ عملية الدمج"</string>

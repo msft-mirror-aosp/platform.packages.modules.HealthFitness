@@ -204,12 +204,13 @@ public class ExercisePerformanceGoalTest {
                         new ExercisePerformanceGoal.PowerGoal(
                                 Power.fromWatts(200), Power.fromWatts(240)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -220,12 +221,13 @@ public class ExercisePerformanceGoalTest {
                                 Velocity.fromMetersPerSecond(10.0),
                                 Velocity.fromMetersPerSecond(12.0)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -234,12 +236,13 @@ public class ExercisePerformanceGoalTest {
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.CadenceGoal(80.0, 85.0));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -248,12 +251,13 @@ public class ExercisePerformanceGoalTest {
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.HeartRateGoal(120, 130));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -262,12 +266,13 @@ public class ExercisePerformanceGoalTest {
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.WeightGoal(Mass.fromGrams(80_000)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -275,6 +280,20 @@ public class ExercisePerformanceGoalTest {
         PlannedExerciseSessionRecord record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.RateOfPerceivedExertionGoal(6));
+
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
+
+        assertThat(
+                        Iterables.getOnlyElement(
+                                TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
+                .isEqualTo(insertedRecord);
+    }
+
+    @Test
+    public void amrapGoal_insertAndRead() throws InterruptedException {
+        PlannedExerciseSessionRecord record =
+                createPlannedSessionWithPerformanceGoal(ExercisePerformanceGoal.AmrapGoal.INSTANCE);
 
         TestUtils.insertRecordAndGetId(record);
 

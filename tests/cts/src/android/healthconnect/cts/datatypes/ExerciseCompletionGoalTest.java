@@ -182,12 +182,33 @@ public class ExerciseCompletionGoalTest {
                 createPlannedSessionWithCompletionGoal(
                         new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(500)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
+    }
+
+    @Test
+    public void distanceWithVariableRestGoal_insertionAndRead() throws InterruptedException {
+        PlannedExerciseSessionRecord record =
+                createPlannedSessionWithCompletionGoal(
+                        new ExerciseCompletionGoal.DistanceWithVariableRestGoal(
+                                Length.fromMeters(100), Duration.ofMinutes(2)));
+
+        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord restored =
+                Iterables.getOnlyElement(
+                        TestUtils.readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(restored).isEqualTo(record);
+
+        ExerciseCompletionGoal.DistanceWithVariableRestGoal goal =
+                (ExerciseCompletionGoal.DistanceWithVariableRestGoal)
+                        restored.getBlocks().get(0).getSteps().get(0).getCompletionGoal();
+        assertThat(goal.getDistance()).isEqualTo(Length.fromMeters(100));
+        assertThat(goal.getDuration()).isEqualTo(Duration.ofMinutes(2));
     }
 
     @Test
@@ -195,12 +216,13 @@ public class ExerciseCompletionGoalTest {
         PlannedExerciseSessionRecord record =
                 createPlannedSessionWithCompletionGoal(new ExerciseCompletionGoal.StepsGoal(250));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -209,12 +231,13 @@ public class ExerciseCompletionGoalTest {
                 createPlannedSessionWithCompletionGoal(
                         new ExerciseCompletionGoal.DurationGoal(Duration.ofMinutes(30)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -223,12 +246,13 @@ public class ExerciseCompletionGoalTest {
                 createPlannedSessionWithCompletionGoal(
                         new ExerciseCompletionGoal.RepetitionsGoal(8));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -238,12 +262,13 @@ public class ExerciseCompletionGoalTest {
                         new ExerciseCompletionGoal.TotalCaloriesBurnedGoal(
                                 Energy.fromCalories(260)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -253,12 +278,13 @@ public class ExerciseCompletionGoalTest {
                         new ExerciseCompletionGoal.ActiveCaloriesBurnedGoal(
                                 Energy.fromCalories(120)));
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     @Test
@@ -267,12 +293,13 @@ public class ExerciseCompletionGoalTest {
                 createPlannedSessionWithCompletionGoal(
                         ExerciseCompletionGoal.UnspecifiedGoal.INSTANCE);
 
-        TestUtils.insertRecordAndGetId(record);
+        PlannedExerciseSessionRecord insertedRecord =
+                (PlannedExerciseSessionRecord) TestUtils.insertRecord(record);
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(insertedRecord);
     }
 
     private PlannedExerciseSessionRecord createPlannedSessionWithCompletionGoal(
