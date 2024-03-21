@@ -18,6 +18,7 @@ package android.healthconnect.cts.datatypes;
 
 import static android.healthconnect.cts.utils.DataFactory.SESSION_END_TIME;
 import static android.healthconnect.cts.utils.DataFactory.SESSION_START_TIME;
+import static android.healthconnect.cts.utils.TestUtils.insertRecord;
 import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readAllRecords;
@@ -485,14 +486,18 @@ public class PlannedExerciseSessionRecordTest {
                                 ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
                         .setPlannedExerciseSessionId(insertedPlannedSession.getMetadata().getId());
 
-        insertRecords(Collections.singletonList(exerciseSession.build()));
+        ExerciseSessionRecord record =
+                (ExerciseSessionRecord) insertRecord(exerciseSession.build());
+        ExerciseSessionRecord.Builder exerciseSessionRecordBuilder =
+                exerciseSessionRecordToBuilder(record);
+        exerciseSessionRecordBuilder.setTitle("Updated exercise session");
+        TestUtils.updateRecords(Collections.singletonList(exerciseSessionRecordBuilder.build()));
 
-        exerciseSession.setTitle("Updated exercise session");
-        TestUtils.updateRecords(Collections.singletonList(exerciseSession.build()));
         ExerciseSessionRecord updatedExerciseSession =
                 Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
         PlannedExerciseSessionRecord updatedTrainingPlan =
                 Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+
         assertThat(updatedExerciseSession.getPlannedExerciseSessionId())
                 .isEqualTo(insertedPlannedSession.getMetadata().getId());
         assertThat(updatedTrainingPlan.getCompletedExerciseSessionId())
@@ -715,6 +720,35 @@ public class PlannedExerciseSessionRecordTest {
                 .build();
     }
 
+    private ExerciseSessionRecord.Builder exerciseSessionRecordToBuilder(
+            ExerciseSessionRecord record) {
+        ExerciseSessionRecord.Builder builder =
+                new ExerciseSessionRecord.Builder(
+                        record.getMetadata(),
+                        record.getStartTime(),
+                        record.getEndTime(),
+                        record.getExerciseType());
+        builder.setTitle(record.getTitle());
+        builder.setPlannedExerciseSessionId(record.getPlannedExerciseSessionId());
+        return builder;
+    }
+
+    private PlannedExerciseSessionRecord.Builder plannedExerciseSessionRecordToBuilder(
+            PlannedExerciseSessionRecord record) {
+        PlannedExerciseSessionRecord.Builder builder =
+                new PlannedExerciseSessionRecord.Builder(
+                        record.getMetadata(),
+                        record.getExerciseType(),
+                        record.getStartTime(),
+                        record.getEndTime());
+        builder.setTitle(record.getTitle());
+        builder.setNotes(record.getNotes());
+        builder.setStartZoneOffset(record.getStartZoneOffset());
+        builder.setEndZoneOffset(record.getEndZoneOffset());
+        record.getBlocks().stream().forEach(block -> builder.addBlock(block));
+        return builder;
+    }
+
     private PlannedExerciseSessionRecord.Builder basePlannedExerciseSession(int exerciseType) {
         PlannedExerciseSessionRecord.Builder builder =
                 new PlannedExerciseSessionRecord.Builder(
@@ -769,8 +803,16 @@ public class PlannedExerciseSessionRecordTest {
             throws InterruptedException {
         List<Record> insertedRecords = insertRecords(records);
 
+        for (int i = 0; i < records.size(); i++) {
+            String id = insertedRecords.get(i).getMetadata().getId();
+            PlannedExerciseSessionRecord.Builder testRecord =
+                    plannedExerciseSessionRecordToBuilder(records.get(i));
+            testRecord.setMetadata(buildMetadataWithUuid(id));
+
+            assertThat(testRecord.build()).isEqualTo(insertedRecords.get(i));
+        }
         assertThat(records.size()).isEqualTo(insertedRecords.size());
-        assertThat(records).containsExactlyElementsIn(insertedRecords);
+
         return insertedRecords;
     }
 
