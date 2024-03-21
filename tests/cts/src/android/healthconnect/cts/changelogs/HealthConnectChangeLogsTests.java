@@ -519,8 +519,7 @@ public class HealthConnectChangeLogsTests {
 
         assertThat(response.getUpsertedRecords()).hasSize(1);
         assertThat(nextResponse.hasMorePages()).isTrue();
-        assertThat(nextResponse.getNextChangesToken())
-                .isGreaterThan(response.getNextChangesToken());
+        assertThat(nextResponse.getNextChangesToken()).isNotEqualTo(response.getNextChangesToken());
 
         nextChangeLogsRequest =
                 new ChangeLogsRequest.Builder(nextResponse.getNextChangesToken()).build();

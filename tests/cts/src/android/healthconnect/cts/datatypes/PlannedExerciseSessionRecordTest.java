@@ -749,6 +749,102 @@ public class PlannedExerciseSessionRecordTest {
         return builder;
     }
 
+    @Test
+    public void builder_clearStartZoneOffset() {
+        PlannedExerciseSessionRecord.Builder builder =
+                new PlannedExerciseSessionRecord.Builder(
+                        buildMetadata("some client record ID"),
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                        LocalDate.of(2007, APRIL, 5),
+                        Duration.of(1, HOURS));
+
+        builder.setStartZoneOffset(ZoneOffset.MIN);
+        assertThat(builder.build().getStartZoneOffset()).isEqualTo(ZoneOffset.MIN);
+        builder.clearStartZoneOffset();
+        assertThat(builder.build().getStartZoneOffset())
+                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+    }
+
+    @Test
+    public void builder_clearEndZoneOffset() {
+        PlannedExerciseSessionRecord.Builder builder =
+                new PlannedExerciseSessionRecord.Builder(
+                        buildMetadata("some client record ID"),
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                        LocalDate.of(2007, APRIL, 5),
+                        Duration.of(1, HOURS));
+
+        builder.setEndZoneOffset(ZoneOffset.MIN);
+        assertThat(builder.build().getEndZoneOffset()).isEqualTo(ZoneOffset.MIN);
+        builder.clearEndZoneOffset();
+        assertThat(builder.build().getEndZoneOffset())
+                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+    }
+
+    @Test
+    public void getDuration() {
+        PlannedExerciseSessionRecord.Builder builder =
+                new PlannedExerciseSessionRecord.Builder(
+                        buildMetadata("some client record ID"),
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                        LocalDate.of(2007, APRIL, 5),
+                        Duration.ofHours(2));
+
+        assertThat(builder.build().getDuration()).isEqualTo(Duration.ofHours(2));
+    }
+
+    @Test
+    public void builder_setMetadata() {
+        Metadata originalMetadata = buildMetadata("some client record ID");
+        PlannedExerciseSessionRecord.Builder builder =
+                new PlannedExerciseSessionRecord.Builder(
+                        originalMetadata,
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                        LocalDate.of(2007, APRIL, 5),
+                        Duration.ofHours(2));
+
+        assertThat(builder.build().getMetadata()).isEqualTo(originalMetadata);
+
+        Metadata replacementMetadata = buildMetadata("a different client record ID");
+        builder.setMetadata(replacementMetadata);
+
+        assertThat(builder.build().getMetadata()).isEqualTo(replacementMetadata);
+    }
+
+    @Test
+    public void builder_setEndTime() {
+        Instant originalStartTime = SESSION_START_TIME;
+        PlannedExerciseSessionRecord.Builder builder =
+                new PlannedExerciseSessionRecord.Builder(
+                        buildMetadata("some client record ID"),
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                        originalStartTime,
+                        originalStartTime.plus(1, HOURS));
+
+        assertThat(builder.build().getStartTime()).isEqualTo(originalStartTime);
+
+        Instant replacementStartTime = SESSION_START_TIME.plus(3, HOURS);
+        builder.setStartTime(replacementStartTime);
+        builder.setEndTime(replacementStartTime.plus(1, HOURS));
+
+        assertThat(builder.build().getStartTime()).isEqualTo(replacementStartTime);
+    }
+
+    @Test
+    public void builder_clearBlocks() {
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+        builder.addBlock(blockBuilder.build());
+
+        assertThat(builder.build().getBlocks()).hasSize(1);
+
+        builder.clearBlocks();
+
+        assertThat(builder.build().getBlocks()).isEmpty();
+    }
+
     private PlannedExerciseSessionRecord.Builder basePlannedExerciseSession(int exerciseType) {
         PlannedExerciseSessionRecord.Builder builder =
                 new PlannedExerciseSessionRecord.Builder(
