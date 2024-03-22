@@ -39,5 +39,14 @@
         android:text="@string/export_location_title"
         android:textAppearance="?attr/textAppearanceHeadline2" />
 
+    <!-- b/325917283 add UI to select export destination here. -->
+    <LinearLayout
+        android:id="@+id/export_locations"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/spacing_large"
+        android:layout_weight="1"
+        android:orientation="vertical"/>
+
     <include layout="@layout/widget_export_navigation_buttons" />
 </LinearLayout>
