@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Consulta quines aplicacions han accedit a les teves dades durant les 24 darreres hores"</string>
     <string name="today_header" msgid="1006837293203834373">"Avui"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Ahir"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Ha llegit: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Ha escrit: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestiona els permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Temps: %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lectura en segon pla"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lectura en segon pla"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Llegeix dades de salut en segon pla"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Llegeix dades de salut passades"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories actives cremades"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calories actives cremades"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Llegir calories actives cremades"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entesos"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporta i importa"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Exportació recurrent"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Restaura les dades"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Carrega les dades exportades anteriorment"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Tria la freqüència"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Tria si vols desar les dades una vegada o configura que es desin automàticament en intervals regulars."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Cada dia"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Cada setmana"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Cada mes"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Exporta la ubicació"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Activa l\'encriptació"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Cal encriptar les dades abans de desar-les. Ningú, ni tan sols Salut connectada o Google, hi podrà accedir."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea una contrasenya per protegir les teves dades encriptades. Necessitaràs aquesta contrasenya per importar i restaurar les dades."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 lliura}other{# lliures}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stones}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 grau Celsius}other{# graus Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kèlvins}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 grau Fahrenheit}other{# graus Fahrenheit}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} grau Celsius}other{{formattedValue} graus Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} grau Fahrenheit}other{{formattedValue} graus Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kèlvins}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (variació mitjana)}other{{formattedValue} ℃ (variació mitjana)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} grau Celsius (variació mitjana)}other{{formattedValue} graus Celsius (variació mitjana)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (variació mitjana)}other{{formattedValue} ℉ (variació mitjana)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} grau Fahrenheit (variació mitjana)}other{{formattedValue} graus Fahrenheit (variació mitjana)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (variació mitjana)}other{{formattedValue} K (variació mitjana)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (variació mitjana)}other{{formattedValue} kèlvins (variació mitjana)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Aixella"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Dit de la mà"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Front"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Orella"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Canell"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Ubicació de mesura"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Referència"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variació de la referència"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milla}other{# milles}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milla}other{# milles}}"</string>
@@ -762,7 +752,7 @@
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Salut connectada suprimirà automàticament les dades noves passat # mes. Amb aquesta configuració, també se suprimiran les dades existents anteriors a # mes.}other{Salut connectada suprimirà automàticament les dades noves passats # mesos. Amb aquesta configuració, també se suprimiran les dades existents anteriors a # mesos.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Estableix la supressió automàtica"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Les dades existents se suprimiran"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salut connectada suprimirà totes les dades anteriors a # mes. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}other{Salut connectada suprimirà totes les dades anteriors a # mesos. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Salut connectada suprimirà totes les dades amb una antiguitat superior a # mes. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}other{Salut connectada suprimirà totes les dades amb una antiguitat superior a # mesos. Pot ser que aquests canvis tardin un dia a aparèixer a les teves aplicacions connectades.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Les dades se suprimiran d\'aquestes categories"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Fet"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"Defineix la prioritat de les aplicacions"</string>
@@ -874,7 +864,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"Fonts d\'aplicacions"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Afegeix fonts d\'aplicacions a la llista per veure com canvien els totals de dades. Si suprimeixes una aplicació de la llista, deixarà de contribuir als totals, però continuarà tenint permisos d\'escriptura."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"No hi ha cap font d\'aplicacions"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Quan concedeixis permisos a les aplicacions per escriure dades de <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, les fonts es mostraran aquí."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Quan concedeixis permisos a les aplicacions per escriure dades d\'aquest tipus (<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>), les fonts es mostraran aquí."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Com funcionen les fonts i la priorització"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Afegeix una aplicació"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Edita les fonts d\'aplicacions"</string>

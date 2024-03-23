@@ -158,8 +158,8 @@ public class WeightRecordTest {
         List<WeightRecord> oldWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class).build());
-        WeightRecord testRecord = getCompleteWeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WeightRecord testRecord = (WeightRecord) TestUtils.insertRecord(getCompleteWeightRecord());
         List<WeightRecord> newWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class).build());
@@ -174,8 +174,8 @@ public class WeightRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        WeightRecord testRecord = getCompleteWeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WeightRecord testRecord = (WeightRecord) TestUtils.insertRecord(getCompleteWeightRecord());
         List<WeightRecord> newWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class)
@@ -196,8 +196,8 @@ public class WeightRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        WeightRecord testRecord = getCompleteWeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WeightRecord testRecord = (WeightRecord) TestUtils.insertRecord(getCompleteWeightRecord());
         List<WeightRecord> newWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class)
@@ -281,8 +281,8 @@ public class WeightRecordTest {
 
     @Test
     public void testDeleteWeightRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseWeightRecord(), getCompleteWeightRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseWeightRecord(), getCompleteWeightRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -319,15 +319,15 @@ public class WeightRecordTest {
 
     @Test
     public void testDeleteWeightRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseWeightRecord(), getCompleteWeightRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
-        List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(List.of(getBaseWeightRecord(), getCompleteWeightRecord()));
+        List<RecordIdFilter> recordIds = new ArrayList<>(insertedRecords.size());
+        for (Record record : insertedRecords) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
-        for (Record record : records) {
+        for (Record record : insertedRecords) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
         }
     }
@@ -486,8 +486,8 @@ public class WeightRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteWeightRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteWeightRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

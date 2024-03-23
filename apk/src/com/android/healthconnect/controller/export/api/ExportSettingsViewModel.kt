@@ -19,7 +19,6 @@ package com.android.healthconnect.controller.export.api
 import android.health.connect.Constants.DEFAULT_INT
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.net.Uri
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,8 +45,7 @@ constructor(
         loadExportSettings()
     }
 
-    // Visible for testing to trigger a load with an observer attached.
-    @VisibleForTesting
+    /** Triggers a load of export settings. */
     fun loadExportSettings() {
         _storedExportSettings.postValue(ExportSettings.Loading)
         viewModelScope.launch {
