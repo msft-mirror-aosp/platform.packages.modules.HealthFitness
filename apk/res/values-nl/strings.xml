@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Bekijk welke apps in de afgelopen 24 uur toegang hebben gehad tot je gegevens"</string>
     <string name="today_header" msgid="1006837293203834373">"Vandaag"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Gisteren"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lezen: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Schrijven: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Rechten beheren"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tijd: %s"</string>
@@ -58,7 +60,7 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"cyclus bijhouden"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Voeding"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"voeding"</string>
-    <string name="browse_data_category" msgid="4813955610391357638">"Browsen in gegevens"</string>
+    <string name="browse_data_category" msgid="4813955610391357638">"Browsen door gegevens"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Gegevens beheren"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Gegevens exporteren"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Alle gegevens verwijderen"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lezen op de achtergrond"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lezen op de achtergrond"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Gezondheidsgegevens lezen op de achtergrond"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Eerdere gezondheidsgegevens lezen"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Verbrande actieve calorieën"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"verbrande actieve calorieën"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Gegevens over verbrande actieve calorieën lezen"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up maken en terugzetten"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporteren en importeren"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Terugkerende export"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Gegevens herstellen"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Eerder geëxporteerde gegevens laden"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Frequentie kiezen"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Kies of je gegevens eenmalig wilt opslaan of ze op regelmatige tijdstippen automatisch wilt laten opslaan."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dagelijks"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Wekelijks"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Maandelijks"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Exportlocatie"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Versleuteling aanzetten"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Gegevens moeten worden versleuteld voordat ze worden opgeslagen. Niemand heeft er toegang toe, zelfs niet Google of Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Maak een wachtwoord om je versleutelde gegevens te beschermen. Je hebt dit wachtwoord nodig om je gegevens te importeren en te herstellen."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 pound}other{# pound}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stones}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 graad Celsius}other{# graden Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 graad Fahrenheit}other{# graden Fahrenheit}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} graad Celsius}other{{formattedValue} graden Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} graad Fahrenheit}other{{formattedValue} graden Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (gemiddelde variatie)}other{{formattedValue} ℃ (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} graad Celsius (gemiddelde variatie)}other{{formattedValue} graden Celsius (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (gemiddelde variatie)}other{{formattedValue} ℉ (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} graad Fahrenheit (gemiddelde variatie)}other{{formattedValue} graden Fahrenheit (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (gemiddelde variatie)}other{{formattedValue} K (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (gemiddelde variatie)}other{{formattedValue} kelvin (gemiddelde variatie)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Oksel"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Vinger"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Voorhoofd"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Oor"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pols"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Meetlocatie"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Basislijn"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variatie ten opzichte van basislijn"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mijl}other{# mijl}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mijl}other{# mijl}}"</string>
@@ -745,7 +735,7 @@
     <string name="check_for_updates" msgid="3841090978657783101">"Checken op updates"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"Zorg dat geïnstalleerde apps up-to-date zijn"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Alle compatibele apps bekijken"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Apps vinden op Google Play"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Vind apps op Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Feedback sturen"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Vertel ons welke gezondheids- en fitness-apps met Health Connect moeten samenwerken"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
@@ -762,7 +752,7 @@
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect verwijdert nieuwe gegevens automatisch na # maand. Als je dit instelt, worden bestaande gegevens ouder dan # maand ook verwijderd.}other{Health Connect verwijdert nieuwe gegevens automatisch na # maanden. Als je dit instelt, worden bestaande gegevens ouder dan # maanden ook verwijderd.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Automatisch verwijderen instellen"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Bestaande gegevens worden verwijderd"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect verwijdert alle gegevens ouder dan # maand. Het kan een dag duren voordat deze wijzigingen worden getoond in je gekoppelde apps.}other{Health Connect verwijdert alle gegevens ouder dan # maanden. Het kan een dag duren voordat deze wijzigingen worden getoond in je gekoppelde apps.}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect verwijdert alle gegevens ouder dan # maand. Deze wijzigingen kunnen pas een dag later worden getoond in je gekoppelde apps.}other{Health Connect verwijdert alle gegevens ouder dan # maanden. Deze wijzigingen kunnen pas een dag later worden getoond in je gekoppelde apps.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Gegevens worden verwijderd uit deze categorieën"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Klaar"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"App-prioriteit instellen"</string>
@@ -874,7 +864,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"App-bronnen"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Voeg app-bronnen aan de lijst toe om te zien hoe de gegevenstotalen kunnen veranderen. Als je een app uit deze lijst verwijdert, draagt die niet meer bij aan de totalen. De app heeft nog wel schrijfrechten."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Geen app-bronnen"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Zodra je app-rechten verleent om <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>-gegevens te schrijven, komen de bronnen hier te staan."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Zodra je app-rechten verleent om gegevens van de categorie \'<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>\' te schrijven, komen de bronnen hier te staan."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Hoe bronnen en prioritering werken"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Een app toevoegen"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"App-bronnen bewerken"</string>

@@ -134,12 +134,12 @@ public class UpsertTransactionRequest {
                     // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
                     StorageUtils.addNameBasedUUIDTo(recordInternal);
                 }
-                mRecordTypes.add(recordInternal.getRecordType());
             } else {
                 // For update requests, generate uuid if the clientRecordID is present, else use the
                 // uuid passed as input.
                 StorageUtils.updateNameBasedUUIDIfRequired(recordInternal);
             }
+            mRecordTypes.add(recordInternal.getRecordType());
             recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
             addRequest(recordInternal, isInsertRequest);
         }

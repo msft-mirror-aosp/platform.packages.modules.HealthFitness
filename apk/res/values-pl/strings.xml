@@ -34,15 +34,15 @@
     <string name="entry_details_title" msgid="590184849040247850">"Szczegóły wpisu"</string>
     <string name="backup_title" msgid="211503191266235085">"Kopia zapasowa"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Źródła danych i priorytet"</string>
-    <string name="set_units_title" msgid="2657822539603758029">"Jednostki zestawu"</string>
+    <string name="set_units_title" msgid="2657822539603758029">"Ustaw jednostki"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Ostatni dostęp"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Żadne aplikacje nie uzyskiwały ostatnio dostępu do Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Zobacz wszystkie ostatnie przypadki dostępu"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Zobacz, które aplikacje korzystały z danych w ciągu ostatnich 24 godzin"</string>
     <string name="today_header" msgid="1006837293203834373">"Dziś"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Wczoraj"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Odczytywanie: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Zapisywanie: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Odczyt: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Zapis: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Zarządzaj uprawnieniami"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Czas: %s"</string>
@@ -308,16 +308,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Tworzenie i przywracanie kopii zapasowej"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Eksportowanie i importowanie"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Eksport cykliczny"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Przywróć dane"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Wczytaj wyeksportowane wcześniej dane"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Wybierz częstotliwość"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Wybierz, czy chcesz zapisać dane raz, czy zapisywać je automatycznie w regularnych odstępach czasu."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Codziennie"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Co tydzień"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Co miesiąc"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Lokalizacja eksportu"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Włącz szyfrowanie"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Przed zapisaniem dane trzeba zaszyfrować. Nikt nie będzie mieć do nich dostępu, nawet Google i Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Utwórz hasło, aby chronić swoje zaszyfrowane dane. Będziesz go potrzebować do zaimportowania i przywrócenia danych."</string>
@@ -655,23 +659,23 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 funt}few{# funty}many{# funtów}other{# funta}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 kamień}few{# kamienie}many{# kamieni}other{# kamienia}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1℃}few{#℃}many{#℃}other{#℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}few{#℃}many{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 stopień Celsjusza}few{# stopnie Celsjusza}many{# stopni Celsjusza}other{# stopnia Celsjusza}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}few{# K}many{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}few{# K}many{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelwin}few{# kelwiny}many{# kelwinów}other{# kelwina}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1℉}few{#℉}many{#℉}other{#℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}few{#℉}many{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stopień Fahrenheita}few{# stopnie Fahrenheita}many{# stopni Fahrenheita}other{# stopnia Fahrenheita}}"</string>
-    <string name="temperatureDelta_celsius" msgid="4027139004654243248">"{value,plural, =1{{formattedValue}℃}few{{formattedValue}℃}many{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}few{{formattedValue}℃}many{{formattedValue}℃}other{{formattedValue}℃}}"</string>
     <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} stopień Celsjusza}few{{formattedValue} stopnie Celsjusza}many{{formattedValue} stopni Celsjusza}other{{formattedValue} stopnia Celsjusza}}"</string>
-    <string name="temperatureDelta_fahrenheit" msgid="3958333818549407912">"{value,plural, =1{{formattedValue}℉}few{{formattedValue}℉}many{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}few{{formattedValue}℉}many{{formattedValue}℉}other{{formattedValue}℉}}"</string>
     <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} stopień Fahrenheita}few{{formattedValue} stopnie Fahrenheita}many{{formattedValue} stopni Fahrenheita}other{{formattedValue} stopnia Fahrenheita}}"</string>
-    <string name="temperatureDelta_kelvin" msgid="8956765298317364018">"{value,plural, =1{{formattedValue} K}few{{formattedValue} K}many{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}few{{formattedValue} K}many{{formattedValue} K}other{{formattedValue} K}}"</string>
     <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelwin}few{{formattedValue} kelwiny}many{{formattedValue} kelwinów}other{{formattedValue} kelwina}}"</string>
-    <string name="temperatureDelta_average_celsius" msgid="4396290848174994509">"{value,plural, =1{{formattedValue}℃ (śr. odchylenie)}few{{formattedValue}℃ (śr. odchylenie)}many{{formattedValue}℃ (śr. odchylenie)}other{{formattedValue}℃ (śr. odchylenie)}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (śr. odchylenie)}few{{formattedValue}℃ (śr. odchylenie)}many{{formattedValue}℃ (śr. odchylenie)}other{{formattedValue}℃ (śr. odchylenie)}}"</string>
     <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} stopień Celsjusza (średnie odchylenie)}few{{formattedValue} stopnie Celsjusza (średnie odchylenie)}many{{formattedValue} stopni Celsjusza (średnie odchylenie)}other{{formattedValue} stopnia Celsjusza (średnie odchylenie)}}"</string>
-    <string name="temperatureDelta_average_fahrenheit" msgid="2033143518773987747">"{value,plural, =1{{formattedValue}℉ (śr. odchylenie)}few{{formattedValue}℉ (śr. odchylenie)}many{{formattedValue}℉ (śr. odchylenie)}other{{formattedValue}℉ (śr. odchylenie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (śr. odchylenie)}few{{formattedValue}℉ (śr. odchylenie)}many{{formattedValue}℉ (śr. odchylenie)}other{{formattedValue}℉ (śr. odchylenie)}}"</string>
     <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} stopień Fahrenheita (średnie odchylenie)}few{{formattedValue} stopnie Fahrenheita (średnie odchylenie)}many{{formattedValue} stopni Fahrenheita (średnie odchylenie)}other{{formattedValue} stopnia Fahrenheita (średnie odchylenie)}}"</string>
-    <string name="temperatureDelta_average_kelvin" msgid="6068752736609778866">"{value,plural, =1{{formattedValue} K (śr. odchylenie)}few{{formattedValue} K (śr. odchylenie)}many{{formattedValue} K (śr. odchylenie)}other{{formattedValue} K (śr. odchylenie)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (śr. odchylenie)}few{{formattedValue} K (śr. odchylenie)}many{{formattedValue} K (śr. odchylenie)}other{{formattedValue} K (śr. odchylenie)}}"</string>
     <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelwin (średnie odchylenie)}few{{formattedValue} kelwiny (średnie odchylenie)}many{{formattedValue} kelwinów (średnie odchylenie)}other{{formattedValue} kelwina (średnie odchylenie)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Pacha"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Palec"</string>
@@ -743,7 +747,7 @@
     <string name="range_off" msgid="8178520557618184215">"Wyłączono"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Kiedy zmienisz te ustawienia, Health Connect usunie dotychczasowe dane zgodnie z nowymi preferencjami"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Automatycznie usuwać dane po # miesiącu?}few{Automatycznie usuwać dane po # miesiącach?}many{Automatycznie usuwać dane po # miesiącach?}other{Automatycznie usuwać dane po # miesiąca?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect będzie usuwać nowe dane po # miesiącu. Włączenie tej opcji sprawi, że istniejące dane starsze niż # miesiąc również zostaną usunięte.}few{Health Connect będzie usuwać nowe dane po # miesiącach. Włączenie tej opcji sprawi, że istniejące dane starsze niż # miesiące również zostaną usunięte.}many{Health Connect będzie usuwać nowe dane po # miesiącach. Włączenie tej opcji sprawi, że istniejące dane starsze niż # miesiące również zostaną usunięte.}other{Health Connect będzie usuwać nowe dane po # miesiąca. Włączenie tej opcji sprawi, że istniejące dane starsze niż # miesiąca również zostaną usunięte.}}"</string>
+    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect będzie usuwać nowe dane po # miesiącu. Włączenie tej opcji sprawi, że istniejące dane sprzed ponad # miesiąca również zostaną usunięte.}few{Health Connect będzie usuwać nowe dane po # miesiącach. Włączenie tej opcji sprawi, że istniejące dane sprzed ponad # miesięcy również zostaną usunięte.}many{Health Connect będzie usuwać nowe dane po # miesiącach. Włączenie tej opcji sprawi, że istniejące dane sprzed ponad # miesięcy również zostaną usunięte.}other{Health Connect będzie usuwać nowe dane po # miesiąca. Włączenie tej opcji sprawi, że istniejące dane sprzed ponad # miesiąca również zostaną usunięte.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Ustaw automatyczne usuwanie"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Dotychczasowe dane zostaną usunięte"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect usunie wszystkie dane starsze niż # miesiąc. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}few{Health Connect usunie wszystkie dane starsze niż # miesiące. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}many{Health Connect usunie wszystkie dane starsze niż # miesięcy. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}other{Health Connect usunie wszystkie dane starsze niż # miesiąca. Zmiany powinny być widoczne w połączonych aplikacjach w ciągu jednego dnia.}}"</string>
@@ -858,7 +862,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"Źródła aplikacji"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Dodawaj źródła aplikacji do listy, aby widzieć, jak zmieniają się sumy danych. Usunięcie aplikacji z tej listy zatrzyma jej podliczanie w sumie danych, ale wciąż będzie mieć uprawnienia do zapisu."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Brak źródeł aplikacji"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Kiedy nadasz aplikacji uprawnienia do zapisywania danych <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, źródła pojawią się tutaj."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Kiedy nadasz aplikacji uprawnienia do zapisywania danych z kategorii <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, źródła pojawią się tutaj."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Jak działają priorytety źródeł"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Dodaj aplikację"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Edytuj źródła aplikacji"</string>

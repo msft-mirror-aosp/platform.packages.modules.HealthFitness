@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Вижте кои приложения са осъществили достъп до данните ви през последните 24 часа"</string>
     <string name="today_header" msgid="1006837293203834373">"Днес"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Четене: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Записване: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управление на разрешенията"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Час: %s"</string>
@@ -308,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Разбрах"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервно копие и възстановяване"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Експортиране и импортиране"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Периодично експортиране"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Възстановяване на данни"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Зареждане на по-рано експортираните данни"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Избиране на честота"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Изберете еднократно запазване на данните или задайте да се запазват автоматично през редовни интервали."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ежеседмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ежемесечно"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Местоположение за експортиране"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Включване на шифроването"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Данните трябва да бъдат шифровани, преди да бъдат запазени. Никой, включително Google и Health Connect, няма да има достъп до тях."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Създайте парола, за да защитите шифрованите си данни. Тя ще ви е нужна при импортиране и възстановяване на данните."</string>
@@ -655,23 +661,23 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 фунт}other{# фунта}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 стоун}other{# стоуна}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} и {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1℃}other{#℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 градус по Целзий}other{# градуса по Целзий}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1°K}other{#°K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 келвин}other{# келвина}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 градус по Фаренхайт}other{# градуса по Фаренхайт}}"</string>
-    <string name="temperatureDelta_celsius" msgid="4027139004654243248">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
     <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} градус по Целзий}other{{formattedValue} градуса по Целзий}}"</string>
-    <string name="temperatureDelta_fahrenheit" msgid="3958333818549407912">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
     <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} градус по Фаренхайт}other{{formattedValue} градуса по Фаренхайт}}"</string>
-    <string name="temperatureDelta_kelvin" msgid="8956765298317364018">"{value,plural, =1{{formattedValue}°K}other{{formattedValue}°K}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}°K}other{{formattedValue}°K}}"</string>
     <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} градус по Келвин}other{{formattedValue} градуса по Келвин}}"</string>
-    <string name="temperatureDelta_average_celsius" msgid="4396290848174994509">"{value,plural, =1{{formattedValue}℃ (средно отклонение)}other{{formattedValue}℃ (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (средно отклонение)}other{{formattedValue}℃ (средно отклонение)}}"</string>
     <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} градус по Целзий (средно отклонение)}other{{formattedValue} градуса по Целзий (средно отклонение)}}"</string>
-    <string name="temperatureDelta_average_fahrenheit" msgid="2033143518773987747">"{value,plural, =1{{formattedValue}℉ (средно отклонение)}other{{formattedValue}℉ (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (средно отклонение)}other{{formattedValue}℉ (средно отклонение)}}"</string>
     <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} градус по Фаренхайт (средно отклонение)}other{{formattedValue} градуса по Фаренхайт (средно отклонение)}}"</string>
-    <string name="temperatureDelta_average_kelvin" msgid="6068752736609778866">"{value,plural, =1{{formattedValue}°K (средно отклонение)}other{{formattedValue}°K (средно отклонение)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}°K (средно отклонение)}other{{formattedValue}°K (средно отклонение)}}"</string>
     <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} градус по Келвин (средно отклонение)}other{{formattedValue} градуса по Келвин (средно отклонение)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Мишница"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Пръст"</string>

@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Découvrez quelles applis ont accédé à vos données au cours des dernières 24 heures"</string>
     <string name="today_header" msgid="1006837293203834373">"Aujourd\'hui"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Hier"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lecture : %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Écriture : %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Temps : %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lecture en arrière-plan"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lecture en arrière-plan"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Lire les données de forme physique en arrière-plan"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Lire les données de santé antérieures"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories brûlées en activité"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calories brûlées en activité"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lire les calories brûlées en activité"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sauvegarder et restaurer"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporter et importer"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Exportation récurrente"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Restaurer les données"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Charger les données précédemment exportées"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Choisir la fréquence"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vous pouvez choisir d\'enregistrer vos données une seule fois ou de les enregistrer automatiquement à intervalles réguliers."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Tous les jours"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Toutes les semaines"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Tous les mois"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Emplacement de l\'exportation"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Activer le chiffrement"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Les données doivent être chiffrées avant d\'être enregistrées. Personne, y compris Google ou Health Connect, ne pourra y accéder."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Créez un mot de passe pour protéger vos données chiffrées. Vous aurez besoin de ce mot de passe pour importer et restaurer vos données."</string>
@@ -538,7 +543,7 @@
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> de sommeil"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> : <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"éveillé"</string>
-    <string name="sleep_stage_awake_in_bed" msgid="5533385496857888503">"éveillé au lit"</string>
+    <string name="sleep_stage_awake_in_bed" msgid="5533385496857888503">"éveillé, au lit"</string>
     <string name="sleep_stage_sleeping" msgid="5122840110107303518">"endormi"</string>
     <string name="sleep_stage_out_of_bed" msgid="522297068981578046">"hors du lit"</string>
     <string name="sleep_stage_rem" msgid="1694477904067543104">"en sommeil paradoxal"</string>
@@ -577,7 +582,7 @@
     <string name="body_position_standing_up" msgid="1221924915768574594">"Debout"</string>
     <string name="body_position_sitting_down" msgid="8053875174780552282">"Assis"</string>
     <string name="body_position_lying_down" msgid="1472381098179371143">"Allongé"</string>
-    <string name="body_position_reclining" msgid="5676889701646839079">"Étendu"</string>
+    <string name="body_position_reclining" msgid="5676889701646839079">"Allongé"</string>
     <string name="blood_pressure_left_wrist" msgid="2047244346984766880">"Poignet gauche"</string>
     <string name="blood_pressure_right_wrist" msgid="1488133877790549424">"Poignet droit"</string>
     <string name="blood_pressure_left_arm" msgid="5150436840115504433">"Haut du bras gauche"</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 livre}one{# livre}other{# livres}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}one{# stone}other{# stones}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 degré Celsius}one{# degré Celsius}other{# degrés Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}other{# kelvins}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 degré Fahrenheit}one{# degré Fahrenheit}other{# degrés Fahrenheit}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} degré Celsius}one{{formattedValue} degré Celsius}other{{formattedValue} degrés Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} degré Fahrenheit}one{{formattedValue} degré Fahrenheit}other{{formattedValue} degrés Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}other{{formattedValue} kelvins}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (variation moy.)}one{{formattedValue} ℃ (variation moy.)}other{{formattedValue} ℃ (variation moy.)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} degré Celsius (variation moyenne)}one{{formattedValue} degré Celsius (variation moyenne)}other{{formattedValue} degrés Celsius (variation moyenne)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (variation moy.)}one{{formattedValue} ℉ (variation moy.)}other{{formattedValue} ℉ (variation moy.)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} degré Fahrenheit (variation moyenne)}one{{formattedValue} degré Fahrenheit (variation moyenne)}other{{formattedValue} degrés Fahrenheit (variation moyenne)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (variation moy.)}one{{formattedValue} K (variation moy.)}other{{formattedValue} K (variation moy.)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (variation moyenne)}one{{formattedValue} kelvin (variation moyenne)}other{{formattedValue} kelvins (variation moyenne)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Aisselle"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Doigt"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Front"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Oreille"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Poignet"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagin"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lieu de mesure"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Référence"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variation par rapport aux valeurs de référence"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
@@ -743,9 +733,9 @@
     <string name="cant_see_all_your_apps_description" msgid="7344859063463536472">"Si vous ne voyez pas une appli installée, elle n\'est peut-être pas encore compatible avec Santé Connect"</string>
     <string name="things_to_try" msgid="8200374691546152703">"À essayer"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"Rechercher les mises à jour"</string>
-    <string name="check_for_updates_description" msgid="1347667778199095160">"Vérifier que les applis installées sont à jour"</string>
+    <string name="check_for_updates_description" msgid="1347667778199095160">"Vérifiez que les applis installées sont à jour"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Voir toutes les applis compatibles"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Rechercher des applis sur Google Play"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Recherchez des applis sur Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Envoyer des commentaires"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Dites-nous quelles applis de santé et de fitness vous souhaitez utiliser avec Santé Connect"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
@@ -757,10 +747,10 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Au bout de # mois}one{Au bout de # mois}other{Au bout de # mois}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Jamais"</string>
     <string name="range_off" msgid="8178520557618184215">"Désactivée"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Lorsque vous modifiez ces paramètres, Santé Connect supprime les données existantes pour tenir compte de vos nouvelles préférences"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Lorsque vous modifiez ces paramètres, Santé Connect supprime les données existantes en tenant compte de vos nouvelles préférences"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Supprimer automatiquement les données au bout de # mois ?}one{Supprimer automatiquement les données au bout de # mois ?}other{Supprimer automatiquement les données au bout de # mois ?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Santé Connect supprimera automatiquement les nouvelles données au bout de # mois. Avec ce paramètre, les données existantes datant de plus de # mois seront aussi supprimées.}one{Santé Connect supprimera automatiquement les nouvelles données au bout de # mois. Avec ce paramètre, les données existantes datant de plus de # mois seront aussi supprimées.}other{Santé Connect supprimera automatiquement les nouvelles données au bout de # mois. Avec ce paramètre, les données existantes datant de plus de # mois seront aussi supprimées.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Configurer la suppression automatique"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Confirmer"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Les données existantes seront supprimées"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Santé Connect supprimera les données datant de plus de # mois. Il peut s\'écouler un jour avant que ces modifications ne s\'appliquent dans vos applis connectées.}one{Santé Connect supprimera les données datant de plus de # mois. Il peut s\'écouler un jour avant que ces modifications ne s\'appliquent dans vos applis connectées.}other{Santé Connect supprimera les données datant de plus de # mois. Il peut s\'écouler un jour avant que ces modifications ne s\'appliquent dans vos applis connectées.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Données à supprimer parmi les suivantes"</string>
@@ -874,7 +864,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"Sources d\'applications"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Ajoutez des sources d\'applications à la liste pour voir comment les totaux de données peuvent changer. Supprimer une application de cette liste l\'empêchera de contribuer aux totaux, mais elle disposera toujours d\'autorisations d\'écriture."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Aucune source d\'application"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Une fois que vous aurez accordé des autorisations d\'application pour écrire des données <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, des sources s\'afficheront ici."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Une fois que vous aurez autorisé des applications à écrire des données <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, des sources s\'afficheront ici."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Fonctionnement de la priorisation des sources"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Ajouter une application"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Modifier les sources d\'application"</string>
