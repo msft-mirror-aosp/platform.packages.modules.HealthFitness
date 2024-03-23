@@ -146,8 +146,8 @@ public class HeightRecordTest {
         List<HeightRecord> oldHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
-        HeightRecord testRecord = getCompleteHeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HeightRecord testRecord = (HeightRecord) TestUtils.insertRecord(getCompleteHeightRecord());
         List<HeightRecord> newHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
@@ -162,8 +162,8 @@ public class HeightRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        HeightRecord testRecord = getCompleteHeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HeightRecord testRecord = (HeightRecord) TestUtils.insertRecord(getCompleteHeightRecord());
         List<HeightRecord> newHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class)
@@ -184,8 +184,8 @@ public class HeightRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        HeightRecord testRecord = getCompleteHeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HeightRecord testRecord = (HeightRecord) TestUtils.insertRecord(getCompleteHeightRecord());
         List<HeightRecord> newHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class)
@@ -265,8 +265,8 @@ public class HeightRecordTest {
 
     @Test
     public void testDeleteHeightRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseHeightRecord(), getCompleteHeightRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseHeightRecord(), getCompleteHeightRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -303,10 +303,10 @@ public class HeightRecordTest {
 
     @Test
     public void testDeleteHeightRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseHeightRecord(), getCompleteHeightRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseHeightRecord(), getCompleteHeightRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -510,8 +510,8 @@ public class HeightRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteHeightRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteHeightRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
