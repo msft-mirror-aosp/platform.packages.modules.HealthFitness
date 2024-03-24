@@ -130,7 +130,7 @@ constructor(
 
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
-        _appPermissions.postValue(permissionsList.map { it.dataTypePermission })
+        _appPermissions.postValue(emptyList())
         _grantedPermissions.postValue(emptySet())
 
         viewModelScope.launch { _appInfo.postValue(appInfoReader.getAppMetadata(packageName)) }

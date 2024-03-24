@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"ببینید در ۲۴ ساعت گذشته، کدام برنامه‌ها به داده‌هایتان دسترسی داشته‌اند"</string>
     <string name="today_header" msgid="1006837293203834373">"امروز"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"دیروز"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"خوانده شد: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"دسترسی نوشتن: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"مدیریت اجازه‌ها"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"زمان: %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"خواندن در پس‌زمینه"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"خواندن در پس‌زمینه"</string>
     <string name="background_read_description" msgid="5263745158443722174">"خواندن داده‌های سلامتی در پس‌زمینه"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"خواندن داده‌های سلامت گذشته"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"کالری سوزانده‌شده درطول فعالیت"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"کالری سوزانده‌شده درطول فعالیت"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"خواندن کالری سوزانده‌شده درطول فعالیت"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"متوجه‌ام"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"پشتیبان‌گیری و بازیابی"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"صادر کردن و وارد کردن"</string>
-    <string name="recurring_export" msgid="111638340692746218">"صادر کردن تکرارشونده"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"بازیابی داده‌ها"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"بار کردن داده‌هایی که قبلاً صادر شده است"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"انتخاب دوره زمانی"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"می‌توانید انتخاب کنید داده‌ها یک بار ذخیره شود، یا تنظیمی انجام دهید تا در زمان‌های معینی به‌طور خودکار ذخیره شود."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"هر روز"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"هر هفته"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"هر ماه"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"محل صادر کردن"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"روشن کردن رمزگذاری"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"داده‌ها باید قبل‌از ذخیره شدن رمزگذاری شود. هیچ کسی، حتی Google یا Health Connect، نمی‌تواند به آن دسترسی پیدا کند."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"برای محافظت از داده‌های رمزگذاری‌شده‌تان، گذرواژه ایجاد کنید. برای وارد کردن و بازیابی داده‌هایتان به این گذرواژه نیاز خواهید داشت."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{یک پوند}one{# پوند}other{# پوند}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{یک سنگ}one{# سنگ}other{# سنگ}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{‎۱ ℃‎}one{‎# ℃‎}other{‎# ℃‎}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{‫۱ درجه سانتی‌گراد}one{‫# درجه سانتی‌گراد}other{‫# درجه سانتی‌گراد}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{یک درجه سلسیوس}one{# درجه سلسیوس}other{# درجه سلسیوس}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{یک کلوین}one{# کلوین}other{# کلوین}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{‫۱ کلوین}one{‫# کلوین}other{‫# کلوین}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{یک کلوین}one{# کلوین}other{# کلوین}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{‎۱ ℉‎}one{‎# ℉‎}other{‎# ℉‎}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{‫۱ درجه فارنهایت}one{‫# درجه فارنهایت}other{‫# درجه فارنهایت}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{۱ درجه فارنهایت}one{# درجه فارنهایت}other{# درجه فارنهایت}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{‫{formattedValue} درجه سانتی‌گراد}one{‫{formattedValue} درجه سانتی‌گراد}other{‫{formattedValue} درجه سانتی‌گراد}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{‫{formattedValue} درجه سلسیوس}one{‫{formattedValue} درجه سلسیوس}other{‫{formattedValue} درجه سلسیوس}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{‫{formattedValue} درجه فارنهایت}one{‫{formattedValue} درجه فارنهایت}other{‫{formattedValue} درجه فارنهایت}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{‫{formattedValue} درجه فارنهایت}one{‫{formattedValue} درجه فارنهایت}other{‫{formattedValue} درجه فارنهایت}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{‫{formattedValue} کلوین}one{‫{formattedValue} کلوین}other{‫{formattedValue} کلوین}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{‫{formattedValue} کلوین}one{‫{formattedValue} کلوین}other{‫{formattedValue} کلوین}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{‫{formattedValue} درجه سانتی‌گراد (انحراف میانگین)}one{‫{formattedValue} درجه سانتی‌گراد (انحراف میانگین)}other{‫{formattedValue} درجه سانتی‌گراد (انحراف میانگین)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{‫{formattedValue} درجه سلسیوس (انحراف میانگین)}one{‫{formattedValue} درجه سلسیوس (انحراف میانگین)}other{‫{formattedValue} درجه سلسیوس (انحراف میانگین)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{‫{formattedValue} درجه فارنهایت (انحراف میانگین)}one{‫{formattedValue} درجه فارنهایت (انحراف میانگین)}other{‫{formattedValue} درجه فارنهایت (انحراف میانگین)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{‫{formattedValue} درجه فارنهایت (انحراف میانگین)}one{‫{formattedValue} درجه فارنهایت (انحراف میانگین)}other{‫{formattedValue} درجه فارنهایت (انحراف میانگین)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{‫{formattedValue} کلوین (انحراف میانگین)}one{‫{formattedValue} کلوین (انحراف میانگین)}other{‫{formattedValue} کلوین (انحراف میانگین)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{‫{formattedValue} کلوین (انحراف میانگین)}one{‫{formattedValue} کلوین (انحراف میانگین)}other{‫{formattedValue} کلوین (انحراف میانگین)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"زیر بغل"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"انگشت دست"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"پیشانی"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"گوش"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"مچ دست"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"مهبل"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"مکان اندازه‌گیری"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"مقدار پایه"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"تغییر از مقدار پایه"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{یک مایل}one{# مایل}other{# مایل}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{یک کیلومتر}one{# کیلومتر}other{# کیلومتر}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{۱یک مایل}one{# مایل}other{# مایل}}"</string>
@@ -741,7 +731,7 @@
     <string name="temperature_unit_kelvin_label" msgid="3786210768294615821">"کلوین"</string>
     <string name="help_and_feedback" msgid="4772169905005369871">"راهنمایی و بازخورد"</string>
     <string name="cant_see_all_your_apps_description" msgid="7344859063463536472">"اگر نمی‌توانید برنامه نصب‌شده‌ای را ببینید، ممکن است هنوز با Health Connect سازگار نباشد"</string>
-    <string name="things_to_try" msgid="8200374691546152703">"کارهای که می‌توانید امتحان کنید"</string>
+    <string name="things_to_try" msgid="8200374691546152703">"کارهایی که می‌توانید امتحان کنید"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"بررسی وجود به‌روزرسانی"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"مطمئن شوید برنامه‌های نصب‌شده به‌روز باشند"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"دیدن همه برنامه‌های سازگار"</string>

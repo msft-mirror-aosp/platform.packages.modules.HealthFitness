@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"છેલ્લા 24 કલાકમાં કઈ ઍપ દ્વારા તમારો ડેટા ઍક્સેસ કરવામાં આવ્યો છે, તે જુઓ"</string>
     <string name="today_header" msgid="1006837293203834373">"આજે"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ગઈ કાલે"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"વાંચો: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"લખો: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"પરવાનગીઓને મેનેજ કરો"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"સમય: %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"બૅકગ્રાઉન્ડમાં વાંચવું"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"બૅકગ્રાઉન્ડમાં વાંચવું"</string>
     <string name="background_read_description" msgid="5263745158443722174">"બૅકગ્રાઉન્ડમાં આરોગ્યનો ડેટા વાંચો"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"જૂનો હેલ્થ ડેટા વાંચો"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"વપરાયેલી સક્રિય કૅલરી"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"વપરાયેલી સક્રિય કૅલરી"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"વપરાયેલી સક્રિય કૅલરીનો ડેટા વાંચો"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"સમજાઈ ગયું"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"બૅકઅપ લો અને રિસ્ટોર કરો"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"નિકાસ અને આયાત"</string>
-    <string name="recurring_export" msgid="111638340692746218">"પુનરાવર્તિત નિકાસ"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"રિસ્ટોર કર્યાની તારીખ"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"અગાઉ નિકાસ કરેલો ડેટા લોડ કરો"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"ફ્રિકવન્સી પસંદ કરો"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"એકવાર ડેટા સાચવવાનું પસંદ કરો અથવા તેને નિયમિત સમયે ઑટોમૅટિક રીતે સાચવવા માટે સેટ કરો."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"દરરોજ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"દર અઠવાડિયે"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"દર મહિને"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"નિકાસ કરવા માટેનું લોકેશન"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"એન્ક્રિપ્શન ચાલુ કરો"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ડેટા સાચવવામાં આવે તે પહેલાં તેને એન્ક્રિપ્ટ કરવો જરૂરી છે. કોઈપણ વ્યક્તિ, Google કે Health Connect પણ તેને ઍક્સેસ કરી શકશે નહીં."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"તમારા એન્ક્રિપ્ટેડ ડેટાને સુરક્ષિત રાખવા માટે કોઈ પાસવર્ડ બનાવો. તમારો ડેટા આયાત કરવા અને તેને રિસ્ટોર કરવા માટે, તમને આ પાસવર્ડની જરૂર પડશે."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 પાઉન્ડ}one{# પાઉન્ડ}other{# પાઉન્ડ}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 સ્ટોન}one{# સ્ટોન}other{# સ્ટોન}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}one{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 ડિગ્રી સેલ્સિયસ}one{# ડિગ્રી સેલ્સિયસ}other{# ડિગ્રી સેલ્સિયસ}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 કેલ્વિન}one{# કેલ્વિન}other{# કેલ્વિન}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}one{#K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 કેલ્વિન}one{# કેલ્વિન}other{# કેલ્વિન}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}one{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ડિગ્રી ફૅરન્હાઇટ}one{# ડિગ્રી ફૅરન્હાઇટ}other{# ડિગ્રી ફૅરન્હાઇટ}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}one{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} ડિગ્રી સેલ્સિયસ}one{{formattedValue} ડિગ્રી સેલ્સિયસ}other{{formattedValue} ડિગ્રી સેલ્સિયસ}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}one{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} ડિગ્રી ફૅરન્હાઇટ}one{{formattedValue} ડિગ્રી ફૅરન્હાઇટ}other{{formattedValue} ડિગ્રી ફૅરન્હાઇટ}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}one{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} કેલ્વિન}one{{formattedValue} કેલ્વિન}other{{formattedValue} કેલ્વિન}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (સરેરાશ વેરિએશન)}one{{formattedValue}℃ (સરેરાશ વેરિએશન)}other{{formattedValue}℃ (સરેરાશ વેરિએશન)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} ડિગ્રી સેલ્સિયસ (સરેરાશ વેરિએશન)}one{{formattedValue} ડિગ્રી સેલ્સિયસ (સરેરાશ વેરિએશન)}other{{formattedValue} ડિગ્રી સેલ્સિયસ (સરેરાશ વેરિએશન)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (સરેરાશ વેરિએશન)}one{{formattedValue}℉ (સરેરાશ વેરિએશન)}other{{formattedValue}℉ (સરેરાશ વેરિએશન)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} ડિગ્રી ફૅરન્હાઇટ (સરેરાશ વેરિએશન)}one{{formattedValue} ડિગ્રી ફૅરન્હાઇટ (સરેરાશ વેરિએશન)}other{{formattedValue} ડિગ્રી ફૅરન્હાઇટ (સરેરાશ વેરિએશન)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (સરેરાશ વેરિએશન)}one{{formattedValue}K (સરેરાશ વેરિએશન)}other{{formattedValue}K (સરેરાશ વેરિએશન)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} કેલ્વિન (સરેરાશ વેરિએશન)}one{{formattedValue} કેલ્વિન (સરેરાશ વેરિએશન)}other{{formattedValue} કેલ્વિન (સરેરાશ વેરિએશન)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"બગલ"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"આંગળી"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"કપાળ"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"કાન"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"કાંડું"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"યોનિ"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"શરીરનું તાપમાન માપવાનું સ્થાન"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"બેઝલાઇન"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"બેઝલાઇનમાં વેરિએશન"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 માઇલ}one{# માઇલ}other{# માઇલ}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 કિલોમીટર}one{# કિલોમીટર}other{# કિલોમીટર}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 માઇલ}one{# માઇલ}other{# માઇલ}}"</string>
