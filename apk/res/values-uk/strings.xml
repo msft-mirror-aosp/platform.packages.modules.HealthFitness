@@ -21,7 +21,7 @@
     <string name="health_connect_summary" msgid="6401520186678972547">"Керуйте доступом додатків до даних про здоров’я"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Дозволи й дані"</string>
     <string name="home_subtitle" msgid="1750033322147357163">"Керуйте даними про здоров’я та фізичну активність на телефоні, а також визначайте додатки, які матимуть доступ до даних"</string>
-    <string name="data_title" msgid="4456619761533380816">"Дані та доступ"</string>
+    <string name="data_title" msgid="4456619761533380816">"Дані й доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Усі категорії"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Переглянути всі категорії"</string>
     <string name="no_data" msgid="1906986019249068659">"Немає даних"</string>
@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Дізнайтеся, які додатки отримували доступ до ваших даних за останні 24 години"</string>
     <string name="today_header" msgid="1006837293203834373">"Сьогодні"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Учора"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Зчитано: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Записано: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Керувати дозволами"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Час: %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Перегляд у фоновому режимі"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"перегляд у фоновому режимі"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Переглядати дані про здоров’я у фоновому режимі"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Переглядати попередні дані про здоров’я"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Спалені калорії під час активності"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"кількість спалених активних калорій"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Зчитувати кількість спалених активних калорій"</string>
@@ -270,7 +271,7 @@
     <string name="navigation_selected_day" msgid="2510843479734091348">"Вибраний день"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Попередній день"</string>
     <string name="default_error" msgid="7966868260616403475">"Сталася помилка. Повторіть спробу."</string>
-    <string name="health_permission_header_description" msgid="7497601695462373927">"Додатки з цим дозволом можуть переглядати й записувати дані про ваше здоров’я та фізичну активність."</string>
+    <string name="health_permission_header_description" msgid="7497601695462373927">"Додатки з цим дозволом можуть переглядати й записувати дані про ваше здоров’я і фізичну активність."</string>
     <string name="connected_apps_text" msgid="1177626440966855831">"Укажіть, які додатки можуть отримувати доступ до даних, збережених у Health Connect. Виберіть додаток, щоб переглянути дані, які він може читати або записувати."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"З дозволом на доступ"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Без дозволу на доступ"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервне копіювання й відновлення"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Експорт і імпорт"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Регулярний експорт"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Відновити дані"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Завантажити раніше експортовані дані"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Виберіть частоту"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Виберіть, як зберігатимуться дані: один раз або автоматично із заданою періодичністю."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Щодня"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Щотижня"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Щомісяця"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Розташування експорту"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Увімкніть шифрування"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перш ніж зберегти дані, їх потрібно зашифрувати. Доступу до них не матиме ніхто, навіть Google чи Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Створіть пароль, щоб захистити свої зашифровані дані. Він знадобиться вам для імпорту й відновлення даних."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 фунт}one{# фунт}few{# фунти}many{# фунтів}other{# фунта}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 стоун}one{# стоун}few{# стоуни}many{# стоунів}other{# стоуна}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}many{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}many{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 градус Цельсія}one{# градус Цельсія}few{# градуси Цельсія}many{# градусів Цельсія}other{# градуса Цельсія}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}few{# K}many{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}few{# K}many{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 кельвін}one{# кельвін}few{# кельвіни}many{# кельвінів}other{# кельвіна}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}many{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}many{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 градус Фаренгейта}one{# градус Фаренгейта}few{# градуси Фаренгейта}many{# градусів Фаренгейта}other{# градуса Фаренгейта}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}few{{formattedValue} ℃}many{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} градус Цельсія}one{{formattedValue} градус Цельсія}few{{formattedValue} градуси Цельсія}many{{formattedValue} градусів Цельсія}other{{formattedValue} градуса Цельсія}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}few{{formattedValue} ℉}many{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} градус Фаренгейта}one{{formattedValue} градус Фаренгейта}few{{formattedValue} градуси Фаренгейта}many{{formattedValue} градусів Фаренгейта}other{{formattedValue} градуса Фаренгейта}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}few{{formattedValue} K}many{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} кельвін}one{{formattedValue} кельвін}few{{formattedValue} кельвіни}many{{formattedValue} кельвінів}other{{formattedValue} кельвіна}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (середнє відхилення)}one{{formattedValue} ℃ (середнє відхилення)}few{{formattedValue} ℃ (середнє відхилення)}many{{formattedValue} ℃ (середнє відхилення)}other{{formattedValue} ℃ (середнє відхилення)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} градус Цельсія (середнє відхилення)}one{{formattedValue} градус Цельсія (середнє відхилення)}few{{formattedValue} градуси Цельсія (середнє відхилення)}many{{formattedValue} градусів Цельсія (середнє відхилення)}other{{formattedValue} градуса Цельсія (середнє відхилення)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (середнє відхилення)}one{{formattedValue} ℉ (середнє відхилення)}few{{formattedValue} ℉ (середнє відхилення)}many{{formattedValue} ℉ (середнє відхилення)}other{{formattedValue} ℉ (середнє відхилення)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} градус Фаренгейта (середнє відхилення)}one{{formattedValue} градус Фаренгейта (середнє відхилення)}few{{formattedValue} градуси Фаренгейта (середнє відхилення)}many{{formattedValue} градусів Фаренгейта (середнє відхилення)}other{{formattedValue} градуса Фаренгейта (середнє відхилення)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (середнє відхилення)}one{{formattedValue} K (середнє відхилення)}few{{formattedValue} K (середнє відхилення)}many{{formattedValue} K (середнє відхилення)}other{{formattedValue} K (середнє відхилення)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} кельвін (середнє відхилення)}one{{formattedValue} кельвін (середнє відхилення)}few{{formattedValue} кельвіни (середнє відхилення)}many{{formattedValue} кельвінів (середнє відхилення)}other{{formattedValue} кельвіна (середнє відхилення)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Пахва"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Палець руки"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Чоло"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Вухо"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Зап’ястя"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Піхва"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Місце вимірювання"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Базовий показник"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Відхилення від базового показника"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миля}one{# миля}few{# милі}many{# миль}other{# милі}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 км}one{# км}few{# км}many{# км}other{# км}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 миля}one{# миля}few{# милі}many{# миль}other{# милі}}"</string>
@@ -730,7 +720,7 @@
     <string name="distance_unit_kilometers_label" msgid="1361363017122240294">"Кілометри"</string>
     <string name="distance_unit_miles_label" msgid="848850214987608211">"Милі"</string>
     <string name="height_unit_centimeters_label" msgid="4096031670561995574">"Сантиметри"</string>
-    <string name="height_unit_feet_label" msgid="3311723678628261399">"Фути та дюйми"</string>
+    <string name="height_unit_feet_label" msgid="3311723678628261399">"Фути й дюйми"</string>
     <string name="weight_unit_pound_label" msgid="8210663393844989211">"Фунти"</string>
     <string name="weight_unit_kilogram_label" msgid="6623938920860887238">"Кілограми"</string>
     <string name="weight_unit_stone_label" msgid="3063787243474847180">"Стоуни"</string>

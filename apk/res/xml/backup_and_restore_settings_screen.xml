@@ -19,9 +19,9 @@
         android:key="settings_category"
         android:title="@string/export_and_import_title">
         <com.android.healthconnect.controller.shared.preference.HealthPreference
-            android:key="recurring_export"
+            android:key="export_automatically"
             android:icon="?attr/repeatIcon"
-            android:title="@string/recurring_export" />
+            android:title="@string/export_automatically" />
         <com.android.healthconnect.controller.shared.preference.HealthPreference
             android:key="restore_data"
             android:icon="?attr/settingsBackupRestoreIcon"

@@ -18,11 +18,13 @@ package com.android.healthconnect.controller.tests.export
 
 import android.content.Context
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -30,17 +32,27 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.export.ExportFrequencyFragment
+import com.android.healthconnect.controller.export.api.ExportFrequency
+import com.android.healthconnect.controller.export.api.ExportSettings
+import com.android.healthconnect.controller.export.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
 
 @HiltAndroidTest
 class ExportFrequencyFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
+
+    @BindValue
+    val exportSettingsViewModel: ExportSettingsViewModel =
+        Mockito.mock(ExportSettingsViewModel::class.java)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -54,6 +66,9 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_isDisplayedCorrectly() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
         onView(withId(R.id.export_frequency_header_repeat_icon)).check(matches(isDisplayed()))
@@ -74,6 +89,9 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_backButton_isClickable() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
         onView(withId(R.id.export_back_button)).check(matches(isClickable()))
@@ -81,6 +99,9 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_clicksNextButton_navigatesToDestinationFragment() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
         launchFragment<ExportFrequencyFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.export_nav_graph)
             navHostController.setCurrentDestination(R.id.exportFrequencyFragment)
@@ -92,5 +113,35 @@ class ExportFrequencyFragmentTest {
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.exportDestinationFragment)
+    }
+
+    @Test
+    fun exportFrequencyFragment_storedFrequencyIsDaily_dailyButtonChecked() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle())
+
+        onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun exportFrequencyFragment_storedFrequencyIsWeekly_weeklyButtonChecked() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle())
+
+        onView(withId(R.id.radio_button_weekly)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun exportFrequencyFragment_storedFrequencyIsMonthly_monthlyButtonChecked() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_MONTHLY))
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle())
+
+        onView(withId(R.id.radio_button_monthly)).check(matches(isChecked()))
     }
 }
