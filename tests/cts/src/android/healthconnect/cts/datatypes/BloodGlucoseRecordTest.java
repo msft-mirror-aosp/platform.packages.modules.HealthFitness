@@ -126,8 +126,8 @@ public class BloodGlucoseRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodGlucoseRecord.class)
                                 .build());
-        BloodGlucoseRecord testRecord = getCompleteBloodGlucoseRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BloodGlucoseRecord testRecord =
+                (BloodGlucoseRecord) TestUtils.insertRecord(getCompleteBloodGlucoseRecord());
         List<BloodGlucoseRecord> newBloodGlucoseRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodGlucoseRecord.class)
@@ -144,8 +144,8 @@ public class BloodGlucoseRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BloodGlucoseRecord testRecord = getCompleteBloodGlucoseRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BloodGlucoseRecord testRecord =
+                (BloodGlucoseRecord) TestUtils.insertRecord(getCompleteBloodGlucoseRecord());
         List<BloodGlucoseRecord> newBloodGlucoseRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodGlucoseRecord.class)
@@ -168,8 +168,8 @@ public class BloodGlucoseRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BloodGlucoseRecord testRecord = getCompleteBloodGlucoseRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BloodGlucoseRecord insertedRecord =
+                (BloodGlucoseRecord) TestUtils.insertRecord(getCompleteBloodGlucoseRecord());
         List<BloodGlucoseRecord> newBloodGlucoseRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodGlucoseRecord.class)
@@ -181,11 +181,11 @@ public class BloodGlucoseRecordTest {
         assertThat(newBloodGlucoseRecords.size() - oldBloodGlucoseRecords.size()).isEqualTo(1);
         BloodGlucoseRecord newRecord =
                 newBloodGlucoseRecords.get(newBloodGlucoseRecords.size() - 1);
-        assertThat(newRecord.equals(testRecord)).isTrue();
-        assertThat(newRecord.getSpecimenSource()).isEqualTo(testRecord.getSpecimenSource());
-        assertThat(newRecord.getLevel()).isEqualTo(testRecord.getLevel());
-        assertThat(newRecord.getRelationToMeal()).isEqualTo(testRecord.getRelationToMeal());
-        assertThat(newRecord.getMealType()).isEqualTo(testRecord.getMealType());
+        assertThat(newRecord.equals(insertedRecord)).isTrue();
+        assertThat(newRecord.getSpecimenSource()).isEqualTo(insertedRecord.getSpecimenSource());
+        assertThat(newRecord.getLevel()).isEqualTo(insertedRecord.getLevel());
+        assertThat(newRecord.getRelationToMeal()).isEqualTo(insertedRecord.getRelationToMeal());
+        assertThat(newRecord.getMealType()).isEqualTo(insertedRecord.getMealType());
     }
 
     @Test
@@ -254,8 +254,8 @@ public class BloodGlucoseRecordTest {
     @Test
     public void testDeleteBloodGlucoseRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBloodGlucoseRecord(), getCompleteBloodGlucoseRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseBloodGlucoseRecord(), getCompleteBloodGlucoseRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -295,14 +295,14 @@ public class BloodGlucoseRecordTest {
     public void testDeleteBloodGlucoseRecord_usingIds() throws InterruptedException {
         List<Record> records =
                 List.of(getBaseBloodGlucoseRecord(), getCompleteBloodGlucoseRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : insertedRecords) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
-        for (Record record : records) {
+        for (Record record : insertedRecords) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
         }
     }
@@ -493,8 +493,8 @@ public class BloodGlucoseRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBloodGlucoseRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteBloodGlucoseRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

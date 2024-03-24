@@ -41,19 +41,21 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Соңғы 24 сағатта деректерді пайдаланған қолданбаларды көре аласыз."</string>
     <string name="today_header" msgid="1006837293203834373">"Бүгін"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Кеше"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Оқу: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Жазу: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Рұқсаттарды басқару"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Уақыт: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Қимыл"</string>
-    <string name="activity_category_lowercase" msgid="3007220578865400601">"қимыл"</string>
+    <string name="activity_category_lowercase" msgid="3007220578865400601">"Қимыл"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Дене өлшемдері"</string>
     <string name="body_measurements_category_lowercase" msgid="2259696274629666992">"дене өлшемдері"</string>
     <string name="sleep_category_uppercase" msgid="3422452674899706786">"Ұйқы"</string>
     <string name="sleep_category_lowercase" msgid="842609634386839011">"ұйқы"</string>
-    <string name="vitals_category_uppercase" msgid="8982333138032938623">"Тіршілік көрсеткіштері"</string>
-    <string name="vitals_category_lowercase" msgid="4664457787866407963">"тіршілік көрсеткіштері"</string>
+    <string name="vitals_category_uppercase" msgid="8982333138032938623">"Маңызды көрсеткіштер"</string>
+    <string name="vitals_category_lowercase" msgid="4664457787866407963">"маңызды көрсеткіштер"</string>
     <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"Етеккір циклін бақылау"</string>
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"етеккір циклін бақылау"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Тамақтану"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Фондық режимде оқу"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"фондық режимде оқу"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Денсаулық туралы деректерді фондық режимде оқу"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Бұрынғы денсаулық деректерін оқу"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Қимыл кезінде жұмсалған калория"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"қимыл кезінде жұмсалған калория"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Қимыл кезінде жұмсалған калория деректерін оқу"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Түсінікті"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Сақтық көшірме жасап, қалпына келтіру"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспорттау және импорттау"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Мерзімді түрде экспорттау"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Деректерді қалпына келтіру"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Бұрын экспортталған деректерді жүктеу"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Жиілікті таңдау"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Деректерді сақтау мүмкіндігін бір рет таңдаңыз немесе белгілі бір уақытта автоматты түрде сақталатын етіп реттеңіз."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Күн сайын"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Апта сайын"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ай сайын"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Экспортталған дерек локациясы"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Шифрлауды қосу"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Деректер сақталмас бұрын шифрлануы керек. Оларды ешкім, тіпті Google немесе Health Connect пайдалана алмайтын болады."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Шифрланған деректерді басқару үшін құпия сөз жасаңыз. Деректерді импорттау және қалпына келтіру үшін құпия сөз қажет болады."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 фунт}other{# фунт}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 стоун}other{# стоун}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1℃}other{#℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{Цельсий бойынша 1 градус}other{Цельсий бойынша # градус}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 К}other{# К}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 кельвин}other{# кельвин}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1℉}other{#℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{Фаренгейт бойынша 1 градус}other{Фаренгейт бойынша # градус}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} Цельсий градусы}other{{formattedValue} Цельсий градусы}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} Фаренгейт градусы}other{{formattedValue} Фаренгейт градусы}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} кельвин}other{{formattedValue} кельвин}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (орташа айырмашылық)}other{{formattedValue}℃ (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} Цельсий градусы (орташа айырмашылық)}other{{formattedValue} Цельсий градусы (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (орташа айырмашылық)}other{{formattedValue}℉ (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Фаренгейт градусы (орташа айырмашылық)}other{{formattedValue} Фаренгейт градусы (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (орташа айырмашылық)}other{{formattedValue}K (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} кельвин (орташа айырмашылық)}other{{formattedValue} кельвин (орташа айырмашылық)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Қолтық"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Саусақ"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Маңдай"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Құлақ"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Білезік"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Қынап"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Температура өлшенген орын"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Негізгі"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Негізгі температурамен салыстырғандағы айырмашылық"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миля}other{# миля}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 км}other{# км}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 миля}other{# миля}}"</string>
@@ -751,15 +741,15 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Автоматты түрде жою"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Автоматты түрде жою"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Деректерді белгілі бір уақыттан кейін өшіретін етіп жоспарлау арқылы оның Health Connect-те сақталу мерзімін басқаруға болады."</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Белгілі бір уақыттан кейін өшетін етіп жоспарлау арқылы деректердің Health Connect-те сақталу мерзімін реттеуге болады."</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Автоматты түрде жою туралы толық ақпарат"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Деректерді автоматты түрде жою"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{# айдан кейін}other{# айдан кейін}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Ешқашан"</string>
     <string name="range_off" msgid="8178520557618184215">"Өшірулі"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Бұл параметрлерді өзгерткенде, Health Connect жаңа параметрлерді күшіне енгізу үшін ағымдағы деректерді жояды."</string>
-    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Деректер # айдан кейін автоматты жойылсын ба?}other{Деректер # айдан кейін автоматты жойылсын ба?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect жаңа деректерді # айдан кейін автоматты жояды. Мұны орнатсаңыз, # айдан ұзақ сақталған бұрынғы деректер де жойылады.}other{Health Connect жаңа деректерді # айдан кейін автоматты жояды. Мұны орнатсаңыз, # айдан ұзақ сақталған бұрынғы деректер де жойылады.}}"</string>
+    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Деректер # айдан кейін автоматты түрде жойылсын ба?}other{Деректер # айдан кейін автоматты түрде жойылсын ба?}}"</string>
+    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect жаңа деректерді # айдан кейін автоматты түрде жояды. Мұны орнатсаңыз, # айдан ұзақ сақталған бұрынғы деректер де жойылады.}other{Health Connect жаңа деректерді # айдан кейін автоматты түрде жояды. Мұны орнатсаңыз, # айдан ұзақ сақталған бұрынғы деректер де жойылады.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Автоматты жоюды реттеу"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Бұрыннан бар деректер жойылады"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # айдан асқан барлық деректі жояды. Бұл өзгертулер жалғанған қолданбаларда көрсетілуі үшін бір күн кетуі мүмкін.}other{Health Connect # айдан асқан барлық деректі жояды. Бұл өзгертулер жалғанған қолданбаларда көрсетілуі үшін бір күн кетуі мүмкін.}}"</string>
@@ -874,7 +864,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"Қолданба дереккөздері"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Деректер жиынының қалай өзгеретінін көру үшін тізімге қолданба дереккөздерін енгізіңіз. Бұл тізімнен қолданбаны өшірсеңіз, деректер жиынына үлес қоса алмайсыз, бірақ жазу рұқсаттарыңыз болады."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Қолданба дереккөзі жоқ."</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"<xliff:g id="CATEGORY_NAME">%1$s</xliff:g> деректерін жазуға қолданба рұқсаттарын бергеннен кейін, дереккөздер осы жерде көрсетіледі."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"\"<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>\" санатындағы деректерді жазуға қолданба рұқсаттарын бергеннен кейін, дереккөздер осы жерде көрсетіледі."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Дереккөздер мен басымдық туралы ақпарат"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Қолданба қосу"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Қолданба дереккөздерін өзгерту"</string>

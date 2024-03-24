@@ -242,8 +242,9 @@ public class SkinTemperatureRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SkinTemperatureRecord.class)
                                 .build());
-        SkinTemperatureRecord testRecord = getSkinTemperatureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(Collections.singletonList(getSkinTemperatureRecord()));
+        SkinTemperatureRecord testRecord = (SkinTemperatureRecord) insertedRecords.get(0);
 
         List<SkinTemperatureRecord> newSkinTemperatureRecords =
                 TestUtils.readRecords(
@@ -266,8 +267,10 @@ public class SkinTemperatureRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        SkinTemperatureRecord testRecord = getSkinTemperatureRecordWithBaseline(38);
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getSkinTemperatureRecordWithBaseline(38)));
+        SkinTemperatureRecord testRecord = (SkinTemperatureRecord) insertedRecords.get(0);
 
         List<SkinTemperatureRecord> newSkinTemperatureRecords =
                 TestUtils.readRecords(
@@ -294,8 +297,10 @@ public class SkinTemperatureRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        SkinTemperatureRecord testRecord = getSkinTemperatureRecordWithBaseline(38);
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getSkinTemperatureRecordWithBaseline(38)));
+        SkinTemperatureRecord testRecord = (SkinTemperatureRecord) insertedRecords.get(0);
         List<SkinTemperatureRecord> newSkinTemperatureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SkinTemperatureRecord.class)
@@ -365,8 +370,10 @@ public class SkinTemperatureRecordTest {
     @Test
     public void testDeleteSkinTemperatureRecord_recordIdFilters() throws InterruptedException {
         List<Record> records =
-                List.of(getSkinTemperatureRecordWithBaseline(37.5), getSkinTemperatureRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getSkinTemperatureRecordWithBaseline(37.5),
+                                getSkinTemperatureRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -405,10 +412,12 @@ public class SkinTemperatureRecordTest {
     @Test
     public void testDeleteSkinTemperatureRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getSkinTemperatureRecordWithBaseline(37.2), getSkinTemperatureRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getSkinTemperatureRecordWithBaseline(37.2),
+                                getSkinTemperatureRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -606,8 +615,8 @@ public class SkinTemperatureRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getSkinTemperatureRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getSkinTemperatureRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -667,11 +676,10 @@ public class SkinTemperatureRecordTest {
         TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.VITALS);
 
         List<Record> records =
-                List.of(
-                        getSkinTemperatureRecordWithDeltas(0.55, -0.55),
-                        getSkinTemperatureRecordWithDeltas(0.22, -0.22));
-
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getSkinTemperatureRecordWithDeltas(0.55, -0.55),
+                                getSkinTemperatureRecordWithDeltas(0.22, -0.22)));
 
         AggregateRecordsResponse<TemperatureDelta> response =
                 TestUtils.getAggregateResponse(

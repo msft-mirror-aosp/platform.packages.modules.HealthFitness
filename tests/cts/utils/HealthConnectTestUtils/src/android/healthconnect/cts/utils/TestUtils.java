@@ -205,6 +205,16 @@ public final class TestUtils {
     }
 
     /**
+     * Insert record to the database.
+     *
+     * @param record record to insert
+     * @return inserted record
+     */
+    public static Record insertRecord(Record record) throws InterruptedException {
+        return insertRecords(Collections.singletonList(record)).get(0);
+    }
+
+    /**
      * Inserts records to the database.
      *
      * @param records records to insert

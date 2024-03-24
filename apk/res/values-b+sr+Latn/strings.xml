@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Pogledajte koje aplikacije su pristupile podacima u poslednja 24 sata"</string>
     <string name="today_header" msgid="1006837293203834373">"Danas"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Juče"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Čitanje: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Pisanje: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljaj dozvolama"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Vreme: %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Čitanje u pozadini"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"čitanje u pozadini"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Čitaj podatke o zdravlju u pozadini"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Čitaj ranije podatke o zdravlju"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Utrošene aktivne kalorije"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"utrošene aktivne kalorije"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Čitanje utrošenih aktivnih kalorija"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Važi"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pravljenje rezervnih kopija i vraćanje"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Uvoz i izvoz"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Izvoz koji se ponavlja"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Vrati podatke"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Učitajte podatke koji su prethodno izvezeni"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Izaberite učestalost"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Izaberite jednokratno čuvanje podataka ili podesite automatsko čuvanje u redovnim intervalima."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Jednom dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Jednom nedeljno"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Jednom mesečno"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Lokacija za izvoz"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Uključite šifrovanje"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci moraju da se šifruju pre čuvanja. Niko neće moći da im pristupi, čak ni Google ni Povezivanje zdravlja."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Napravite lozinku da biste zaštitili šifrovane podatke. Ova lozinka vam treba za uvoz i vraćanje podataka."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 funta}one{# funta}few{# funte}other{# funti}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 ston}one{# ston}few{# stona}other{# stona}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 stepen Celzijusa}one{# stepen Celzijusa}few{# stepena Celzijusa}other{# stepeni Celzijusa}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}few{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}few{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}few{# kelvina}other{# kelvina}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stepen Farenhajta}one{# stepen Farenhajta}few{# stepena Farenhajta}other{# stepeni Farenhajta}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}few{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} stepen Celzijusa}one{{formattedValue} stepen Celzijusa}few{{formattedValue} stepena Celzijusa}other{{formattedValue} stepeni Celzijusa}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}few{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} stepen Farenhajta}one{{formattedValue} stepen Farenhajta}few{{formattedValue} stepena Farenhajta}other{{formattedValue} stepeni Farenhajta}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}few{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}few{{formattedValue} kelvina}other{{formattedValue} kelvina}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (prosečno odstupanje)}one{{formattedValue} ℃ (prosečno odstupanje)}few{{formattedValue} ℃ (prosečno odstupanje)}other{{formattedValue} ℃ (prosečno odstupanje)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} stepen Celzijusa (prosečno odstupanje)}one{{formattedValue} stepen Celzijusa (prosečno odstupanje)}few{{formattedValue} stepena Celzijusa (prosečno odstupanje)}other{{formattedValue} stepeni Celzijusa (prosečno odstupanje)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (prosečno odstupanje)}one{{formattedValue} ℉ (prosečno odstupanje)}few{{formattedValue} ℉ (prosečno odstupanje)}other{{formattedValue} ℉ (prosečno odstupanje)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} stepen Farenhajta (prosečno odstupanje)}one{{formattedValue} stepen Farenhajta (prosečno odstupanje)}few{{formattedValue} stepena Farenhajta (prosečno odstupanje)}other{{formattedValue} stepeni Farenhajta (prosečno odstupanje)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (prosečno odstupanje)}one{{formattedValue} K (prosečno odstupanje)}few{{formattedValue} K (prosečno odstupanje)}other{{formattedValue} K (prosečno odstupanje)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (prosečno odstupanje)}one{{formattedValue} kelvin (prosečno odstupanje)}few{{formattedValue} kelvina (prosečno odstupanje)}other{{formattedValue} kelvina (prosečno odstupanje)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Pazuh"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Prst"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Čelo"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Uvo"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Zglob"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokacija merenja"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Referentna vrednost"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Odstupanje od referentne vrednosti"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milja}one{# milja}few{# milje}other{# milja}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}few{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milja}one{# milja}few{# milje}other{# milja}}"</string>
@@ -758,7 +748,7 @@
     <string name="range_never" msgid="4429478261788361233">"Nikad"</string>
     <string name="range_off" msgid="8178520557618184215">"Isključeno"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Kada promenite ova podešavanja, Povezivanje zdravlja briše postojeće podatke u skladu sa novim podešavanjima"</string>
-    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Želite da automatski izbrišete podatke posle # meseca?}one{Želite da automatski izbrišete podatke posle # meseca?}few{Želite da automatski izbrišete podatke posle # meseca?}other{Želite da automatski izbrišete podatke posle # meseci?}}"</string>
+    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Želite da automatski brišete podatke posle # meseca?}one{Želite da automatski brišete podatke posle # meseca?}few{Želite da automatski brišete podatke posle # meseca?}other{Želite da automatski brišete podatke posle # meseci?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Povezivanje zdravlja će automatski izbrisati nove podatke posle # meseca. Ovo podešavanje će izbrisati i postojeće podatke starije od # meseca.}one{Povezivanje zdravlja će automatski izbrisati nove podatke posle # meseca. Ovo podešavanje će izbrisati i postojeće podatke starije od # meseca.}few{Povezivanje zdravlja će automatski izbrisati nove podatke posle # meseca. Ovo podešavanje će izbrisati i postojeće podatke starije od # meseca.}other{Povezivanje zdravlja će automatski izbrisati nove podatke posle # meseci. Ovo podešavanje će izbrisati i postojeće podatke starije od # meseci.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Podesi automatsko brisanje"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Postojeći podaci će se izbrisati"</string>

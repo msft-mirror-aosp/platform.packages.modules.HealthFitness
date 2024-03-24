@@ -137,8 +137,10 @@ public class WheelchairPushesRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WheelchairPushesRecord.class)
                                 .build());
-        WheelchairPushesRecord testRecord = getCompleteWheelchairPushesRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WheelchairPushesRecord testRecord =
+                (WheelchairPushesRecord)
+                        TestUtils.insertRecord(getCompleteWheelchairPushesRecord());
         List<WheelchairPushesRecord> newWheelchairPushesRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WheelchairPushesRecord.class)
@@ -160,8 +162,10 @@ public class WheelchairPushesRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        WheelchairPushesRecord testRecord = getCompleteWheelchairPushesRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WheelchairPushesRecord testRecord =
+                (WheelchairPushesRecord)
+                        TestUtils.insertRecord(getCompleteWheelchairPushesRecord());
         List<WheelchairPushesRecord> newWheelchairPushesRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WheelchairPushesRecord.class)
@@ -187,8 +191,10 @@ public class WheelchairPushesRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        WheelchairPushesRecord testRecord = getCompleteWheelchairPushesRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WheelchairPushesRecord testRecord =
+                (WheelchairPushesRecord)
+                        TestUtils.insertRecord(getCompleteWheelchairPushesRecord());
         List<WheelchairPushesRecord> newWheelchairPushesRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WheelchairPushesRecord.class)
@@ -423,8 +429,9 @@ public class WheelchairPushesRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteWheelchairPushesRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteWheelchairPushesRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -458,16 +465,16 @@ public class WheelchairPushesRecordTest {
 
     private void readWheelchairPushesRecordUsingIds(List<Record> recordList)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+        List<Record> records = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<WheelchairPushesRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(WheelchairPushesRecord.class);
-        for (Record record : insertedRecords) {
+        for (Record record : records) {
             request.addId(record.getMetadata().getId());
         }
         List<WheelchairPushesRecord> result = TestUtils.readRecords(request.build());
-        assertThat(result).hasSize(insertedRecords.size());
-        assertThat(result.size()).isEqualTo(insertedRecords.size());
-        assertThat(result).containsExactlyElementsIn(insertedRecords);
+        assertThat(result).hasSize(records.size());
+        assertThat(result.size()).isEqualTo(records.size());
+        assertThat(result).containsExactlyElementsIn(records);
     }
 
     @Test(expected = IllegalArgumentException.class)
