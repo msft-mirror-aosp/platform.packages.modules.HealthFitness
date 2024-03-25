@@ -72,7 +72,7 @@ object Constants {
     const val INPUT_TYPE_INT = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_TEXT = InputType.TYPE_CLASS_TEXT
 
-    val ALL_PERMISSIONS =
+    val HEALTH_PERMISSIONS =
         arrayOf(
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
             "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
@@ -148,6 +148,13 @@ object Constants {
             "android.permission.health.WRITE_WHEELCHAIR_PUSHES",
             "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING",
             "android.permission.health.WRITE_EXERCISE_ROUTE")
+
+    val BG_READ_PERMISSION = "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
+    val HA_READ_PERMISSION = "android.permission.health.READ_HEALTH_DATA_HISTORY"
+
+    val ADDITIONAL_PERMISSIONS = arrayOf(BG_READ_PERMISSION, HA_READ_PERMISSION)
+
+    val ALL_PERMISSIONS = HEALTH_PERMISSIONS + ADDITIONAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
     enum class HealthDataCategory(
