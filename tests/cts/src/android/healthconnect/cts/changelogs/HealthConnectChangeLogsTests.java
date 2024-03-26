@@ -264,7 +264,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
-        StepsRecord stepsRecord = getStepsRecord(/* steps = */ 10, "stepsId");
+        StepsRecord stepsRecord = getStepsRecord(/* steps= */ 10, "stepsId");
         insertRecords(ImmutableList.of(stepsRecord));
         deleteRecordsByIdFilter(
                 ImmutableList.of(RecordIdFilter.fromClientRecordId(StepsRecord.class, "stepsId")));
@@ -412,16 +412,16 @@ public class HealthConnectChangeLogsTests {
                 insertRecords(
                                 ImmutableList.of(
                                         getStepsRecord(
-                                                /* steps = */ 10, new Metadata.Builder().build())))
+                                                /* steps= */ 10, new Metadata.Builder().build())))
                         .get(0)
                         .getMetadata();
 
-        updateRecords(ImmutableList.of(getStepsRecord(/* steps = */ 123, insertedRecordMetadata)));
+        updateRecords(ImmutableList.of(getStepsRecord(/* steps= */ 123, insertedRecordMetadata)));
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
         assertThat(response.getUpsertedRecords())
                 .comparingElementsUsing(STEPS_RECORD_CORRESPONDENCE)
-                .containsExactly(getStepsRecord(/* steps = */ 123, insertedRecordMetadata));
+                .containsExactly(getStepsRecord(/* steps= */ 123, insertedRecordMetadata));
         assertThat(response.getDeletedLogs()).isEmpty();
     }
 
@@ -434,15 +434,15 @@ public class HealthConnectChangeLogsTests {
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
         Metadata insertedRecordMetadata =
-                insertRecords(ImmutableList.of(getStepsRecord(/* steps = */ 10, "stepsId")))
+                insertRecords(ImmutableList.of(getStepsRecord(/* steps= */ 10, "stepsId")))
                         .get(0)
                         .getMetadata();
-        updateRecords(ImmutableList.of(getStepsRecord(/* steps = */ 123, "stepsId")));
+        updateRecords(ImmutableList.of(getStepsRecord(/* steps= */ 123, "stepsId")));
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
         assertThat(response.getUpsertedRecords())
                 .comparingElementsUsing(STEPS_RECORD_CORRESPONDENCE)
-                .containsExactly(getStepsRecord(/* steps = */ 123, insertedRecordMetadata));
+                .containsExactly(getStepsRecord(/* steps= */ 123, insertedRecordMetadata));
         assertThat(response.getDeletedLogs()).isEmpty();
     }
 
@@ -458,12 +458,12 @@ public class HealthConnectChangeLogsTests {
                 insertRecords(
                                 ImmutableList.of(
                                         getStepsRecord(
-                                                /* steps = */ 10, new Metadata.Builder().build())))
+                                                /* steps= */ 10, new Metadata.Builder().build())))
                         .get(0)
                         .getMetadata();
         assertThat(insertedRecordMetadata.getClientRecordId()).isNull();
-        updateRecords(ImmutableList.of(getStepsRecord(/* steps = */ 123, insertedRecordMetadata)));
-        deleteRecords(ImmutableList.of(getStepsRecord(/* steps = */ 123, insertedRecordMetadata)));
+        updateRecords(ImmutableList.of(getStepsRecord(/* steps= */ 123, insertedRecordMetadata)));
+        deleteRecords(ImmutableList.of(getStepsRecord(/* steps= */ 123, insertedRecordMetadata)));
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
         assertThat(response.getUpsertedRecords()).isEmpty();
@@ -480,8 +480,8 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
-        String insertedRecordId = insertRecordAndGetId(getStepsRecord(/* steps = */ 10, "stepsId"));
-        updateRecords(ImmutableList.of(getStepsRecord(/* steps = */ 123, "stepsId")));
+        String insertedRecordId = insertRecordAndGetId(getStepsRecord(/* steps= */ 10, "stepsId"));
+        updateRecords(ImmutableList.of(getStepsRecord(/* steps= */ 123, "stepsId")));
         deleteRecordsByIdFilter(
                 ImmutableList.of(RecordIdFilter.fromClientRecordId(StepsRecord.class, "stepsId")));
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
