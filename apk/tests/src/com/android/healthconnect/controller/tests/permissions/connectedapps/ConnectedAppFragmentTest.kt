@@ -43,7 +43,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.ConnectedAppFragment
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
@@ -409,7 +409,7 @@ class ConnectedAppFragmentTest {
         val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
@@ -438,7 +438,7 @@ class ConnectedAppFragmentTest {
             MutableLiveData<Set<DataTypePermission>>(setOf())
         }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
@@ -468,7 +468,7 @@ class ConnectedAppFragmentTest {
             MutableLiveData<Set<DataTypePermission>>(setOf())
         }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent(rationaleAction))

@@ -24,7 +24,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSessionDetail
 import com.android.healthconnect.controller.dataentries.formatters.shared.EntryFormatter
-import com.android.healthconnect.controller.dataentries.formatters.shared.SessionDetailsFormatter
+import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.DistanceUnit.KILOMETERS
 import com.android.healthconnect.controller.dataentries.units.DistanceUnit.MILES
 import com.android.healthconnect.controller.dataentries.units.SpeedConverter.convertToDistancePerHour
@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 /** Formatter for printing Speed series data. */
 class SpeedFormatter @Inject constructor(@ApplicationContext private val context: Context) :
-    EntryFormatter<SpeedRecord>(context), SessionDetailsFormatter<SpeedRecord> {
+    EntryFormatter<SpeedRecord>(context), RecordDetailsFormatter<SpeedRecord> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)
 

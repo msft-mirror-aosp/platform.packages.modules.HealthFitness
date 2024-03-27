@@ -93,7 +93,7 @@ import com.android.healthconnect.controller.dataentries.formatters.DurationForma
 import com.android.healthconnect.controller.dataentries.formatters.DurationFormatter.formatDurationShort
 import com.android.healthconnect.controller.dataentries.formatters.shared.BaseFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.LengthFormatter
-import com.android.healthconnect.controller.dataentries.formatters.shared.SessionDetailsFormatter
+import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -106,7 +106,7 @@ class ExerciseSessionFormatter
 constructor(
     @ApplicationContext private val context: Context,
     private val exerciseSegmentTypeFormatter: ExerciseSegmentTypeFormatter
-) : BaseFormatter<ExerciseSessionRecord>(context), SessionDetailsFormatter<ExerciseSessionRecord> {
+) : BaseFormatter<ExerciseSessionRecord>(context), RecordDetailsFormatter<ExerciseSessionRecord> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)
 

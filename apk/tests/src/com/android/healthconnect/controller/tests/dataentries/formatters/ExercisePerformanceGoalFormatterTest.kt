@@ -33,7 +33,9 @@ import android.health.connect.datatypes.units.Velocity
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.ExercisePerformanceGoalFormatter
+import com.android.healthconnect.controller.dataentries.units.DistanceUnit
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
+import com.android.healthconnect.controller.dataentries.units.WeightUnit
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -66,6 +68,7 @@ class ExercisePerformanceGoalFormatterTest {
 
     @Test
     fun formatGoal_weightPerformanceGoal() = runBlocking {
+        unitPreferences.setWeightUnit(WeightUnit.POUND)
         Truth.assertThat(
                 formatter.formatGoal(
                     WeightGoal(Mass.fromGrams(1000.0)), unitPreferences = unitPreferences))
@@ -111,6 +114,7 @@ class ExercisePerformanceGoalFormatterTest {
 
     @Test
     fun formatGoal_speedPerformanceGoal() = runBlocking {
+        unitPreferences.setDistanceUnit(DistanceUnit.KILOMETERS)
         Truth.assertThat(
                 formatter.formatGoal(
                     SpeedGoal(
