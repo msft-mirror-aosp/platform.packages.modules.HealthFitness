@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Oglejte si, katere aplikacije so dostopale do vaših podatkov v zadnjih 24 urah."</string>
     <string name="today_header" msgid="1006837293203834373">"Danes"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Včeraj"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Branje: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Zapisovanje: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljanje dovoljenj"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Čas: %s"</string>
@@ -84,8 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Branje v ozadju"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"branje v ozadju"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Branje podatkov o zdravju v ozadju"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="history_read_description" msgid="7347109472601749963">"Branje preteklih podatkov o zdravju"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Porabljene kalorije med dejavnostjo"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"porabljene kalorije med dejavnostjo"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Branje porabljenih kalorij med dejavnostjo"</string>
@@ -309,16 +310,20 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Razumem"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Varnostno kopiranje in obnovitev"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Izvoz in uvoz"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Ponavljajoč se izvoz"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
     <string name="restore_data" msgid="3401173690437871417">"Obnovitev podatkov"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Nalaganje predhodno izvoženih podatkov"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Izbira pogostosti"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Izberite enkratno shranjevanje podatkov ali samodejno shranjevanje ob rednih urah."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Tedensko"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mesečno"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Lokacija izvoza"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Vklopite šifriranje"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podatke morate šifrirati, preden jih shranite. Nihče, niti Google ali Health Connect, ne bo imel dostopa do njih."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Ustvarite geslo za zaščito šifriranih podatkov. To geslo boste potrebovali za uvoz in obnovitev podatkov."</string>
@@ -656,36 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 funt}one{# funt}two{# funta}few{# funti}other{# funtov}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}one{# stone}two{# stone}few{# stone}other{# stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}two{# ℃}few{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}two{# ℃}few{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 stopinja Celzija}one{# stopinja Celzija}two{# stopinji Celzija}few{# stopinje Celzija}other{# stopinj Celzija}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}two{# K}few{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}two{# K}few{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}two{# kelvina}few{# kelvine}other{# kelvinov}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}two{# ℉}few{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}two{# ℉}few{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stopinja Fahrenheita}one{# stopinja Fahrenheita}two{# stopinji Fahrenheita}few{# stopinje Fahrenheita}other{# stopinj Fahrenheita}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}two{{formattedValue} ℃}few{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} stopinja Celzija}one{{formattedValue} stopinja Celzija}two{{formattedValue} stopinji Celzija}few{{formattedValue} stopinje Celzija}other{{formattedValue} stopinj Celzija}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}two{{formattedValue} ℉}few{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} stopinja Fahrenheita}one{{formattedValue} stopinja Fahrenheita}two{{formattedValue} stopinji Fahrenheita}few{{formattedValue} stopinje Fahrenheita}other{{formattedValue} stopinj Fahrenheita}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}two{{formattedValue} K}few{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}two{{formattedValue} kelvina}few{{formattedValue} kelvini}other{{formattedValue} kelvinov}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (povpr. razlika)}one{{formattedValue} ℃ (povpr. razlika)}two{{formattedValue} ℃ (povpr. razlika)}few{{formattedValue} ℃ (povpr. razlika)}other{{formattedValue} ℃ (povpr. razlika)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} stopinja Celzija (povprečna razlika)}one{{formattedValue} stopinja Celzija (povprečna razlika)}two{{formattedValue} stopinji Celzija (povprečna razlika)}few{{formattedValue} stopinje Celzija (povprečna razlika)}other{{formattedValue} stopinj Celzija (povprečna razlika)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (povpr. razlika)}one{{formattedValue} ℉ (povpr. razlika)}two{{formattedValue} ℉ (povpr. razlika)}few{{formattedValue} ℉ (povpr. razlika)}other{{formattedValue} ℉ (povpr. razlika)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} stopinja Fahrenheita (povprečna razlika)}one{{formattedValue} stopinja Fahrenheita (povprečna razlika)}two{{formattedValue} stopinji Fahrenheita (povprečna razlika)}few{{formattedValue} stopinje Fahrenheita (povprečna razlika)}other{{formattedValue} stopinj Fahrenheita (povprečna razlika)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (povpr. razlika)}one{{formattedValue} K (povpr. razlika)}two{{formattedValue} K (povpr. razlika)}few{{formattedValue} K (povpr. razlika)}other{{formattedValue} K (povpr. razlika)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (povprečna razlika)}one{{formattedValue} kelvin (povprečna razlika)}two{{formattedValue} kelvina (povprečna razlika)}few{{formattedValue} kelvini (povprečna razlika)}other{{formattedValue} kelvinov (povprečna razlika)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Pazduha"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Prst"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Čelo"</string>
@@ -696,12 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Uho"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Zapestje"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Nožnica"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokacija meritve"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Izhodiščna vrednost"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Razlika glede na izhodiščno vrednost"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milja}one{# milja}two{# milji}few{# milje}other{# milj}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}two{# km}few{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milja}one{# milja}two{# milji}few{# milje}other{# milj}}"</string>

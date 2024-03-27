@@ -47,6 +47,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
+import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -146,6 +147,75 @@ public class HealthConnectChangeLogsTests {
 
         assertThat(changeLogsRequest.getToken()).isEqualTo(tokenResponse.getToken());
         assertThat(changeLogsRequest.getPageSize()).isEqualTo(1000);
+    }
+
+    @Test
+    public void testGetChangeLogsRequest_pageSizeOutOfBounds_throwsException()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
+
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                new ChangeLogsRequest.Builder(tokenResponse.getToken())
+                                        .setPageSize(5001)
+                                        .build());
+        assertThat(thrown).hasMessageThat().isEqualTo("Maximum page size: 5000, requested: 5001");
+
+        thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                new ChangeLogsRequest.Builder(tokenResponse.getToken())
+                                        .setPageSize(0)
+                                        .build());
+        assertThat(thrown).hasMessageThat().isEqualTo("Minimum page size: 1, requested: 0");
+
+        thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                new ChangeLogsRequest.Builder(tokenResponse.getToken())
+                                        .setPageSize(-1)
+                                        .build());
+        assertThat(thrown).hasMessageThat().isEqualTo("Minimum page size: 1, requested: -1");
+    }
+
+    @Test
+    public void testGetChangeLogsRequest_pageSizeWithinBounds_succeeds()
+            throws InterruptedException {
+        ChangeLogTokenResponse tokenResponse =
+                getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
+
+        assertThat(
+                        new ChangeLogsRequest.Builder(tokenResponse.getToken())
+                                .setPageSize(1)
+                                .build()
+                                .getPageSize())
+                .isEqualTo(1);
+        assertThat(
+                        new ChangeLogsRequest.Builder(tokenResponse.getToken())
+                                .setPageSize(5000)
+                                .build()
+                                .getPageSize())
+                .isEqualTo(5000);
+    }
+
+    @Test
+    public void testChangeLogs_invalidToken_throwsException() {
+        Throwable thrown =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> getChangeLogs(new ChangeLogsRequest.Builder("abc").build()));
+        assertThat(thrown).hasMessageThat().contains("Invalid token");
+
+        thrown =
+                assertThrows(
+                        HealthConnectException.class,
+                        () -> getChangeLogs(new ChangeLogsRequest.Builder("").build()));
+        assertThat(thrown).hasMessageThat().contains("Invalid token");
     }
 
     @Test
