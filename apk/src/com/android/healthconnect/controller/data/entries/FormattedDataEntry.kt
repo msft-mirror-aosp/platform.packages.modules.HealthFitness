@@ -15,7 +15,9 @@
  */
 package com.android.healthconnect.controller.data.entries
 
+import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
+import android.health.connect.datatypes.PlannedExerciseStep
 import com.android.healthconnect.controller.shared.DataType
 import java.time.Instant
 
@@ -90,4 +92,16 @@ sealed class FormattedEntry(open val uuid: String) {
     data class EntryDateSectionHeader(
         val date: String,
     ) : FormattedEntry(date)
+
+    data class PlannedExerciseStepEntry(
+        val step: PlannedExerciseStep,
+        val title: String,
+        val titleA11y: String
+    ) : FormattedEntry(uuid = "")
+
+    data class ExercisePerformanceGoalEntry(
+        val goal: ExercisePerformanceGoal,
+        val title: String,
+        val titleA11y: String
+    ) : FormattedEntry(uuid = "")
 }

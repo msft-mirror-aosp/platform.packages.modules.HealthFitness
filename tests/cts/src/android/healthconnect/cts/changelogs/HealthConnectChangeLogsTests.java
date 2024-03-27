@@ -57,6 +57,8 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.HeartRateRecord;
+import android.health.connect.datatypes.InstantRecord;
+import android.health.connect.datatypes.IntervalRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
@@ -130,7 +132,7 @@ public class HealthConnectChangeLogsTests {
     }
 
     @Test
-    public void testBuildChangeLogTokenRequest_hasFieldsSet() {
+    public void testGetChangeLogToken_hasFieldsSet() {
         ChangeLogTokenRequest changeLogTokenRequest =
                 new ChangeLogTokenRequest.Builder().addRecordType(StepsRecord.class).build();
 
@@ -139,7 +141,59 @@ public class HealthConnectChangeLogsTests {
     }
 
     @Test
-    public void testBuildChangeLogsRequest_hasFieldsSet() throws InterruptedException {
+    public void testGetChangeLogToken_emptyRecordTypes_throwsException() {
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () -> getChangeLogToken(new ChangeLogTokenRequest.Builder().build()));
+        assertThat(thrown).hasMessageThat().contains("Requested record types must not be empty");
+    }
+
+    @Test
+    public void testGetChangeLogToken_superRecordTypes_throwsException() {
+        String errorMessage = "Requested record types must not contain any of ";
+        Throwable thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                getChangeLogToken(
+                                        new ChangeLogTokenRequest.Builder()
+                                                .addRecordType(Record.class)
+                                                .build()));
+        assertThat(thrown)
+                .hasMessageThat()
+                .isEqualTo(errorMessage + "[android.health.connect.datatypes.Record]");
+
+        thrown =
+                assertThrows(
+                        IllegalArgumentException.class,
+                        () ->
+                                getChangeLogToken(
+                                        new ChangeLogTokenRequest.Builder()
+                                                .addRecordType(HeartRateRecord.class)
+                                                .addRecordType(InstantRecord.class)
+                                                .addRecordType(IntervalRecord.class)
+                                                .addRecordType(StepsRecord.class)
+                                                .build()));
+        assertThat(thrown).hasMessageThat().startsWith(errorMessage);
+
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("android.health.connect.datatypes.InstantRecord");
+        assertThat(thrown)
+                .hasMessageThat()
+                .contains("android.health.connect.datatypes.IntervalRecord");
+
+        assertThat(thrown)
+                .hasMessageThat()
+                .doesNotContain("android.health.connect.datatypes.HeartRateRecord");
+        assertThat(thrown)
+                .hasMessageThat()
+                .doesNotContain("android.health.connect.datatypes.StepsRecord");
+    }
+
+    @Test
+    public void testGetChangeLogs_hasFieldsSet() throws InterruptedException {
         ChangeLogTokenResponse tokenResponse =
                 getChangeLogToken(getChangeLogTokenRequestForTestRecordTypes().build());
         ChangeLogsRequest changeLogsRequest =
@@ -625,15 +679,6 @@ public class HealthConnectChangeLogsTests {
         assertThat(newResponse.getUpsertedRecords()).isEmpty();
         assertThat(newResponse.hasMorePages()).isFalse();
         assertThat(newResponse.getNextChangesToken()).isEqualTo(newChangeLogsRequest.getToken());
-    }
-
-    @Test
-    public void testGetChangeLogToken_emptyRecordTypes_throwsException() throws Exception {
-        Throwable thrown =
-                assertThrows(
-                        IllegalArgumentException.class,
-                        () -> getChangeLogToken(new ChangeLogTokenRequest.Builder().build()));
-        assertThat(thrown).hasMessageThat().contains("Requested record types must not be empty");
     }
 
     @Test
