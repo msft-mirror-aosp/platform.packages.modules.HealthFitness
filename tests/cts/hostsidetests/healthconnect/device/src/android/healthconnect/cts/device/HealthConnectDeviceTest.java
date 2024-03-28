@@ -37,12 +37,14 @@ import static android.healthconnect.cts.utils.PermissionHelper.grantPermission;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeAndThenGrantHealthPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokeHealthPermissions;
 import static android.healthconnect.cts.utils.PermissionHelper.revokePermission;
+import static android.healthconnect.cts.utils.TestUtils.createReadRecordsRequestUsingFilters;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.deleteTestData;
 import static android.healthconnect.cts.utils.TestUtils.fetchDataOriginsPriorityOrder;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getApplicationInfo;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIdFilters;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecordsForPriority;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateDataOriginPriorityOrder;
@@ -78,12 +80,15 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ExerciseSegment;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
+import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
+import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
@@ -345,6 +350,57 @@ public class HealthConnectDeviceTest {
     }
 
     @Test
+    public void testAppWithReadPerms_readOtherAppsDataByFilters_expectSuccess() throws Exception {
+        List<String> insertedRecordIds =
+                List.of(
+                        APP_WITH_WRITE_PERMS_ONLY.insertRecord(getStepsRecordWithEmptyMetaData()),
+                        APP_WITH_WRITE_PERMS_ONLY.insertRecord(
+                                getHeartRateRecordWithEmptyMetadata()),
+                        APP_WITH_WRITE_PERMS_ONLY.insertRecord(
+                                buildSleepSessionWithEmptyMetadata()),
+                        APP_WITH_WRITE_PERMS_ONLY.insertRecord(
+                                getDistanceRecordWithEmptyMetadata()),
+                        APP_WITH_WRITE_PERMS_ONLY.insertRecord(
+                                getTotalCaloriesBurnedRecordWithEmptyMetadata()),
+                        APP_WITH_WRITE_PERMS_ONLY.insertRecord(
+                                buildExerciseSessionWithEmptyMetadata()),
+                        APP_A_WITH_READ_WRITE_PERMS.insertRecord(getStepsRecordWithEmptyMetaData()),
+                        APP_A_WITH_READ_WRITE_PERMS.insertRecord(
+                                getHeartRateRecordWithEmptyMetadata()),
+                        APP_A_WITH_READ_WRITE_PERMS.insertRecord(
+                                buildSleepSessionWithEmptyMetadata()),
+                        APP_A_WITH_READ_WRITE_PERMS.insertRecord(
+                                getDistanceRecordWithEmptyMetadata()),
+                        APP_A_WITH_READ_WRITE_PERMS.insertRecord(
+                                getTotalCaloriesBurnedRecordWithEmptyMetadata()),
+                        APP_A_WITH_READ_WRITE_PERMS.insertRecord(
+                                buildExerciseSessionWithEmptyMetadata()));
+
+        List<String> readRecordIds = new ArrayList<>();
+        List<String> packageNameFilters =
+                List.of(
+                        APP_A_WITH_READ_WRITE_PERMS.getPackageName(),
+                        APP_WITH_WRITE_PERMS_ONLY.getPackageName());
+        List<Class<? extends Record>> classes =
+                List.of(
+                        StepsRecord.class,
+                        HeartRateRecord.class,
+                        DistanceRecord.class,
+                        TotalCaloriesBurnedRecord.class,
+                        ExerciseSessionRecord.class,
+                        SleepSessionRecord.class);
+        for (Class<? extends Record> clazz : classes) {
+            readRecordIds.addAll(
+                    getRecordIds(
+                            APP_A_WITH_READ_WRITE_PERMS.readRecords(
+                                    createReadRecordsRequestUsingFilters(
+                                            clazz, packageNameFilters))));
+        }
+
+        assertThat(readRecordIds).containsExactlyElementsIn(insertedRecordIds);
+    }
+
+    @Test
     public void testAppWithWritePermsOnly_readDataByIdForOwnApp_success() throws Exception {
         List<Record> ownRecords = TestUtils.insertRecords(List.of(STEPS_1000, STEPS_2000));
         List<String> ownRecordIds =
@@ -568,59 +624,64 @@ public class HealthConnectDeviceTest {
     }
 
     @Test
-    public void testAppCanReadChangeLogsUsingDataOriginFilters() throws Exception {
+    public void testAppWithReadPerms_getChangeTokensAndLogsOfOtherApps_expectSuccess()
+            throws Exception {
         String changeLogTokenForAppB =
                 APP_B_WITH_READ_WRITE_PERMS.getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
+                                .addRecordType(StepsRecord.class)
+                                .addRecordType(HeartRateRecord.class)
+                                .addRecordType(BasalMetabolicRateRecord.class)
+                                .addRecordType(ExerciseSessionRecord.class)
                                 .addDataOriginFilter(
                                         getDataOrigin(APP_A_WITH_READ_WRITE_PERMS.getPackageName()))
+                                .addRecordType(StepsRecord.class)
+                                .addRecordType(HeartRateRecord.class)
+                                .addRecordType(DistanceRecord.class)
+                                .addRecordType(TotalCaloriesBurnedRecord.class)
+                                .addRecordType(SleepSessionRecord.class)
+                                .addRecordType(ExerciseSessionRecord.class)
                                 .build());
         String changeLogTokenForAppA =
                 APP_A_WITH_READ_WRITE_PERMS.getChangeLogToken(
                         new ChangeLogTokenRequest.Builder()
+                                .addRecordType(StepsRecord.class)
+                                .addRecordType(HeartRateRecord.class)
+                                .addRecordType(BasalMetabolicRateRecord.class)
+                                .addRecordType(ExerciseSessionRecord.class)
                                 .addDataOriginFilter(
                                         getDataOrigin(APP_B_WITH_READ_WRITE_PERMS.getPackageName()))
                                 .build());
-
+        List<Record> recordsB = TEST_RECORDS;
         List<Record> recordsA =
                 List.of(
                         getStepsRecord(getEmptyMetadata()),
                         getHeartRateRecord(getEmptyMetadata()),
-                        getBasalMetabolicRateRecord(getEmptyMetadata()));
-
+                        getDistanceRecordWithEmptyMetadata(),
+                        buildExerciseSessionWithEmptyMetadata(),
+                        buildSleepSessionWithEmptyMetadata(),
+                        getTotalCaloriesBurnedRecordWithEmptyMetadata());
         List<String> recordIdsA = APP_A_WITH_READ_WRITE_PERMS.insertRecords(recordsA);
+        List<String> recordIdsB = APP_B_WITH_READ_WRITE_PERMS.insertRecords(recordsB);
+        APP_B_WITH_READ_WRITE_PERMS.deleteRecords(getRecordIdFilters(recordIdsB, recordsB));
 
-        List<Record> updatedRecordsA =
-                List.of(
-                        getStepsRecord(getMetadataForId(recordIdsA.get(0))),
-                        getHeartRateRecord(getMetadataForId(recordIdsA.get(1))),
-                        getBasalMetabolicRateRecord(getMetadataForId(recordIdsA.get(2))));
-        APP_A_WITH_READ_WRITE_PERMS.updateRecords(updatedRecordsA);
-
-        List<String> bRecordIds = APP_B_WITH_READ_WRITE_PERMS.insertRecords(TEST_RECORDS);
-
-        APP_B_WITH_READ_WRITE_PERMS.deleteRecords(getRecordIdFilters(bRecordIds, TEST_RECORDS));
-
-        ChangeLogsResponse response =
+        ChangeLogsResponse responseB =
                 APP_B_WITH_READ_WRITE_PERMS.getChangeLogs(
                         new ChangeLogsRequest.Builder(changeLogTokenForAppB).build());
+        ChangeLogsResponse responseA =
+                APP_A_WITH_READ_WRITE_PERMS.getChangeLogs(
+                        new ChangeLogsRequest.Builder(changeLogTokenForAppA).build());
 
-        assertThat(response.getUpsertedRecords()).hasSize(recordsA.size());
+        assertThat(responseB.getUpsertedRecords()).hasSize(recordsA.size());
         assertThat(
-                        response.getUpsertedRecords().stream()
+                        responseB.getUpsertedRecords().stream()
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
                 .containsExactlyElementsIn(recordIdsA);
-
-        assertThat(response.getDeletedLogs()).isEmpty();
-
-        response =
-                APP_A_WITH_READ_WRITE_PERMS.getChangeLogs(
-                        new ChangeLogsRequest.Builder(changeLogTokenForAppA).build());
-
-        assertThat(response.getUpsertedRecords()).isEmpty();
-        assertThat(response.getDeletedLogs()).hasSize(TEST_RECORDS.size());
+        assertThat(responseB.getDeletedLogs()).isEmpty();
+        assertThat(responseA.getUpsertedRecords()).isEmpty();
+        assertThat(responseA.getDeletedLogs()).hasSize(recordsB.size());
     }
 
     @Test

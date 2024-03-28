@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"मागील २४ तासांमध्ये कोणत्या अ‍ॅप्सनी तुमचा डेटा अ‍ॅक्सेस केला आहे ते पहा"</string>
     <string name="today_header" msgid="1006837293203834373">"आज"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"काल"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"रीड करा: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"राइट करा: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"परवानग्या व्यवस्थापित करा"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"वेळ: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"बॅकग्राउंडमध्ये वाचन"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"बॅकग्राउंडमध्ये वाचन"</string>
     <string name="background_read_description" msgid="5263745158443722174">"बॅकग्राउंडमध्ये आरोग्याशी संबंधित डेटा वाचा"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"आरोग्यासंबंधित मागील डेटा रीड करा"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"घटवलेल्या अ‍ॅक्टिव्ह कॅलरी"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"घटवलेल्या अ‍ॅक्टिव्ह कॅलरी"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"घटवलेल्या अ‍ॅक्टिव्ह कॅलरी रीड करा"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"मागील २४ तासांमध्ये अ‍ॅक्सेस केले होते"</string>
     <string name="app_access_title" msgid="7137018424885371763">"अ‍ॅप अ‍ॅक्सेस"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"तुमच्याकडे सध्या कोणतीही कंपॅटिबल अ‍ॅप्स इंस्टॉल केलेली नाहीत"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"अतिरिक्त अ‍ॅक्सेस"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"काढून टाकलेल्या अ‍ॅप परवानग्या"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ने <xliff:g id="APP_DATA">%s</xliff:g> साठी परवानग्या काढून टाकल्या"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ने <xliff:g id="APP_DATA_0">%1$s</xliff:g> आणि <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> साठी परवानग्या काढून टाकल्या"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect हे अ‍ॅप परवानग्या का काढून टाकते"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"एखादे अ‍ॅप Google Play वरून निलंबित केल्यास किंवा काढून टाकल्यास, Health Connect हे आपोआप त्याच्या परवानग्या काढून टाकते.\n\nयाचा अर्थ असा, की अ‍ॅप यापुढे Health Connect मध्ये स्टोअर केलेला डेटा अ‍ॅक्सेस करू शकत नाही. या अ‍ॅपने याआधी डेटा राइट केलेला असल्यास, ते इनॅक्टिव्ह अ‍ॅप्सच्या सूचीमध्ये दिसते."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"समजले"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"बॅकअप घ्या आणि रिस्टोअर करा"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"एक्सपोर्ट आणि इंपोर्ट करा"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"डेटा रिस्टोअर करा"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"यापूर्वी एक्सपोर्ट केलेला डेटा लोड करा"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"वारंवारता निवडा"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एकदा सेव्ह करणे निवडा किंवा तो नियमित वेळी आपोआप सेव्ह करणे सेट करा."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"दररोज"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"दर आठवड्याला"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"दर महिन्याला"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"स्थान एक्सपोर्ट करा"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"एन्क्रिप्शन सुरू करा"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"डेटा सेव्ह केला जाण्यापूर्वी तो एन्क्रिप्ट केला जाणे आवश्यक आहे. कोणालाही, अगदी Google किंवा Health Connect लादेखील तो ॲक्सेस करता येणार नाही."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"तुमच्या एन्क्रिप्ट केलेला डेटाचे संरक्षण करण्यासाठी पासवर्ड तयार करा. तुमचा डेटा इंपोर्ट आणि रिस्टोअर करण्यासाठी तुम्हाला हा पासवर्ड आवश्यक असेल."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"पासवर्ड"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"पासवर्ड रिपीट करा"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"तुम्ही तुमचा पासवर्ड विसरल्यास आणि तुमचा फोन गमवल्यास, Health Connect हे तुमचा सेव्ह केलेला डेटा रिकव्हर करण्यात तुम्हाला मदत करू शकत नाही."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"मागे जा"</string>
+    <string name="export_next_button" msgid="657930567137105172">"पुढे जा"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect सह सुरुवात करा"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect हे तुमचा आरोग्य आणि फिटनेसशी संबंधित डेटा स्टोअर करते व तुम्हाला तुमच्या फोनवरील वेगवेगळी अ‍ॅप्स सिंक करण्याचा सोपा मार्ग देते"</string>
     <string name="share_data" msgid="3481932156368883946">"तुमच्या अ‍ॅप्ससह डेटा शेअर करा"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{एक पाउंड}other{# पाउंड}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{एक स्टोन}other{# स्टोन}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{१ ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{१℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{१ अंश सेल्सियस}other{# अंश सेल्सियस}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{१ K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{१ केल्विन}other{# केल्विन}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{१ ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{१℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{१ अंश फेरनहाइट}other{# अंश फेरनहाइट}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} अंश सेल्सियस}other{{formattedValue} अंश सेल्सियस}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} अंश फेरनहाइट}other{{formattedValue} अंश फेरनहाइट}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} केल्विन}other{{formattedValue} केल्विन}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (सरासरी फरक)}other{{formattedValue}℃ (सरासरी फरक)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} अंश सेल्सियस (सरासरी फरक)}other{{formattedValue} अंश सेल्सियस (सरासरी फरक)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (सरासरी फरक)}other{{formattedValue}℉ (सरासरी फरक)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} अंश फेरनहाइट (सरासरी फरक)}other{{formattedValue} अंश फेरनहाइट (सरासरी फरक)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (सरासरी फरक)}other{{formattedValue}K (सरासरी फरक)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} केल्विन (सरासरी फरक)}other{{formattedValue} केल्विन (सरासरी फरक)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"काख"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"बोट"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"कपाळ"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"कान"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"मनगट"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"योनिमार्ग"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"मापनाचे स्थान"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"बेसलाइन"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"बेसलाइनच्या तुलनेतील फरक"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{एक मैल}other{# मैल}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{एक किमी}other{# किमी}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{एक मैल}other{# मैल}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"या मार्गाला अनुमती द्या"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"सर्व मार्गांना अनुमती द्या"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"अनुमती देऊ नका"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"नेहमी अनुमती द्या"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"व्यायामाचा मार्ग शेअर करणे"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"कनेक्ट केलेल्या ॲप्समधून हे ॲप व्यायामाचे मार्ग कसे अ‍ॅक्सेस करते ते नियंत्रित करा"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"प्रत्येक वेळी विचारा"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"अनुमती देऊ नका"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"दोन्ही डेटा प्रकार सुरू करायचे आहेत का?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"दोन्ही डेटा प्रकार बंद करायचे आहेत का?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला व्यायाम मार्ग सुरू करण्यासाठी रीड अ‍ॅक्सेस हवा आहे"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला व्यायाम मार्ग सुरू करण्यासाठी व्यायामाचा अ‍ॅक्सेस हवा आहे"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"होय"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"नाही"</string>
     <string name="back_button" msgid="780519527385993407">"मागे जा"</string>
     <string name="loading" msgid="2526615755685950317">"लोड करत आहे…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"इंटिग्रेशन प्रगतीपथावर आहे"</string>

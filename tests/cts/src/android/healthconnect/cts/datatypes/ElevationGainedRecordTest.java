@@ -142,8 +142,9 @@ public class ElevationGainedRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(ElevationGainedRecord.class)
                                 .build());
-        ElevationGainedRecord testRecord = getCompleteElevationGainedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        ElevationGainedRecord testRecord =
+                (ElevationGainedRecord) TestUtils.insertRecord(getCompleteElevationGainedRecord());
         List<ElevationGainedRecord> newElevationGainedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(ElevationGainedRecord.class)
@@ -164,8 +165,9 @@ public class ElevationGainedRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        ElevationGainedRecord testRecord = getCompleteElevationGainedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        ElevationGainedRecord testRecord =
+                (ElevationGainedRecord) TestUtils.insertRecord(getCompleteElevationGainedRecord());
         List<ElevationGainedRecord> newElevationGainedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(ElevationGainedRecord.class)
@@ -191,8 +193,9 @@ public class ElevationGainedRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        ElevationGainedRecord testRecord = getCompleteElevationGainedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        ElevationGainedRecord testRecord =
+                (ElevationGainedRecord) TestUtils.insertRecord(getCompleteElevationGainedRecord());
         List<ElevationGainedRecord> newElevationGainedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(ElevationGainedRecord.class)
@@ -248,8 +251,10 @@ public class ElevationGainedRecordTest {
     @Test
     public void testDeleteElevationGainedRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseElevationGainedRecord(), getCompleteElevationGainedRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseElevationGainedRecord(),
+                                getCompleteElevationGainedRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -288,10 +293,12 @@ public class ElevationGainedRecordTest {
     @Test
     public void testDeleteElevationGainedRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseElevationGainedRecord(), getCompleteElevationGainedRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseElevationGainedRecord(),
+                                getCompleteElevationGainedRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -555,8 +562,9 @@ public class ElevationGainedRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteElevationGainedRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteElevationGainedRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

@@ -47,6 +47,7 @@
   <uses-permission android:name="android.permission.health.READ_RESPIRATORY_RATE" />
   <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE" />
   <uses-permission android:name="android.permission.health.READ_SEXUAL_ACTIVITY" />
+  <uses-permission android:name="android.permission.health.READ_SKIN_TEMPERATURE" />
   <uses-permission android:name="android.permission.health.READ_SLEEP" />
   <uses-permission android:name="android.permission.health.READ_SPEED" />
   <uses-permission android:name="android.permission.health.READ_STEPS" />
@@ -83,6 +84,7 @@
   <uses-permission android:name="android.permission.health.WRITE_RESPIRATORY_RATE" />
   <uses-permission android:name="android.permission.health.WRITE_RESTING_HEART_RATE" />
   <uses-permission android:name="android.permission.health.WRITE_SEXUAL_ACTIVITY" />
+  <uses-permission android:name="android.permission.health.WRITE_SKIN_TEMPERATURE" />
   <uses-permission android:name="android.permission.health.WRITE_SLEEP" />
   <uses-permission android:name="android.permission.health.WRITE_SPEED" />
   <uses-permission android:name="android.permission.health.WRITE_STEPS" />
@@ -93,6 +95,9 @@
   <uses-permission android:name="android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING" />
   <uses-permission android:name="android.permission.health.WRITE_EXERCISE_ROUTE" />
 
+  <!--  Additional permissions -->
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
 
   <application
     android:icon="@mipmap/ic_launcher"

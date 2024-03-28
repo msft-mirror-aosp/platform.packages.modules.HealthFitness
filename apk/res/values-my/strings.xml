@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"ပြီးခဲ့သော ၂၄ နာရီတွင် မည်သည့်အက်ပ်က သင့်ဒေတာကိုသုံးထားကြောင်း ကြည့်နိုင်သည်"</string>
     <string name="today_header" msgid="1006837293203834373">"ယနေ့"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"မနေ့က"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"ဖတ်ရန်- %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"ရေးရန်- %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">"၊ "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ခွင့်ပြုချက်များကို စီမံရန်"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"အချိန်- %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"နောက်ခံတွင် ဖတ်ခြင်း"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"နောက်ခံတွင် ဖတ်ခြင်း"</string>
     <string name="background_read_description" msgid="5263745158443722174">"နောက်ခံတွင် ကျန်းမာရေးဒေတာကို ဖတ်နိုင်သည်"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"ယခင်ကျန်းမာရေးဒေတာကို ဖတ်နိုင်သည်"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"လောင်ကျွမ်းသည့် လှုပ်ရှားကယ်လိုရီ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"လောင်ကျွမ်းသည့် လှုပ်ရှားကယ်လိုရီ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"လောင်ကျွမ်းသည့် လှုပ်ရှားကယ်လိုရီကို ဖတ်ရန်"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"ပြီးခဲ့သော ၂၄ နာရီအတွင်း သုံးထားသည်"</string>
     <string name="app_access_title" msgid="7137018424885371763">"အက်ပ်သုံးခွင့်"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"တွဲသုံးနိုင်သောအက်ပ်များကို လောလောဆယ် ထည့်သွင်းမထားပါ"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"နောက်ထပ်သုံးခွင့်"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ဖယ်ရှားထားသည့် အက်ပ်ခွင့်ပြုချက်များ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect က <xliff:g id="APP_DATA">%s</xliff:g> အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားလိုက်သည်"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect က <xliff:g id="APP_DATA_0">%1$s</xliff:g> နှင့် <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားလိုက်သည်"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect က အက်ပ်ခွင့်ပြုချက်များကို ဖယ်ရှားရသည့် အကြောင်းရင်း"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"အက်ပ်ကို Google Play မှ ဆိုင်းငံ့ (သို့) ဖယ်ရှားလိုက်ပါက Health Connect သည် ၎င်း၏ ခွင့်ပြုချက်များကို အလိုအလျောက် ဖယ်ရှားသည်။\n\nဆိုလိုသည်မှာ အက်ပ်သည် Health Connect တွင် သိမ်းထားသည့် ဒေတာကို မသုံးနိုင်တော့ပါ။ ဤအက်ပ်တွင် ယခင်ရေးသွင်းထားသည့် ဒေတာရှိပါက အသုံးမပြုသော အက်ပ်စာရင်းတွင် ၎င်းကို မြင်ရသည်။"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ရပြီ"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"အရန်သိမ်းခြင်း၊ ပြန်ယူခြင်း"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ထုတ်ယူခြင်း၊ ထည့်သွင်းခြင်း"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"ဒေတာ ပြန်ယူရန်"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"ထုတ်ယူထားသော ဒေတာကို ယခင်က ဖွင့်ထားသည်"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"အကြိမ်ရေ ရွေးခြင်း"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ဒေတာကို တစ်ကြိမ်သိမ်းရန် ရွေးနိုင်သည် (သို့) ပုံမှန်အချိန်များတွင် အလိုအလျောက်သိမ်းရန် သတ်မှတ်နိုင်သည်။"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"နေ့စဉ်"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"အပတ်စဉ်"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"လစဉ်"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"တည်နေရာ ထုတ်ယူခြင်း"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"အသွင်ဝှက်ခြင်း ဖွင့်ပါ"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ဒေတာကို မသိမ်းမီ အသွင်ဝှက်ထားရမည်။ Google (သို့) ‘ကျန်းမာရေး အချိတ်အဆက်’ ပင်လျှင် ၎င်းကို သုံးနိုင်မည်မဟုတ်ပါ။"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"အသွင်ဝှက်ထားသော သင့်ဒေတာကို ကာကွယ်ရန် စကားဝှက်ပြုလုပ်ပါ။ သင့်ဒေတာကို ထည့်သွင်းပြီး ပြန်ယူရန် ဤစကားဝှက် လိုအပ်ပါမည်။"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"စကားဝှက်"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"စကားဝှက် ပြန်ရိုက်ပါ"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"စကားဝှက်မေ့သွားပြီး သင့်ဖုန်းပျောက်သွားပါက ‘ကျန်းမာရေး အချိတ်အဆက်’ သည် သိမ်းထားသော သင့်ဒေတာကို ပြန်လည်ရယူရာတွင် မကူညီနိုင်ပါ။"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect စတင်အသုံးပြုခြင်း"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect သည် သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး ၎င်းဖြင့် သင့်ဖုန်းပေါ်ရှိ အက်ပ်အမျိုးမျိုးကို ရိုးရှင်းစွာစင့်ခ်လုပ်နိုင်သည်"</string>
     <string name="share_data" msgid="3481932156368883946">"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{၁ ပေါင်}other{# ပေါင်}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{၁ စတုန်}other{# စတုန်}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{၁ ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{၁ ဒီဂရီ စင်တီဂရိတ်}other{# ဒီဂရီ စင်တီဂရိတ်}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{၁ K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{၁ ကယ်ဗင်}other{# ကယ်ဗင်}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{၁ ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{၁ ဒီဂရီ ဖာရင်ဟိုက်}other{# ဒီဂရီ ဖာရင်ဟိုက်}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} ဒီဂရီ စင်တီဂရိတ်}other{{formattedValue} ဒီဂရီ စင်တီဂရိတ်}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} ဒီဂရီ ဖာရင်ဟိုက်}other{{formattedValue} ဒီဂရီ ဖာရင်ဟိုက်}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} ကယ်ဗင်}other{{formattedValue} ကယ်ဗင်}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (ပျမ်းမျှ ကွာဟမှု)}other{{formattedValue}℃ (ပျမ်းမျှ ကွာဟမှု)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} ဒီဂရီ စင်တီဂရိတ် (ပျမ်းမျှ ကွာဟမှု)}other{{formattedValue} ဒီဂရီ စင်တီဂရိတ် (ပျမ်းမျှ ကွာဟမှု)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (ပျမ်းမျှ ကွာဟမှု)}other{{formattedValue}℉ (ပျမ်းမျှ ကွာဟမှု)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} ဒီဂရီ ဖာရင်ဟိုက် (ပျမ်းမျှ ကွာဟမှု)}other{{formattedValue} ဒီဂရီ ဖာရင်ဟိုက် (ပျမ်းမျှ ကွာဟမှု)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (ပျမ်းမျှ ကွာဟမှု)}other{{formattedValue}K (ပျမ်းမျှ ကွာဟမှု)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} ကယ်ဗင် (ပျမ်းမျှ ကွာဟမှု)}other{{formattedValue} ကယ်ဗင် (ပျမ်းမျှ ကွာဟမှု)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"ချိုင်းကြား"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"လက်ချောင်း"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"နဖူး"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"နားရွက်"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"လက်ကောက်ဝတ်"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"သားအိမ်လမ်းကြောင်း"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"တိုင်းတာမှုနေရာ"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"အခြေခံ"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"အခြေခံမှ ကွာဟမှု"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{၁ မိုင်}other{# မိုင်}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{၁ km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{၁ မိုင်}other{# မိုင်}}"</string>
@@ -692,7 +735,7 @@
     <string name="check_for_updates" msgid="3841090978657783101">"အပ်ဒိတ် ရှာရန်"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"ထည့်သွင်းထားသောအက်ပ်များ အပ်ဒိတ်ဖြစ်ကြောင်း သေချာပါစေ"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"တွဲသုံးနိုင်သော အက်ပ်အားလုံးကို ကြည့်ရန်"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Google Play တွင် အက်ပ်ရှာရန်"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Google Play တွင် အက်ပ်ရှာပါ"</string>
     <string name="send_feedback" msgid="7756927746070096780">"အကြံပြုချက်ပို့ရန်"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Health Connect နှင့် တွဲဖက်လုပ်ဆောင်စေလိုသည့် ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးအက်ပ်များကို ပြောပြပါ"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"ဤလမ်းကြောင်းကို ခွင့်ပြုရန်"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"လမ်းကြောင်းအားလုံး ခွင့်ပြုရန်"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ခွင့်မပြုပါ"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"အမြဲခွင့်ပြုရန်"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"လေ့ကျင့်ခန်းလမ်းကြောင်း မျှဝေခြင်း"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ချိတ်ဆက်ထားသောအက်ပ်များမှ လေ့ကျင့်ခန်းလမ်းကြောင်းများကို ဤအက်ပ်က အသုံးပြုပုံအား သတ်မှတ်ပါ"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"အကြိမ်တိုင်း မေးရန်"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"ခွင့်မပြုပါ"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ဒေတာအမျိုးအစား နှစ်ခုစလုံးကို ဖွင့်မလား။"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ဒေတာအမျိုးအစား နှစ်ခုစလုံးကို ပိတ်မလား။"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် ဖွင့်ထားမည့် လေ့ကျင့်ခန်းလမ်းကြောင်းများအတိုင်း လေ့ကျင့်ရန် ဖတ်ခွင့်လိုအပ်သည်"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် လေ့ကျင့်ခန်းလမ်းကြောင်းများ ဖွင့်ရန် လေ့ကျင့်ခန်း သုံးခွင့် လိုအပ်သည်"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"လုပ်မည်"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"မလုပ်ပါ"</string>
     <string name="back_button" msgid="780519527385993407">"နောက်သို့"</string>
     <string name="loading" msgid="2526615755685950317">"ဖွင့်နေသည်…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ပေါင်းစည်းနေဆဲဖြစ်သည်"</string>

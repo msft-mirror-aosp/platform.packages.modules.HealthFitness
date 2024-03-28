@@ -23,7 +23,7 @@
     <string name="home_subtitle" msgid="1750033322147357163">"Du kannst die Gesundheits- und Fitnessdaten auf deinem Smartphone verwalten und entscheiden, welche Apps darauf zugreifen können"</string>
     <string name="data_title" msgid="4456619761533380816">"Daten und Zugriff"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Alle Kategorien"</string>
-    <string name="see_all_categories" msgid="5599882403901010434">"Alle Kategorien anzeigen"</string>
+    <string name="see_all_categories" msgid="5599882403901010434">"Alle Kategorien ansehen"</string>
     <string name="no_data" msgid="1906986019249068659">"Keine Daten"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"App-Berechtigungen"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Apps und Berechtigungen verwalten"</string>
@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Hier siehst du, welche Apps in den letzten 24 Stunden auf deine Daten zugegriffen haben"</string>
     <string name="today_header" msgid="1006837293203834373">"Heute"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Gestern"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lesen: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Schreiben: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Berechtigungen verwalten"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Zeit: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Daten im Hintergrund abrufen"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"Daten im Hintergrund abrufen"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Gesundheitsdaten im Hintergrund abrufen"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Bisherige Gesundheitsdaten abrufen"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktiv verbrannte Kalorien"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"Aktiv verbrannte Kalorien"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Aktiv verbrannte Kalorien lesen"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Zugriff in den letzten 24 Stunden"</string>
     <string name="app_access_title" msgid="7137018424885371763">"App-Zugriff"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Derzeit sind keine kompatiblen Apps installiert"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Zusätzliche Zugriffsrechte"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"App-Berechtigungen entfernt"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect hat Berechtigungen für <xliff:g id="APP_DATA">%s</xliff:g> entfernt"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect hat Berechtigungen für <xliff:g id="APP_DATA_0">%1$s</xliff:g> und <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> entfernt"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Gründe, warum Health Connect App-Berechtigungen entfernt"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Wenn eine App bei Google Play gesperrt oder entfernt wird, entfernt Health Connect automatisch ihre Berechtigungen.\n\nDie App kann dann nicht mehr auf deine in Health Connect gespeicherten Daten zugreifen. Falls sie schon einmal Daten geschrieben hat, wird sie in der Liste inaktiver Apps angezeigt."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ok"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up und Wiederherstellung"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Export und Import"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"Datenwiederherstellung"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Zuvor exportierte Daten laden"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Häufigkeit auswählen"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Du kannst auswählen, dass Daten einmal gespeichert werden sollen, oder Zeiträume zum regelmäßigen Speichern festlegen."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Täglich"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Wöchentlich"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Monatlich"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Speicherort für Export"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Verschlüsselung aktivieren"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Daten müssen vor dem Speichern verschlüsselt werden. Niemand, nicht einmal Google oder Health Connect, kann auf sie zugreifen."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Erstelle ein Passwort, um deine verschlüsselten Daten zu schützen. Du benötigst dieses Passwort dann, um sie zu importieren und wiederherzustellen."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Passwort"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Passwort wiederholen"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Wenn du dein Passwort vergisst und dein Smartphone verlierst, kann dir Health Connect nicht dabei helfen, deine gespeicherten Daten wiederherzustellen."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Zurück"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Weiter"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Erste Schritte mit Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Dank Health Connect werden deine Gesundheits- und Fitnessdaten gespeichert und lassen sich einfach mit verschiedenen Apps auf deinem Smartphone synchronisieren"</string>
     <string name="share_data" msgid="3481932156368883946">"Daten für deine Apps freigeben"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 Pfund}other{# Pfund}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 Stone}other{# Stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 Grad Celsius}other{# Grad Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 Kelvin}other{# Kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 Grad Fahrenheit}other{# Grad Fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} Grad Celsius}other{{formattedValue} Grad Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} Grad Fahrenheit}other{{formattedValue} Grad Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} Kelvin}other{{formattedValue} Kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (durchschn. Abweichung)}other{{formattedValue} ℃ (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} Grad Celsius (durchschn. Abweichung)}other{{formattedValue} Grad Celsius (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (durchschn. Abweichung)}other{{formattedValue} ℉ (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Grad Fahrenheit (durchschn. Abweichung)}other{{formattedValue} Grad Fahrenheit (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (durchschn. Abweichung)}other{{formattedValue} K (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} Kelvin (durchschn. Abweichung)}other{{formattedValue} Kelvin (durchschn. Abweichung)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Achselhöhle"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Finger"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Stirn"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ohr"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Handgelenk"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Messort"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Normalbereich"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Abweichung vom Normalbereich"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 Meile}other{# Meilen}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 Meile}other{# Meilen}}"</string>
@@ -691,15 +734,15 @@
     <string name="things_to_try" msgid="8200374691546152703">"Vorschläge"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"Nach Updates suchen"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"Installierte Apps müssen auf dem neuesten Stand sein"</string>
-    <string name="see_all_compatible_apps" msgid="6791146164535475726">"Alle kompatiblen Apps anzeigen"</string>
+    <string name="see_all_compatible_apps" msgid="6791146164535475726">"Alle kompatiblen Apps ansehen"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Apps bei Google Play suchen"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Feedback senden"</string>
-    <string name="send_feedback_description" msgid="2887207112856240778">"Sag uns, von welchen Gesundheits- und Fitness-Apps du wünschst, dass sie mit Health Connect funktionieren"</string>
+    <string name="send_feedback_description" msgid="2887207112856240778">"Sag uns, welche Gesundheits- und Fitness-Apps du gerne mit Health Connect verwenden möchtest"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Automatisch löschen"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Automatisch löschen"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Du kannst bestimmen, wie lange deine Daten in Health Connect gespeichert bleiben, indem du einen bestimmten Zeitpunkt zum Löschen festlegst"</string>
-    <string name="auto_delete_learn_more" msgid="7416469042791307994">"Weitere Informationen zur automatischen Löschung"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Du kannst bestimmen, wie lange deine Daten in Health Connect gespeichert bleiben, indem du festlegst, dass sie nach einem bestimmten Zeitraum gelöscht werden"</string>
+    <string name="auto_delete_learn_more" msgid="7416469042791307994">"Weitere Informationen zum automatischen Löschen"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Daten automatisch löschen"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Nach # Monat}other{Nach # Monaten}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Nie"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Zugriff auf diese Route erlauben"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Zugriff auf alle Routen erlauben"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nicht erlauben"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Immer zulassen"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Trainingsrouten teilen"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Du kannst festlegen, wie diese App auf Trainingsrouten von verbundenen Apps zugreift"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Jedes Mal fragen"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Nicht zulassen"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Beide Datentypen aktivieren?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Beide Datentypen deaktivieren?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> benötigt Lesezugriff auf „Sport“, um die Trainingsrouten zu aktivieren"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> benötigt Zugriff auf „Sport“, um die Trainingsrouten zu aktivieren"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ja"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nein"</string>
     <string name="back_button" msgid="780519527385993407">"Zurück"</string>
     <string name="loading" msgid="2526615755685950317">"Wird geladen…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integration läuft"</string>
@@ -810,7 +864,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"App-Quellen"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Füge der Liste App-Quellen hinzu, um zu sehen, wie sich die Gesamtwerte für Daten ändern können. Wenn du eine App aus dieser Liste entfernst, wird sie nicht mehr in den Gesamtwerten berücksichtigt, verfügt aber weiterhin über die Schreibberechtigung."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Keine App-Quellen"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Wenn du App-Berechtigungen zum Schreiben von „<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>“-Daten erteilst, werden die Quellen hier angezeigt."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Wenn du App-Berechtigungen zum Schreiben von Daten der Kategorie „<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>“ erteilst, werden die Quellen hier angezeigt."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"So funktionieren Quellen und Priorisierung"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"App hinzufügen"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"App-Quellen bearbeiten"</string>

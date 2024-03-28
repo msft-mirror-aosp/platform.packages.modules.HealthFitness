@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"查看過去 24 小時內有哪些應用程式曾存取你的資料"</string>
     <string name="today_header" msgid="1006837293203834373">"今天"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"昨天"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"讀取：%s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"寫入：%s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理權限"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"時間：%s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"背景讀取"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"背景讀取"</string>
     <string name="background_read_description" msgid="5263745158443722174">"在背景讀取健康資料"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"讀取過去的健康資料"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"活動卡路里燃燒量"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"活動卡路里燃燒量"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"讀取活動卡路里燃燒量資料"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次存取時間：過去 24 小時內"</string>
     <string name="app_access_title" msgid="7137018424885371763">"應用程式存取權"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"你目前未安裝任何相容的應用程式"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"額外存取權"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"應用程式權限已移除"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"「健康資料同步」已移除「<xliff:g id="APP_DATA">%s</xliff:g>」的權限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"「健康資料同步」已移除「<xliff:g id="APP_DATA_0">%1$s</xliff:g>」和「<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>」的權限"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"「健康資料同步」移除應用程式權限的原因"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"如果應用程式在 Google Play 中遭到停權或移除，「健康資料同步」會自動移除該應用程式的權限。\n\n這表示該應用程式無法再存取「健康資料同步」中儲存的資料。如果應用程式曾寫入資料，就會列在已停用應用程式的清單中。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"我知道了"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"備份與還原"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"匯出與匯入"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"還原資料"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"載入先前匯出的資料"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"選擇頻率"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"選擇一次儲存資料，或設為定時自動儲存。"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"每週"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"匯出位置"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"開啟加密功能"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"資料需要先加密再儲存。包括 Google 或健康資料同步在內，沒有人可以存取這些資料。"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"建立密碼可保護加密的資料。你需要使用這組密碼，才能匯入及還原資料。"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"密碼"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"再次輸入密碼"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"如果你忘記密碼且遺失手機，健康資料同步就無法協助你復原已儲存的資料。"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
+    <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"開始使用「健康資料同步」"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"「健康資料同步」會儲存健康與健身資料，方便你在手機上同步不同應用程式的資料"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 磅}other{# 磅}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 英石}other{# 英石}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{攝氏 1 度}other{攝氏 # 度}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 克耳文}other{# 克耳文}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 克耳文}other{# 克耳文}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{華氏 1 度}other{華氏 # 度}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{攝氏 {formattedValue} 度}other{攝氏 {formattedValue} 度}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{華氏 {formattedValue} 度}other{華氏 {formattedValue} 度}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} 克耳文}other{{formattedValue} 克耳文}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (平均變化)}other{{formattedValue}℃ (平均變化)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{攝氏 {formattedValue} 度 (平均變化)}other{攝氏 {formattedValue} 度 (平均變化)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (平均變化)}other{{formattedValue}℉ (平均變化)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{華氏 {formattedValue} 度 (平均變化)}other{華氏 {formattedValue} 度 (平均變化)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (平均變化)}other{{formattedValue}K (平均變化)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} 克耳文 (平均變化)}other{{formattedValue} 克耳文 (平均變化)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"腋下"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"手指"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"額頭"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"耳朵"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"手腕"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"陰道"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"測量位置"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"基準"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"與基準相比的變化"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 英里}other{# 英里}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 公里}other{# 公里}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 英里}other{# 英里}}"</string>
@@ -690,8 +733,8 @@
     <string name="cant_see_all_your_apps_description" msgid="7344859063463536472">"如果沒看到已安裝的應用程式，可能是該應用程式與「健康資料同步」尚不相容"</string>
     <string name="things_to_try" msgid="8200374691546152703">"試試其他選項"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"檢查更新"</string>
-    <string name="check_for_updates_description" msgid="1347667778199095160">"確認所有安裝的應用程式均為最新版本"</string>
-    <string name="see_all_compatible_apps" msgid="6791146164535475726">"顯示所有相容的應用程式"</string>
+    <string name="check_for_updates_description" msgid="1347667778199095160">"確認已安裝的應用程式均為最新版本"</string>
+    <string name="see_all_compatible_apps" msgid="6791146164535475726">"查看所有相容的應用程式"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"在 Google Play 上搜尋應用程式"</string>
     <string name="send_feedback" msgid="7756927746070096780">"提供意見"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"告訴我們你希望哪些健康與健身應用程式可搭配「健康資料同步」使用"</string>
@@ -704,12 +747,12 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{# 個月後}other{# 個月後}}"</string>
     <string name="range_never" msgid="4429478261788361233">"永不"</string>
     <string name="range_off" msgid="8178520557618184215">"已關閉"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"如果變更這些設定，「健康資料同步」將根據新的偏好設定刪除現有資料"</string>
-    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{要在 # 個月後自動刪除資料嗎？}other{要在 # 個月後自動刪除資料嗎？}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{「健康資料同步」將只保存 # 個月內的資料。如果選擇這項設定，系統將一併刪除 # 個月前的現有資料。}other{「健康資料同步」將只保存 # 個月內的資料。如果選擇這項設定，系統將一併刪除 # 個月前的現有資料。}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"設定自動刪除功能"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"如果變更設定，「健康資料同步」將根據新的偏好設定刪除現有資料"</string>
+    <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# 個月後自動刪除資料？}other{# 個月後自動刪除資料？}}"</string>
+    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{「健康資料同步」將只保存 # 個月內的資料。如果選擇這項設定，系統將一併刪除儲存超過 # 個月的現有資料。}other{「健康資料同步」將只保存 # 個月內的資料。如果選擇這項設定，系統將一併刪除儲存超過 # 個月的現有資料。}}"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"設定自動刪除"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"系統將刪除現有資料"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{「健康資料同步」將刪除 # 個月前的所有資料。可能需要一天的時間，連結的應用程式才會反映這些變更。}other{「健康資料同步」將刪除 # 個月前的所有資料。可能需要一天的時間，連結的應用程式才會反映這些變更。}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{「健康資料同步」會刪除儲存超過 # 個月的所有資料。可能要到一天後，連結的應用程式才會反映這些變更。}other{「健康資料同步」會刪除儲存超過 # 個月的所有資料。可能要到一天後，連結的應用程式才會反映這些變更。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"系統會刪除以下類別的資料"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"完成"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"設定應用程式優先順序"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"允許存取這條路線"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"允許存取所有路線"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"不允許"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"一律允許"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"分享運動路線"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"控管這個應用程式如何存取連結應用程式中的運動路線資訊"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"每次都詢問"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"不允許"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"要啟用這兩種資料類型嗎？"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"要停用這兩種資料類型嗎？"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> 需要具備運動資料讀取權限，才能啟用運動路線"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> 必須具備運動資料存取權，才能啟用運動路線"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"是"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"否"</string>
     <string name="back_button" msgid="780519527385993407">"返回"</string>
     <string name="loading" msgid="2526615755685950317">"載入中…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"整合中"</string>
@@ -810,7 +864,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"應用程式來源"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"在清單中新增應用程式來源，即可查看資料總數的變化情形。從這份清單中移除某個應用程式後，相關資料就不會計入總數，但應用程式仍具有寫入權限。"</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"沒有應用程式來源"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"當你將寫入<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>資料的權限授予應用程式後，這裡就會顯示來源。"</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"你將寫入<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>資料的權限授予應用程式後，這裡就會顯示來源。"</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"來源與優先順序的運作方式"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"新增應用程式"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"編輯應用程式來源清單"</string>

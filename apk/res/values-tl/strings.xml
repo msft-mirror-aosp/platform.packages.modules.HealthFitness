@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Tingnan kung aling mga app ang nag-access ng iyong data sa loob ng nakalipas na 24 na oras"</string>
     <string name="today_header" msgid="1006837293203834373">"Ngayon"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Kahapon"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Nabasa: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Na-write: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Pamahalaan ang mga pahintulot"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Oras: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Pag-read sa background"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"pag-read sa background"</string>
     <string name="background_read_description" msgid="5263745158443722174">"I-read ang data ng kalusugan sa background"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Basahin ang nakaraang data ng kalusugan"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Mga calorie na na-burn habang aktibo"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"mga calorie na na-burn habang aktibo"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"I-read ang mga calorie na na-burn habang aktibo"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Na-access sa nakalipas na 24 na oras"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Access ng app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Wala kang anumang compatible na naka-install na app sa kasalukuyan"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Karagdagang access"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Inalis ang mga pahintulot sa app"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA_0">%1$s</xliff:g> at <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Bakit nag-aalis ng mga pahintulot sa app ang Health Connect"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Kung sinuspinde o inalis sa Google Play ang isang app, awtomatikong aalisin ng Health Connect ang mga pahintulot nito.\n\nIbig sabihin, hindi na maa-access ng app ang data na naka-store sa Health Connect. Kung dating nagra-write ng data ang app na ito, lalabas ito sa listahan ng mga hindi aktibong app."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pag-back up at pag-restore"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"I-export at i-import"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"I-restore ang data"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"I-load ang dating na-export na data"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Pumili ng dalas"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Piliing mag-save ng data nang isang beses, o itakda itong awtomatikong mag-save sa mga regular na oras."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Araw-araw"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Linggo-linggo"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Buwanan"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Lokasyon ng pag-export"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"I-on ang pag-encrypt"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Kailangang naka-encrypt ang data bago ito i-save. Walang sinuman, kahit na Google o Health Connect, ang makakapag-access dito."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Gumawa ng password para protektahan ang iyong naka-encrypt na data. Kakailanganin mo ang password na ito para ma-import at ma-restore ang iyong data."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Password"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ulitin ang password"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Kung makalimutan mo ang iyong password at mawala ang telepono mo, hindi ka matutulungan ng Health Connect na ma-recover ang iyong na-save na data."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Bumalik"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Susunod"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Magsimula sa Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa telepono mo"</string>
     <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 pound}one{# pound}other{# na pound}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}one{# stone}other{# na stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}one{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 degree Celsius}one{# degrees Celsius}other{# degrees Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}one{#K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvins}other{# kelvins}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}one{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 degree Fahrenheit}one{# degrees Fahrenheit}other{# degrees Fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}one{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} degree Celsius}one{{formattedValue} degrees Celsius}other{{formattedValue} degrees Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}one{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} degree Fahrenheit}one{{formattedValue} degrees Fahrenheit}other{{formattedValue} degrees Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}one{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvins}other{{formattedValue} kelvins}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (avg na variation)}one{{formattedValue}℃ (avg na variation)}other{{formattedValue}℃ (avg na variation)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} degree Celsius (average na variation)}one{{formattedValue} degrees Celsius (average na variation)}other{{formattedValue} degrees Celsius (average na variation)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (avg na variation)}one{{formattedValue}℉ (avg na variation)}other{{formattedValue}℉ (avg na variation)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} degree Fahrenheit (average na variation)}one{{formattedValue} degrees Fahrenheit (average na variation)}other{{formattedValue} degrees Fahrenheit (average na variation)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (avg na variation)}one{{formattedValue}K (avg na variation)}other{{formattedValue}K (avg na variation)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (average na variation)}one{{formattedValue} kelvins (average na variation)}other{{formattedValue} kelvins (average na variation)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Kilikili"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Daliri"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Noo"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Tainga"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pulso"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Ari ng babae"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokasyon ng pagsukat"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Baseline"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variation mula sa baseline"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milya}one{# milya}other{# na milya}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milya}one{# milya}other{# na milya}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Payagan ang rutang ito"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Payagan ang lahat ng ruta"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Huwag payagan"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Palaging payagan"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Pagbabahagi ng ruta ng pag-eehersisyo"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Kontrolin kung paano ina-access ng app na ito ang mga ruta ng pag-eehersisyo mula sa mga nakakonektang app"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Tanungin palagi"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Huwag payagan"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"I-enable ang parehong uri ng data?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"I-disable ang parehong uri ng data?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa pag-read sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Oo"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Hindi"</string>
     <string name="back_button" msgid="780519527385993407">"Bumalik"</string>
     <string name="loading" msgid="2526615755685950317">"Naglo-load…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Isinasagawa ang pag-integrate"</string>

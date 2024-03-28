@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"ดูแอปที่เข้าถึงข้อมูลในช่วง 24 ชั่วโมงที่ผ่านมา"</string>
     <string name="today_header" msgid="1006837293203834373">"วันนี้"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"เมื่อวาน"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"อ่าน: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"เขียน: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"จัดการสิทธิ์"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"เวลา: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"การอ่านในเบื้องหลัง"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"การอ่านในเบื้องหลัง"</string>
     <string name="background_read_description" msgid="5263745158443722174">"อ่านข้อมูลสุขภาพในเบื้องหลัง"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"อ่านข้อมูลสุขภาพที่ผ่านมา"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"แคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"แคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"อ่านข้อมูลแคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"เข้าถึงในช่วง 24 ชั่วโมงที่ผ่านมา"</string>
     <string name="app_access_title" msgid="7137018424885371763">"สิทธิ์การเข้าถึงของแอป"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ตอนนี้คุณยังไม่ได้ติดตั้งแอปที่เข้ากันได้"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"การเข้าถึงเพิ่มเติม"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"สิทธิ์ของแอปที่ถูกนำออก"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA">%s</xliff:g> ออกแล้ว"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA_0">%1$s</xliff:g> และ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ออกแล้ว"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ทำไม Health Connect จึงนำสิทธิ์ของแอปออก"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"หากแอปถูกระงับหรือนำออกจาก Google Play, Health Connect จะนำสิทธิ์ของแอปนั้นออกโดยอัตโนมัติ\n\nซึ่งแปลว่าแอปดังกล่าวจะไม่สามารถเข้าถึงข้อมูลที่เก็บไว้ใน Health Connect ได้อีกต่อไป ข้อมูลที่แอปเคยเขียนไว้จะไปปรากฏในรายการข้อมูลแอปที่ไม่ได้ใช้งาน"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"รับทราบ"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"การสำรองและคืนค่า"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ส่งออกและนำเข้า"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"คืนค่าข้อมูล"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"โหลดข้อมูลที่ส่งออกก่อนหน้านี้"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"เลือกความถี่"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"เลือกเพื่อบันทึกข้อมูลครั้งเดียว หรือตั้งค่าให้บันทึกโดยอัตโนมัติเป็นประจำเมื่อถึงเวลาที่ระบุ"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ทุกเดือน"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"ตำแหน่งการส่งออก"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"เปิดการเข้ารหัส"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ต้องเข้ารหัสข้อมูลก่อนที่จะทำการบันทึก ไม่มีใครสามารถเข้าถึงข้อมูลได้ แม้แต่ Google หรือ Health Connect เอง"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"สร้างรหัสผ่านเพื่อปกป้องข้อมูลที่เข้ารหัส คุณต้องใช้รหัสผ่านนี้เพื่อนำเข้าและกู้คืนข้อคุณ"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"รหัสผ่าน"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ป้อนรหัสผ่านอีกครั้ง"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"หากลืมรหัสผ่านและทำโทรศัพท์สูญหาย Health Connect จะช่วยคุณกู้คืนข้อมูลที่บันทึกไว้ไม่ได้"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"เริ่มต้นใช้งาน Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย และให้คุณซิงค์แอปต่างๆ ในโทรศัพท์ได้โดยง่าย"</string>
     <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 ปอนด์}other{# ปอนด์}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 สโตน}other{# สโตน}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 องศาเซลเซียส}other{# องศาเซลเซียส}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 เคลวิน}other{# เคลวิน}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 องศาฟาเรนไฮต์}other{# องศาฟาเรนไฮต์}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} องศาเซลเซียส}other{{formattedValue} องศาเซลเซียส}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} องศาฟาเรนไฮต์}other{{formattedValue} องศาฟาเรนไฮต์}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} เคลวิน}other{{formattedValue} เคลวิน}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (ค่าต่างโดยเฉลี่ย)}other{{formattedValue}℃ (ค่าต่างโดยเฉลี่ย)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} องศาเซลเซียส (ค่าต่างโดยเฉลี่ย)}other{{formattedValue} องศาเซลเซียส (ค่าต่างโดยเฉลี่ย)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (ค่าต่างโดยเฉลี่ย)}other{{formattedValue}℉ (ค่าต่างโดยเฉลี่ย)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} องศาฟาเรนไฮต์ (ค่าต่างโดยเฉลี่ย)}other{{formattedValue} องศาฟาเรนไฮต์ (ค่าต่างโดยเฉลี่ย)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (ค่าต่างโดยเฉลี่ย)}other{{formattedValue}K (ค่าต่างโดยเฉลี่ย)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} เคลวิน (ค่าต่างโดยเฉลี่ย)}other{{formattedValue} เคลวิน (ค่าต่างโดยเฉลี่ย)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"รักแร้"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"นิ้ว"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"หน้าผาก"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"หู"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"ข้อมือ"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"ช่องคลอด"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"ตำแหน่งการวัด"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"พื้นฐาน"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"ค่าต่างจากพื้นฐาน"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ไมล์}other{# ไมล์}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 กม.}other{# กม.}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ไมล์}other{# ไมล์}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"อนุญาตเส้นทางนี้"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"อนุญาตเส้นทางทั้งหมด"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ไม่อนุญาต"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"อนุญาตเสมอ"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"แชร์เส้นทางออกกำลังกาย"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"ควบคุมวิธีที่แอปนี้เข้าถึงเส้นทางออกกำลังกายจากแอปที่เชื่อมต่อ"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"ถามทุกครั้ง"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"ไม่อนุญาต"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"เปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงและอ่านข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ใช่"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ไม่"</string>
     <string name="back_button" msgid="780519527385993407">"กลับ"</string>
     <string name="loading" msgid="2526615755685950317">"กำลังโหลด…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"การผสานรวมอยู่ระหว่างดำเนินการ"</string>

@@ -34,15 +34,17 @@
     <string name="entry_details_title" msgid="590184849040247850">"Detalizēta informācija par ierakstu"</string>
     <string name="backup_title" msgid="211503191266235085">"Dublēšana"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Datu avoti un prioritāte"</string>
-    <string name="set_units_title" msgid="2657822539603758029">"Iestatīt vienības"</string>
+    <string name="set_units_title" msgid="2657822539603758029">"Iestatīt mērvienības"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Nesena piekļuve"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Neviena lietotne pēdējā laikā nav piekļuvusi platformai Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Skatīt visus nesenas piekļuves gadījumus"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Uzziniet, kuras lietotnes ir piekļuvušas jūsu datiem pēdējo 24 h laikā"</string>
     <string name="today_header" msgid="1006837293203834373">"Šodien"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Vakar"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lasīt: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Rakstīt: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Pārvaldīt atļaujas"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Laiks: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lasīšana fonā"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"lasīšana fonā"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Fonā lasīt veselības datus"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Lasīt iepriekšējos veselības datus"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktivitātēs patērētās kalorijas"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktivitātēs patērētās kalorijas"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lasīt aktivitātēs patērēto kaloriju datus"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Piekļūts pēdējo 24 stundu laikā"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Lietotnes piekļuve"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Pašlaik nav instalēta neviena saderīga lietotne"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Papildu piekļuve"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Noņemtas lietotņu atļaujas"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Platformā Health Connect tika noņemtas lietotnes <xliff:g id="APP_DATA">%s</xliff:g> atļaujas."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Platformā Health Connect tika noņemtas lietotņu <xliff:g id="APP_DATA_0">%1$s</xliff:g> un <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> atļaujas."</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Kāpēc platformā Health Connect tiek noņemtas lietotņu atļaujas"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ja lietotnes darbība tiek apturēta vai lietotne tiek noņemta no pakalpojuma Google Play, platformā Health Connect tiek automātiski noņemtas šīs lietotnes atļaujas.\n\nTas nozīmē, ka lietotne vairs nevar piekļūt platformā Health Connect saglabātajiem datiem. Ja attiecīgā lietotne iepriekš ir rakstījusi datus, tā tiek rādīta neaktīvo lietotņu sarakstā."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Labi"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Dublēšana un atjaunošana"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Eksportēšana un importēšana"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"Atjaunot datus"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Ielādēt iepriekš eksportētos datus"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Izvēlieties biežumu"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Pēc izvēles varat saglabāt datus vienreiz vai iestatīt regulāru automātisku saglabāšanu."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Katru dienu"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Katru nedēļu"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Katru mēnesi"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Eksportēšanas vieta"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Šifrējuma ieslēgšana"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Lai varētu saglabāt datus, tie vispirms jāšifrē. Tiem nevarēs piekļūt neviens — pat ne Google vai Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Izveidojiet paroli, lai aizsargātu savus šifrētos datus. Šī parole jums būs vajadzīga datu importēšanai un atjaunošanai."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Parole"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Vēlreiz norādiet paroli"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ja aizmirsīsiet paroli un pazaudēsiet tālruni, Health Connect komanda nevarēs jums palīdzēt atkopt saglabātos datus."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Atpakaļ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Tālāk"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Darba sākšana ar Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Platformā Health Connect tiek glabāti jūsu veselības un fizisko aktivitāšu dati, tādējādi varat vienkāršā veidā sinhronizēt dažādas lietotnes savā tālrunī."</string>
     <string name="share_data" msgid="3481932156368883946">"Datu kopīgošana ar lietotnēm"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 mārciņa}zero{# mārciņu}one{# mārciņa}other{# mārciņas}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stouns}zero{# stounu}one{# stouns}other{# stouni}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}zero{# ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}zero{# ℃}one{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 Celsija grāds}zero{# Celsija grādu}one{# Celsija grāds}other{# Celsija grādi}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}zero{# K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}zero{# K}one{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvins}zero{# kelvinu}one{# kelvins}other{# kelvini}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}zero{# ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}zero{# ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 Fārenheita grāds}zero{# Fārenheita grādu}one{# Fārenheita grāds}other{# Fārenheita grādi}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}zero{{formattedValue} ℃}one{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} grāds pēc Celsija skalas}zero{{formattedValue} grādi pēc Celsija skalas}one{{formattedValue} grāds pēc Celsija skalas}other{{formattedValue} grādi pēc Celsija skalas}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}zero{{formattedValue} ℉}one{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} grāds pēc Fārenheita skalas}zero{{formattedValue} grādi pēc Fārenheita skalas}one{{formattedValue} grāds pēc Fārenheita skalas}other{{formattedValue} grādi pēc Fārenheita skalas}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}zero{{formattedValue} K}one{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvins}zero{{formattedValue} kelvini}one{{formattedValue} kelvins}other{{formattedValue} kelvini}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (vidējā novirze)}zero{{formattedValue} ℃ (vidējā novirze)}one{{formattedValue} ℃ (vidējā novirze)}other{{formattedValue} ℃ (vidējā novirze)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} grāds pēc Celsija skalas (vidējā novirze)}zero{{formattedValue} grādi pēc Celsija skalas (vidējā novirze)}one{{formattedValue} grāds pēc Celsija skalas (vidējā novirze)}other{{formattedValue} grādi pēc Celsija skalas (vidējā novirze)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (vidējā novirze)}zero{{formattedValue} ℉ (vidējā novirze)}one{{formattedValue} ℉ (vidējā novirze)}other{{formattedValue} ℉ (vidējā novirze)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} grāds pēc Fārenheita skalas (vidējā novirze)}zero{{formattedValue} grādi pēc Fārenheita skalas (vidējā novirze)}one{{formattedValue} grāds pēc Fārenheita skalas (vidējā novirze)}other{{formattedValue} grādi pēc Fārenheita skalas (vidējā novirze)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (vidējā novirze)}zero{{formattedValue} K (vidējā novirze)}one{{formattedValue} K (vidējā novirze)}other{{formattedValue} K (vidējā novirze)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvins (vidējā novirze)}zero{{formattedValue} kelvini (vidējā novirze)}one{{formattedValue} kelvins (vidējā novirze)}other{{formattedValue} kelvini (vidējā novirze)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Paduse"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Pirksts"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Piere"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Auss"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Plaukstas locītava"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagīna"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Mērījuma vieta"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Atsauces temperatūra"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Novirze no atsauces temperatūras"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 jūdze}zero{# jūdžu}one{# jūdze}other{# jūdzes}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}zero{# km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 jūdze}zero{# jūdžu}one{# jūdze}other{# jūdzes}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Atļaut šo maršrutu"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Atļaut visus maršrutus"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Neatļaut"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Vienmēr atļaut"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Fizisko aktivitāšu maršrutu kopīgošana"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Kontrolējiet, kā šī lietotne piekļūst fizisko aktivitāšu maršrutiem no pievienotām lietotnēm."</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Vaicāt katru reizi"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Neatļaut"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Vai iespējot abus datu veidus?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Vai atspējot abus datu veidus?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Lai varētu iespējot fizisko aktivitāšu maršrutus, lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> vajadzīga lasīšanas piekļuve."</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Lai varētu iespējot fizisko aktivitāšu maršrutus, lietotnei <xliff:g id="APP_NAME">%1$s</xliff:g> vajadzīga piekļuve fizisko aktivitāšu datiem."</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Jā"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nē"</string>
     <string name="back_button" msgid="780519527385993407">"Atpakaļ"</string>
     <string name="loading" msgid="2526615755685950317">"Notiek ielāde…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Notiek integrēšana"</string>

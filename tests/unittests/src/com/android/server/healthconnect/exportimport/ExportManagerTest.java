@@ -44,9 +44,9 @@ import org.mockito.Mock;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 
 @RunWith(AndroidJUnit4.class)
 public class ExportManagerTest {
@@ -95,10 +95,10 @@ public class ExportManagerTest {
         File originalDbFile = createAndGetNonEmptyFile(mMockDataDirectory, DATABASE_NAME);
         when(mTransactionManager.getDatabasePath()).thenReturn(originalDbFile);
 
-        String exportFilePath = mExportManager.exportLocally(mUserHandle);
+        File exportFilePath = mExportManager.exportLocally(mUserHandle);
 
-        assertThat(getFileContentFromPath(exportFilePath).length())
-                .isEqualTo(originalDbFile.length());
+        assertThat(Files.readAllLines(exportFilePath.toPath()))
+                .containsExactlyElementsIn(Files.readAllLines(originalDbFile.toPath()));
     }
 
     private static File createAndGetNonEmptyFile(File dir, String fileName) throws IOException {
@@ -107,15 +107,5 @@ public class ExportManagerTest {
         fileWriter.write("Contents of file " + fileName);
         fileWriter.close();
         return file;
-    }
-
-    private static String getFileContentFromPath(String path) throws Exception {
-        FileReader reader = new FileReader(path);
-        StringBuilder stringBuilder = new StringBuilder();
-        int nextChar;
-        while ((nextChar = reader.read()) != -1) {
-            stringBuilder.append((char) nextChar);
-        }
-        return String.valueOf(stringBuilder);
     }
 }

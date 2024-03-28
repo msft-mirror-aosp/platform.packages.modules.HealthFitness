@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Δείτε ποιες εφαρμογές απέκτησαν πρόσβαση στα δεδομένα σας στις προηγούμενες 24 ώρες"</string>
     <string name="today_header" msgid="1006837293203834373">"Σήμερα"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Χθες"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Ανάγνωση: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Εγγραφή: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Διαχείριση αδειών"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Χρόνος: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Ανάγνωση στο παρασκήνιο"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"ανάγνωση στο παρασκήνιο"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Ανάγνωση δεδομένων υγείας στο παρασκήνιο"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Ανάγνωση προηγούμενων δεδομένων υγείας"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Ενεργές θερμίδες που έχετε κάψει"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ενεργές θερμίδες που έχετε κάψει"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Ανάγνωση ενεργών θερμίδων που έχετε κάψει"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Πρόσβαση τις τελευταίες 24 ώρες"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Πρόσβαση εφαρμογής"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Προς το παρόν, δεν έχετε εγκαταστήσει συμβατές εφαρμογές"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Επιπλέον πρόσβαση"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Άδειες εφαρμογών που καταργήθηκαν"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Το Health Connect κατάργησε τις άδειες για την εφαρμογή <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Το Health Connect κατάργησε τις άδειες για τις εφαρμογές <xliff:g id="APP_DATA_0">%1$s</xliff:g> και <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Γιατί το Health Connect καταργεί άδειες εφαρμογών"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Αν μια εφαρμογή τεθεί σε αναστολή ή καταργηθεί από το Google Play, το Health Connect καταργεί αυτόματα τις άδειές της.\n\nΑυτό σημαίνει ότι η εφαρμογή δεν μπορεί πλέον να αποκτήσει πρόσβαση σε δεδομένα που έχουν αποθηκευτεί στο Health Connect. Εάν αυτή η εφαρμογή έχει εγγράψει στο παρελθόν δεδομένα, θα εμφανίζεται στη λίστα ανενεργών εφαρμογών."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Το κατάλαβα"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Αντίγραφα ασφαλείας και επαναφορά"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Εξαγωγή και εισαγωγή"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"Επαναφορά δεδομένων"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Φόρτωση δεδομένων που είχαν εξαχθεί στο παρελθόν"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Επιλογή συχνότητας"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Επιλέξτε αν θέλετε να αποθηκεύσετε τα δεδομένα μία φορά ή αν θα αποθηκεύονται αυτόματα ανά τακτά χρονικά διαστήματα."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Ανά ημέρα"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Ανά εβδομάδα"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Ανά μήνα"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Τοποθεσία εξαγωγής"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Ενεργοποίηση κρυπτογράφησης"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Τα δεδομένα πρέπει να κρυπτογραφηθούν πριν αποθηκευτούν. Κανείς δεν θα έχει πρόσβαση σε αυτά, συμπεριλαμβανομένης της Google και του Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Δημιουργήστε έναν κωδικό πρόσβασης για να προστατέψετε τα κρυπτογραφημένα δεδομένα σας. Θα χρειαστείτε αυτόν τον κωδικό πρόσβασης για την εισαγωγή ή την επαναφορά των δεδομένων σας."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Κωδικός πρόσβασης"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Επανάληψη κωδικού πρόσβασης"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Εάν ξεχάσετε τον κωδικό πρόσβασης και χάσετε το τηλέφωνό σας, το Health Connect δεν μπορεί να σας βοηθήσει να επαναφέρετε τα αποθηκευμένα δεδομένα σας."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Πίσω"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Επόμενο"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Ξεκινήστε με το Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Το Health Connect αποθηκεύει τα δεδομένα υγείας και φυσικής κατάστασής σας, προσφέροντας έναν απλό τρόπο συγχρονισμού των διαφορετικών εφαρμογών στο τηλέφωνό σας"</string>
     <string name="share_data" msgid="3481932156368883946">"Μοιραστείτε δεδομένα με τις εφαρμογές σας"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 λίβρα}other{# λίβρες}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 βαθμός Κελσίου}other{# βαθμοί Κελσίου}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 βαθμός Κέλβιν}other{# βαθμοί Κέλβιν}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 βαθμός Φαρενάιτ}other{# βαθμοί Φαρενάιτ}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} βαθμός Κελσίου}other{{formattedValue} βαθμοί Κελσίου}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} βαθμός Φαρενάιτ}other{{formattedValue} βαθμοί Φαρενάιτ}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} κέλβιν}other{{formattedValue} κέλβιν}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (μέση μεταβολή)}other{{formattedValue} ℃ (μέση μεταβολή)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} βαθμός Κελσίου (μέση μεταβολή)}other{{formattedValue} βαθμοί Κελσίου (μέση μεταβολή)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (μέση μεταβολή)}other{{formattedValue} ℉ (μέση μεταβολή)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} βαθμός Φαρενάιτ (μέση μεταβολή)}other{{formattedValue} βαθμοί Φαρενάιτ (μέση μεταβολή)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (μέση μεταβολή)}other{{formattedValue} K (μέση μεταβολή)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} κέλβιν (μέση μεταβολή)}other{{formattedValue} κέλβιν (μέση μεταβολή)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Μασχάλη"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Δάχτυλο"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Μέτωπο"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Αυτί"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Καρπός"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Κόλπος"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Τοποθεσία μέτρησης"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Γραμμή βάσης"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Μεταβολή από τη γραμμή βάσης"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 μίλι}other{# μίλια}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 χλμ.}other{# χλμ.}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 μίλι}other{# μίλια}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Να επιτρέπεται αυτή η διαδρομή"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Να επιτρέπ. όλες οι διαδρομές"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Να μην επιτρέπεται"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Να επιτρέπεται πάντα"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Κοινή χρήση διαδρομής άσκησης"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Καθορισμός του τρόπου με τον οποίο αυτή η εφαρμογή έχει πρόσβαση σε διαδρομές άσκησης από συνδεδεμένες εφαρμογές"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Ερώτηση κάθε φορά"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Να μην επιτρέπεται"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Ενεργοποίηση και των δύο τύπων δεδομένων;"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Απενεργοποίηση και των δύο τύπων δεδομένων;"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> απαιτεί πρόσβαση ανάγνωσης για άσκηση προκειμένου να ενεργοποιηθούν οι διαδρομές άσκησης"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> απαιτεί πρόσβαση σε ασκήσεις προκειμένου να ενεργοποιηθούν οι διαδρομές άσκησης"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ναι"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Όχι"</string>
     <string name="back_button" msgid="780519527385993407">"Πίσω"</string>
     <string name="loading" msgid="2526615755685950317">"Φόρτωση…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Η ενσωμάτωση είναι σε εξέλιξη"</string>
@@ -758,9 +812,9 @@
     <string name="migration_app_update_needed_notification_title" msgid="8971076370900025444">"Απαιτείται ενημέρωση του Health Connect"</string>
     <string name="migration_app_update_needed_action" msgid="3289432528592774601">"Πριν συνεχίσετε, ενημερώστε την εφαρμογή Health Connect στην πιο πρόσφατη έκδοση."</string>
     <string name="migration_more_space_needed_screen_title" msgid="1535473230886051579">"Απαιτείται περισσότερος χρόνος"</string>
-    <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας προκειμένου να συνεχιστεί η ενσωμάτωση.\n\nΑπελευθερώσετε χώρο στο τηλέφωνό σας και δοκιμάστε ξανά."</string>
+    <string name="migration_more_space_needed_screen_details" msgid="621140247825603412">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας προκειμένου να συνεχιστεί η ενσωμάτωση.\n\nΑποδεσμεύστε χώρο στο τηλέφωνό σας και δοκιμάστε ξανά."</string>
     <string name="try_again_button" msgid="8745496819992160789">"Δοκιμάστε ξανά"</string>
-    <string name="free_up_space_button" msgid="4141013808635654695">"Ελευθερώστε χώρο"</string>
+    <string name="free_up_space_button" msgid="4141013808635654695">"Αποδεσμεύστε χώρο"</string>
     <string name="migration_more_space_needed_notification_title" msgid="8238155395120107672">"Απαιτείται περισσότερος χρόνος"</string>
     <string name="migration_more_space_needed_notification_content" msgid="4034728181940567836">"Το Health Connect χρειάζεται <xliff:g id="SPACE_NEEDED">%1$s</xliff:g> αποθηκευτικού χώρου στο τηλέφωνό σας για να συνεχίσει την ενσωμάτωση."</string>
     <string name="migration_paused_screen_title" msgid="8041170155372429894">"Η ενσωμάτωση τέθηκε σε παύση"</string>
@@ -797,7 +851,7 @@
     <string name="migration_complete_notification_title" msgid="4988631739109332404">"Η ενσωμάτωση του Health Connect ολοκληρώθηκε"</string>
     <string name="migration_complete_notification_action" msgid="5350322865206331186">"Άνοιγμα"</string>
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Τι νέο υπάρχει"</string>
-    <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Μπορείτε πλέον να αποκτήσετε πρόσβαση στο Health Connect απευθείας από τις ρυθμίσεις σας. Απεγκαταστήστε την εφαρμογή Health Connect ανά πάσα στιγμή για να ελευθερώσετε αποθηκευτικό χώρο."</string>
+    <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Μπορείτε πλέον να αποκτήσετε πρόσβαση στο Health Connect απευθείας από τις ρυθμίσεις σας. Απεγκαταστήστε την εφαρμογή Health Connect ανά πάσα στιγμή για να αποδεσμεύσετε αποθηκευτικό χώρο."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Το κατάλαβα"</string>
     <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Επαναφορά σε εξέλιξη"</string>
     <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Το Health Connect επαναφέρει δεδομένα και άδειες. Μπορεί να χρειαστεί λίγη ώρα για την ολοκλήρωση της διαδικασίας."</string>

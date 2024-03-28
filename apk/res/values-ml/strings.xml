@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"കഴിഞ്ഞ 24 മണിക്കൂറിൽ നിങ്ങളുടെ ഡാറ്റ ഏതെല്ലാം ആപ്പുകൾ ആക്സസ് ചെയ്തിട്ടുണ്ട് എന്ന് കാണുക"</string>
     <string name="today_header" msgid="1006837293203834373">"ഇന്ന്"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ഇന്നലെ"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"റീഡ് ചെയ്യുക: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"റൈറ്റ് ചെയ്യുക: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"അനുമതികൾ മാനേജ് ചെയ്യുക"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"സമയം: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"പശ്ചാത്തലത്തിലെ വായന"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"പശ്ചാത്തലത്തിലെ വായന"</string>
     <string name="background_read_description" msgid="5263745158443722174">"പശ്ചാത്തലത്തിൽ ആരോഗ്യ ഡാറ്റ വായിക്കുക"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"ആരോഗ്യ ഡാറ്റ വായിക്കുക"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"സജീവമായിരിക്കുമ്പോൾ കത്തിച്ചുകളഞ്ഞ കലോറി"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"സജീവമായിരിക്കുമ്പോൾ കത്തിച്ചുകളഞ്ഞ കലോറി"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"സജീവമായിരിക്കുമ്പോൾ കത്തിച്ചുകളഞ്ഞ കലോറി സംബന്ധിച്ച ഡാറ്റ റീഡ് ചെയ്യുക"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"കഴിഞ്ഞ 24 മണിക്കൂറിനിടെ ആക്‌സസ് ചെയ്‌തു"</string>
     <string name="app_access_title" msgid="7137018424885371763">"ആപ്പ് ആക്‌സസ്"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"നിലവിൽ നിങ്ങൾ അനുയോജ്യമായ ആപ്പുകളൊന്നും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"അധിക ആക്‌സസ്"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"നീക്കം ചെയ്ത ആപ്പ് അനുമതികൾ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> ആപ്പിനുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> എന്നീ ആപ്പുകൾക്കുള്ള അനുമതികൾ Health Connect നീക്കം ചെയ്തു"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"എന്തുകൊണ്ടാണ് Health Connect ആപ്പ് അനുമതികൾ നീക്കം ചെയ്യുന്നത്"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play-യിൽ നിന്ന് ഒരു ആപ്പ് താൽക്കാലികമായി റദ്ദാക്കുകയോ നീക്കം ചെയ്യുകയോ ചെയ്താൽ, അതിനുള്ള അനുമതികൾ Health Connect സ്വയമേവ നീക്കം ചെയ്യുന്നു.\n\nഈ ആപ്പിന് Health Connect-ൽ സംഭരിച്ച ഡാറ്റ തുടർന്ന് ആക്‌സസ് ചെയ്യാനാകില്ല എന്നാണ് ഇതിനർത്ഥം. ആപ്പിൽ മുമ്പ് രേഖപ്പെടുത്തിയ ഡാറ്റയുണ്ടെങ്കിൽ, അത് നിഷ്ക്രിയ ആപ്പുകളുടെ ലിസ്റ്റിൽ ദൃശ്യമാകും."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"മനസ്സിലായി"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ബാക്കപ്പ് ചെയ്ത് പുനഃസ്ഥാപിക്കൂ"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"എക്‌സ്‌പോർട്ട് ചെയ്യൂ, ഇമ്പോർട്ട് ചെയ്യൂ"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"ഡാറ്റ പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"മുമ്പ് എക്‌സ്പോർട്ട് ചെയ്ത ഡാറ്റ ലോഡ് ചെയ്യുക"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"ആവൃത്തി തിരഞ്ഞെടുക്കുക"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ഡാറ്റ ഒരിക്കൽ സംരക്ഷിക്കാൻ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ പതിവ് സമയങ്ങളിൽ അത് സ്വയമേവ സംരക്ഷിക്കാൻ സജ്ജീകരിക്കുക."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"എല്ലാ ദിവസവും"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"പ്രതിവാരം"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"പ്രതിമാസം"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"ലൊക്കേഷൻ എക്‌സ്പോർട്ട് ചെയ്യുക"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"എൻക്രിപ്‌ഷൻ ഓണാക്കുക"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ഡാറ്റ സംരക്ഷിക്കുന്നതിന് മുമ്പ് അത് എൻക്രിപ്റ്റ് ചെയ്യേണ്ടതുണ്ട്. ആർക്കും, Google-നോ Health Connect-നോ പോലും, അത് ആക്സസ് ചെയ്യാനാകില്ല."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"നിങ്ങളുടെ എൻ‍ക്രിപ്റ്റ് ചെയ്ത ഡാറ്റ പരിരക്ഷിക്കുന്നതിന് പാസ്‌വേഡ് സൃഷ്ടിക്കുക. നിങ്ങളുടെ ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യാനും പുനഃസ്ഥാപിക്കാനും നിങ്ങൾക്ക് ഈ പാസ്‌വേഡ് ആവശ്യമാണ്."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"പാസ്‌വേഡ്"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"പാസ്‌വേഡ് ആവർത്തിക്കുക"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"നിങ്ങൾ പാസ്‌വേഡ് മറക്കുകയും ഫോൺ നഷ്ടപ്പെടുകയും ചെയ്യുകയാണെങ്കിൽ, Health Connect-ന് നിങ്ങളുടെ സംരക്ഷിച്ച ഡാറ്റ വീണ്ടെടുക്കാൻ നിങ്ങളെ സഹായിക്കാനാകില്ല."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"മടങ്ങുക"</string>
+    <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‌നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഫോണിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 പൗണ്ട്}other{# പൗണ്ട്}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 സ്‌റ്റോൺ}other{# സ്‌റ്റോൺ}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 ഡിഗ്രി സെൽഷ്യസ്}other{# ഡിഗ്രി സെൽഷ്യസ്}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 കെൽവിൻ}other{# കെൽവിൻ}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ഡിഗ്രി ഫാരൻഹീറ്റ്}other{# ഡിഗ്രി ഫാരൻഹീറ്റ്}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} ഡിഗ്രി സെൽഷ്യസ്}other{{formattedValue} ഡിഗ്രി സെൽഷ്യസ്}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} ഡിഗ്രി ഫാരൻഹീറ്റ്}other{{formattedValue} ഡിഗ്രി ഫാരൻഹീറ്റ്}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} കെൽവിൻ}other{{formattedValue} കെൽവിൻ}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (ശരാശരി വകഭേദം)}other{{formattedValue}℃ (ശരാശരി വകഭേദം)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} ഡിഗ്രി സെൽഷ്യസ് (ശരാശരി വകഭേദം)}other{{formattedValue} ഡിഗ്രി സെൽഷ്യസ് (ശരാശരി വകഭേദം)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (ശരാശരി വകഭേദം)}other{{formattedValue}℉ (ശരാശരി വകഭേദം)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} ഡിഗ്രി ഫാരൻഹീറ്റ് (ശരാശരി വകഭേദം)}other{{formattedValue} ഡിഗ്രി ഫാരൻഹീറ്റ് (ശരാശരി വകഭേദം)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (ശരാശരി വകഭേദം)}other{{formattedValue}K (ശരാശരി വകഭേദം)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} കെൽവിൻ (ശരാശരി വകഭേദം)}other{{formattedValue} കെൽവിൻ (ശരാശരി വകഭേദം)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"കക്ഷം"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"വിരൽ"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"നെറ്റി"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"ചെവി"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"കണങ്കൈ"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"യോനി"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"ശരീര താപനില അളക്കുന്ന ലൊക്കേഷൻ"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"ബേസ്‌ലൈൻ"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"ബേസ്‌ലൈനിന്റെ വകഭേദം"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{ഒരു മൈൽ}other{# മൈൽ}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{ഒരു കി.മീ}other{# കി.മീ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{ഒരു മൈൽ}other{# മൈൽ}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"ഈ വഴി അനുവദിക്കുക"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"എല്ലാ വഴികളും അനുവദിക്കുക"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"അനുവദിക്കരുത്"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"എപ്പോഴും അനുവദിക്കുക"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"വ്യായാമ സെഷന്റെ വഴി പങ്കിടൽ"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"കണക്റ്റ് ചെയ്‌ത ആപ്പുകളിൽ നിന്ന് ഈ ആപ്പ് എങ്ങനെ വ്യായാമ സെഷന്റെ വഴി ആക്‌സസ് ചെയ്യുന്നു എന്നത് നിയന്ത്രിക്കുക"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"എല്ലായ്‌പ്പോഴും ചോദിക്കുക"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"അനുവദിക്കരുത്"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"രണ്ട് ഡാറ്റ തരങ്ങളും പ്രവർത്തനക്ഷമമാക്കണോ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"രണ്ട് ഡാറ്റ തരങ്ങളും പ്രവർത്തനരഹിതമാക്കണോ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"വ്യായാമ സെഷന്റെ വഴികൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന്, <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് വ്യായാമ ഡാറ്റ വായിക്കുന്നതിനുള്ള ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"വ്യായാമ സെഷന്റെ വഴികൾ പ്രവർത്തനക്ഷമമാക്കുന്നതിന് <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിന് വ്യായാമ ആക്‌സസ് ആവശ്യമാണ്"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"ഉവ്വ്"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ഇല്ല"</string>
     <string name="back_button" msgid="780519527385993407">"മടങ്ങുക"</string>
     <string name="loading" msgid="2526615755685950317">"ലോഡ് ചെയ്യുന്നു…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"സംയോജനം പുരോഗമിക്കുന്നു"</string>

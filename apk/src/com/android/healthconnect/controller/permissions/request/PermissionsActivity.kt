@@ -26,10 +26,10 @@ import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES
 import android.content.pm.PackageManager.EXTRA_REQUEST_PERMISSIONS_RESULTS
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
@@ -47,9 +47,7 @@ import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
-import com.android.healthconnect.controller.utils.increaseViewTouchTargetSize
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -81,10 +79,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // This flag ensures an app requesting permissions cannot show an overlay to deceive the
-        // user. For example, an app requesting permission for Sexual Activity, can overlay and
-        // replace the text with Body Weight, thus deceiving the user. b/313425281
-        getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
 
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
@@ -109,19 +105,64 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
             openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
         }
 
-        val rationalIntentDeclared =
-            healthPermissionReader.isRationalIntentDeclared(getPackageNameExtra())
-        if (!rationalIntentDeclared) {
-            Log.e(TAG, "App should support rational intent, finishing!")
+        val rationaleIntentDeclared =
+            healthPermissionReader.isRationaleIntentDeclared(getPackageNameExtra())
+        if (!rationaleIntentDeclared) {
+            Log.e(TAG, "App should support rationale intent, finishing!")
             finish()
         }
 
         requestPermissionsViewModel.init(getPackageNameExtra(), getPermissionStrings())
-        requestPermissionsViewModel.permissionsList.observe(this) { notGrantedPermissions ->
-            if (notGrantedPermissions.isEmpty()) {
-                handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+        if (requestPermissionsViewModel.isAnyPermissionUserFixed(
+            getPackageNameExtra(), getPermissionStrings())) {
+            Log.e(TAG, "App has at least one USER_FIXED permission, finishing!")
+            requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
+            handlePermissionResults()
+        }
+
+        requestPermissionsViewModel.healthPermissionsList.observe(this) { allPermissions ->
+            val dataTypePermissions =
+                allPermissions.filterIsInstance<HealthPermission.DataTypePermission>()
+            val additionalPermissions =
+                allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
+
+            // Case 1 - no permissions
+            if (dataTypePermissions.isEmpty() && additionalPermissions.isEmpty()) {
+                requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
+                handlePermissionResults()
+            }
+
+            // Case 2 - just health permissions
+            else if (additionalPermissions.isEmpty()) {
+                showFragment(DataTypePermissionsFragment())
+            }
+
+            // Case 3 - just additional permissions
+            else if (dataTypePermissions.isEmpty()) {
+                if (!requestPermissionsViewModel.isAnyReadPermissionGranted()) {
+                    Log.e(
+                        TAG,
+                        "No data type read permissions are granted, cannot request additional permissions.")
+                    handlePermissionResults(RESULT_CANCELED)
+                }
+
+                // Show only additional access request
+                requestPermissionsViewModel.setDataTypePermissionRequestConcluded(true)
+                showFragment(AdditionalPermissionsFragment())
+            }
+
+            // Case 4 - combined
+            else {
+                if (!requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
+                    Log.i("AdditionalPerm", "PermissionsActivity health not concluded")
+                    showFragment(DataTypePermissionsFragment())
+                } else {
+                    // After configuration change
+                    showFragment(AdditionalPermissionsFragment())
+                }
             }
         }
+
         migrationViewModel.migrationState.observe(this) { migrationState ->
             when (migrationState) {
                 is MigrationViewModel.MigrationFragmentState.WithData -> {
@@ -131,47 +172,6 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     // do nothing
                 }
             }
-        }
-
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.permission_content, PermissionsFragment())
-            .commit()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setupAllowButton()
-        setupCancelButton()
-    }
-
-    private fun setupCancelButton() {
-        val cancelButton: View = findViewById(R.id.cancel)
-        logger.logImpression(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
-
-        val parentView = cancelButton.parent as View
-        increaseViewTouchTargetSize(this, cancelButton, parentView)
-
-        cancelButton.setOnClickListener {
-            logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
-            requestPermissionsViewModel.updatePermissions(false)
-            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
-        }
-    }
-
-    private fun setupAllowButton() {
-        val allowButton: View = findViewById(R.id.allow)
-        logger.logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-
-        val parentView = allowButton.parent.parent as View
-        increaseViewTouchTargetSize(this, allowButton, parentView)
-
-        requestPermissionsViewModel.grantedPermissions.observe(this) { grantedPermissions ->
-            allowButton.isEnabled = grantedPermissions.isNotEmpty()
-        }
-        allowButton.setOnClickListener {
-            logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-            handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
         }
     }
 
@@ -201,8 +201,15 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     requestPermissionsViewModel.appMetadata.value?.appName),
                 null,
             ) { _, _ ->
-                requestPermissionsViewModel.updatePermissions(false)
-                handleResults(requestPermissionsViewModel.request(getPackageNameExtra()))
+                if (requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
+                    requestPermissionsViewModel.updateAdditionalPermissions(false)
+                    requestPermissionsViewModel.requestAdditionalPermissions(getPackageNameExtra())
+                } else {
+                    requestPermissionsViewModel.updateDataTypePermissions(false)
+                    requestPermissionsViewModel.requestDataTypePermissions(getPackageNameExtra())
+                }
+
+                handlePermissionResults()
                 finish()
             }
         } else if (migrationUiState == MigrationUiState.COMPLETE) {
@@ -210,21 +217,25 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
     }
 
-    fun handleResults(results: Map<HealthPermission, PermissionState>) {
-        val grants =
-            results.values
-                .map { permissionSelection ->
-                    if (PermissionState.GRANTED == permissionSelection) {
-                        PackageManager.PERMISSION_GRANTED
-                    } else {
-                        PackageManager.PERMISSION_DENIED
-                    }
-                }
-                .toIntArray()
+    private fun handlePermissionResults(resultCode: Int = RESULT_OK) {
+        val results = requestPermissionsViewModel.getPermissionGrants()
+        val grants = mutableListOf<Int>()
+        val permissionStrings = mutableListOf<String>()
+
+        for ((permission, state) in results) {
+            if (state == PermissionState.GRANTED) {
+                grants.add(PackageManager.PERMISSION_GRANTED)
+            } else {
+                grants.add(PackageManager.PERMISSION_DENIED)
+            }
+
+            permissionStrings.add(permission.toString())
+        }
+
         val result = Intent()
-        result.putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, getPermissionStrings())
-        result.putExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS, grants)
-        setResult(RESULT_OK, result)
+        result.putExtra(EXTRA_REQUEST_PERMISSIONS_NAMES, permissionStrings.toTypedArray())
+        result.putExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS, grants.toIntArray())
+        setResult(resultCode, result)
         finish()
     }
 
@@ -234,5 +245,12 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
 
     private fun getPackageNameExtra(): String {
         return intent.getStringExtra(EXTRA_PACKAGE_NAME).orEmpty()
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.permission_content, fragment)
+            .commit()
     }
 }

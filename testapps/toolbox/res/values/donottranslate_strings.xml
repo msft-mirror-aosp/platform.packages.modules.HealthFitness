@@ -15,7 +15,7 @@
 -->
 
 <resources>
-  <string name="app_label">Health Connect Toolbox</string>
+  <string name="app_label">AP Health Connect Toolbox</string>
   <string name="not_implemented">Not implemented</string>
   <string name="insert_data">Insert Data</string>
   <string name="update_data">Update Data</string>
@@ -23,7 +23,7 @@
   <string name="please_wait">Please Wait</string>
 
   <!-- Home Screen -->
-  <string name="request_permissions">Request Permissions</string>
+  <string name="request_health_permissions">Request Health Permissions</string>
   <string name="launch_health_connect">Launch Health Connect</string>
   <string name="request_route">Request Route</string>
   <string name="insert_update_data">Insert / Update Data</string>
@@ -36,6 +36,9 @@
   <string name="seed_performance_insert_data_in_parallel">Seed Performance Data (In Parallel)</string>
   <string name="seed_performance_read_data">Read Performance Data</string>
   <string name="toggle_permission_intent_filter">Toggle Intent Filter</string>
+  <string name="request_combined_permissions">Request Combined Permissions</string>
+  <string name="request_additional_permissions">Request Additional Permissions</string>
+  <string name="request_bg_read_permission">Request BG Read</string>
   <string name="toast_permission_filter_enabled">Intent Filter Enabled</string>
   <string name="toast_permission_filter_disabled">Intent Filter Disabled</string>
   <string name="toast_seed_data_success">Data inserted successfully</string>
@@ -104,6 +107,7 @@
   <string name="oxygen_saturation_label" description="Label used to show the user's oxygen saturation data [CHAR_LIMIT=50]">Oxygen saturation</string>
   <string name="respiratory_rate_label" description="Label used to show the user's respiratory rate data [CHAR_LIMIT=50]">Respiratory rate</string>
   <string name="resting_heart_rate_label" description="Label used to show the user's resting heart rate data [CHAR_LIMIT=50]">Resting heart rate</string>
+  <string name="skin_temperature_label" description="Label used to show the user's skin temperature data [CHAR_LIMIT=50]">Skin temperature</string>
   <!--endregion-->
   <!--endregion-->
 

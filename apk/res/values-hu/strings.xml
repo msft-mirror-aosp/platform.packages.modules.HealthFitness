@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Megtekintheti, hogy mely alkalmazások fértek hozzá az Ön adataihoz az elmúlt 24 órában"</string>
     <string name="today_header" msgid="1006837293203834373">"Ma"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Tegnap"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"%s olvasása"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"%s írása"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Engedélyek kezelése"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Idő: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"Olvasás a háttérben"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"olvasás a háttérben"</string>
     <string name="background_read_description" msgid="5263745158443722174">"Egészségi adatok olvasása a háttérben"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"Múltbeli egészségügyi adatok beolvasása"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktívan elégetett kalória"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktívan elégetett kalória"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Aktívan elégetett kalóriára vonatkozó adatok olvasása"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Hozzáfért az elmúlt 24 órában"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Alkalmazás-hozzáférés"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Jelenleg nincs kompatibilis alkalmazás telepítve"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"További hozzáférés"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Eltávolított alkalmazásengedélyek"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"A Health Connect eltávolította a következőnek megadott engedélyeket: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"A Health Connect eltávolította a következőknek megadott engedélyeket: <xliff:g id="APP_DATA_0">%1$s</xliff:g> és <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Miért távolít el a Health Connect alkalmazásengedélyeket?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ha valamelyik alkalmazás felfüggesztésre vagy eltávolításra kerül a Google Playen, a Health Connect automatikusan eltávolítja az engedélyeit.\n\nEz azt jelenti, hogy az adott alkalmazás a továbbiakban már nem férhet hozzá a Health Connect szolgáltatásban tárolt adatokhoz. Ha az alkalmazás korábban rögzített adatokat, akkor az inaktív alkalmazások listájában lesz látható."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Értem"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Biztonsági mentés és visszaállítás"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Exportálás és importálás"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"Adatok visszaállítása"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Betölthet korábban exportált adatokat"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"Gyakoriság kiválasztása"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Dönthet az egyszeri adatmentés mellett, vagy beállíthatja a rendszeres időközönkénti automatikus mentést."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Naponta"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Hetente"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Havonta"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Exportálási hely"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Titkosítás bekapcsolása"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Az adatokat titkosítani kell a mentésük előtt. Senki, még a Google vagy a Health Connect sem tud majd hozzájuk férni."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Hozzon létre egy jelszót titkosított adatainak védelme érdekében. Erre a jelszóra adatai importálásához és visszaállításához lesz szüksége."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Jelszó"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Jelszó megismétlése"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ha elfelejti a jelszavát, és elveszti a telefonját, a Health Connect nem tud segíteni az elveszett adatok visszaállításában."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Vissza"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Következő"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Kezdő lépések a Health Connect szolgáltatással"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"A Health Connect tárolja az egészségével és a fitnesztevékenységeivel kapcsolatos adatokat, így könnyedén szinkronizálhatja a telefonján lévő különböző alkalmazásokat"</string>
     <string name="share_data" msgid="3481932156368883946">"Megoszthat adatokat az alkalmazásaival"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 font}other{# font}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 Celsius-fok}other{# Celsius-fok}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 Fahrenheit-fok}other{# Fahrenheit-fok}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} Celsius-fok}other{{formattedValue} Celsius-fok}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} Fahrenheit-fok}other{{formattedValue} Fahrenheit-fok}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (átlagos eltérés)}other{{formattedValue} ℃ (átlagos eltérés)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} Celsius-fok (szórás)}other{{formattedValue} Celsius-fok (szórás)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (átlagos eltérés)}other{{formattedValue} ℉ (átlagos eltérés)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Fahrenheit-fok (szórás)}other{{formattedValue} Fahrenheit-fok (szórás)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (átlagos eltérés)}other{{formattedValue} K (átlagos eltérés)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (szórás)}other{{formattedValue} kelvin (szórás)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Hónalj"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Ujj"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Homlok"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Fül"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Csukló"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Hüvely"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Mérés helye"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Alapérték"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Eltérés az alapértéktől"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mérföld}other{# mérföld}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mérföld}other{# mérföld}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Az útvonal engedélyezése"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Összes útvonal engedélyezése"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Tiltás"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Engedélyezés mindig"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Edzési útvonal megosztása"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Annak szabályozása, hogy ez az alkalmazás hogyan férhet hozzá a társított alkalmazásokból származó edzési útvonalakhoz"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Mindig kérdezzen rá"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Tiltás"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Mindkét adattípust engedélyezi?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Mindkét adattípust letiltja?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazásnak olvasási hozzáférésre van szüksége az edzésekhez az edzési útvonalak engedélyezéséhez."</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazásnak hozzáférésre van szüksége az edzésekhez az edzési útvonalak engedélyezéséhez."</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Igen"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nem"</string>
     <string name="back_button" msgid="780519527385993407">"Vissza"</string>
     <string name="loading" msgid="2526615755685950317">"Betöltés…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Az integráció folyamatban van"</string>

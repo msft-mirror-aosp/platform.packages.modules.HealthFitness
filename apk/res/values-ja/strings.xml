@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"過去 24 時間にあなたのデータにアクセスしたアプリが表示されます"</string>
     <string name="today_header" msgid="1006837293203834373">"今日"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"昨日"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"読み取り: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"書き込み: %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"権限を管理"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"時間: %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"バックグラウンドでの読み取り"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"バックグラウンドでの読み取り"</string>
     <string name="background_read_description" msgid="5263745158443722174">"健康に関するデータをバックグラウンドで読み取ります"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"健康に関するデータの履歴を読み取ります"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"活動中の消費カロリー"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"活動中の消費カロリー"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"活動中の消費カロリーの読み取り"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"過去 24 時間にアクセス"</string>
     <string name="app_access_title" msgid="7137018424885371763">"アプリのアクセス権"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"現在、対応アプリがインストールされていません"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"アクセス権の追加"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"アプリの権限を削除しました"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"ヘルスコネクトにより、<xliff:g id="APP_DATA">%s</xliff:g> に対する権限が削除されました"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"ヘルスコネクトにより、<xliff:g id="APP_DATA_0">%1$s</xliff:g> と <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> の権限が削除されました"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ヘルスコネクトによりアプリの権限が削除される理由"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"アプリが Google Play での公開が停止された場合や Google Play から削除された場合、ヘルスコネクトにより、そのアプリの権限が自動的に削除されます。\n\nそのため、そのアプリはヘルスコネクトに保存されたデータにアクセスできなくなります。そのアプリで以前に書き込まれたデータがある場合は、無効なアプリのリストに表示されます。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"バックアップと復元"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"エクスポートとインポート"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"データを復元"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"以前にエクスポートしたデータを読み込む"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"頻度の選択"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"データを 1 回保存することを指定するか、定期的な自動保存を設定します。"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"毎日"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"毎週"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"毎月"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"エクスポート先"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"暗号化を有効にする"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"データを保存するには先に暗号化する必要があります。これにより、Google やヘルスコネクトを含め、他のユーザーはデータにアクセスできなくなります。"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"暗号化されたデータを保護するためにパスワードを作成してください。データのインポートや復元には、このパスワードが必要になります。"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"パスワード"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"もう一度パスワードを入力"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"パスワードを忘れたり、スマートフォンを紛失したりした場合、ヘルスコネクトでは保存されたデータを復元できなくなります。"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"戻る"</string>
+    <string name="export_next_button" msgid="657930567137105172">"次へ"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"ヘルスコネクトを使ってみる"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"ヘルスコネクトを利用すると、健康状態やフィットネスのデータを保存し、スマートフォン上のさまざまなアプリを簡単に同期することができます"</string>
     <string name="share_data" msgid="3481932156368883946">"アプリとデータを共有する"</string>
@@ -393,7 +421,7 @@
     <string name="ovulation_positive" msgid="6588547263126320238">"好ましい"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"好ましくない"</string>
     <string name="ovulation_high" msgid="205362931427158291">"高"</string>
-    <string name="ovulation_inconclusive" msgid="3447066667631538756">"不確定"</string>
+    <string name="ovulation_inconclusive" msgid="3447066667631538756">"判定不能"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ミリ秒}other{# ミリ秒}}"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 回}other{# 回}}"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 ポンド}other{# ポンド}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 ストーン}other{# ストーン}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 度（摂氏）}other{# 度（摂氏）}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 ケルビン}other{# ケルビン}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 度（華氏）}other{# 度（華氏）}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} 度（摂氏）}other{{formattedValue} 度（摂氏）}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} 度（華氏）}other{{formattedValue} 度（華氏）}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} ケルビン}other{{formattedValue} ケルビン}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃（変動の平均）}other{{formattedValue}℃（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} 度（摂氏）（変動の平均）}other{{formattedValue} 度（摂氏）（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉（変動の平均）}other{{formattedValue}℉（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} 度（華氏）（変動の平均）}other{{formattedValue} 度（華氏）（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K（変動の平均）}other{{formattedValue}K（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} ケルビン（変動の平均）}other{{formattedValue} ケルビン（変動の平均）}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"脇の下"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"指"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"額"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"耳"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"手首"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"膣"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"測定場所"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"基準値"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"基準値からの変動"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 マイル}other{# マイル}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 マイル}other{# マイル}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"このルートを許可する"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"すべてのルートを許可する"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"許可しない"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"常に許可"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"エクササイズのルートの共有"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"接続されているアプリによるエクササイズのルートに、このアプリがどのようにアクセスするかを管理します"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"毎回確認"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"許可しない"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"両方のデータの種類を有効にしますか？"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"両方のデータの種類を無効にしますか？"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"エクササイズのルートを有効にするには、エクササイズの読み取りアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に許可する必要があります"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"エクササイズのルートを有効にするには、エクササイズへのアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に許可する必要があります"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"はい"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"いいえ"</string>
     <string name="back_button" msgid="780519527385993407">"戻る"</string>
     <string name="loading" msgid="2526615755685950317">"読み込んでいます…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"統合中"</string>

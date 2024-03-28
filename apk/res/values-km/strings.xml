@@ -41,8 +41,10 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"មើលថាតើកម្មវិធីណាខ្លះបានចូលប្រើប្រាស់ទិន្នន័យរបស់អ្នកក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយ"</string>
     <string name="today_header" msgid="1006837293203834373">"ថ្ងៃនេះ"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ម្សិលមិញ"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"អាន៖ %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"សរសេរ​៖ %s"</string>
+    <!-- no translation found for read_data_access_label (8968758932021241976) -->
+    <skip />
+    <!-- no translation found for write_data_access_label (105976369853871061) -->
+    <skip />
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"គ្រប់គ្រង​ការអនុញ្ញាត"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"ពេលវេលា៖ %s"</string>
@@ -84,6 +86,7 @@
     <string name="background_read_uppercase_label" msgid="5727643918930403320">"ការអាននៅផ្ទៃខាងក្រោយ"</string>
     <string name="background_read_lowercase_label" msgid="2490218479761177680">"ការអាននៅផ្ទៃខាងក្រោយ"</string>
     <string name="background_read_description" msgid="5263745158443722174">"អានទិន្នន័យសុខភាពនៅផ្ទៃខាងក្រោយ"</string>
+    <string name="history_read_description" msgid="7347109472601749963">"អានទិន្នន័យសុខភាពពីមុន"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"កាឡូរីសកម្មដែលបានដុត"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"កាឡូរីសកម្មដែលបានដុត"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"អានកាឡូរីសកម្មដែលបានដុត"</string>
@@ -295,6 +298,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"បានចូលប្រើក្នុងរយៈពេល 24 ម៉ោងចុងក្រោយ"</string>
     <string name="app_access_title" msgid="7137018424885371763">"សិទ្ធិចូលប្រើកម្មវិធី"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"បច្ចុប្បន្ននេះ អ្នកមិនបានដំឡើង​កម្មវិធីដែលត្រូវគ្នាទេ"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"សិទ្ធិ​ចូល​ប្រើបន្ថែម"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"បានដកការអនុញ្ញាតកម្មវិធី"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect បានដកការអនុញ្ញាតសម្រាប់ <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect បានដកការអនុញ្ញាតសម្រាប់ <xliff:g id="APP_DATA_0">%1$s</xliff:g> និង <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +308,30 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ហេតុអ្វីបានជា Health Connect ដកការអនុញ្ញាតកម្មវិធី"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ប្រសិនបើ​កម្មវិធីមួយ​ត្រូវបានផ្អាក ឬដកចេញពី Google Play នោះ Health Connect នឹងដកការអនុញ្ញាតរបស់ខ្លួនចេញ​ដោយស្វ័យប្រវត្តិ។\n\nនេះមានន័យថា កម្មវិធីមិនអាចចូលប្រើប្រាស់​ទិន្នន័យដែលរក្សាទុក​នៅក្នុង Health Connect បានទៀតទេ។ ប្រសិនបើកម្មវិធីនេះធ្លាប់បានសរសេរទិន្នន័យពីមុន នោះវានឹងបង្ហាញនៅក្នុងបញ្ជីកម្មវិធីអសកម្ម។"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"យល់ហើយ"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"បម្រុងទុក និង​ស្ដារ"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"នាំចេញ និងនាំចូល"</string>
+    <!-- no translation found for export_automatically (8820158546399774250) -->
+    <skip />
+    <string name="restore_data" msgid="3401173690437871417">"ស្ដារទិន្នន័យ"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"ផ្ទុកទិន្នន័យដែលបាននាំចេញពីមុន"</string>
+    <!-- no translation found for automatic_export_on (6972389773963624315) -->
+    <skip />
+    <!-- no translation found for automatic_export_off (3270255845008880841) -->
+    <skip />
+    <string name="choose_frequency" msgid="1077467424225083246">"ជ្រើសរើសកម្រិតញឹកញាប់"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ជ្រើសរើសរក្សាទុកទិន្នន័យម្ដង ឬកំណត់ឱ្យរក្សាទុកដោយស្វ័យប្រវត្តិតាមពេលវេលាទៀងទាត់។"</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"ប្រចាំថ្ងៃ"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"ប្រចាំសប្ដាហ៍"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"ប្រចាំខែ"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"ទីតាំងនាំចេញ"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"បើក​ការ​អ៊ីនគ្រីប"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ត្រូវអ៊ីនគ្រីបទិន្នន័យជាមុនសិន ទើបរក្សាទុកបាន។ គ្មាននរណាម្នាក់ សូម្បីតែ Google ឬ Health Connect នឹងអាចចូលប្រើទិន្នន័យនេះបានទេ។"</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"បង្កើតពាក្យសម្ងាត់ ដើម្បីការពារទិន្នន័យដែលបានអ៊ីនគ្រីបរបស់អ្នក។ អ្នកនឹងត្រូវការពាក្យសម្ងាត់នេះ ដើម្បីនាំចូល និងស្ដារទិន្នន័យរបស់អ្នក។"</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"ពាក្យសម្ងាត់"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"បញ្ចូលពាក្យសម្ងាត់ម្តងទៀត"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"ប្រសិនបើអ្នកភ្លេចពាក្យសម្ងាត់របស់អ្នក និងបាត់ទូរសព្ទរបស់អ្នក នោះ Health Connect មិនអាចជួយអ្នកស្ដារឡើងវិញនូវទិន្នន័យដែលបានរក្សាទុករបស់អ្នកបានទេ។"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"ថយក្រោយ"</string>
+    <string name="export_next_button" msgid="657930567137105172">"បន្ទាប់"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"ចាប់ផ្ដើមជាមួយ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើទូរសព្ទ​របស់អ្នក"</string>
     <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>
@@ -633,12 +661,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 ផោន}other{# ផោន}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 ស្តូន}other{# ស្តូន}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 អង្សាសេ}other{# អង្សាសេ}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 កែលវិន}other{# កែលវិន}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 អង្សា​ហ្វារិនហៃ}other{# អង្សា​ហ្វារិនហៃ}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} អង្សាសេ}other{{formattedValue} អង្សាសេ}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} អង្សា​ហ្វារិនហៃ}other{{formattedValue} អង្សា​ហ្វារិនហៃ}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} កែលវិន}other{{formattedValue} កែលវិន}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (ភាពខុសគ្នាជាមធ្យម)}other{{formattedValue}℃ (ភាពខុសគ្នាជាមធ្យម)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} អង្សាសេ (ភាពខុសគ្នាជាមធ្យម)}other{{formattedValue} អង្សាសេ (ភាពខុសគ្នាជាមធ្យម)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (ភាពខុសគ្នាជាមធ្យម)}other{{formattedValue}℉ (ភាពខុសគ្នាជាមធ្យម)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} អង្សា​ហ្វារិនហៃ (ភាពខុសគ្នាជាមធ្យម)}other{{formattedValue} អង្សា​ហ្វារិនហៃ (ភាពខុសគ្នាជាមធ្យម)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (ភាពខុសគ្នាជាមធ្យម)}other{{formattedValue}K (ភាពខុសគ្នាជាមធ្យម)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} កែលវិន (ភាពខុសគ្នាជាមធ្យម)}other{{formattedValue} កែលវិន (ភាពខុសគ្នាជាមធ្យម)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"ក្លៀក"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"ម្រាមដៃ"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"ថ្ងាស"</string>
@@ -649,6 +689,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"ត្រចៀក"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"កដៃ"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"ទ្វារមាស"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"ទីតាំងវាស់"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"ចំណុចគោល"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"ភាពខុសគ្នាពីចំណុចគោល"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ម៉ាយល៍}other{# ម៉ាយល៍}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ម៉ាយល៍}other{# ម៉ាយល៍}}"</string>
@@ -741,6 +784,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"អនុញ្ញាតផ្លូវនេះ"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"អនុញ្ញាតផ្លូវទាំងអស់"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"កុំអនុញ្ញាត"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"អនុញ្ញាត​ជានិច្ច"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"ការចែករំលែកផ្លូវហាត់ប្រាណ"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"គ្រប់គ្រងរបៀបដែលកម្មវិធីនេះចូលប្រើផ្លូវហាត់ប្រាណពីកម្មវិធីដែលបានភ្ជាប់"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"សួរគ្រប់ពេល"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"មិនអនុញ្ញាត"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"បើកប្រភេទទិន្នន័យទាំងពីរឬ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"បិទប្រភេទទិន្នន័យទាំងពីរឬ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ត្រូវការការចូលអានលំហាត់ប្រាណ ដើម្បីបើកផ្លូវហាត់ប្រាណ"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> តម្រូវឱ្យមានសិទ្ធិចូលប្រើលំហាត់ប្រាណ ដើម្បីបើកផ្លូវហាត់ប្រាណ"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"បាទ/ចាស"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"ទេ"</string>
     <string name="back_button" msgid="780519527385993407">"ថយក្រោយ"</string>
     <string name="loading" msgid="2526615755685950317">"កំពុងផ្ទុក…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ការរួមបញ្ចូល​កំពុងដំណើរការ"</string>
