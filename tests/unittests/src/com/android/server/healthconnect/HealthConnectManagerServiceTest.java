@@ -126,7 +126,7 @@ public class HealthConnectManagerServiceTest {
                 .thenReturn(mHealthDataCategoryPriorityHelper);
         doNothing()
                 .when(mHealthDataCategoryPriorityHelper)
-                .maybeAddInactiveAppsToPriorityList(mContext);
+                .maybeAddContributingAppsToPriorityList(mContext);
         mHealthConnectManagerService = new HealthConnectManagerService(mContext);
     }
 
@@ -154,6 +154,6 @@ public class HealthConnectManagerServiceTest {
         verify(mJobScheduler, timeout(5000).times(1)).schedule(any());
         ExtendedMockito.verify(
                 () -> BackupRestore.BackupRestoreJobService.cancelAllJobs(eq(mContext)));
-        verify(mHealthDataCategoryPriorityHelper).maybeAddInactiveAppsToPriorityList(any());
+        verify(mHealthDataCategoryPriorityHelper).maybeAddContributingAppsToPriorityList(any());
     }
 }

@@ -25,8 +25,6 @@ import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
-
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
@@ -44,6 +42,8 @@ import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -56,8 +56,6 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
-
-import com.google.common.annotations.VisibleForTesting;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -301,11 +299,14 @@ public final class TransactionManager {
      */
     public Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsAndPageToken(
             @NonNull ReadTransactionRequest request) throws SQLiteException {
-        // TODO(b/308158714): Make this build time check once we have different classes.
+        // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
                 request.getPageToken() != null && request.getPageSize().isPresent(),
                 "Expect read by filter request, but request doesn't contain pagination info.");
-        ReadTableRequest readTableRequest = getOnlyElement(request.getReadRequests());
+        checkArgument(
+                request.getReadRequests().size() == 1,
+                "Expected read by filter request, but request contains multiple read requests.");
+        ReadTableRequest readTableRequest = request.getReadRequests().get(0);
         List<RecordInternal<?>> recordInternalList;
         RecordHelper<?> helper = readTableRequest.getRecordHelper();
         requireNonNull(helper);

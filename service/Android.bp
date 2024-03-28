@@ -43,7 +43,6 @@ java_sdk_library {
         "modules-utils-preconditions",
     ],
     static_libs: [
-        "guava",
         "modules-utils-backgroundthread",
     ],
     installable: true,
