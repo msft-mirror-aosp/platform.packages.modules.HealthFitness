@@ -23,7 +23,7 @@ import android.content.pm.PackageManager.PackageInfoFlags
 import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -133,7 +133,7 @@ constructor(
         return getHealthPermissions(packageName).filter { perm -> isAdditionalPermission(perm) }
     }
 
-    fun isRationalIntentDeclared(packageName: String): Boolean {
+    fun isRationaleIntentDeclared(packageName: String): Boolean {
         val intent = getRationaleIntent(packageName)
         val resolvedInfo =
             context.packageManager.queryIntentActivities(

@@ -25,7 +25,7 @@ import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermi
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -135,7 +135,7 @@ class AppPermissionViewModelTest {
 
     @Test
     fun whenPackageSupported_loadAllPermissions() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
@@ -170,7 +170,7 @@ class AppPermissionViewModelTest {
 
     @Test
     fun whenPackageNotSupported_loadOnlyGrantedPermissions() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(false)
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
@@ -416,7 +416,7 @@ class AppPermissionViewModelTest {
 
     @Test
     fun shouldNavigateToFragment_whenPackageNameSupported_returnsTrue() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
@@ -436,7 +436,7 @@ class AppPermissionViewModelTest {
 
     @Test
     fun shouldNavigateToFragment_whenAnyPermissionGranted_returnsTrue() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(false)
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(
@@ -458,7 +458,7 @@ class AppPermissionViewModelTest {
     @Test
     fun shouldNavigateToFragment_whenPackageNotSupported_andNoPermissionsGranted_returnsFalse() =
         runTest {
-            whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(false)
+            whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
             whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
                 .thenReturn(
                     listOf(
@@ -479,11 +479,11 @@ class AppPermissionViewModelTest {
     @Test
     fun isPackageSupported_callsCorrectMethod() {
         appPermissionViewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)
-        verify(healthPermissionReader).isRationalIntentDeclared(TEST_APP_PACKAGE_NAME)
+        verify(healthPermissionReader).isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)
     }
 
     private fun setupDeclaredAndGrantedPermissions() {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
             .thenReturn(
                 listOf(

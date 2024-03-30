@@ -42,7 +42,7 @@ public class ExportManager {
 
     // TODO(b/325599879): Change visibility once there is a wrapper.
     /** Writes the backup data into a local file. */
-    public String exportLocally(@NonNull UserHandle userHandle) {
+    public File exportLocally(@NonNull UserHandle userHandle) {
         Slog.d(TAG, "Incoming request to make a local copy for export");
 
         File exportDir =
@@ -73,6 +73,6 @@ public class ExportManager {
             Slog.e(TAG, "Failed to create file for export", e);
         }
 
-        return exportFile.getPath();
+        return exportFile;
     }
 }
