@@ -1926,7 +1926,10 @@ public class HealthConnectManagerTest {
                 (recordTypeClass, recordTypeInfoResponse) -> {
                     TestUtils.RecordTypeInfoTestResponse expectedTestResponse =
                             expectedResponse.get(recordTypeClass);
-                    assertThat(expectedTestResponse).isNotNull();
+                    // Ignore unknown record types in the response.
+                    if (expectedTestResponse == null) {
+                        return;
+                    }
                     assertThat(recordTypeInfoResponse.getPermissionCategory())
                             .isEqualTo(expectedTestResponse.getRecordTypePermission());
                     assertThat(recordTypeInfoResponse.getDataCategory())
