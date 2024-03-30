@@ -18,7 +18,7 @@
 package com.android.healthconnect.controller.permissions.app
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import javax.inject.Inject

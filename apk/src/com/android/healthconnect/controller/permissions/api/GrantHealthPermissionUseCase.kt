@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.permissions.api
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Use case to grant health permission for an app. */
+/** Use case to grant a health permission for an app. */
 @Singleton
 class GrantHealthPermissionUseCase
 @Inject

@@ -41,10 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Consulta las apps que accedieron a tus datos en las últimas 24 horas"</string>
     <string name="today_header" msgid="1006837293203834373">"Hoy"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Ayer"</string>
-    <!-- no translation found for read_data_access_label (8968758932021241976) -->
-    <skip />
-    <!-- no translation found for write_data_access_label (105976369853871061) -->
-    <skip />
+    <string name="read_data_access_label" msgid="8968758932021241976">"Leer: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrar permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tiempo: %s"</string>
@@ -83,10 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"Acceder a tus datos de salud"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Medir calorías quemadas"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que la app lea las calorías quemadas"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lectura en segundo plano"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"lectura en segundo plano"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Leer los datos de salud en segundo plano"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"Leer datos de salud anteriores"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Acceso a los datos en segundo plano"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permite que esta app acceda a los datos de Health Connect cuando la app no está en uso"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect cuando la app no está en uso."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos antiguos"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos antiguos?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Permite que esta app acceda a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Permite que esta app acceda a datos antiguos de Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Si estás de acuerdo, esta app podrá acceder a los datos antiguos de Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorías activas quemadas"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"Calorías activas quemadas"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Medir las calorías activas quemadas"</string>
@@ -132,8 +136,8 @@
     <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"total de calorías quemadas"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Medir total de calorías quemadas"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Registrar total de calorías quemadas"</string>
-    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"máximo de VO2"</string>
-    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"máximo de VO2"</string>
+    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"VO2 máximo"</string>
+    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"VO2 máximo"</string>
     <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Medir máximo de VO2"</string>
     <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Registrar máximo de VO2"</string>
     <string name="wheelchair_pushes_uppercase_label" msgid="5582991294340226965">"Impulsos en silla de ruedas"</string>
@@ -259,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todo"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"No permitir"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Elige los datos que quieres que esta app lea o escriba en Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Si otorgas acceso a la lectura, esta app podrá leer los datos nuevos y los de los últimos 30 días"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si otorgas acceso de lectura, la app podrá leer los datos nuevos y los de los últimos 30 días"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si otorgas acceso de lectura, la app podrá leer datos nuevos y antiguos"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Consulta la <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> del desarrollador para obtener más información sobre el modo en que <xliff:g id="APP_NAME">%1$s</xliff:g> maneja tus datos"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidad"</string>
@@ -296,7 +301,7 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Para administrar otros permisos de Android a los que esta app puede acceder, ve a Configuración y, luego, presiona Apps"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Leer la política de privacidad"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Se accedió en las últimas 24 horas"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Acceso a apps"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Acceso de la app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Actualmente, no tienes ninguna app compatible instalada"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acceso adicional"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Apps a las que se les quitaron permisos"</string>
@@ -310,14 +315,11 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendido"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguridad y restablecimiento"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Importar y exportar"</string>
-    <!-- no translation found for export_automatically (8820158546399774250) -->
-    <skip />
+    <string name="export_automatically" msgid="8820158546399774250">"Exportación automática"</string>
     <string name="restore_data" msgid="3401173690437871417">"Restablecer datos"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Carga datos exportados previamente"</string>
-    <!-- no translation found for automatic_export_on (6972389773963624315) -->
-    <skip />
-    <!-- no translation found for automatic_export_off (3270255845008880841) -->
-    <skip />
+    <string name="automatic_export_on" msgid="6972389773963624315">"Activada"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Desactivada"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Elegir frecuencia"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Elige guardar datos una vez o configúralo para que guarde automáticamente con determinada frecuencia."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
@@ -424,6 +426,15 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"No concluyente"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisegundo}other{# milisegundos}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 vez}other{# veces}}"</string>
+    <!-- no translation found for active_calories_burned (1164230083046893828) -->
+    <skip />
+    <!-- no translation found for total_calories_burned (1674210345283541450) -->
+    <skip />
+    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
+    <skip />
+    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 repetición}other{# repeticiones}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetición}other{# repeticiones}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmentos de ejercicio"</string>
@@ -880,4 +891,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"El mes pasado"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Entradas"</string>
     <string name="tab_access" msgid="7818197975407243701">"Acceso"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"¿Quieres otorgarle acceso adicional a <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> también quiere acceder a estos parámetros de configuración de Health Connect"</string>
 </resources>
