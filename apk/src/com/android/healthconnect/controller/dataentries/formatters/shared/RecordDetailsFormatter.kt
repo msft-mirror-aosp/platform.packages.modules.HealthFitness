@@ -21,6 +21,6 @@ package com.android.healthconnect.controller.dataentries.formatters.shared
 import android.health.connect.datatypes.Record
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 
-interface SessionDetailsFormatter<T : Record> {
+interface RecordDetailsFormatter<T : Record> {
     suspend fun formatRecordDetails(record: T): List<FormattedEntry>
 }

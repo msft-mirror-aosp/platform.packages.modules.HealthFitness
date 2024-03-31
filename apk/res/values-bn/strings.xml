@@ -41,10 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"বিগত ২৪ ঘণ্টায় কোন কোন অ্যাপ আপনার ডেটা অ্যাক্সেস করেছে তা দেখুন"</string>
     <string name="today_header" msgid="1006837293203834373">"আজ"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"গতকাল"</string>
-    <!-- no translation found for read_data_access_label (8968758932021241976) -->
-    <skip />
-    <!-- no translation found for write_data_access_label (105976369853871061) -->
-    <skip />
+    <string name="read_data_access_label" msgid="8968758932021241976">"পড়ুন: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"লিখুন: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"অনুমতি ম্যানেজ করুন"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"সময়: %s"</string>
@@ -83,10 +81,26 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"আপনার স্বাস্থ্য সংক্রান্ত ডেটা অ্যাক্সেস করুন"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"ক্যালোরি খরচের ডেটা দেখা"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"কত ক্যালোরি খরচ হয়েছে সেই সংক্রান্ত ডেটা"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"ব্যাকগ্রাউন্ড পড়া"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"ব্যাকগ্রাউন্ড পড়া"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"ব্যাকগ্রাউন্ডে স্বাস্থ্য সম্পর্কিত ডেটা পড়ুন"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"স্বাস্থ্য সংক্রান্ত আগের ডেটা পড়ুন"</string>
+    <!-- no translation found for background_read_title (5061383169517186234) -->
+    <skip />
+    <!-- no translation found for background_read_request_title (8492898140120977977) -->
+    <skip />
+    <!-- no translation found for background_read_description (3203594555849969283) -->
+    <skip />
+    <!-- no translation found for background_read_request_description (1664402237648709581) -->
+    <skip />
+    <!-- no translation found for historic_access_title (3584594624937737030) -->
+    <skip />
+    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
+    <skip />
+    <!-- no translation found for historic_access_description (2616669701088141765) -->
+    <skip />
+    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description (136335743939253358) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"অ্যাক্টিভিটির সময় খরচ হওয়া ক্যালোরি সংক্রান্ত ডেটা"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"অ্যাক্টিভিটির সময় খরচ হওয়া ক্যালোরি সংক্রান্ত ডেটা"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"অ্যাক্টিভিটির সময় কতটা ক্যালোরি খরচ হয়েছে সেই সংক্রান্ত ডেটা দেখার অনুমতি দিন"</string>
@@ -259,7 +273,10 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"সব অনুমতি দিন"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"অনুমতি দেবেন না"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Health Connect-এর কোন ডেটা এই অ্যাপ দেখতে ও এডিট করতে পারবে তা বেছে নিন"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"আপনি এই অ্যাপকে দেখার অ্যাক্সেস দিলে এই অ্যাপ নতুন ডেটা সহ বিগত ৩০ দিনের ডেটাও দেখতে পারবে"</string>
+    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
+    <skip />
+    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
+    <skip />
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g>-কে Health Connect অ্যাক্সেস করার অনুমতি দেবেন?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"কীভাবে <xliff:g id="APP_NAME">%1$s</xliff:g> আপনার ডেটা ম্যানেজ করে, ডেভেলপারের <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> থেকে আপনি তা জানতে পারবেন"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"গোপনীয়তা নীতি"</string>
@@ -310,14 +327,11 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"বুঝেছি"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ব্যাক-আপ নিন ও ফিরিয়ে আনুন"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"এক্সপোর্ট ও ইমপোর্ট করুন"</string>
-    <!-- no translation found for export_automatically (8820158546399774250) -->
-    <skip />
+    <string name="export_automatically" msgid="8820158546399774250">"অটোমেটিক এক্সপোর্ট"</string>
     <string name="restore_data" msgid="3401173690437871417">"ডেটা রিস্টোর করুন"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"আগে এক্সপোর্ট করা ডেটা লোড করুন"</string>
-    <!-- no translation found for automatic_export_on (6972389773963624315) -->
-    <skip />
-    <!-- no translation found for automatic_export_off (3270255845008880841) -->
-    <skip />
+    <string name="automatic_export_on" msgid="6972389773963624315">"চালু আছে"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"বন্ধ আছে"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ফ্রিকোয়েন্সি বেছে নেওয়া হয়েছে"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ডেটা সেভ করার বিকল্প একবার বেছে নিন অথবা পর্যায়ক্রমে অটোমেটিক সেভ করার সেটিং সেট করুন।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"দৈনিক"</string>
@@ -424,6 +438,16 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"সিদ্ধান্তে আসা যায়নি"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{১ মিলিসেকেন্ড}one{# মিলিসেকেন্ড}other{# মিলিসেকেন্ড}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{১ মিলিসেকেন্ড}one{# মিলিসেকেন্ড}other{# মিলিসেকেন্ড}}"</string>
+    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
+    <skip />
+    <!-- no translation found for active_calories_burned (1164230083046893828) -->
+    <skip />
+    <!-- no translation found for total_calories_burned (1674210345283541450) -->
+    <skip />
+    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
+    <skip />
+    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{১ বার পুনরাবৃত্তি}one{# বার পুনরাবৃত্তি}other{# বার পুনরাবৃত্তি}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{১ বার পুনরাবৃত্তি}one{# বার পুনরাবৃত্তি}other{# বার পুনরাবৃত্তি}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"ব্যায়ামের বিভাগ"</string>
@@ -739,8 +763,8 @@
     <string name="send_feedback" msgid="7756927746070096780">"মতামত জানান"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Health Connect-এর সাথে কোন কোন স্বাস্থ্য &amp; ফিটনেস অ্যাপ আপনি ব্যবহার করতে চান তা আমাদের জানান"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
-    <string name="auto_delete_button" msgid="8536451792268513619">"অটোমেটিক মুছে দিন"</string>
-    <string name="auto_delete_title" msgid="8761742828224207826">"অটোমেটিক মুছে দিন"</string>
+    <string name="auto_delete_button" msgid="8536451792268513619">"অটোমেটিক মুছে দেওয়া"</string>
+    <string name="auto_delete_title" msgid="8761742828224207826">"অটোমেটিক মুছে দেওয়া"</string>
     <string name="auto_delete_header" msgid="4258649705159293715">"সেট করা সময়ের পরে শিডিউল করে ডেটা মুছে ফেলার মাধ্যমে কতক্ষণ আপনার ডেটা Health Connect-এ সেভ করা থাকবে তা নিয়ন্ত্রণ করুন"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"অটোমেটিক মুছে দেওয়ার বিকল্প সম্পর্কে আরও জানুন"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"ডেটা অটোমেটিক মুছে দিন"</string>
@@ -750,7 +774,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"আপনি এইসব সেটিংস পরিবর্তন করলে, Health Connect আপনার নতুন পছন্দ প্রতিফলিত করতে আগে থেকে রয়েছে এমন ডেটা মুছে দেয়"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# মাস পরে ডেটা অটোমেটিক মুছে দিতে চান?}one{# মাস পরে ডেটা অটোমেটিক মুছে দিতে চান?}other{# মাস পরে ডেটা অটোমেটিক মুছে দিতে চান?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{# মাস পরে Health Connect নতুন ডেটা অটোমেটিক মুছে দেবে। এছাড়া, এটি সেট করা হলে বর্তমানে থাকা # মাসের চেয়ে পুরনো ডেটা অটোমেটিক মুছে যাবে।}one{# মাস পরে Health Connect নতুন ডেটা অটোমেটিক মুছে দেবে। এছাড়া, এটি সেট করা হলে বর্তমানে থাকা # মাসের চেয়ে পুরনো ডেটা অটোমেটিক মুছে যাবে।}other{# মাস পরে Health Connect নতুন ডেটা অটোমেটিক মুছে দেবে। এছাড়া, এটি সেট করা হলে বর্তমানে থাকা # মাসের চেয়ে পুরনো ডেটা অটোমেটিক মুছে যাবে।}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"\'অটোমেটিক মুছে দিন\' সেটিং সেট-আপ করুন"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"অটোমেটিক মুছে দেওয়ার সেটিং সেট করুন"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"আগে থাকা ডেটা মুছে ফেলা হবে"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # মাসের বেশি পুরনো সব ডেটা মুছে দেবে। আপনার কানেক্ট করা অ্যাপে এইসব পরিবর্তন দেখতে পাওয়ার জন্য এক দিন সময় লাগতে পারে।}one{Health Connect # মাসের বেশি পুরনো সব ডেটা মুছে দেবে। আপনার কানেক্ট করা অ্যাপে এইসব পরিবর্তন দেখতে পাওয়ার জন্য এক দিন সময় লাগতে পারে।}other{Health Connect # মাসের বেশি পুরনো সব ডেটা মুছে দেবে। আপনার কানেক্ট করা অ্যাপে এইসব পরিবর্তন দেখতে পাওয়ার জন্য এক দিন সময় লাগতে পারে।}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"এইসব বিভাগ থেকে ডেটা মুছে ফেলা হবে"</string>
@@ -880,4 +904,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"গত মাসের"</string>
     <string name="tab_entries" msgid="3402700951602029493">"এন্ট্রি"</string>
     <string name="tab_access" msgid="7818197975407243701">"অ্যাক্সেস রয়েছে"</string>
+    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
+    <skip />
+    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
+    <skip />
 </resources>

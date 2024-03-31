@@ -22,7 +22,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
