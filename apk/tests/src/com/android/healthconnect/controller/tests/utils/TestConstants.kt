@@ -42,6 +42,7 @@ import android.health.connect.datatypes.units.Volume
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.android.healthconnect.controller.dataentries.units.PowerConverter
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.utils.SystemTimeSource
@@ -54,6 +55,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
 import kotlin.random.Random
+import org.mockito.Mockito
 
 val NOW: Instant = Instant.parse("2022-10-20T07:06:05.432Z")
 val MIDNIGHT: Instant = Instant.parse("2022-10-20T00:00:00.000Z")
@@ -103,9 +105,9 @@ fun getIntermenstrualBleedingRecord(time: Instant): IntermenstrualBleedingRecord
 }
 
 fun getBodyTemperatureRecord(
-        time: Instant,
-        location: Int,
-        temperature: Temperature
+    time: Instant,
+    location: Int,
+    temperature: Temperature
 ): BodyTemperatureRecord {
     return BodyTemperatureRecord.Builder(getMetaData(), time, location, temperature).build()
 }
@@ -223,22 +225,22 @@ fun verifyBodyWaterMassListsEqual(actual: List<Record>, expected: List<Record>) 
 val START_TIME = Instant.parse("2023-06-12T22:30:00Z")
 
 val INSTANT_TODAY =
-        Instant.ofEpochMilli(SystemTimeSource.currentTimeMillis())
-                .toLocalDate()
-                .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-                .toInstant()
+    Instant.ofEpochMilli(SystemTimeSource.currentTimeMillis())
+        .toLocalDate()
+        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
+        .toInstant()
 
 val INSTANT_YESTERDAY =
-        INSTANT_TODAY.toLocalDate()
-                .minus(Period.ofDays(1))
-                .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-                .toInstant()
+    INSTANT_TODAY.toLocalDate()
+        .minus(Period.ofDays(1))
+        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
+        .toInstant()
 
 val INSTANT_TWO_DAYS_AGO =
-        INSTANT_YESTERDAY.toLocalDate()
-                .minus(Period.ofDays(1))
-                .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-                .toInstant()
+    INSTANT_YESTERDAY.toLocalDate()
+        .minus(Period.ofDays(1))
+        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
+        .toInstant()
 
 // pre-defined Instants within a day, week, and month of the START_TIME Instant
 val INSTANT_DAY: Instant = Instant.parse("2023-06-11T23:30:00Z")
@@ -252,38 +254,38 @@ val INSTANT_MONTH5: Instant = Instant.parse("2023-07-05T03:45:00Z")
 val INSTANT_MONTH6: Instant = Instant.parse("2023-07-07T07:05:00Z")
 
 val SLEEP_DAY_0H20 =
-        getSleepSessionRecord(
-                Instant.parse("2023-06-12T21:00:00Z"), Instant.parse("2023-06-12T21:20:00Z"))
+    getSleepSessionRecord(
+        Instant.parse("2023-06-12T21:00:00Z"), Instant.parse("2023-06-12T21:20:00Z"))
 val SLEEP_DAY_1H45 =
-        getSleepSessionRecord(
-                Instant.parse("2023-06-12T16:00:00Z"), Instant.parse("2023-06-12T17:45:00Z"))
+    getSleepSessionRecord(
+        Instant.parse("2023-06-12T16:00:00Z"), Instant.parse("2023-06-12T17:45:00Z"))
 val SLEEP_DAY_9H15 =
-        getSleepSessionRecord(
-                Instant.parse("2023-06-12T22:30:00Z"), Instant.parse("2023-06-13T07:45:00Z"))
+    getSleepSessionRecord(
+        Instant.parse("2023-06-12T22:30:00Z"), Instant.parse("2023-06-13T07:45:00Z"))
 val SLEEP_WEEK_9H15 =
-        getSleepSessionRecord(
-                Instant.parse("2023-06-14T22:30:00Z"), Instant.parse("2023-06-15T07:45:00Z"))
+    getSleepSessionRecord(
+        Instant.parse("2023-06-14T22:30:00Z"), Instant.parse("2023-06-15T07:45:00Z"))
 val SLEEP_WEEK_33H15 =
-        getSleepSessionRecord(
-                Instant.parse("2023-06-11T22:30:00Z"), Instant.parse("2023-06-13T07:45:00Z"))
+    getSleepSessionRecord(
+        Instant.parse("2023-06-11T22:30:00Z"), Instant.parse("2023-06-13T07:45:00Z"))
 val SLEEP_MONTH_81H15 =
-        getSleepSessionRecord(
-                Instant.parse("2023-07-09T22:30:00Z"), Instant.parse("2023-07-13T07:45:00Z"))
+    getSleepSessionRecord(
+        Instant.parse("2023-07-09T22:30:00Z"), Instant.parse("2023-07-13T07:45:00Z"))
 
 val HYDRATION_MONTH: HydrationRecord =
-        getHydrationRecord(INSTANT_MONTH1, INSTANT_MONTH2, Volume.fromLiters(2.0))
+    getHydrationRecord(INSTANT_MONTH1, INSTANT_MONTH2, Volume.fromLiters(2.0))
 val HYDRATION_MONTH2: HydrationRecord =
-        getHydrationRecord(INSTANT_MONTH3, INSTANT_MONTH4, Volume.fromLiters(0.3))
+    getHydrationRecord(INSTANT_MONTH3, INSTANT_MONTH4, Volume.fromLiters(0.3))
 val HYDRATION_MONTH3: HydrationRecord =
-        getHydrationRecord(INSTANT_MONTH5, INSTANT_MONTH6, Volume.fromLiters(1.5))
+    getHydrationRecord(INSTANT_MONTH5, INSTANT_MONTH6, Volume.fromLiters(1.5))
 
 val OXYGENSATURATION_DAY: OxygenSaturationRecord =
-        getOxygenSaturationRecord(INSTANT_DAY, Percentage.fromValue(98.0))
+    getOxygenSaturationRecord(INSTANT_DAY, Percentage.fromValue(98.0))
 val OXYGENSATURATION_DAY2: OxygenSaturationRecord =
-        getOxygenSaturationRecord(INSTANT_DAY2, Percentage.fromValue(95.0))
+    getOxygenSaturationRecord(INSTANT_DAY2, Percentage.fromValue(95.0))
 
 val DISTANCE_STARTDATE_1500: DistanceRecord =
-        getDistanceRecord(Length.fromMeters(1500.0), START_TIME)
+    getDistanceRecord(Length.fromMeters(1500.0), START_TIME)
 
 val WEIGHT_DAY_100: WeightRecord = getWeightRecord(INSTANT_DAY, Mass.fromGrams(100000.0))
 val WEIGHT_WEEK_100: WeightRecord = getWeightRecord(INSTANT_WEEK, Mass.fromGrams(100000.0))
@@ -291,30 +293,30 @@ val WEIGHT_MONTH_100: WeightRecord = getWeightRecord(INSTANT_MONTH3, Mass.fromGr
 val WEIGHT_STARTDATE_100: WeightRecord = getWeightRecord(START_TIME, Mass.fromGrams(100000.0))
 
 val INTERMENSTRUAL_BLEEDING_DAY: IntermenstrualBleedingRecord =
-        getIntermenstrualBleedingRecord(INSTANT_DAY)
+    getIntermenstrualBleedingRecord(INSTANT_DAY)
 
 val BODYTEMPERATURE_MONTH: BodyTemperatureRecord =
-        getBodyTemperatureRecord(
-                INSTANT_MONTH3,
-                BodyTemperatureMeasurementLocation.MEASUREMENT_LOCATION_MOUTH,
-                Temperature.fromCelsius(100.0))
+    getBodyTemperatureRecord(
+        INSTANT_MONTH3,
+        BodyTemperatureMeasurementLocation.MEASUREMENT_LOCATION_MOUTH,
+        Temperature.fromCelsius(100.0))
 
 val BODYWATERMASS_WEEK: BodyWaterMassRecord =
-        getBodyWaterMassRecord(INSTANT_WEEK, Mass.fromGrams(1000.0))
+    getBodyWaterMassRecord(INSTANT_WEEK, Mass.fromGrams(1000.0))
 
 // records using today's date, yesterday's date, and the date two days ago - for header testing
 val DISTANCE_TWODAYSAGO_2000: DistanceRecord =
-        getDistanceRecord(Length.fromMeters(2000.0), INSTANT_TWO_DAYS_AGO)
+    getDistanceRecord(Length.fromMeters(2000.0), INSTANT_TWO_DAYS_AGO)
 val WEIGHT_TWODAYSAGO_95: WeightRecord =
-        getWeightRecord(INSTANT_TWO_DAYS_AGO, Mass.fromGrams(95000.0))
+    getWeightRecord(INSTANT_TWO_DAYS_AGO, Mass.fromGrams(95000.0))
 val OXYGENSATURATION_YESTERDAY_99: OxygenSaturationRecord =
-        getOxygenSaturationRecord(INSTANT_YESTERDAY, Percentage.fromValue(99.0))
+    getOxygenSaturationRecord(INSTANT_YESTERDAY, Percentage.fromValue(99.0))
 val DISTANCE_YESTERDAY_2500: DistanceRecord =
-        getDistanceRecord(Length.fromMeters(2500.0), INSTANT_YESTERDAY)
+    getDistanceRecord(Length.fromMeters(2500.0), INSTANT_YESTERDAY)
 val SLEEP_TODAY_0H30: SleepSessionRecord =
-        getSleepSessionRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(1800))
+    getSleepSessionRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(1800))
 val HYDRATION_TODAY_2L: HydrationRecord =
-        getHydrationRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(900), Volume.fromLiters(2.0))
+    getHydrationRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(900), Volume.fromLiters(2.0))
 
 // test data constants - end
 
@@ -327,6 +329,14 @@ fun toggleAnimation(isEnabled: Boolean) {
         executeShellCommand(
             "settings put global animator_duration_scale ${if (isEnabled) 1 else 0}")
     }
+}
+
+// Used for matching arguments for [RequestPermissionViewModel]
+fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
+
+/** Utility function to turn an array of permission strings to a list of [HealthPermission]s */
+fun Array<String>.toPermissionsList(): List<HealthPermission> {
+    return this.map { HealthPermission.fromPermissionString(it) }.toList()
 }
 
 // region apps

@@ -545,8 +545,8 @@ public class StepsRecordTest {
         LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
-                        .setEndTime(recordTime.plus(2, ChronoUnit.SECONDS))
+                        .setStartTime(recordTime)
+                        .setEndTime(recordTime.plusSeconds(2))
                         .build();
         String id1 =
                 TestUtils.insertRecordAndGetId(
@@ -555,16 +555,29 @@ public class StepsRecordTest {
         String id2 =
                 TestUtils.insertRecordAndGetId(
                         getBaseStepsRecord(
-                                recordTime.toInstant(ZoneOffset.MAX), ZoneOffset.MAX, 50));
+                                recordTime.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                ZoneOffset.MAX,
+                                50));
+        String id3 =
+                TestUtils.insertRecordAndGetId(
+                        getBaseStepsRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                ZoneOffset.MAX,
+                                50));
         TestUtils.assertRecordFound(id1, StepsRecord.class);
         TestUtils.assertRecordFound(id2, StepsRecord.class);
+        TestUtils.assertRecordFound(id3, StepsRecord.class);
+
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addRecordType(StepsRecord.class)
                         .setTimeRangeFilter(timeRangeFilter)
                         .build());
+
         TestUtils.assertRecordNotFound(id1, StepsRecord.class);
         TestUtils.assertRecordNotFound(id2, StepsRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, StepsRecord.class);
     }
 
     @Test
