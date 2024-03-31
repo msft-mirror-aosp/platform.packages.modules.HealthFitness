@@ -86,7 +86,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         if (sessionIdExtra == null || callingPackage == null) {
             Log.e(TAG, "Invalid Intent Extras, finishing.")
             finishCancelled()

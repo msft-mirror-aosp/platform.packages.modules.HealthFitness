@@ -16,10 +16,11 @@
 package com.android.healthconnect.controller.tests.permissions.api
 
 import android.content.Context
+import android.health.connect.HealthPermissions
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import org.junit.Before
@@ -40,12 +41,21 @@ class RevokeHealthPermissionUseCaseTest {
     }
 
     @Test
-    fun invoke_callsHealthPermissionManager() {
+    fun invoke_withDataTypePermission_callsHealthPermissionManager() {
         useCase.invoke(
             "TEST_APP",
             DataTypePermission(HealthPermissionType.HEIGHT, PermissionsAccessType.WRITE).toString())
 
         verify(healthPermissionManager)
             .revokeHealthPermission("TEST_APP", "android.permission.health.WRITE_HEIGHT")
+    }
+
+    @Test
+    fun invoke_withAdditionalPermission_callsHealthPermissionManager() {
+        useCase.invoke("TEST_APP", HealthPermissions.READ_HEALTH_DATA_HISTORY)
+
+        verify(healthPermissionManager)
+            .revokeHealthPermission(
+                "TEST_APP", "android.permission.health.READ_HEALTH_DATA_HISTORY")
     }
 }

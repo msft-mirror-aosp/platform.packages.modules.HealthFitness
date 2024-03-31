@@ -7,7 +7,8 @@ import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -95,12 +96,12 @@ class HealthPermissionReaderTest {
 
     @Test
     fun isRationalIntentDeclared_withIntent_returnsTrue() {
-        assertThat(permissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME)).isTrue()
+        assertThat(permissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)).isTrue()
     }
 
     @Test
     fun isRationalIntentDeclared_noIntent_returnsTrue() {
-        assertThat(permissionReader.isRationalIntentDeclared(UNSUPPORTED_TEST_APP_PACKAGE_NAME))
+        assertThat(permissionReader.isRationaleIntentDeclared(UNSUPPORTED_TEST_APP_PACKAGE_NAME))
             .isFalse()
     }
 
@@ -154,6 +155,12 @@ class HealthPermissionReaderTest {
 
         assertThat(permissionReader.shouldHidePermission(READ_PLANNED_EXERCISE)).isFalse()
         assertThat(permissionReader.shouldHidePermission(WRITE_PLANNED_EXERCISE)).isFalse()
+    }
+
+    @Test
+    fun isAdditionalPermission_returnsTrue() = runTest {
+        val perm = HealthPermission.AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
+        assertThat(permissionReader.isAdditionalPermission(perm.toString())).isTrue()
     }
 
     private fun String.toHealthPermission(): DataTypePermission {

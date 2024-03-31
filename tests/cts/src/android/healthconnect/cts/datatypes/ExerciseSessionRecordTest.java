@@ -25,6 +25,7 @@ import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
 import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflection;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
+import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
@@ -34,6 +35,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -66,6 +68,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -431,6 +434,48 @@ public class ExerciseSessionRecordTest {
                 records.get(0).getMetadata().getId(), ExerciseSessionRecord.class);
         TestUtils.assertRecordNotFound(
                 records.get(1).getMetadata().getId(), ExerciseSessionRecord.class);
+    }
+
+    @Test
+    public void testDeleteRecords_insertAndDeleteByLocalDate_deletedRecordsNotFound()
+            throws InterruptedException {
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.MIN);
+        String id1 =
+                insertRecordAndGetId(
+                        buildSession(
+                                now.toInstant(ZoneOffset.MIN),
+                                now.toInstant(ZoneOffset.MIN).plusSeconds(1),
+                                ZoneOffset.MIN));
+        String id2 =
+                insertRecordAndGetId(
+                        buildSession(
+                                now.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                now.toInstant(ZoneOffset.MAX).plusSeconds(3),
+                                ZoneOffset.MAX));
+        String id3 =
+                insertRecordAndGetId(
+                        buildSession(
+                                now.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                now.toInstant(ZoneOffset.MAX).plusSeconds(3),
+                                ZoneOffset.MAX));
+        TestUtils.assertRecordFound(id1, ExerciseSessionRecord.class);
+        TestUtils.assertRecordFound(id2, ExerciseSessionRecord.class);
+        TestUtils.assertRecordFound(id3, ExerciseSessionRecord.class);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .setTimeRangeFilter(
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(now)
+                                        .setEndTime(now.plusSeconds(2))
+                                        .build())
+                        .build());
+
+        TestUtils.assertRecordNotFound(id1, ExerciseSessionRecord.class);
+        TestUtils.assertRecordNotFound(id2, ExerciseSessionRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, ExerciseSessionRecord.class);
     }
 
     @Test
@@ -881,6 +926,19 @@ public class ExerciseSessionRecordTest {
     }
 
     private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, ZoneOffset zoneOffset) {
+        return buildSession(
+                /* id= */ null,
+                startTime,
+                zoneOffset,
+                endTime,
+                zoneOffset,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0,
+                buildLocationTimePoint(startTime));
+    }
+
+    private static ExerciseSessionRecord buildSession(
             Instant startTime, Instant endTime, String clientRecordId) {
         return buildSession(startTime, endTime, clientRecordId, buildLocationTimePoint(startTime));
     }
@@ -934,13 +992,33 @@ public class ExerciseSessionRecordTest {
             String clientRecordId,
             long clientRecordVersion,
             Location location) {
+        return buildSession(
+                id,
+                startTime,
+                ZoneOffset.MIN,
+                endTime,
+                ZoneOffset.MAX,
+                clientRecordId,
+                clientRecordVersion,
+                location);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            String id,
+            Instant startTime,
+            ZoneOffset startZoneOffset,
+            Instant endTime,
+            ZoneOffset endZoneOffset,
+            String clientRecordId,
+            long clientRecordVersion,
+            Location location) {
         return new ExerciseSessionRecord.Builder(
                         buildMetadata(id, clientRecordId, clientRecordVersion),
                         startTime,
                         endTime,
                         ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
-                .setEndZoneOffset(ZoneOffset.MAX)
-                .setStartZoneOffset(ZoneOffset.MIN)
+                .setEndZoneOffset(endZoneOffset)
+                .setStartZoneOffset(startZoneOffset)
                 .setRoute(new ExerciseRoute(List.of(location)))
                 .setNotes("notes")
                 .setTitle("title")
