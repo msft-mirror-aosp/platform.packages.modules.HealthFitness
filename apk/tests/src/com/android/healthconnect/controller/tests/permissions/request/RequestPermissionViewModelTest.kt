@@ -17,31 +17,39 @@
 package com.android.healthconnect.controller.tests.permissions.request
 
 import android.content.pm.PackageManager
+import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_HEART_RATE
 import android.health.connect.HealthPermissions.READ_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.READ_SKIN_TEMPERATURE
 import android.health.connect.HealthPermissions.READ_STEPS
+import android.health.connect.HealthPermissions.WRITE_DISTANCE
 import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
+import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
-import com.android.healthconnect.controller.permissions.data.DataTypePermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
+import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.FeaturesModule
 import com.google.common.truth.Truth.*
@@ -61,15 +69,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @UninstallModules(HealthPermissionManagerModule::class, FeaturesModule::class)
 @HiltAndroidTest
 class RequestPermissionViewModelTest {
-
-    companion object {
-        private val permissions = arrayOf(READ_STEPS, READ_HEART_RATE)
-    }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -83,6 +89,7 @@ class RequestPermissionViewModelTest {
     @Inject lateinit var revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase
     @Inject lateinit var getGrantHealthPermissionUseCase: GetGrantedHealthPermissionsUseCase
     @Inject lateinit var getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase
+    @BindValue var loadAccessDateUseCase: LoadAccessDateUseCase = mock()
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     lateinit var viewModel: RequestPermissionViewModel
@@ -92,6 +99,8 @@ class RequestPermissionViewModelTest {
         hiltRule.inject()
         permissionManager.revokeAllHealthPermissions(TEST_APP_PACKAGE_NAME)
         Dispatchers.setMain(testDispatcher)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         viewModel =
             RequestPermissionViewModel(
                 appInfoReader,
@@ -99,18 +108,24 @@ class RequestPermissionViewModelTest {
                 revokeHealthPermissionUseCase,
                 getGrantHealthPermissionUseCase,
                 getHealthPermissionsFlagsUseCase,
+                loadAccessDateUseCase,
                 healthPermissionReader)
-        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        whenever(loadAccessDateUseCase.invoke(eq(TEST_APP_PACKAGE_NAME))).thenReturn(NOW)
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
         testDispatcher.cleanupTestCoroutines()
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
     }
 
     @Test
-    fun init_initAppInfo_initPermissions() = runTest {
+    fun init_loadsAppInfo() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val testObserver = TestObserver<AppMetadata>()
         viewModel.appMetadata.observeForever(testObserver)
         advanceUntilIdle()
@@ -119,13 +134,45 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
-    fun init_initPermissions() = runTest {
-        val testObserver = TestObserver<List<DataTypePermission>>()
-        viewModel.permissionsList.observeForever(testObserver)
+    fun init_loadsHealthPermissions() = runTest {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                WRITE_DISTANCE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val dataTypePermissionObserver = TestObserver<List<DataTypePermission>>()
+        viewModel.dataTypePermissionsList.observeForever(dataTypePermissionObserver)
+
+        val additionalPermissionObserver = TestObserver<List<AdditionalPermission>>()
+        viewModel.additionalPermissionsList.observeForever(additionalPermissionObserver)
+
+        val healthPermissionObserver = TestObserver<List<HealthPermission>>()
+        viewModel.healthPermissionsList.observeForever(healthPermissionObserver)
+
         advanceUntilIdle()
-        assertThat(testObserver.getLastValue())
+        assertThat(dataTypePermissionObserver.getLastValue())
             .isEqualTo(
-                listOf(fromPermissionString(READ_STEPS), fromPermissionString(READ_HEART_RATE)))
+                listOf(
+                    fromPermissionString(READ_STEPS),
+                    fromPermissionString(READ_HEART_RATE),
+                    fromPermissionString(WRITE_DISTANCE)))
+        assertThat(additionalPermissionObserver.getLastValue())
+            .isEqualTo(
+                listOf(
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND),
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY)))
+        assertThat(healthPermissionObserver.getLastValue())
+            .isEqualTo(
+                listOf(
+                    fromPermissionString(READ_STEPS),
+                    fromPermissionString(READ_HEART_RATE),
+                    fromPermissionString(WRITE_DISTANCE),
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND),
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY)))
     }
 
     @Test
@@ -134,7 +181,7 @@ class RequestPermissionViewModelTest {
             TEST_APP_PACKAGE_NAME,
             arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
         val testObserver = TestObserver<List<DataTypePermission>>()
-        viewModel.permissionsList.observeForever(testObserver)
+        viewModel.dataTypePermissionsList.observeForever(testObserver)
         advanceUntilIdle()
         assertThat(testObserver.getLastValue())
             .isEqualTo(
@@ -145,6 +192,7 @@ class RequestPermissionViewModelTest {
     fun initPermissions_whenPermissionsHidden_filtersOutHiddenPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
         (fakeFeatureUtils as FakeFeatureUtils).setIsPlannedExerciseEnabled(false)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
 
         viewModel.init(
             TEST_APP_PACKAGE_NAME,
@@ -154,13 +202,19 @@ class RequestPermissionViewModelTest {
                 READ_SKIN_TEMPERATURE,
                 WRITE_SKIN_TEMPERATURE,
                 READ_PLANNED_EXERCISE,
-                WRITE_PLANNED_EXERCISE))
-        val testObserver = TestObserver<List<DataTypePermission>>()
-        viewModel.permissionsList.observeForever(testObserver)
+                WRITE_PLANNED_EXERCISE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND))
+
+        val testObserver = TestObserver<List<HealthPermission>>()
+        viewModel.healthPermissionsList.observeForever(testObserver)
         advanceUntilIdle()
         assertThat(testObserver.getLastValue())
             .isEqualTo(
-                listOf(fromPermissionString(READ_STEPS), fromPermissionString(READ_HEART_RATE)))
+                listOf(
+                    fromPermissionString(READ_STEPS),
+                    fromPermissionString(READ_HEART_RATE),
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND)))
     }
 
     @Test
@@ -178,7 +232,7 @@ class RequestPermissionViewModelTest {
                 READ_PLANNED_EXERCISE,
                 WRITE_PLANNED_EXERCISE))
         val testObserver = TestObserver<List<DataTypePermission>>()
-        viewModel.permissionsList.observeForever(testObserver)
+        viewModel.dataTypePermissionsList.observeForever(testObserver)
         advanceUntilIdle()
         assertThat(testObserver.getLastValue())
             .isEqualTo(
@@ -192,48 +246,219 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
-    fun isPermissionGranted_permissionGranted_returnsTrue() = runTest {
+    fun initPermissions_filtersOutUnrecognisedPermissions() = runTest {
+        viewModel.init(TEST_APP_PACKAGE_NAME, arrayOf(READ_STEPS, READ_HEART_RATE, "permission"))
+
+        val testObserver = TestObserver<List<HealthPermission>>()
+        viewModel.healthPermissionsList.observeForever(testObserver)
+        advanceUntilIdle()
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(
+                listOf(fromPermissionString(READ_STEPS), fromPermissionString(READ_HEART_RATE)))
+    }
+
+    @Test
+    fun initPermissions_filtersOutGrantedPermissions() = runTest {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME, listOf(READ_STEPS, READ_HEALTH_DATA_IN_BACKGROUND))
+        viewModel.init(
+            TEST_APP_PACKAGE_NAME,
+            arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_IN_BACKGROUND))
+
+        val testObserver = TestObserver<List<HealthPermission>>()
+        viewModel.healthPermissionsList.observeForever(testObserver)
+        advanceUntilIdle()
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(listOf(fromPermissionString(READ_HEART_RATE)))
+    }
+
+    @Test
+    fun isPermissionLocallyGranted_dataTypePermissionGranted_returnsTrue() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val readStepsPermission = fromPermissionString(READ_STEPS)
-        viewModel.updatePermission(readStepsPermission, grant = true)
+        viewModel.updateHealthPermission(readStepsPermission, grant = true)
 
         assertThat(viewModel.isPermissionLocallyGranted(readStepsPermission)).isTrue()
     }
 
     @Test
-    fun isPermissionGranted_permissionRevoked_returnsFalse() = runTest {
+    fun isPermissionLocallyGranted_additionalPermissionGranted_returnsTrue() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
+        viewModel.updateHealthPermission(historyReadPermission, grant = true)
+
+        assertThat(viewModel.isPermissionLocallyGranted(historyReadPermission)).isTrue()
+    }
+
+    @Test
+    fun isPermissionLocallyGranted_dataTypePermissionRevoked_returnsFalse() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val readStepsPermission = fromPermissionString(READ_STEPS)
-        viewModel.updatePermission(readStepsPermission, grant = false)
+        viewModel.updateHealthPermission(readStepsPermission, grant = false)
 
         assertThat(viewModel.isPermissionLocallyGranted(fromPermissionString(READ_STEPS))).isFalse()
     }
 
     @Test
-    fun updatePermission_grant_updatesGrantedPermissions() = runTest {
+    fun isPermissionLocallyGranted_additionalPermissionRevoked_returnsFalse() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
+        viewModel.updateHealthPermission(historyReadPermission, grant = false)
+
+        assertThat(viewModel.isPermissionLocallyGranted(historyReadPermission)).isFalse()
+    }
+
+    @Test
+    fun init_anyReadPermissionsGranted_whenReadPermissionGranted_returnsTrue() = runTest {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                WRITE_DISTANCE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY)
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME, listOf(READ_STEPS))
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        advanceUntilIdle()
+        assertThat(viewModel.isAnyReadPermissionGranted()).isTrue()
+    }
+
+    @Test
+    fun init_anyReadPermissionsGranted_whenNoReadPermissionGranted_returnsFalse() = runTest {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                WRITE_DISTANCE,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_HEALTH_DATA_HISTORY)
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME, listOf())
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        advanceUntilIdle()
+        assertThat(viewModel.isAnyReadPermissionGranted()).isFalse()
+    }
+
+    @Test
+    fun init_isHistoryReadPermissionsGranted_whenHistoryReadPermissionGranted_returnsTrue() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_STEPS,
+                    READ_HEART_RATE,
+                    WRITE_DISTANCE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME, listOf(READ_HEALTH_DATA_HISTORY))
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+            advanceUntilIdle()
+            assertThat(viewModel.isHistoryAccessGranted()).isTrue()
+        }
+
+    @Test
+    fun init_isHistoryReadPermissionsGranted_whenHistoryReadPermissionNotGranted_returnsFalse() =
+        runTest {
+            val permissions =
+                arrayOf(
+                    READ_STEPS,
+                    READ_HEART_RATE,
+                    WRITE_DISTANCE,
+                    READ_HEALTH_DATA_IN_BACKGROUND,
+                    READ_HEALTH_DATA_HISTORY)
+            (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+                TEST_APP_PACKAGE_NAME, listOf(READ_HEALTH_DATA_IN_BACKGROUND))
+            viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+            advanceUntilIdle()
+            assertThat(viewModel.isHistoryAccessGranted()).isFalse()
+        }
+
+    @Test
+    fun setDataTypePermissionsConcluded_correctlySets() = runTest {
+        viewModel.setDataTypePermissionRequestConcluded(true)
+        assertThat(viewModel.isDataTypePermissionRequestConcluded()).isTrue()
+
+        viewModel.setDataTypePermissionRequestConcluded(false)
+        assertThat(viewModel.isDataTypePermissionRequestConcluded()).isFalse()
+    }
+
+    @Test
+    fun updateHealthPermission_grant_updatesGrantedDataTypePermissions() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val readStepsPermission = fromPermissionString(READ_STEPS)
         val testObserver = TestObserver<Set<DataTypePermission>>()
-        viewModel.grantedPermissions.observeForever(testObserver)
-        viewModel.updatePermission(readStepsPermission, grant = true)
+        viewModel.grantedDataTypePermissions.observeForever(testObserver)
+        viewModel.updateHealthPermission(readStepsPermission, grant = true)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue()).contains(readStepsPermission)
     }
 
     @Test
-    fun updatePermission_revoke_updatesGrantedPermissions() = runTest {
+    fun updateHealthPermission_grant_updatesGrantedAdditionalPermissions() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
+        val testObserver = TestObserver<Set<AdditionalPermission>>()
+        viewModel.grantedAdditionalPermissions.observeForever(testObserver)
+        viewModel.updateHealthPermission(historyReadPermission, grant = true)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).contains(historyReadPermission)
+    }
+
+    @Test
+    fun updateHealthPermission_revoke_updatesGrantedDataTypePermissions() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val readStepsPermission = fromPermissionString(READ_STEPS)
         val testObserver = TestObserver<Set<DataTypePermission>>()
-        viewModel.grantedPermissions.observeForever(testObserver)
-        viewModel.updatePermission(readStepsPermission, grant = false)
+        viewModel.grantedDataTypePermissions.observeForever(testObserver)
+        viewModel.updateHealthPermission(readStepsPermission, grant = false)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue()).doesNotContain(readStepsPermission)
     }
 
     @Test
-    fun updatePermissions_grant_updatesGrantedPermissions() = runTest {
+    fun updateHealthPermission_revoke_updatesGrantedAdditionalPermissions() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
+        val testObserver = TestObserver<Set<AdditionalPermission>>()
+        viewModel.grantedAdditionalPermissions.observeForever(testObserver)
+        viewModel.updateHealthPermission(historyReadPermission, grant = false)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue()).doesNotContain(historyReadPermission)
+    }
+
+    @Test
+    fun updateDataTypePermissions_grant_updatesGrantedDataTypePermissions() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val testObserver = TestObserver<Set<DataTypePermission>>()
-        viewModel.grantedPermissions.observeForever(testObserver)
-        viewModel.updatePermissions(grant = true)
+        viewModel.grantedDataTypePermissions.observeForever(testObserver)
+        viewModel.updateDataTypePermissions(grant = true)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue())
@@ -242,32 +467,108 @@ class RequestPermissionViewModelTest {
     }
 
     @Test
-    fun updatePermissions_revoke_updatesGrantedPermissions() = runTest {
+    fun updateAdditionalPermissions_grant_updatesGrantedAdditionalPermissions() = runTest {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val testObserver = TestObserver<Set<AdditionalPermission>>()
+        viewModel.grantedAdditionalPermissions.observeForever(testObserver)
+        viewModel.updateAdditionalPermissions(grant = true)
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue())
+            .containsExactly(
+                fromPermissionString(READ_HEALTH_DATA_HISTORY),
+                fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND))
+    }
+
+    @Test
+    fun updateDataTypePermissions_revoke_updatesGrantedDataTypePermissions() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
         val testObserver = TestObserver<Set<DataTypePermission>>()
-        viewModel.grantedPermissions.observeForever(testObserver)
-        viewModel.updatePermissions(grant = false)
+        viewModel.grantedDataTypePermissions.observeForever(testObserver)
+        viewModel.updateDataTypePermissions(grant = false)
         advanceUntilIdle()
 
         assertThat(testObserver.getLastValue()).isEmpty()
     }
 
     @Test
-    fun request_allPermissionsGranted_updatesPermissionState() {
-        viewModel.updatePermissions(true)
+    fun updateAdditionalPermissions_revoke_updatesGrantedAdditionalPermissions() = runTest {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
 
-        viewModel.request(TEST_APP_PACKAGE_NAME)
+        val testObserver = TestObserver<Set<AdditionalPermission>>()
+        viewModel.grantedAdditionalPermissions.observeForever(testObserver)
+        viewModel.updateAdditionalPermissions(grant = false)
+        advanceUntilIdle()
 
-        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
-            .containsExactly(READ_STEPS, READ_HEART_RATE)
+        assertThat(testObserver.getLastValue()).isEmpty()
     }
 
     @Test
-    fun request_allPermissionsRevoked_updatesPermissionState() {
-        viewModel.updatePermissions(false)
+    fun requestDataTypePermissions_updatesPermissionState() {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        viewModel.updateDataTypePermissions(true)
 
-        viewModel.request(TEST_APP_PACKAGE_NAME)
+        viewModel.requestDataTypePermissions(TEST_APP_PACKAGE_NAME)
+        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(READ_STEPS, READ_HEART_RATE)
+        assertThat(viewModel.getPermissionGrants())
+            .isEqualTo(
+                mutableMapOf(
+                    fromPermissionString(READ_STEPS) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEART_RATE) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
+                        PermissionState.NOT_GRANTED))
+    }
 
-        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME)).isEmpty()
+    @Test
+    fun requestAdditionalPermissions_updatesPermissionState() {
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        viewModel.updateAdditionalPermissions(true)
+
+        viewModel.requestAdditionalPermissions(TEST_APP_PACKAGE_NAME)
+        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+        assertThat(viewModel.getPermissionGrants())
+            .isEqualTo(
+                mutableMapOf(
+                    fromPermissionString(READ_STEPS) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_HEART_RATE) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
+                        PermissionState.GRANTED))
+    }
+
+    @Test
+    fun loadAccessDate_returnsCorrectAccessDate() {
+        assertThat(viewModel.loadAccessDate(TEST_APP_PACKAGE_NAME)).isEqualTo(NOW)
     }
 
     @Test

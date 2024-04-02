@@ -41,10 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"過去 24 時間にあなたのデータにアクセスしたアプリが表示されます"</string>
     <string name="today_header" msgid="1006837293203834373">"今日"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"昨日"</string>
-    <!-- no translation found for read_data_access_label (8968758932021241976) -->
-    <skip />
-    <!-- no translation found for write_data_access_label (105976369853871061) -->
-    <skip />
+    <string name="read_data_access_label" msgid="8968758932021241976">"読み取り: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"書き込み: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"権限を管理"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"時間: %s"</string>
@@ -83,10 +81,26 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"健康に関するデータにアクセスします"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"消費カロリーの読み取り"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"消費カロリーの読み取りをアプリに許可します"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"バックグラウンドでの読み取り"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"バックグラウンドでの読み取り"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"健康に関するデータをバックグラウンドで読み取ります"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"健康に関するデータの履歴を読み取ります"</string>
+    <!-- no translation found for background_read_title (5061383169517186234) -->
+    <skip />
+    <!-- no translation found for background_read_request_title (8492898140120977977) -->
+    <skip />
+    <!-- no translation found for background_read_description (3203594555849969283) -->
+    <skip />
+    <!-- no translation found for background_read_request_description (1664402237648709581) -->
+    <skip />
+    <!-- no translation found for historic_access_title (3584594624937737030) -->
+    <skip />
+    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
+    <skip />
+    <!-- no translation found for historic_access_description (2616669701088141765) -->
+    <skip />
+    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description (136335743939253358) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"活動中の消費カロリー"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"活動中の消費カロリー"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"活動中の消費カロリーの読み取り"</string>
@@ -108,10 +122,10 @@
     <string name="distance_lowercase_label" msgid="2287154001209381379">"距離"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"距離の読み取り"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"距離の書き込み"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"獲得した標高"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"獲得した標高"</string>
-    <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"獲得した標高の読み取り"</string>
-    <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"獲得した標高の書き込み"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"獲得標高"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"獲得標高"</string>
+    <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"獲得標高の読み取り"</string>
+    <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"獲得標高の書き込み"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"登った階数"</string>
     <string name="floors_climbed_lowercase_label" msgid="5326072443481377299">"登った階数"</string>
     <string name="floors_climbed_read_content_description" msgid="4730764877684911752">"登った階数の読み取り"</string>
@@ -259,7 +273,10 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"すべて許可"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"許可しない"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"このアプリにヘルスコネクトでの読み取りまたは書き込みを許可するデータを選択します"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"読み取りアクセス権を付与すると、このアプリは新規データと過去 30 日間のデータを読み取ることができます"</string>
+    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
+    <skip />
+    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
+    <skip />
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> にヘルスコネクトへのアクセスを許可しますか？"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> でのデータの取り扱いについて、デベロッパーの<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>でご確認ください"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"プライバシー ポリシー"</string>
@@ -310,14 +327,11 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"バックアップと復元"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"エクスポートとインポート"</string>
-    <!-- no translation found for export_automatically (8820158546399774250) -->
-    <skip />
+    <string name="export_automatically" msgid="8820158546399774250">"自動でエクスポート"</string>
     <string name="restore_data" msgid="3401173690437871417">"データを復元"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"以前にエクスポートしたデータを読み込む"</string>
-    <!-- no translation found for automatic_export_on (6972389773963624315) -->
-    <skip />
-    <!-- no translation found for automatic_export_off (3270255845008880841) -->
-    <skip />
+    <string name="automatic_export_on" msgid="6972389773963624315">"ON"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"OFF"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"頻度の選択"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"データを 1 回保存することを指定するか、定期的な自動保存を設定します。"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"毎日"</string>
@@ -424,6 +438,16 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"判定不能"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ミリ秒}other{# ミリ秒}}"</string>
+    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
+    <skip />
+    <!-- no translation found for active_calories_burned (1164230083046893828) -->
+    <skip />
+    <!-- no translation found for total_calories_burned (1674210345283541450) -->
+    <skip />
+    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
+    <skip />
+    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 回}other{# 回}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 回}other{# 回}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"エクササイズの種類"</string>
@@ -750,7 +774,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"これらの設定を変更すると、ヘルスコネクトから既存のデータが削除され、新しい設定が反映されます"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# か月後にデータを自動削除しますか？}other{# か月後にデータを自動削除しますか？}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{今後のデータは # か月後にヘルスコネクトから自動削除されます。保存期間が # か月を超える既存のデータも削除されます。}other{今後のデータは # か月後にヘルスコネクトから自動削除されます。保存期間が # か月を超える既存のデータも削除されます。}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"自動削除を設定"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"自動削除を ON にする"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"既存のデータが削除されます"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{保存期間が # か月を超えるすべてのデータがヘルスコネクトから削除されます。接続されているアプリにこれらの変更が反映されるまで 1 日ほどかかることがあります。}other{保存期間が # か月を超えるすべてのデータがヘルスコネクトから削除されます。接続されているアプリにこれらの変更が反映されるまで 1 日ほどかかることがあります。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"アプリから削除されるデータ"</string>
@@ -880,4 +904,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"先月"</string>
     <string name="tab_entries" msgid="3402700951602029493">"エントリ"</string>
     <string name="tab_access" msgid="7818197975407243701">"アクセス"</string>
+    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
+    <skip />
+    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
+    <skip />
 </resources>

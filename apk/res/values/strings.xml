@@ -115,11 +115,17 @@
     <!-- region permission ui labels -->
 
     <!-- Other health permissions -->
-    <string name="background_read_uppercase_label" description="Uppercase label used to show background reading permission. [CHAR_LIMIT=50]">Background reading</string>
-    <string name="background_read_lowercase_label" description="Lowercase label used to show background reading permission. [CHAR_LIMIT=50]">background reading</string>
-    <string name="background_read_description" description="Content description for switch that enables permissions for reading health data in the background. [CHAR_LIMIT=50]">Read health data in the background</string>
+    <string name="background_read_title" description="Title for permission to read health data in the background. [CHAR_LIMIT=NONE]">Access data in the background</string>
+    <string name="background_read_request_title" description="Title for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access data in the background?</string>
+    <string name="background_read_description" description="Description for permission to read health data in the background. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data when you\'re not using the app</string>
+    <string name="background_read_request_description" description="Description for screen to give permission to an app to read health data in the background. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data when you\'re not using the app.</string>
 
-    <string name="history_read_description" description="Content description for switch that enables permissions for reading historic health data. [CHAR_LIMIT=50]">Read past health data</string>
+    <string name="historic_access_title" description="Title for permission to access past health data. [CHAR_LIMIT=NONE]">Access past data</string>
+    <string name="historic_access_request_title" description="Title for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past data?</string>
+    <string name="historic_access_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
+    <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access past Health&#160;Connect data</string>
+    <string name="historic_access_request_description" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
+    <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access past Health&#160;Connect data.</string>
     <!--endregion-->
 
     <!-- region Activity data types -->
@@ -350,7 +356,8 @@
     <string name="request_permissions_allow_all" description="Label for button to allow an app to have the selected permissions for the user's data [CHAR_LIMIT=20]">Allow all</string>
     <string name="request_permissions_dont_allow" description="Label for button to allow an app to have the selected permissions for the user's data [CHAR_LIMIT=20]">Don\'t allow</string>
     <string name="request_permissions_header_desc" description="Text asking the user to select permissions for an app. [CHAR_LIMIT=NONE]">Choose data you want this app to read or write to Health&#160;Connect</string>
-    <string name="request_permissions_header_time_frame_desc" description="Text describing the time frame of data which an app will be able to access. [CHAR_LIMIT=NONE]">If you give read access, this app can read new data and data from the past 30 days</string>
+    <string name="request_permissions_header_time_frame_desc" description="Text describing the time frame of data which an app will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new data and data from the past 30 days</string>
+    <string name="request_permissions_header_time_frame_history_desc" description="Text describing the time frame of data which an app with history read permission will be able to access. [CHAR_LIMIT=NONE]">If you give read access, the app can read new and past data</string>
     <string name="request_permissions_header_title" description="Title for screen to give permissions to an app to read or write users data. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access Health&#160;Connect?</string>
     <string name="request_permissions_rationale" description="Text informing the user that data they share with an app is covered by that app's data privacy policy. Has a link to the app's privacy policy. [CHAR_LIMIT=NONE]">You can learn how <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> handles your data in the developer\'s <xliff:g example="privacy policy" id="privacy_policy_link">%2$s</xliff:g></string>
     <string name="request_permissions_privacy_policy" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">privacy policy</string>
@@ -587,6 +594,20 @@
 
     <string name="milliseconds" description="Heart rate variability value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{count, plural, =1 {1 ms} other {# ms}}</string>
     <string name="milliseconds_long" description="Heart rate variability value with unit. [ICU SYNTAX][CHAR LIMIT=160]">{count, plural, =1 {1 millisecond} other {# milliseconds}}</string>
+
+    <!-- region training plans -->
+    <string name="planned_exercise_session_title" translatable="false"><xliff:g example="Swimming" id="type">%1$s</xliff:g> • <xliff:g example="Freestyle Technique Bootcamp" id="title">%2$s</xliff:g></string>
+    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> x<xliff:g example="2" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_block_a11y_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_block_repetitions" description="Repetitions of an exercise set. [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 time} other {# times}}</string>
+    <string name="planned_exercise_step_title" translatable="false"><xliff:g example="400m" id="completion_goal">%1$s</xliff:g> <xliff:g example="Breaststroke" id="exercise_segment_type">%2$s</xliff:g></string>
+    <string name="distance_with_variable_rest_goal_formatted" translatable="false"><xliff:g example="400m" id="distance">%1$s</xliff:g>\@<xliff:g example="4 hours" id="duration">%2$s</xliff:g> </string>
+    <string name="active_calories_burned" description="Label for active calories burned">Active: <xliff:g example="40 Cal" id="active_calories">%1$s</xliff:g></string>
+    <string name="total_calories_burned" description="Label for total calories burned">Total: <xliff:g example="40 Cal" id="total_calories">%1$s</xliff:g></string>
+    <string name="performance_goals_range" translatable="false"><xliff:g example="100W" id="min_value">%1$s</xliff:g> - <xliff:g example="200W" id="max_value">%2$s</xliff:g></string>
+    <string name="amrap_performance_goal" description="Label for as many reps as possible performance goal">As many reps as possible</string>
+    <string name="rate_of_perceived_exertion_goal" description="Label for rate of perceived exertion goal">Effort level: <xliff:g example="4" id="value">%1$d</xliff:g>/10</string>
+    <!-- endregion -->
 
     <!--  region activity -->
     <string name="session_title" translatable="false"><xliff:g example="My Strava workout" id="title">%1$s</xliff:g>, <xliff:g example="Strength training" id="type">%2$s</xliff:g></string>
@@ -1205,4 +1226,8 @@
     <string name="tab_access" description="Tab that navigates to the screen that shows which apps have access to the given data type. [CHAR_LIMIT=50]">Access</string>
     <!--  endregion -->
 
+    <!-- region Additional Access -->
+    <string name="request_additional_permissions_header_title" description="Title for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]">Allow additional access for <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>?</string>
+    <string name="request_additional_permissions_description" description="Description for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> also wants to access these Health&#160;Connect settings</string>
+    <!--  endregion -->
 </resources>

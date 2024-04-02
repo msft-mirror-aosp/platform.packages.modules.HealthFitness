@@ -41,10 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"विगत २४ घण्टामा कुन कुन एपले तपाईंको डेटा प्रयोग गरे भन्ने कुरा हेर्नुहोस्"</string>
     <string name="today_header" msgid="1006837293203834373">"आज"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"हिजो"</string>
-    <!-- no translation found for read_data_access_label (8968758932021241976) -->
-    <skip />
-    <!-- no translation found for write_data_access_label (105976369853871061) -->
-    <skip />
+    <string name="read_data_access_label" msgid="8968758932021241976">"रिड एक्सेस: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"राइट एक्सेस: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"अनुमतिहरू व्यवस्थापन गर्नुहोस्"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"समय: %s"</string>
@@ -83,10 +81,26 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"आफ्नो स्वास्थ्यसम्बन्धी डेटा हेर्ने तथा प्रयोग गर्ने अनुमति दिनुहोस्"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"खर्च गरिएको क्यालोरीसम्बन्धी डेटा रिड गर्ने अनुमति दिनुहोस्"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"एपलाई खर्च गरिएको क्यालोरीसम्बन्धी डेटा रिड गर्ने अनुमति दिन्छ"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"ब्याकग्राउन्डमा रिड गर्ने"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"ब्याकग्राउन्डमा रिड गर्ने"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"ब्याकग्राउन्डमा स्वास्थ्यसम्बन्धी डेटा रिड गर्ने"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"स्वास्थ्यसम्बन्धी विगतको डेटा पढ्ने अनुमति"</string>
+    <!-- no translation found for background_read_title (5061383169517186234) -->
+    <skip />
+    <!-- no translation found for background_read_request_title (8492898140120977977) -->
+    <skip />
+    <!-- no translation found for background_read_description (3203594555849969283) -->
+    <skip />
+    <!-- no translation found for background_read_request_description (1664402237648709581) -->
+    <skip />
+    <!-- no translation found for historic_access_title (3584594624937737030) -->
+    <skip />
+    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
+    <skip />
+    <!-- no translation found for historic_access_description (2616669701088141765) -->
+    <skip />
+    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description (136335743939253358) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"सक्रिय हुँदा खर्च गरिएको क्यालोरी"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"सक्रिय हुँदा खर्च गरिएको क्यालोरी"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"सक्रिय हुँदा खर्च गरिएको क्यालोरी रिड गर्ने अनुमति दिनुहोस्"</string>
@@ -259,7 +273,10 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"एपलाई सबै अनुमति दिनुहोस्"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"अनुमति नदिनुहोस्"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"तपाईं यो एपलाई Health Connect मा कुन कुन डेटा रिड वा राइट गर्न दिन चाहनुहुन्छ छनौट गर्नुहोस्।"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"तपाईंले डेटा रिड गर्ने अनुमति दिनुभयो भने यो एपले नयाँ डेटाका साथै पछिल्ला ३० दिनका डेटा रिड गर्न सक्छ"</string>
+    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
+    <skip />
+    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
+    <skip />
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई Health Connect प्रयोग गर्ने अनुमति दिने हो?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"तपाईं विकासकर्ताको <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> मा गई <xliff:g id="APP_NAME">%1$s</xliff:g> ले तपाईंको डेटा कसरी व्यवस्थापन गर्छ भन्ने बारेमा जान्न सक्नुहुन्छ"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"गोपनीयता नीति"</string>
@@ -310,14 +327,11 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"बुझेँ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ब्याकअप र रिस्टोर"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"एक्स्पोर्ट र इम्पोर्ट"</string>
-    <!-- no translation found for export_automatically (8820158546399774250) -->
-    <skip />
+    <string name="export_automatically" msgid="8820158546399774250">"स्वतः एक्स्पोर्ट गर्नुहोस्"</string>
     <string name="restore_data" msgid="3401173690437871417">"डेटा रिस्टोर गर्नुहोस्"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"यसभन्दा अघि एक्स्पोर्ट गरिएका डेटा लोड गर्नुहोस्"</string>
-    <!-- no translation found for automatic_export_on (6972389773963624315) -->
-    <skip />
-    <!-- no translation found for automatic_export_off (3270255845008880841) -->
-    <skip />
+    <string name="automatic_export_on" msgid="6972389773963624315">"अन छ"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"अफ छ"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"अन्तराल छनौट गर्नुहोस्"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एक पटक सेभ गर्ने विकल्प छनौट गर्नुहोस् वा नियमित अन्तरालमा स्वतः सेभ गरिने बनाउनुहोस्।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"दैनिक"</string>
@@ -424,6 +438,16 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"अनिर्णित"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{१ मिलिसेकेन्ड}other{# मिलिसेकेन्ड}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{१ मिलिसेकेन्ड}other{# मिलिसेकेन्ड}}"</string>
+    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
+    <skip />
+    <!-- no translation found for active_calories_burned (1164230083046893828) -->
+    <skip />
+    <!-- no translation found for total_calories_burned (1674210345283541450) -->
+    <skip />
+    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
+    <skip />
+    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"कसरतका खण्डहरू"</string>
@@ -751,7 +775,7 @@
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# महिनापछि डेटा स्वतः मेटाउने हो?}other{# महिनापछि डेटा स्वतः मेटाउने हो?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect ले # महिनापछि नयाँ डेटा स्वतः मेटाउने छ। तपाईंले यो सेटिङ लागू गर्नुभयो भने # महिनाभन्दा पहिलाको डेटा पनि मेटिने छ।}other{Health Connect ले # महिनापछि नयाँ डेटा स्वतः मेटाउने छ। तपाईंले यो सेटिङ लागू गर्नुभयो भने # महिनाभन्दा पहिलाको डेटा पनि मेटिने छ।}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"स्वतः मेटाउने सेटिङ लागू गर्नुहोस्"</string>
-    <string name="deletion_started_title" msgid="1177766097121885025">"विद्यमान डेटा मेटाइने छ"</string>
+    <string name="deletion_started_title" msgid="1177766097121885025">"हालको डेटा मेटाइने छ"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect ले # महिनाभन्दा पहिलेका सबै डेटा मेटाउने छ। तपाईंका कनेक्ट गरिएका एपहरूमा यी परिवर्तन लागू हुन एक दिन लाग्न सक्छ।}other{Health Connect ले # महिनाभन्दा पहिलेका सबै डेटा मेटाउने छ। तपाईंका कनेक्ट गरिएका एपहरूमा यी परिवर्तन लागू हुन एक दिन लाग्न सक्छ।}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"यी कोटीबाट मेटाइनु पर्ने डेटा"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"सम्पन्न भयो"</string>
@@ -863,7 +887,7 @@
     <string name="data_totals_header" msgid="8316977153276216025">"कुल डेटा"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"एपका स्रोतहरू"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"कुल डेटा कसरी परिवर्तन हुन्छ भनी हेर्न सूचीमा एपका स्रोतहरू हाल्नुहोस्। यो सूचीबाट एप हटाउनुभयो भने कुल डेटामा यसले गर्ने योगदान रोकिने छ तर यो एपसँग भने राइट गर्ने अनुमति रहिरहने छ।"</string>
-    <string name="data_sources_empty_state" msgid="1899652759274805556">"डेटाको स्रोतका रूपमा कुनै पनि एप उपलब्ध छैन"</string>
+    <string name="data_sources_empty_state" msgid="1899652759274805556">"जानकारीको स्रोतका रूपमा कुनै पनि एप उपलब्ध छैन"</string>
     <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"तपाईंले एपलाई <xliff:g id="CATEGORY_NAME">%1$s</xliff:g> सम्बन्धी डेटा राइट गर्ने अनुमति दिएपछि स्रोतहरू यहाँ देखिने छन्।"</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"स्रोत तथा प्राथमिकताले काम गर्ने तरिका"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"कुनै एप हाल्नुहोस्"</string>
@@ -880,4 +904,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"गत महिना"</string>
     <string name="tab_entries" msgid="3402700951602029493">"इन्ट्रीहरू"</string>
     <string name="tab_access" msgid="7818197975407243701">"एक्सेस"</string>
+    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
+    <skip />
+    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
+    <skip />
 </resources>

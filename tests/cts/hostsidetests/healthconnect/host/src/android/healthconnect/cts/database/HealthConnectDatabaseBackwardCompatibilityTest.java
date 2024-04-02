@@ -64,7 +64,7 @@ public class HealthConnectDatabaseBackwardCompatibilityTest extends BaseHostJUni
         /** check for device availability. */
         ITestDevice device = getDevice();
         assertThat(device).isNotNull();
-        rebootAndEnableRoot();
+        Assume.assumeTrue(rebootAndEnableRoot());
 
         /**
          * Getting the current version of HealthConnect database and setting the current and
@@ -87,13 +87,14 @@ public class HealthConnectDatabaseBackwardCompatibilityTest extends BaseHostJUni
                 "cd ~; sqlite3 data/system_ce/0/healthconnect/healthconnect.db" + " \".schema\"");
     }
 
-    private void rebootAndEnableRoot() throws DeviceNotAvailableException {
+    private boolean rebootAndEnableRoot() throws DeviceNotAvailableException {
         getDevice().reboot();
         getDevice().waitForDeviceAvailable();
         /** Enable root for device. */
         if (!getDevice().isAdbRoot()) {
-            getDevice().enableAdbRoot();
+            return getDevice().enableAdbRoot();
         }
+        return true;
     }
 
     /** test to check the backward compatibility of database versions. */

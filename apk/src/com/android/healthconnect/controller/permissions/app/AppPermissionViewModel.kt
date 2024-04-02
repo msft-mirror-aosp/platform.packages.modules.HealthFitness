@@ -31,8 +31,8 @@ import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPer
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
-import com.android.healthconnect.controller.permissions.data.DataTypePermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
@@ -305,7 +305,7 @@ constructor(
 
     /** Returns True if the packageName declares the Rationale intent, False otherwise */
     fun isPackageSupported(packageName: String): Boolean {
-        return healthPermissionReader.isRationalIntentDeclared(packageName)
+        return healthPermissionReader.isRationaleIntentDeclared(packageName)
     }
 
     fun hideExerciseRoutePermissionDialog() {

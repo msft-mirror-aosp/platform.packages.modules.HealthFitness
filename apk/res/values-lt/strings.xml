@@ -41,10 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Peržiūrėkite, kurios programos pasiekė jūsų duomenis per pastarąsias dvidešimt keturias valandas"</string>
     <string name="today_header" msgid="1006837293203834373">"Šiandien"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Vakar"</string>
-    <!-- no translation found for read_data_access_label (8968758932021241976) -->
-    <skip />
-    <!-- no translation found for write_data_access_label (105976369853871061) -->
-    <skip />
+    <string name="read_data_access_label" msgid="8968758932021241976">"Perskaityta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Įrašyta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Tvarkyti leidimus"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Laikas: %s"</string>
@@ -83,10 +81,26 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"prieiga prie sveikatos duomenų"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Skaityti sudegintų kalorijų duomenis"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Leidžiama programa skaityti sudegintų kalorijų duomenis"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Skaitymas fone"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"skaitymas fone"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Skaityti sveikatos duomenis fone"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"Skaityti ankstesnius sveikatos duomenis"</string>
+    <!-- no translation found for background_read_title (5061383169517186234) -->
+    <skip />
+    <!-- no translation found for background_read_request_title (8492898140120977977) -->
+    <skip />
+    <!-- no translation found for background_read_description (3203594555849969283) -->
+    <skip />
+    <!-- no translation found for background_read_request_description (1664402237648709581) -->
+    <skip />
+    <!-- no translation found for historic_access_title (3584594624937737030) -->
+    <skip />
+    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
+    <skip />
+    <!-- no translation found for historic_access_description (2616669701088141765) -->
+    <skip />
+    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description (136335743939253358) -->
+    <skip />
+    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
+    <skip />
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Sudegintų kalorijų aktyviu metu skaičius"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"sudegintų kalorijų aktyviu metu skaičius"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Skaityti sudegintų kalorijų aktyviu metu skaičių"</string>
@@ -259,7 +273,10 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Leisti viską"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Neleisti"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Pasirinkite duomenis, kuriuos ši programa galės skaityti ar rašyti naudojant „Health Connect“"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Suteikus skaitymo prieigą, ši programa galės skaityti naujus ir pastarųjų trisdešimt dienų duomenis"</string>
+    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
+    <skip />
+    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
+    <skip />
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Leisti programai „<xliff:g id="APP_NAME">%1$s</xliff:g>“ pasiekti „Health Connect“?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Kaip „<xliff:g id="APP_NAME">%1$s</xliff:g>“ tvarko jūsų duomenis, sužinosite kūrėjo <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privatumo politika"</string>
@@ -310,14 +327,11 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Supratau"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Atsarginė kopija ir atkūrimas"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Importavimas ir eksportavimas"</string>
-    <!-- no translation found for export_automatically (8820158546399774250) -->
-    <skip />
+    <string name="export_automatically" msgid="8820158546399774250">"Automatiškai eksportuoti"</string>
     <string name="restore_data" msgid="3401173690437871417">"Atkurti duomenis"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Įkelti anksčiau eksportuotus duomenis"</string>
-    <!-- no translation found for automatic_export_on (6972389773963624315) -->
-    <skip />
-    <!-- no translation found for automatic_export_off (3270255845008880841) -->
-    <skip />
+    <string name="automatic_export_on" msgid="6972389773963624315">"Įjungta"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Išjungta"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Dažnio pasirinkimas"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Pasirinkite saugoti duomenis vieną kartą arba nustatykite reguliariai saugoti juos automatiškai."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Kasdien"</string>
@@ -424,6 +438,12 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nepakankamas"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 milisek.}one{# milisek.}few{# milisek.}many{# milisek.}other{# milisek.}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekundė}one{# milisekundė}few{# milisekundės}many{# milisekundės}other{# milisekundžių}}"</string>
+    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
+    <skip />
+    <string name="active_calories_burned" msgid="1164230083046893828">"Užsiimant veikla: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Iš viso: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Kartoti kiek pavyksta"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Pastangų lygis: <xliff:g id="VALUE">%1$d</xliff:g> iš 10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 pakartojimas}one{# pakartojimas}few{# pakartojimai}many{# pakartojimo}other{# pakartojimų}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 pakartojimas}one{# pakartojimas}few{# pakartojimai}many{# pakartojimo}other{# pakartojimų}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Mankštos segmentai"</string>
@@ -880,4 +900,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"Praėjęs mėnuo"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Įrašai"</string>
     <string name="tab_access" msgid="7818197975407243701">"Prieiga"</string>
+    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
+    <skip />
+    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
+    <skip />
 </resources>
