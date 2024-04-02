@@ -126,9 +126,11 @@ class HomeFragment : Fragment() {
         view.findViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
             performanceTestingViewModel.beginInsertingData(false)
         }
-
         view.findViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
             togglePermissionIntentFilter()
+        }
+        view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {
+            goToReadDataInBackgroundPage()
         }
 
         view.findViewById<Button>(R.id.request_combined_permissions).setOnClickListener {
@@ -265,5 +267,9 @@ class HomeFragment : Fragment() {
 
     private fun goToCategoryListPage() {
         mNavigationController.navigate(R.id.action_homeFragment_to_categoryList)
+    }
+
+    private fun goToReadDataInBackgroundPage() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_readDataInBackground)
     }
 }

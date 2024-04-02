@@ -427,14 +427,10 @@
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milissegundo}other{# milissegundos}}"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 vez}other{# vezes}}"</string>
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
-    <skip />
+    <string name="active_calories_burned" msgid="1164230083046893828">"Em atividade: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"O maior número de repetições possível"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nível de esforço: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rep}other{# reps}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetição}other{# repetições}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmentos de exercício"</string>

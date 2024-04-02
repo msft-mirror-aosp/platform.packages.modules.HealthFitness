@@ -81,26 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"आफ्नो स्वास्थ्यसम्बन्धी डेटा हेर्ने तथा प्रयोग गर्ने अनुमति दिनुहोस्"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"खर्च गरिएको क्यालोरीसम्बन्धी डेटा रिड गर्ने अनुमति दिनुहोस्"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"एपलाई खर्च गरिएको क्यालोरीसम्बन्धी डेटा रिड गर्ने अनुमति दिन्छ"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"ब्याकग्राउन्डमा डेटा एक्सेस गर्ने अनुमति"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई ब्याकग्राउन्डमा डेटा एक्सेस गर्न दिने हो?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"तपाईंले यो एप प्रयोग नगरिरहेका बेला पनि यो एपलाई Health Connect मा भएका डेटा एक्सेस गर्न दिनुहोस्"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"तपाईंले यो अनुमति दिनुभयो भने तपाईंले एप प्रयोग नगरेका बेला पनि यो एपले Health Connect मा भएको डेटा एक्सेस गर्न सक्छ।"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"पुराना डेटा एक्सेस गर्ने अनुमति"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई पुराना डेटा एक्सेस गर्न दिने हो?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"यो एपलाई <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> अघि Health Connect मा हालिएका डेटा एक्सेस गर्न दिनुहोस्"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"यो एपलाई Health Connect का पुराना डेटा एक्सेस गर्न दिनुहोस्"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"तपाईंले यो अनुमति दिनुभयो भने यो एपले <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> अघि Health Connect मा हालिएका डेटा एक्सेस गर्न सक्छ।"</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"तपाईंले यो अनुमति दिनुभयो भने यो एपले Health Connect का पुराना डेटा एक्सेस गर्न सक्छ।"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"सक्रिय हुँदा खर्च गरिएको क्यालोरी"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"सक्रिय हुँदा खर्च गरिएको क्यालोरी"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"सक्रिय हुँदा खर्च गरिएको क्यालोरी रिड गर्ने अनुमति दिनुहोस्"</string>
@@ -273,10 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"एपलाई सबै अनुमति दिनुहोस्"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"अनुमति नदिनुहोस्"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"तपाईं यो एपलाई Health Connect मा कुन कुन डेटा रिड वा राइट गर्न दिन चाहनुहुन्छ छनौट गर्नुहोस्।"</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"तपाईंले डेटा रिड गर्ने अनुमति दिनुभयो भने यो एपले नयाँ डेटाका साथै पछिल्ला ३० दिनका डेटा पनि रिड गर्न सक्छ"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"तपाईंले डेटा रिड गर्ने अनुमति दिनुभयो भने यो एपले नयाँ तथा पुराना डेटा रिड गर्न सक्छ"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई Health Connect प्रयोग गर्ने अनुमति दिने हो?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"तपाईं विकासकर्ताको <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> मा गई <xliff:g id="APP_NAME">%1$s</xliff:g> ले तपाईंको डेटा कसरी व्यवस्थापन गर्छ भन्ने बारेमा जान्न सक्नुहुन्छ"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"गोपनीयता नीति"</string>
@@ -438,16 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"अनिर्णित"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{१ मिलिसेकेन्ड}other{# मिलिसेकेन्ड}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{१ मिलिसेकेन्ड}other{# मिलिसेकेन्ड}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
-    <skip />
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{१ पटक}other{# पटक}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"सक्रिय: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"कुल: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"जति सक्दो धेरै दोहोर्‌याउने"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"शारीरिक परिश्रमको स्तर: <xliff:g id="VALUE">%1$d</xliff:g>/१०"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"कसरतका खण्डहरू"</string>
@@ -904,8 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"गत महिना"</string>
     <string name="tab_entries" msgid="3402700951602029493">"इन्ट्रीहरू"</string>
     <string name="tab_access" msgid="7818197975407243701">"एक्सेस"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई थप अनुमति दिने हो?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले Health Connect का यी सेटिङ पनि एक्सेस गर्ने अनुमति माग्दै छ"</string>
 </resources>

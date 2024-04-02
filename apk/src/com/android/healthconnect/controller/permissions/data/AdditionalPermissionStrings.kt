@@ -26,8 +26,8 @@ data class AdditionalPermissionStrings(
     @StringRes val permissionDescription: Int,
     @StringRes val requestTitle: Int,
     @StringRes val requestDescription: Int,
-    @StringRes val permissionDescriptionFallback: Int = -1,
-    @StringRes val requestDescriptionFallback: Int = -1
+    @StringRes val permissionDescriptionFallback: Int = 0,
+    @StringRes val requestDescriptionFallback: Int = 0
 ) {
 
     companion object {
