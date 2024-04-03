@@ -106,9 +106,9 @@ public class PlannedExerciseSessionRecordTest {
         PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
         blockBuilder.setDescription("Some description");
 
-        verifyInsertSucceeds(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
     }
 
     @Test
@@ -118,9 +118,9 @@ public class PlannedExerciseSessionRecordTest {
         PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
         blockBuilder.setDescription("Some description");
 
-        verifyInsertSucceeds(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
     }
 
     @Test
@@ -131,9 +131,9 @@ public class PlannedExerciseSessionRecordTest {
         blockBuilder.setDescription("Some description");
         builder.addBlock(blockBuilder.build());
 
-        verifyInsertSucceeds(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
     }
 
     @Test
@@ -146,9 +146,9 @@ public class PlannedExerciseSessionRecordTest {
         blockBuilder.setDescription("Another description");
         builder.addBlock(blockBuilder.build());
 
-        verifyInsertSucceeds(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
     }
 
     @Test
@@ -169,9 +169,9 @@ public class PlannedExerciseSessionRecordTest {
         blockBuilder.addStep(stepBuilder.build());
         builder.addBlock(blockBuilder.build());
 
-        verifyInsertSucceeds(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
     }
 
     @Test
@@ -197,9 +197,9 @@ public class PlannedExerciseSessionRecordTest {
         blockBuilder.addStep(stepBuilder.setDescription("Step three").build());
         builder.addBlock(blockBuilder.build());
 
-        verifyInsertSucceeds(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
     }
 
     @Test
@@ -213,9 +213,9 @@ public class PlannedExerciseSessionRecordTest {
                         .setEndTime(SESSION_END_TIME.plus(2, DAYS))
                         .build();
 
-        verifyInsertSucceeds(Arrays.asList(record1, record2));
+        List<Record> insertedRecords = verifyInsertSucceeds(Arrays.asList(record1, record2));
 
-        verifyReadReturnsSameRecords(Arrays.asList(record1, record2));
+        verifyReadReturnsSameRecords(insertedRecords);
     }
 
     @Test
@@ -241,9 +241,10 @@ public class PlannedExerciseSessionRecordTest {
         blockBuilder.addStep(stepBuilder.setDescription("Step three").build());
         builder.addBlock(blockBuilder.build());
 
-        verifyInsertSucceeds(builder.build());
-        verifyReadReturnsSameRecords(builder.build());
+        Record insertedRecord = verifyInsertSucceeds(builder.build());
+        verifyReadReturnsSameRecords(insertedRecord);
 
+        builder.setMetadata(insertedRecord.getMetadata());
         builder.setTitle("Updated training plan");
         blockBuilder.setDescription("Updated block description");
         stepBuilder.setDescription("Updated step");
@@ -265,7 +266,7 @@ public class PlannedExerciseSessionRecordTest {
 
         Record insertedPlannedSession = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedPlannedSession);
 
         // Now insert an exercise session that completes it.
         ExerciseSessionRecord.Builder exerciseSession =
@@ -309,7 +310,7 @@ public class PlannedExerciseSessionRecordTest {
 
         Record insertedPlannedSession = verifyInsertSucceeds(builder.build());
 
-        verifyReadReturnsSameRecords(builder.build());
+        verifyReadReturnsSameRecords(insertedPlannedSession);
 
         // Now insert an exercise session, but don't complete the training plan.
         ExerciseSessionRecord.Builder exerciseSession =
@@ -464,6 +465,7 @@ public class PlannedExerciseSessionRecordTest {
 
         insertRecords(Collections.singletonList(exerciseSession));
 
+        plannedSession.setMetadata(insertedPlannedSession.getMetadata());
         plannedSession.setTitle("Updated training plan");
         TestUtils.updateRecords(Collections.singletonList(plannedSession.build()));
         ExerciseSessionRecord updatedExerciseSession =
@@ -912,20 +914,19 @@ public class PlannedExerciseSessionRecordTest {
         return insertedRecords;
     }
 
-    private void verifyReadReturnsSameRecords(PlannedExerciseSessionRecord inserted)
-            throws InterruptedException {
+    private void verifyReadReturnsSameRecords(Record inserted) throws InterruptedException {
         verifyReadReturnsSameRecords(Collections.singletonList(inserted));
     }
 
-    private void verifyReadReturnsSameRecords(List<PlannedExerciseSessionRecord> inserted)
-            throws InterruptedException {
+    private void verifyReadReturnsSameRecords(List<Record> inserted) throws InterruptedException {
         List<PlannedExerciseSessionRecord> readBack =
                 readAllRecords(PlannedExerciseSessionRecord.class);
         assertWithMessage("inserted record count equals read back record count")
                 .that(readBack.size())
                 .isEqualTo(inserted.size());
         for (int i = 0; i < inserted.size(); i++) {
-            assertRecordsEqual(readBack.get(i), inserted.get(i));
+            PlannedExerciseSessionRecord record = (PlannedExerciseSessionRecord) inserted.get(i);
+            assertRecordsEqual(readBack.get(i), record);
         }
     }
 

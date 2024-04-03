@@ -105,17 +105,17 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void powerGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.PowerGoal(
                                 Power.fromWatts(200), Power.fromWatts(240)));
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
     @Test
@@ -168,18 +168,18 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void speedGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.SpeedGoal(
                                 Velocity.fromMetersPerSecond(10.0),
                                 Velocity.fromMetersPerSecond(12.0)));
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
     @Test
@@ -207,16 +207,16 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void cadenceGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.CadenceGoal(80.0, 85.0));
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
     @Test
@@ -243,16 +243,16 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void heartRateGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.HeartRateGoal(120, 130));
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
     @Test
@@ -281,16 +281,16 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void weightGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.WeightGoal(Mass.fromGrams(80_000)));
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
     @Test
@@ -317,16 +317,16 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void rpeGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(
                         new ExercisePerformanceGoal.RateOfPerceivedExertionGoal(6));
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
     @Test
@@ -339,39 +339,40 @@ public class ExercisePerformanceGoalTest {
 
     @Test
     public void amrapGoal_insertAndRead() throws InterruptedException {
-        PlannedExerciseSessionRecord record =
+        PlannedExerciseSessionRecord.Builder record =
                 createPlannedSessionWithPerformanceGoal(ExercisePerformanceGoal.AmrapGoal.INSTANCE);
 
-        TestUtils.insertRecordAndGetId(record);
+        String id = TestUtils.insertRecordAndGetId(record.build());
 
         assertThat(
                         Iterables.getOnlyElement(
                                 TestUtils.readAllRecords(PlannedExerciseSessionRecord.class)))
-                .isEqualTo(record);
+                .isEqualTo(record.setMetadata(createMetadata(id)).build());
     }
 
-    private PlannedExerciseSessionRecord createPlannedSessionWithPerformanceGoal(
+    private Metadata createMetadata(String id) {
+        return new Metadata.Builder()
+                .setDataOrigin(
+                        new DataOrigin.Builder()
+                                .setPackageName("android.healthconnect.cts")
+                                .build())
+                .setId(id)
+                .setClientRecordId(null)
+                .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
+                .build();
+    }
+
+    private PlannedExerciseSessionRecord.Builder createPlannedSessionWithPerformanceGoal(
             ExercisePerformanceGoal goal) {
-        PlannedExerciseSessionRecord.Builder builder =
-                new PlannedExerciseSessionRecord.Builder(
-                                new Metadata.Builder()
-                                        .setDataOrigin(
-                                                new DataOrigin.Builder()
-                                                        .setPackageName("android.healthconnect.cts")
-                                                        .build())
-                                        .setId(UUID.randomUUID().toString())
-                                        .setClientRecordId(null)
-                                        .setRecordingMethod(
-                                                Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
-                                        .build(),
-                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
-                                LocalDate.of(2007, APRIL, 5),
-                                Duration.of(1, HOURS))
-                        .addBlock(
-                                new PlannedExerciseBlock.Builder(1)
-                                        .addStep(createStepWithPerformanceGoal(goal))
-                                        .build());
-        return builder.build();
+        return new PlannedExerciseSessionRecord.Builder(
+                        createMetadata(UUID.randomUUID().toString()),
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                        LocalDate.of(2007, APRIL, 5),
+                        Duration.of(1, HOURS))
+                .addBlock(
+                        new PlannedExerciseBlock.Builder(1)
+                                .addStep(createStepWithPerformanceGoal(goal))
+                                .build());
     }
 
     private PlannedExerciseStep createStepWithPerformanceGoal(ExercisePerformanceGoal goal) {

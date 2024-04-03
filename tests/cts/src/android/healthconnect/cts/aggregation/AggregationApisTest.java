@@ -61,6 +61,7 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.StepsCadenceRecord;
+import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
@@ -307,12 +308,10 @@ public class AggregationApisTest {
     @Test
     public void groupByDurationWithInstantFilter_weightMin() throws Exception {
         Instant time = Instant.now().minus(1, DAYS).truncatedTo(DAYS);
-        ZoneOffset defaultOffset = ZoneOffset.systemDefault().getRules().getOffset(time);
-        insertRecords(
-                List.of(
-                        getWeightRecord(50.0, time.minus(24, DAYS)),
-                        getWeightRecord(60.0, time.minus(11, DAYS)),
-                        getWeightRecord(70.0, time.minus(4, DAYS).minusMillis(1))));
+        WeightRecord record1 = getWeightRecord(50.0, time.minus(24, DAYS));
+        WeightRecord record2 = getWeightRecord(60.0, time.minus(11, DAYS));
+        WeightRecord record3 = getWeightRecord(70.0, time.minus(4, DAYS).minusMillis(1));
+        insertRecords(List.of(record1, record2, record3));
 
         TimeInstantRangeFilter timeFilter = getTimeFilter(time.minus(25, DAYS), time.plus(1, DAYS));
         List<AggregateRecordsGroupedByDurationResponse<Mass>> responses =
@@ -327,7 +326,7 @@ public class AggregationApisTest {
         assertMassWithTolerance(responses.get(0).get(WEIGHT_MIN), 50.0);
         assertThat(responses.get(0).getStartTime()).isEqualTo(time.minus(25, DAYS));
         assertThat(responses.get(0).getEndTime()).isEqualTo(time.minus(18, DAYS));
-        assertThat(responses.get(0).getZoneOffset(WEIGHT_MIN)).isEqualTo(defaultOffset);
+        assertThat(responses.get(0).getZoneOffset(WEIGHT_MIN)).isEqualTo(record1.getZoneOffset());
         // (day -18) - (day -11), no weight
         assertThat(responses.get(1).get(WEIGHT_MIN)).isNull();
         assertThat(responses.get(1).getStartTime()).isEqualTo(time.minus(18, DAYS));
@@ -337,7 +336,7 @@ public class AggregationApisTest {
         assertMassWithTolerance(responses.get(2).get(WEIGHT_MIN), 60.0);
         assertThat(responses.get(2).getStartTime()).isEqualTo(time.minus(11, DAYS));
         assertThat(responses.get(2).getEndTime()).isEqualTo(time.minus(4, DAYS));
-        assertThat(responses.get(2).getZoneOffset(WEIGHT_MIN)).isEqualTo(defaultOffset);
+        assertThat(responses.get(2).getZoneOffset(WEIGHT_MIN)).isEqualTo(record2.getZoneOffset());
         // (day -4) - (day 1), no weight
         assertThat(responses.get(3).get(WEIGHT_MIN)).isNull();
         assertThat(responses.get(3).getStartTime()).isEqualTo(time.minus(4, DAYS));

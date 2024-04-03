@@ -90,9 +90,10 @@ public class MenstruationPeriodRecordTest {
     @Test
     public void testReadMenstruationPeriodRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteMenstruationPeriodRecord(),
-                        getCompleteMenstruationPeriodRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteMenstruationPeriodRecord(),
+                                getCompleteMenstruationPeriodRecord()));
         readMenstruationPeriodRecordUsingIds(recordList);
     }
 
@@ -542,9 +543,8 @@ public class MenstruationPeriodRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readMenstruationPeriodRecordUsingIds(List<Record> recordList)
+    private void readMenstruationPeriodRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<MenstruationPeriodRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(MenstruationPeriodRecord.class);
         for (Record record : insertedRecords) {
