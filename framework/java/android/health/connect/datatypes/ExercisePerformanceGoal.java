@@ -305,6 +305,18 @@ public abstract class ExercisePerformanceGoal {
         }
     }
 
+    /**
+     * An {@link ExercisePerformanceGoal} that requires completing as many repetitions as possible.
+     * AMRAP (as many reps as possible) sets are often used in conjunction with a duration based
+     * completion goal.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final class AmrapGoal extends ExercisePerformanceGoal {
+        @NonNull public static final AmrapGoal INSTANCE = new AmrapGoal();
+
+        private AmrapGoal() {}
+    }
+
     /** An {@link ExercisePerformanceGoal} that is unknown. */
     @FlaggedApi("com.android.healthconnect.flags.training_plans")
     public static final class UnknownGoal extends ExercisePerformanceGoal {

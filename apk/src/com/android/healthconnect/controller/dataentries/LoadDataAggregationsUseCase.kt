@@ -166,7 +166,7 @@ constructor(
     }
 
     private suspend fun getContributingApps(apps: Set<DataOrigin>): String {
-        val separator : String = context.getString(R.string.data_type_separator)
+        val separator: String = context.getString(R.string.data_type_separator)
         return apps
             .map { origin -> appInfoReader.getAppMetadata(origin.packageName) }
             .joinToString(separator) { it.appName }

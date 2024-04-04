@@ -34,6 +34,7 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.InstantRecord;
 import android.health.connect.datatypes.IntervalRecord;
+import android.health.connect.datatypes.MenstruationPeriodRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
@@ -43,7 +44,9 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Power;
+import android.healthconnect.cts.utils.ToStringUtils;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
@@ -57,6 +60,7 @@ import java.util.stream.IntStream;
 
 /** Converters from/to bundles for HC request, response, and record types. */
 public final class BundleHelper {
+    private static final String TAG = "TestApp-BundleHelper";
     private static final String PREFIX = "android.healthconnect.cts.";
     public static final String QUERY_TYPE = PREFIX + "QUERY_TYPE";
     public static final String INSERT_RECORDS_QUERY = PREFIX + "INSERT_RECORDS_QUERY";
@@ -427,6 +431,8 @@ public final class BundleHelper {
             values = getDistanceRecordValues(distanceRecord);
         } else if (record instanceof TotalCaloriesBurnedRecord totalCaloriesBurnedRecord) {
             values = getTotalCaloriesBurnedRecord(totalCaloriesBurnedRecord);
+        } else if (record instanceof MenstruationPeriodRecord) {
+            values = new Bundle();
         } else {
             throw new IllegalArgumentException(
                     "Unsupported record type: " + record.getClass().getName());
@@ -436,6 +442,16 @@ public final class BundleHelper {
 
         Record decodedRecord = toRecord(bundle);
         if (!record.equals(decodedRecord)) {
+            Log.e(
+                    TAG,
+                    BundleHelper.class.getSimpleName()
+                            + ".java - record = "
+                            + ToStringUtils.recordToString(record));
+            Log.e(
+                    TAG,
+                    BundleHelper.class.getSimpleName()
+                            + ".java - decoded = "
+                            + ToStringUtils.recordToString(record));
             throw new IllegalArgumentException(
                     "Some fields are incorrectly encoded in " + record.getClass().getSimpleName());
         }
@@ -475,6 +491,8 @@ public final class BundleHelper {
         } else if (Objects.equals(recordClassName, TotalCaloriesBurnedRecord.class.getName())) {
             return createTotalCaloriesBurnedRecord(
                     metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, MenstruationPeriodRecord.class.getName())) {
+            return new MenstruationPeriodRecord.Builder(metadata, startTime, endTime).build();
         }
 
         throw new IllegalArgumentException("Unsupported record type: " + recordClassName);

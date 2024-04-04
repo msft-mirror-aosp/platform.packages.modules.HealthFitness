@@ -26,6 +26,7 @@
 
     <permission
         android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"
+        android:label="@string/historic_access_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
@@ -267,7 +268,7 @@
 
     <permission
         android:name="android.permission.health.READ_PLANNED_EXERCISE"
-        android:label="@string/skin_temperature_read_content_description"
+        android:label="@string/planned_exercise_read_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
@@ -502,7 +503,7 @@
 
     <permission
         android:name="android.permission.health.WRITE_PLANNED_EXERCISE"
-        android:label="@string/skin_temperature_write_content_description"
+        android:label="@string/planned_exercise_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 </manifest>
