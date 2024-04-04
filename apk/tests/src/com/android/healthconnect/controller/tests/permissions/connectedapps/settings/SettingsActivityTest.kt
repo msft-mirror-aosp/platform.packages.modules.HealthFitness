@@ -31,7 +31,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
@@ -78,7 +78,7 @@ class SettingsActivityTest {
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME, listOf())
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData<Set<HealthPermission>>(emptySet())
+            MutableLiveData<Set<DataTypePermission>>(emptySet())
         }
         showOnboarding(context, false)
 
@@ -102,9 +102,9 @@ class SettingsActivityTest {
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
         val writePermission =
-            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

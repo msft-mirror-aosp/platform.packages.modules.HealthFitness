@@ -16,6 +16,7 @@
 
 package healthconnect.storage.utils;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
 
 import android.health.connect.datatypes.RecordTypeIdentifier;
@@ -39,10 +40,11 @@ public class RecordTypeForUuidMappingsTest {
     @Rule public final Expect mExpect = Expect.create();
 
     @Test
-    public void testForEveryInternalRecordTypeReturnsDistinctResult_exceptSkinTemperature() {
+    public void testForEveryInternalRecordTypeReturnsDistinctResult_exceptUnreleasedDataTypes() {
         final Set<Integer> resultTypeIds = new HashSet<>();
         for (Integer recordTypeId : RecordTypeIdentifier.VALID_TYPES) {
-            if (recordTypeId == RECORD_TYPE_SKIN_TEMPERATURE) {
+            if (recordTypeId == RECORD_TYPE_SKIN_TEMPERATURE
+                    || recordTypeId == RECORD_TYPE_PLANNED_EXERCISE_SESSION) {
                 return;
             }
             final int resultTypeId = RecordTypeForUuidMappings.getRecordTypeIdForUuid(recordTypeId);

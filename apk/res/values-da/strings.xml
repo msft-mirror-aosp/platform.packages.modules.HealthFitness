@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Se, hvilke apps der har tilgået dine data inden for de seneste 24 timer"</string>
     <string name="today_header" msgid="1006837293203834373">"I dag"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"I går"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Læser: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Skriver: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Læst: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Skrevet: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrer tilladelser"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tid: %s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"få adgang til dine sundhedsdata"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Læs forbrændte kalorier"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Tillader, at appen læser de forbrændte kalorier"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Læsning i baggrunden"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"læsning i baggrunden"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Læs sundhedsdata i baggrunden"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Adgang til data i baggrunden"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til data i baggrunden?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Giv denne app adgang til Health Connect-data, når du ikke bruger appen"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Hvis du giver adgang, kan appen tilgå Health Connect-data, når du ikke bruger appen."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Adgang til gamle data"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Vil du tillade, at <xliff:g id="APP_NAME">%1$s</xliff:g> kan tilgå gamle data?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Giv denne app tilladelse til at tilgå Health Connect-data, der er tilføjet før <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Giv denne app tilladelse til gamle Health Connect-data"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Hvis du giver adgang, kan denne app tilgå Health Connect-data, der er tilføjet før <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Hvis du giver adgang, kan denne app tilgå gamle Health Connect-data."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktive forbrændte kalorier"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktive forbrændte kalorier"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Læs aktive forbrændte kalorier"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Tillad alle"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Tillad ikke"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Vælg, hvilke data denne app skal kunne læse eller skrive til Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Hvis du giver læseadgang, kan appen læse nye data og data fra de seneste 30 dage"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Hvis du giver læseadgang, kan appen læse nye data og data fra de seneste 30 dage"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Hvis du giver læseadgang, kan appen læse nye og gamle data"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> adgang til Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Du kan se, hvordan <xliff:g id="APP_NAME">%1$s</xliff:g> håndterer dine data, i udviklerens <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privatlivspolitik"</string>
@@ -295,6 +303,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Brugt inden for de seneste 24 timer"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Appadgang"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Du har i øjeblikket ikke installeret nogen kompatible apps"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Yderligere adgang"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Apptilladelser blev fjernet"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect fjernede tilladelser for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect fjernede tilladelser for <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Derfor fjerner Health Connect apptilladelser"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Hvis en app suspenderes eller fjernes fra Google Play, fjerner Health Connect automatisk dens tilladelser.\n\nDet betyder, at appen ikke længere vil have adgang til data, der er gemt i Health Connect. Hvis appen tidligere har skrevet data, vises den på listen over inaktive apps."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sikkerhedskopiering og gendannelse"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Eksport og import"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Eksportér automatisk"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Gendan data"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Indlæs tidligere eksporterede data"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Til"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Fra"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Vælg hyppighed"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Vælg at gemme dine data én gang, eller konfigurer indstillingen til at gemme dataene automatisk med en angivet hyppighed."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Dagligt"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Ugentligt"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Månedligt"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Eksportplacering"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Aktivér kryptering"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data skal krypteres, før de kan gemmes. Der er ingen, som kan få adgang til dataene, heller ikke Google eller Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Opret en adgangskode for at beskytte dine krypterede data. Du skal bruge denne adgangskode for at importere og gendanne dine data."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Adgangskode"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Gentag adgangskode"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Hvis du glemmer din adgangskode og mister din telefon, kan Health Connect ikke hjælpe dig med at gendanne dine gemte data."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Tilbage"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Næste"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Kom godt i gang med Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect opbevarer dine sundheds- og motionsdata, så du nemt kan synkronisere de forskellige apps på din telefon"</string>
     <string name="share_data" msgid="3481932156368883946">"Del data med dine apps"</string>
@@ -396,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Ugyldigt resultat"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisekund}one{# millisekund}other{# millisekunder}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 gang}one{# gang}other{# gange}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Aktiv: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"I alt: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Så mange gentagelser som muligt"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Intensitetsniveau: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 gentagelse}one{# gentagelse}other{# gentagelser}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 gentagelse}one{# gentagelse}other{# gentagelser}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Træningssessioner"</string>
@@ -633,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 engelsk pund}one{# engelsk pund}other{# engelske pund}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}one{# stone}other{# stones}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} og {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 grad celsius}one{# grad celsius}other{# grader celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 grad fahrenheit}one{# grad fahrenheit}other{# grader fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue}℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} grad celsius}one{{formattedValue} grad celsius}other{{formattedValue} grader celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue}℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} grad fahrenheit}one{{formattedValue} grad fahrenheit}other{{formattedValue} grader fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue}K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (gns. variation)}one{{formattedValue}℃ (avg variation)}other{{formattedValue} ℃ (gns. variation)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} grad celsius (gennemsnitlig variation)}one{{formattedValue} grad celsius (gennemsnitlig variation)}other{{formattedValue} grader celsius (gennemsnitlig variation)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (gns. variation)}one{{formattedValue}℉ (avg variation)}other{{formattedValue} ℉ (gns. variation)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} grad fahrenheit (gennemsnitlig variation)}one{{formattedValue} grad fahrenheit (gennemsnitlig variation)}other{{formattedValue} grader fahrenheit (gennemsnitlig variation)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (gns. variation)}one{{formattedValue}K (avg variation)}other{{formattedValue} K (gns. variation)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (gennemsnitlig variation)}one{{formattedValue} kelvin (gennemsnitlig variation)}other{{formattedValue} kelvin (gennemsnitlig variation)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Armhule"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Finger"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Pande"</string>
@@ -649,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Øre"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Håndled"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Målingssted"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Referenceværdi"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Afvigelse fra referenceværdi"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
@@ -741,6 +791,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Tillad denne rute"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Tillad alle ruter"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Tillad ikke"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Tillad altid"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Deling af træningsrute"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Administrer, hvordan denne app tilgår træningsruter via tilknyttede apps"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Spørg hver gang"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Tillad ikke"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Vil du aktivere begge datatyper?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Vil du deaktivere begge datatyper?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> skal have læseadgang til øvelser, før træningsruter kan aktiveres"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> skal have adgang til øvelser, før træningsruter kan aktiveres"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ja"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nej"</string>
     <string name="back_button" msgid="780519527385993407">"Tilbage"</string>
     <string name="loading" msgid="2526615755685950317">"Indlæser…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrationen er i gang"</string>
@@ -826,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Sidste måned"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Poster"</string>
     <string name="tab_access" msgid="7818197975407243701">"Adgang"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Vil du give <xliff:g id="APP_NAME">%1$s</xliff:g> yderligere adgang?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> anmoder også om adgang til disse Health Connect-indstillinger"</string>
 </resources>

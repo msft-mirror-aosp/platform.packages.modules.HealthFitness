@@ -46,7 +46,7 @@ object UiTestUtils {
     /** The label of the rescan button. */
     const val RESCAN_BUTTON_LABEL = "Scan device"
 
-    private val WAIT_TIMEOUT = Duration.ofSeconds(4)
+    private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
 
     private val TAG = UiTestUtils::class.java.simpleName

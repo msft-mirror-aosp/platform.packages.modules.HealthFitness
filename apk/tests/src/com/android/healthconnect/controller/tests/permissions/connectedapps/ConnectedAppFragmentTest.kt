@@ -43,7 +43,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.ConnectedAppFragment
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
@@ -112,12 +112,12 @@ class ConnectedAppFragmentTest {
         whenever(viewModel.showDisableExerciseRouteEvent)
             .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData(emptySet<HealthPermission>())
+            MutableLiveData(emptySet<DataTypePermission>())
         }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -175,7 +175,7 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun test_readPermission() {
-        val permission = HealthPermission(DISTANCE, READ)
+        val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
 
@@ -204,7 +204,7 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun test_writePermission() {
-        val permission = HealthPermission(EXERCISE, WRITE)
+        val permission = DataTypePermission(EXERCISE, WRITE)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
 
@@ -232,8 +232,8 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun test_readAndWritePermission() {
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -272,8 +272,8 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun test_allowAllToggleOn_whenAllPermissionsOn() {
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -305,8 +305,8 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun test_allowAllToggleOff_whenAtLeastOnePermissionOff() {
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -332,8 +332,8 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun allowAll_toggleOff_showsDisconnectDialog() {
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -357,8 +357,8 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun allowAll_toggleOff_onDialogRemoveAllClicked_disconnectAllPermissions() {
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -381,8 +381,8 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun allowAll_toggleOff_deleteDataSelected_onDialogRemoveAllClicked_deleteIsCalled() {
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
@@ -406,10 +406,10 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun test_footerWithGrantTime_isDisplayed() {
-        val permission = HealthPermission(DISTANCE, READ)
+        val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
@@ -432,13 +432,13 @@ class ConnectedAppFragmentTest {
 
     @Test
     fun footerWithoutGrantTime_isDisplayed() {
-        val permission = HealthPermission(DISTANCE, READ)
+        val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData<Set<HealthPermission>>(setOf())
+            MutableLiveData<Set<DataTypePermission>>(setOf())
         }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
@@ -462,13 +462,13 @@ class ConnectedAppFragmentTest {
     @Ignore
     fun whenClickOnPrivacyPolicyLink_startsRationaleActivity() {
         val rationaleAction = "android.intent.action.VIEW_PERMISSION_USAGE"
-        val permission = HealthPermission(DISTANCE, READ)
+        val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData<Set<HealthPermission>>(setOf())
+            MutableLiveData<Set<DataTypePermission>>(setOf())
         }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent(rationaleAction))
@@ -494,8 +494,8 @@ class ConnectedAppFragmentTest {
     @Test
     fun seeAppData_isEnabled_buttonDisplayed() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewInformationArchitectureEnabled(true)
-        val writePermission = HealthPermission(EXERCISE, WRITE)
-        val readPermission = HealthPermission(DISTANCE, READ)
+        val writePermission = DataTypePermission(EXERCISE, WRITE)
+        val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }

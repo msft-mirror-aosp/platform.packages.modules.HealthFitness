@@ -72,9 +72,13 @@
             <item type="drawable" name="ic_edit"/>
             <item type="drawable" name="ic_close"/>
 
-            <!-- Export -->
+            <!-- Backup and restore -->
             <item type="drawable" name="ic_repeat"/>
+            <item type="drawable" name="ic_upload"/>
+            <item type="drawable" name="ic_settings_backup_restore"/>
 
+            <item type="drawable" name="ic_lock"/>
+            <item type="drawable" name="ic_warning"/>
             <!-- END REGION -->
 
             <!-- REGION DIALOG GRAVITY -->
@@ -100,7 +104,7 @@
             <item type="style" name="TextAppearance.HealthConnect.Subheader2"/>
             <item type="style" name="TextAppearance.HealthConnect.Subheader3"/>
             <item type="style" name="TextAppearance.HealthConnect.RouteRequest"/>
-            <item type="style" name="PreferenceCategoryTitleTextStyle.HealthConnect"/>
+            <item type="style" name="TextAppearance.HealthConnect.CategoryTitle"/>
 
             <item type="style" name="Widget.HealthConnect.Button"/>
             <item type="style" name="Widget.HealthConnect.CheckBox"/>

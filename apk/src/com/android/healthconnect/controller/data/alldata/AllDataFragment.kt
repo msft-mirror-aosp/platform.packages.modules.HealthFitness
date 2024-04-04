@@ -24,7 +24,7 @@ import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.preference.HealthPreference
@@ -101,14 +101,14 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
             permissionTypesPerCategory.data
                 .sortedBy {
-                    getString(HealthPermissionStrings.fromPermissionType(it).uppercaseLabel)
+                    getString(DataTypePermissionStrings.fromPermissionType(it).uppercaseLabel)
                 }
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
                         HealthPreference(requireContext()).also {
                             it.icon = categoryIcon
                             it.setTitle(
-                                HealthPermissionStrings.fromPermissionType(permissionType)
+                                DataTypePermissionStrings.fromPermissionType(permissionType)
                                     .uppercaseLabel)
                             // TODO(b/291249677): Add in upcoming CL.
                             // it.logName = AllDataElement.PERMISSION_TYPE_BUTTON

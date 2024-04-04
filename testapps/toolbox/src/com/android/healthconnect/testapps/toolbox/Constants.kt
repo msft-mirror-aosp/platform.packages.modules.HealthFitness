@@ -46,6 +46,7 @@ import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -63,11 +64,15 @@ import kotlin.reflect.KClass
 object Constants {
 
     const val INPUT_TYPE_DOUBLE = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+    const val INPUT_TYPE_SIGNED_DOUBLE =
+        InputType.TYPE_CLASS_NUMBER or
+            InputType.TYPE_NUMBER_FLAG_DECIMAL or
+            InputType.TYPE_NUMBER_FLAG_SIGNED
     const val INPUT_TYPE_LONG = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_INT = InputType.TYPE_CLASS_NUMBER
     const val INPUT_TYPE_TEXT = InputType.TYPE_CLASS_TEXT
 
-    val ALL_PERMISSIONS =
+    val HEALTH_PERMISSIONS =
         arrayOf(
             "android.permission.health.READ_ACTIVE_CALORIES_BURNED",
             "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
@@ -97,6 +102,7 @@ object Constants {
             "android.permission.health.READ_RESPIRATORY_RATE",
             "android.permission.health.READ_RESTING_HEART_RATE",
             "android.permission.health.READ_SEXUAL_ACTIVITY",
+            "android.permission.health.READ_SKIN_TEMPERATURE",
             "android.permission.health.READ_SLEEP",
             "android.permission.health.READ_SPEED",
             "android.permission.health.READ_STEPS",
@@ -132,6 +138,7 @@ object Constants {
             "android.permission.health.WRITE_RESPIRATORY_RATE",
             "android.permission.health.WRITE_RESTING_HEART_RATE",
             "android.permission.health.WRITE_SEXUAL_ACTIVITY",
+            "android.permission.health.WRITE_SKIN_TEMPERATURE",
             "android.permission.health.WRITE_SLEEP",
             "android.permission.health.WRITE_SPEED",
             "android.permission.health.WRITE_STEPS",
@@ -141,6 +148,13 @@ object Constants {
             "android.permission.health.WRITE_WHEELCHAIR_PUSHES",
             "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING",
             "android.permission.health.WRITE_EXERCISE_ROUTE")
+
+    val BG_READ_PERMISSION = "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"
+    val HA_READ_PERMISSION = "android.permission.health.READ_HEALTH_DATA_HISTORY"
+
+    val ADDITIONAL_PERMISSIONS = arrayOf(BG_READ_PERMISSION, HA_READ_PERMISSION)
+
+    val ALL_PERMISSIONS = HEALTH_PERMISSIONS + ADDITIONAL_PERMISSIONS
 
     /** Represents Category group for HealthConnect data. */
     enum class HealthDataCategory(
@@ -226,7 +240,8 @@ object Constants {
                 HealthPermissionType.HEART_RATE_VARIABILITY,
                 HealthPermissionType.OXYGEN_SATURATION,
                 HealthPermissionType.RESPIRATORY_RATE,
-                HealthPermissionType.RESTING_HEART_RATE)
+                HealthPermissionType.RESTING_HEART_RATE,
+                HealthPermissionType.SKIN_TEMPERATURE)
     }
 
     enum class HealthPermissionType(
@@ -288,5 +303,6 @@ object Constants {
         OXYGEN_SATURATION(OxygenSaturationRecord::class, R.string.oxygen_saturation_label),
         RESPIRATORY_RATE(RespiratoryRateRecord::class, R.string.respiratory_rate_label),
         RESTING_HEART_RATE(RestingHeartRateRecord::class, R.string.resting_heart_rate_label),
+        SKIN_TEMPERATURE(SkinTemperatureRecord::class, R.string.skin_temperature_label),
     }
 }

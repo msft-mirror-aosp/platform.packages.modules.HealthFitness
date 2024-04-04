@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"כאן אפשר לראות אילו אפליקציות ניגשו לנתונים שלך ב-24 השעות האחרונות"</string>
     <string name="today_header" msgid="1006837293203834373">"היום"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"אתמול"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"קריאה: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"כתיבה: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"קריאה: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"כתיבה: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ניהול הרשאות"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"זמן: ‎%s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"גישה לנתוני הבריאות שלך"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"קריאה של נתוני הקלוריות שנשרפו"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"מאפשרת לאפליקציה לקרוא את נתוני הקלוריות שנשרפו"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"קריאה ברקע"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"קריאה ברקע"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"קריאה של נתוני הבריאות ברקע"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"גישה לנתונים ברקע"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> הרשאת גישה לנתונים ברקע?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"מתן הרשאה לאפליקציה הזו לגשת לנתונים של Health Connect גם כשהיא לא בשימוש"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"אם תינתן הרשאה, האפליקציה הזו תוכל לגשת לנתונים של Health Connect גם כשהיא לא בשימוש."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"גישה לנתונים קודמים"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> הרשאה לגשת לנתונים קודמים?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"מתן הרשאה לאפליקציה הזו לגשת לנתונים של Health Connect שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"מתן הרשאה לאפליקציה הזו לגשת לנתונים קודמים של Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"אם תינתן הרשאה, האפליקציה הזו תוכל לגשת לנתונים של Health Connect שנוספו לפני <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"אם תינתן הרשאה, האפליקציה הזו תוכל לגשת לנתונים קודמים של Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"קלוריות שנשרפו בזמן פעילות"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"קלוריות שנשרפו בזמן פעילות"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"קריאה של נתוני הקלוריות שנשרפו בזמן פעילות"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"אישור של הכול"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"אין אישור"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"כאן ניתן לבחור אילו נתונים האפליקציה הזו תקרא או תכתוב ב-Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"הרשאת קריאה מאפשרת לאפליקציה הזו לקרוא נתונים מ-30 הימים האחרונים"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"ההרשאה מאפשרת לאפליקציה לקרוא נתונים חדשים ונתונים קודמים מ-30 הימים האחרונים"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"אם תינתן הרשאת קריאה, האפליקציה תוכל לקרוא נתונים חדשים ונתונים קודמים"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"האם לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> גישה אל Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"אפשר לקרוא איך אפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> מטפלת בנתונים שלך ב<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> של המפתח"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"מדיניות הפרטיות"</string>
@@ -295,6 +303,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"הייתה גישה ב-24 השעות האחרונות"</string>
     <string name="app_access_title" msgid="7137018424885371763">"גישה לאפליקציות"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"כרגע אין לך אפליקציות תואמות מותקנות"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"הרשאת גישה נוספת"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ההרשאות שניתנו לאפליקציה הוסרו"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"אפליקציית Health Connect הסירה את ההרשאות של <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"אפליקציית Health Connect הסירה את ההרשאות של <xliff:g id="APP_DATA_0">%1$s</xliff:g> ושל <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"למה אפליקציית Health Connect מסירה הרשאות הניתנות לאפליקציות"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"אם אפליקציה הושעתה מ-Google Play או הוסרה משם, Health Connect מסירה אוטומטית את ההרשאות שניתנו לאפליקציה.\n\nכלומר, האפליקציה הזו כבר לא יכולה לגשת לנתונים שאוחסנו ב-Health Connect. אם לאפליקציה הזו יש נתונים שנכתבו לפני כן, היא תופיע ברשימת האפליקציות הלא פעילות."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"הבנתי"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"גיבוי ושחזור"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ייצוא וייבוא"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"ייצוא אוטומטי"</string>
+    <string name="restore_data" msgid="3401173690437871417">"שחזור נתונים"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"טעינה של נתונים שיוצאו בעבר"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"מצב פעיל"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"מצב מושבת"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"בחירת תדירות"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"אפשר לבחור לשמור נתונים פעם אחת או להגדיר שמירה אוטומטית בזמנים קבועים."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"כל יום"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"כל שבוע"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"כל חודש"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"מיקום ייצוא"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"הפעלת ההצפנה"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"צריך להצפין את הנתונים לפני שהם נשמרים. אף אחד לא יוכל לגשת אליהם, אפילו לא Google או אפליקציית Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"צריך ליצור סיסמה כדי להגן על הנתונים המוצפנים. הסיסמה הזו תשמש לייבוא ולשחזור של הנתונים."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"סיסמה"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"חזרה על הסיסמה"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"אם שכחת את הסיסמה ואיבדת את הטלפון, לא תהיה לך אפשרות להיעזר ב-Health Connect כדי לשחזר את הנתונים ששמרת."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"חזרה"</string>
+    <string name="export_next_button" msgid="657930567137105172">"הבא"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"איך מתחילים להשתמש ב-Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"אפליקציית Health Connect מאחסנת את נתוני הבריאות והכושר שלך, ומאפשרת לך לסנכרן בקלות את האפליקציות השונות בטלפון"</string>
     <string name="share_data" msgid="3481932156368883946">"שיתוף נתונים עם האפליקציות שלך"</string>
@@ -396,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"לא חד-משמעית"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{אלפית שנייה}one{# אלפיות שנייה}two{# אלפיות שנייה}other{# אלפיות שנייה}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{אלפית שנייה}one{# אלפיות שנייה}two{# אלפיות שנייה}other{# אלפיות שנייה}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{פעם אחת}one{# פעמים}two{פעמיים}other{# פעמים}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"במצב פעיל: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"סה\"כ: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"כמה שיותר חזרות"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"רמת המאמץ: <xliff:g id="VALUE">%1$d</xliff:g> מתוך 10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{חזרה אחת}one{# חזרות}two{# חזרות}other{# חזרות}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{חזרה אחת}one{# חזרות}two{# חזרות}other{# חזרות}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"מקטעים של פעילות גופנית"</string>
@@ -633,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{פאונד אחד}one{# פאונד}two{# פאונד}other{# פאונד}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{סטון אחד}one{# סטון}two{# סטון}other{# סטון}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{℃ 1}one{℃ #}two{℃ #}other{℃ #}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{‫‎1℃‎}one{‫‎#℃‎}two{‫‎#℃‎}other{‫‎#℃‎}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{מעלה אחת צלזיוס}one{# מעלות צלזיוס}two{# מעלות צלזיוס}other{# מעלות צלזיוס}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1K}one{‎#‎K}two{‎#‎K}other{‎#‎K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{‫1K}one{‫‎#K}two{‫‎#K}other{‫‎#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{מעלה אחת קלווין}one{# מעלות קלווין}two{# מעלות קלווין}other{# מעלות קלווין}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{℉ 1}one{℉ #}two{℉ #}other{℉ #}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{‫‎1℉‎}one{‫‎#℉‎}two{‫‎#℉‎}other{‫‎#℉‎}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{מעלה אחת פרנהייט}one{# מעלות פרנהייט}two{# מעלות פרנהייט}other{# מעלות פרנהייט}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{‫‎{formattedValue}℃‎}one{{formattedValue}℃}two{‫‎{formattedValue}℃‎}other{‫‎{formattedValue}℃‎}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{מעלה אחת צלזיוס ({formattedValue})}one{‫{formattedValue} מעלות צלזיוס}two{‫{formattedValue} מעלות צלזיוס}other{‫{formattedValue} מעלות צלזיוס}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{‫‎{formattedValue}℉‎}one{{formattedValue}℉}two{‫‎{formattedValue}℉‎}other{‫‎{formattedValue}℉‎}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{מעלה אחת פרנהייט ({formattedValue})}one{‫{formattedValue} מעלות פרנהייט}two{‫{formattedValue} מעלות פרנהייט}other{‫{formattedValue} מעלות פרנהייט}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{‫K{formattedValue}}one{{formattedValue}K}two{‫K{formattedValue}}other{‫K{formattedValue}}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{מעלה אחת קלווין ({formattedValue})}one{‫{formattedValue} מעלות קלווין}two{‫{formattedValue} מעלות קלווין}other{‫{formattedValue} מעלות קלווין}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{‫‎{formattedValue}℃‎ (ממוצע)}one{{formattedValue}℃ (avg variation)}two{‫‎{formattedValue}℃‎ (ממוצע)}other{‫‎{formattedValue}℃‎ (ממוצע)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{מעלה אחת צלזיוס ({formattedValue}) (ממוצע)}one{‫{formattedValue} מעלות צלזיוס (ממוצע)}two{‫{formattedValue} מעלות צלזיוס (ממוצע)}other{‫{formattedValue} מעלות צלזיוס (ממוצע)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{‫‎{formattedValue}℉‎ (ממוצע)}one{{formattedValue}℉ (avg variation)}two{‫‎{formattedValue}℉‎ (ממוצע)}other{‫‎{formattedValue}℉‎ (ממוצע)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{מעלה אחת פרנהייט ({formattedValue}) (ממוצע)}one{‫{formattedValue} מעלות פרנהייט (ממוצע)}two{‫{formattedValue} מעלות פרנהייט (ממוצע)}other{‫{formattedValue} מעלות פרנהייט (ממוצע)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{‫‎{formattedValue}K (ממוצע)}one{{formattedValue}K (avg variation)}two{‫‎{formattedValue}K (ממוצע)}other{‫‎{formattedValue}K (ממוצע)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{מעלה אחת קלווין ({formattedValue}) (ממוצע)}one{‫{formattedValue} מעלות קלווין (ממוצע)}two{‫{formattedValue} מעלות קלווין (ממוצע)}other{‫{formattedValue} מעלות קלווין (ממוצע)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"בית השחי"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"אצבע"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"מצח"</string>
@@ -649,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"אוזן"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"פרק כף היד"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"הנרתיק"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"מיקום המדידה"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"ערך הבסיס"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"שינוי לעומת ערך הבסיס"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{מייל אחד}one{# מייל}two{# מייל}other{# מייל}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{ק\"מ אחד}one{# ק\"מ}two{# ק\"מ}other{# ק\"מ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{מייל אחד}one{# מייל}two{# מייל}other{# מייל}}"</string>
@@ -709,7 +759,7 @@
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי חודש אחד. ההגדרה הזאת תמחק גם נתונים קיימים מלפני חודש.}one{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי # חודשים. ההגדרה הזאת תמחק גם נתונים קיימים מלפני # חודשים.}two{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי חודשיים. ההגדרה הזאת תמחק גם נתונים קיימים מלפני # חודשים.}other{נתונים חדשים יימחקו מ-Health Connect באופן אוטומטי אחרי # חודשים. ההגדרה הזאת תמחק גם נתונים קיימים מלפני # חודשים.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"הגדרת מחיקה אוטומטית"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"הנתונים הקיימים יימחקו"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{כל הנתונים מלפני # חודשים ויותר יימחקו מ-Health Connect‏. ייתכן שיעבור יום עד שהשינויים האלה יופיעו באפליקציות המקושרות שלך.}one{Health Connect will delete all data older than # months. It may take a day for these changes to appear in your connected apps.}two{כל הנתונים מלפני חודשיים ויותר יימחקו מ-Health Connect‏. ייתכן שיעבור יום עד שהשינויים האלה יופיעו באפליקציות המקושרות שלך.}other{כל הנתונים מלפני # חודשים ויותר יימחקו מ-Health Connect‏. ייתכן שיעבור יום עד שהשינויים האלה יופיעו באפליקציות המקושרות שלך.}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{כל הנתונים מלפני # חודשים ויותר יימחקו מ-Health Connect‏. ייתכן שיעבור יום עד שהשינויים האלה יופיעו באפליקציות המחוברות שלך.}one{Health Connect will delete all data older than # months. It may take a day for these changes to appear in your connected apps.}two{כל הנתונים מלפני חודשיים ויותר יימחקו מ-Health Connect‏. ייתכן שיעבור יום עד שהשינויים האלה יופיעו באפליקציות המחוברות שלך.}other{כל הנתונים מלפני # חודשים ויותר יימחקו מ-Health Connect‏. ייתכן שיעבור יום עד שהשינויים האלה יופיעו באפליקציות המחוברות שלך.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"הנתונים שיימחקו מהקטגוריות האלה"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"סיום"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"הגדרת העדיפות של האפליקציות"</string>
@@ -741,6 +791,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"מתן הרשאה למסלול הזה"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"מתן הרשאה לכל המסלולים"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"אין אישור"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"ללא הגבלת שימוש"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"שיתוף של מסלול אימון כושר"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"שליטה באופן שבו האפליקציה ניגשת לנתונים של מסלולי אימון כושר מאפליקציות מקושרות"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"אני רוצה לבחור בכל פעם"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"אין אישור"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"להפעיל את שני סוגי הנתונים?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"להשבית את שני סוגי הנתונים?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"לאפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> נדרשת גישה לקריאת נתוני הפעילות הגופנית כדי להפעיל מסלולי אימון"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"לאפליקציית <xliff:g id="APP_NAME">%1$s</xliff:g> נדרשת גישה לנתוני הפעילות הגופנית כדי להפעיל מסלולי אימון"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"כן"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"לא"</string>
     <string name="back_button" msgid="780519527385993407">"חזרה"</string>
     <string name="loading" msgid="2526615755685950317">"בטעינה…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"השילוב מתבצע"</string>
@@ -826,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"בחודש שעבר"</string>
     <string name="tab_entries" msgid="3402700951602029493">"רשומות"</string>
     <string name="tab_access" msgid="7818197975407243701">"גישה"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"לתת לאפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> הרשאת גישה נוספת?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"האפליקציה <xliff:g id="APP_NAME">%1$s</xliff:g> ביקשה גם גישה להגדרות הבאות של Health Connect"</string>
 </resources>

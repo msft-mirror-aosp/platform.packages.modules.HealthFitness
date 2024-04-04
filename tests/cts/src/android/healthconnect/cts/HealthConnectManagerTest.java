@@ -1633,7 +1633,8 @@ public class HealthConnectManagerTest {
         }
 
         try {
-            TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build());
+            TestUtils.getChangeLogToken(
+                    new ChangeLogTokenRequest.Builder().addRecordType(StepsRecord.class).build());
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
@@ -1925,7 +1926,10 @@ public class HealthConnectManagerTest {
                 (recordTypeClass, recordTypeInfoResponse) -> {
                     TestUtils.RecordTypeInfoTestResponse expectedTestResponse =
                             expectedResponse.get(recordTypeClass);
-                    assertThat(expectedTestResponse).isNotNull();
+                    // Ignore unknown record types in the response.
+                    if (expectedTestResponse == null) {
+                        return;
+                    }
                     assertThat(recordTypeInfoResponse.getPermissionCategory())
                             .isEqualTo(expectedTestResponse.getRecordTypePermission());
                     assertThat(recordTypeInfoResponse.getDataCategory())

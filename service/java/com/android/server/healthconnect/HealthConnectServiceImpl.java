@@ -110,7 +110,6 @@ import android.os.Binder;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
-import android.os.Trace;
 import android.os.UserHandle;
 import android.permission.PermissionManager;
 import android.util.ArrayMap;
@@ -179,28 +178,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private static final String HEALTH_CONNECT_BACKUP_INTER_AGENT_PERMISSION =
             "android.permission.HEALTH_CONNECT_BACKUP_INTER_AGENT";
 
-    private static final String TAG_INSERT = "HealthConnectInsert";
-    private static final String TAG_READ = "HealthConnectRead";
-    private static final String TAG_GRANT_PERMISSION = "HealthConnectGrantReadPermissions";
-    private static final String TAG_READ_PERMISSION = "HealthConnectReadPermission";
-    private static final String TAG_READ_PERMISSION_FLAGS = "HealthConnectReadPermissionFlags";
-    private static final String TAG_MAKE_PERMISSIONS_REQUESTABLE =
-            "HealthConnectMakePermissionsRequestable";
-    private static final String TAG_INSERT_SUBTASKS = "HealthConnectInsertSubtasks";
-
-    private static final String TAG_DELETE_SUBTASKS = "HealthConnectDeleteSubtasks";
-    private static final String TAG_READ_SUBTASKS = "HealthConnectReadSubtasks";
-    private static final int TRACE_TAG_INSERT = TAG_INSERT.hashCode();
-    private static final int TRACE_TAG_READ = TAG_READ.hashCode();
-    private static final int TRACE_TAG_GRANT_PERMISSION = TAG_GRANT_PERMISSION.hashCode();
-    private static final int TRACE_TAG_READ_PERMISSION = TAG_READ_PERMISSION.hashCode();
-    private static final int TRACE_TAG_READ_PERMISSION_FLAGS = TAG_READ_PERMISSION_FLAGS.hashCode();
-    private static final int TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE =
-            TAG_MAKE_PERMISSIONS_REQUESTABLE.hashCode();
-    private static final int TRACE_TAG_INSERT_SUBTASKS = TAG_INSERT_SUBTASKS.hashCode();
-    private static final int TRACE_TAG_DELETE_SUBTASKS = TAG_DELETE_SUBTASKS.hashCode();
-    private static final int TRACE_TAG_READ_SUBTASKS = TAG_READ_SUBTASKS.hashCode();
-
     private final TransactionManager mTransactionManager;
     private final HealthConnectDeviceConfigManager mDeviceConfigManager;
     private final HealthConnectPermissionHelper mPermissionHelper;
@@ -251,7 +228,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         HealthConnectThreadScheduler.scheduleInternalTask(
                 () -> {
                     HealthDataCategoryPriorityHelper.getInstance()
-                            .maybeAddInactiveAppsToPriorityList(mContext);
+                            .maybeAddContributingAppsToPriorityList(mContext);
                 });
     }
 
@@ -261,9 +238,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(packageName, permissionName, user);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
-        Trace.traceBegin(TRACE_TAG_GRANT_PERMISSION, TAG_GRANT_PERMISSION);
         mPermissionHelper.grantHealthPermission(packageName, permissionName, user);
-        Trace.traceEnd(TRACE_TAG_GRANT_PERMISSION);
     }
 
     @Override
@@ -293,10 +268,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(packageName, user);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
-        Trace.traceBegin(TRACE_TAG_READ_PERMISSION, TAG_READ_PERMISSION);
         List<String> grantedPermissions =
                 mPermissionHelper.getGrantedHealthPermissions(packageName, user);
-        Trace.traceEnd(TRACE_TAG_READ_PERMISSION);
         return grantedPermissions;
     }
 
@@ -306,26 +279,22 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(packageName, user);
         throwIllegalStateExceptionIfDataSyncInProgress();
 
-        Trace.traceBegin(TRACE_TAG_READ_PERMISSION_FLAGS, TAG_READ_PERMISSION_FLAGS);
-
         Map<String, Integer> response =
                 mPermissionHelper.getHealthPermissionsFlags(packageName, user, permissions);
-
-        Trace.traceEnd(TRACE_TAG_READ_PERMISSION_FLAGS);
         return response;
     }
 
     @Override
-    public void makeHealthPermissionsRequestable(
-            @NonNull String packageName, @NonNull UserHandle user, List<String> permissions) {
+    public void setHealthPermissionsUserFixedFlagValue(
+            @NonNull String packageName,
+            @NonNull UserHandle user,
+            List<String> permissions,
+            boolean value) {
         checkParamsNonNull(packageName, user);
         throwIllegalStateExceptionIfDataSyncInProgress();
 
-        Trace.traceBegin(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE, TAG_MAKE_PERMISSIONS_REQUESTABLE);
-
-        mPermissionHelper.makeHealthPermissionsRequestable(packageName, user, permissions);
-
-        Trace.traceEnd(TRACE_TAG_MAKE_PERMISSIONS_REQUESTABLE);
+        mPermissionHelper.setHealthPermissionsUserFixedFlagValue(
+                packageName, user, permissions, value);
     }
 
     @Override
@@ -392,7 +361,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 recordsParcel.getRecordsChunkSize());
                         mDataPermissionEnforcer.enforceRecordsWritePermissions(
                                 recordInternals, attributionSource);
-                        Trace.traceBegin(TRACE_TAG_INSERT, TAG_INSERT);
                         UpsertTransactionRequest insertRequest =
                                 new UpsertTransactionRequest(
                                         attributionSource.getPackageName(),
@@ -433,7 +401,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         Slog.e(TAG, "Exception: ", e);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
                     } finally {
-                        Trace.traceEnd(TRACE_TAG_INSERT);
                         logger.build().log();
                     }
                 },
@@ -443,8 +410,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private void postInsertTasks(
             @NonNull AttributionSource attributionSource, @NonNull RecordsParcel recordsParcel) {
-        Trace.traceBegin(TRACE_TAG_INSERT_SUBTASKS, TAG_INSERT.concat("PostInsertTasks"));
-
         ActivityDateHelper.getInstance().insertRecordDate(recordsParcel.getRecords());
         Set<Integer> recordsTypesInsertedSet =
                 recordsParcel.getRecords().stream()
@@ -455,8 +420,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         AppInfoHelper.getInstance()
                 .updateAppInfoRecordTypesUsedOnInsert(
                         recordsTypesInsertedSet, attributionSource.getPackageName());
-
-        Trace.traceEnd(TRACE_TAG_INSERT_SUBTASKS);
     }
 
     /**
@@ -658,7 +621,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mDataPermissionEnforcer.collectGrantedExtraReadPermissions(
                                         Set.of(request.getRecordType()), attributionSource);
 
-                        Trace.traceBegin(TRACE_TAG_READ, TAG_READ);
                         try {
                             long startDateAccessEpochMilli = request.getStartTime();
 
@@ -723,11 +685,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             boolean requiresLogging =
                                     !holdsDataManagementPermission && !enforceSelfRead;
                             if (requiresLogging) {
-                                Trace.traceBegin(
-                                        TRACE_TAG_READ_SUBTASKS, TAG_READ.concat("AddAccessLog"));
                                 AccessLogsHelper.getInstance()
                                         .addAccessLog(callingPackageName, recordTypes, READ);
-                                Trace.traceEnd(TRACE_TAG_READ_SUBTASKS);
                             }
                             callback.onResult(
                                     new ReadRecordsResponseParcel(
@@ -782,7 +741,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         Slog.e(TAG, "Exception: ", e);
                         tryAndThrowException(callback, e, ERROR_INTERNAL);
                     } finally {
-                        Trace.traceEnd(TRACE_TAG_READ);
                         logger.build().log();
                     }
                 },
@@ -939,6 +897,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                 mAppOpsManagerLocal.isUidInForeground(uid),
                                 logger);
                         throwExceptionIfDataSyncInProgress();
+                        if (request.getRecordTypes().isEmpty()) {
+                            throw new IllegalArgumentException(
+                                    "Requested record types must not be empty.");
+                        }
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 request.getRecordTypesList(), attributionSource);
                         callback.onResult(
@@ -957,6 +919,14 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
                         Slog.e(TAG, "SecurityException: ", securityException);
                         tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (IllegalArgumentException illegalArgumentException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                HealthConnectException.ERROR_INVALID_ARGUMENT);
+                        Slog.e(TAG, "IllegalArgumentException: ", illegalArgumentException);
+                        tryAndThrowException(
+                                callback,
+                                illegalArgumentException,
+                                HealthConnectException.ERROR_INVALID_ARGUMENT);
                     } catch (HealthConnectException healthConnectException) {
                         logger.setHealthDataServiceApiStatusError(
                                 healthConnectException.getErrorCode());
@@ -1019,6 +989,10 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                                         callerPackageName, request.getToken());
                         tryAcquireApiCallQuota(
                                 uid, QuotaCategory.QUOTA_CATEGORY_READ, isInForeground, logger);
+                        if (changeLogsTokenRequest.getRecordTypes().isEmpty()) {
+                            throw new IllegalArgumentException(
+                                    "Requested record types must not be empty.");
+                        }
                         mDataPermissionEnforcer.enforceRecordIdsReadPermissions(
                                 changeLogsTokenRequest.getRecordTypes(), attributionSource);
                         long startDateAccessEpochMilli = DEFAULT_LONG;
@@ -2370,13 +2344,11 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     private static void postDeleteTasks(List<Integer> recordTypeIdsToDelete) {
-        Trace.traceBegin(TRACE_TAG_DELETE_SUBTASKS, TAG_INSERT.concat("PostDeleteTasks"));
         if (recordTypeIdsToDelete != null && !recordTypeIdsToDelete.isEmpty()) {
             AppInfoHelper.getInstance()
                     .syncAppInfoRecordTypesUsed(new HashSet<>(recordTypeIdsToDelete));
             ActivityDateHelper.getInstance().reSyncByRecordTypeIds(recordTypeIdsToDelete);
         }
-        Trace.traceEnd(TRACE_TAG_DELETE_SUBTASKS);
     }
 
     private static void tryAndReturnResult(

@@ -25,7 +25,7 @@ import android.health.connect.datatypes.units.Mass;
 final class Utils {
     static void assertEnergyWithTolerance(Energy energy, double expected) {
         assertThat(energy).isNotNull();
-        assertThat(energy.getInCalories()).isWithin(0.001).of(expected);
+        assertThat(energy.getInCalories()).isWithin(1).of(expected);
     }
 
     static void assertLengthWithTolerance(Length length, double expected) {

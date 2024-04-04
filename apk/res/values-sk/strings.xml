@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Zistite, ktoré aplikácie získali prístup k vašim údajom za posledných 24 hodín."</string>
     <string name="today_header" msgid="1006837293203834373">"Dnes"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Včera"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Číta: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Zapisuje: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Číta: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Zapisuje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Spravovať povolenia"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Čas: %s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"prístup k vašim údajom o zdraví"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Čít. údajov o spál. kalóriách"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Umožňuje aplikáciám čítať údaje o spálených kalóriách"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Čítanie na pozadí"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"čítanie na pozadí"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Čítať zdravotné údaje na pozadí"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Prístup k údajom na pozadí"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k údajom na pozadí?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Povoľte tejto aplikácii prístup k údajom Dát o zdraví, keď ju nebudete používať"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ak ho povolíte, bude mať táto aplikácia prístup k údajom Dát o zdraví, keď ju nebudete používať."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Prístup k minulým údajom"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k minulým údajom?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Povolenie prístupu tejto aplikácie k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Povolenie prístupu tejto aplikácie k minulým údajom Dát o zdraví"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ak ho povolíte, bude mať táto aplikácia prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Ak ho povolíte, bude mať táto aplikácia prístup k minulým údajom Dát o zdraví."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalórie spálené počas aktivity"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalórie spálené počas aktivity"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Čítanie údajov o kalóriách spálených počas aktivity"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Povoliť všetko"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Nepovoliť"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Vyberte údaje, ktoré chcete povoliť tejto aplikácii čítať alebo zapisovať do Dát o zdraví"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Ak udelíte prístup na čítanie, táto aplikácia môže čítať nové údaje aj tie z posledných 30 dní"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ak udelíte prístup na čítanie, aplikácia bude môcť čítať nové údaje aj údaje z posledných 30 dní"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ak udelíte prístup na čítanie, aplikácia bude môcť čítať nové aj minulé údaje"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Chcete povoliť aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> prístup k Dátam o zdraví?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Spôsob, akým <xliff:g id="APP_NAME">%1$s</xliff:g> spracúva vaše údaje, zistíte v <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> príslušného vývojára"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravidlách ochrany súkromia"</string>
@@ -293,8 +301,9 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Ak chcete spravovať ďalšie povolenia pre Android, ku ktorým má táto aplikácia prístup, prejdite do sekcie Nastavenia a potom Aplikácie"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Zobraziť pravidlá ochrany súkromia"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Použité v posledných 24 hodinách"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Prístup k aplikáciám"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Prístup aplikácie"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálne nemáte nainštalované žiadne kompatibilné aplikácie"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Dodatočný prístup"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odstránené povolenia aplikácií"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Dáta o zdraví odstránili povolenia pre aplikáciu <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Dáta o zdraví odstránili povolenia pre aplikácie <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Prečo Dáta o zdraví odstraňujú povolenia aplikácií"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ak bude aplikácia zablokovaná alebo odstránená zo služby Google Play, Dáta o zdraví automaticky odstránia jej povolenia.\n\nZnamená to, že daná aplikácia už nebude mať prístup k údajom uloženým v Dátach o zdraví. Ak aplikácia v minulosti zapísala údaje, zobrazí sa v zozname neaktívnych aplikácií."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Dobre"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Záloha a obnovenie"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Export a import"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Exportovať automaticky"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Obnoviť údaje"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Načítanie údajov exportovaných v minulosti"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Zapnuté"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Vypnuté"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Výber frekvencie"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Vyberte, či chcete údaje uložiť raz, alebo nastavte, aby sa pravidelne automaticky ukladali."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Každý deň"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Každý týždeň"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Každý mesiac"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Umiestnenie exportu"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Zapnite šifrovanie"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Údaje musia byť pred uložením šifrované. Nikto vrátane Googlu a Dát o zdraví k nim nebude mať prístup."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Vytvorte heslo, ktoré ochráni vaše šifrované údaje. Budete ho potrebovať na import a obnovenie svojich údajov."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Heslo"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Znova zadajte heslo"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ak zabudnete heslo a stratíte telefón, Dáta o zdraví vám nebudú môcť pomôcť obnoviť uložené údaje."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Späť"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Ďalej"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Začíname s Dátami o zdraví"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii a umožňujú vám jednoducho synchronizovať rôzne aplikácie v telefóne"</string>
     <string name="share_data" msgid="3481932156368883946">"Zdieľanie údajov s aplikáciami"</string>
@@ -318,7 +348,7 @@
     <string name="time_range_message_all" msgid="7280888587242744729">"Týmto natrvalo odstránite všetky údaje pridané do Dát o zdraví vo vybranom období"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Týmto natrvalo odstránite údaje typu <xliff:g id="DATA_TYPE">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Týmto natrvalo odstránite údaje kategórie <xliff:g id="CATEGORY">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
-    <string name="time_range_message_app_data" msgid="2590800457710603556">"Týmto natrvalo odstránite dáta aplikácie <xliff:g id="APP_DATA">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
+    <string name="time_range_message_app_data" msgid="2590800457710603556">"Týmto natrvalo odstránite údaje aplikácie <xliff:g id="APP_DATA">%s</xliff:g> pridané do Dát o zdraví vo vybranom období"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Odstrániť posledných 24 hodín"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Odstrániť posledných 7 dní"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Odstrániť posledných 30 dní"</string>
@@ -396,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nepreukázateľná"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}many{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}few{# milisekundy}many{# milisekundy}other{# milisekúnd}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1-krát}few{#-krát}many{#-krát}other{#-krát}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Počas aktivity: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Celkove: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Čo najviac opakovaní"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Stupeň úsilia: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 opak.}few{# opak.}many{# reps}other{# opak.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 opakovanie}few{# opakovania}many{# repetitions}other{# opakovaní}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenty cvičenia"</string>
@@ -633,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 libra}few{# libry}many{# libry}other{# libier}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 kameň}few{# kamene}many{# kameňa}other{# kameňov}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}few{# ℃}many{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}few{# ℃}many{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 stupeň Celzia}few{# stupne Celzia}many{# stupňa Celzia}other{# stupňov Celzia}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}few{# K}many{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}few{# K}many{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}few{# kelviny}many{# kelvina}other{# kelvinov}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}few{# ℉}many{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}few{# ℉}many{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stupeň Fahrenheita}few{# stupne Fahrenheita}many{# stupňa Fahrenheita}other{# stupňov Fahrenheita}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}few{{formattedValue} ℃}many{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} stupeň Celzia}few{{formattedValue} stupne Celzia}many{{formattedValue} stupňa Celzia}other{{formattedValue} stupňov Celzia}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}few{{formattedValue} ℉}many{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} stupeň Fahrenheita}few{{formattedValue} stupne Fahrenheita}many{{formattedValue} stupňa Fahrenheita}other{{formattedValue} stupňov Fahrenheita}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}few{{formattedValue} K}many{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}few{{formattedValue} kelviny}many{{formattedValue} kelvina}other{{formattedValue} kelvinov}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (priem. odchýlka)}few{{formattedValue} ℃ (priem. odchýlka)}many{{formattedValue} ℃ (priem. odchýlka)}other{{formattedValue} ℃ (priem. odchýlka)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} stupeň Celzia (priemerná odchýlka)}few{{formattedValue} stupne Celzia (priemerná odchýlka)}many{{formattedValue} stupňa Celzia (priemerná odchýlka)}other{{formattedValue} stupňov Celzia (priemerná odchýlka)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (priem. odchýlka)}few{{formattedValue} ℉ (priem. odchýlka)}many{{formattedValue} ℉ (priem. odchýlka)}other{{formattedValue} ℉ (priem. odchýlka)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} stupeň Fahrenheita (priemerná odchýlka)}few{{formattedValue} stupne Fahrenheita (priemerná odchýlka)}many{{formattedValue} stupňa Fahrenheita (priemerná odchýlka)}other{{formattedValue} stupňov Fahrenheita (priemerná odchýlka)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (priem. odchýlka)}few{{formattedValue} K (priem. odchýlka)}many{{formattedValue} K (priem. odchýlka)}other{{formattedValue} K (priem. odchýlka)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (priemerná odchýlka)}few{{formattedValue} kelviny (priemerná odchýlka)}many{{formattedValue} kelvina (priemerná odchýlka)}other{{formattedValue} kelvinov (priemerná odchýlka)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Podpazušie"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Prst"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Čelo"</string>
@@ -649,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ucho"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Zápästie"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagína"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Miesto merania"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Základná hodnota"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Odchýlka od základnej hodnoty"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 míľa}few{# míle}many{# míle}other{# míľ}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}few{# km}many{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 míľa}few{# míle}many{# míle}other{# míľ}}"</string>
@@ -692,7 +742,7 @@
     <string name="check_for_updates" msgid="3841090978657783101">"Skontrolovať dostupnosť aktualizácií"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"Skontrolujte, či sú nainštalované aplikácie aktuálne"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Zobraziť všetky kompatibilné aplikácie"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Vyhľadať aplikácie na Google Play"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Vyhľadajte si aplikácie na Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Odoslať spätnú väzbu"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Povedzte nám, ktoré zdravotné a kondičné aplikácie majú spolupracovať s Dátami o zdraví"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Obchod Play"</string>
@@ -741,6 +791,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Povoliť túto trasu"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Povoliť všetky trasy"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nepovoliť"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Vždy povoliť"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Zdieľanie trás cvičení"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Ovládajte, ako táto aplikácia získava prístup k trasám cvičení z pripojených aplikácií"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Vždy sa opýtať"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Nepovoliť"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Chcete povoliť oba typy údajov?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Chcete zakázať oba typy údajov?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> potrebuje k cvičeniu prístup na čítanie, aby bolo možné povoliť trasy cvičenia"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> vyžaduje prístup k cvičeniu, aby bolo možné povoliť trasy cvičenia"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Áno"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nie"</string>
     <string name="back_button" msgid="780519527385993407">"Späť"</string>
     <string name="loading" msgid="2526615755685950317">"Načítava sa…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integruje sa"</string>
@@ -826,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Minulý mesiac"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Vstupy"</string>
     <string name="tab_access" msgid="7818197975407243701">"Prístup"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť ďalší prístup?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> vyžaduje aj prístup k týmto nastaveniam Dát o zdraví"</string>
 </resources>
