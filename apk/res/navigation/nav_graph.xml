@@ -70,11 +70,11 @@
         android:name="com.android.healthconnect.controller.export.ExportSetupActivity"/>
 
     <fragment
-        android:id="@+id/exportSettingsFragment"
-        android:name="com.android.healthconnect.controller.export.ExportSettingsFragment"
-        android:label="@string/export_settings_screen_title">
+        android:id="@+id/backupAndRestoreSettingsFragment"
+        android:name="com.android.healthconnect.controller.backuprestore.BackupAndRestoreSettingsFragment"
+        android:label="@string/backup_and_restore_settings_screen_title">
         <action
-            android:id="@+id/action_exportSettingsFragment_to_exportSetupActivity"
+            android:id="@+id/action_backupAndRestoreSettingsFragment_to_exportSetupActivity"
             app:destination="@id/exportSetupActivity" />
     </fragment>
 
@@ -179,8 +179,8 @@
             android:id="@+id/action_manageData_to_setUnits"
             app:destination="@+id/setUnitsFragment"/>
         <action
-            android:id="@+id/action_manageData_to_saveData"
-            app:destination="@+id/exportSettingsFragment" />
+            android:id="@+id/action_manageData_to_backupAndRestore"
+            app:destination="@+id/backupAndRestoreSettingsFragment" />
     </fragment>
 
     <fragment

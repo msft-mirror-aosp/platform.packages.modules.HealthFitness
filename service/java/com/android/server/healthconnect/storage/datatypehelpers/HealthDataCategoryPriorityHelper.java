@@ -451,6 +451,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
             updateTableWithNewPriorityList(dataCategoryToAppIdMapHavingPermission);
         }
         maybeRemoveAppsFromPriorityList(dataCategoryToAppIdMapWithoutPermission);
+        maybeAddContributingAppsIfEmpty(context);
     }
 
     /** Returns a list of PackageInfos holding health permissions for this user. */
@@ -518,6 +519,44 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
         }
     }
 
+    /**
+     * If the priority list is empty for a {@link HealthDataCategory}, add the contributing apps.
+     *
+     * <p>This is necessary because the priority list should never be empty if there are
+     * contributing apps present.
+     */
+    private synchronized void maybeAddContributingAppsIfEmpty(@NonNull Context context) {
+        List.of(
+                        HealthDataCategory.ACTIVITY,
+                        HealthDataCategory.BODY_MEASUREMENTS,
+                        HealthDataCategory.CYCLE_TRACKING,
+                        HealthDataCategory.NUTRITION,
+                        HealthDataCategory.SLEEP,
+                        HealthDataCategory.VITALS)
+                .forEach(
+                        (category) ->
+                                getHealthDataCategoryToAppIdPriorityMap()
+                                        .putIfAbsent(category, new ArrayList<>()));
+        Map<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap =
+                getHealthDataCategoryToAppIdPriorityMap();
+        for (int dataCategory : healthDataCategoryToAppIdPriorityMap.keySet()) {
+            List<Long> appIdsInPriorityOrder =
+                    healthDataCategoryToAppIdPriorityMap.getOrDefault(dataCategory, List.of());
+            if (appIdsInPriorityOrder.isEmpty()) {
+                getAllContributorApps().getOrDefault(dataCategory, new HashSet<>()).stream()
+                        .sorted()
+                        .forEach(
+                                (contributingApp) ->
+                                        appendToPriorityList(
+                                                contributingApp,
+                                                dataCategory,
+                                                context,
+                                                isInactiveApp(
+                                                        dataCategory, contributingApp, context)));
+            }
+        }
+    }
+
     private synchronized void updateTableWithNewPriorityList(
             Map<Integer, List<Long>> healthDataCategoryToAppIdPriorityMap) {
         for (int dataCategory : healthDataCategoryToAppIdPriorityMap.keySet()) {
@@ -537,19 +576,22 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
     }
 
     /**
-     * A one-time operation which adds inactive apps (without permissions but with data) to the
-     * priority list if the new aggregation source controls are available.
+     * A one-time operation which adds contributing apps to the priority list if the new aggregation
+     * source controls are available.
      *
-     * <p>The inactive apps are added in ascending order of their package names.
+     * <p>The contributing apps are added in ascending order of their package names.
+     *
+     * <p>Originally only inactive apps were added, extending this to all contributing apps is a
+     * workaround for the case when the device to device transfer empties the priority list.
      */
-    public void maybeAddInactiveAppsToPriorityList(Context context) {
-        if (!shouldAddInactiveApps()) {
+    public void maybeAddContributingAppsToPriorityList(Context context) {
+        if (!shouldAddContributingApps()) {
             return;
         }
 
-        Map<Integer, Set<String>> inactiveApps = getAllInactiveApps(context);
+        Map<Integer, Set<String>> contributingApps = getAllContributorApps();
 
-        for (Map.Entry<Integer, Set<String>> entry : inactiveApps.entrySet()) {
+        for (Map.Entry<Integer, Set<String>> entry : contributingApps.entrySet()) {
             int category = entry.getKey();
             entry.getValue().stream()
                     .sorted()
@@ -559,14 +601,22 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
                                             packageName,
                                             category,
                                             context,
-                                            /* isInactiveApp= */ true));
+                                            isInactiveApp(category, packageName, context)));
         }
 
         PreferenceHelper.getInstance()
                 .insertOrReplacePreference(INACTIVE_APPS_ADDED, String.valueOf(true));
     }
 
-    private boolean shouldAddInactiveApps() {
+    private boolean isInactiveApp(
+            @HealthDataCategory.Type int dataCategory,
+            @NonNull String packageName,
+            @NonNull Context context) {
+        Map<Integer, Set<String>> inactiveApps = getAllInactiveApps(context);
+        return inactiveApps.getOrDefault(dataCategory, new HashSet<>()).contains(packageName);
+    }
+
+    private boolean shouldAddContributingApps() {
         boolean newAggregationSourceControl =
                 HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isAggregationSourceControlsEnabled();

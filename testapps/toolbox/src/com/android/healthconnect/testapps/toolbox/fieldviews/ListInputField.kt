@@ -23,16 +23,19 @@ import android.health.connect.datatypes.ExerciseSegment
 import android.health.connect.datatypes.ExerciseSegmentType
 import android.health.connect.datatypes.HeartRateRecord.HeartRateSample
 import android.health.connect.datatypes.PowerRecord.PowerRecordSample
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord.SpeedRecordSample
 import android.health.connect.datatypes.StepsCadenceRecord.StepsCadenceRecordSample
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Power
+import android.health.connect.datatypes.units.TemperatureDelta
 import android.health.connect.datatypes.units.Velocity
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_DOUBLE
 import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_LONG
+import com.android.healthconnect.testapps.toolbox.Constants.INPUT_TYPE_SIGNED_DOUBLE
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.getStaticFieldNamesAndValues
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -110,6 +113,9 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                     rowLayout.addView(row.endTime)
                     EditableTextView(context, "Length", INPUT_TYPE_DOUBLE)
                 }
+                SkinTemperatureRecord.Delta::class.java -> {
+                    EditableTextView(context, "Delta", INPUT_TYPE_SIGNED_DOUBLE)
+                }
                 else -> {
                     return
                 }
@@ -175,6 +181,14 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
                                 }
                             }
                             .build())
+                }
+                SkinTemperatureRecord.Delta::class.java -> {
+                    if (dataPointString.isNotEmpty()) {
+                        samples.add(
+                            SkinTemperatureRecord.Delta(
+                                TemperatureDelta.fromCelsius(dataPointString.toDouble()),
+                                instant.getFieldValue()))
+                    }
                 }
             }
         }

@@ -85,6 +85,7 @@ public final class TransactionTestUtils {
                         records,
                         mContext,
                         /* isInsertRequest= */ true,
+                        /* useProvidedUuid = */ false,
                         /* skipPackageNameAndLogs= */ false));
     }
 

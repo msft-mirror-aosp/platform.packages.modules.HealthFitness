@@ -22,15 +22,26 @@
         android:id="@+id/exportFrequencyFragment"
         android:name="com.android.healthconnect.controller.export.ExportFrequencyFragment">
         <action
-            android:id="@+id/action_exportFrequencyFragment_to_exportEncryptionFragment"
-            app:destination="@id/exportEncryptionFragment" />
+            android:id="@+id/action_exportFrequencyFragment_to_exportDestinationFragment"
+            app:destination="@id/exportDestinationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exportDestinationFragment"
+        android:name="com.android.healthconnect.controller.export.ExportDestinationFragment">
+        <action
+            android:id="@+id/action_exportDestinationFragment_to_exportFrequencyFragment"
+            app:destination="@id/exportFrequencyFragment" />
+        <action
+            android:id="@+id/action_exportDestinationFragment_to_exportEncryptionFragment"
+            app:destination="@id/exportFrequencyFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/exportEncryptionFragment"
         android:name="com.android.healthconnect.controller.export.ExportEncryptionFragment">
         <action
-            android:id="@+id/action_exportEncryptionFragment_to_exportFrequencyFragment"
-            app:destination="@id/exportFrequencyFragment" />
+            android:id="@+id/action_exportEncryptionFragment_to_exportDestinationFragment"
+            app:destination="@id/exportDestinationFragment" />
     </fragment>
 </navigation>

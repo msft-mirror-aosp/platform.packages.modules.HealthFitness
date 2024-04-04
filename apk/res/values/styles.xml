@@ -101,6 +101,11 @@
         <item name="android:lineHeight">15sp</item>
     </style>
 
+    <style name="TextAppearance.HealthConnect.CategoryTitle" parent="@style/TextAppearance.CategoryTitle.SettingsLib">
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
     <!-- END REGION -->
 
     <!-- REGION BUTTONS -->
@@ -250,10 +255,5 @@
         <item name="tabTextColor">?android:attr/textColorSecondary</item>
         <item name="tabBackground">@drawable/tab_background</item>
         <item name="tabTextAppearance">?attr/textAppearanceSubheader</item>
-    </style>
-
-    <style name="PreferenceCategoryTitleTextStyle.HealthConnect">
-        <item name="android:textAppearance">?attr/preferenceCategoryTitleTextAppearance</item>
-        <item name="android:textColor">?attr/preferenceCategoryTitleTextColor</item>
     </style>
 </resources>
