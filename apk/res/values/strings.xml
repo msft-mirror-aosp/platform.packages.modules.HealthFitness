@@ -123,9 +123,9 @@
     <string name="historic_access_title" description="Title for permission to access past health data. [CHAR_LIMIT=NONE]">Access past data</string>
     <string name="historic_access_request_title" description="Title for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past data?</string>
     <string name="historic_access_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
-    <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access past Health&#160;Connect data</string>
+    <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past Health&#160;Connect data</string>
     <string name="historic_access_request_description" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
-    <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access past Health&#160;Connect data.</string>
+    <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access all past Health&#160;Connect data.</string>
     <!--endregion-->
 
     <!-- region Activity data types -->
