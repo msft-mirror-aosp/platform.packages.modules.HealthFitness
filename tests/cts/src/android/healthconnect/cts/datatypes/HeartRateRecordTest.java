@@ -347,13 +347,14 @@ public class HeartRateRecordTest {
                 .build();
     }
 
+    // TODO(b/331350683): Update times once LocalTimeRangeFilter#endTime is exclusive
     @Test
-    public void testDeleteStepsRecord_time_filters_local() throws InterruptedException {
+    public void testDeleteHeartRateRecord_time_filters_local() throws InterruptedException {
         LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
-                        .setEndTime(recordTime.plus(2, ChronoUnit.SECONDS))
+                        .setStartTime(recordTime)
+                        .setEndTime(recordTime.plusSeconds(2))
                         .build();
         String id1 =
                 TestUtils.insertRecordAndGetId(
@@ -362,9 +363,16 @@ public class HeartRateRecordTest {
         String id2 =
                 TestUtils.insertRecordAndGetId(
                         getBaseHeartRateRecord(
-                                recordTime.toInstant(ZoneOffset.MAX), ZoneOffset.MAX));
+                                recordTime.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                ZoneOffset.MAX));
+        String id3 =
+                TestUtils.insertRecordAndGetId(
+                        getBaseHeartRateRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                ZoneOffset.MAX));
         TestUtils.assertRecordFound(id1, HeartRateRecord.class);
         TestUtils.assertRecordFound(id2, HeartRateRecord.class);
+        TestUtils.assertRecordFound(id3, HeartRateRecord.class);
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addRecordType(HeartRateRecord.class)
@@ -372,6 +380,8 @@ public class HeartRateRecordTest {
                         .build());
         TestUtils.assertRecordNotFound(id1, HeartRateRecord.class);
         TestUtils.assertRecordNotFound(id2, HeartRateRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, HeartRateRecord.class);
     }
 
     @Test

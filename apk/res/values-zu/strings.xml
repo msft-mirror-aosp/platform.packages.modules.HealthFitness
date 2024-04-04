@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Bona ukuthi yimaphi ama-app afinyelele idatha yakho emahoreni angu-24 adlule"</string>
     <string name="today_header" msgid="1006837293203834373">"Namuhla"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Izolo"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Funda: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Bhala: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Funda: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Bhala: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Lawula izimvume"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Isikhathi: %s"</string>
@@ -81,11 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"finyelela idatha yakho yezempilo"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Funda amakholari ashisiwe"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Ivumela i-app ukufunda amakholari ashisiwe"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Ukufunda kungemuva"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"ukufunda kungemuva"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Funda idatha yempilo kungemuva"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Finyelela idatha engemuva"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Vumela <xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele idatha ingemuva?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Vumela le app ifinyelele kudatha yakho ye-Health Connect uma ungayisebenzisi i-app"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Uma uyivumela, le app izofinyelela kudatha ye-Health Connect uma ungayisebenzisi i-app."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Finyelela idatha eyedlule"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ifinyelele kudatha eyedlule?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Vumela le app ukuthi ifinyelele idatha ye-Health Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Vumela le app ukuthi ifinyelele idatha edlule ye-Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Uma uyivumela, le app izofinyelela kudatha ye-Health Connect efakwe ngaphambi komhla ka-<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Uma uyivumela, le app izofinyelela kudatha edlule ye-Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Amakhalari asebenzayo ashisiwe"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"amakhalari asebenzayo ashisiwe"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Funda amakhalari asebenzayo ashisiwe"</string>
@@ -258,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Vumela konke"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ungavumeli"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Khetha idatha ofuna ukuthi le-app iyifunde noma iyibhale ku-Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Uma unikeza ukufinyelela kokufunda, le app ingafunda idatha entsha nedatha yezinsukwini ezingama-30 ezedlule"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Uma unikeza ukufinyelela kokufunda, i-app ingafunda idatha entsha nedatha yezinsukwini ezingu-30 ezedlule"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Uma unikeza ukufinyelela kokufunda, i-app ungafunda idatha entsha neyesikhathi esedlule"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vumela i-<xliff:g id="APP_NAME">%1$s</xliff:g> ukuthi ifinyelele i-Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Ungafunda ukuthi i-<xliff:g id="APP_NAME">%1$s</xliff:g> iyiphatha kanjani idatha yakho ku-<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> yonjiniyela"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"inqubomgomo yobumfihlo"</string>
@@ -307,18 +313,19 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Isizathu sokuba i-Health Connect isuse izimvume ze-app"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Uma i-app imiswe okwesikhashana noma lisuswa ku-Google Play, i-Health Connect isusa izimvume zayo ngokuzenzakalelayo.\n\nLokhu kusho ukuthi i-app ngeke isakwazi ukufinyelela idatha egcinwe ku-Health Connect. Uma le-app inedatha ebhaliwe ngaphambilini, ivela kuhlu lwama-app angasebenzi."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ngiyezwa"</string>
-    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yenza isipele fduthi ubuyisele"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yenza isipele futhi ubuyisele"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Thumela uphinde ungenise"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Ukuthunyelwa okuphindayo"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Thumela ngokuzenzakalela"</string>
     <string name="restore_data" msgid="3401173690437871417">"Buyisela idatha"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Layisha idatha ethunyelwe ngaphambilini"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Kuvuliwe"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Kuvaliwe"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Khetha imvamisa"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Khetha ukulondoloza idatha kanye, noma uyisethe ukuthi ilondoloze ngokuzenzekelayo ngezikhathi ezivamile."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Nsuku zonke"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Maviki wonke"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ngenyanga"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Khipha indawo"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Vula ukubethela"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Idatha idinga ukubethelwa ngaphambi kokuthi ilondolozwe. Akekho, ngisho ne-Google noma i-Health Connect, ozokwazi ukuyifinyelela."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Sungula iphasiwedi ukuze uvikele idatha yakho ebethelwe. Uzodinga le phasiwedi ukuze ungenise futhi ubuyisele idatha yakho."</string>
@@ -419,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Akuphelele"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{I-ms e-1}one{Ama-ms angu-#}other{Ama-ms angu-#}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{Imilisekhondi e-1}one{Amamilisekhondi angu-#}other{Amamilisekhondi angu-#}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{Isikhathi esingu-1}one{Izikhathi ezingu-#}other{Izikhathi ezingu-#}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Kuyasebenza: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Isamba: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Izimpinda eziningi ngokungakhoneka"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Ileveli yomzamo: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{Impinda e-1}one{Izimpinda ezingu-#}other{Izimpinda ezingu-#}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{Impinda e-1}one{Izimpinda ezingu-#}other{Izimpinda ezingu-#}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Izigaba zokujima"</string>
@@ -656,36 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{Iphawundi e-1}one{Amaphawundi angu-#}other{Amaphawundi angu-#}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{Itshe e-1}one{Amatshe angu-#}other{Amatshe angu-#}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}one{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{i-degree Celsius 1}one{ama-degree Celsius #}other{ama-degree Celsius #}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{U-1 K}one{U-# K}other{U-# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}one{#K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{i-kelvin e-1}one{ama-kelvin angu-#}other{ama-kelvin angu-#}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{U-1 ℉}one{U-# ℉}other{U-# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}one{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{i-degree Fahrenheit e-1}one{ama-degree Fahrenheit angu-#}other{ama-degree Fahrenheit angu-#}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}one{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{U-{formattedValue} degree Celsius}one{U-{formattedValue} degrees Celsius}other{U-{formattedValue} degrees Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}one{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{U-{formattedValue} degree Fahrenheit}one{U0{formattedValue} degrees Fahrenheit}other{U0{formattedValue} degrees Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}one{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{U-{formattedValue} kelvin}one{U-{formattedValue} kelvins}other{U-{formattedValue} kelvins}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (isilinganiso esihlukile)}one{{formattedValue}℃ (isilinganiso esihlukile)}other{{formattedValue}℃ (isilinganiso esihlukile)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{U-{formattedValue} degree Celsius (isilinganiso esihlukile)}one{U-{formattedValue} degrees Celsius (isilinganiso esihlukile)}other{U-{formattedValue} degrees Celsius (isilinganiso esihlukile)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (isilinganiso esihlukile)}one{{formattedValue}℉ (isilinganiso esihlukile)}other{{formattedValue}℉ (isilinganiso esihlukile)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{U-{formattedValue} degree Fahrenheit (isilinganiso esihlukile)}one{U-{formattedValue} degrees Fahrenheit (isilinganiso esihlukile)}other{U-{formattedValue} degrees Fahrenheit (isilinganiso esihlukile)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (isilinganiso esihlukile)}one{{formattedValue}K (isilinganiso esihlukile)}other{{formattedValue}K (isilinganiso esihlukile)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{U-{formattedValue} kelvin (isilinganiso esihlukile)}one{U-{formattedValue} kelvins (isilinganiso esihlukile)}other{U-{formattedValue} kelvins (isilinganiso esihlukile)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Ikhwapha"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Umunwe"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Isiphongo"</string>
@@ -696,12 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Indlebe"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Isihlakala"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Isitho sangasese sowesifazane"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Indawo yokulinganisa"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Isisekelo"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Ukwehluka kusisekelo"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{imayela 1}one{amamayela angu-#}other{amamayela angu-#}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{imayela 1}one{amamayela angu-#}other{amamayela angu-#}}"</string>
@@ -748,7 +745,7 @@
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Thola ama-app ku-Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Thumela impendulo"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Sitshele ukuthi yimaphi ama-app ezempilo nokufaneleka ongathanda ukusebenza ngawo nge-Health Connect"</string>
-    <string name="playstore_app_title" msgid="4138464328693481809">"I-Google Play Isitolo"</string>
+    <string name="playstore_app_title" msgid="4138464328693481809">"Isitolo seGoogle Play"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Sula ngokuzenzekela"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Sula ngokuzenzekela"</string>
     <string name="auto_delete_header" msgid="4258649705159293715">"Lawula ukuthi idatha yakho igcinwa isikhathi esingakanani ku-Health Connect ngokuyishejula ukuthi isulwe ngemva esisethiwe"</string>
@@ -890,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Inyanga edlule"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Ukungena"</string>
     <string name="tab_access" msgid="7818197975407243701">"Ukufinyelela"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Vumela ukufinyelela okwengeziwe kwe-<xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"I-<xliff:g id="APP_NAME">%1$s</xliff:g> nayo ifuna ukufinyelela kulawa masethingi e-Health Connect"</string>
 </resources>

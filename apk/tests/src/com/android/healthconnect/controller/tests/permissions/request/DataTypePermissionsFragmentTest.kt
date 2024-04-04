@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- *
  */
 package com.android.healthconnect.controller.tests.permissions.request
 
@@ -32,21 +30,29 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry.*
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
-import com.android.healthconnect.controller.permissions.data.DataTypePermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.PermissionState
+import com.android.healthconnect.controller.permissions.request.DataTypePermissionsFragment
 import com.android.healthconnect.controller.permissions.request.PermissionsFragment
 import com.android.healthconnect.controller.permissions.request.RequestPermissionViewModel
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.TestActivity
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
+import com.android.healthconnect.controller.tests.utils.any
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.toPermissionsList
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
+import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
@@ -62,13 +68,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Matchers.eq
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
-class PermissionsFragmentTest {
-
+class DataTypePermissionsFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue
@@ -86,20 +90,22 @@ class PermissionsFragmentTest {
                     TEST_APP_NAME,
                     context.getDrawable(R.drawable.health_connect_logo)))
         }
-        `when`(viewModel.allPermissionsGranted).then { MutableLiveData(false) }
-        `when`(viewModel.grantedPermissions).then {
+        `when`(viewModel.allDataTypePermissionsGranted).then { MutableLiveData(false) }
+        `when`(viewModel.grantedDataTypePermissions).then {
             MutableLiveData(emptySet<DataTypePermission>())
         }
+        toggleAnimation(false)
     }
 
     @After
     fun teardown() {
         reset(healthConnectLogger)
+        toggleAnimation(true)
     }
 
     @Test
-    fun test_displaysCategories() {
-        `when`(viewModel.permissionsList).then {
+    fun displaysCategories() {
+        `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_STEPS),
@@ -107,16 +113,20 @@ class PermissionsFragmentTest {
                 )
             MutableLiveData(permissions)
         }
-        launchFragment<PermissionsFragment>(bundleOf())
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
 
-        onView(withText("Allow “$TEST_APP_NAME” to access Health Connect?"))
+        onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
+            .check(matches(isDisplayed()))
         onView(withText("Choose data you want this app to read or write to Health Connect"))
+            .check(matches(isDisplayed()))
         onView(
-            withText(
-                "If you give read access, this app can read new data and data from the past 30 days"))
+                withText(
+                    "If you give read access, the app can read new data and data from the past 30 days"))
+            .check(matches(isDisplayed()))
         onView(
-            withText(
-                "You can learn how “$TEST_APP_NAME” handles your data in the developer's privacy policy"))
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+            .check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
@@ -139,8 +149,33 @@ class PermissionsFragmentTest {
     }
 
     @Test
-    fun test_displaysReadPermissions() {
-        `when`(viewModel.permissionsList).then {
+    fun whenHistoryReadPermissionAlreadyGranted_displaysCorrectText() {
+        `when`(viewModel.healthPermissionsList).then {
+            val permissions =
+                listOf(
+                    fromPermissionString(READ_STEPS),
+                    fromPermissionString(WRITE_HEART_RATE),
+                )
+            MutableLiveData(permissions)
+        }
+        `when`(viewModel.isHistoryAccessGranted()).thenReturn(true)
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
+
+        onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
+            .check(matches(isDisplayed()))
+        onView(withText("Choose data you want this app to read or write to Health Connect"))
+            .check(matches(isDisplayed()))
+        onView(withText("If you give read access, the app can read new and past data"))
+            .check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun displaysReadPermissions() {
+        `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_STEPS),
@@ -148,7 +183,7 @@ class PermissionsFragmentTest {
                 )
             MutableLiveData(permissions)
         }
-        launchFragment<PermissionsFragment>(bundleOf())
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
@@ -166,8 +201,8 @@ class PermissionsFragmentTest {
     }
 
     @Test
-    fun test_displaysWritePermissions() {
-        `when`(viewModel.permissionsList).then {
+    fun displaysWritePermissions() {
+        `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(WRITE_DISTANCE),
@@ -175,7 +210,7 @@ class PermissionsFragmentTest {
                 )
             MutableLiveData(permissions)
         }
-        launchFragment<PermissionsFragment>(bundleOf())
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
@@ -193,8 +228,8 @@ class PermissionsFragmentTest {
     }
 
     @Test
-    fun test_togglesPermissions_callsUpdatePermissions() {
-        `when`(viewModel.permissionsList).then {
+    fun togglesPermissions_callsUpdatePermissions() {
+        `when`(viewModel.healthPermissionsList).then {
             val permissions =
                 listOf(
                     fromPermissionString(READ_DISTANCE),
@@ -202,7 +237,7 @@ class PermissionsFragmentTest {
                 )
             MutableLiveData(permissions)
         }
-        launchFragment<PermissionsFragment>(bundleOf())
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
@@ -210,13 +245,13 @@ class PermissionsFragmentTest {
         Espresso.onIdle()
         onView(withText("Distance")).perform(click())
 
-        verify(viewModel).updatePermission(any(DataTypePermission::class.java), eq(true))
+        verify(viewModel).updateHealthPermission(any(DataTypePermission::class.java), eq(true))
         verify(healthConnectLogger)
             .logInteraction(PermissionsElement.PERMISSION_SWITCH, UIAction.ACTION_TOGGLE_ON)
     }
 
     @Test
-    fun test_toggleOn() {
+    fun allowAllToggleOn_updatesAllPermissions() {
         val permissions =
             listOf(
                 fromPermissionString(READ_STEPS),
@@ -224,9 +259,9 @@ class PermissionsFragmentTest {
                 fromPermissionString(READ_HEART_RATE),
                 fromPermissionString(WRITE_HEART_RATE),
             )
-        `when`(viewModel.permissionsList).then { MutableLiveData(permissions) }
+        `when`(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
 
-        val activityScenario = launchFragment<PermissionsFragment>(bundleOf())
+        val activityScenario = launchFragment<DataTypePermissionsFragment>(bundleOf())
 
         activityScenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -240,7 +275,7 @@ class PermissionsFragmentTest {
 
             allowAllPreference?.isChecked = true
 
-            verify(viewModel).updatePermissions(eq(true))
+            verify(viewModel).updateDataTypePermissions(eq(true))
             // TODO (b/325680041) this is not triggered?
             //
             // verify(healthConnectLogger).logInteraction(PermissionsElement.ALLOW_ALL_SWITCH,
@@ -249,7 +284,7 @@ class PermissionsFragmentTest {
     }
 
     @Test
-    fun test_toggleOff() {
+    fun allowAllToggleOff_updatesAllPermissions() {
         val permissions =
             listOf(
                 fromPermissionString(READ_STEPS),
@@ -257,8 +292,8 @@ class PermissionsFragmentTest {
                 fromPermissionString(READ_HEART_RATE),
                 fromPermissionString(WRITE_HEART_RATE),
             )
-        `when`(viewModel.permissionsList).then { MutableLiveData(permissions) }
-        val activityScenario = launchFragment<PermissionsFragment>(bundleOf())
+        `when`(viewModel.healthPermissionsList).then { MutableLiveData(permissions) }
+        val activityScenario = launchFragment<DataTypePermissionsFragment>(bundleOf())
 
         activityScenario.onActivity { activity: TestActivity ->
             val fragment =
@@ -272,9 +307,49 @@ class PermissionsFragmentTest {
 
             allowAllPreference?.isChecked = false
 
-            assertThat(viewModel.grantedPermissions.value).isEmpty()
+            assertThat(viewModel.grantedDataTypePermissions.value).isEmpty()
         }
     }
-}
 
-private fun <T> any(type: Class<T>): T = Mockito.any<T>(type)
+    @Test
+    fun allowButton_noDataTypePermissionsSelected_isDisabled() {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
+        whenever(viewModel.healthPermissionsList).then {
+            MutableLiveData(permissions.toPermissionsList())
+        }
+        whenever(viewModel.dataTypePermissionsList).then {
+            MutableLiveData(permissions.toPermissionsList())
+        }
+        whenever(viewModel.getPermissionGrants()).then {
+            mapOf(
+                HealthPermission.fromPermissionString(READ_STEPS) to PermissionState.GRANTED,
+                HealthPermission.fromPermissionString(READ_HEART_RATE) to PermissionState.GRANTED,
+                HealthPermission.fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
+                HealthPermission.fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED)
+        }
+        whenever(viewModel.grantedDataTypePermissions).then {
+            MutableLiveData(emptySet<DataTypePermission>())
+        }
+
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
+        onView(withText("Allow")).check(matches(ViewMatchers.isNotEnabled()))
+    }
+
+    @Test
+    fun allowButton_dataTypePermissionsSelected_isEnabled() {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
+        whenever(viewModel.healthPermissionsList).then {
+            MutableLiveData(permissions.toPermissionsList())
+        }
+        whenever(viewModel.dataTypePermissionsList).then {
+            MutableLiveData(permissions.toPermissionsList())
+        }
+        whenever(viewModel.grantedDataTypePermissions).then {
+            MutableLiveData(setOf(HealthPermission.fromPermissionString(READ_STEPS)))
+        }
+
+        launchFragment<DataTypePermissionsFragment>(bundleOf())
+
+        onView(withText("Allow")).check(matches(ViewMatchers.isEnabled()))
+    }
+}

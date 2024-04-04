@@ -18,6 +18,9 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.android.healthconnect.testapps.toolbox">
 
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" />
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY" />
+
   <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
   <uses-permission android:name="android.permission.health.READ_BASAL_BODY_TEMPERATURE" />
   <uses-permission android:name="android.permission.health.READ_BASAL_METABOLIC_RATE" />
@@ -95,6 +98,9 @@
   <uses-permission android:name="android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING" />
   <uses-permission android:name="android.permission.health.WRITE_EXERCISE_ROUTE" />
 
+  <!--  Additional permissions -->
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
 
   <application
     android:icon="@mipmap/ic_launcher"
@@ -120,11 +126,13 @@
       </intent-filter>
     </activity-alias>
 
-    <!-- Remove "androidx-startup" provider to avoid conflict between different Toolbox app. -->
     <provider
         android:name="androidx.startup.InitializationProvider"
-        android:authorities="${applicationId}.androidx-startup"
-        tools:node="remove" />
+        android:authorities="${applicationId}.androidx-startup" />
+
+    <receiver
+        android:name=".ToolboxProxyReceiver"
+        android:exported="true" />
   </application>
 
 </manifest>

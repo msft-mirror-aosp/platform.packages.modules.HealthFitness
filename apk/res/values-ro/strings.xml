@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Vezi ce aplicații ți-au accesat datele în ultimele 24 de ore"</string>
     <string name="today_header" msgid="1006837293203834373">"Azi"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Ieri"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Citire: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Scriere: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Citire: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Scriere: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestionează permisiunile"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Ora: %s"</string>
@@ -81,11 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"să-ți acceseze datele despre sănătate"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Să citească numărul de calorii arse"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite aplicației să citească numărul de calorii arse"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Citire în fundal"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"citire în fundal"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Citește informațiile de sănătate din fundal"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Să acceseze datele din fundal"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Permiți ca <xliff:g id="APP_NAME">%1$s</xliff:g> să acceseze datele din fundal?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permite accesul aplicației la datele Health Connect atunci când nu o folosești"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Dacă acorzi permisiunea, aplicația poate să acceseze datele Health Connect atunci când nu o folosești."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Să acceseze datele anterioare"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Permiți accesul <xliff:g id="APP_NAME">%1$s</xliff:g> la datele anterioare?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Permite accesul aplicației la datele Health Connect adăugate până pe <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Permite accesul aplicației la datele Health Connect anterioare"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Dacă acorzi permisiunea, aplicația poate să acceseze datele Health Connect adăugate până pe <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Dacă acorzi permisiunea, aplicația poate să acceseze datele Health Connect anterioare."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorii active arse"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calorii active arse"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Să citească date despre caloriile active arse"</string>
@@ -231,8 +236,8 @@
     <string name="heart_rate_lowercase_label" msgid="693492686337628283">"puls"</string>
     <string name="heart_rate_read_content_description" msgid="4165867166260001259">"Să citească pulsul"</string>
     <string name="heart_rate_write_content_description" msgid="2876667918366409170">"Să scrie pulsul"</string>
-    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Variabilitatea ritmului cardiac"</string>
-    <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"variabilitatea ritmului cardiac"</string>
+    <string name="heart_rate_variability_uppercase_label" msgid="2047887230527012536">"Variabilitatea pulsului"</string>
+    <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"variabilitatea pulsului"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Să citească date despre variabilitatea ritmului cardiac"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Să scrie date despre variabilitatea ritmului cardiac"</string>
     <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Saturația oxigenului"</string>
@@ -243,8 +248,8 @@
     <string name="respiratory_rate_lowercase_label" msgid="8138249029197360098">"frecvența respiratorie"</string>
     <string name="respiratory_rate_read_content_description" msgid="8545898979648419722">"Să citească frecvența respiratorie"</string>
     <string name="respiratory_rate_write_content_description" msgid="7689533746809591931">"Să scrie frecvența respiratorie"</string>
-    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Ritm cardiac de repaus"</string>
-    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"ritm cardiac de repaus"</string>
+    <string name="resting_heart_rate_uppercase_label" msgid="5700827752396195453">"Puls în repaus"</string>
+    <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"puls în repaus"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Să citească ritmul cardiac de repaus"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Să scrie ritmul cardiac de repaus"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Temperatura pielii"</string>
@@ -258,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permite-le pe toate"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Nu permite"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Alege datele pe care dorești să le citească sau scrie această aplicație în Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Dacă permiți accesul pentru citire, aplicația poate să citească date noi și date din ultimele 30 de zile"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Dacă acorzi acces pentru citire, aplicația poate să citească date noi și date din ultimele 30 de zile"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Dacă acorzi acces pentru citire, aplicația poate să citească date noi și anterioare"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Permiți accesul <xliff:g id="APP_NAME">%1$s</xliff:g> la Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Află cum îți gestionează <xliff:g id="APP_NAME">%1$s</xliff:g> datele din <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> a dezvoltatorului"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politica de confidențialitate"</string>
@@ -309,16 +315,17 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup și restabilire"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exportare și importare"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Exportare recurentă"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Exportă automat"</string>
     <string name="restore_data" msgid="3401173690437871417">"Restabilirea datelor"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Încarcă datele exportate anterior"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Activat"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Dezactivat"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Alege frecvența"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Alege să salvezi datele o dată sau setează-le să se salveze automat, la ore fixe."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Zilnic"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Săptămânal"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Lunar"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Locație pentru export"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Activează criptarea"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Datele trebuie criptate înainte de a fi salvate. Nimeni, nici Google sau Health Connect, nu le vor putea accesa."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Creează o parolă pentru a-ți proteja datele criptate. Vei avea nevoie de această parolă pentru a importa și a restabili datele."</string>
@@ -419,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neconcludent"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{O milisecundă}few{# milisecunde}other{# de milisecunde}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{O dată}few{De # ori}other{De # de ori}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Active: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Cât mai multe repetiții"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nivelul de efort: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rep.}few{# rep.}other{# rep.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{O repetare}few{# repetări}other{# de repetări}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmente de exerciții"</string>
@@ -458,7 +470,7 @@
     <string name="guided_breathing" msgid="8688586393796970733">"Respirație ghidată"</string>
     <string name="gymnastics" msgid="1122967371410769598">"Gimnastică"</string>
     <string name="handball" msgid="3088985331906235361">"Handbal"</string>
-    <string name="high_intensity_interval_training" msgid="8873384314130026442">"Antrenament foarte intens, pe intervale"</string>
+    <string name="high_intensity_interval_training" msgid="8873384314130026442">"Antrenament pe intervale de intensitate ridicată"</string>
     <string name="hiking" msgid="5477476795295322496">"Drumeție"</string>
     <string name="ice_hockey" msgid="3615167122989198051">"Hochei pe gheață"</string>
     <string name="ice_skating" msgid="8509270149324068230">"Patinaj pe gheață"</string>
@@ -656,36 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{O livră}few{# livre}other{# de livre}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}few{# stone}other{# de stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}few{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}few{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{Un grad Celsius}few{# grade Celsius}other{# de grade Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}few{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}few{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{Un grad Kelvin}few{# grade Kelvin}other{# de grade Kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}few{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}few{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{Un grad Fahrenheit}few{# grade Fahrenheit}other{# de grade Fahrenheit}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}few{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} grad Celsius}few{{formattedValue} grade Celsius}other{{formattedValue} de grade Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}few{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} grad Fahrenheit}few{{formattedValue} grade Fahrenheit}other{{formattedValue} de grade Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}few{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}few{{formattedValue} grade kelvin}other{{formattedValue} de grade kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (variația med.)}few{{formattedValue}℃ (variația med.)}other{{formattedValue}℃ (variația med.)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} grad Celsius (variația medie)}few{{formattedValue} grade Celsius (variația medie)}other{{formattedValue} de grade Celsius (variația medie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (variația med.)}few{{formattedValue}℉ (variația med.)}other{{formattedValue}℉ (variația med.)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} grad Fahrenheit (variația medie)}few{{formattedValue} grade Fahrenheit (variația medie)}other{{formattedValue} de grade Fahrenheit (variația medie)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (variația med.)}few{{formattedValue} K (variația med.)}other{{formattedValue} K (variația med.)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (variația medie)}few{{formattedValue} grade kelvin (variația medie)}other{{formattedValue} de grade kelvin (variația medie)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Axilă"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Deget"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Frunte"</string>
@@ -696,12 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ureche"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Încheietura mâinii"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagin"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Locația măsurătorii"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"De bază"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variație de la nivelul de referință"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{O milă}few{# mile}other{# de mile}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{Un km}few{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{O milă}few{# mile}other{# de mile}}"</string>
@@ -890,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Luna trecută"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Intrări"</string>
     <string name="tab_access" msgid="7818197975407243701">"Acces"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Permiți accesul suplimentar pentru <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> solicită și permisiunea de a accesa aceste setări Health Connect"</string>
 </resources>

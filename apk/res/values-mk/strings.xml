@@ -23,7 +23,7 @@
     <string name="home_subtitle" msgid="1750033322147357163">"Управувајте со податоците за здравјето и фитнесот на вашиот телефон и контролирајте кои апликации може да пристапуваат до нив"</string>
     <string name="data_title" msgid="4456619761533380816">"Податоци и пристап"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Сите категории"</string>
-    <string name="see_all_categories" msgid="5599882403901010434">"Прикажи ги сите категории"</string>
+    <string name="see_all_categories" msgid="5599882403901010434">"Преглед на сите категории"</string>
     <string name="no_data" msgid="1906986019249068659">"Нема податоци"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Дозволи за апликации"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Управувајте со апликациите и дозволите"</string>
@@ -33,16 +33,16 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Нема"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Детали на записот"</string>
     <string name="backup_title" msgid="211503191266235085">"Бекап"</string>
-    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Приоритет и извори на податоци"</string>
-    <string name="set_units_title" msgid="2657822539603758029">"Поставете единици"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Извори на податоци и приоритет"</string>
+    <string name="set_units_title" msgid="2657822539603758029">"Поставете мерни единици"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Најнов пристап"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Нема апликации што неодамна пристапиле до Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Погледнете ги сите најнови пристапи"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Погледнете кои апликации пристапиле до вашите податоци во изминатите 24 часа"</string>
     <string name="today_header" msgid="1006837293203834373">"Денес"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Вчера"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Читај: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Запишување: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Прочита: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Внесе: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управувајте со дозволите"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Време: %s"</string>
@@ -81,11 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"пристапување до податоците за здравјето"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Читање потрошени калории"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Дозволува апликацијата да чита потрошени калории"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Читање во заднина"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"читање во заднина"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Читање на здравствените податоци во заднина"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Пристап до податоците во заднина"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до податоците во заднина?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Дозволете апликацијава да пристапува до податоците од Health Connect кога не ја користите апликацијата"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect кога не ја користите апликацијата."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Пристап до минатите податоци"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до минатите податоци?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Дозволете апликацијава да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Дозволете апликацијава да пристапува до минатите податоци од Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Ако дозволите, апликацијава ќе може да пристапува до минатите податоци од Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Активно потрошени калории"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"активно потрошени калории"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Читање активно потрошени калории"</string>
@@ -107,8 +112,8 @@
     <string name="distance_lowercase_label" msgid="2287154001209381379">"растојание"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Читање растојание"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"Запишување растојание"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Достигната надморска висина"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"достигната надморска висина"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Достигната височина"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"достигната височина"</string>
     <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"Читање достигната надморска висина"</string>
     <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"Запишување достигната надморска висина"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"Искачени катови"</string>
@@ -131,8 +136,8 @@
     <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"вкупно потрошени калории"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Читање вкупно потрошени калории"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Запишување вкупно потрошени калории"</string>
-    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Макс. VO2"</string>
-    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"Макс. VO2"</string>
+    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Максимална потрошувачка на кислород"</string>
+    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"максимална потрошувачка на кислород"</string>
     <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Читање макс. VO2"</string>
     <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Запишување макс. VO2"</string>
     <string name="wheelchair_pushes_uppercase_label" msgid="5582991294340226965">"Туркања на инвалидска количка"</string>
@@ -147,8 +152,8 @@
     <string name="body_fat_lowercase_label" msgid="4090686510477176498">"телесни масти"</string>
     <string name="body_fat_read_content_description" msgid="801664410906939146">"Читање телесни масти"</string>
     <string name="body_fat_write_content_description" msgid="4863558071904720577">"Запишување телесни масти"</string>
-    <string name="body_water_mass_uppercase_label" msgid="7839393299147916863">"Маса на вода во тело"</string>
-    <string name="body_water_mass_lowercase_label" msgid="9196249948631920955">"маса на вода во тело"</string>
+    <string name="body_water_mass_uppercase_label" msgid="7839393299147916863">"Маса на вода во телото"</string>
+    <string name="body_water_mass_lowercase_label" msgid="9196249948631920955">"маса на вода во телото"</string>
     <string name="body_water_mass_read_content_description" msgid="1468266374858854184">"Читање маса на вода во тело"</string>
     <string name="body_water_mass_write_content_description" msgid="8485284654932647383">"Запишување маса на вода во тело"</string>
     <string name="bone_mass_uppercase_label" msgid="6815438946872228501">"Коскена маса"</string>
@@ -235,8 +240,8 @@
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"променливост на пулсот"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Читање податоци за променливоста на пулсот"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Запишување податоци за променливоста на пулсот"</string>
-    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Кислородна сатурација"</string>
-    <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"кислородна сатурација"</string>
+    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Заситеност со кислород"</string>
+    <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"заситеност со кислород"</string>
     <string name="oxygen_saturation_read_content_description" msgid="4756434113425028212">"Читање кислородна сатурација"</string>
     <string name="oxygen_saturation_write_content_description" msgid="7189901097196830875">"Запишување кислородна сатурација"</string>
     <string name="respiratory_rate_uppercase_label" msgid="4609498171205294389">"Респираторна стапка"</string>
@@ -258,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дозволи ги сите"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дозволувај"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Изберете ги податоците што сакате оваа апликација да ги чита или запишува во Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Ако ѝ дадете пристап за читање, оваа апликација ќе може да чита нови податоци и податоци од минатите 30 дена"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ако ѝ дадете пристап за читање, апликацијата ќе може да ги чита новите податоци и податоците од минатите 30 дена"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ако ѝ дадете пристап за читање, апликацијата ќе може да ги чита новите и минатите податоци"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Може да дознаете како <xliff:g id="APP_NAME">%1$s</xliff:g> постапува со вашите податоци во <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> на програмерот"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"политика за приватност"</string>
@@ -286,7 +292,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Отстрани ги сите"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Управувајте со апликацијата"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Прикажи податоци од апликацијата"</string>
-    <string name="delete_app_data" msgid="6890357774873859952">"Избриши ги податоците од апликација"</string>
+    <string name="delete_app_data" msgid="6890357774873859952">"Избриши ги податоците од апликацијата"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Неактивни апликации"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Апликацииве веќе немаат пристап, но уште имаат зачувани податоци во Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чита податоци додадени по <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
@@ -309,16 +315,17 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Сфатив"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Бекап и враќање"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Извезување и увезување"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Повторливо извезување"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Извезете автоматски"</string>
     <string name="restore_data" msgid="3401173690437871417">"Враќање податоци"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Вчитување на претходно извезените податоци"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Вклучено"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Исклучено"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Изберете фреквенција"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Изберете да ги зачувате податоците еднаш или поставете да се зачувуваат автоматски редовно."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Дневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Седмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Месечно"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_location_title" msgid="9016990510649325641">"Извезете ја локацијата"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Вклучете шифрирање"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Податоците треба да се шифрираат пред да се зачуваат. Никој, па ни Google, ни Health Connect, нема да може да пристапат до нив."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Создајте лозинка за да ги заштитите шифрираните податоци. Лозинкава ќе ви треба за да ги увезете и вратите податоците."</string>
@@ -419,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Неодредена"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 милисекунда}one{# милисекунда}other{# милисекунди}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{Еднаш}one{# пат}other{# пати}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Активни: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Вкупно: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Што е можно повеќе повторувања"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Ниво на напор: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 повт.}one{# повт.}other{# повт.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 повторување}one{# повторување}other{# повторувања}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Сегменти на вежбање"</string>
@@ -656,36 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 фунта}one{# фунта}other{# фунти}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 стон}one{# стон}other{# стона}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 степен целзиусов}one{# степен целзиусов}other{# степени целзиусови}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 келвин}one{# келвин}other{# келвини}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 степен фаренхајтов}one{# степен фаренхајтов}other{# степени фаренхајтови}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} целзиусов степен}one{{formattedValue} целзиусов степен}other{{formattedValue} целзиусови степени}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} фаренхајтов степен}one{{formattedValue} фаренхајтов степен}other{{formattedValue} фаренхајтови степени}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} келвин}one{{formattedValue} келвин}other{{formattedValue} келвини}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (прос. варијација)}one{{formattedValue} ℃ (прос. варијација)}other{{formattedValue} ℃ (прос. варијација)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} целзиусов степен (просечна варијација)}one{{formattedValue} целзиусов степен (просечна варијација)}other{{formattedValue} целзиусови степени (просечна варијација)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (прос. варијација)}one{{formattedValue} ℉ (прос. варијација)}other{{formattedValue} ℉ (прос. варијација)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} фаренхајтов степен (просечна варијација)}one{{formattedValue} фаренхајтов степен (просечна варијација)}other{{formattedValue} фаренхајтови степени (просечна варијација)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (прос. варијација)}one{{formattedValue} K (прос. варијација)}other{{formattedValue} K (прос. варијација)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} келвин (просечна варијација)}one{{formattedValue} келвин (просечна варијација)}other{{formattedValue} келвини (просечна варијација)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Пазуви"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Прст"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Чело"</string>
@@ -696,12 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Уво"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Зглоб"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Вагина"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Локација на мерење"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Референтна вредност"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Варијација од референтната вредност"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 милја}one{# милја}other{# милји}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 милја}one{# милја}other{# милји}}"</string>
@@ -733,7 +730,7 @@
     <string name="height_unit_feet_label" msgid="3311723678628261399">"Стапки и инчи"</string>
     <string name="weight_unit_pound_label" msgid="8210663393844989211">"Фунти"</string>
     <string name="weight_unit_kilogram_label" msgid="6623938920860887238">"Килограми"</string>
-    <string name="weight_unit_stone_label" msgid="3063787243474847180">"Стони"</string>
+    <string name="weight_unit_stone_label" msgid="3063787243474847180">"Стоуни"</string>
     <string name="energy_unit_calorie_label" msgid="3412965811470957296">"Калории"</string>
     <string name="energy_unit_kilojoule_label" msgid="6481196724083455110">"Килоџули"</string>
     <string name="temperature_unit_celsius_label" msgid="4698347100553808449">"Целзиус"</string>
@@ -747,17 +744,17 @@
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Видете ги сите компатибилни апликации"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Најдете апликации на Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Испратете повратни информации"</string>
-    <string name="send_feedback_description" msgid="2887207112856240778">"Кажете ни со кои апликации за здравје и фитнес сакате да работите со Health Connect"</string>
+    <string name="send_feedback_description" msgid="2887207112856240778">"Кажете ни кои апликации за здравје и фитнес сакате да функционираат со Health Connect"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Автоматско бришење"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Автоматско бришење"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Контролирајте колку долго податоците се складираат во Health Connect така што ќе закажете да се избришат после определено време"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Контролирајте колку време да се чуваат податоците во Health Connect така што ќе закажете да се избришат по одредено време"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Дознајте повеќе за автоматското бришење"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Автоматско бришење на податоците"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{По # месец}one{По # месец}other{По # месеци}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Никогаш"</string>
     <string name="range_off" msgid="8178520557618184215">"Исклучено"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Кога ќе ги промените поставкиве, Health Connect ги брише постојните податоци согласно вашите нови поставки"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Кога ќе ги промените поставкиве, Health Connect ги брише постојните податоци согласно со вашите нови поставки"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Да се постави автоматско бришење на податоците по # месец?}one{Да се постави автоматско бришење на податоците по # месец?}other{Да се постави автоматско бришење на податоците по # месеци?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect автоматски ќе ги избрише новите податоци по # месец. Ако го поставите ова, ќе се избришат и постојните податоци постари од # месец.}one{Health Connect автоматски ќе ги избрише новите податоци по # месец. Ако го поставите ова, ќе се избришат и постојните податоци постари од # месец.}other{Health Connect автоматски ќе ги избрише новите податоци по # месеци. Ако го поставите ова, ќе се избришат и постојните податоци постари од # месеци.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Постави автоматско бришење"</string>
@@ -796,7 +793,7 @@
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дозволувај"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Секогаш дозволувај"</string>
     <string name="route_permissions_label" msgid="5201501195020295860">"Споделување на маршрутата за вежбање"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Контролирање на тоа како апликацијава пристапува до маршрутите за вежбање од поврзаните апликации"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Контролирајте го пристапот на апликацијава до маршрутите за вежбање од поврзаните апликации"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Секогаш прашувај"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Не дозволувај"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Да се овозможат двата типа податоци?"</string>
@@ -873,8 +870,8 @@
     <string name="data_totals_header" msgid="8316977153276216025">"Вкупни податоци"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Извори за апликацијата"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Додајте извори за апликацијата во списокот за да видите како може да се променат вкупните податоци. Ако ја отстраните апликацијата од списоков, веќе нема да придонесува во вкупните податоци, но сѐ уште ќе има дозволи за пишување."</string>
-    <string name="data_sources_empty_state" msgid="1899652759274805556">"Нема извори на апликации"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Откако ќе дадете дозволи за апликацијата да пишува податоци за <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, изворите ќе се прикажат тука."</string>
+    <string name="data_sources_empty_state" msgid="1899652759274805556">"Нема апликации"</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Откако ќе им дозволите на апликациите да запишуваат податоци за <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, изворите ќе се прикажат тука."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Како функционираат изворите и приоритизацијата"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Додајте апликација"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Изменување на изворите на апликации"</string>
@@ -890,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Минатиот месец"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Записи"</string>
     <string name="tab_access" msgid="7818197975407243701">"Пристап"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Да се дозволи дополнителен пристап за <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"И <xliff:g id="APP_NAME">%1$s</xliff:g> сака да пристапува до поставкиве за Health Connect"</string>
 </resources>

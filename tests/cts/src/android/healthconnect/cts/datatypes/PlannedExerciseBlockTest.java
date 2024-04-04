@@ -110,4 +110,26 @@ public class PlannedExerciseBlockTest {
 
         assertThat(builder.setDescription(null).build().getDescription()).isNull();
     }
+
+    @Test
+    public void addStep() {
+        PlannedExerciseBlock.Builder builder = new PlannedExerciseBlock.Builder(1);
+
+        PlannedExerciseStep step =
+                new PlannedExerciseStep.Builder(
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                                PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                                new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)))
+                        .build();
+        builder.addStep(step);
+
+        assertThat(builder.build().getSteps()).containsExactly(step);
+    }
+
+    @Test
+    public void getRepetitions() {
+        PlannedExerciseBlock.Builder builder = new PlannedExerciseBlock.Builder(8);
+
+        assertThat(builder.build().getRepetitions()).isEqualTo(8);
+    }
 }

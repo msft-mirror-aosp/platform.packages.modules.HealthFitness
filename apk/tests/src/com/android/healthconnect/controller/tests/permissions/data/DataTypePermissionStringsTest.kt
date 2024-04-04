@@ -13,8 +13,8 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
