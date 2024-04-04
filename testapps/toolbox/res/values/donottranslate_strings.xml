@@ -67,6 +67,8 @@
   <string name="wheelchair_pushes_label" description="Label used to show the user's wheelchair pushes data [CHAR_LIMIT=50]">Wheelchair pushes</string>
   <string name="cycling_pedaling_cadence" description="Label used to show the user's cycling pedaling cadence data [CHAR_LIMIT=50]">Cycling Pedaling Cadence</string>
   <string name="exercise_session" description="Label used to show the exercise session [CHAR_LIMIT=50]">Exercise Sessions</string>
+  <string name="training_plans" description="Label used to show the training plans [CHAR_LIMIT=50]">Training Plans</string>
+  <string name="training_plan_exercise_block_notice_text" description="Label used to generate exercise steps">Generate test exercise steps</string>
   <!--endregion-->
 
   <!-- region Body measurements data types -->
