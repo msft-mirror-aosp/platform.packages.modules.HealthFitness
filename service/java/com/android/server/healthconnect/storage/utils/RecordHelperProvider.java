@@ -48,6 +48,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.MenstruationPeri
 import com.android.server.healthconnect.storage.datatypehelpers.NutritionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.OvulationTestRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.OxygenSaturationRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PowerRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RespiratoryRateRecordHelper;
@@ -167,6 +168,9 @@ public final class RecordHelperProvider {
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION,
                 new ExerciseSessionRecordHelper());
+        recordIDToHelperMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+                new PlannedExerciseSessionRecordHelper());
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, new SleepSessionRecordHelper());
 

@@ -150,7 +150,14 @@ public final class StepsRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             long count,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         if (!skipValidation) {
             ValidationUtils.requireInRange(count, 0, 1000000, "stepsCount");
         }

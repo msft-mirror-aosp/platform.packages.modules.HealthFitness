@@ -90,7 +90,14 @@ public final class HeartRateRecord extends IntervalRecord {
             @NonNull ZoneOffset endZoneOffset,
             @NonNull List<HeartRateSample> heartRateSamples,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         Objects.requireNonNull(heartRateSamples);
         if (!skipValidation) {
             ValidationUtils.validateSampleStartAndEndTime(

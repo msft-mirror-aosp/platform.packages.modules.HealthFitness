@@ -15,28 +15,28 @@
  */
 package com.android.healthconnect.controller.datasources.api
 
-import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.HealthConnectManager
+import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.healthPermissionTypes
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.suspendCancellableCoroutine
-import androidx.core.os.asOutcomeReceiver
-import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
-import com.android.healthconnect.controller.shared.usecase.UseCaseResults
+import kotlinx.coroutines.withContext
 
 @Singleton
 class LoadPotentialPriorityListUseCase
@@ -52,10 +52,10 @@ constructor(
 
     private val TAG = "LoadAppSourcesUseCase"
 
-    /**
-     * Returns a list of unique [AppMetadata]s that are potential priority list candidates.
-     */
-    override suspend operator fun invoke(category: @HealthDataCategoryInt Int): UseCaseResults<List<AppMetadata>> =
+    /** Returns a list of unique [AppMetadata]s that are potential priority list candidates. */
+    override suspend operator fun invoke(
+        category: @HealthDataCategoryInt Int
+    ): UseCaseResults<List<AppMetadata>> =
         withContext(dispatcher) {
             val appsWithDataResult = getAppsWithData(category)
             val appsWithWritePermissionResult = getAppsWithWritePermission(category)
@@ -70,24 +70,26 @@ constructor(
                 UseCaseResults.Failed(appsOnPriorityListResult.exception)
             } else {
                 val appsWithData = (appsWithDataResult as UseCaseResults.Success).data
-                val appsWithWritePermission = (appsWithWritePermissionResult as UseCaseResults.Success).data
-                val appsOnPriorityList = (appsOnPriorityListResult as UseCaseResults.Success).data
-                    .map { it.packageName }.toSet()
+                val appsWithWritePermission =
+                    (appsWithWritePermissionResult as UseCaseResults.Success).data
+                val appsOnPriorityList =
+                    (appsOnPriorityListResult as UseCaseResults.Success)
+                        .data
+                        .map { it.packageName }
+                        .toSet()
 
                 val potentialPriorityListApps =
-                    appsWithData.union(appsWithWritePermission)
+                    appsWithData
+                        .union(appsWithWritePermission)
                         .minus(appsOnPriorityList)
                         .toList()
                         .map { appInfoReader.getAppMetadata(it) }
 
                 UseCaseResults.Success(potentialPriorityListApps)
             }
-
         }
 
-    /**
-     * Returns a list of unique packageNames that have data in this [HealthDataCategory].
-     */
+    /** Returns a list of unique packageNames that have data in this [HealthDataCategory]. */
     @VisibleForTesting
     suspend fun getAppsWithData(category: @HealthDataCategoryInt Int): UseCaseResults<Set<String>> =
         withContext(dispatcher) {
@@ -104,38 +106,38 @@ constructor(
                         }
                         .map { it.contributingPackages }
                         .flatten()
-                UseCaseResults.Success(packages
-                    .map { it.packageName }
-                    .toSet())
+                UseCaseResults.Success(packages.map { it.packageName }.toSet())
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to get apps with data ", e)
                 UseCaseResults.Failed(e)
             }
         }
 
-
-    /** Returns a set of packageNames which have at least one WRITE permission in this [HealthDataCategory] **/
+    /**
+     * Returns a set of packageNames which have at least one WRITE permission in this
+     * [HealthDataCategory] *
+     */
     @VisibleForTesting
-    suspend fun getAppsWithWritePermission(category: @HealthDataCategoryInt Int): UseCaseResults<Set<String>> =
+    suspend fun getAppsWithWritePermission(
+        category: @HealthDataCategoryInt Int
+    ): UseCaseResults<Set<String>> =
         withContext(dispatcher) {
             try {
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
                 val appsWithHealthPermissions: List<String> =
                     healthPermissionReader.getAppsWithHealthPermissions()
-                val healthPermissionsInCategory: List<String> =
-                    category.healthPermissionTypes().map {
-                            healthPermissionType ->
-                        HealthPermission(
-                            healthPermissionType,
-                            PermissionsAccessType.WRITE).toString()
+                val dataTypePermissionsInCategory: List<String> =
+                    category.healthPermissionTypes().map { healthPermissionType ->
+                        DataTypePermission(healthPermissionType, PermissionsAccessType.WRITE)
+                            .toString()
                     }
 
-                appsWithHealthPermissions.forEach {packageName ->
+                appsWithHealthPermissions.forEach { packageName ->
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(packageName)
 
                     // Apps that can WRITE the given HealthDataCategory
-                    if (healthPermissionsInCategory.any { permissionsPerPackage.contains(it) }) {
+                    if (dataTypePermissionsInCategory.any { permissionsPerPackage.contains(it) }) {
                         writeAppPackageNameSet.add(packageName)
                     }
                 }

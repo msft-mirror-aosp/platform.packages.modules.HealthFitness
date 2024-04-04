@@ -128,8 +128,10 @@ public class MenstruationFlowRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationFlowRecord.class)
                                 .build());
-        MenstruationFlowRecord testRecord = getCompleteMenstruationFlowRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        MenstruationFlowRecord testRecord =
+                (MenstruationFlowRecord)
+                        TestUtils.insertRecord(getCompleteMenstruationFlowRecord());
         List<MenstruationFlowRecord> newMenstruationFlowRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationFlowRecord.class)
@@ -151,8 +153,10 @@ public class MenstruationFlowRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        MenstruationFlowRecord testRecord = getCompleteMenstruationFlowRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        MenstruationFlowRecord testRecord =
+                (MenstruationFlowRecord)
+                        TestUtils.insertRecord(getCompleteMenstruationFlowRecord());
         List<MenstruationFlowRecord> newMenstruationFlowRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationFlowRecord.class)
@@ -178,8 +182,10 @@ public class MenstruationFlowRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        MenstruationFlowRecord testRecord = getCompleteMenstruationFlowRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        MenstruationFlowRecord testRecord =
+                (MenstruationFlowRecord)
+                        TestUtils.insertRecord(getCompleteMenstruationFlowRecord());
         List<MenstruationFlowRecord> newMenstruationFlowRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationFlowRecord.class)
@@ -262,8 +268,10 @@ public class MenstruationFlowRecordTest {
     @Test
     public void testDeleteMenstruationFlowRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseMenstruationFlowRecord(), getCompleteMenstruationFlowRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseMenstruationFlowRecord(),
+                                getCompleteMenstruationFlowRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -302,10 +310,12 @@ public class MenstruationFlowRecordTest {
     @Test
     public void testDeleteMenstruationFlowRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseMenstruationFlowRecord(), getCompleteMenstruationFlowRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseMenstruationFlowRecord(),
+                                getCompleteMenstruationFlowRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -478,8 +488,9 @@ public class MenstruationFlowRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteMenstruationFlowRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteMenstruationFlowRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
