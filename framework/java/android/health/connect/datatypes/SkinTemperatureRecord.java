@@ -118,7 +118,14 @@ public final class SkinTemperatureRecord extends IntervalRecord {
             @NonNull List<Delta> deltas,
             @SkinTemperatureMeasurementLocation int measurementLocation,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ true);
         if (!skipValidation) {
             if (baseline != null) {
                 ValidationUtils.requireInRange(baseline.getInCelsius(), 0.0, 100, "temperature");
@@ -173,6 +180,7 @@ public final class SkinTemperatureRecord extends IntervalRecord {
     public boolean equals(@Nullable Object object) {
         if (this == object) return true;
         if (!(object instanceof SkinTemperatureRecord)) return false;
+        if (!super.equals(object)) return false;
         SkinTemperatureRecord that = (SkinTemperatureRecord) object;
         if (!Objects.equals(getBaseline(), that.getBaseline())
                 || getMeasurementLocation() != that.getMeasurementLocation()) return false;

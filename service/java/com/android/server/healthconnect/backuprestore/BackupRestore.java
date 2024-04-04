@@ -32,6 +32,8 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UNKNOWN;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_USER_ID;
@@ -59,6 +61,7 @@ import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.datatypes.Record;
+import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.restore.BackupFileNamesSet;
@@ -178,15 +181,28 @@ public final class BackupRestore {
     private static final String DATA_MERGING_RETRY_CANCELLED_KEY =
             "data_merging_retry_cancelled_key";
 
+    /*
+     * Record types in this list will always be migrated such that the ordering here is respected.
+     * When adding a new priority override, group the types that need to migrated together within
+     * their own list. This makes the logical separate clear and also reduces storage usage during
+     * migration, as we delete the original records
+     */
+    private static final List<List<Integer>> RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES =
+            List.of(
+                    // Training plans must be migrated before exercise sessions. Exercise sessions
+                    // may contain a reference to a training plan, so the training plan needs to
+                    // exist so that the foreign key constraints are not violated.
+                    List.of(RECORD_TYPE_PLANNED_EXERCISE_SESSION, RECORD_TYPE_EXERCISE_SESSION));
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-            INTERNAL_RESTORE_STATE_UNKNOWN,
-            INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING,
-            INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS,
-            INTERNAL_RESTORE_STATE_STAGING_DONE,
-            INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS,
-            INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE,
-            INTERNAL_RESTORE_STATE_MERGING_DONE
+        INTERNAL_RESTORE_STATE_UNKNOWN,
+        INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING,
+        INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS,
+        INTERNAL_RESTORE_STATE_STAGING_DONE,
+        INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS,
+        INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE,
+        INTERNAL_RESTORE_STATE_MERGING_DONE
     })
     public @interface InternalRestoreState {}
 
@@ -296,8 +312,8 @@ public final class BackupRestore {
                         } catch (IOException e) {
                             Slog.e(
                                     TAG,
-                                    "Failed to get copy to destination: "
-                                            + destination.getName(), e);
+                                    "Failed to get copy to destination: " + destination.getName(),
+                                    e);
                             destination.delete();
                             exceptionsByFileName.put(
                                     fileName,
@@ -306,8 +322,8 @@ public final class BackupRestore {
                         } catch (SecurityException e) {
                             Slog.e(
                                     TAG,
-                                    "Failed to get copy to destination: "
-                                            + destination.getName(), e);
+                                    "Failed to get copy to destination: " + destination.getName(),
+                                    e);
                             destination.delete();
                             exceptionsByFileName.put(
                                     fileName,
@@ -535,7 +551,8 @@ public final class BackupRestore {
         }
     }
 
-    @InternalRestoreState int getInternalRestoreState() {
+    @InternalRestoreState
+    int getInternalRestoreState() {
         mStatesLock.readLock().lock();
         try {
             String restoreStateOnDisk =
@@ -655,7 +672,8 @@ public final class BackupRestore {
         return backupFilesByFileNames;
     }
 
-    @DataDownloadState private int getDataDownloadState() {
+    @DataDownloadState
+    private int getDataDownloadState() {
         mStatesLock.readLock().lock();
         try {
             String downloadStateOnDisk =
@@ -1018,10 +1036,54 @@ public final class BackupRestore {
             // We are sure to migrate the db now, so prepare
             prepInternalDataPerStagedDb();
 
-            // Go through each record type and migrate all records of that type.
-            var recordTypeMap = RecordMapper.getInstance().getRecordIdToExternalRecordClassMap();
-            for (var recordTypeMapEntry : recordTypeMap.entrySet()) {
-                mergeRecordsOfType(recordTypeMapEntry.getKey(), recordTypeMapEntry.getValue());
+            // Determine the order in which we should migrate data types. This involves first
+            // migrating data types according to the specified ordering overrides. Remaining
+            // records are migrated in no particular order.
+            List<Integer> recordTypesWithOrderingOverrides =
+                    RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream()
+                            .flatMap(List::stream)
+                            .toList();
+            List<Integer> recordTypesWithoutOrderingOverrides =
+                    RecordMapper.getInstance()
+                            .getRecordIdToExternalRecordClassMap()
+                            .keySet()
+                            .stream()
+                            .filter(it -> !recordTypesWithOrderingOverrides.contains(it))
+                            .toList();
+
+            // Migrate special case records in their defined order.
+            for (List<Integer> recordTypeMigrationGroup :
+                    RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES) {
+                for (Integer recordTypeToMigrate : recordTypeMigrationGroup) {
+                    mergeRecordsOfType(
+                            recordTypeToMigrate,
+                            RecordMapper.getInstance()
+                                    .getRecordIdToExternalRecordClassMap()
+                                    .get(recordTypeToMigrate));
+                }
+                // Delete records within a group together, once all records within that group
+                // have been migrated. This ensures referential integrity is preserved during
+                // migration.
+                for (Integer recordTypeToMigrate : recordTypeMigrationGroup) {
+                    deleteRecordsOfType(
+                            recordTypeToMigrate,
+                            RecordMapper.getInstance()
+                                    .getRecordIdToExternalRecordClassMap()
+                                    .get(recordTypeToMigrate));
+                }
+            }
+            // Migrate remaining record types in no particular order.
+            for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
+                mergeRecordsOfType(
+                        recordTypeToMigrate,
+                        RecordMapper.getInstance()
+                                .getRecordIdToExternalRecordClassMap()
+                                .get(recordTypeToMigrate));
+                deleteRecordsOfType(
+                        recordTypeToMigrate,
+                        RecordMapper.getInstance()
+                                .getRecordIdToExternalRecordClassMap()
+                                .get(recordTypeToMigrate));
             }
 
             Slog.i(TAG, "Sync app info records after restored data merge.");
@@ -1046,6 +1108,17 @@ public final class BackupRestore {
                 break;
             }
             Slog.d(TAG, "Found record to merge: " + recordsToMergeAndToken.first.getClass());
+            if (recordType == RECORD_TYPE_PLANNED_EXERCISE_SESSION) {
+                // For training plans we nullify any autogenerated references to exercise sessions.
+                // When the corresponding exercise sessions get migrated, these references will be
+                // automatically generated again.
+                recordsToMergeAndToken.first.forEach(
+                        it -> {
+                            PlannedExerciseSessionRecordInternal record =
+                                    (PlannedExerciseSessionRecordInternal) it;
+                            record.setCompletedExerciseSessionId(null);
+                        });
+            }
             // Using null package name for making insertion for two reasons:
             // 1. we don't want to update the logs for this package.
             // 2. we don't want to update the package name in the records as they already have the
@@ -1056,15 +1129,18 @@ public final class BackupRestore {
                             recordsToMergeAndToken.first,
                             mContext,
                             true /* isInsertRequest */,
+                            true /* useProvidedUuid */,
                             true /* skipPackageNameAndLogs */);
             TransactionManager.getInitialisedInstance()
                     .insertAll(upsertTransactionRequest.getUpsertRequests());
 
             token = recordsToMergeAndToken.second;
         } while (!token.isEmpty());
+    }
 
-        // Once all the records of this type have been merged we can delete the table.
-
+    private <T extends Record> void deleteRecordsOfType(int recordType, Class<T> recordTypeClass) {
+        RecordHelper<?> recordHelper =
+                RecordHelperProvider.getInstance().getRecordHelper(recordType);
         // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
         // final query.
         Slog.d(TAG, "Deleting table for: " + recordTypeClass);
@@ -1075,6 +1151,7 @@ public final class BackupRestore {
                         DEFAULT_LONG /* startTime */,
                         DEFAULT_LONG /* endTime */,
                         false /* useLocalTimeFilter */);
+
         getStagedDatabase().getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
 

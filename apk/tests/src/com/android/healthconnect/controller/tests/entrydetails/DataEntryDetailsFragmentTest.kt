@@ -35,6 +35,7 @@ import android.content.Context
 import android.health.connect.datatypes.ExerciseRoute
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -52,12 +53,14 @@ import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewMod
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.WithData
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SKIN_TEMPERATURE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.EntryDetailsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
@@ -74,7 +77,9 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenever
 import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.atMost
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @HiltAndroidTest
@@ -181,6 +186,7 @@ class DataEntryDetailsFragmentTest {
     @Test
     fun dataEntriesDetailsInit_withHeartRate_showsItem_showsDetails() {
         val list = buildList { add(getFormattedSeriesData()) }
+
         whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
 
         launchFragment<DataEntryDetailsFragment>(
@@ -190,6 +196,78 @@ class DataEntryDetailsFragmentTest {
         onView(withText("07:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("100 bpm")).check(matches(isDisplayed()))
         verify(healthConnectLogger).logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
+    }
+
+    @Test
+    fun dataEntriesInit_withSkinTemperature_showsItem_showsDetails() {
+        val list = buildList {
+            add(getSkinTemperatureEntry())
+            addAll(getSkinTemperatureDeltas(includeBaseline = true, includeLocation = true))
+        }
+        whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
+
+        launchFragment<DataEntryDetailsFragment>(
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
+
+        onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
+        onView(withText("Measurement location")).check(matches(isDisplayed()))
+        onView(withText("Toe")).check(matches(isDisplayed()))
+        onView(withText("Baseline")).check(matches(isDisplayed()))
+        onView(withText("25℃")).check(matches(isDisplayed()))
+        onView(withText("Variation from baseline")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression((EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW))
+    }
+
+    @Test
+    fun dataEntriesInit_withSkinTemperature_locationUnknown_hidesLocationDetail() {
+        val list = buildList {
+            add(getSkinTemperatureEntry())
+            addAll(getSkinTemperatureDeltas(includeBaseline = true, includeLocation = false))
+        }
+        whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
+
+        launchFragment<DataEntryDetailsFragment>(
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
+
+        onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
+        onView(withText("Measurement location")).check(doesNotExist())
+        onView(withText("Toe")).check(doesNotExist())
+        onView(withText("Baseline")).check(matches(isDisplayed()))
+        onView(withText("25℃")).check(matches(isDisplayed()))
+        onView(withText("Variation from baseline")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atMost(1))
+            .logImpression((EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW))
+    }
+
+    @Test
+    fun dataEntriesInit_withSkinTemperature_baselineUnknown_hidesBaselineDetail() {
+        val list = buildList {
+            add(getSkinTemperatureEntry())
+            addAll(getSkinTemperatureDeltas(includeBaseline = false, includeLocation = true))
+        }
+        whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
+
+        launchFragment<DataEntryDetailsFragment>(
+            DataEntryDetailsFragment.createBundle(
+                permissionType = SKIN_TEMPERATURE, entryId = "1", showDataOrigin = true))
+
+        onView(withText("+0.5℃ (avg variation)")).check(matches(isDisplayed()))
+        onView(withText("Measurement location")).check(matches(isDisplayed()))
+        onView(withText("Toe")).check(matches(isDisplayed()))
+        onView(withText("Baseline")).check(doesNotExist())
+        onView(withText("25℃")).check(doesNotExist())
+        onView(withText("Variation from baseline")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, atMost(1))
+            .logImpression((EntryDetailsElement.REVERSE_SESSION_DETAIL_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_TITLE_VIEW))
     }
 
     @Test
@@ -235,6 +313,68 @@ class DataEntryDetailsFragmentTest {
                 title = "6 hour deep sleeping",
                 titleA11y = "6 hour deep sleeping",
             ))
+    }
+
+    private fun getSkinTemperatureEntry(): FormattedEntry {
+        return SeriesDataEntry(
+            uuid = "1",
+            header = "16:00 - 17:00 • TEST_APP_NAME",
+            headerA11y = "16:00 - 17:00 • TEST_APP_NAME",
+            title = "+0.5℃ (avg variation)",
+            titleA11y = "+0.5 degrees Celsius (average variation)",
+            dataType = DataType.SKIN_TEMPERATURE)
+    }
+
+    private fun getSkinTemperatureDeltas(
+        includeBaseline: Boolean,
+        includeLocation: Boolean
+    ): List<FormattedEntry> {
+        val locationDefinedFormattedEntry: FormattedEntry.ReverseSessionDetail =
+            FormattedEntry.ReverseSessionDetail(
+                uuid = "1",
+                header = "Measurement location",
+                headerA11y = "Measurement location",
+                title = "Toe",
+                titleA11y = "Toe",
+            )
+
+        val baselineDefinedFormattedEntry: FormattedEntry.ReverseSessionDetail =
+            FormattedEntry.ReverseSessionDetail(
+                uuid = "1",
+                header = "Baseline",
+                headerA11y = "Baseline",
+                title = "25℃",
+                titleA11y = "25 degrees Celsius",
+            )
+
+        val deltaFormattedEntries: List<FormattedEntry> =
+            listOf(
+                FormattedEntry.FormattedSectionTitle(title = "Variation from baseline"),
+                FormattedEntry.FormattedSessionDetail(
+                    uuid = "1",
+                    header = "16:10 AM",
+                    headerA11y = "16:10 AM",
+                    title = "+1.5℃",
+                    titleA11y = "+1.5 degrees Celsius",
+                ),
+                FormattedEntry.FormattedSessionDetail(
+                    uuid = "1",
+                    header = "16:40 AM",
+                    headerA11y = "16:40 AM",
+                    title = "-0.5℃",
+                    titleA11y = "-0.5 degrees Celsius",
+                ))
+
+        return if (includeBaseline && includeLocation) {
+            listOf(locationDefinedFormattedEntry, baselineDefinedFormattedEntry)
+                .plus(deltaFormattedEntries)
+        } else if (includeBaseline) {
+            listOf(baselineDefinedFormattedEntry).plus(deltaFormattedEntries)
+        } else if (includeLocation) {
+            listOf(locationDefinedFormattedEntry).plus(deltaFormattedEntries)
+        } else {
+            deltaFormattedEntries
+        }
     }
 
     private fun getFormattedSleepSession(): SleepSessionEntry {

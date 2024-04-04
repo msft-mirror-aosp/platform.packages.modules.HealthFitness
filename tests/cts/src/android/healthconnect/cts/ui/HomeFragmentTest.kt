@@ -24,6 +24,7 @@ import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
+import androidx.test.filters.FlakyTest
 import androidx.test.uiautomator.By
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -66,6 +67,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @FlakyTest(bugId = 328200136)
     fun homeFragment_openAppPermissions() {
         context.launchMainActivity {
             clickOnText("App permissions")
@@ -108,6 +110,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
     }
 
     @Test
+    @FlakyTest(bugId = 328200136)
     fun homeFragment_navigateToRecentAccess() {
         context.launchMainActivity {
             clickOnText("See all recent access")

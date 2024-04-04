@@ -131,11 +131,8 @@ public final class HealthPermissions {
      * Allows an application to read health data (of any type) in background.
      *
      * <p>Protection level: dangerous.
-     *
-     * @hide
      */
-    // TODO (b/299897306): Specify a label for the permission in HealthPermissionsManifest.xml when
-    // exposing this constant. Also search for 299897306 and remove workarounds.
+    @FlaggedApi("com.android.healthconnect.flags.background_read")
     public static final String READ_HEALTH_DATA_IN_BACKGROUND =
             "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
 
@@ -143,11 +140,8 @@ public final class HealthPermissions {
      * Allows an application to read the entire history of health data (of any type).
      *
      * <p>Protection level: dangerous.
-     *
-     * @hide
      */
-    // TODO (b/325434006): Specify a label for the permission in HealthPermissionsManifest.xml when
-    // exposing this constant. Also search for 325434006 and remove workarounds.
+    @FlaggedApi("com.android.healthconnect.flags.history_read")
     public static final String READ_HEALTH_DATA_HISTORY =
             "android.permission.health.READ_HEALTH_DATA_HISTORY";
 

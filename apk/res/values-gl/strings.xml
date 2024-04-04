@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Consulta que aplicacións accederon aos teus datos nas últimas 24 horas"</string>
     <string name="today_header" msgid="1006837293203834373">"Hoxe"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Onte"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lectura: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Escritura: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Ler: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Xestionar permisos"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tempo: %s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"acceder aos datos sobre a túa saúde"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Ler calorías queimadas"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que a aplicación lea os datos de calorías queimadas"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lectura en segundo plano"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"lectura en segundo plano"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Ler os datos de saúde en segundo plano"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Acceder aos datos en segundo plano"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos en segundo plano?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta aplicación acceda aos datos de Saúde conectada cando non a esteas usando"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Se dás permiso, esta aplicación poderá acceder aos datos de Saúde conectada cando non esteas usando a aplicación."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Acceder aos datos anteriores"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda aos datos anteriores?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta aplicación acceda aos datos de Saúde conectada engadidos antes do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Permitir que esta aplicación acceda aos datos de Saúde conectada"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Se dás permiso, esta aplicación poderá acceder aos datos de Saúde conectada engadidos antes do <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Se dás permiso, esta aplicación poderá acceder aos datos de Saúde conectada."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorías queimadas durante a actividade"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calorías queimadas durante a actividade"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Ler datos de calorías queimadas durante a actividade"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Permitir todo"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Non permitir"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Escolle os datos que queres que lea ou escriba esta aplicación en Saúde conectada"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Se lle concedes acceso de lectura a esta aplicación, poderá ler os datos novos e os correspondentes aos últimos 30 días"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Se lle dás acceso de lectura a esta aplicación, poderá ler os datos novos e os correspondentes aos últimos 30 días"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Se lle dás acceso de lectura a esta aplicación, poderá ler os datos novos e os anteriores"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Queres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a Saúde conectada?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Podes consultar como xestiona <xliff:g id="APP_NAME">%1$s</xliff:g> os teus datos na <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> do programador"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidade"</string>
@@ -295,6 +303,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"O último acceso produciuse nas últimas 24 horas"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Acceso da aplicación"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Nestes momentos non tes instalada ningunha aplicación compatible"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Acceso adicional"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permisos de aplicacións quitados"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -304,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Por que Saúde conectada quita permisos de aplicacións?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Se se suspende unha aplicación ou desaparece de Google Play, Saúde conectada quítalle os permisos de xeito automático.\n\nAo facelo, a aplicación xa non poderá acceder aos datos almacenados en Saúde conectada. Se esta aplicación escribiu datos anteriormente, aparecerá na lista de aplicacións inactivas."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendido"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguranza e restauración"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Exportación e importación"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Exportar automaticamente"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Restaurar datos"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Carga os datos exportados anteriormente"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Opción activada"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Opción desactivada"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Escoller a frecuencia"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Escolle se queres gardar os datos unha vez ou se prefires que se garden automaticamente cada certo tempo."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mensualmente"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Exportar a localización"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Activar a encriptación"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Cómpre encriptar os datos antes de gardalos. Ninguén, nin sequera Google ou Saúde conectada, poderá acceder a eles."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea un contrasinal para protexer os teus datos encriptados. Necesitaralo para importar e restaurar a túa información."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Contrasinal"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Repite o contrasinal"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Se esqueces o contrasinal e perdes o teléfono, Saúde conectada non che poderá axudar a recuperar os datos gardados."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Comeza a usar Saúde conectada"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Saúde conectada almacena os teus datos de saúde e actividade física, e permíteche sincronizar facilmente as distintas aplicacións do teléfono"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparte datos coas túas aplicacións"</string>
@@ -396,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Non concluínte"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisegundo}other{# milisegundos}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 vez}other{# veces}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Calorías activas: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Tantas repeticións como sexa posible"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nivel de esforzo: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 repetición}other{# repeticións}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetición}other{# repeticións}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmentos de exercicio"</string>
@@ -633,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 libra}other{# libras}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 pedra}other{# pedras}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} e {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 °C}other{# °C}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 grao Celsius}other{# graos Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 grao Kelvin}other{# graos Kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 °F}other{# °F}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 grao Fahrenheit}other{# graos Fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} °C}other{{formattedValue} °C}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} grao Celsius}other{{formattedValue} graos Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} °F}other{{formattedValue} °F}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} grao Fahrenheit}other{{formattedValue} graos Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} grao Kelvin}other{{formattedValue} graos Kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} °C (variación media)}other{{formattedValue} °C (variación media)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} grao Celsius (variación media)}other{{formattedValue} graos Celsius (variación media)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} °F (variación media)}other{{formattedValue} °F (variación media)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} grao Fahrenheit (variación media)}other{{formattedValue} graos Fahrenheit (variación media)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (variación media)}other{{formattedValue} K (variación media)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} grao Kelvin (variación media)}other{{formattedValue} graos Kelvin (variación media)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Axila"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Dedo"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Fronte"</string>
@@ -649,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Orella"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pulso"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vaxina"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Localización da medición"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Valor de referencia"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variación con respecto ao valor de referencia"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milla}other{# millas}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milla}other{# millas}}"</string>
@@ -681,7 +731,7 @@
     <string name="weight_unit_pound_label" msgid="8210663393844989211">"Libras"</string>
     <string name="weight_unit_kilogram_label" msgid="6623938920860887238">"Quilogramos"</string>
     <string name="weight_unit_stone_label" msgid="3063787243474847180">"Stones"</string>
-    <string name="energy_unit_calorie_label" msgid="3412965811470957296">"Quilocalorías"</string>
+    <string name="energy_unit_calorie_label" msgid="3412965811470957296">"Calorías"</string>
     <string name="energy_unit_kilojoule_label" msgid="6481196724083455110">"Quilojoules"</string>
     <string name="temperature_unit_celsius_label" msgid="4698347100553808449">"Celsius"</string>
     <string name="temperature_unit_fahrenheit_label" msgid="6590261955872562854">"Fahrenheit"</string>
@@ -741,6 +791,17 @@
     <string name="request_route_allow" msgid="4427372851821847274">"Permitir esta ruta"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"Permitir todas as rutas"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Non permitir"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permitir sempre"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Uso compartido da ruta de exercicio"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Controla o acceso desta aplicación ás rutas de exercicio das aplicacións conectadas"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Preguntar sempre"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Non permitir"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Queres activar os dous tipos de datos?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Queres desactivar os dous tipos de datos?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> require permiso de lectura dos exercicios para que se activen as rutas de exercicio"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> require permiso de acceso aos exercicios para que se activen as rutas de exercicio"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Si"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Non"</string>
     <string name="back_button" msgid="780519527385993407">"Atrás"</string>
     <string name="loading" msgid="2526615755685950317">"Cargando…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integración en proceso"</string>
@@ -826,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Último mes"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Entradas"</string>
     <string name="tab_access" msgid="7818197975407243701">"Acceso"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Queres permitir o acceso adicional de <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> tamén quere ter acceso a estas opcións de configuración de Saúde conectada"</string>
 </resources>

@@ -28,7 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorityListUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
@@ -125,19 +125,19 @@ class LoadPotentialPriorityListUseCaseTest {
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(
                 listOf(
-                    HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
+                    DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_2))
             .thenReturn(
                 listOf(
-                    HealthPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+                    DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_3))
             .thenReturn(
                 listOf(
-                    HealthPermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
+                    DataTypePermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
                         .toString()))
 
         val result =
@@ -156,19 +156,19 @@ class LoadPotentialPriorityListUseCaseTest {
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(
                 listOf(
-                    HealthPermission(HealthPermissionType.SLEEP, PermissionsAccessType.READ)
+                    DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.READ)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_2))
             .thenReturn(
                 listOf(
-                    HealthPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+                    DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_3))
             .thenReturn(
                 listOf(
-                    HealthPermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
+                    DataTypePermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
                         .toString()))
 
         val result =

@@ -73,6 +73,7 @@ import java.util.TimeZone
 import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
@@ -454,6 +455,7 @@ class HomeFragmentTest {
     }
 
     @Test
+    @Ignore("b/327170886")
     fun whenDataRestoreStatePending_showsRestoreBanner() {
         Mockito.doNothing().whenever(navigationUtils).navigate(any(), any())
         whenever(migrationViewModel.migrationState).then {

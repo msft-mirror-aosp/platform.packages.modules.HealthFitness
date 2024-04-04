@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -84,7 +85,9 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         if (sessionIdExtra == null || callingPackage == null) {
             Log.e(TAG, "Invalid Intent Extras, finishing.")
             finishCancelled()
@@ -132,7 +135,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val session = data.session
         val route = session.route!!
 
-        if (session.metadata.dataOrigin.packageName == callingPackage) {
+        if (session.metadata.dataOrigin.packageName == callingPackage &&
+            viewModel.isRouteReadOrWritePermissionGranted(callingPackage)) {
             finishWithResult(route)
             return
         }
@@ -189,6 +193,8 @@ class RouteRequestActivity : Hilt_RouteRequestActivity() {
         val allowAllButton: Button = view.findViewById<Button>(R.id.route_allow_all_button)
 
         allowAllButton.setOnClickListener {
+            healthConnectLogger.logInteraction(
+                RouteRequestElement.EXERCISE_ROUTE_DIALOG_ALWAYS_ALLOW_BUTTON)
             viewModel.grantReadRoutesPermission(callingPackage)
             finishWithResult(route)
         }
