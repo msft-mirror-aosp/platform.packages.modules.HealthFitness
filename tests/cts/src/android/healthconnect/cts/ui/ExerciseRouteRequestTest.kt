@@ -85,6 +85,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val result =
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow all routes"))
+                waitDisplayed(By.text("Don't allow"))
                 clickOnText("Allow this route")
             }
 
@@ -107,6 +108,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
         val result =
             ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
                 waitDisplayed(By.text("Allow this route"))
+                waitDisplayed(By.text("Don't allow"))
                 clickOnText("Allow all routes")
             }
 
@@ -141,7 +143,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun requestRoute_ownSession_doesNotShowDialog_returnsRoute() {
+    fun requestRoute_ownSession_writeRouteGranted_readRoutesDenied_returnsRoute() {
         val record = getExerciseSessionWithRoute()
         val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
         val requestIntent =
@@ -159,7 +161,78 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun requestRoute_withReadRoutesGranted_doesNotShowDialog_returnsRoute() {
+    fun requestRoute_ownSession_writeRouteDenied_readRoutesDenied_notUserFixed_showsDialog() {
+        val record = getExerciseSessionWithRoute()
+        val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
+        val requestIntent =
+            Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
+
+        val result =
+            runWithRevokedPermission(
+                ROUTE_READER_WRITER_APP.packageName, HealthPermissions.WRITE_EXERCISE_ROUTE) {
+                    ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
+                        waitDisplayed(By.text("Allow all routes"))
+                        clickOnText("Allow this route")
+                    }
+                }
+
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val extras = result.resultData.extras!!
+        assertThat(extras.keySet()).containsExactly(EXTRA_EXERCISE_ROUTE, EXTRA_SESSION_ID)
+        assertThat(extras.getParcelable(EXTRA_EXERCISE_ROUTE, ExerciseRoute::class.java))
+            .isEqualTo(record.route)
+        assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
+        assertPermissionRevoked(ROUTE_READER_WRITER_APP, READ_EXERCISE_ROUTES)
+    }
+
+    @Test
+    fun requestRoute_ownSession_writeRouteDenied_readRoutesDenied_userFixed_returnsNull() {
+        val record = getExerciseSessionWithRoute()
+        val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
+        val requestIntent =
+            Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
+
+        val result =
+            runWithRevokedPermission(
+                ROUTE_READER_WRITER_APP.packageName, HealthPermissions.WRITE_EXERCISE_ROUTE) {
+                    runWithUserFixedPermission(
+                        ROUTE_READER_WRITER_APP.packageName, READ_EXERCISE_ROUTES) {
+                            ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent)
+                        }
+                }
+
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+        val extras = result.resultData.extras!!
+        assertThat(extras.keySet()).containsExactly(EXTRA_SESSION_ID)
+        assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
+        assertPermissionRevoked(ROUTE_READER_WRITER_APP, READ_EXERCISE_ROUTES)
+    }
+
+    @Test
+    fun requestRoute_ownSession_writeRouteDenied_readRoutesGranted_returnsRoute() {
+        val record = getExerciseSessionWithRoute()
+        val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
+        val requestIntent =
+            Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
+        grantPermission(ROUTE_READER_WRITER_APP.getPackageName(), READ_EXERCISE_ROUTES)
+
+        val result =
+            runWithRevokedPermission(
+                ROUTE_READER_WRITER_APP.packageName, HealthPermissions.WRITE_EXERCISE_ROUTE) {
+                    ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent)
+                }
+
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val extras = result.resultData.extras!!
+        assertThat(extras.keySet()).containsExactly(EXTRA_EXERCISE_ROUTE, EXTRA_SESSION_ID)
+        assertThat(extras.getParcelable(EXTRA_EXERCISE_ROUTE, ExerciseRoute::class.java))
+            .isEqualTo(record.route)
+        assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
+        assertPermissionGranted(ROUTE_READER_WRITER_APP, READ_EXERCISE_ROUTES)
+    }
+
+    @Test
+    fun requestRoute_readRoutesGranted_doesNotShowDialog_returnsRoute() {
         val record = getExerciseSessionWithRoute()
         val recordId = insertRecordAndGetId(record)
         val requestIntent =
@@ -259,7 +332,24 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun requestRoute_withoutReadRoutesPermissionDeclared_doesNotShowDialog_returnsNull() {
+    fun requestRoute_readRoutesPermissionNotDeclared_doesNotShowDialog_returnsNull() {
+        assertThat(getDeclaredHealthPermissions(context.packageName))
+            .doesNotContain(READ_EXERCISE_ROUTES)
+        val record = getExerciseSessionWithRoute()
+        val recordId = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
+        val requestIntent =
+            Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
+
+        val result = ProxyActivity.launchActivityForResult(requestIntent) {}
+
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+        val extras = result.resultData.extras!!
+        assertThat(extras.keySet()).containsExactly(EXTRA_SESSION_ID)
+        assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
+    }
+
+    @Test
+    fun requestRoute_ownSession_readRoutesPermissionNotDeclared_doesNotShowDialog_returnsNull() {
         assertThat(getDeclaredHealthPermissions(context.packageName))
             .doesNotContain(READ_EXERCISE_ROUTES)
         val record = getExerciseSessionWithRoute()
@@ -339,7 +429,7 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
     }
 
     @Test
-    fun requestRoute_ownRoute_ignoresAccessTimeLimits() {
+    fun requestRoute_ownRoute_writeRouteGranted_ignoresAccessTimeLimits() {
         val record =
             getExerciseSessionWithRoute(TestUtils.yesterdayAt("11:00").minus(Duration.ofDays(60)))
         val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
@@ -347,6 +437,31 @@ class ExerciseRouteRequestTest : HealthConnectBaseTest() {
             Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
 
         val result = ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent)
+
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val extras = result.resultData.extras!!
+        assertThat(extras.keySet()).containsExactly(EXTRA_EXERCISE_ROUTE, EXTRA_SESSION_ID)
+        assertThat(extras.getParcelable(EXTRA_EXERCISE_ROUTE, ExerciseRoute::class.java))
+            .isEqualTo(record.route)
+        assertThat(extras.getString(EXTRA_SESSION_ID)).isEqualTo(recordId)
+    }
+
+    @Test
+    fun requestRoute_ownRoute_writeRouteDenied_ignoresAccessTimeLimits_showsDialog() {
+        val record =
+            getExerciseSessionWithRoute(TestUtils.yesterdayAt("11:00").minus(Duration.ofDays(60)))
+        val recordId: String = ROUTE_READER_WRITER_APP.insertRecords(record).get(0)
+        val requestIntent =
+            Intent(ACTION_REQUEST_EXERCISE_ROUTE).putExtra(EXTRA_SESSION_ID, recordId)
+
+        val result =
+            runWithRevokedPermission(
+                ROUTE_READER_WRITER_APP.packageName, HealthPermissions.WRITE_EXERCISE_ROUTE) {
+                    ROUTE_READER_WRITER_APP.startActivityForResult(requestIntent) {
+                        waitDisplayed(By.text("Allow all routes"))
+                        clickOnText("Allow this route")
+                    }
+                }
 
         assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
         val extras = result.resultData.extras!!

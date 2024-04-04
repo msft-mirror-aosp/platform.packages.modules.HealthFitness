@@ -30,8 +30,8 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NOT_DECLARED
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
-import com.android.healthconnect.controller.permissions.api.MakeHealthPermissionsRequestableUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.api.SetHealthPermissionsUserFixedFlagValueUseCase
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -50,7 +50,8 @@ constructor(
     private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase,
     private val grantHealthPermissionUseCase: GrantHealthPermissionUseCase,
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
-    private val makeHealthPermissionsRequestableUseCase: MakeHealthPermissionsRequestableUseCase
+    private val setHealthPermissionsUserFixedFlagValueUseCase:
+        SetHealthPermissionsUserFixedFlagValueUseCase,
 ) : ViewModel() {
 
     private val _additionalAccessState = MutableLiveData(State())
@@ -121,16 +122,16 @@ constructor(
                 if (screenState.exerciseRoutePermissionUIState == ALWAYS_ALLOW) {
                     revokeHealthPermissionUseCase(packageName, READ_EXERCISE_ROUTES)
                 } else if (screenState.exerciseRoutePermissionUIState == NEVER_ALLOW) {
-                    makeHealthPermissionsRequestableUseCase(
-                        packageName, listOf(READ_EXERCISE_ROUTES))
+                    setHealthPermissionsUserFixedFlagValueUseCase(
+                        packageName, listOf(READ_EXERCISE_ROUTES), false)
                 }
             }
             else -> {
-                // TODO(b/325252727) Remove this check after adding an api to set permission flags.
                 if (screenState.exerciseRoutePermissionUIState == ALWAYS_ALLOW) {
                     revokeHealthPermissionUseCase(packageName, READ_EXERCISE_ROUTES)
                 }
-                revokeHealthPermissionUseCase(packageName, READ_EXERCISE_ROUTES)
+                setHealthPermissionsUserFixedFlagValueUseCase(
+                    packageName, listOf(READ_EXERCISE_ROUTES), true)
             }
         }
         // refresh the ui

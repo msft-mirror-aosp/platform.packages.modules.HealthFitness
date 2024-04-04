@@ -33,6 +33,7 @@ import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.Vo2MaxRecord
 import android.health.connect.datatypes.units.BloodGlucose
 import android.health.connect.datatypes.units.Energy
@@ -42,6 +43,7 @@ import android.health.connect.datatypes.units.Percentage
 import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Pressure
 import android.health.connect.datatypes.units.Temperature
+import android.health.connect.datatypes.units.TemperatureDelta
 import android.health.connect.datatypes.units.Volume
 import android.os.Bundle
 import android.util.Log
@@ -211,6 +213,11 @@ class InsertRecordFragment : Fragment() {
                         EditableTextView(
                             this.requireContext(), mRecordsField.name, INPUT_TYPE_DOUBLE)
                 }
+                TemperatureDelta::class.java -> {
+                    field =
+                        EditableTextView(
+                            this.requireContext(), mRecordsField.name, INPUT_TYPE_DOUBLE)
+                }
                 CharSequence::class.java -> {
                     field =
                         EditableTextView(this.requireContext(), mRecordsField.name, INPUT_TYPE_TEXT)
@@ -270,6 +277,10 @@ class InsertRecordFragment : Fragment() {
             BodyTemperatureRecord::class -> {
                 enumFieldNameToClass["mMeasurementLocation"] =
                     BodyTemperatureMeasurementLocation::class as KClass<*>
+            }
+            SkinTemperatureRecord::class -> {
+                enumFieldNameToClass["mMeasurementLocation"] =
+                    SkinTemperatureRecord::class as KClass<*>
             }
             ExerciseSessionRecord::class -> {
                 enumFieldNameToClass["mExerciseType"] = ExerciseSessionType::class as KClass<*>

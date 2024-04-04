@@ -223,8 +223,9 @@ public class NutritionRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(NutritionRecord.class)
                                 .build());
-        NutritionRecord testRecord = getCompleteNutritionRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        NutritionRecord testRecord =
+                (NutritionRecord) TestUtils.insertRecord(getCompleteNutritionRecord());
         List<NutritionRecord> newNutritionRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(NutritionRecord.class)
@@ -241,8 +242,9 @@ public class NutritionRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        NutritionRecord testRecord = getCompleteNutritionRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        NutritionRecord testRecord =
+                (NutritionRecord) TestUtils.insertRecord(getCompleteNutritionRecord());
         List<NutritionRecord> newNutritionRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(NutritionRecord.class)
@@ -265,8 +267,9 @@ public class NutritionRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        NutritionRecord testRecord = getCompleteNutritionRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        NutritionRecord testRecord =
+                (NutritionRecord) TestUtils.insertRecord(getCompleteNutritionRecord());
         List<NutritionRecord> newNutritionRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(NutritionRecord.class)
@@ -363,8 +366,9 @@ public class NutritionRecordTest {
 
     @Test
     public void testDeleteNutritionRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseNutritionRecord(), getCompleteNutritionRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseNutritionRecord(), getCompleteNutritionRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -410,7 +414,7 @@ public class NutritionRecordTest {
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
-        for (Record record : records) {
+        for (Record record : insertedRecord) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
         }
     }
@@ -739,8 +743,8 @@ public class NutritionRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteNutritionRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteNutritionRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

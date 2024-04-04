@@ -17,15 +17,12 @@
 package com.android.server.healthconnect.storage;
 
 import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
-import static android.health.connect.Constants.PARENT_KEY;
 import static android.health.connect.HealthConnectException.ERROR_INTERNAL;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.internal.util.Preconditions.checkArgument;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
-
-import static com.google.common.collect.Iterables.getOnlyElement;
 
 import static java.util.Objects.requireNonNull;
 
@@ -44,6 +41,8 @@ import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Slog;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -56,8 +55,6 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
-
-import com.google.common.annotations.VisibleForTesting;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -301,11 +298,14 @@ public final class TransactionManager {
      */
     public Pair<List<RecordInternal<?>>, PageTokenWrapper> readRecordsAndPageToken(
             @NonNull ReadTransactionRequest request) throws SQLiteException {
-        // TODO(b/308158714): Make this build time check once we have different classes.
+        // TODO(b/308158714): Make these build time checks once we have different classes.
         checkArgument(
                 request.getPageToken() != null && request.getPageSize().isPresent(),
                 "Expect read by filter request, but request doesn't contain pagination info.");
-        ReadTableRequest readTableRequest = getOnlyElement(request.getReadRequests());
+        checkArgument(
+                request.getReadRequests().size() == 1,
+                "Expected read by filter request, but request contains multiple read requests.");
+        ReadTableRequest readTableRequest = request.getReadRequests().get(0);
         List<RecordInternal<?>> recordInternalList;
         RecordHelper<?> helper = readTableRequest.getRecordHelper();
         requireNonNull(helper);
@@ -545,6 +545,9 @@ public final class TransactionManager {
         long rowId = db.insertOrThrow(request.getTable(), null, request.getContentValues());
         request.getChildTableRequests()
                 .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
+        for (String postUpsertCommand : request.getPostUpsertCommands()) {
+            db.execSQL(postUpsertCommand);
+        }
 
         return rowId;
     }
@@ -567,6 +570,9 @@ public final class TransactionManager {
         if (rowId != -1) {
             request.getChildTableRequests()
                     .forEach(childRequest -> insertRecord(db, childRequest.withParentKey(rowId)));
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
         }
 
         return rowId;
@@ -621,6 +627,9 @@ public final class TransactionManager {
                             request.getContentValues(),
                             request.getUpdateWhereClauses().get(/* withWhereKeyword */ false),
                             /* WHERE args */ null);
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
 
             // throw an exception if the no row was updated, i.e. the uuid with corresponding
             // app_id_info for this request is not found in the table.
@@ -693,6 +702,10 @@ public final class TransactionManager {
                             request.getContentValues(),
                             SQLiteDatabase.CONFLICT_FAIL);
             insertChildTableRequest(request, rowId, db);
+            for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                db.execSQL(postUpsertCommand);
+            }
+
             return rowId;
         } catch (SQLiteConstraintException e) {
             try (Cursor cursor = db.rawQuery(request.getReadRequest().getReadCommand(), null)) {
@@ -701,7 +714,11 @@ public final class TransactionManager {
                             ERROR_INTERNAL, "Conflict found, but couldn't read the entry.");
                 }
 
-                return updateEntriesIfRequired(db, request, cursor);
+                long updateResult = updateEntriesIfRequired(db, request, cursor);
+                for (String postUpsertCommand : request.getPostUpsertCommands()) {
+                    db.execSQL(postUpsertCommand);
+                }
+                return updateResult;
             }
         }
     }
@@ -733,9 +750,11 @@ public final class TransactionManager {
 
     private void deleteChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
-        for (String childTable : request.getAllChildTablesToDelete()) {
+        for (RecordHelper.TableColumnPair childTableAndColumn :
+                request.getChildTablesWithRowsToBeDeletedDuringUpdate()) {
             DeleteTableRequest deleteTableRequest =
-                    new DeleteTableRequest(childTable).setId(PARENT_KEY, String.valueOf(rowId));
+                    new DeleteTableRequest(childTableAndColumn.getTableName())
+                            .setId(childTableAndColumn.getColumnName(), String.valueOf(rowId));
             db.execSQL(deleteTableRequest.getDeleteCommand());
         }
     }
@@ -743,10 +762,12 @@ public final class TransactionManager {
     private void insertChildTableRequest(
             UpsertTableRequest request, long rowId, SQLiteDatabase db) {
         for (UpsertTableRequest childTableRequest : request.getChildTableRequests()) {
-            db.insertOrThrow(
-                    childTableRequest.withParentKey(rowId).getTable(),
-                    null,
-                    childTableRequest.getContentValues());
+            long childRowId =
+                    db.insertOrThrow(
+                            childTableRequest.withParentKey(rowId).getTable(),
+                            null,
+                            childTableRequest.getContentValues());
+            insertChildTableRequest(childTableRequest, childRowId, db);
         }
     }
 

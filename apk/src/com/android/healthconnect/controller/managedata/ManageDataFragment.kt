@@ -26,6 +26,7 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         private const val AUTO_DELETE_PREFERENCE_KEY = "auto_delete"
         private const val DATA_SOURCES_AND_PRIORITY_PREFERENCE_KEY = "data_sources_and_priority"
         private const val SET_UNITS_PREFERENCE_KEY = "set_units"
+        private const val BACKUP_AND_RESTORE_PREFERENCE_KEY = "backup_and_restore"
     }
 
     init {
@@ -45,6 +46,10 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
 
     private val mSetUnitsPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(SET_UNITS_PREFERENCE_KEY)
+    }
+
+    private val backupAndRestorePreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(BACKUP_AND_RESTORE_PREFERENCE_KEY)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -76,6 +81,16 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         mSetUnitsPreference?.setOnPreferenceClickListener {
             findNavController().navigate(R.id.action_manageData_to_setUnits)
             true
+        }
+
+        if (featureUtils.isImportExportEnabled()) {
+            // TODO: b/325917291 - Add proper log name for the backup and restore button.
+            backupAndRestorePreference?.setOnPreferenceClickListener {
+                findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
+                true
+            }
+        } else {
+            preferenceScreen.removePreferenceRecursively(BACKUP_AND_RESTORE_PREFERENCE_KEY)
         }
     }
 

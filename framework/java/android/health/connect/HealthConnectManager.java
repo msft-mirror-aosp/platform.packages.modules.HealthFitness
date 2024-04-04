@@ -445,9 +445,9 @@ public class HealthConnectManager {
     }
 
     /**
-     * Allow provided permissions to be requested again if they previously were denied multiple
-     * times by the users.
+     * Sets/clears {@link PackageManager#FLAG_PERMISSION_USER_FIXED} for given health permissions.
      *
+     * @param value whether to set or clear the flag, {@code true} means set, {@code false} - clear.
      * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
      *     Health permissions or not declared by the app.
      * @throws NullPointerException if any of the arguments is {@code null}.
@@ -457,10 +457,11 @@ public class HealthConnectManager {
      */
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
     @UserHandleAware
-    public void makeHealthPermissionsRequestable(
-            @NonNull String packageName, @NonNull List<String> permissions) {
+    public void setHealthPermissionsUserFixedFlagValue(
+            @NonNull String packageName, @NonNull List<String> permissions, boolean value) {
         try {
-            mService.makeHealthPermissionsRequestable(packageName, mContext.getUser(), permissions);
+            mService.setHealthPermissionsUserFixedFlagValue(
+                    packageName, mContext.getUser(), permissions, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
