@@ -146,8 +146,9 @@ public class BasalMetabolicRateRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
                                 .build());
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -169,8 +170,9 @@ public class BasalMetabolicRateRecordTest {
                         .setStartTime(Instant.now().minus(1, ChronoUnit.DAYS))
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -196,8 +198,9 @@ public class BasalMetabolicRateRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -253,8 +256,10 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testDeleteBasalMetabolicRateRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBasalMetabolicRateRecord(), getCompleteBasalMetabolicRateRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -294,10 +299,12 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testDeleteBasalMetabolicRateRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBasalMetabolicRateRecord(), getCompleteBasalMetabolicRateRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -916,8 +923,9 @@ public class BasalMetabolicRateRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBasalMetabolicRateRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBasalMetabolicRateRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

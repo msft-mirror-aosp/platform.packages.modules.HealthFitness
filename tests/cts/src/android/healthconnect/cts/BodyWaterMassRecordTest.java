@@ -126,8 +126,9 @@ public class BodyWaterMassRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyWaterMassRecord.class)
                                 .build());
-        BodyWaterMassRecord testRecord = getCompleteBodyWaterMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BodyWaterMassRecord testRecord =
+                (BodyWaterMassRecord) TestUtils.insertRecord(getCompleteBodyWaterMassRecord());
         List<BodyWaterMassRecord> newBodyWaterMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyWaterMassRecord.class)
@@ -147,8 +148,9 @@ public class BodyWaterMassRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BodyWaterMassRecord testRecord = getCompleteBodyWaterMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BodyWaterMassRecord testRecord =
+                (BodyWaterMassRecord) TestUtils.insertRecord(getCompleteBodyWaterMassRecord());
         List<BodyWaterMassRecord> newBodyWaterMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyWaterMassRecord.class)
@@ -174,8 +176,9 @@ public class BodyWaterMassRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BodyWaterMassRecord testRecord = getCompleteBodyWaterMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BodyWaterMassRecord testRecord =
+                (BodyWaterMassRecord) TestUtils.insertRecord(getCompleteBodyWaterMassRecord());
         List<BodyWaterMassRecord> newBodyWaterMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyWaterMassRecord.class)
@@ -229,8 +232,8 @@ public class BodyWaterMassRecordTest {
     @Test
     public void testDeleteBodyWaterMassRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBodyWaterMassRecord(), getCompleteBodyWaterMassRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseBodyWaterMassRecord(), getCompleteBodyWaterMassRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -269,10 +272,10 @@ public class BodyWaterMassRecordTest {
     @Test
     public void testDeleteBodyWaterMassRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBodyWaterMassRecord(), getCompleteBodyWaterMassRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseBodyWaterMassRecord(), getCompleteBodyWaterMassRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -472,8 +475,9 @@ public class BodyWaterMassRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBodyWaterMassRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBodyWaterMassRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -518,7 +522,7 @@ public class BodyWaterMassRecordTest {
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<BodyWaterMassRecord> result = TestUtils.readRecords(requestUsingIds);
         assertThat(result).hasSize(insertedRecords.size());
-        assertThat(result).containsExactlyElementsIn(recordList);
+        assertThat(result).containsExactlyElementsIn(insertedRecords);
     }
 
     @Test(expected = IllegalArgumentException.class)
