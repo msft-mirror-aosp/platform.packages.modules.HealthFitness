@@ -81,7 +81,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.kotlin.mock
 
@@ -115,7 +114,7 @@ class ConnectedAppFragmentTest {
             MutableLiveData(emptySet<DataTypePermission>())
         }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
-        whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
+        whenever(viewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         val writePermission = DataTypePermission(EXERCISE, WRITE)
         val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
@@ -132,6 +131,7 @@ class ConnectedAppFragmentTest {
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(AdditionalAccessViewModel.State())
         }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
 
         // disable animations
         toggleAnimation(false)
@@ -527,6 +527,25 @@ class ConnectedAppFragmentTest {
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
                 exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<ConnectedAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(withText(R.string.additional_access_label))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun additionalAccessState_onlyOneAdditionalPermission_showsAdditionalAccess() {
+        val validState =
+            AdditionalAccessViewModel.State(
+                backgroundReadUIState =
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true, isEnabled = false, isGranted = false))
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }

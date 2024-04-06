@@ -140,6 +140,9 @@ class PermissionsActivityTest {
     @After
     fun tearDown() {
         toggleAnimation(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(false)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(false)
     }
 
     @Test

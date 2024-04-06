@@ -155,6 +155,17 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 switchPreference.isChecked = healthPermission in granted
             }
         }
+        appPermissionViewModel.lastReadPermissionDisconnected.observe(viewLifecycleOwner) { lastRead
+            ->
+            if (lastRead) {
+                Toast.makeText(
+                        requireContext(),
+                        R.string.removed_additional_permissions_toast,
+                        Toast.LENGTH_LONG)
+                    .show()
+                appPermissionViewModel.markLastReadShown()
+            }
+        }
 
         deletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) appPermissionViewModel.loadPermissionsForPackage(packageName)
@@ -317,7 +328,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                         it.logNameActive = AppAccessElement.PERMISSION_SWITCH_ACTIVE
                         it.logNameInactive = AppAccessElement.PERMISSION_SWITCH_INACTIVE
                         it.setOnPreferenceChangeListener { _, newValue ->
-                            allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
+                            allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
                             val checked = newValue as Boolean
                             val permissionUpdated =
                                 appPermissionViewModel.updatePermission(
@@ -329,7 +340,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                                         Toast.LENGTH_SHORT)
                                     .show()
                             }
-                            allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
+                            allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
                             permissionUpdated
                         }
                     }

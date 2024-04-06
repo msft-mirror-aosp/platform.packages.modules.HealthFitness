@@ -59,7 +59,7 @@ class LoadAppPermissionsStatusUseCaseTest {
 
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(readExercisePermission, writeExercisePermission))
 
         val result = loadAppPermissionsStatusUseCase.invoke(TEST_APP_PACKAGE_NAME)
@@ -80,7 +80,7 @@ class LoadAppPermissionsStatusUseCaseTest {
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(readExercisePermission.toString(), writeExercisePermission.toString()))
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(writeExercisePermission))
 
         val result = loadAppPermissionsStatusUseCase.invoke(TEST_APP_PACKAGE_NAME)
