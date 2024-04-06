@@ -34,7 +34,7 @@
             app:destination="@id/exportFrequencyFragment" />
         <action
             android:id="@+id/action_exportDestinationFragment_to_exportEncryptionFragment"
-            app:destination="@id/exportFrequencyFragment" />
+            app:destination="@id/exportEncryptionFragment" />
     </fragment>
 
     <fragment

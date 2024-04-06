@@ -81,26 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"pristup podacima o zdravlju"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Očitavanje potrošenih kalorija"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Aplikaciji omogućuje očitavanje podataka o potrošenim kalorijama"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Pristupanje podacima u pozadini"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima u pozadini?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Dopustite aplikaciji da pristupa podacima Health Connecta kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ako dopustite, ova aplikacija može pristupati podacima Health Connecta kad ne upotrebljavate aplikaciju."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Pristupanje prijašnjim podacima"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa prijašnjim podacima?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Dopustite aplikaciji da pristupa podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Dopustite aplikaciji da pristupa prijašnjim podacima Health Connecta"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dopustite, aplikacija može pristupati podacima Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Ako dopustite, aplikacija može pristupati prijašnjim podacima Health Connecta."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Očitavanje aktivne potrošnje kalorija"</string>
@@ -273,10 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Dopusti sve"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne dopuštaj"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Odaberite podatke za koje želite da ih ova aplikacija čita ili bilježi u Health Connect"</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ako date pristup za čitanje, aplikacija može čitati nove podatke i podatke iz proteklih 30 dana"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ako date pristup za čitanje, aplikacija može čitati nove i prijašnje podatke"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa Health Connectu?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"U <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> razvojnog programera možete saznati kako aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> postupa s vašim podacima"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima o privatnosti"</string>
@@ -438,16 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Dvojbeno"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}few{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}one{# milisekunda}few{# milisekunde}other{# milisekundi}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
-    <skip />
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 put}one{# put}few{# puta}other{# puta}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Aktivno: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Ukupno: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Koliko god je ponavljanja moguće"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Razina truda: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ponavljanje}one{# ponavljanje}few{# ponavljanja}other{# ponavljanja}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ponavljanje}one{# ponavljanje}few{# ponavljanja}other{# ponavljanja}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenti vježbe"</string>
@@ -904,8 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Prošli mjesec"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Unosi"</string>
     <string name="tab_access" msgid="7818197975407243701">"Pristup"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Želite li dopustiti dodatni pristup za aplikaciju <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi pristupiti i ovim postavkama Health Connecta"</string>
 </resources>

@@ -17,10 +17,13 @@
 package com.android.healthconnect.controller.export
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
@@ -45,6 +48,47 @@ class ExportEncryptionFragment : Hilt_ExportEncryptionFragment() {
             findNavController()
                 .navigate(R.id.action_exportEncryptionFragment_to_exportDestinationFragment)
         }
+
+        val password = view.findViewById<EditText>(R.id.export_password)
+        val repeatedPassword = view.findViewById<EditText>(R.id.export_repeat_password)
+
+        val passwordTextChangedListener = createTextChangeWatcher(repeatedPassword, password)
+        password?.addTextChangedListener(passwordTextChangedListener)
+
+        val repeatedPasswordTextChangedListener =
+            createTextChangeWatcher(password, repeatedPassword)
+        repeatedPassword?.addTextChangedListener(repeatedPasswordTextChangedListener)
         return view
+    }
+
+    private fun createTextChangeWatcher(
+        editTextToBeCompared: EditText?,
+        currentEditText: EditText?
+    ): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Do nothing.
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Do nothing.
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // We should NOT use strings here as strings are immutable and will be in memory
+                // until cleared by the garbage collector.
+                if (s !== null &&
+                    editTextToBeCompared != null &&
+                    java.lang.CharSequence.compare(s, editTextToBeCompared.text) == 0) {
+                    // Clear all errors.
+                    currentEditText?.error = null
+                    editTextToBeCompared.error = null
+                } else {
+                    // TODO: b/325917283 - Disable next button if the passwords do not match
+                    // criteria
+                    currentEditText?.error = getString(R.string.export_passwords_mismatch_error)
+                }
+            }
+        }
     }
 }

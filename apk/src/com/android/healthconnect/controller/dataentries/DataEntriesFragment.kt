@@ -34,6 +34,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseSessionEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.Empty
@@ -55,11 +56,13 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import com.android.healthconnect.controller.utils.setTitle
 import com.android.healthconnect.controller.utils.setupMenu
+import com.android.healthconnect.controller.utils.toInstant
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import javax.inject.Inject
@@ -69,6 +72,7 @@ import javax.inject.Inject
 class DataEntriesFragment : Hilt_DataEntriesFragment() {
 
     @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var timeSource: TimeSource
     private val pageName = PageName.DATA_ENTRIES_PAGE
 
     private lateinit var permissionType: HealthPermissionType
@@ -123,6 +127,12 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
             onDeleteEntryClicked = onDeleteEntryListener,
             onItemClickedListener = onClickEntryListener)
     }
+    private val plannedExerciseSessionItemViewBinder by lazy {
+        // TODO (b/332850697) Add implementation for onItemClickedListener that navigates to details
+        // of planned exercise session
+        PlannedExerciseSessionItemViewBinder(
+            onDeleteEntryClicked = onDeleteEntryListener, onItemClickedListener = null)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -152,6 +162,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
         logger.logImpression(ToolbarElement.TOOLBAR_SETTINGS_BUTTON)
 
         dateNavigationView = view.findViewById(R.id.date_navigation_view)
+        setDateNavigationViewMaxDate()
         noDataView = view.findViewById(R.id.no_data_view)
         errorView = view.findViewById(R.id.error_view)
         loadingView = view.findViewById(R.id.loading)
@@ -161,6 +172,8 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
                 .setViewBinder(SleepSessionEntry::class.java, sleepSessionViewBinder)
                 .setViewBinder(ExerciseSessionEntry::class.java, exerciseSessionItemViewBinder)
                 .setViewBinder(SeriesDataEntry::class.java, seriesDataItemViewBinder)
+                .setViewBinder(
+                    PlannedExerciseSessionEntry::class.java, plannedExerciseSessionItemViewBinder)
                 .setViewBinder(FormattedAggregation::class.java, aggregationViewBinder)
                 .build()
         entriesRecyclerView =
@@ -195,6 +208,7 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
         if (entriesViewModel.currentSelectedDate.value != null) {
             val date = entriesViewModel.currentSelectedDate.value!!
             dateNavigationView.setDate(date)
+            setDateNavigationViewMaxDate()
             entriesViewModel.loadData(permissionType, date)
         } else {
             entriesViewModel.loadData(permissionType, dateNavigationView.getDate())
@@ -249,6 +263,19 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
                     entriesRecyclerView.isVisible = false
                 }
             }
+        }
+    }
+
+    private fun setDateNavigationViewMaxDate() {
+        if (permissionType == HealthPermissionType.PLANNED_EXERCISE) {
+            // Sets the maximum date to null for the date picker to be able navigate to future dates
+            // since there can be training planned exercise session entries in future dates for
+            // planned exercise session (training plan) permission type.
+            dateNavigationView.setMaxDate(null)
+        } else {
+            // Sets the maximum date to today since there can never be data entries in future dates
+            // for the rest of permission types.
+            dateNavigationView.setMaxDate(timeSource.currentTimeMillis().toInstant())
         }
     }
 

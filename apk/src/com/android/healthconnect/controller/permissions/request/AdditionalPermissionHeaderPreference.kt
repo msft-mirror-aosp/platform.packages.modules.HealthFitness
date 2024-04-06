@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.healthconnect.controller.shared.preference
+package com.android.healthconnect.controller.permissions.request
 
 import android.content.Context
 import android.util.AttributeSet
@@ -34,7 +34,7 @@ constructor(
 
     private lateinit var title: TextView
     private var appName: String? = null
-    private var titleText = -1
+    private var titleText = 0
 
     private lateinit var summary: TextView
     private var summaryText = ""
@@ -61,8 +61,10 @@ constructor(
     }
 
     private fun updateTitle() {
-        val text = context.getString(titleText, appName)
-        title.text = boldAppName(appName, text)
+        if (titleText != 0) {
+            val text = context.getString(titleText, appName)
+            title.text = boldAppName(appName, text)
+        }
     }
 
     private fun updateSummary() {

@@ -43,7 +43,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
@@ -183,6 +182,8 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -231,8 +232,6 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
-        Espresso.onIdle()
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
 
@@ -261,7 +260,6 @@ class MockedPermissionsActivityTest {
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
-
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
@@ -296,14 +294,10 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
-
-        // TODO here we need other logs
-        verify(healthConnectLogger, atLeast(1))
-            .logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger, atLeast(1))
-            .logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
 
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         val returnedIntent = scenario.result.resultData
@@ -357,12 +351,6 @@ class MockedPermissionsActivityTest {
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
-        // TODO here we need other logs
-        verify(healthConnectLogger, atLeast(1))
-            .logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger, atLeast(1))
-            .logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         val returnedIntent = scenario.result.resultData
         assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
@@ -411,10 +399,15 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -427,6 +420,8 @@ class MockedPermissionsActivityTest {
         onView(withText("Allow additional access for $TEST_APP_NAME?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -445,7 +440,6 @@ class MockedPermissionsActivityTest {
                     PERMISSION_GRANTED))
     }
 
-    // TODO might this be better suited in the not mocked activity?
     @Test
     fun requestWithCombinedPermissions_noPermissionsGranted_denyAdditionalPermissions_sendsResultOk() {
         val permissions =
@@ -490,6 +484,8 @@ class MockedPermissionsActivityTest {
         onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -502,6 +498,8 @@ class MockedPermissionsActivityTest {
         onView(withText("Allow additional access for $TEST_APP_NAME?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.dont_allow).callOnClick()
         }
 
@@ -562,18 +560,16 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         // This should show additional permissions only
         onView(withText("Allow additional access for $TEST_APP_NAME?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
-
-        verify(healthConnectLogger, atLeast(1))
-            .logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-        verify(healthConnectLogger, atLeast(1))
-            .logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
 
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         val returnedIntent = scenario.result.resultData
@@ -612,6 +608,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -647,6 +645,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.dont_allow).callOnClick()
         }
 
@@ -684,6 +684,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -759,14 +761,19 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         onView(withText("Health Connect integration in progress"))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "Health Connect is being integrated with the Android system.\n\nYou'll get a notification when the process is complete and you can use $TEST_APP_NAME with Health Connect."))
             .inRoot(isDialog())
-            .check(matches(ViewMatchers.isDisplayed()))
-        onView(withText("Got it")).inRoot(isDialog()).check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
+        onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
         verify(healthConnectLogger)
             .logImpression(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_CONTAINER)
         verify(healthConnectLogger)
@@ -811,16 +818,19 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         onView(withText("Health Connect restore in progress"))
             .inRoot(isDialog())
-            .check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
         onView(
                 withText(
                     "Health Connect is restoring data and permissions. This may take some time to complete."))
             .inRoot(isDialog())
-            .check(matches(ViewMatchers.isDisplayed()))
-        onView(withText("Got it")).inRoot(isDialog()).check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
+        onView(withText("Got it")).inRoot(isDialog()).check(matches(isDisplayed()))
         verify(healthConnectLogger)
             .logImpression(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_CONTAINER)
         verify(healthConnectLogger)

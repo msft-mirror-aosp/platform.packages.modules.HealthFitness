@@ -180,6 +180,7 @@ public final class SkinTemperatureRecord extends IntervalRecord {
     public boolean equals(@Nullable Object object) {
         if (this == object) return true;
         if (!(object instanceof SkinTemperatureRecord)) return false;
+        if (!super.equals(object)) return false;
         SkinTemperatureRecord that = (SkinTemperatureRecord) object;
         if (!Objects.equals(getBaseline(), that.getBaseline())
                 || getMeasurementLocation() != that.getMeasurementLocation()) return false;

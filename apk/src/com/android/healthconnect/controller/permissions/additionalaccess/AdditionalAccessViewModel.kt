@@ -18,6 +18,7 @@
 
 package com.android.healthconnect.controller.permissions.additionalaccess
 
+import android.health.connect.HealthPermissions
 import android.health.connect.HealthPermissions.READ_EXERCISE
 import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import androidx.lifecycle.LiveData
@@ -29,9 +30,13 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NOT_DECLARED
+import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.SetHealthPermissionsUserFixedFlagValueUseCase
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
@@ -52,9 +57,12 @@ constructor(
     private val revokeHealthPermissionUseCase: RevokeHealthPermissionUseCase,
     private val setHealthPermissionsUserFixedFlagValueUseCase:
         SetHealthPermissionsUserFixedFlagValueUseCase,
+    private val getAdditionalPermissionUseCase: GetAdditionalPermissionUseCase,
+    private val getGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
+    private val loadAccessDateUseCase: LoadAccessDateUseCase
 ) : ViewModel() {
 
-    private val _additionalAccessState = MutableLiveData(State())
+    private val _additionalAccessState = MutableLiveData<State>()
     val additionalAccessState: LiveData<State>
         get() = _additionalAccessState
 
@@ -77,6 +85,8 @@ constructor(
             }
         }
 
+    fun loadAccessDate(packageName: String) = loadAccessDateUseCase.invoke(packageName)
+
     /** Loads available additional access preferences. */
     fun loadAdditionalAccessPreferences(packageName: String) {
         viewModelScope.launch {
@@ -86,20 +96,56 @@ constructor(
                 newState =
                     when (val result = loadExerciseRoutePermissionUseCase(packageName)) {
                         is UseCaseResults.Success -> {
-                            State(
+                            newState.copy(
                                 exerciseRoutePermissionUIState =
                                     result.data.exerciseRoutePermissionState,
                                 exercisePermissionUIState = result.data.exercisePermissionState)
                         }
                         else -> {
-                            State(
+                            newState.copy(
                                 exerciseRoutePermissionUIState = NOT_DECLARED,
                                 exercisePermissionUIState = NOT_DECLARED)
                         }
                     }
             }
+
+            val additionalPermissions = getAdditionalPermissionUseCase(packageName)
+            val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
+            val isAnyReadPermissionGranted =
+                grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
+            if (featureUtils.isBackgroundReadEnabled() &&
+                additionalPermissions.contains(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)) {
+                newState =
+                    newState.copy(
+                        backgroundReadUIState =
+                            AdditionalPermissionState(
+                                isDeclared = true,
+                                isGranted =
+                                    grantedPermissions.contains(
+                                        HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND),
+                                isEnabled = isAnyReadPermissionGranted))
+            }
+            if (featureUtils.isHistoryReadEnabled() &&
+                additionalPermissions.contains(HealthPermissions.READ_HEALTH_DATA_HISTORY)) {
+                newState =
+                    newState.copy(
+                        historyReadUIState =
+                            AdditionalPermissionState(
+                                isDeclared = true,
+                                isGranted =
+                                    grantedPermissions.contains(
+                                        HealthPermissions.READ_HEALTH_DATA_HISTORY),
+                                isEnabled = isAnyReadPermissionGranted))
+            }
+
             _additionalAccessState.postValue(newState)
         }
+    }
+
+    private fun isDataTypeReadPermission(permission: String): Boolean {
+        val healthPermission = HealthPermission.fromPermissionString(permission)
+        return ((healthPermission is HealthPermission.DataTypePermission) &&
+            healthPermission.permissionsAccessType == PermissionsAccessType.READ)
     }
 
     /** Updates exercise route permission state and refreshes the screen state. */
@@ -152,10 +198,20 @@ constructor(
         _showEnableExerciseEvent.postValue(false)
     }
 
+    fun updatePermission(packageName: String, permission: String, grant: Boolean) {
+        if (grant) {
+            grantHealthPermissionUseCase.invoke(packageName, permission)
+        } else {
+            revokeHealthPermissionUseCase.invoke(packageName, permission)
+        }
+    }
+
     /** Holds [AdditionalAccessFragment] UI state. */
     data class State(
         val exerciseRoutePermissionUIState: PermissionUiState = NOT_DECLARED,
-        val exercisePermissionUIState: PermissionUiState = NOT_DECLARED
+        val exercisePermissionUIState: PermissionUiState = NOT_DECLARED,
+        val backgroundReadUIState: AdditionalPermissionState = AdditionalPermissionState(),
+        val historyReadUIState: AdditionalPermissionState = AdditionalPermissionState()
     ) {
 
         /**
@@ -167,9 +223,28 @@ constructor(
          */
         fun isValid(): Boolean {
             return (exerciseRoutePermissionUIState != NOT_DECLARED &&
-                exercisePermissionUIState != NOT_DECLARED)
+                exercisePermissionUIState != NOT_DECLARED) ||
+                backgroundReadUIState.isDeclared ||
+                historyReadUIState.isDeclared
+        }
+
+        fun showFooter(): Boolean {
+            return isAdditionalPermissionDisabled(backgroundReadUIState) ||
+                isAdditionalPermissionDisabled(historyReadUIState)
+        }
+
+        fun isAdditionalPermissionDisabled(
+            additionalPermissionState: AdditionalPermissionState
+        ): Boolean {
+            return additionalPermissionState.isDeclared && !additionalPermissionState.isEnabled
         }
     }
+
+    data class AdditionalPermissionState(
+        val isDeclared: Boolean = false,
+        val isEnabled: Boolean = false,
+        val isGranted: Boolean = false
+    )
 
     data class EnableExerciseDialogEvent(
         val shouldShowDialog: Boolean = false,
