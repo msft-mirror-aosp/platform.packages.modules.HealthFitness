@@ -15,7 +15,7 @@
   -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.android.healthconnect.controller.shared.preference.AdditionalPermissionHeaderPreference
+    <com.android.healthconnect.controller.permissions.request.AdditionalPermissionHeaderPreference
         android:key="request_additional_permissions_header"/>
     <PreferenceCategory
         android:key="additional_permissions_category"

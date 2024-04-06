@@ -158,11 +158,12 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
         metadataBuilder.setDataOrigin(dataOrigin);
         List<Record> insertedTrainingPlans = new ArrayList<>();
         List<Record> insertedExercises = new ArrayList<>();
-        PlannedExerciseSessionRecord trainingPlan =
-                DataFactory.plannedExerciseSession(metadataBuilder.build()).build();
+        PlannedExerciseSessionRecord.Builder trainingPlan =
+                DataFactory.plannedExerciseSession(metadataBuilder.build());
         PlannedExerciseSessionRecord insertedTrainingPlan =
-                (PlannedExerciseSessionRecord) insertRecords(List.of(trainingPlan)).get(0);
-        assertThat(insertedTrainingPlan).isEqualTo(trainingPlan);
+                (PlannedExerciseSessionRecord) insertRecords(List.of(trainingPlan.build())).get(0);
+        assertThat(insertedTrainingPlan)
+                .isEqualTo(trainingPlan.setMetadata(insertedTrainingPlan.getMetadata()).build());
         insertedTrainingPlans.add(insertedTrainingPlan);
         assertThat(insertedTrainingPlan.getMetadata().getId()).isNotNull();
 

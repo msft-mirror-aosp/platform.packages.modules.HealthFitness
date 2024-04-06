@@ -41,22 +41,23 @@ class HealthPermissionReaderTest {
     }
 
     @Test
-    fun getDeclaredPermissions_hidesSessionTypesIfDisabled() = runTest {
+    fun getValidHealthPermissions_hidesSessionTypesIfDisabled() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsSessionTypesEnabled(false)
 
-        assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+        assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission())
+                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
+                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES)
     }
 
     @Test
-    fun getDeclaredPermissions_filtersOutAdditionalPermissions() = runTest {
+    fun getValidHealthPermissions_returnsDataTypeAndAdditionalPermissions() = runTest {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
 
-        assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+        assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermissions.READ_EXERCISE.toHealthPermission(),
@@ -64,12 +65,14 @@ class HealthPermissionReaderTest {
                 HealthPermissions.WRITE_SLEEP.toHealthPermission(),
                 HealthPermissions.READ_SLEEP.toHealthPermission(),
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission())
+                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
+                HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
+                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES)
     }
 
     @Test
-    fun getDeclaredPermissions_returnsAllPermissions_exceptHiddenPermissions() = runTest {
-        assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+    fun getValidHealthPermissions_returnsAllPermissions_exceptHiddenPermissions() = runTest {
+        assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
                 HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermissions.READ_EXERCISE.toHealthPermission(),
@@ -77,21 +80,24 @@ class HealthPermissionReaderTest {
                 HealthPermissions.WRITE_SLEEP.toHealthPermission(),
                 HealthPermissions.READ_SLEEP.toHealthPermission(),
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
-                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission())
+                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
+                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES)
     }
 
     @Test
-    fun getHealthPermissions_returnsAllPermissions() {
-        assertThat(permissionReader.getHealthPermissions(TEST_APP_PACKAGE_NAME))
+    fun getDeclaredHealthPermissions_returnsAllPermissions() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
-                HealthPermissions.WRITE_EXERCISE_ROUTE,
-                HealthPermissions.READ_EXERCISE,
-                HealthPermissions.READ_EXERCISE_ROUTES,
-                HealthPermissions.WRITE_EXERCISE,
-                HealthPermissions.WRITE_SLEEP,
-                HealthPermissions.READ_SLEEP,
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED,
-                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED)
+                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
+                HealthPermissions.READ_EXERCISE,
+                HealthPermissions.WRITE_EXERCISE,
+                HealthPermissions.READ_SLEEP,
+                HealthPermissions.WRITE_SLEEP,
+                HealthPermissions.READ_EXERCISE_ROUTES,
+                HealthPermissions.WRITE_EXERCISE_ROUTE,
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
     }
 
     @Test

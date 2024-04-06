@@ -142,6 +142,15 @@
             android:minWidth="250dp"
             android:text="@string/request_bg_read_permission" />
 
+        <Button
+            android:id="@+id/read_data_in_background_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/read_data_in_background" />
+
     </LinearLayout>
 
 </ScrollView>

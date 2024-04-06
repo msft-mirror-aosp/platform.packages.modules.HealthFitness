@@ -145,6 +145,15 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 switchPreference.isChecked = healthPermission in granted
             }
         }
+        viewModel.lastReadPermissionDisconnected.observe(viewLifecycleOwner) { lastRead ->
+            if (lastRead) {
+                Toast.makeText(
+                        requireContext(),
+                        R.string.removed_additional_permissions_toast,
+                        Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
 
         viewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->
             when (state) {
