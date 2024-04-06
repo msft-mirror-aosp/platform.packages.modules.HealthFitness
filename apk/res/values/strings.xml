@@ -442,6 +442,7 @@
     <string name="export_encryption_instruction_description" description="The instruction description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Create a password to protect your encrypted data. You will need this password to import and restore your data.</string>
     <string name="export_password_hint" description="Placeholder text on the input field which reminds users to enter their password here. [CHAR_LIMIT=50]">Password</string>
     <string name="export_repeat_password_hint" description="Placeholder text on the input field which reminds users to repeat their password here. [CHAR_LIMIT=50]">Repeat password</string>
+    <string name="export_passwords_mismatch_error" description="Text shown to the users that indicates the entered password and the repeated password do not match. [CHAR_LIMIT=NONE]">Passwords don\'t match</string>
     <string name="export_encryption_warning" description="Description to warn users the importance to remember their passwords.">If you forget your password and lose your phone, Health&#160;Connect cannot help you recover your saved data.</string>
 
     <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow.">Back</string>
@@ -1070,8 +1071,8 @@
     <string name="request_route_allow_all" description="Label for button in the route request dialog to allow an app access all exercise routes from now on [CHAR_LIMIT=30]">Allow all routes</string>
     <string name="request_route_dont_allow" description="Label for button in the route request dialog to deny an app access to the requested route [CHAR_LIMIT=20]">Don\'t allow</string>
     <string name="route_permissions_always_allow" description="Label for button in the route read request dialog to allow an app access all exercise routes from now on.">Always allow</string>
-    <string name="route_permissions_label" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Exercise route sharing</string>
-    <string name="route_permissions_summary" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Control how this app accesses exercise routes from connected apps</string>
+    <string name="route_permissions_label" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Access exercise routes</string>
+    <string name="route_permissions_summary" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access routes</string>
     <string name="route_permissions_ask" description="Label for button in the route read request dialog to require an app to ask for a permission next time they need it.">Ask every time</string>
     <string name="route_permissions_deny" description="Label for button in the route read request dialog to to deny with prejudice a permission grant.">Don\u2019t allow</string>
     <string name="exercise_permission_dialog_enable_title" description="Title for a dialog to ask users to disable exercise and exercise routes permissions.">Enable both data types? </string>

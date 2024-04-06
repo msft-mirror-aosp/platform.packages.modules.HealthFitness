@@ -1,4 +1,20 @@
 {
+  "healthfitness-mainline-presubmit": [
+    {
+      "name" : "HealthConnectControllerUITests",
+      "options": [
+                {
+                    "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
+                }
+      ]
+    },
+    {
+      "name": "CtsHealthFitnessDeviceTestCases"
+    },
+    {
+      "name": "CtsHealthFitnessDeviceTestCasesNoPermission"
+    }
+  ],
   "mainline-presubmit": [
     {
       "name": "CtsHealthFitnessDeviceTestCases[com.google.android.healthfitness.apex]"

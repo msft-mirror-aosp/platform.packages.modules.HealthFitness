@@ -35,13 +35,19 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.export_destination_screen, container, false)
-        // TODO: b/325917283 - Add proper navigation to the next screen (either file picker or
-        // document UI).
         val backButton = view.findViewById<Button>(R.id.export_back_button)
 
         backButton.setOnClickListener {
             findNavController()
                 .navigate(R.id.action_exportDestinationFragment_to_exportFrequencyFragment)
+        }
+
+        val nextButton = view.findViewById<Button>(R.id.export_next_button)
+        nextButton.setOnClickListener {
+            // TODO: b/325917283 - Add proper navigation to the next screen (document UI)
+            // and to the encryption fragment.
+            findNavController()
+                .navigate(R.id.action_exportDestinationFragment_to_exportEncryptionFragment)
         }
         return view
     }
