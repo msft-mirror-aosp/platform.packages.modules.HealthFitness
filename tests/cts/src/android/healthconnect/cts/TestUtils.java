@@ -191,6 +191,16 @@ public class TestUtils {
     }
 
     /**
+     * Insert record to the database.
+     *
+     * @param record record to insert
+     * @return inserted record
+     */
+    public static Record insertRecord(Record record) throws InterruptedException {
+        return insertRecords(Collections.singletonList(record)).get(0);
+    }
+
+    /**
      * Inserts records to the database.
      *
      * @param records records to insert
@@ -303,6 +313,14 @@ public class TestUtils {
                 getHeartRateRecord(),
                 getBasalMetabolicRateRecord(),
                 buildExerciseSession());
+    }
+
+    public static ChangeLogTokenRequest.Builder getChangeLogTokenRequestForTestRecordTypes() {
+        return new ChangeLogTokenRequest.Builder()
+                .addRecordType(StepsRecord.class)
+                .addRecordType(HeartRateRecord.class)
+                .addRecordType(BasalMetabolicRateRecord.class)
+                .addRecordType(ExerciseSessionRecord.class);
     }
 
     public static List<RecordAndIdentifier> getRecordsAndIdentifiers() {

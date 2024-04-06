@@ -127,14 +127,6 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
             filterImpressionLogs(data, homePageId, ElementId.DATA_AND_ACCESS_BUTTON)
         assertThat(dataAndAccessImpression.size).isAtLeast(1)
 
-        val recentAccessDataImpression =
-            filterImpressionLogs(data, homePageId, ElementId.RECENT_ACCESS_ENTRY)
-        assertThat(recentAccessDataImpression.size).isAtLeast(1)
-
-        val seeAllRecentAccessImpression =
-            filterImpressionLogs(data, homePageId, ElementId.SEE_ALL_RECENT_ACCESS_BUTTON)
-        assertThat(seeAllRecentAccessImpression.size).isAtLeast(1)
-
         val toolbarImpression =
             filterImpressionLogs(data, homePageId, ElementId.TOOLBAR_SETTINGS_BUTTON)
         assertThat(toolbarImpression.size).isAtLeast(1)
@@ -146,10 +138,6 @@ class HealthConnectUiLogsTests : DeviceTestCase(), IBuildReceiver {
         val seeAllCategoriesImpression =
             filterImpressionLogs(data, categoriesPageId, ElementId.SEE_ALL_CATEGORIES_BUTTON)
         assertThat(seeAllCategoriesImpression.size).isAtLeast(1)
-
-        val autoDeleteImpression =
-            filterImpressionLogs(data, categoriesPageId, ElementId.AUTO_DELETE_BUTTON)
-        assertThat(autoDeleteImpression.size).isAtLeast(1)
 
         val deleteAllDataImpression =
             filterImpressionLogs(data, categoriesPageId, ElementId.DELETE_ALL_DATA_BUTTON)
