@@ -29,6 +29,7 @@
   <string name="insert_update_data">Insert / Update Data</string>
   <string name="insert_session">Insert Session</string>
   <string name="seed_random_data">Seed Random Data</string>
+  <string name="read_data_in_background">Read Data in Background</string>
   <string name="all_permissions_already_granted_toast">Permissions already granted, please manage them via HC App</string>
   <string name="all_permissions_success">All permissions were successfully granted</string>
   <string name="number_of_permissions_not_granted">%1$d permissions were not granted</string>
@@ -66,6 +67,8 @@
   <string name="wheelchair_pushes_label" description="Label used to show the user's wheelchair pushes data [CHAR_LIMIT=50]">Wheelchair pushes</string>
   <string name="cycling_pedaling_cadence" description="Label used to show the user's cycling pedaling cadence data [CHAR_LIMIT=50]">Cycling Pedaling Cadence</string>
   <string name="exercise_session" description="Label used to show the exercise session [CHAR_LIMIT=50]">Exercise Sessions</string>
+  <string name="training_plans" description="Label used to show the training plans [CHAR_LIMIT=50]">Training Plans</string>
+  <string name="training_plan_exercise_block_notice_text" description="Label used to generate exercise steps">Generate test exercise steps</string>
   <!--endregion-->
 
   <!-- region Body measurements data types -->
@@ -119,4 +122,8 @@
   <string name="performance_testing_explanation">Heart Rate Records will be inserted/read in batches. Please enable checkbox to insert data over a given time span.</string>
   <!--endregion-->
 
+  <!-- region Background Reading screen -->
+  <string name="background_read_title">Read Data In Background Via Toolbox 2</string>
+  <string name="background_read_all_steps">Read All Steps</string>
+  <!--endregion-->
 </resources>

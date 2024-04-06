@@ -24,21 +24,22 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.AdditionalPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthconnect.controller.shared.preference.AdditionalPermissionHeaderPreference
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.logging.ElementName
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
-import com.android.healthconnect.controller.utils.logging.PermissionsElement
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RequestBackgroundReadPermissionElement
+import com.android.healthconnect.controller.utils.logging.RequestCombinedAdditionalPermissionsElement
+import com.android.healthconnect.controller.utils.logging.RequestHistoryReadPermissionElement
+import com.android.healthconnect.controller.utils.pref
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** Fragment that can show combined or single additional permission request screens. */
 @AndroidEntryPoint(PermissionsFragment::class)
 class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
-
-    // TODO (b/331098724) Add telemetry for this screen
-    @Inject lateinit var logger: HealthConnectLogger
 
     companion object {
         private const val HEADER = "request_additional_permissions_header"
@@ -47,14 +48,25 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
 
     private val viewModel: RequestPermissionViewModel by activityViewModels()
 
-    private val header: AdditionalPermissionHeaderPreference? by lazy {
-        preferenceScreen.findPreference(HEADER)
-    }
+    private val header: AdditionalPermissionHeaderPreference by pref(HEADER)
+    private val category: PreferenceCategory by pref(CATEGORY)
 
-    private val category: PreferenceCategory? by lazy { preferenceScreen.findPreference(CATEGORY) }
+    private var pageName = PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE
+    private var allowButtonName: ElementName =
+        RequestCombinedAdditionalPermissionsElement.ALLOW_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
+    private var cancelButtonName: ElementName =
+        RequestCombinedAdditionalPermissionsElement.CANCEL_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
+
     private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
 
     @Inject lateinit var featureUtils: FeatureUtils
+    @Inject lateinit var logger: HealthConnectLogger
+
+    override fun onResume() {
+        super.onResume()
+        logger.setPageId(pageName)
+        logger.logPageImpression()
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.additional_permissions_screen, rootKey)
@@ -70,7 +82,7 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             }
 
             if (additionalPermissions.size > 1) {
-                showCombinedAdditionalPermissions(additionalPermissions, appMetadata!!)
+                showCombinedAdditionalPermissions(appMetadata!!)
             } else {
                 showSingleAdditionalPermission(additionalPermissions[0], appMetadata!!)
             }
@@ -81,7 +93,7 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     }
 
     private fun setupAllowButton(permissionList: List<AdditionalPermission>) {
-        logger.logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
+        logger.logImpression(allowButtonName)
 
         if (viewModel.isDataTypePermissionRequestConcluded()) {
             // if requested additional permissions == 1 then allow by default
@@ -96,65 +108,85 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
         }
 
         getAllowButton().setOnClickListener {
-            logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
+            logger.logInteraction(allowButtonName)
             viewModel.requestAdditionalPermissions(getPackageNameExtra())
             handlePermissionResults(viewModel.getPermissionGrants())
         }
     }
 
     private fun setupDontAllowButton() {
-        logger.logImpression(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
+        logger.logImpression(cancelButtonName)
 
         getDontAllowButton().setOnClickListener {
-            logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
+            logger.logInteraction(cancelButtonName)
             viewModel.updateAdditionalPermissions(false)
             viewModel.requestAdditionalPermissions(this.getPackageNameExtra())
             handlePermissionResults(viewModel.getPermissionGrants())
         }
     }
 
-    private fun showCombinedAdditionalPermissions(
-        additionalPermissions: List<AdditionalPermission>,
-        appMetadata: AppMetadata
-    ) {
-        header?.bind(
+    private fun showCombinedAdditionalPermissions(appMetadata: AppMetadata) {
+        pageName = PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE
+        allowButtonName =
+            RequestCombinedAdditionalPermissionsElement.ALLOW_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
+        cancelButtonName =
+            RequestCombinedAdditionalPermissionsElement
+                .CANCEL_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON
+
+        header.bind(
             titleText = R.string.request_additional_permissions_header_title,
             appName = appMetadata.appName,
             summaryText =
                 getString(R.string.request_additional_permissions_description, appMetadata.appName))
 
-        category?.removeAll()
-        category?.isVisible = true
+        category.removeAll()
+        category.isVisible = true
 
-        additionalPermissions
-            .sortedBy { it.additionalPermission }
-            .forEach { additionalPermission ->
-                category?.addPreference(
-                    getAdditionalPermissionPreference(additionalPermission, appMetadata))
-            }
+        category.addPreference(getBackgroundReadPreference())
+        category.addPreference(getHistoryReadPreference(appMetadata))
     }
 
-    private fun getAdditionalPermissionPreference(
-        additionalPermission: AdditionalPermission,
-        appMetadata: AppMetadata
-    ): HealthSwitchPreference {
+    private fun getBackgroundReadPreference(): HealthSwitchPreference {
+        val additionalPermission =
+            AdditionalPermission.fromPermissionString(
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+        val additionalPermissionStrings =
+            AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
         val value = viewModel.isPermissionLocallyGranted(additionalPermission)
+        val summary = getString(additionalPermissionStrings.permissionDescription)
 
-        val summary =
-            if (additionalPermission.isHistoryReadPermission()) {
-                getHistoryReadPermissionPreferenceSummary(appMetadata)
-            } else {
-                getString(
-                    AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
-                        .permissionDescription)
-            }
         return HealthSwitchPreference(requireContext()).also { switchPreference ->
             switchPreference.setDefaultValue(value)
-            switchPreference.title =
-                getString(
-                    AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
-                        .permissionTitle)
+            switchPreference.title = getString(additionalPermissionStrings.permissionTitle)
             switchPreference.summary = summary
+            switchPreference.logNameActive =
+                RequestCombinedAdditionalPermissionsElement.BACKGROUND_READ_BUTTON
+            switchPreference.logNameInactive =
+                RequestCombinedAdditionalPermissionsElement.BACKGROUND_READ_BUTTON
+
+            switchPreference.setOnPreferenceChangeListener { _, newValue ->
+                viewModel.updateHealthPermission(additionalPermission, newValue as Boolean)
+                true
+            }
+        }
+    }
+
+    private fun getHistoryReadPreference(appMetadata: AppMetadata): HealthSwitchPreference {
+        val additionalPermission =
+            AdditionalPermission.fromPermissionString(HealthPermissions.READ_HEALTH_DATA_HISTORY)
+        val additionalPermissionStrings =
+            AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
+        val value = viewModel.isPermissionLocallyGranted(additionalPermission)
+        val summary = getHistoryReadPermissionPreferenceSummary(appMetadata)
+
+        return HealthSwitchPreference(requireContext()).also { switchPreference ->
+            switchPreference.setDefaultValue(value)
+            switchPreference.title = getString(additionalPermissionStrings.permissionTitle)
+            switchPreference.summary = summary
+            switchPreference.logNameActive =
+                RequestCombinedAdditionalPermissionsElement.HISTORY_READ_BUTTON
+            switchPreference.logNameInactive =
+                RequestCombinedAdditionalPermissionsElement.HISTORY_READ_BUTTON
 
             switchPreference.setOnPreferenceChangeListener { _, newValue ->
                 viewModel.updateHealthPermission(additionalPermission, newValue as Boolean)
@@ -203,12 +235,20 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
             AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
 
         if (additionalPermission.isHistoryReadPermission()) {
-            header?.bind(
+            pageName = PageName.REQUEST_HISTORY_READ_PERMISSION_PAGE
+            allowButtonName = RequestHistoryReadPermissionElement.ALLOW_HISTORY_READ_BUTTON
+            cancelButtonName = RequestHistoryReadPermissionElement.CANCEL_HISTORY_READ_BUTTON
+
+            header.bind(
                 titleText = additionalPermissionStrings.requestTitle,
                 appName = appMetadata.appName,
                 summaryText = getHistoryReadPermissionRequestText(appMetadata))
         } else {
-            header?.bind(
+            pageName = PageName.REQUEST_BACKGROUND_READ_PERMISSION_PAGE
+            allowButtonName = RequestBackgroundReadPermissionElement.ALLOW_BACKGROUND_READ_BUTTON
+            cancelButtonName = RequestBackgroundReadPermissionElement.CANCEL_BACKGROUND_READ_BUTTON
+
+            header.bind(
                 titleText = additionalPermissionStrings.requestTitle,
                 appName = appMetadata.appName,
                 summaryText = getString(additionalPermissionStrings.requestDescription))

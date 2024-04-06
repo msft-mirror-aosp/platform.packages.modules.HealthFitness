@@ -18,7 +18,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
-    <string name="health_connect_summary" msgid="6401520186678972547">"จัดการสิทธิ์เข้าถึงข้อมูลสุขภาพของแอป"</string>
+    <string name="health_connect_summary" msgid="6401520186678972547">"จัดการสิทธิ์ของแอปในการเข้าถึงข้อมูลสุขภาพ"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"สิทธิ์และข้อมูล"</string>
     <string name="home_subtitle" msgid="1750033322147357163">"จัดการข้อมูลสุขภาพและการออกกำลังกายในโทรศัพท์ และควบคุมว่าแอปใดบ้างที่เข้าถึงข้อมูลได้"</string>
     <string name="data_title" msgid="4456619761533380816">"ข้อมูลและการเข้าถึง"</string>
@@ -81,26 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"เข้าถึงข้อมูลสุขภาพของคุณ"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"อ่านข้อมูลแคลอรี่ที่ใช้ไป"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"อนุญาตให้แอปอ่านข้อมูลแคลอรี่ที่ใช้ไป"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"อนุญาตให้เข้าถึงข้อมูลในเบื้องหลัง"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลในเบื้องหลังใช่ไหม"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect เมื่อคุณไม่ได้ใช้แอป"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect เมื่อคุณไม่ได้ใช้แอป"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"อนุญาตให้เข้าถึงข้อมูลในอดีต"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลในอดีตใช่ไหม"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"อนุญาตให้แอปเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"อนุญาตให้แอปเข้าถึงข้อมูล Health Connect ในอดีต"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ในอดีต"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"แคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"แคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"อ่านข้อมูลแคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
@@ -273,10 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"อนุญาตทั้งหมด"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"ไม่อนุญาต"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"เลือกข้อมูลที่คุณต้องการให้แอปนี้อ่านหรือเขียนลงใน Health Connect"</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"หากคุณให้สิทธิ์อ่าน แอปนี้จะอ่านข้อมูลใหม่และข้อมูลในช่วง 30 วันที่ผ่านมาได้"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"หากคุณให้สิทธิ์อ่าน แอปนี้จะอ่านข้อมูลใหม่และข้อมูลในอดีตได้"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึง Health Connect ไหม"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"ดูวิธีที่ <xliff:g id="APP_NAME">%1$s</xliff:g> จัดการข้อมูลของคุณใน<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>ของนักพัฒนาแอป"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"นโยบายความเป็นส่วนตัว"</string>
@@ -438,8 +426,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"ไม่มีผลสรุปแน่ชัด"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 มิลลิวินาที}other{# มิลลิวินาที}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 มิลลิวินาที}other{# มิลลิวินาที}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 ครั้ง}other{# ครั้ง}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"ขณะทำกิจกรรม: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"รวม: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"จำนวนครั้งมากที่สุดเท่าที่จะเป็นไปได้"</string>
@@ -900,8 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"เดือนที่แล้ว"</string>
     <string name="tab_entries" msgid="3402700951602029493">"รายการ"</string>
     <string name="tab_access" msgid="7818197975407243701">"การเข้าถึง"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"อนุญาตการเข้าถึงเพิ่มเติมสำหรับ <xliff:g id="APP_NAME">%1$s</xliff:g> ใช่ไหม"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการเข้าถึงการตั้งค่า Health Connect เหล่านี้ด้วย"</string>
 </resources>

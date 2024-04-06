@@ -36,7 +36,6 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -85,7 +84,6 @@ public class TransactionManagerExerciseRoutesTest {
 
     @After
     public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
         TransactionManager.clearInstance();
     }
 

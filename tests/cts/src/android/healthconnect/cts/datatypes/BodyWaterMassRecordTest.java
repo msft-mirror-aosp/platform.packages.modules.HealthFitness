@@ -90,7 +90,10 @@ public class BodyWaterMassRecordTest {
     @Test
     public void testReadBodyWaterMassRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(getCompleteBodyWaterMassRecord(), getCompleteBodyWaterMassRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBodyWaterMassRecord(),
+                                getCompleteBodyWaterMassRecord()));
         readBodyWaterMassRecordUsingIds(recordList);
     }
 
@@ -509,9 +512,8 @@ public class BodyWaterMassRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readBodyWaterMassRecordUsingIds(List<Record> recordList)
+    private void readBodyWaterMassRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<BodyWaterMassRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(BodyWaterMassRecord.class);
         for (Record record : insertedRecords) {

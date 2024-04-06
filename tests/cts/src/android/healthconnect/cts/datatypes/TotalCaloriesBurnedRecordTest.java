@@ -87,9 +87,10 @@ public class TotalCaloriesBurnedRecordTest {
     @Test
     public void testReadTotalCaloriesBurnedRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteTotalCaloriesBurnedRecord(),
-                        getCompleteTotalCaloriesBurnedRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteTotalCaloriesBurnedRecord(),
+                                getCompleteTotalCaloriesBurnedRecord()));
         readTotalCaloriesBurnedRecordUsingIds(recordList);
     }
 
@@ -427,9 +428,8 @@ public class TotalCaloriesBurnedRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readTotalCaloriesBurnedRecordUsingIds(List<Record> recordList)
+    private void readTotalCaloriesBurnedRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<TotalCaloriesBurnedRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(TotalCaloriesBurnedRecord.class);
         for (Record record : insertedRecords) {

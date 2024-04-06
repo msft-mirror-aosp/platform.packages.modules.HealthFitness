@@ -111,6 +111,8 @@ class HealthDataCategoryExtensionsTest {
     @Test
     fun fromHealthPermissionType() {
         assertThat(fromHealthPermissionType(HealthPermissionType.HEART_RATE)).isEqualTo(VITALS)
+        assertThat(fromHealthPermissionType(HealthPermissionType.PLANNED_EXERCISE))
+            .isEqualTo(ACTIVITY)
         assertThat(fromHealthPermissionType(HealthPermissionType.EXERCISE_ROUTE))
             .isEqualTo(ACTIVITY)
     }

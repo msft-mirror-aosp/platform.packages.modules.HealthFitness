@@ -20,6 +20,11 @@ import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION
 import static android.healthconnect.cts.utils.DataFactory.SESSION_END_TIME;
 import static android.healthconnect.cts.utils.DataFactory.SESSION_START_TIME;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
+import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
+import static android.healthconnect.cts.utils.TestUtils.insertRecord;
+import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -39,7 +44,6 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -79,13 +83,13 @@ public class SleepDurationAggregationTest {
 
     @Test
     public void testSimpleAggregation_oneSession_returnsItsDuration() throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
         SleepSessionRecord session =
                 new SleepSessionRecord.Builder(
                                 generateMetadata(), SESSION_START_TIME, SESSION_END_TIME)
                         .build();
-        AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(mAggregateAllRecordsRequest, List.of(session));
+        insertRecord(session);
+        AggregateRecordsResponse<Long> response = getAggregateResponse(mAggregateAllRecordsRequest);
 
         assertThat(response.get(SLEEP_DURATION_TOTAL)).isNotNull();
         assertThat(response.get(SLEEP_DURATION_TOTAL))
@@ -93,13 +97,13 @@ public class SleepDurationAggregationTest {
                         session.getEndTime().toEpochMilli()
                                 - session.getStartTime().toEpochMilli());
         assertThat(response.getZoneOffset(SLEEP_DURATION_TOTAL))
-                .isEqualTo(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
+                .isEqualTo(session.getStartZoneOffset());
     }
 
     @Test
     public void testSimpleAggregation_oneSessionWithAwake_returnsDurationMinusAwake()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
         SleepSessionRecord.Stage awakeStage =
                 new SleepSessionRecord.Stage(
                         SESSION_START_TIME,
@@ -128,8 +132,8 @@ public class SleepDurationAggregationTest {
                                                         .STAGE_TYPE_SLEEPING_REM)))
                         .build();
 
-        AggregateRecordsResponse<Long> response =
-                TestUtils.getAggregateResponse(mAggregateAllRecordsRequest, List.of(session));
+        insertRecords(session);
+        AggregateRecordsResponse<Long> response = getAggregateResponse(mAggregateAllRecordsRequest);
 
         assertThat(response.get(SLEEP_DURATION_TOTAL)).isNotNull();
 
@@ -145,15 +149,15 @@ public class SleepDurationAggregationTest {
     @Test
     public void testAggregationByDuration_oneSession_returnsSplitDurationIntoGroups()
             throws InterruptedException {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
+        setupAggregation(PACKAGE_NAME, HealthDataCategory.SLEEP);
         Instant endTime = SESSION_START_TIME.plus(10, ChronoUnit.HOURS);
         SleepSessionRecord session =
                 new SleepSessionRecord.Builder(generateMetadata(), SESSION_START_TIME, endTime)
                         .build();
-        TestUtils.insertRecords(List.of(session));
+        insertRecord(session);
 
         List<AggregateRecordsGroupedByDurationResponse<Long>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
+                getAggregateResponseGroupByDuration(
                         new AggregateRecordsRequest.Builder<Long>(
                                         new TimeInstantRangeFilter.Builder()
                                                 .setStartTime(SESSION_START_TIME)
