@@ -136,7 +136,7 @@ class AppPermissionViewModelTest {
     @Test
     fun whenPackageSupported_loadAllPermissions() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -171,7 +171,7 @@ class AppPermissionViewModelTest {
     @Test
     fun whenPackageNotSupported_loadOnlyGrantedPermissions() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -417,7 +417,7 @@ class AppPermissionViewModelTest {
     @Test
     fun shouldNavigateToFragment_whenPackageNameSupported_returnsTrue() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -437,7 +437,7 @@ class AppPermissionViewModelTest {
     @Test
     fun shouldNavigateToFragment_whenAnyPermissionGranted_returnsTrue() = runTest {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -459,7 +459,7 @@ class AppPermissionViewModelTest {
     fun shouldNavigateToFragment_whenPackageNotSupported_andNoPermissionsGranted_returnsFalse() =
         runTest {
             whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
-            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            whenever(healthPermissionReader.getValidHealthPermissions(any()))
                 .thenReturn(
                     listOf(
                         readExercisePermission,
@@ -484,7 +484,7 @@ class AppPermissionViewModelTest {
 
     private fun setupDeclaredAndGrantedPermissions() {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
