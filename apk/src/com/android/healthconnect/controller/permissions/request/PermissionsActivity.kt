@@ -132,7 +132,7 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 handlePermissionResults()
             }
 
-            // Case 2 - just health permissions
+            // Case 2 - just data type permissions
             else if (additionalPermissions.isEmpty()) {
                 showFragment(DataTypePermissionsFragment())
             }
@@ -151,10 +151,9 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 showFragment(AdditionalPermissionsFragment())
             }
 
-            // Case 4 - combined
+            // Case 4 - combined permissions
             else {
                 if (!requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
-                    Log.i("AdditionalPerm", "PermissionsActivity health not concluded")
                     showFragment(DataTypePermissionsFragment())
                 } else {
                     // After configuration change

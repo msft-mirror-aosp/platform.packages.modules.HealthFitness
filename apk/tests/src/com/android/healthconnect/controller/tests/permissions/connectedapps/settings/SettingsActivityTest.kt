@@ -109,6 +109,7 @@ class SettingsActivityTest {
             MutableLiveData(listOf(writePermission, readPermission))
         }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
     }
 
     @Test

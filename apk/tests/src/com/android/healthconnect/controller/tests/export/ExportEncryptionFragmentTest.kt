@@ -22,7 +22,10 @@ import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.hasErrorText
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withHint
@@ -76,8 +79,8 @@ class ExportEncryptionFragmentTest {
                     "If you forget your password and lose your phone, Health\u00A0Connect cannot help you recover your saved data."))
             .check(matches(isDisplayed()))
 
-        onView(withText("Back")).check(matches(isDisplayed()))
-        onView(withText("Next")).check(matches(isDisplayed()))
+        onView(withText("Back")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("Next")).perform(scrollTo()).check(matches(isDisplayed()))
     }
 
     @Test
@@ -88,7 +91,7 @@ class ExportEncryptionFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_back_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_back_button)).perform(scrollTo()).check(matches(isClickable()))
         onView(withId(R.id.export_back_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
@@ -100,5 +103,26 @@ class ExportEncryptionFragmentTest {
         launchFragment<ExportEncryptionFragment>(Bundle())
 
         onView(withId(R.id.export_next_button)).check(matches(isClickable()))
+    }
+
+    @Test
+    fun exportEncryptionFragment_mismatchedPassword_errorIsShown() {
+        launchFragment<ExportEncryptionFragment>(Bundle())
+
+        // Do nothing with the repeated password.
+        onView(withId(R.id.export_password)).perform(typeText("1password"))
+
+        onView(withId(R.id.export_password)).check(matches(hasErrorText("Passwords don\'t match")))
+    }
+
+    @Test
+    fun exportEncryptionFragment_mismatchedRepeatedPassword_errorIsShown() {
+        launchFragment<ExportEncryptionFragment>(Bundle())
+
+        // Do nothing with the password.
+        onView(withId(R.id.export_repeat_password)).perform(typeText("1password"))
+
+        onView(withId(R.id.export_repeat_password))
+            .check(matches(hasErrorText("Passwords don\'t match")))
     }
 }

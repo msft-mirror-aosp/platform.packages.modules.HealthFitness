@@ -85,7 +85,6 @@ public class ImportManagerTest {
 
     @After
     public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
         TransactionManager.clearInstance();
     }
 

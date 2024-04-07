@@ -41,6 +41,7 @@ import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
@@ -87,6 +88,7 @@ object Constants {
             "android.permission.health.READ_DISTANCE",
             "android.permission.health.READ_ELEVATION_GAINED",
             "android.permission.health.READ_EXERCISE",
+            "android.permission.health.READ_PLANNED_EXERCISE",
             "android.permission.health.READ_EXERCISE_ROUTES",
             "android.permission.health.READ_FLOORS_CLIMBED",
             "android.permission.health.READ_HEART_RATE",
@@ -124,6 +126,7 @@ object Constants {
             "android.permission.health.WRITE_DISTANCE",
             "android.permission.health.WRITE_ELEVATION_GAINED",
             "android.permission.health.WRITE_EXERCISE",
+            "android.permission.health.WRITE_PLANNED_EXERCISE",
             "android.permission.health.WRITE_FLOORS_CLIMBED",
             "android.permission.health.WRITE_HEART_RATE",
             "android.permission.health.WRITE_HEART_RATE_VARIABILITY",
@@ -192,6 +195,7 @@ object Constants {
     object CategoriesMappers {
         val ACTIVITY_PERMISSION_GROUPS =
             listOf(
+                HealthPermissionType.PLANNED_EXERCISE,
                 HealthPermissionType.ACTIVE_CALORIES_BURNED,
                 HealthPermissionType.DISTANCE,
                 HealthPermissionType.ELEVATION_GAINED,
@@ -265,6 +269,7 @@ object Constants {
         CYCLING_PEDALING_CADENCE(
             CyclingPedalingCadenceRecord::class, R.string.cycling_pedaling_cadence),
         EXERCISE_SESSION(ExerciseSessionRecord::class, R.string.exercise_session),
+        PLANNED_EXERCISE(PlannedExerciseSessionRecord::class, R.string.training_plans),
 
         // BODY_MEASUREMENTS
         BASAL_METABOLIC_RATE(BasalMetabolicRateRecord::class, R.string.basal_metabolic_rate_label),

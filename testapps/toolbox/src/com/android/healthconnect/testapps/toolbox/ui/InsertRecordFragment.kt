@@ -31,6 +31,7 @@ import android.health.connect.datatypes.IntervalRecord
 import android.health.connect.datatypes.MealType
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.OvulationTestRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SexualActivityRecord
 import android.health.connect.datatypes.SkinTemperatureRecord
@@ -284,6 +285,10 @@ class InsertRecordFragment : Fragment() {
             }
             ExerciseSessionRecord::class -> {
                 enumFieldNameToClass["mExerciseType"] = ExerciseSessionType::class as KClass<*>
+            }
+            PlannedExerciseSessionRecord::class -> {
+                enumFieldNameToClass["mPlannedExerciseType"] =
+                    ExerciseSessionType::class as KClass<*>
             }
         }
         if (enumFieldNameToClass.size > 0) {

@@ -81,26 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"ձեր առողջության մասին տվյալների հասանելիություն"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Կարդալ՝ որքան կալորիա է այրվել"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Թույլ է տալիս հավելվածին կարդալ այրված կալորիաների մասին տվյալները"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Թույլատրել տվյալների օգտագործումը ֆոնային ռեժիմում"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել տվյալները ֆոնային ռեժիմում"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Թույլատրեք այս հավելվածին օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործում հավելվածը"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործի հավելվածը։"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Թույլատրել նախկին տվյալների օգտագործումը"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել նախկին տվյալները։"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի նախկին տվյալները"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>։"</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի նախկին տվյալները։"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Ակտիվ գործողությունների ժամանակ այրված կալորիաներ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ակտիվ գործողությունների ժամանակ այրված կալորիաներ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Կարդալ ակտիվ գործողությունների ժամանակ այրված կալորիաների մասին տվյալները"</string>
@@ -273,10 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Թույլատրել բոլորը"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Չթույլատրել"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Ընտրեք, թե ինչ տվյալներ այս հավելվածը կարդա կամ գրանցի Health Connect-ում"</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Եթե տրամադրեք կարդալու թույլտվություն, այս հավելվածը կկարողանա կարդալ նոր և նախորդ 30 օրվա տվյալները"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Եթե տրամադրեք կարդալու թույլտվություն, հավելվածը կկարողանա կարդալ նոր և հին տվյալները"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Հասանելի դարձնե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին Health Connect-ը"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Կարդացեք մշակողի <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>ը՝ տեղեկանալու, թե ինչպես է <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը մշակում ձեր տվյալները"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"գաղտնիության քաղաքականություն"</string>
@@ -438,16 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Անորոշ"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 մվ}one{# մվ}other{# մվ}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 միլիվայրկյան}one{# միլիվայրկյան}other{# միլիվայրկյան}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
-    <skip />
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 անգամ}one{# անգամ}other{# անգամ}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Ակտիվ՝ <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Ընդամենը՝ <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Հնարավորինս շատ կրկնություններ"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Ինտենսիվության մակարդակը՝ <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 կրկն.}one{# կրկն.}other{# կրկն.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 կրկնություն}one{# կրկնություն}other{# կրկնություն}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Մարզման տեսակներ"</string>
@@ -904,8 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Անցած ամիս"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Մուտքագրված տվյալներ"</string>
     <string name="tab_access" msgid="7818197975407243701">"Հասանելիություն"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Տրամադրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին լրացուցիչ թույլտվություններ"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածը նաև հայցում է Health Connect-ի այս կարգավորումների օգտագորման թույլտվություն"</string>
 </resources>

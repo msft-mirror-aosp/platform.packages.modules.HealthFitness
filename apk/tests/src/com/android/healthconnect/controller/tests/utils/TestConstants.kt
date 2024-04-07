@@ -22,11 +22,18 @@ import android.health.connect.datatypes.BodyWaterMassRecord
 import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.Device
 import android.health.connect.datatypes.DistanceRecord
+import android.health.connect.datatypes.ExerciseCompletionGoal
+import android.health.connect.datatypes.ExercisePerformanceGoal
+import android.health.connect.datatypes.ExerciseSegmentType
+import android.health.connect.datatypes.ExerciseSessionType
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseBlock
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.StepsRecord
@@ -38,6 +45,7 @@ import android.health.connect.datatypes.units.Mass
 import android.health.connect.datatypes.units.Percentage
 import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Temperature
+import android.health.connect.datatypes.units.Velocity
 import android.health.connect.datatypes.units.Volume
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -54,6 +62,7 @@ import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
+import java.time.ZoneOffset
 import kotlin.random.Random
 import org.mockito.Mockito
 
@@ -138,6 +147,92 @@ fun getRandomRecord(healthPermissionType: HealthPermissionType, date: LocalDate)
             throw IllegalArgumentException(
                 "HealthPermissionType $healthPermissionType not supported")
     }
+}
+
+fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
+    val exerciseBlock1 =
+        getPlannedExerciseBlock(
+            repetitions = 1,
+            description = "Warm up",
+            exerciseSteps =
+                listOf(
+                    getPlannedExerciseStep(
+                        exerciseSegmentType = ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                        completionGoal =
+                            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(1000.0)),
+                        performanceGoals =
+                            listOf(
+                                ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                                ExercisePerformanceGoal.SpeedGoal(
+                                    Velocity.fromMetersPerSecond(25.0),
+                                    Velocity.fromMetersPerSecond(15.0))))))
+    val exerciseBlock2 =
+        getPlannedExerciseBlock(
+            repetitions = 1,
+            description = "Main set",
+            exerciseSteps =
+                listOf(
+                    getPlannedExerciseStep(
+                        exerciseSegmentType = ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                        completionGoal =
+                            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(4000.0)),
+                        performanceGoals =
+                            listOf(
+                                ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                                ExercisePerformanceGoal.SpeedGoal(
+                                    Velocity.fromMetersPerSecond(50.0),
+                                    Velocity.fromMetersPerSecond(25.0))))))
+    val exerciseBlocks = listOf(exerciseBlock1, exerciseBlock2)
+
+    return getPlannedExerciseSessionRecord(
+        title = "Morning Run",
+        note = "Morning quick run by the park",
+        exerciseBlocks = exerciseBlocks)
+}
+
+fun getPlannedExerciseSessionRecord(
+    title: String,
+    note: String,
+    exerciseBlocks: List<PlannedExerciseBlock>
+): PlannedExerciseSessionRecord {
+    return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
+        .setTitle(title)
+        .setNotes(note)
+        .setBlocks(exerciseBlocks)
+        .build()
+}
+
+private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessionRecord.Builder {
+    val builder: PlannedExerciseSessionRecord.Builder =
+        PlannedExerciseSessionRecord.Builder(
+            getMetaData(), exerciseType, NOW, NOW.plusSeconds(3600))
+    builder.setNotes("Sample training plan notes")
+    builder.setTitle("Training plan title")
+    builder.setStartZoneOffset(ZoneOffset.UTC)
+    builder.setEndZoneOffset(ZoneOffset.UTC)
+    return builder
+}
+
+fun getPlannedExerciseBlock(
+    repetitions: Int,
+    description: String,
+    exerciseSteps: List<PlannedExerciseStep>
+): PlannedExerciseBlock {
+    return PlannedExerciseBlock.Builder(repetitions)
+        .setDescription(description)
+        .setSteps(exerciseSteps)
+        .build()
+}
+
+fun getPlannedExerciseStep(
+    exerciseSegmentType: Int,
+    completionGoal: ExerciseCompletionGoal,
+    performanceGoals: List<ExercisePerformanceGoal>
+): PlannedExerciseStep {
+    return PlannedExerciseStep.Builder(
+            exerciseSegmentType, PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE, completionGoal)
+        .setPerformanceGoals(performanceGoals)
+        .build()
 }
 
 fun getMetaData(): Metadata {

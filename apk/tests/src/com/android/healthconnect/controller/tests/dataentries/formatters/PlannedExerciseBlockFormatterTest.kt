@@ -19,8 +19,6 @@ import android.content.Context
 import android.health.connect.datatypes.ExerciseCompletionGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseSegmentType
-import android.health.connect.datatypes.PlannedExerciseBlock
-import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Velocity
 import androidx.test.platform.app.InstrumentationRegistry
@@ -28,6 +26,8 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseBlockFormatter
 import com.android.healthconnect.controller.dataentries.units.DistanceUnit
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseStep
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -180,27 +180,5 @@ class PlannedExerciseBlockFormatterTest {
                                             Velocity.fromMetersPerSecond(50.0)))),
                         title = "3.5 km Cycling",
                         titleA11y = "3.5 kilometres Cycling")))
-    }
-
-    private fun getPlannedExerciseBlock(
-        repetitions: Int,
-        description: String,
-        exerciseSteps: List<PlannedExerciseStep>
-    ): PlannedExerciseBlock {
-        return PlannedExerciseBlock.Builder(repetitions)
-            .setDescription(description)
-            .setSteps(exerciseSteps)
-            .build()
-    }
-
-    private fun getPlannedExerciseStep(
-        exerciseSegmentType: Int,
-        completionGoal: ExerciseCompletionGoal,
-        performanceGoals: List<ExercisePerformanceGoal>
-    ): PlannedExerciseStep {
-        return PlannedExerciseStep.Builder(
-                exerciseSegmentType, PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE, completionGoal)
-            .setPerformanceGoals(performanceGoals)
-            .build()
     }
 }
