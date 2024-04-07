@@ -99,6 +99,7 @@ sealed class FormattedEntry(open val uuid: String) {
         val header: String,
         val headerA11y: String,
         val title: String,
+        val dataType: DataType,
         val titleA11y: String,
         val notes: String?
     ) : FormattedEntry(uuid)

@@ -33,6 +33,7 @@ import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogs;
 import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.insertRecord;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
@@ -330,8 +331,8 @@ public class HealthConnectChangeLogsTests {
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
         List<Record> testRecords = getTestRecords();
-        insertRecords(testRecords);
-        deleteRecords(testRecords);
+        List<Record> insertedRecords = insertRecords(testRecords);
+        deleteRecords(insertedRecords);
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
         assertThat(response.getUpsertedRecords()).isEmpty();
@@ -387,15 +388,15 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
-        StepsRecord stepsRecord = getStepsRecord(/* steps= */ 10, "stepsId");
-        insertRecords(ImmutableList.of(stepsRecord));
+        StepsRecord stepsRecord = getStepsRecord(/* steps = */ 10, "stepsId");
+        Record insertedRecord = insertRecord(stepsRecord);
         deleteRecordsByIdFilter(
                 ImmutableList.of(RecordIdFilter.fromClientRecordId(StepsRecord.class, "stepsId")));
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
         assertThat(response.getDeletedLogs())
                 .comparingElementsUsing(DELETED_LOG_TO_RECORD_CORRESPONDENCE)
-                .containsExactly(stepsRecord);
+                .containsExactly(insertedRecord);
         assertThat(response.getUpsertedRecords()).isEmpty();
     }
 
@@ -459,8 +460,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
-        List<Record> testRecords = getTestRecords();
-        insertRecords(testRecords);
+        List<Record> testRecords = insertRecords(getTestRecords());
         deleteRecords(testRecords);
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 
@@ -484,8 +484,8 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsRequest changeLogsRequest =
                 new ChangeLogsRequest.Builder(tokenResponse.getToken()).build();
 
-        List<Record> testRecords = ImmutableList.of(getStepsRecord(), getHeartRateRecord());
-        insertRecords(testRecords);
+        List<Record> testRecords =
+                insertRecords(ImmutableList.of(getStepsRecord(), getHeartRateRecord()));
         deleteRecords(testRecords);
         ChangeLogsResponse response = getChangeLogs(changeLogsRequest);
 

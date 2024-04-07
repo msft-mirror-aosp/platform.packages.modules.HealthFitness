@@ -30,11 +30,6 @@ class FormattersIntegrationTest {
             RecordMapper.getInstance().recordIdToExternalRecordClassMap.values.sortedBy { it.name }
         val supportedUIRecords =
             HealthPermissionToDatatypeMapper.getAllDataTypes().values.flatten().sortedBy { it.name }
-        assertThat(
-                recordClasses.filterNot { record ->
-                    record.name.equals(
-                        "android.health.connect.datatypes.PlannedExerciseSessionRecord")
-                })
-            .isEqualTo(supportedUIRecords)
+        assertThat(recordClasses).isEqualTo(supportedUIRecords)
     }
 }
