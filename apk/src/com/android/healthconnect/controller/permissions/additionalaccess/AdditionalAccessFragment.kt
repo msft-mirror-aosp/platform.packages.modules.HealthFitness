@@ -19,6 +19,7 @@
 package com.android.healthconnect.controller.permissions.additionalaccess
 
 import android.content.Intent.EXTRA_PACKAGE_NAME
+import android.health.connect.HealthPermissions
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -28,13 +29,18 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NOT_DECLARED
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
+import com.android.healthconnect.controller.permissions.data.AdditionalPermissionStrings
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
+import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_BUTTON
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.AppHeaderPreference
+import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -49,6 +55,11 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
 
     private val header: AppHeaderPreference by pref(PREF_APP_HEADER)
     private val exerciseRoutePref: HealthPreference by pref(KEY_EXERCISE_ROUTES_PERMISSION)
+    private val historicReadPref: HealthSwitchPreference by pref(KEY_HISTORY_READ_PERMISSION)
+    private val backgroundReadPref: HealthSwitchPreference by pref(KEY_BACKGROUND_READ_PERMISSION)
+    private val footerPref: FooterPreference by pref(KEY_FOOTER)
+
+    private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
 
     lateinit var packageName: String
 
@@ -73,7 +84,7 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         packageName = packageNameExtra
 
         viewModel.additionalAccessState.observe(viewLifecycleOwner) { state ->
-            setupExerciseRoutePref(state.exerciseRoutePermissionUIState)
+            setupAdditionalPrefs(state)
         }
 
         viewModel.showEnableExerciseEvent.observe(viewLifecycleOwner) { state ->
@@ -117,11 +128,79 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         }
     }
 
+    private fun maybeShowFooter(state: AdditionalAccessViewModel.State) {
+        val shouldShow = state.showFooter()
+
+        if (!shouldShow) {
+            footerPref.isVisible = false
+            return
+        }
+
+        val title =
+            if (state.isAdditionalPermissionDisabled(state.historyReadUIState) &&
+                state.isAdditionalPermissionDisabled(state.backgroundReadUIState)) {
+                R.string.additional_access_combined_footer
+            } else if (state.isAdditionalPermissionDisabled(state.backgroundReadUIState)) {
+                R.string.additional_access_background_footer
+            } else {
+                R.string.additional_access_history_footer
+            }
+
+        footerPref.title = getString(title)
+        footerPref.isVisible = true
+    }
+
+    private fun setupAdditionalPrefs(state: AdditionalAccessViewModel.State) {
+        setupExerciseRoutePref(state.exerciseRoutePermissionUIState)
+        maybeShowFooter(state)
+
+        if (state.historyReadUIState.isDeclared) {
+            val permStrings =
+                AdditionalPermissionStrings.fromAdditionalPermission(
+                    HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY)
+
+            val dataAccessDate = viewModel.loadAccessDate(packageName)
+            val summary =
+                if (dataAccessDate != null) {
+                    val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
+                    getString(permStrings.permissionDescription, formattedDate)
+                } else {
+                    getString(permStrings.permissionDescriptionFallback)
+                }
+
+            historicReadPref.isVisible = true
+            historicReadPref.isChecked = state.historyReadUIState.isGranted
+            historicReadPref.isEnabled = state.historyReadUIState.isEnabled
+            historicReadPref.summary = summary
+            historicReadPref.setOnPreferenceChangeListener { _, newValue ->
+                viewModel.updatePermission(
+                    packageName, HealthPermissions.READ_HEALTH_DATA_HISTORY, newValue as Boolean)
+                true
+            }
+        }
+
+        if (state.backgroundReadUIState.isDeclared) {
+            backgroundReadPref.isVisible = true
+            backgroundReadPref.isChecked = state.backgroundReadUIState.isGranted
+            backgroundReadPref.isEnabled = state.backgroundReadUIState.isEnabled
+            backgroundReadPref.setOnPreferenceChangeListener { _, newValue ->
+                viewModel.updatePermission(
+                    packageName,
+                    HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+                    newValue as Boolean)
+                true
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "AdditionalAccessFragmen"
         private const val PREF_APP_HEADER = "manage_app_permission_header"
         private const val KEY_EXERCISE_ROUTES_PERMISSION = "key_exercise_routes_permission"
         private const val EXERCISE_ROUTES_DIALOG_TAG = "ExerciseRoutesPermissionDialogFragment"
         private const val ENABLE_EXERCISE_DIALOG_TAG = "EnableExercisePermissionDialog"
+        private const val KEY_BACKGROUND_READ_PERMISSION = "key_background_read"
+        private const val KEY_HISTORY_READ_PERMISSION = "key_history_read"
+        private const val KEY_FOOTER = "key_additional_access_footer"
     }
 }

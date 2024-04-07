@@ -16,6 +16,7 @@
 package com.android.healthconnect.controller.shared.preference
 
 import android.content.Context
+import android.util.AttributeSet
 import androidx.preference.Preference.OnPreferenceChangeListener
 import androidx.preference.SwitchPreference
 import com.android.healthconnect.controller.utils.logging.ElementName
@@ -26,7 +27,9 @@ import com.android.healthconnect.controller.utils.logging.UIAction
 import dagger.hilt.android.EntryPointAccessors
 
 /** A [SwitchPreference] that allows logging. */
-open class HealthSwitchPreference(context: Context) : SwitchPreference(context) {
+open class HealthSwitchPreference
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null) : SwitchPreference(context, attrs) {
 
     private var logger: HealthConnectLogger
     var logNameActive: ElementName = ErrorPageElement.UNKNOWN_ELEMENT

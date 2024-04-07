@@ -124,15 +124,15 @@ constructor(
         withContext(dispatcher) {
             try {
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
-                val appsWithHealthPermissions: List<String> =
-                    healthPermissionReader.getAppsWithHealthPermissions()
+                val appsWithDataTypePermissions: List<String> =
+                    healthPermissionReader.getAppsWithDataTypePermissions()
                 val dataTypePermissionsInCategory: List<String> =
                     category.healthPermissionTypes().map { healthPermissionType ->
                         DataTypePermission(healthPermissionType, PermissionsAccessType.WRITE)
                             .toString()
                     }
 
-                appsWithHealthPermissions.forEach { packageName ->
+                appsWithDataTypePermissions.forEach { packageName ->
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(packageName)
 

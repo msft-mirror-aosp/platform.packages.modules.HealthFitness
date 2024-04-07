@@ -23,6 +23,7 @@ import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessi
 import com.android.healthconnect.controller.dataentries.formatters.shared.BaseFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
+import com.android.healthconnect.controller.shared.DataType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -48,7 +49,8 @@ constructor(
             headerA11y = headerA11y,
             title = formatTitle(record),
             titleA11y = formatTitle(record),
-            notes = getNotes(record))
+            notes = getNotes(record),
+            dataType = DataType.PLANNED_EXERCISE)
     }
 
     fun formatTitle(record: PlannedExerciseSessionRecord): String {

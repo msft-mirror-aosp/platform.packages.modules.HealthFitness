@@ -118,7 +118,7 @@ class LoadPotentialPriorityListUseCaseTest {
     @Test
     @Ignore
     fun getAppsWithWritePermission_forActivity_returnsAppsForActivity() = runTest {
-        whenever(healthPermissionReader.getAppsWithHealthPermissions())
+        whenever(healthPermissionReader.getAppsWithDataTypePermissions())
             .thenReturn(
                 listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
 
@@ -150,7 +150,7 @@ class LoadPotentialPriorityListUseCaseTest {
     @Test
     @Ignore
     fun getAppsWithWritePermission_forSleep_returnsAppsForSleep() = runTest {
-        whenever(healthPermissionReader.getAppsWithHealthPermissions())
+        whenever(healthPermissionReader.getAppsWithDataTypePermissions())
             .thenReturn(
                 listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))

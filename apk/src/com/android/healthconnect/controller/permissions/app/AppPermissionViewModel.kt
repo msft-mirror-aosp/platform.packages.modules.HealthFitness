@@ -31,8 +31,10 @@ import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPer
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
@@ -128,6 +130,12 @@ constructor(
             }
         }
 
+    private val _lastReadPermissionDisconnected = MutableLiveData(false)
+    val lastReadPermissionDisconnected: LiveData<Boolean>
+        get() = _lastReadPermissionDisconnected
+
+    private var additionalPermissions: List<String> = emptyList()
+
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
         _appPermissions.postValue(emptyList())
@@ -146,9 +154,19 @@ constructor(
     private fun loadAllPermissions(packageName: String) {
         viewModelScope.launch {
             permissionsList = loadAppPermissionsStatusUseCase.invoke(packageName)
-            _appPermissions.postValue(permissionsList.map { it.dataTypePermission })
+            _appPermissions.postValue(
+                permissionsList.map { it.healthPermission }.filterIsInstance<DataTypePermission>())
             _grantedPermissions.postValue(
-                permissionsList.filter { it.isGranted }.map { it.dataTypePermission }.toSet())
+                permissionsList
+                    .filter { it.isGranted }
+                    .map { it.healthPermission }
+                    .filterIsInstance<DataTypePermission>()
+                    .toSet())
+            additionalPermissions =
+                permissionsList
+                    .map { it.healthPermission }
+                    .filterIsInstance<HealthPermission.AdditionalPermission>()
+                    .map { it.additionalPermission }
         }
     }
 
@@ -161,9 +179,15 @@ constructor(
                 permissionsList = grantedPermissions
 
                 // Only show app permissions that are granted
-                _appPermissions.postValue(grantedPermissions.map { it.dataTypePermission })
+                _appPermissions.postValue(
+                    grantedPermissions
+                        .map { it.healthPermission }
+                        .filterIsInstance<DataTypePermission>())
                 _grantedPermissions.postValue(
-                    grantedPermissions.map { it.dataTypePermission }.toSet())
+                    grantedPermissions
+                        .map { it.healthPermission }
+                        .filterIsInstance<DataTypePermission>()
+                        .toSet())
             }
             shouldLoadGrantedPermissions = false
         }
@@ -204,9 +228,33 @@ constructor(
 
     private fun revokePermission(dataTypePermission: DataTypePermission, packageName: String) {
         val grantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
+        val readPermissionsBeforeDisconnect =
+            grantedPermissions.count { permission ->
+                permission.permissionsAccessType == PermissionsAccessType.READ
+            }
         grantedPermissions.remove(dataTypePermission)
+        val readPermissionsAfterDisconnect =
+            grantedPermissions.count { permission ->
+                permission.permissionsAccessType == PermissionsAccessType.READ
+            }
         _grantedPermissions.postValue(grantedPermissions)
+
+        // AND any additional permissions granted
+        val lastReadPermissionRevoked =
+            additionalPermissions.isNotEmpty() &&
+                (readPermissionsBeforeDisconnect > readPermissionsAfterDisconnect) &&
+                readPermissionsAfterDisconnect == 0
+
+        if (lastReadPermissionRevoked) {
+            additionalPermissions.forEach { revokePermissionsStatusUseCase.invoke(packageName, it) }
+        }
+
+        _lastReadPermissionDisconnected.postValue(lastReadPermissionRevoked)
         revokePermissionsStatusUseCase.invoke(packageName, dataTypePermission.toString())
+    }
+
+    fun markLastReadShown() {
+        _lastReadPermissionDisconnected.postValue(false)
     }
 
     private fun shouldDisplayExerciseRouteDialog(

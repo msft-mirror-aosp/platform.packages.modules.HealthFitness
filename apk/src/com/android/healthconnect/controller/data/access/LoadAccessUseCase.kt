@@ -45,8 +45,8 @@ constructor(
     ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> =
         withContext(dispatcher) {
             try {
-                val appsWithHealthPermissions: List<String> =
-                    healthPermissionReader.getAppsWithHealthPermissions()
+                val appsWithDataTypePermissions: List<String> =
+                    healthPermissionReader.getAppsWithDataTypePermissions()
                 val contributingApps: List<AppMetadata> =
                     loadPermissionTypeContributorAppsUseCase.invoke(permissionType)
                 val readAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
@@ -54,7 +54,7 @@ constructor(
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
                 val inactiveAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
 
-                appsWithHealthPermissions.forEach {
+                appsWithDataTypePermissions.forEach {
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(it)
 

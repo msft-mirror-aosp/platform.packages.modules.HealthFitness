@@ -27,12 +27,14 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedAggregation
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedDataEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseSessionEntry
 import com.android.healthconnect.controller.dataentries.DataEntriesFragment
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.Empty
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.Loading
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.LoadingFailed
 import com.android.healthconnect.controller.dataentries.DataEntriesFragmentViewModel.DataEntriesFragmentState.WithData
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType.PLANNED_EXERCISE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType
@@ -147,6 +149,21 @@ class DataEntriesFragmentTest {
     }
 
     @Test
+    fun dataEntriesInit_withPlannedExerciseData_showsListOfPlannedExerciseEntries() {
+        Mockito.`when`(viewModel.dataEntries)
+            .thenReturn(MutableLiveData(WithData(FORMATTED_PLANNED_EXERCISE_LIST)))
+
+        launchFragment<DataEntriesFragment>(bundleOf(PERMISSION_TYPE_KEY to PLANNED_EXERCISE))
+
+        onView(withText("7:00 AM - 10:00 AM • TEST_APP_NAME")).check(matches(isDisplayed()))
+        onView(withText("Running • Morning Run")).check(matches(isDisplayed()))
+        onView(withText("4:00 PM - 5:00 PM • TEST_APP_NAME")).check(matches(isDisplayed()))
+        onView(withText("Swimming • Freestyle Technique Bootcamp")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
+    }
+
+    @Test
     fun dataEntries_withData_showsDeleteAction() {
         Mockito.`when`(viewModel.dataEntries)
             .thenReturn(MutableLiveData(WithData(FORMATTED_STEPS_LIST)))
@@ -177,3 +194,22 @@ private val FORMATTED_STEPS_LIST =
             aggregation = "127 steps",
             aggregationA11y = "127 steps",
             contributingApps = "TEST_APP_NAME, TEST_APP_NAME_2"))
+
+private val FORMATTED_PLANNED_EXERCISE_LIST =
+    listOf(
+        PlannedExerciseSessionEntry(
+            uuid = "test_id",
+            header = "7:00 AM - 10:00 AM • TEST_APP_NAME",
+            headerA11y = "from 7:00 AM to 10:00 AM • TEST_APP_NAME",
+            title = "Running • Morning Run",
+            titleA11y = "Running • Morning Run",
+            notes = "Daily morning run.",
+            dataType = DataType.PLANNED_EXERCISE),
+        PlannedExerciseSessionEntry(
+            uuid = "test_id",
+            header = "4:00 PM - 5:00 PM • TEST_APP_NAME",
+            headerA11y = "from 4:00 PM to 5:00 PM • TEST_APP_NAME",
+            title = "Swimming • Freestyle Technique Bootcamp",
+            titleA11y = "Swimming • Freestyle Technique Bootcamp",
+            notes = "A weekly swimming training plan.",
+            dataType = DataType.PLANNED_EXERCISE))

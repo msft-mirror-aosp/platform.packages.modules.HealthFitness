@@ -307,13 +307,28 @@ class RequestPermissionViewModelTest {
 
     @Test
     fun isPermissionLocallyGranted_additionalPermissionRevoked_returnsFalse() = runTest {
-        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        val permissions =
+            arrayOf(
+                READ_STEPS,
+                READ_HEART_RATE,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND)
         viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
 
         val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
         viewModel.updateHealthPermission(historyReadPermission, grant = false)
 
         assertThat(viewModel.isPermissionLocallyGranted(historyReadPermission)).isFalse()
+    }
+
+    @Test
+    fun isPermissionLocallyGranted_onlyOneAdditionalPermission_returnsTrue() = runTest {
+        val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, READ_HEALTH_DATA_HISTORY)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+
+        val historyReadPermission = fromPermissionString(READ_HEALTH_DATA_HISTORY)
+
+        assertThat(viewModel.isPermissionLocallyGranted(historyReadPermission)).isTrue()
     }
 
     @Test

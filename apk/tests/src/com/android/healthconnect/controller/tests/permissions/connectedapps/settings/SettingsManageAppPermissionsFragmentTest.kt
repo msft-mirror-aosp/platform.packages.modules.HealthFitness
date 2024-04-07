@@ -142,6 +142,7 @@ class SettingsManageAppPermissionsFragmentTest {
                         dataRestoreState = DataRestoreUiState.IDLE,
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
 
         // disable animations
         toggleAnimation(false)
@@ -337,6 +338,23 @@ class SettingsManageAppPermissionsFragmentTest {
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
                 exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<SettingsManageAppPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+
+        onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun additionalAccessState_onlyOneAdditionalPermission_showsAdditionalAccess() {
+        val validState =
+            AdditionalAccessViewModel.State(
+                backgroundReadUIState =
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true, isEnabled = false, isGranted = false))
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }
