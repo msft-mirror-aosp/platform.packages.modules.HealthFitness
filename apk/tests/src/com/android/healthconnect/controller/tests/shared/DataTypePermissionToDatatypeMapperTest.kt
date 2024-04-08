@@ -30,7 +30,7 @@ import com.android.healthconnect.controller.shared.HealthPermissionToDatatypeMap
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class HealthPermissionToDatatypeMapperTest {
+class DataTypePermissionToDatatypeMapperTest {
 
     @Test
     fun getDataTypes_steps_returnsCorrectRecords() {

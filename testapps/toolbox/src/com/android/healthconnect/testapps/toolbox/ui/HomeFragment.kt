@@ -35,7 +35,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.ALL_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.BG_READ_PERMISSION
+import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
@@ -104,8 +107,8 @@ class HomeFragment : Fragment() {
         view.findViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
             launchHealthConnect()
         }
-        view.findViewById<Button>(R.id.request_permissions_button).setOnClickListener {
-            requestPermissions()
+        view.findViewById<Button>(R.id.request_health_permissions_button).setOnClickListener {
+            requestHealthPermissions()
         }
         view.findViewById<Button>(R.id.request_route_button).setOnClickListener {
             goToRequestRoute()
@@ -122,11 +125,24 @@ class HomeFragment : Fragment() {
         view.findViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
             performanceTestingViewModel.beginInsertingData(false)
         }
-
         view.findViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
             togglePermissionIntentFilter()
         }
+        view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {
+            goToReadDataInBackgroundPage()
+        }
 
+        view.findViewById<Button>(R.id.request_combined_permissions).setOnClickListener {
+            requestCombinedPermissions()
+        }
+
+        view.findViewById<Button>(R.id.request_additional_permissions).setOnClickListener {
+            requestAdditionalPermissions()
+        }
+
+        view.findViewById<Button>(R.id.request_bg_read_permission).setOnClickListener {
+            requestBgReadPermission()
+        }
         // view
         //     .findViewById<Button>(R.id.seed_performance_insert_data_button_in_parallel)
         //     .setOnClickListener { performanceTestingViewModel.beginInsertingData(true) }
@@ -150,10 +166,23 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun isPermissionMissing(): Boolean {
-        for (permission in ALL_PERMISSIONS) {
-            if (ContextCompat.checkSelfPermission(this.requireContext(), permission) !=
-                PackageManager.PERMISSION_GRANTED) {
+    private fun isPermissionGranted(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(this.requireContext(), permission) ==
+            PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isHealthPermissionMissing(): Boolean {
+        for (permission in HEALTH_PERMISSIONS) {
+            if (!isPermissionGranted(permission)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isAdditionalPermissionMissing(): Boolean {
+        for (permission in ADDITIONAL_PERMISSIONS) {
+            if (!isPermissionGranted(permission)) {
                 return true
             }
         }
@@ -180,11 +209,50 @@ class HomeFragment : Fragment() {
         Toast.makeText(this.requireContext(), toastText, Toast.LENGTH_SHORT).show()
     }
 
-    private fun requestPermissions() {
-        if (isPermissionMissing()) {
+    private fun requestCombinedPermissions() {
+        if (!isHealthPermissionMissing()) {
+            // all health granted, just need to request additional
+            requestAdditionalPermissions()
+            return
+        } else if (!isAdditionalPermissionMissing()) {
+            // all additional granted, just need to request health
+            requestHealthPermissions()
+            return
+        } else {
             mRequestPermissionLauncher.launch(ALL_PERMISSIONS)
             return
         }
+    }
+
+    private fun requestHealthPermissions() {
+        if (isHealthPermissionMissing()) {
+            mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
+            return
+        }
+        Toast.makeText(
+                this.requireContext(),
+                R.string.all_permissions_already_granted_toast,
+                Toast.LENGTH_LONG)
+            .show()
+    }
+
+    private fun requestAdditionalPermissions() {
+        if (isAdditionalPermissionMissing()) {
+            mRequestPermissionLauncher.launch(ADDITIONAL_PERMISSIONS)
+            return
+        }
+        Toast.makeText(
+                this.requireContext(),
+                R.string.all_permissions_already_granted_toast,
+                Toast.LENGTH_LONG)
+            .show()
+    }
+
+    private fun requestBgReadPermission() {
+        if (!isPermissionGranted(BG_READ_PERMISSION)) {
+            mRequestPermissionLauncher.launch(arrayOf(BG_READ_PERMISSION))
+        }
+
         Toast.makeText(
                 this.requireContext(),
                 R.string.all_permissions_already_granted_toast,
@@ -198,5 +266,9 @@ class HomeFragment : Fragment() {
 
     private fun goToCategoryListPage() {
         mNavigationController.navigate(R.id.action_homeFragment_to_categoryList)
+    }
+
+    private fun goToReadDataInBackgroundPage() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_readDataInBackground)
     }
 }

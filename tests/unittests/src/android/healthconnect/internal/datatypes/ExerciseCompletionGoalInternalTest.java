@@ -23,6 +23,7 @@ import android.health.connect.datatypes.units.Length;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.ActiveCaloriesBurnedGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.DistanceGoalInternal;
+import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.DistanceWithVariableRestGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.DurationGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.RepetitionsGoalInternal;
 import android.health.connect.internal.datatypes.ExerciseCompletionGoalInternal.StepsGoalInternal;
@@ -190,6 +191,36 @@ public class ExerciseCompletionGoalInternalTest {
                                                 original.toExternalObject()))
                                 .getActiveCalories())
                 .isEqualTo(original.getActiveCalories());
+    }
+
+    @Test
+    public void distanceWithVariableRestGoal_writeToParcelThenRestore_objectsAreIdentical() {
+        DistanceWithVariableRestGoalInternal original =
+                new DistanceWithVariableRestGoalInternal(
+                        Length.fromMeters(100), Duration.ofMinutes(2));
+
+        Parcel parcel = writeToParcel(original);
+        DistanceWithVariableRestGoalInternal restored =
+                (DistanceWithVariableRestGoalInternal)
+                        ExerciseCompletionGoalInternal.readFromParcel(parcel);
+
+        assertThat(restored.getDistance()).isEqualTo(original.getDistance());
+        assertThat(restored.getDuration()).isEqualTo(original.getDuration());
+        parcel.recycle();
+    }
+
+    @Test
+    public void distanceWithVariableRestGoal_convertToExternalAndBack_objectsAreIdentical() {
+        DistanceWithVariableRestGoalInternal original =
+                new DistanceWithVariableRestGoalInternal(
+                        Length.fromMeters(100), Duration.ofMinutes(2));
+
+        DistanceWithVariableRestGoalInternal roundTripConverted =
+                (DistanceWithVariableRestGoalInternal)
+                        ExerciseCompletionGoalInternal.fromExternalObject(
+                                original.toExternalObject());
+        assertThat(roundTripConverted.getDistance()).isEqualTo(original.getDistance());
+        assertThat(roundTripConverted.getDuration()).isEqualTo(original.getDuration());
     }
 
     @Test

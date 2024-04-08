@@ -23,6 +23,7 @@ import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Velocity;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal;
+import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.AmrapGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.CadenceGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.HeartRateGoalInternal;
 import android.health.connect.internal.datatypes.ExercisePerformanceGoalInternal.PowerGoalInternal;
@@ -203,6 +204,27 @@ public class ExercisePerformanceGoalInternalTest {
                                                 original.toExternalObject()))
                                 .getMass())
                 .isEqualTo(original.getMass());
+    }
+
+    @Test
+    public void amrapGoal_writeToParcelThenRestore_objectsAreIdentical() {
+        AmrapGoalInternal original = AmrapGoalInternal.INSTANCE;
+
+        Parcel parcel = writeToParcel(original);
+        AmrapGoalInternal restored =
+                (AmrapGoalInternal)
+                        getOnlyElement(ExercisePerformanceGoalInternal.readFromParcel(parcel));
+
+        assertThat(restored).isSameInstanceAs(original);
+        parcel.recycle();
+    }
+
+    @Test
+    public void amrapGoal_convertToExternalAndBack_objectsAreIdentical() {
+        ExercisePerformanceGoalInternal.AmrapGoalInternal original = AmrapGoalInternal.INSTANCE;
+
+        assertThat(ExercisePerformanceGoalInternal.fromExternalObject(original.toExternalObject()))
+                .isSameInstanceAs(original);
     }
 
     @Test

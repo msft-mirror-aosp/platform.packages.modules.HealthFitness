@@ -23,7 +23,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import android.app.backup.BackupAgent;
 import android.app.backup.BackupDataInput;
 import android.app.backup.BackupDataOutput;
 import android.app.backup.FullBackupDataOutput;
@@ -151,13 +153,28 @@ public class HealthConnectBackupAgentTest {
     }
 
     @Test
-    public void testOnBackup_doesNotBackUpAnything() throws Exception {
+    public void testOnFullBackup_deviceToDeviceFlag_callsBackupFileNamesWithTrue()
+            throws Exception {
         createAndGetNonEmptyFile(mBackupDataDirectory, "testFile1");
         createAndGetNonEmptyFile(mBackupDataDirectory, "testFile2");
 
-        mHealthConnectBackupAgent.onBackup(mOldState, mBackupDataOutput, mNewState);
+        when(mFullBackupDataOutput.getTransportFlags())
+                .thenReturn(BackupAgent.FLAG_DEVICE_TO_DEVICE_TRANSFER);
+        mHealthConnectBackupAgent.onFullBackup(mFullBackupDataOutput);
 
-        assertThat(mHealthConnectBackupAgent.mBackedUpFiles).hasSize(0);
+        verify(mHealthConnectManager, times(1)).getAllBackupFileNames(true);
+    }
+
+    @Test
+    public void testOnFullBackup_noDeviceToDeviceFlag_callsBackupFileNamesWithFalse()
+            throws Exception {
+        createAndGetNonEmptyFile(mBackupDataDirectory, "testFile1");
+        createAndGetNonEmptyFile(mBackupDataDirectory, "testFile2");
+
+        when(mFullBackupDataOutput.getTransportFlags()).thenReturn(0);
+        mHealthConnectBackupAgent.onFullBackup(mFullBackupDataOutput);
+
+        verify(mHealthConnectManager, times(1)).getAllBackupFileNames(false);
     }
 
     @Test

@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Паглядзіце, якія праграмы мелі доступ да вашых даных у апошнія 24 гадз"</string>
     <string name="today_header" msgid="1006837293203834373">"Сёння"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Учора"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Счытана: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Запісана: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Счытванне: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Запіс: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Кіраваць дазволамі"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Час: %s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"доступ да даных, датычных здароўя"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Счытваць даныя пра калорыі"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Дазваляе праграме счытваць даныя пра зрасходаваныя калорыі"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Чытанне ў фонавым рэжыме"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"чытанне ў фонавым рэжыме"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Чытаць даныя пра здароўе ў фонавым рэжыме"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Доступ да даных у фонавым рэжыме"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да даных у фонавым рэжыме?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Дазволіць праграме доступ да даных сэрвісу \"Здароўе і спорт\", калі вы яе не выкарыстоўваеце"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных сэрвісу \"Здароўе і спорт\", калі вы яе не выкарыстоўваеце."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Доступ да мінулых даных"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да мінулых даных?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Дазволіць праграме доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Дазволіць праграме доступ да мінулых даных платформы \"Здароўе і спорт\""</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да мінулых даных платформы \"Здароўе і спорт\"."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Зрасходаваныя актыўныя калорыі"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"зрасходаваныя актыўныя калорыі"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Счытваць даныя пра зрасходаваныя актыўныя калорыі"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дазволіць усё"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дазваляць"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Выберыце, якія даныя зможа счытваць ці запісваць гэта праграма ў праграме \"Здароўе і спорт\""</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Калі вы дасце дазвол на счытванне, гэта праграма зможа счытваць новыя даныя і даныя за апошнія 30 дзён"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Калі вы дасце праграме дазвол на чытанне, яна зможа атрымліваць як новыя даныя, так і звесткі за апошнія 30 дзён"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Калі вы дасце праграме дазвол на чытанне, яна зможа атрымліваць як новыя, так і мінулыя даныя"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Даць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да праграмы \"Здароўе і спорт\"?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Даведацца пра тое, як праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" апрацоўвае вашы даныя, можна ў <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> распрацоўшчыка"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"палітыка прыватнасці"</string>
@@ -305,30 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Чаму выдаляюцца дазволы праграм на доступ да даных праграмы \"Здароўе і спорт\""</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Калі праграма блакіруецца ці выдаляецца з Google Play, аўтаматычна выдаляюцца яе дазволы на доступ да даных у праграме \"Здароўе і спорт\".\n\nТакім чынам, заблакіраваная ці выдаленая праграма страчвае доступ да даных, захаваных у праграме \"Здароўе і спорт\". Калі такая праграма раней запісвала даныя, яна з\'явіцца ў спісе неактыўных праграм."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Рэзервовыя копіі і аднаўленне"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Экспарт і імпарт"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Экспартаваць аўтаматычна"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Аднавіць даныя"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Загрузіць экспартаваныя раней даныя"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Уключана"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Выключана"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Выберыце перыядычнасць захавання"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Укажыце, як трэба захоўваць даныя: адзін раз або аўтаматычна праз пэўныя прамежкі часу."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Штодзень"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Штотыдзень"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Штомесяц"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Экспарт геаданых"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Уключыце шыфраванне"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перад захаваннем даныя трэба зашыфраваць. Ніхто, нават Google ці Здароўе і спорт, не змогуць атрымаць да іх доступ."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Стварыце пароль, каб абараніць зашыфраваныя даныя. Гэты пароль спатрэбіцца, калі вы захочаце імпартаваць і аднавіць даныя."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Пароль"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Увядзіце пароль яшчэ раз"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Калі вы забудзеце пароль і згубіце тэлефон, то не зможаце аднавіць захаваныя даныя праз Здароўе і спорт."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Далей"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на тэлефоне"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>
@@ -421,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Недастаткова даных"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 мс}one{# мс}few{# мс}many{# мс}other{# мс}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 мілісекунда}one{# мілісекунда}few{# мілісекунды}many{# мілісекунд}other{# мілісекунды}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 раз}one{# раз}few{# разы}many{# разоў}other{# разу}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Спалена праз фізічную актыўнасць: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Усяго: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Максімальна магчымая колькасць паўтарэнняў"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Узровень нагрузкі: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 паўтарэнне}one{# паўтарэнне}few{# паўтарэнні}many{# паўтарэнняў}other{# паўтарэння}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 паўтарэнне}one{# паўтарэнне}few{# паўтарэнні}many{# паўтарэнняў}other{# паўтарэння}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Часткі практыкаванняў"</string>
@@ -658,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 фунт}one{# фунт}few{# фунты}many{# фунтаў}other{# фунта}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 стоўн}one{# стоўн}few{# стоўны}many{# стоўнаў}other{# стоўна}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}many{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}one{#℃}few{#℃}many{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 градус Цэльсія}one{# градус Цэльсія}few{# градусы Цэльсія}many{# градусаў Цэльсія}other{# градуса Цэльсія}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 К}one{# К}few{# К}many{# К}other{# К}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}one{#K}few{#K}many{#K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 кельвін}one{# кельвін}few{# кельвіны}many{# кельвінаў}other{# кельвіна}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}many{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}one{#℉}few{#℉}many{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 градус Фарэнгейта}one{# градус Фарэнгейта}few{# градусы Фарэнгейта}many{# градусаў Фарэнгейта}other{# градуса Фарэнгейта}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}one{{formattedValue}℃}few{{formattedValue}℃}many{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} градус Цэльсія}one{{formattedValue} градус Цэльсія}few{{formattedValue} градусы Цэльсія}many{{formattedValue} градусаў Цэльсія}other{{formattedValue} градуса Цэльсія}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}one{{formattedValue}℉}few{{formattedValue}℉}many{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} градус Фарэнгейта}one{{formattedValue} градус Фарэнгейта}few{{formattedValue} градусы Фарэнгейта}many{{formattedValue} градусаў Фарэнгейта}other{{formattedValue} градуса Фарэнгейта}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}one{{formattedValue}K}few{{formattedValue}K}many{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} кельвін}one{{formattedValue} кельвін}few{{formattedValue} кельвіны}many{{formattedValue} кельвінаў}other{{formattedValue} кельвіна}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (сярэдняе адхіленне)}one{{formattedValue}℃ (сярэдняе адхіленне)}few{{formattedValue}℃ (сярэдняе адхіленне)}many{{formattedValue}℃ (сярэдняе адхіленне)}other{{formattedValue}℃ (сярэдняе адхіленне)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} градус Цэльсія (сярэдняе адхіленне)}one{{formattedValue} градус Цэльсія (сярэдняе адхіленне)}few{{formattedValue} градусы Цэльсія (сярэдняе адхіленне)}many{{formattedValue} градусаў Цэльсія (сярэдняе адхіленне)}other{{formattedValue} градуса Цэльсія (сярэдняе адхіленне)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (сярэдняе адхіленне)}one{{formattedValue}℉ (сярэдняе адхіленне)}few{{formattedValue}℉ (сярэдняе адхіленне)}many{{formattedValue}℉ (сярэдняе адхіленне)}other{{formattedValue}℉ (сярэдняе адхіленне)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} градус Фарэнгейта (сярэдняе адхіленне)}one{{formattedValue} градус Фарэнгейта (сярэдняе адхіленне)}few{{formattedValue} градусы Фарэнгейта (сярэдняе адхіленне)}many{{formattedValue} градусаў Фарэнгейта (сярэдняе адхіленне)}other{{formattedValue} градуса Фарэнгейта (сярэдняе адхіленне)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (сярэдняе адхіленне)}one{{formattedValue}K (сярэдняе адхіленне)}few{{formattedValue}K (сярэдняе адхіленне)}many{{formattedValue}K (сярэдняе адхіленне)}other{{formattedValue}K (сярэдняе адхіленне)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} кельвін (сярэдняе адхіленне)}one{{formattedValue} кельвін (сярэдняе адхіленне)}few{{formattedValue} кельвіны (сярэдняе адхіленне)}many{{formattedValue} кельвінаў (сярэдняе адхіленне)}other{{formattedValue} кельвіна (сярэдняе адхіленне)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Падпаха"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Палец"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Лоб"</string>
@@ -674,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Вуха"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Запясце"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Похва"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Месца вымярэння"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Асноўнае значэнне"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Адхіленне ад асноўнага значэння"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 міля}one{# міля}few{# мілі}many{# міль}other{# мілі}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 км}one{# км}few{# км}many{# км}other{# км}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 міля}one{# міля}few{# мілі}many{# міль}other{# мілі}}"</string>
@@ -771,18 +796,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Наладзьце доступ гэтай праграмы да даных пра маршруты трэніровак з падключаных праграм"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Заўсёды пытацца"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Не дазваляць"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Уключыць абодва тыпы даных?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Адключыць абодва тыпы даных?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Каб маршруты трэніровак былі ўключаны, праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" патрабуецца доступ да трэніровак (доступ для чытання)"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Каб маршруты трэніровак былі ўключаны, праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" патрабуецца доступ да трэніровак"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Так"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Не"</string>
     <string name="back_button" msgid="780519527385993407">"Назад"</string>
     <string name="loading" msgid="2526615755685950317">"Ідзе загрузка…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Выконваецца інтэграцыя"</string>
@@ -868,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Апошні месяц"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Запісы"</string>
     <string name="tab_access" msgid="7818197975407243701">"Доступ"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" пашыраны доступ?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" таксама запытвае доступ да наступных налад платформы \"Здароўе і спорт\""</string>
 </resources>
