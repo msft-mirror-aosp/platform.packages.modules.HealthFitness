@@ -111,7 +111,9 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
         }
     }
     private val aggregationViewBinder by lazy { AggregationViewBinder() }
-    private val entryViewBinder by lazy { EntryItemViewBinder(onDeleteEntryListener) }
+    private val entryViewBinder by lazy {
+        EntryItemViewBinder(onDeleteEntryListener = onDeleteEntryListener)
+    }
     private val sleepSessionViewBinder by lazy {
         SleepSessionItemViewBinder(
             onDeleteEntryListenerClicked = onDeleteEntryListener,
@@ -128,10 +130,9 @@ class DataEntriesFragment : Hilt_DataEntriesFragment() {
             onItemClickedListener = onClickEntryListener)
     }
     private val plannedExerciseSessionItemViewBinder by lazy {
-        // TODO (b/332850697) Add implementation for onItemClickedListener that navigates to details
-        // of planned exercise session
         PlannedExerciseSessionItemViewBinder(
-            onDeleteEntryClicked = onDeleteEntryListener, onItemClickedListener = null)
+            onDeleteEntryClicked = onDeleteEntryListener,
+            onItemClickedListener = onClickEntryListener)
     }
 
     override fun onCreateView(

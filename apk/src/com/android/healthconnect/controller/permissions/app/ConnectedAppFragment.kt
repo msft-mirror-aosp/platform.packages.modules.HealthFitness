@@ -71,7 +71,6 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
@@ -238,7 +237,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
-                        it.logName = AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
+                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
                         it.setTitle(R.string.additional_access_label)
                         it.setOnPreferenceClickListener { _ ->
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)

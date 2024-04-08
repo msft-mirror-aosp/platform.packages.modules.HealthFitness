@@ -32,7 +32,13 @@
 package com.android.healthconnect.controller.tests.entrydetails
 
 import android.content.Context
+import android.health.connect.datatypes.ExerciseCompletionGoal
+import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseRoute
+import android.health.connect.datatypes.ExerciseSegmentType
+import android.health.connect.datatypes.PlannedExerciseStep
+import android.health.connect.datatypes.units.Length
+import android.health.connect.datatypes.units.Velocity
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -43,8 +49,14 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseBlockEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseStepEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel
@@ -53,10 +65,13 @@ import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewMod
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsViewModel.DateEntryFragmentState.WithData
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEART_RATE
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType.PLANNED_EXERCISE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SKIN_TEMPERATURE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
 import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseStep
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.utils.logging.DataEntriesElement
@@ -296,6 +311,87 @@ class DataEntryDetailsFragmentTest {
         onView(withId(R.id.map_view)).check(matches(not(isDisplayed())))
     }
 
+    @Test
+    fun dataEntriesDetailsInit_withPlannedExerciseSession_showsItem_showsDetails() {
+        val list = buildList {
+            add(
+                PlannedExerciseSessionEntry(
+                    uuid = "test_id",
+                    header = "07:06 - 08:06 • Health Connect test app",
+                    headerA11y = "from 07:06 to 08:06 • Health Connect test app",
+                    title = "Running • Morning Run",
+                    titleA11y = "Running • Morning Run",
+                    dataType = DataType.PLANNED_EXERCISE,
+                    notes = "Morning quick run by the park"))
+            add(
+                PlannedExerciseBlockEntry(
+                    block =
+                        getPlannedExerciseBlock(
+                            1,
+                            "Warm up",
+                            listOf(
+                                getPlannedExerciseStep(
+                                    exerciseSegmentType =
+                                        ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                                    completionGoal =
+                                        ExerciseCompletionGoal.DistanceGoal(
+                                            Length.fromMeters(1000.0)),
+                                    performanceGoals =
+                                        listOf(
+                                            ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                                            ExercisePerformanceGoal.SpeedGoal(
+                                                Velocity.fromMetersPerSecond(25.0),
+                                                Velocity.fromMetersPerSecond(15.0)))))),
+                    title = "Warm up: 1 time",
+                    titleA11y = "Warm up 1 time"))
+            add(SessionHeader("Notes"))
+            add(FormattedSectionContent("Morning quick run by the park"))
+            add(
+                PlannedExerciseStepEntry(
+                    step =
+                        getPlannedExerciseStepBuilder()
+                            .setPerformanceGoals(
+                                listOf(
+                                    ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                                    ExercisePerformanceGoal.SpeedGoal(
+                                        Velocity.fromMetersPerSecond(25.0),
+                                        Velocity.fromMetersPerSecond(15.0))))
+                            .build(),
+                    title = "4 km Running",
+                    titleA11y = "4 kilometres Running"))
+            add(FormattedSectionContent(title = "This is a test exercise step", bulleted = true))
+            add(
+                ExercisePerformanceGoalEntry(
+                    goal = ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                    title = "150 bpm - 180 bpm",
+                    titleA11y = "150 beats per minute - 180 beats per minute"))
+            add(
+                ExercisePerformanceGoalEntry(
+                    goal =
+                        ExercisePerformanceGoal.SpeedGoal(
+                            Velocity.fromMetersPerSecond(180.0),
+                            Velocity.fromMetersPerSecond(90.0)),
+                    title = "180 km/h - 90 km/h",
+                    titleA11y = "180 kilometres per hour - 90 kilometres per hour"))
+        }
+
+        whenever(viewModel.sessionData).thenReturn(MutableLiveData(WithData(list)))
+
+        launchFragment<DataEntryDetailsFragment>(
+            DataEntryDetailsFragment.createBundle(
+                permissionType = PLANNED_EXERCISE, entryId = "1", showDataOrigin = true))
+
+        onView(withText("07:06 - 08:06 • Health Connect test app")).check(matches(isDisplayed()))
+        onView(withText("Running • Morning Run")).check(matches(isDisplayed()))
+        onView(withText("Notes")).check(matches(isDisplayed()))
+        onView(withText("Morning quick run by the park")).check(matches(isDisplayed()))
+        onView(withText("Warm up: 1 time")).check(matches(isDisplayed()))
+        onView(withText("4 km Running")).check(matches(isDisplayed()))
+        onView(withText("• This is a test exercise step")).check(matches(isDisplayed()))
+        onView(withText("• 150 bpm - 180 bpm")).check(matches(isDisplayed()))
+        onView(withText("• 180 km/h - 90 km/h")).check(matches(isDisplayed()))
+    }
+
     private fun getSleepStages(): List<FormattedEntry> {
         return listOf(
             FormattedEntry.SessionHeader(header = "Stages"),
@@ -413,5 +509,12 @@ class DataEntryDetailsFragmentTest {
             title = "100 bpm",
             titleA11y = "100 beats per minute",
             dataType = DataType.HEART_RATE)
+    }
+
+    private fun getPlannedExerciseStepBuilder(): PlannedExerciseStep.Builder {
+        return PlannedExerciseStep.Builder(
+            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+            PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(1000.0)))
     }
 }

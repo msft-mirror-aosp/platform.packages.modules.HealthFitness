@@ -64,7 +64,7 @@ import com.android.healthconnect.controller.shared.preference.HealthSwitchPrefer
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
+import com.android.healthconnect.controller.utils.logging.AppAccessElement.ADDITIONAL_ACCESS_BUTTON
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.pref

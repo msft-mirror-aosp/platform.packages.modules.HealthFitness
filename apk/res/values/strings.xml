@@ -601,8 +601,10 @@
 
     <!-- region training plans -->
     <string name="planned_exercise_session_title" translatable="false"><xliff:g example="Swimming" id="type">%1$s</xliff:g> • <xliff:g example="Freestyle Technique Bootcamp" id="title">%2$s</xliff:g></string>
-    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> x<xliff:g example="2" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_session_notes_title" description="Title for notes section.">Notes</string>
+    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g>: <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
     <string name="planned_exercise_block_a11y_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_block_details_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g>: <xliff:g example="2" id="repetition">%2$d</xliff:g></string>
     <string name="planned_exercise_block_repetitions" description="Repetitions of an exercise set. [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 time} other {# times}}</string>
     <string name="planned_exercise_step_title" translatable="false"><xliff:g example="400m" id="completion_goal">%1$s</xliff:g> <xliff:g example="Breaststroke" id="exercise_segment_type">%2$s</xliff:g></string>
     <string name="distance_with_variable_rest_goal_formatted" translatable="false"><xliff:g example="400m" id="distance">%1$s</xliff:g>\@<xliff:g example="4 hours" id="duration">%2$s</xliff:g> </string>
@@ -611,6 +613,7 @@
     <string name="performance_goals_range" translatable="false"><xliff:g example="100W" id="min_value">%1$s</xliff:g> - <xliff:g example="200W" id="max_value">%2$s</xliff:g></string>
     <string name="amrap_performance_goal" description="Label for as many reps as possible performance goal">As many reps as possible</string>
     <string name="rate_of_perceived_exertion_goal" description="Label for rate of perceived exertion goal">Effort level: <xliff:g example="4" id="value">%1$d</xliff:g>/10</string>
+    <string name="bulleted_content" translatable="false">• <xliff:g example="Focus on breathing" id="title">%1$s</xliff:g></string>
     <!-- endregion -->
 
     <!--  region activity -->
