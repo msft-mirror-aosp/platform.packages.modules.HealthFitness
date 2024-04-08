@@ -75,7 +75,7 @@ public class ValuePriorityAggregationTest {
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);
         when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(false);
+                .thenReturn(true);
     }
 
     @Test
@@ -89,13 +89,13 @@ public class ValuePriorityAggregationTest {
     }
 
     @Test
-    public void testOneStepsRecord_doesntHavePriority_accountedForAggregation() {
+    public void testOneStepsRecord_doesNotHavePriority_noneAccountedForAggregation() {
         doReturn(createStepsData(10, 20, 10, Integer.MIN_VALUE, 1))
                 .when(mOneGroupAggregator)
                 .readNewData(mCursor);
         when(mCursor.moveToNext()).thenReturn(true, false);
         mOneGroupAggregator.calculateAggregation(mCursor);
-        assertThat(mOneGroupAggregator.getResultForGroup(0)).isEqualTo(10.0);
+        assertThat(mOneGroupAggregator.getResultForGroup(0)).isNull();
     }
 
     @Test
@@ -300,7 +300,7 @@ public class ValuePriorityAggregationTest {
     }
 
     @Test
-    public void testTwoStepsRecords_noOneHasPriority_latestAccountedForAggregation() {
+    public void testTwoStepsRecords_noOneHasPriority_noneAccountedForAggregation() {
         doReturn(
                         createStepsData(10, 20, 10, Integer.MIN_VALUE, 10),
                         createStepsData(10, 20, 20, Integer.MIN_VALUE, 20))
@@ -308,7 +308,7 @@ public class ValuePriorityAggregationTest {
                 .readNewData(mCursor);
         when(mCursor.moveToNext()).thenReturn(true, true, false);
         mOneGroupAggregator.calculateAggregation(mCursor);
-        assertThat(mOneGroupAggregator.getResultForGroup(0)).isEqualTo(20);
+        assertThat(mOneGroupAggregator.getResultForGroup(0)).isNull();
     }
 
     @Test
@@ -383,8 +383,6 @@ public class ValuePriorityAggregationTest {
 
     @Test
     public void testOneStepRecord_newAggregation_noPriority_notAccountedForAggregation() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         doReturn(createStepsData(10, 20, 10, Integer.MIN_VALUE, 1))
                 .when(mOneGroupAggregator)
                 .readNewData(mCursor);
@@ -396,8 +394,6 @@ public class ValuePriorityAggregationTest {
     @Test
     public void
             testTwoStepRecords_newAggregation_recordWithNoPriority_notAccountedForAggregation() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         doReturn(
                         createStepsData(15, 15, 10, Integer.MIN_VALUE, 10),
                         createStepsData(15, 15, 20, 100, 20))
@@ -411,8 +407,6 @@ public class ValuePriorityAggregationTest {
     @Test
     public void
             testTwoStepRecords_newAggregation_noRecordsWithPriority_notAccountedForAggregation() {
-        when(mHealthConnectDeviceConfigManager.isAggregationSourceControlsEnabled())
-                .thenReturn(true);
         doReturn(
                         createStepsData(15, 15, 10, Integer.MIN_VALUE, 10),
                         createStepsData(15, 15, 20, Integer.MIN_VALUE, 20))

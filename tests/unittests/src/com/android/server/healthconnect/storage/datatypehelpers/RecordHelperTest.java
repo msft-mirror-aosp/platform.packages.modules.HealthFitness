@@ -77,7 +77,6 @@ public class RecordHelperTest {
 
     @After
     public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
         TransactionManager.clearInstance();
     }
 

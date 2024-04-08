@@ -1,14 +1,6 @@
 {
   "mainline-presubmit": [
     {
-      "name" : "HealthConnectControllerUITests[com.google.android.healthfitness.apex]",
-      "options": [
-                {
-                    "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
-                }
-      ]
-    },
-    {
       "name": "CtsHealthFitnessDeviceTestCases[com.google.android.healthfitness.apex]"
     },
     {
@@ -32,6 +24,9 @@
        "name": "HealthConnectControllerExerciseRouteTests[com.google.android.healthfitness.apex]"
     },
     {
+       "name": "HealthConnectControllerExportTests[com.google.android.healthfitness.apex]"
+    },
+    {
        "name": "HealthConnectControllerHomePageAndOnboardingTests[com.google.android.healthfitness.apex]"
     },
     {
@@ -51,17 +46,6 @@
     }
   ],
   "presubmit": [
-    {
-       "name" : "HealthConnectControllerUITests",
-       "options": [
-                {
-                    "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
-                },
-                {
-                    "exclude-annotation": "androidx.test.filters.FlakyTest"
-                }
-        ]
-    },
     {
       "name": "CtsHealthFitnessDeviceTestCases"
     },
@@ -119,6 +103,9 @@
     },
     {
        "name": "HealthConnectControllerExerciseRouteTests"
+    },
+    {
+       "name": "HealthConnectControllerExportTests"
     },
     {
        "name": "HealthConnectControllerHomePageAndOnboardingTests"

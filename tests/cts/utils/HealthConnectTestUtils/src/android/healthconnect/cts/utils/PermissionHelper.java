@@ -52,8 +52,6 @@ public final class PermissionHelper {
     public static final String READ_EXERCISE_ROUTE_PERMISSION =
             "android.permission.health.READ_EXERCISE_ROUTE";
 
-    public static final String READ_HEALTH_DATA_IN_BACKGROUND =
-            "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
     public static final String READ_EXERCISE_ROUTES =
             "android.permission.health.READ_EXERCISE_ROUTES";
     private static final String MANAGE_HEALTH_PERMISSIONS =

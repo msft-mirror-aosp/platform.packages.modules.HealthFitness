@@ -41,15 +41,15 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"గత 24 గంటల్లో మీ డేటాను ఏయే యాప్‌లు యాక్సెస్ చేశాయో చూడండి"</string>
     <string name="today_header" msgid="1006837293203834373">"నేడు"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"నిన్న"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"ఇవి చదవగలిగింది: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"రాసిన విషయాలు: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"చదివింది: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"రాసింది: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"అనుమతులను మేనేజ్ చేయండి"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"సమయం: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"యాక్టివిటీ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"యాక్టివిటీ"</string>
-    <string name="body_measurements_category_uppercase" msgid="422923782603313038">"శారీరక సమాచారం"</string>
-    <string name="body_measurements_category_lowercase" msgid="2259696274629666992">"శారీరక సమాచారం"</string>
+    <string name="body_measurements_category_uppercase" msgid="422923782603313038">"శరీర కొలతలు"</string>
+    <string name="body_measurements_category_lowercase" msgid="2259696274629666992">"శరీర కొలతలు"</string>
     <string name="sleep_category_uppercase" msgid="3422452674899706786">"నిద్ర"</string>
     <string name="sleep_category_lowercase" msgid="842609634386839011">"నిద్ర"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"కీలక ఆరోగ్య కొలమానాలు"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"మీ ఆరోగ్య డేటాను యాక్సెస్ చేయండి"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"ఖర్చు అయిన కేలరీలను చదువుతుంది"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"ఖర్చు అయిన కేలరీలను చదవడానికి యాప్‌ను అనుమతిస్తుంది"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"బ్యాక్ గ్రౌండ్ రీడింగ్"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"బ్యాక్ గ్రౌండ్ రీడింగ్"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"బ్యాక్‌గ్రౌండ్‌లో ఆరోగ్య డేటాను చదవండి"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"బ్యాక్‌గ్రౌండ్‌లో డేటాను యాక్సెస్ చేయండి"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"బ్యాక్‌గ్రౌండ్‌లో డేటాను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"మీరు యాప్‌ను ఉపయోగించనప్పుడు Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"మీరు అనుమతిస్తే, మీరు యాప్‌ను ఉపయోగించనప్పుడు ఈ యాప్ Health Connect డేటాను యాక్సెస్ చేయగలదు."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"మునుపటి డేటాను యాక్సెస్ చేయండి"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"మునుపటి డేటాను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీలోపు జోడించిన Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"మునుపటి Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"మీరు అనుమతిస్తే, ఈ యాప్ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీలోపు జోడించబడిన Health Connect డేటాను యాక్సెస్ చేయగలదు."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"మీరు అనుమతిస్తే, ఈ యాప్ మునుపటి Health Connect డేటాను యాక్సెస్ చేయగలదు."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటా"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటా"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటాను చదువుతుంది"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"అన్నీ అనుమతించండి"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"అనుమతించవద్దు"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Health Connect కోసం ఈ యాప్, ఏ డేటాను చదవాలో లేదా రాయాలో ఎంచుకోండి"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"మీరు చదవగల యాక్సెస్‌ను ఇచ్చినట్లయితే, ఈ యాప్ కొత్త డేటాను, అలాగే గత 30 రోజులకు చెందిన డేటాను చదవగలదు"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"మీరు చదవగల యాక్సెస్‌ను ఇచ్చినట్లయితే, యాప్ కొత్త డేటాను, అలాగే గత 30 రోజులకు చెందిన డేటాను చదవగలదు"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"మీరు చదవడానికి యాక్సెస్ ఇస్తే, యాప్ కొత్త, పాత డేటాను చదవగలదు"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Health Connectను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"డెవలపర్ తాలూకు <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>‌లో మీ డేటాను <xliff:g id="APP_NAME">%1$s</xliff:g> ఎలా హ్యాండిల్ చేస్తుందో మీరు తెలుసుకోవచ్చు"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"గోప్యతా పాలసీ"</string>
@@ -305,30 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect యాప్ అనుమతులను ఎందుకు తీసివేస్తుంది"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play నుండి యాప్ సస్పెండ్ చేయబడినా లేదా తీసివేయబడినా, Health Connect దాని అనుమతులను ఆటోమేటిక్‌గా తీసివేస్తుంది.\n\nయాప్ ఇకపై Health Connectలో స్టోర్ చేసిన డేటాను యాక్సెస్ చేయలేదని దీని అర్థం. ఈ యాప్ మునుపు రాసిన డేటాను కలిగి ఉంటే, అది ఇన్‌యాక్టివ్ యాప్‌ల లిస్ట్‌లో కనిపిస్తుంది."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"అర్థమైంది"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"బ్యాకప్, రీస్టోర్"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"ఎగుమతి, దిగుమతి"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"ఆటోమేటిక్‌గా ఎగుమతి చేయండి"</string>
+    <string name="restore_data" msgid="3401173690437871417">"డేటాను రీస్టోర్ చేయండి"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"మునుపు ఎగుమతి చేసిన డేటాను లోడ్ చేయండి"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"ఆన్‌లో ఉంది"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"ఆఫ్‌లో ఉంది"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"ఫ్రీక్వెన్సీని ఎంచుకోండి"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"ఒకసారి డేటాను సేవ్ చేయడానికి ఎంచుకోండి లేదా ప్రతిసారీ ఆటోమేటిక్‌గా సేవ్ చేయడానికి సెట్ చేయండి."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"రోజుకు ఒకసారి"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"వారానికి ఒకసారి"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"నెలకు ఒకసారి"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"లొకేషన్‌ను ఎగుమతి చేయండి"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"ఎన్‌క్రిప్షన్‌ను ఆన్ చేయండి"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"డేటాను సేవ్ చేసే ముందు, దాన్ని ఎన్‌క్రిప్ట్ చేయాలి. Google లేదా Health Connectతో సహా ఎవ్వరూ కూడా దీన్ని యాక్సెస్ చేయలేరు."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ఎన్‌క్రిప్ట్ చేసిన మీ డేటాను రక్షించుకోవడానికి పాస్‌వర్డ్‌ను క్రియేట్ చేయండి. మీ డేటాను దిగుమతి చేసుకోవడానికి, రీస్టోర్ చేయడానికి మీకు ఈ పాస్‌వర్డ్ అవసరం."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"పాస్‌వర్డ్"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"పాస్‌వర్డ్‌ను మళ్లీ ఎంటర్ చేయండి"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"మీరు పాస్‌వర్డ్‌ను మర్చిపోయి, ఫోన్ పోగొట్టుకుంటే, సేవ్ చేయబడిన మీ డేటాను రికవర్ చేయడంలో Health Connect సహాయపడలేదు."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
+    <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connectను ప్రారంభించండి"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు సంబంధించిన డేటాను స్టోర్ చేస్తుంది, తద్వారా మీరు మీ డేటాను ఫోన్​లోని విభిన్న రకాల యాప్‌లతో సులభంగా సింక్ చేయవచ్చు"</string>
     <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>
@@ -421,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"అసంపూర్ణం"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 మిసె}other{# మిసె}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 మిల్లీసెకను}other{# మిల్లీసెకన్లు}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 సారి}other{# సార్లు}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"యాక్టివ్: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"మొత్తం: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"వీలైనన్ని సార్లు రిపీట్ చేయండి"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"ప్రయత్న స్థాయి: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 సారి}other{# సార్లు}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 రిపిటీషన్}other{# రిపిటీషన్‌లు}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"వ్యాయామ విభాగాలు"</string>
@@ -658,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 పౌండ్}other{# పౌండ్లు}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 స్టోన్}other{# స్టోన్‌లు}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 డిగ్రీ సెల్సియస్}other{# డిగ్రీల సెల్సియస్}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 కె}other{# కె}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 కెల్విన్}other{# కెల్విన్‌లు}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 డిగ్రీ ఫారెన్‌హీట్}other{# డిగ్రీల ఫారన్‌హీట్}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} డిగ్రీ సెల్సియస్}other{{formattedValue} డిగ్రీల సెల్సియస్}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} డిగ్రీ ఫారెన్‌హీట్}other{{formattedValue} డిగ్రీల ఫారెన్‌హీట్}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} కెల్విన్}other{{formattedValue} కెల్విన్‌లు}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ ((సగటు వ్యత్యాసం)}other{{formattedValue}℃ ((సగటు వ్యత్యాసం)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} డిగ్రీ సెల్సియస్ (సగటు వ్యత్యాసం)}other{{formattedValue} డిగ్రీల సెల్సియస్ (సగటు వ్యత్యాసం)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (సగటు వ్యత్యాసం)}other{{formattedValue}℉ (సగటు వ్యత్యాసం)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} డిగ్రీ ఫారెన్‌హీట్ (సగటు వ్యత్యాసం)}other{{formattedValue} డిగ్రీల ఫారెన్‌హీట్ (సగటు వ్యత్యాసం)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (సగటు వ్యత్యాసం)}other{{formattedValue}K (సగటు వ్యత్యాసం)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} కెల్విన్ (సగటు వ్యత్యాసం)}other{{formattedValue} కెల్విన్‌ల (సగటు వ్యత్యాసం)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"చంక"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"వేలు"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"నుదురు"</string>
@@ -674,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"చెవి"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"మణికట్టు"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"యోని"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"కొలమానం లొకేషన్"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"బేస్‌లైన్"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"బేస్‌లైన్ నుండి వ్యత్యాసం"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 మైలు}other{# మైళ్లు}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 కి.మీ.}other{# కి.మీ.}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 మైలు}other{# మైళ్లు}}"</string>
@@ -734,7 +759,7 @@
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{# నెల తర్వాత Health Connect కొత్త డేటాను ఆటోమేటిక్‌గా తొలగిస్తుంది. దీన్ని సెట్ చేయడం వలన ఇప్పటికే ఉన్న # నెల కంటే పాత డేటా కూడా తొలగించబడుతుంది.}other{# నెలల తర్వాత Health Connect కొత్త డేటాను ఆటోమేటిక్‌గా తొలగిస్తుంది. దీన్ని సెట్ చేయడం వలన ఇప్పటికే ఉన్న # నెలల కంటే పాత డేటా కూడా తొలగించబడుతుంది.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ఆటోమేటిక్ తొలగింపును సెట్ చేయండి"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"ఇప్పటికే ఉన్న డేటా తొలగించబడుతుంది"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect # నెలల కంటే పాత డేటా మొత్తాన్ని తొలగిస్తుంది. మీ కనెక్ట్ చేయబడిన యాప్‌లలో ఈ మార్పులు కనిపించడానికి ఒక రోజు సమయం పట్టవచ్చు.}other{Health Connect # నెలల కంటే పాత డేటా మొత్తాన్ని తొలగిస్తుంది. మీ కనెక్ట్ చేయబడిన యాప్‌లలో ఈ మార్పులు కనిపించడానికి ఒక రోజు సమయం పట్టవచ్చు.}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{# నెల కంటే పాతదైన డేటా మొత్తాన్ని Health Connect తొలగిస్తుంది. ఈ మార్పులు, కనెక్ట్ అయిన మీ యాప్‌లలో కనిపించడానికి ఒక రోజు సమయం పట్టవచ్చు.}other{# నెలల కంటే పాతదైన డేటా మొత్తాన్ని Health Connect తొలగిస్తుంది. ఈ మార్పులు, కనెక్ట్ అయిన మీ యాప్‌లలో కనిపించడానికి ఒక రోజు సమయం పట్టవచ్చు.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"ఈ కింద ఉన్న వాటి నుండి తొలగించాల్సిన డేటా"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"పూర్తయింది"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"యాప్ ప్రాధాన్యతను సెట్ చేయండి"</string>
@@ -771,18 +796,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"కనెక్ట్ చేయబడిన యాప్‌ల నుండి వ్యాయామం మార్గాలను ఈ యాప్ ఎలా యాక్సెస్ చేస్తుందో కంట్రోల్ చేయండి"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగండి"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"అనుమతించవద్దు"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"రెండు రకాల డేటాను ఎనేబుల్ చేయాలా?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"రెండు రకాల డేటాను డిజేబుల్ చేయాలా?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"వ్యాయామ సెషన్‌కు సంబంధించిన మార్గాలను ఎనేబుల్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌కు వ్యాయామం సంబంధిత డేటాకు రీడ్ యాక్సెస్ అవసరం"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> వ్యాయామ సెషన్‌కు సంబంధించిన మార్గాలను ఎనేబుల్ చేయడానికి వ్యాయామ సెషన్‌కు యాక్సెస్ అవసరం"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"రద్దు చేయండి"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"రద్దు చేయవద్దు"</string>
     <string name="back_button" msgid="780519527385993407">"వెనుకకు"</string>
     <string name="loading" msgid="2526615755685950317">"లోడ్ అవుతోంది…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"ఇంటిగ్రేషన్ ప్రోగ్రెస్‌లో ఉంది"</string>
@@ -852,7 +871,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"యాప్ సోర్స్‌లు"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"డేటా మొత్తాలు ఎలా మారతాయో చూడటానికి యాప్ సోర్స్‌లను లిస్ట్‌కు జోడించండి. ఈ లిస్ట్ నుండి యాప్‌ను తీసివేయడం వలన అది మొత్తాలకు కంట్రిబ్యూట్ చేయకుండా ఆపివేయబడుతుంది, కానీ అది ఇప్పటికీ రైట్ అనుమతులను కలిగి ఉంటుంది."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"యాప్ సోర్స్‌లు లేవు"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"మీరు <xliff:g id="CATEGORY_NAME">%1$s</xliff:g> డేటాను రాయడానికి యాప్ అనుమతులు ఇచ్చిన తర్వాత, సోర్స్‌లు ఇక్కడ చూపబడతాయి."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"<xliff:g id="CATEGORY_NAME">%1$s</xliff:g> డేటాను రైట్ చేయడానికి ఏవైనా యాప్‌లకు మీరు అనుమతులు ఇస్తే, అప్పుడు సంబంధిత సోర్స్‌లు ఇక్కడ చూపబడతాయి."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"సోర్స్‌లు &amp; ప్రాధాన్యత ఎలా పని చేస్తాయి"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"యాప్‌ను జోడించండి"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"యాప్ సోర్స్‌లను ఎడిట్ చేయండి"</string>
@@ -868,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"గత నెల"</string>
     <string name="tab_entries" msgid="3402700951602029493">"ఎంట్రీలు"</string>
     <string name="tab_access" msgid="7818197975407243701">"యాక్సెస్"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> కోసం అదనపు యాక్సెస్‌ను అనుమతించాలా?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> కూడా ఈ Health Connect సెట్టింగ్‌లను యాక్సెస్ చేయాలనుకుంటోంది"</string>
 </resources>

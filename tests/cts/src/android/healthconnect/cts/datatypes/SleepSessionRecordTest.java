@@ -224,15 +224,14 @@ public class SleepSessionRecordTest {
 
     @Test
     public void testReadById_insertAndReadByIdOne_recordsAreEqual() throws InterruptedException {
-        List<Record> records = List.of(buildSleepSession());
-        TestUtils.insertRecords(records);
+        SleepSessionRecord insertedRecord =
+                (SleepSessionRecord) TestUtils.insertRecord(buildSleepSession());
 
         ReadRecordsRequestUsingIds.Builder<SleepSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SleepSessionRecord.class);
-        request.addId(records.get(0).getMetadata().getId());
+        request.addId(insertedRecord.getMetadata().getId());
 
         SleepSessionRecord readRecord = TestUtils.readRecords(request.build()).get(0);
-        SleepSessionRecord insertedRecord = (SleepSessionRecord) records.get(0);
         assertThat(readRecord.getMetadata()).isEqualTo(insertedRecord.getMetadata());
         assertThat(CharSequence.compare(readRecord.getTitle(), insertedRecord.getTitle()))
                 .isEqualTo(0);
@@ -244,8 +243,8 @@ public class SleepSessionRecordTest {
 
     @Test
     public void testReadById_insertAndReadById_recordsAreEqual() throws InterruptedException {
-        List<Record> records = List.of(buildSleepSession(), buildSleepSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildSleepSession(), buildSleepSessionMinimal()));
 
         ReadRecordsRequestUsingIds.Builder<SleepSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SleepSessionRecord.class);
@@ -258,8 +257,8 @@ public class SleepSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByClientId_recordsAreEqual()
             throws InterruptedException {
-        List<Record> records = List.of(buildSleepSession(), buildSleepSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildSleepSession(), buildSleepSessionMinimal()));
 
         ReadRecordsRequestUsingIds.Builder<SleepSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SleepSessionRecord.class);
@@ -272,26 +271,26 @@ public class SleepSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByDefaultFilter_filteredAll()
             throws InterruptedException {
-        List<Record> records = List.of(buildSleepSession(), buildSleepSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(List.of(buildSleepSession(), buildSleepSessionMinimal()));
 
         List<SleepSessionRecord> readRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SleepSessionRecord.class)
                                 .build());
-        assertRecordsAreEqual(records, readRecords);
+        assertRecordsAreEqual(insertedRecords, readRecords);
     }
 
     @Test
     public void testDeleteRecords_insertAndDeleteById_recordsNotFoundAnymore()
             throws InterruptedException {
-        List<Record> records = List.of(buildSleepSession(), buildSleepSessionMinimal());
-        List<Record> insertedRecords = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildSleepSession(), buildSleepSessionMinimal()));
 
         TestUtils.assertRecordFound(records.get(0).getMetadata().getId(), SleepSessionRecord.class);
         TestUtils.assertRecordFound(records.get(1).getMetadata().getId(), SleepSessionRecord.class);
 
-        TestUtils.deleteRecords(insertedRecords);
+        TestUtils.deleteRecords(records);
 
         TestUtils.assertRecordNotFound(
                 records.get(0).getMetadata().getId(), SleepSessionRecord.class);
@@ -423,8 +422,8 @@ public class SleepSessionRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(buildSleepSession());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(buildSleepSession()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

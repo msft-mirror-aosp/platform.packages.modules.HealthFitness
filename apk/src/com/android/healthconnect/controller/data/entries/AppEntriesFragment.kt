@@ -40,7 +40,7 @@ import com.android.healthconnect.controller.data.entries.datenavigation.DateNavi
 import com.android.healthconnect.controller.deletion.DeletionConstants.FRAGMENT_TAG_DELETION
 import com.android.healthconnect.controller.deletion.DeletionFragment
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter

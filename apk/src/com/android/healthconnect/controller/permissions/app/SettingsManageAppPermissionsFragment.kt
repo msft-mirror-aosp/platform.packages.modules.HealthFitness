@@ -49,8 +49,8 @@ import com.android.healthconnect.controller.migration.MigrationViewModel.Migrati
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -63,7 +63,7 @@ import com.android.healthconnect.controller.shared.preference.HealthSwitchPrefer
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
+import com.android.healthconnect.controller.utils.logging.AppAccessElement.ADDITIONAL_ACCESS_BUTTON
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.pref
@@ -95,7 +95,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     private var appName: String = ""
 
     private val viewModel: AppPermissionViewModel by activityViewModels()
-    private val permissionMap: MutableMap<HealthPermission, TwoStatePreference> = mutableMapOf()
+    private val permissionMap: MutableMap<DataTypePermission, TwoStatePreference> = mutableMapOf()
     private val additionalAccessViewModel: AdditionalAccessViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by viewModels()
     private val allowAllPreference: HealthMainSwitchPreference by pref(ALLOW_ALL_PREFERENCE)
@@ -143,6 +143,15 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         viewModel.grantedPermissions.observe(viewLifecycleOwner) { granted ->
             permissionMap.forEach { (healthPermission, switchPreference) ->
                 switchPreference.isChecked = healthPermission in granted
+            }
+        }
+        viewModel.lastReadPermissionDisconnected.observe(viewLifecycleOwner) { lastRead ->
+            if (lastRead) {
+                Toast.makeText(
+                        requireContext(),
+                        R.string.removed_additional_permissions_toast,
+                        Toast.LENGTH_LONG)
+                    .show()
             }
         }
 
@@ -262,7 +271,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             .show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
 
-    private fun updatePermissions(permissions: List<HealthPermission>) {
+    private fun updatePermissions(permissions: List<DataTypePermission>) {
         readPermissionCategory.removeAll()
         writePermissionCategory.removeAll()
 
@@ -327,7 +336,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         }
 
         footer.title = title
-        if (healthPermissionReader.isRationalIntentDeclared(packageName)) {
+        if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {
             footer.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
             footer.setLearnMoreAction {
                 val startRationaleIntent =

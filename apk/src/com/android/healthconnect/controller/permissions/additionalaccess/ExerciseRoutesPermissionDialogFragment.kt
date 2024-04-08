@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
@@ -35,10 +36,10 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_ALLOW_ALL_BUTTON
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_ASK_BUTTON
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_DIALOG_CONTAINER
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_DIALOG_DENY_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_ALLOW_ALL_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_ASK_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_DIALOG_CONTAINER
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_DIALOG_DENY_BUTTON
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -89,6 +90,7 @@ class ExerciseRoutesPermissionDialogFragment : Hilt_ExerciseRoutesPermissionDial
         }
         packageName = packageNameExtra
 
+        setupMessage(view)
         setupAppIcon(view)
         setupPermissionRadioGroup(view)
 
@@ -96,6 +98,13 @@ class ExerciseRoutesPermissionDialogFragment : Hilt_ExerciseRoutesPermissionDial
             .setAdditionalLogging(extraLogger)
             .setView(view)
             .create()
+    }
+
+    private fun setupMessage(view: View) {
+        val dialogMessage = view.findViewById(R.id.dialog_message) as TextView
+        permissionsViewModel.appInfo.observe(this) { app ->
+            dialogMessage.text = getString(R.string.route_permissions_summary, app.appName)
+        }
     }
 
     private fun setupAppIcon(view: View) {

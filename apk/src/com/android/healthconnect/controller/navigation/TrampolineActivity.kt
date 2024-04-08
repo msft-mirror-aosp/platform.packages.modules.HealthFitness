@@ -23,6 +23,7 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.MainActivity
 import com.android.healthconnect.controller.data.DataManagementActivity
@@ -49,7 +50,8 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
             Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")

@@ -201,6 +201,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                 && RecordUtils.isEqualNullableCharSequences(getTitle(), that.getTitle())
                 && Objects.equals(getRoute(), that.getRoute())
                 && Objects.equals(getSegments(), that.getSegments())
+                && Objects.equals(getPlannedExerciseSessionId(), that.getPlannedExerciseSessionId())
                 && Objects.equals(getLaps(), that.getLaps());
     }
 
@@ -213,6 +214,7 @@ public final class ExerciseSessionRecord extends IntervalRecord {
                 getTitle(),
                 getRoute(),
                 getSegments(),
+                getPlannedExerciseSessionId(),
                 getLaps());
     }
 

@@ -26,6 +26,7 @@ import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflecti
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
 import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
@@ -66,6 +67,7 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
@@ -94,6 +96,8 @@ public class StepsRecordTest {
     private static final String TAG = "StepsRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
+    private Context mContext;
+
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
@@ -101,6 +105,7 @@ public class StepsRecordTest {
 
     @Before
     public void setUp() throws InterruptedException {
+        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -184,8 +189,8 @@ public class StepsRecordTest {
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
                                 .setAscending(true)
                                 .build());
-        StepsRecord testRecord = getCompleteStepsRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        StepsRecord testRecord = (StepsRecord) TestUtils.insertRecord(getCompleteStepsRecord());
         List<StepsRecord> newStepsRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
@@ -202,8 +207,8 @@ public class StepsRecordTest {
                         .setStartTime(NOW)
                         .setEndTime(NOW.plusMillis(3000))
                         .build();
-        StepsRecord testRecord = getCompleteStepsRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        StepsRecord testRecord = (StepsRecord) TestUtils.insertRecord(getCompleteStepsRecord());
         List<StepsRecord> newStepsRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
@@ -235,8 +240,8 @@ public class StepsRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        StepsRecord testRecord = getCompleteStepsRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        StepsRecord testRecord = (StepsRecord) TestUtils.insertRecord(getCompleteStepsRecord());
         List<StepsRecord> newStepsRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
@@ -266,9 +271,8 @@ public class StepsRecordTest {
 
     @Test
     public void testReadStepsRecordUsingFilters_withPageSize() throws InterruptedException {
-        List<Record> recordList =
-                Arrays.asList(getStepsRecord_minusDays(1), getStepsRecord_minusDays(2));
-        TestUtils.insertRecords(recordList);
+        TestUtils.insertRecords(
+                Arrays.asList(getStepsRecord_minusDays(1), getStepsRecord_minusDays(2)));
         ReadRecordsResponse<StepsRecord> response =
                 readRecordsWithPagination(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
@@ -541,8 +545,8 @@ public class StepsRecordTest {
         LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
-                        .setEndTime(recordTime.plus(2, ChronoUnit.SECONDS))
+                        .setStartTime(recordTime)
+                        .setEndTime(recordTime.plusSeconds(2))
                         .build();
         String id1 =
                 TestUtils.insertRecordAndGetId(
@@ -551,22 +555,35 @@ public class StepsRecordTest {
         String id2 =
                 TestUtils.insertRecordAndGetId(
                         getBaseStepsRecord(
-                                recordTime.toInstant(ZoneOffset.MAX), ZoneOffset.MAX, 50));
+                                recordTime.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                ZoneOffset.MAX,
+                                50));
+        String id3 =
+                TestUtils.insertRecordAndGetId(
+                        getBaseStepsRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                ZoneOffset.MAX,
+                                50));
         TestUtils.assertRecordFound(id1, StepsRecord.class);
         TestUtils.assertRecordFound(id2, StepsRecord.class);
+        TestUtils.assertRecordFound(id3, StepsRecord.class);
+
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addRecordType(StepsRecord.class)
                         .setTimeRangeFilter(timeRangeFilter)
                         .build());
+
         TestUtils.assertRecordNotFound(id1, StepsRecord.class);
         TestUtils.assertRecordNotFound(id2, StepsRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, StepsRecord.class);
     }
 
     @Test
     public void testDeleteStepsRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseStepsRecord(), getCompleteStepsRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseStepsRecord(), getCompleteStepsRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -603,10 +620,10 @@ public class StepsRecordTest {
 
     @Test
     public void testDeleteStepsRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseStepsRecord(), getCompleteStepsRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseStepsRecord(), getCompleteStepsRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
         for (RecordIdFilter recordIdFilter : recordIds) {
@@ -642,10 +659,10 @@ public class StepsRecordTest {
 
     @Test
     public void testDeleteStepsRecord_usingInvalidClientIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseStepsRecord(), getCompleteStepsRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseStepsRecord(), getCompleteStepsRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(
                     RecordIdFilter.fromClientRecordId(
                             record.getClass(), record.getMetadata().getId()));
@@ -1065,8 +1082,8 @@ public class StepsRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteStepsRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteStepsRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -1569,6 +1586,34 @@ public class StepsRecordTest {
         copyRecordIdsViaReflection(insertedRecords, updatedRecords);
 
         readStepsRecordsUsingId(updatedRecords);
+    }
+
+    @Test
+    public void updateRecordsFromAnotherApp_byId_fail() {
+        Instant now = Instant.now();
+        String insertedId =
+                insertStepsRecordViaTestApp(mContext, now.minusMillis(2), now.minusMillis(1), 1);
+
+        List<Record> updatedRecords =
+                List.of(
+                        getCompleteStepsRecord(
+                                insertedId, now.minusMillis(2), now.minusMillis(1), 10));
+        HealthConnectException error =
+                assertThrows(HealthConnectException.class, () -> updateRecords(updatedRecords));
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void updateRecordsFromAnotherApp_byClientRecordId_fail() {
+        Instant now = Instant.now();
+        insertStepsRecordViaTestApp(mContext, now.minusMillis(2), now.minusMillis(1), "id1", 1);
+
+        List<Record> updatedRecords =
+                List.of(getCompleteStepsRecord(now.minusMillis(2), now.minusMillis(1), "id1", 10));
+        HealthConnectException error =
+                assertThrows(HealthConnectException.class, () -> updateRecords(updatedRecords));
+
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
     }
 
     private static List<StepsRecord> insertAndReadRecords(int recordCount, int stepCount)
