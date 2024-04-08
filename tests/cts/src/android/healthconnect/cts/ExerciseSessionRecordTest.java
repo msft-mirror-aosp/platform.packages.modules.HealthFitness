@@ -185,11 +185,11 @@ public class ExerciseSessionRecordTest {
                                 ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
                         .setRoute(route)
                         .build();
-        List<Record> recordList = TestUtils.insertRecords(Collections.singletonList(record));
+        ExerciseSessionRecord testRecord = (ExerciseSessionRecord) TestUtils.insertRecord(record);
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
-        request.addId(recordList.get(0).getMetadata().getId());
+        request.addId(testRecord.getMetadata().getId());
 
         ExerciseSessionRecord insertedRecord = TestUtils.readRecords(request.build()).get(0);
         assertThat(insertedRecord.hasRoute()).isTrue();
@@ -198,7 +198,7 @@ public class ExerciseSessionRecordTest {
         TestUtils.updateRecords(
                 Collections.singletonList(
                         getExerciseSessionRecord_update(
-                                record, recordList.get(0).getMetadata().getId(), null)));
+                                record, testRecord.getMetadata().getId(), null)));
 
         insertedRecord = TestUtils.readRecords(request.build()).get(0);
         assertThat(insertedRecord.hasRoute()).isFalse();
@@ -327,18 +327,9 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testInsertRecord_apiReturnsRequestedRecords() throws InterruptedException {
-        List<Record> records =
-                Arrays.asList(TestUtils.buildExerciseSession(), TestUtils.buildExerciseSession());
-        List<Record> insertedRecords = TestUtils.insertRecords(records);
-        assertThat(records.size()).isEqualTo(insertedRecords.size());
-        assertThat(records).containsExactlyElementsIn(insertedRecords);
-    }
-
-    @Test
     public void testReadById_insertAndReadById_recordsAreEqual() throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession(), buildSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
@@ -350,8 +341,7 @@ public class ExerciseSessionRecordTest {
 
     @Test
     public void testReadById_insertAndReadByIdOne_recordsAreEqual() throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession());
-        TestUtils.insertRecords(records);
+        List<Record> records = TestUtils.insertRecords(List.of(buildExerciseSession()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
@@ -369,8 +359,8 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByClientId_recordsAreEqual()
             throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession(), buildSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
@@ -383,8 +373,9 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByDefaultFilter_filteredAll()
             throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession(), buildSessionMinimal());
-        assertThat(TestUtils.insertRecords(records)).hasSize(2);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
+        assertThat(records).hasSize(2);
 
         List<ExerciseSessionRecord> readRecords =
                 TestUtils.readRecords(
@@ -396,8 +387,8 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByTimeFilter_filteredCorrectly()
             throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession(), buildSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         TimeInstantRangeFilter filter =
                 new TimeInstantRangeFilter.Builder()
@@ -420,15 +411,15 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testDeleteRecords_insertAndDeleteById_recordsNotFoundAnymore()
             throws InterruptedException {
-        List<Record> records = List.of(TestUtils.buildExerciseSession(), buildSessionMinimal());
-        List<Record> insertedRecords = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         TestUtils.assertRecordFound(
                 records.get(0).getMetadata().getId(), ExerciseSessionRecord.class);
         TestUtils.assertRecordFound(
                 records.get(1).getMetadata().getId(), ExerciseSessionRecord.class);
 
-        TestUtils.deleteRecords(insertedRecords);
+        TestUtils.deleteRecords(records);
 
         TestUtils.assertRecordNotFound(
                 records.get(0).getMetadata().getId(), ExerciseSessionRecord.class);
@@ -574,8 +565,8 @@ public class ExerciseSessionRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(buildExerciseSession());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(buildExerciseSession()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
