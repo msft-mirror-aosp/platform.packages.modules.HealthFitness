@@ -45,6 +45,10 @@ import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorit
 import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.SleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.UpdatePriorityListUseCase
+import com.android.healthconnect.controller.export.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.export.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.export.api.LoadExportSettingsUseCase
+import com.android.healthconnect.controller.export.api.UpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
@@ -268,5 +272,19 @@ class UseCaseModule {
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): IGetContributorAppInfoUseCase {
         return GetContributorAppInfoUseCase(healthConnectManager, context, dispatcher)
+    }
+
+    @Provides
+    fun providesLoadExportSettingsUseCase(
+        healthConnectManager: HealthConnectManager
+    ): ILoadExportSettingsUseCase {
+        return LoadExportSettingsUseCase(healthConnectManager)
+    }
+
+    @Provides
+    fun providesUpdateExportSettingsUseCase(
+        healthConnectManager: HealthConnectManager
+    ): IUpdateExportSettingsUseCase {
+        return UpdateExportSettingsUseCase(healthConnectManager)
     }
 }

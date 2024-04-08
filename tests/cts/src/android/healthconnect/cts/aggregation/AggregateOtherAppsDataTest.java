@@ -45,9 +45,11 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Length;
 import android.healthconnect.cts.lib.TestAppProxy;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -55,6 +57,11 @@ import java.time.Instant;
 public class AggregateOtherAppsDataTest {
     private static final TestAppProxy APP_WITH_WRITE_PERMS_ONLY =
             TestAppProxy.forPackageName("android.healthconnect.cts.testapp.writePermsOnly");
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {

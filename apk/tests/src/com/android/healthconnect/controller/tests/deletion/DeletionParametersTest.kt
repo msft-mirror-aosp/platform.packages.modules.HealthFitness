@@ -6,7 +6,7 @@ import com.android.healthconnect.controller.deletion.ChosenRange
 import com.android.healthconnect.controller.deletion.DeletionParameters
 import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -119,7 +119,7 @@ class DeletionParametersTest {
 
         assertTrue(
             deletionParameters.getPermissionTypeLabel() ==
-                HealthPermissionStrings.fromPermissionType(
+                DataTypePermissionStrings.fromPermissionType(
                         HealthPermissionType.ACTIVE_CALORIES_BURNED)
                     .lowercaseLabel)
     }

@@ -348,4 +348,9 @@ public final class RecordMapper {
     public int getRecordType(Class<? extends Record> recordClass) {
         return mExternalRecordClassToRecordIdMap.get(recordClass);
     }
+
+    /** Checks whether the given {@code recordClass} can be mapped. */
+    public boolean hasRecordType(Class<? extends Record> recordClass) {
+        return mExternalRecordClassToRecordIdMap.containsKey(recordClass);
+    }
 }

@@ -49,14 +49,27 @@ public final class ChangeLogTokenRequest implements Parcelable {
     private ChangeLogTokenRequest(
             @NonNull Set<DataOrigin> dataOriginFilters,
             @NonNull Set<Class<? extends Record>> recordTypes) {
-        if (recordTypes.isEmpty()) {
-            throw new IllegalArgumentException("Requested record types must not be empty");
-        }
         Objects.requireNonNull(recordTypes);
+        verifyRecordTypes(recordTypes);
         Objects.requireNonNull(dataOriginFilters);
 
         mDataOriginFilters = dataOriginFilters;
         mRecordTypes = recordTypes;
+    }
+
+    private void verifyRecordTypes(Set<Class<? extends Record>> recordTypes) {
+        if (recordTypes.isEmpty()) {
+            throw new IllegalArgumentException("Requested record types must not be empty");
+        }
+        Set<String> invalidRecordTypes =
+                recordTypes.stream()
+                        .filter(recordType -> !RecordMapper.getInstance().hasRecordType(recordType))
+                        .map(Class::getName)
+                        .collect(Collectors.toSet());
+        if (!invalidRecordTypes.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Requested record types must not contain any of " + invalidRecordTypes);
+        }
     }
 
     private ChangeLogTokenRequest(@NonNull Parcel in) {

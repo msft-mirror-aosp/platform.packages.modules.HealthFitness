@@ -24,7 +24,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSessionDetail
 import com.android.healthconnect.controller.dataentries.formatters.shared.EntryFormatter
-import com.android.healthconnect.controller.dataentries.formatters.shared.SessionDetailsFormatter
+import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.DistanceUnit.KILOMETERS
 import com.android.healthconnect.controller.dataentries.units.DistanceUnit.MILES
 import com.android.healthconnect.controller.dataentries.units.SpeedConverter.convertToDistancePerHour
@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 /** Formatter for printing Speed series data. */
 class SpeedFormatter @Inject constructor(@ApplicationContext private val context: Context) :
-    EntryFormatter<SpeedRecord>(context), SessionDetailsFormatter<SpeedRecord> {
+    EntryFormatter<SpeedRecord>(context), RecordDetailsFormatter<SpeedRecord> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)
 
@@ -107,7 +107,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
         return formatSpeedValue(res, averageSpeed, unitPreferences)
     }
 
-    private fun formatSpeedValue(
+    fun formatSpeedValue(
         @StringRes res: Int,
         speed: Double,
         unitPreferences: UnitPreferences
@@ -116,14 +116,14 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
         return MessageFormat.format(context.getString(res), mapOf("value" to speedWithUnit))
     }
 
-    private fun getUnitRes(unitPreferences: UnitPreferences): Int {
+    fun getUnitRes(unitPreferences: UnitPreferences): Int {
         return when (unitPreferences.getDistanceUnit()) {
             MILES -> R.string.velocity_speed_miles
             KILOMETERS -> R.string.velocity_speed_km
         }
     }
 
-    private fun getA11yUnitRes(unitPreferences: UnitPreferences): Int {
+    fun getA11yUnitRes(unitPreferences: UnitPreferences): Int {
         return when (unitPreferences.getDistanceUnit()) {
             MILES -> R.string.velocity_speed_miles_long
             KILOMETERS -> R.string.velocity_speed_km_long

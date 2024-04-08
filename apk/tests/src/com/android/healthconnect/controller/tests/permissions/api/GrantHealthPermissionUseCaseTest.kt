@@ -16,10 +16,11 @@
 package com.android.healthconnect.controller.tests.permissions.api
 
 import android.content.Context
+import android.health.connect.HealthPermissions
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.HEIGHT
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.WRITE
 import org.junit.Before
@@ -40,10 +41,19 @@ class GrantHealthPermissionUseCaseTest {
     }
 
     @Test
-    fun invoke_callsHealthPermissionManager() {
-        useCase.invoke("TEST_APP", HealthPermission(HEIGHT, WRITE).toString())
+    fun invoke_withDataTypePermission_callsHealthPermissionManager() {
+        useCase.invoke("TEST_APP", DataTypePermission(HEIGHT, WRITE).toString())
 
         verify(healthPermissionManager)
             .grantHealthPermission("TEST_APP", "android.permission.health.WRITE_HEIGHT")
+    }
+
+    @Test
+    fun invoke_withAdditionalPermission_callsHealthPermissionManager() {
+        useCase.invoke("TEST_APP", HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+
+        verify(healthPermissionManager)
+            .grantHealthPermission(
+                "TEST_APP", "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND")
     }
 }

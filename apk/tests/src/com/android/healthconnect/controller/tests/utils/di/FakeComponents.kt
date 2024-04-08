@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.utils.di
 import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
+import android.health.connect.exportimport.ScheduledExportSettings
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -35,6 +36,11 @@ import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriori
 import com.android.healthconnect.controller.datasources.api.ILoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.ISleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
+import com.android.healthconnect.controller.export.api.ExportFrequency
+import com.android.healthconnect.controller.export.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
+import com.android.healthconnect.controller.export.api.ExportUseCaseResult
+import com.android.healthconnect.controller.export.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.export.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -423,5 +429,36 @@ class FakeQueryRecentAccessLogsUseCase : IQueryRecentAccessLogsUseCase {
 
     fun reset() {
         this.recentAccessMap = emptyMap()
+    }
+}
+
+class FakeLoadExportSettingsUseCase : ILoadExportSettingsUseCase {
+    private var exportFrequency = EXPORT_FREQUENCY_NEVER
+
+    override suspend fun invoke(): ExportUseCaseResult<ExportFrequency> {
+        return ExportUseCaseResult.Success(exportFrequency)
+    }
+
+    fun updateExportFrequency(frequency: ExportFrequency) {
+        this.exportFrequency = frequency
+    }
+
+    fun reset() {
+        this.exportFrequency = EXPORT_FREQUENCY_NEVER
+    }
+}
+
+class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
+    var mostRecentSettings: ScheduledExportSettings =
+        ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+
+    override suspend fun invoke(settings: ScheduledExportSettings): ExportUseCaseResult<Unit> {
+        mostRecentSettings = settings
+        return ExportUseCaseResult.Success(Unit)
+    }
+
+    fun reset() {
+        mostRecentSettings =
+            ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
     }
 }

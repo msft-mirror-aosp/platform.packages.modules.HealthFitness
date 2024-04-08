@@ -41,11 +41,13 @@ import android.health.connect.datatypes.MenstruationPeriodRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
 import android.health.connect.datatypes.RestingHeartRateRecord
 import android.health.connect.datatypes.SexualActivityRecord
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -79,10 +81,12 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.NUTRITION
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.OVULATION_TEST
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.OXYGEN_SATURATION
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType.PLANNED_EXERCISE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.POWER
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.RESPIRATORY_RATE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.RESTING_HEART_RATE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SEXUAL_ACTIVITY
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SKIN_TEMPERATURE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SLEEP
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.SPEED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.STEPS
@@ -131,7 +135,8 @@ object HealthPermissionToDatatypeMapper {
             BODY_WATER_MASS to listOf(BodyWaterMassRecord::class.java),
             INTERMENSTRUAL_BLEEDING to listOf(IntermenstrualBleedingRecord::class.java),
             HEART_RATE_VARIABILITY to listOf(HeartRateVariabilityRmssdRecord::class.java),
-        )
+            SKIN_TEMPERATURE to listOf(SkinTemperatureRecord::class.java),
+            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java))
 
     fun getDataTypes(permissionType: HealthPermissionType): List<Class<out Record>> {
         return map[permissionType].orEmpty()

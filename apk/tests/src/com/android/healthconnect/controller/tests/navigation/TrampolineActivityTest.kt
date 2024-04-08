@@ -52,7 +52,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.TrampolineActivity
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.tests.utils.TEST_APP
@@ -114,9 +114,9 @@ class TrampolineActivityTest {
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
         val writePermission =
-            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
         whenever(
                 appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
@@ -135,6 +135,9 @@ class TrampolineActivityTest {
         whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
+        whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {
+            MutableLiveData(false)
+        }
     }
 
     @Test

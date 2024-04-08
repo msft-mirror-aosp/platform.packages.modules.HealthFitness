@@ -35,7 +35,7 @@ import com.android.healthconnect.controller.data.entries.EntriesViewModel.Entrie
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationPeriod
 import com.android.healthconnect.controller.data.entries.datenavigation.DateNavigationView
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.recyclerview.RecyclerViewAdapter

@@ -74,7 +74,10 @@ public abstract class ExercisePerformanceGoalInternal {
                 case RateOfPerceivedExertionGoalInternal.RATE_OF_PERCEIVED_EXERTION_TYPE_ID:
                     result.add(RateOfPerceivedExertionGoalInternal.readFieldsFromParcel(parcel));
                     break;
-                case ExerciseCompletionGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
+                case AmrapGoalInternal.AMRAP_GOAL_TYPE_ID:
+                    result.add(AmrapGoalInternal.INSTANCE);
+                    break;
+                case ExercisePerformanceGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
                     result.add(UnknownGoalInternal.INSTANCE);
                     break;
                 default:
@@ -113,6 +116,8 @@ public abstract class ExercisePerformanceGoalInternal {
             ExercisePerformanceGoal.RateOfPerceivedExertionGoal goal =
                     (ExercisePerformanceGoal.RateOfPerceivedExertionGoal) externalObject;
             return new RateOfPerceivedExertionGoalInternal(goal.getRpe());
+        } else if (externalObject instanceof ExercisePerformanceGoal.AmrapGoal) {
+            return AmrapGoalInternal.INSTANCE;
         } else {
             return UnknownGoalInternal.INSTANCE;
         }
@@ -373,6 +378,29 @@ public abstract class ExercisePerformanceGoalInternal {
         @Override
         public ExercisePerformanceGoal toExternalObject() {
             return new ExercisePerformanceGoal.RateOfPerceivedExertionGoal(mRpe);
+        }
+    }
+
+    public static final class AmrapGoalInternal extends ExercisePerformanceGoalInternal {
+        public static final AmrapGoalInternal INSTANCE = new AmrapGoalInternal();
+
+        public static final int AMRAP_GOAL_TYPE_ID = 7;
+
+        @Override
+        void writeFieldsToParcel(Parcel parcel) {
+            // No fields to write.
+        }
+
+        @Override
+        public int getTypeId() {
+            return AMRAP_GOAL_TYPE_ID;
+        }
+
+        AmrapGoalInternal() {}
+
+        @Override
+        public ExercisePerformanceGoal toExternalObject() {
+            return ExercisePerformanceGoal.AmrapGoal.INSTANCE;
         }
     }
 }

@@ -25,7 +25,7 @@
     <string name="all_categories_title" msgid="1446410643217937926">"Allir flokkar"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Sjá alla flokka"</string>
     <string name="no_data" msgid="1906986019249068659">"Engin gögn"</string>
-    <string name="connected_apps_title" msgid="279942692804743223">"Heimildir forrits"</string>
+    <string name="connected_apps_title" msgid="279942692804743223">"Heimildir forrita"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Stjórna forritum og heimildum"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> af <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> forritum eru með aðgang"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> forrit eru með aðgang"</string>
@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Sjáðu hvaða forrit hafa nálgast gögnin þín síðasta sólarhringinn"</string>
     <string name="today_header" msgid="1006837293203834373">"Í dag"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Í gær"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lesa: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Skrifa: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Lesa: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Skrifa: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Stjórna heimildum"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tími: %s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"opna heilsugögn"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Lesa brennslu hitaeininga"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Leyfir forritinu að lesa brennslu hitaeininga"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Bakgrunnslestur"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"bakgrunnslestur"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Lesa heilsufarsgögn í bakgrunni"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Aðgangur að gögnum í bakgrunninum"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Gefa <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að gögnum í bakgrunninum?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Gefa þessu forriti aðgang að gögnum úr Heilsutengingu þegar þú ert ekki að nota forritið"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ef þú leyfir þetta getur forritið fengið aðgang að gögnum úr Heilsutengingu þegar þú ert ekki að nota forritið."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Aðgangur að eldri gögnum"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Leyfa <xliff:g id="APP_NAME">%1$s</xliff:g> að fá aðgang að eldri gögnum?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Gefa þessu forriti aðgang að gögnum úr Heilsutengingu sem bætt var við fyrir <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Gefa þessu forriti aðgang að eldri gögnum úr Heilsutengingu"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ef þú leyfir þetta getur forritið fengið aðgang að gögnum úr Heilsutengingu sem bætt var við fyrir <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Ef þú gefur leyfi hefur þetta forrit aðgang að eldri gögnum úr Heilsutengingu."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Brennsla hitaeininga við hreyfingu"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"brennsla hitaeininga við hreyfingu"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lesa brennslu hitaeininga við hreyfingu"</string>
@@ -256,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Leyfa allt"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ekki leyfa"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Veldu hvaða gögn þú vilt að forritið lesi eða skrifi á Heilsutengingu"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Ef þú leyfir lesaðgang getur þetta forrit lesið ný gögn og gögn síðustu 30 daga"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ef þú leyfir lesaðgang getur forritið lesið ný gögn og gögn síðustu 30 daga"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ef þú leyfir lesaðgang getur þetta forrit lesið ný og eldri gögn"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Veita <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang að Heilsutengingu?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Þú getur séð hvernig <xliff:g id="APP_NAME">%1$s</xliff:g> meðhöndlar gögnin þín í <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> þróunaraðilans"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"persónuverndarstefnu"</string>
@@ -305,30 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Ástæða þess að Heilsutenging fjarlægir heimildir forrita"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ef Google Play fjarlægir eða lokar tímabundið á forrit fjarlægir Heilsutenging sjálfkrafa heimildir þess.\n\nÞað þýðir að forritið getur ekki nálgast gögn sem eru vistuð í Heilsutengingu. Ef viðkomandi forrit hefur skrifað gögn áður birtist það á listanum yfir óvirk forrit."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ég skil"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Öryggisafritun og endurheimt"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Út- og innflutningur"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Flytja sjálfkrafa út"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Endurheimta gögn"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Hlaða áður útfluttum gögnum"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Kveikt"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Slökkt"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Velja tíðni"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Veldu til að vista gögn einu sinni eða stilltu til að vista sjálfkrafa með vissu millibili."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Daglega"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Vikulega"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mánaðarlega"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Staðsetning útflutnings"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Kveikja á dulkóðun"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Dulkóða þarf gögn áður en þau eru vistuð. Enginn, ekki einu sinni Google eða Heilsutenging, hefur aðgang að þeim."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Búðu til aðgangsorð til að vernda dulkóðuðu gögnin þín. Þú þarft þetta aðgangsorð til að flytja inn og endurheimta gögnin þín."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Aðgangsorð"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Endurtaktu aðgangsorðið"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ef þú gleymir aðgangsorðinu þínu og týnir símanum þínum getur Heilsutenging ekki hjálpað þér að endurheimta vistuðu gögnin þín."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Til baka"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Áfram"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Byrjaðu að nota Heilsutengingu"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í símanum á einfaldan hátt"</string>
     <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
@@ -421,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Óvíst"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 msek.}one{# msek.}other{# msek.}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisekúnda}one{# millisekúnda}other{# millisekúndur}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{Einu sinni}one{# sinni}other{# sinnum}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Virkt: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Alls: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Eins margar endurtekningar og hægt er"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Áreynslustig: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 endurtekning}one{# endurtekning}other{# endurtekningar}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 endurtekning}one{# endurtekning}other{# endurtekningar}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Æfingahlutar"</string>
@@ -658,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 pund}one{# pund}other{# pund}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 steinn}one{# steinn}other{# steinar}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}one{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 gráða á Celsíus}one{# gráða á Celsíus}other{# gráður á Celsíus}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 Kelvin}one{# Kelvin}other{# Kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}one{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 gráða á Fahrenheit}one{# gráða á Fahrenheit}other{# gráður á Fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}one{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} gráða á Celsíus}one{{formattedValue} gráða á Celsíus}other{{formattedValue} gráður á Celsíus}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}one{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} gráða á Fahrenheit}one{{formattedValue} gráða á Fahrenheit}other{{formattedValue} gráður á Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}one{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (meðalfrávik)}one{{formattedValue}℃ (meðalfrávik)}other{{formattedValue}℃ (meðalfrávik)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} gráða á Celsíus (meðalfrávik)}one{{formattedValue} gráða á Celsíus (meðalfrávik)}other{{formattedValue} gráður á Celsíus (meðalfrávik)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (meðalfrávik)}one{{formattedValue}℉ (meðalfrávik)}other{{formattedValue}℉ (meðalfrávik)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} gráða á Fahrenheit (meðalfrávik)}one{{formattedValue} gráða á Fahrenheit (meðalfrávik)}other{{formattedValue} gráður á Fahrenheit (meðalfrávik)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (meðalfrávik)}one{{formattedValue}K (meðalfrávik)}other{{formattedValue}K (meðalfrávik)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (meðalfrávik)}one{{formattedValue} kelvin (meðalfrávik)}other{{formattedValue} kelvin (meðalfrávik)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Handarkriki"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Fingur"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Enni"</string>
@@ -674,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Eyra"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Úlnliður"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Leggöng"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Staðsetning mælinga"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Grunnlína"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Frávik frá grunnlínu"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 míla}one{# míla}other{# mílur}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 míla}one{# míla}other{# mílur}}"</string>
@@ -750,7 +775,7 @@
     <string name="search_keywords_home" msgid="5386515593026555327">"hreysti, vellíðan"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"heimildir"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"heilsutenging, heilsugögn, heilsuflokkar, aðgangur að gögnum, hreyfing, líkamsmælingar, skráning tíðahrings, næring, svefn, lífsmörk"</string>
-    <string name="search_breadcrumbs_permissions" msgid="2667471090347475796">"Heilsutenging &gt; Heimildir forrits"</string>
+    <string name="search_breadcrumbs_permissions" msgid="2667471090347475796">"Heilsutenging &gt; Heimildir forrita"</string>
     <string name="search_breadcrumbs_data" msgid="6635428480372024040">"Heilsutenging &gt; Gögn og aðgangur"</string>
     <string name="search_connected_apps" msgid="8180770761876928851">"Leita að forritum"</string>
     <string name="no_results" msgid="4007426147286897998">"Engar niðurstöður"</string>
@@ -771,18 +796,12 @@
     <string name="route_permissions_summary" msgid="4670908225783213910">"Stjórnaðu aðgangi forritsins að æfingaleiðum í tengdum forritum"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Spyrja í hvert skipti"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Ekki leyfa"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Virkja báðar gagnagerðir?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Gera báðar gagnagerðir óvirkar?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> þarf lesaðgang að æfingum svo hægt sé að virkja æfingaleiðir"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> krefst aðgangs að æfingum svo hægt sé að virkja æfingaleiðir"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Já"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nei"</string>
     <string name="back_button" msgid="780519527385993407">"Til baka"</string>
     <string name="loading" msgid="2526615755685950317">"Hleður…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Samþætting í gangi"</string>
@@ -868,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Síðasti mánuður"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Skráningar"</string>
     <string name="tab_access" msgid="7818197975407243701">"Aðgangur"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Gefa <xliff:g id="APP_NAME">%1$s</xliff:g> viðbótaraðgang?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> vill einnig aðgang að þessum stillingum í Heilsutengingu"</string>
 </resources>

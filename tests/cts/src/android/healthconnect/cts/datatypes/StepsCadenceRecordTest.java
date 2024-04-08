@@ -140,8 +140,9 @@ public class StepsCadenceRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsCadenceRecord.class)
                                 .build());
-        StepsCadenceRecord testRecord = getCompleteStepsCadenceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        StepsCadenceRecord testRecord =
+                (StepsCadenceRecord) TestUtils.insertRecord(getCompleteStepsCadenceRecord());
         List<StepsCadenceRecord> newStepsCadenceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsCadenceRecord.class)
@@ -158,8 +159,9 @@ public class StepsCadenceRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        StepsCadenceRecord testRecord = getCompleteStepsCadenceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        StepsCadenceRecord testRecord =
+                (StepsCadenceRecord) TestUtils.insertRecord(getCompleteStepsCadenceRecord());
         List<StepsCadenceRecord> newStepsCadenceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsCadenceRecord.class)
@@ -182,8 +184,9 @@ public class StepsCadenceRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        StepsCadenceRecord testRecord = getCompleteStepsCadenceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        StepsCadenceRecord testRecord =
+                (StepsCadenceRecord) TestUtils.insertRecord(getCompleteStepsCadenceRecord());
         List<StepsCadenceRecord> newStepsCadenceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(StepsCadenceRecord.class)
@@ -245,8 +248,8 @@ public class StepsCadenceRecordTest {
     @Test
     public void testDeleteStepsCadenceRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseStepsCadenceRecord(), getCompleteStepsCadenceRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseStepsCadenceRecord(), getCompleteStepsCadenceRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -284,16 +287,16 @@ public class StepsCadenceRecordTest {
 
     @Test
     public void testDeleteStepsCadenceRecord_usingIds() throws InterruptedException {
-        List<Record> records =
-                List.of(getBaseStepsCadenceRecord(), getCompleteStepsCadenceRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
-        List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
+        List<Record> insertedRecord =
+                TestUtils.insertRecords(
+                        List.of(getBaseStepsCadenceRecord(), getCompleteStepsCadenceRecord()));
+        List<RecordIdFilter> recordIds = new ArrayList<>(insertedRecord.size());
         for (Record record : insertedRecord) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
-        for (Record record : records) {
+        for (Record record : insertedRecord) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
         }
     }
@@ -465,8 +468,8 @@ public class StepsCadenceRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteStepsCadenceRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteStepsCadenceRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -488,7 +491,9 @@ public class StepsCadenceRecordTest {
 
     private void testReadStepsCadenceRecordIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(getCompleteStepsCadenceRecord(), getCompleteStepsCadenceRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteStepsCadenceRecord(), getCompleteStepsCadenceRecord()));
         readStepsCadenceRecordUsingIds(recordList);
     }
 
@@ -504,9 +509,8 @@ public class StepsCadenceRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readStepsCadenceRecordUsingIds(List<Record> recordList)
+    private void readStepsCadenceRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<StepsCadenceRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(StepsCadenceRecord.class);
         for (Record record : insertedRecords) {

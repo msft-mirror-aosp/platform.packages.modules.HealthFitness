@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- *
  */
 
-package com.android.healthconnect.controller.dataentries.formatters.shared
+package com.android.healthconnect.controller.export.api
 
-import android.health.connect.datatypes.Record
-import com.android.healthconnect.controller.data.entries.FormattedEntry
+/** User configured settings for scheduled export of Health Connect data. */
+sealed class ExportSettings {
+    object Loading : ExportSettings()
 
-interface SessionDetailsFormatter<T : Record> {
-    suspend fun formatRecordDetails(record: T): List<FormattedEntry>
+    object LoadingFailed : ExportSettings()
+
+    data class WithData(val frequency: ExportFrequency) : ExportSettings()
 }

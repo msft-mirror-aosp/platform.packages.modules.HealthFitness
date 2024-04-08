@@ -52,6 +52,8 @@ import java.util.stream.Collectors;
  */
 public class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
+    // Whenever we are bumping the database version, take a look at potential problems described in:
+    // go/hc-handling-database-upgrades.
     private static final int DATABASE_VERSION = 12;
     private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
     @NonNull private final Collection<RecordHelper<?>> mRecordHelpers;

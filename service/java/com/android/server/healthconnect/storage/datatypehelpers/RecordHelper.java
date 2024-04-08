@@ -51,7 +51,6 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
-import android.os.Trace;
 import android.util.ArrayMap;
 import android.util.Pair;
 
@@ -100,8 +99,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             List.of(
                     new Pair<>(DEDUPE_HASH_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB),
                     new Pair<>(UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
-    private static final String TAG_RECORD_HELPER = "HealthConnectRecordHelper";
-    private static final int TRACE_TAG_RECORD_HELPER = TAG_RECORD_HELPER.hashCode();
     @RecordTypeIdentifier.RecordType private final int mRecordIdentifier;
 
     RecordHelper(@RecordTypeIdentifier.RecordType int recordIdentifier) {
@@ -244,8 +241,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     public UpsertTableRequest getUpsertTableRequest(
             RecordInternal<?> recordInternal,
             ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
-        Trace.traceBegin(
-                TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetUpsertTableRequest"));
         ContentValues upsertValues = getContentValues((T) recordInternal);
         updateUpsertValuesIfRequired(upsertValues, extraWritePermissionToStateMap);
         UpsertTableRequest upsertTableRequest =
@@ -290,7 +285,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                         .setPostUpsertCommands(getPostUpsertCommands(recordInternal))
                         .setHelper(this)
                         .setExtraWritePermissionsStateMapping(extraWritePermissionToStateMap);
-        Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
         return upsertTableRequest;
     }
 
@@ -468,14 +462,10 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             throw new IllegalArgumentException(
                     "Too many records in the cursor. Max allowed: " + MAXIMUM_ALLOWED_CURSOR_COUNT);
         }
-        Trace.traceBegin(TRACE_TAG_RECORD_HELPER, TAG_RECORD_HELPER.concat("GetInternalRecords"));
-
         List<RecordInternal<?>> recordInternalList = new ArrayList<>();
         while (cursor.moveToNext()) {
             recordInternalList.add(getRecord(cursor, /* packageNamesByAppIds= */ null));
         }
-
-        Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
         return recordInternalList;
     }
 
@@ -518,10 +508,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
             int requestSize,
             PageTokenWrapper prevPageToken,
             @Nullable Map<Long, String> packageNamesByAppIds) {
-        Trace.traceBegin(
-                TRACE_TAG_RECORD_HELPER,
-                TAG_RECORD_HELPER.concat("getNextInternalRecordsPageAndToken"));
-
         // Ignore <offset> records of the same start time, because it was returned in previous
         // page(s).
         // If the offset is greater than number of records in the cursor, it'll move to the last
@@ -562,8 +548,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 offset++;
             }
         }
-
-        Trace.traceEnd(TRACE_TAG_RECORD_HELPER);
         return Pair.create(recordInternalList, nextPageToken);
     }
 
