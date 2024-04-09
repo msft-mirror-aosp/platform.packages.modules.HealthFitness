@@ -12,8 +12,6 @@ import javax.inject.Singleton
 interface FeatureUtils {
     fun isSessionTypesEnabled(): Boolean
 
-    fun isExerciseRouteEnabled(): Boolean
-
     fun isExerciseRouteReadAllEnabled(): Boolean
 
     fun isEntryPointsEnabled(): Boolean
@@ -24,7 +22,13 @@ interface FeatureUtils {
 
     fun isBackgroundReadEnabled(): Boolean
 
+    fun isHistoryReadEnabled(): Boolean
+
     fun isImportExportEnabled(): Boolean
+
+    fun isSkinTemperatureEnabled(): Boolean
+
+    fun isPlannedExerciseEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -54,13 +58,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_SESSIONS_TYPE_ENABLED, true)
 
-    private var isExerciseRouteEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_EXERCISE_ROUTE_ENABLED, true)
-
-    private var isExerciseRouteReadAllEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED, true)
+    private var isExerciseRouteReadAllEnabled = true
 
     private var isEntryPointsEnabled =
         DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_ENTRY_POINTS_ENABLED, true)
@@ -93,12 +91,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         }
     }
 
-    override fun isExerciseRouteEnabled(): Boolean {
-        synchronized(lock) {
-            return isExerciseRouteEnabled
-        }
-    }
-
     override fun isExerciseRouteReadAllEnabled(): Boolean {
         synchronized(lock) {
             return isExerciseRouteReadAllEnabled
@@ -117,9 +109,27 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         }
     }
 
+    override fun isHistoryReadEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
     override fun isImportExportEnabled(): Boolean {
         synchronized(lock) {
             return isImportExportEnabled
+        }
+    }
+
+    override fun isPlannedExerciseEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
+    override fun isSkinTemperatureEnabled(): Boolean {
+        synchronized(lock) {
+            return false
         }
     }
 
@@ -131,9 +141,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
             for (name in properties.keyset) {
                 when (name) {
-                    PROPERTY_EXERCISE_ROUTE_ENABLED ->
-                        isExerciseRouteEnabled =
-                            properties.getBoolean(PROPERTY_EXERCISE_ROUTE_ENABLED, true)
                     PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED -> {
                         isExerciseRouteReadAllEnabled =
                             properties.getBoolean(PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED, true)

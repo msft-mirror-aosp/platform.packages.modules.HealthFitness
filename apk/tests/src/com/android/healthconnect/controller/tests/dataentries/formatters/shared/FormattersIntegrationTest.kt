@@ -25,7 +25,7 @@ import org.junit.Test
 
 class FormattersIntegrationTest {
     @Test
-    fun allRecordsHaveFormatters() {
+    fun allRecordsHaveFormatters_exceptUnreleasedDataTypes() {
         val recordClasses =
             RecordMapper.getInstance().recordIdToExternalRecordClassMap.values.sortedBy { it.name }
         val supportedUIRecords =

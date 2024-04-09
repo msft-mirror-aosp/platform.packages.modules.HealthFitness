@@ -126,8 +126,9 @@ public class LeanBodyMassRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(LeanBodyMassRecord.class)
                                 .build());
-        LeanBodyMassRecord testRecord = getCompleteLeanBodyMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        LeanBodyMassRecord testRecord =
+                (LeanBodyMassRecord) TestUtils.insertRecord(getCompleteLeanBodyMassRecord());
         List<LeanBodyMassRecord> newLeanBodyMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(LeanBodyMassRecord.class)
@@ -144,8 +145,9 @@ public class LeanBodyMassRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        LeanBodyMassRecord testRecord = getCompleteLeanBodyMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        LeanBodyMassRecord testRecord =
+                (LeanBodyMassRecord) TestUtils.insertRecord(getCompleteLeanBodyMassRecord());
         List<LeanBodyMassRecord> newLeanBodyMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(LeanBodyMassRecord.class)
@@ -168,8 +170,9 @@ public class LeanBodyMassRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        LeanBodyMassRecord testRecord = getCompleteLeanBodyMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        LeanBodyMassRecord testRecord =
+                (LeanBodyMassRecord) TestUtils.insertRecord(getCompleteLeanBodyMassRecord());
         List<LeanBodyMassRecord> newLeanBodyMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(LeanBodyMassRecord.class)
@@ -251,8 +254,8 @@ public class LeanBodyMassRecordTest {
     @Test
     public void testDeleteLeanBodyMassRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseLeanBodyMassRecord(), getCompleteLeanBodyMassRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseLeanBodyMassRecord(), getCompleteLeanBodyMassRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -291,10 +294,10 @@ public class LeanBodyMassRecordTest {
     @Test
     public void testDeleteLeanBodyMassRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseLeanBodyMassRecord(), getCompleteLeanBodyMassRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseLeanBodyMassRecord(), getCompleteLeanBodyMassRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -468,8 +471,8 @@ public class LeanBodyMassRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteLeanBodyMassRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteLeanBodyMassRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -509,12 +512,6 @@ public class LeanBodyMassRecordTest {
     private static LeanBodyMassRecord getBaseLeanBodyMassRecord() {
         return new LeanBodyMassRecord.Builder(
                         new Metadata.Builder().build(), Instant.now(), Mass.fromGrams(10.0))
-                .build();
-    }
-
-    static LeanBodyMassRecord getBaseLeanBodyMassRecord(Instant time, double value) {
-        return new LeanBodyMassRecord.Builder(
-                        new Metadata.Builder().build(), time, Mass.fromGrams(value))
                 .build();
     }
 

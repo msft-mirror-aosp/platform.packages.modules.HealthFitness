@@ -16,12 +16,17 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_AVG;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_MAX;
 import static android.health.connect.datatypes.WeightRecord.WEIGHT_MIN;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
+import static android.healthconnect.cts.utils.TestUtils.insertWeightRecordViaTestApp;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -53,6 +58,7 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
@@ -72,7 +78,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -81,6 +86,8 @@ public class WeightRecordTest {
     private static final String TAG = "WeightRecordTest";
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
 
+    private Context mContext;
+
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
@@ -88,6 +95,7 @@ public class WeightRecordTest {
 
     @Before
     public void setUp() throws InterruptedException {
+        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -150,8 +158,8 @@ public class WeightRecordTest {
         List<WeightRecord> oldWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class).build());
-        WeightRecord testRecord = getCompleteWeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WeightRecord testRecord = (WeightRecord) TestUtils.insertRecord(getCompleteWeightRecord());
         List<WeightRecord> newWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class).build());
@@ -166,8 +174,8 @@ public class WeightRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        WeightRecord testRecord = getCompleteWeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WeightRecord testRecord = (WeightRecord) TestUtils.insertRecord(getCompleteWeightRecord());
         List<WeightRecord> newWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class)
@@ -188,8 +196,8 @@ public class WeightRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        WeightRecord testRecord = getCompleteWeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        WeightRecord testRecord = (WeightRecord) TestUtils.insertRecord(getCompleteWeightRecord());
         List<WeightRecord> newWeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(WeightRecord.class)
@@ -215,108 +223,6 @@ public class WeightRecordTest {
                                         new DataOrigin.Builder().setPackageName("abc").build())
                                 .build());
         assertThat(newWeightRecords.size()).isEqualTo(0);
-    }
-
-    @Test
-    public void testAggregation_weight() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Context context = ApplicationProvider.getApplicationContext();
-        List<Record> records =
-                Arrays.asList(
-                        getBaseWeightRecord(5.0),
-                        getBaseWeightRecord(10.0),
-                        getBaseWeightRecord(15.0));
-        AggregateRecordsResponse<Mass> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Mass>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, DAYS))
-                                                .build())
-                                .addAggregationType(WEIGHT_AVG)
-                                .addAggregationType(WEIGHT_MAX)
-                                .addAggregationType(WEIGHT_MIN)
-                                .addDataOriginsFilter(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(context.getPackageName())
-                                                .build())
-                                .build(),
-                        records);
-        Mass maxWeight = response.get(WEIGHT_MAX);
-        Mass minWeight = response.get(WEIGHT_MIN);
-        Mass avgWeight = response.get(WEIGHT_AVG);
-        assertThat(maxWeight).isNotNull();
-        assertThat(maxWeight.getInGrams()).isEqualTo(15.0);
-        assertThat(minWeight).isNotNull();
-        assertThat(minWeight.getInGrams()).isEqualTo(5.0);
-        assertThat(avgWeight).isNotNull();
-        assertThat(avgWeight.getInGrams()).isEqualTo(10.0);
-        Set<DataOrigin> dataOrigins = response.getDataOrigins(WEIGHT_AVG);
-        for (DataOrigin itr : dataOrigins) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAggregation_zeroDuration_throwsException() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        TestUtils.getAggregateResponseGroupByDuration(
-                new AggregateRecordsRequest.Builder<Mass>(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(Instant.ofEpochMilli(0))
-                                        .setEndTime(Instant.now())
-                                        .build())
-                        .addAggregationType(WEIGHT_AVG)
-                        .build(),
-                Duration.ZERO);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testAggregation_zeroPeriod_throwsException() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        TestUtils.getAggregateResponseGroupByPeriod(
-                new AggregateRecordsRequest.Builder<Mass>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(
-                                                LocalDateTime.now(ZoneOffset.UTC).minusDays(1))
-                                        .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
-                                        .build())
-                        .addAggregationType(WEIGHT_AVG)
-                        .build(),
-                Period.ZERO);
-    }
-
-    @Test(expected = HealthConnectException.class)
-    public void testAggregationPeriod_lotsOfGroups_throwsException() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        TestUtils.getAggregateResponseGroupByPeriod(
-                new AggregateRecordsRequest.Builder<Mass>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(
-                                                LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC))
-                                        .setEndTime(LocalDateTime.now(ZoneOffset.UTC))
-                                        .build())
-                        .addAggregationType(WEIGHT_AVG)
-                        .build(),
-                Period.ofDays(1));
-    }
-
-    @Test(expected = HealthConnectException.class)
-    public void testAggregation_hugeNumberOfGroups_throwsException() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        TestUtils.getAggregateResponseGroupByDuration(
-                new AggregateRecordsRequest.Builder<Mass>(
-                                new TimeInstantRangeFilter.Builder()
-                                        .setStartTime(Instant.ofEpochMilli(0))
-                                        .setEndTime(Instant.now())
-                                        .build())
-                        .addAggregationType(WEIGHT_AVG)
-                        .build(),
-                Duration.ofSeconds(1));
     }
 
     @Test
@@ -353,30 +259,42 @@ public class WeightRecordTest {
         LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
-                        .setEndTime(recordTime.plus(1, ChronoUnit.SECONDS))
+                        .setStartTime(recordTime)
+                        .setEndTime(recordTime.plusSeconds(2))
                         .build();
         String id1 =
                 TestUtils.insertRecordAndGetId(
                         getBaseWeightRecord(recordTime.toInstant(ZoneOffset.MIN), ZoneOffset.MIN));
         String id2 =
                 TestUtils.insertRecordAndGetId(
-                        getBaseWeightRecord(recordTime.toInstant(ZoneOffset.MAX), ZoneOffset.MAX));
+                        getBaseWeightRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                ZoneOffset.MAX));
+        String id3 =
+                TestUtils.insertRecordAndGetId(
+                        getBaseWeightRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                ZoneOffset.MAX));
         TestUtils.assertRecordFound(id1, WeightRecord.class);
         TestUtils.assertRecordFound(id2, WeightRecord.class);
+        TestUtils.assertRecordFound(id3, WeightRecord.class);
+
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addRecordType(WeightRecord.class)
                         .setTimeRangeFilter(timeRangeFilter)
                         .build());
+
         TestUtils.assertRecordNotFound(id1, WeightRecord.class);
         TestUtils.assertRecordNotFound(id2, WeightRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, WeightRecord.class);
     }
 
     @Test
     public void testDeleteWeightRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseWeightRecord(), getCompleteWeightRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseWeightRecord(), getCompleteWeightRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -413,15 +331,15 @@ public class WeightRecordTest {
 
     @Test
     public void testDeleteWeightRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseWeightRecord(), getCompleteWeightRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
-        List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(List.of(getBaseWeightRecord(), getCompleteWeightRecord()));
+        List<RecordIdFilter> recordIds = new ArrayList<>(insertedRecords.size());
+        for (Record record : insertedRecords) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
-        for (Record record : records) {
+        for (Record record : insertedRecords) {
             TestUtils.assertRecordNotFound(record.getMetadata().getId(), record.getClass());
         }
     }
@@ -580,8 +498,8 @@ public class WeightRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteWeightRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteWeightRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -929,6 +847,29 @@ public class WeightRecordTest {
                 .build();
     }
 
+    @Test
+    public void updateRecordsFromAnotherApp_byId_fail() {
+        Instant now = Instant.now();
+        String insertedId = insertWeightRecordViaTestApp(mContext, now, 10.0);
+
+        List<Record> updatedRecords = List.of(getWeightRecord(insertedId, now, 20.0));
+        HealthConnectException error =
+                assertThrows(HealthConnectException.class, () -> updateRecords(updatedRecords));
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void updateRecordsFromAnotherApp_byClientRecordId_fail() {
+        Instant now = Instant.now();
+        insertWeightRecordViaTestApp(mContext, now, "id1", 10.0);
+
+        List<Record> updatedRecords = List.of(getWeightRecord(now, "id1", 20.0));
+        HealthConnectException error =
+                assertThrows(HealthConnectException.class, () -> updateRecords(updatedRecords));
+
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
     WeightRecord getWeightRecord_update(Record record, String id, String clientRecordId) {
         Metadata metadata = record.getMetadata();
         Metadata metadataWithId =
@@ -951,12 +892,6 @@ public class WeightRecordTest {
                 .build();
     }
 
-    static WeightRecord getBaseWeightRecord(Instant time, double weight) {
-        return new WeightRecord.Builder(
-                        new Metadata.Builder().build(), time, Mass.fromGrams(weight))
-                .build();
-    }
-
     static WeightRecord getBaseWeightRecord(double weight) {
         return new WeightRecord.Builder(
                         new Metadata.Builder().setClientRecordId("WR" + Math.random()).build(),
@@ -975,6 +910,25 @@ public class WeightRecordTest {
     }
 
     private static WeightRecord getWeightRecordWithTime(Instant time, ZoneOffset offset) {
+        return getWeightRecord(
+                time, offset, /* clientRecordId= */ "WR" + Math.random(), /* grams= */ 10.0);
+    }
+
+    private static WeightRecord getWeightRecord(String id, Instant time, double grams) {
+        return getWeightRecord(id, time, /* offset= */ null, /* clientRecordId= */ null, grams);
+    }
+
+    private static WeightRecord getWeightRecord(Instant time, String clientRecordId, double grams) {
+        return getWeightRecord(time, /* offset= */ null, clientRecordId, grams);
+    }
+
+    private static WeightRecord getWeightRecord(
+            Instant time, ZoneOffset offset, String clientRecordId, double grams) {
+        return getWeightRecord(/* id= */ null, time, offset, clientRecordId, grams);
+    }
+
+    private static WeightRecord getWeightRecord(
+            String id, Instant time, ZoneOffset offset, String clientRecordId, double grams) {
         Device device =
                 new Device.Builder()
                         .setManufacturer("google")
@@ -984,12 +938,19 @@ public class WeightRecordTest {
         DataOrigin dataOrigin =
                 new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        if (id != null) {
+            testMetadataBuilder.setId(id);
+        }
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        testMetadataBuilder.setClientRecordId("WR" + Math.random());
+        testMetadataBuilder.setClientRecordId(clientRecordId);
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
-        return new WeightRecord.Builder(testMetadataBuilder.build(), time, Mass.fromGrams(10.0))
-                .setZoneOffset(offset)
-                .build();
+        WeightRecord.Builder builder =
+                new WeightRecord.Builder(testMetadataBuilder.build(), time, Mass.fromGrams(grams));
+        if (offset != null) {
+            builder.setZoneOffset(offset);
+        }
+
+        return builder.build();
     }
 }

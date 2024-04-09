@@ -46,7 +46,7 @@ object UiTestUtils {
     /** The label of the rescan button. */
     const val RESCAN_BUTTON_LABEL = "Scan device"
 
-    private val WAIT_TIMEOUT = Duration.ofSeconds(4)
+    private val WAIT_TIMEOUT = Duration.ofSeconds(5)
     private val NOT_DISPLAYED_TIMEOUT = Duration.ofMillis(500)
 
     private val TAG = UiTestUtils::class.java.simpleName
@@ -99,6 +99,11 @@ object UiTestUtils {
     /** Clicks on [UiObject2] with given [text]. */
     fun clickOnText(string: String) {
         waitDisplayed(By.text(string)) { it.click() }
+    }
+
+    /** Clicks on [UiObject2] if the description contains given [string]. */
+    fun clickOnDescContains(string: String) {
+        waitDisplayed(By.descContains(string)) { it.click() }
     }
 
     fun deleteAllDataAndNavigateToHomeScreen() {
@@ -256,6 +261,10 @@ object UiTestUtils {
         return distanceRecord(TEST_APP_PACKAGE_NAME)
     }
 
+    fun distanceRecordFromTestApp(startTime: Instant): DistanceRecord {
+        return distanceRecord(TEST_APP_PACKAGE_NAME, startTime, startTime.plusSeconds(100))
+    }
+
     fun distanceRecordFromTestApp2(): DistanceRecord {
         return distanceRecord(TEST_APP_2_PACKAGE_NAME)
     }
@@ -275,6 +284,20 @@ object UiTestUtils {
         testMetadataBuilder.setDevice(TEST_DEVICE).setDataOrigin(dataOrigin)
         testMetadataBuilder.setClientRecordId("SR" + Math.random())
         return StepsRecord.Builder(testMetadataBuilder.build(), startTime, endTime, stepCount)
+            .build()
+    }
+
+    private fun distanceRecord(
+        packageName: String,
+        startTime: Instant,
+        endTime: Instant
+    ): DistanceRecord {
+        val dataOrigin: DataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
+        val testMetadataBuilder: Metadata.Builder = Metadata.Builder()
+        testMetadataBuilder.setDevice(TEST_DEVICE).setDataOrigin(dataOrigin)
+        testMetadataBuilder.setClientRecordId("SR" + Math.random())
+        return DistanceRecord.Builder(
+                testMetadataBuilder.build(), startTime, endTime, Length.fromMeters(500.0))
             .build()
     }
 

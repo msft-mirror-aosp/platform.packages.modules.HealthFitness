@@ -16,7 +16,10 @@
 
 package android.healthconnect.cts;
 
+import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
+import static android.healthconnect.cts.utils.DataFactory.getMetadataForClientId;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
+import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readAllRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
@@ -30,15 +33,18 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static java.util.Comparator.comparing;
 
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.changelog.ChangeLogsResponse.DeletedLog;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HeightRecord;
 import android.health.connect.datatypes.InstantRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
@@ -54,6 +60,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -79,7 +86,8 @@ public class SharedMemoryTest {
     }
 
     @Test
-    public void insertRecordsAndReadRecords_viaSharedMemory_recordsEqual() throws Exception {
+    public void insertRecordsAndReadRecordsByFilter_viaSharedMemory_recordsEqual()
+            throws Exception {
         DataOrigin dataOrigin =
                 new DataOrigin.Builder()
                         .setPackageName(getApplicationContext().getPackageName())
@@ -119,6 +127,99 @@ public class SharedMemoryTest {
     }
 
     @Test
+    public void insertRecordsAndReadRecordsByIds_viaSharedMemory_recordsEqual() throws Exception {
+        int recordCount = 5000;
+        List<WeightRecord> records = new ArrayList<>(recordCount);
+        Instant now = Instant.now();
+
+        ReadRecordsRequestUsingIds.Builder<WeightRecord> request =
+                new ReadRecordsRequestUsingIds.Builder<>(WeightRecord.class);
+        for (int i = 0; i < recordCount - 1; i++) {
+            String clientId = "id" + i;
+            records.add(
+                    new WeightRecord.Builder(
+                                    getMetadataForClientId(clientId),
+                                    now.minusMillis(i),
+                                    Mass.fromGrams(Math.random() * 7000.0))
+                            .build());
+            request.addClientRecordId(clientId);
+        }
+        insertRecords(records);
+
+        String id =
+                insertRecordAndGetId(
+                        new WeightRecord.Builder(
+                                        getEmptyMetadata(),
+                                        now.minusMillis(5000),
+                                        Mass.fromGrams(720000))
+                                .build());
+        request.addId(id);
+
+        List<WeightRecord> readRecords = readRecords(request.build());
+
+        assertWithMessage("Record list sizes do not match")
+                .that(readRecords.size())
+                .isEqualTo(recordCount);
+
+        List<String> ids =
+                readRecords.stream()
+                        .map(Record::getMetadata)
+                        .map(
+                                metadata -> {
+                                    String clientId = metadata.getClientRecordId();
+                                    return clientId == null ? metadata.getId() : clientId;
+                                })
+                        .toList();
+
+        for (int i = 0; i < recordCount - 1; i++) {
+            assertThat(ids).contains("id" + i);
+        }
+        assertThat(ids).contains(id);
+    }
+
+    @Test
+    public void seriesDataWithHugeSampleCount_viaSharedMemory_recordEqual() throws Exception {
+        int sampleCount = 5000;
+        Instant now = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+
+        ArrayList<HeartRateRecord.HeartRateSample> insertedSamples = new ArrayList<>();
+        for (int i = 0; i < sampleCount; i++) {
+            long heartRate = (long) (60 + Math.random() * 60);
+            HeartRateRecord.HeartRateSample sample =
+                    new HeartRateRecord.HeartRateSample(heartRate, now.minusMillis(i));
+            insertedSamples.add(sample);
+        }
+
+        HeartRateRecord insertedRecord =
+                new HeartRateRecord.Builder(
+                                getEmptyMetadata(),
+                                now.minusMillis(sampleCount + 1),
+                                now.plusMillis(1),
+                                insertedSamples)
+                        .build();
+        String id = insertRecordAndGetId(insertedRecord);
+        List<HeartRateRecord> readRecords =
+                readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(HeartRateRecord.class)
+                                .addId(id)
+                                .build());
+
+        assertThat(readRecords).hasSize(1);
+        List<HeartRateRecord.HeartRateSample> readSamples = readRecords.get(0).getSamples();
+        assertThat(readSamples).hasSize(sampleCount);
+
+        // Workaround for b/324040999
+        readSamples.sort(comparing(HeartRateRecord.HeartRateSample::getTime));
+        insertedSamples.sort(comparing(HeartRateRecord.HeartRateSample::getTime));
+        for (int i = 0; i < sampleCount; i++) {
+            HeartRateRecord.HeartRateSample expected = insertedSamples.get(i);
+            HeartRateRecord.HeartRateSample value = readSamples.get(i);
+            assertThat(value.getBeatsPerMinute()).isEqualTo(expected.getBeatsPerMinute());
+            assertThat(value.getTime()).isEqualTo(expected.getTime());
+        }
+    }
+
+    @Test
     public void getChangeLogs_viaSharedMemory_recordsMatch() throws Exception {
         DataOrigin dataOrigin =
                 new DataOrigin.Builder()
@@ -133,7 +234,12 @@ public class SharedMemoryTest {
         Instant now = Instant.now();
 
         String changeLogToken =
-                TestUtils.getChangeLogToken(new ChangeLogTokenRequest.Builder().build()).getToken();
+                TestUtils.getChangeLogToken(
+                                new ChangeLogTokenRequest.Builder()
+                                        .addRecordType(HeightRecord.class)
+                                        .addRecordType(WeightRecord.class)
+                                        .build())
+                        .getToken();
 
         List<HeightRecord> heightRecords = new ArrayList<>(recordsToDeleteCount);
         for (int i = 0; i < recordsToDeleteCount; i++) {

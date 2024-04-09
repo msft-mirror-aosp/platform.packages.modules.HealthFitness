@@ -21,8 +21,10 @@ package com.android.healthconnect.controller.dataentries.formatters.shared
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord
 import android.health.connect.datatypes.ExerciseSessionRecord
 import android.health.connect.datatypes.HeartRateRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
+import android.health.connect.datatypes.SkinTemperatureRecord
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.SpeedRecord
 import android.health.connect.datatypes.StepsCadenceRecord
@@ -30,7 +32,9 @@ import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.CyclingPedalingCadenceFormatter
 import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.HeartRateFormatter
+import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseSessionRecordFormatter
 import com.android.healthconnect.controller.dataentries.formatters.PowerFormatter
+import com.android.healthconnect.controller.dataentries.formatters.SkinTemperatureFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SleepSessionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.SpeedFormatter
 import com.android.healthconnect.controller.dataentries.formatters.StepsCadenceFormatter
@@ -47,7 +51,9 @@ constructor(
     private val speedRecordFormatter: SpeedFormatter,
     private val stepsCadenceFormatter: StepsCadenceFormatter,
     private val powerFormatter: PowerFormatter,
-    private val cyclingPedalingCadenceFormatter: CyclingPedalingCadenceFormatter
+    private val cyclingPedalingCadenceFormatter: CyclingPedalingCadenceFormatter,
+    private val skinTemperatureFormatter: SkinTemperatureFormatter,
+    private val plannedExerciseSessionRecordFormatter: PlannedExerciseSessionRecordFormatter
 ) {
     suspend fun formatDetails(record: Record): List<FormattedEntry> {
         return when (record) {
@@ -59,6 +65,9 @@ constructor(
             is PowerRecord -> powerFormatter.formatRecordDetails(record)
             is CyclingPedalingCadenceRecord ->
                 cyclingPedalingCadenceFormatter.formatRecordDetails(record)
+            is SkinTemperatureRecord -> skinTemperatureFormatter.formatRecordDetails(record)
+            is PlannedExerciseSessionRecord ->
+                plannedExerciseSessionRecordFormatter.formatRecordDetails(record)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }

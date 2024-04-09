@@ -20,10 +20,10 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Upravljajte kojim podacima o zdravlju pristupaju aplikacije"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Dopuštenja i podaci"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Upravljajte podacima o zdravlju i sportskim aktivnostima na telefonu i odredite koje im aplikacije mogu pristupiti"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Upravljajte podacima o zdravlju i fitnessu na telefonu i odredite koje im aplikacije mogu pristupati"</string>
     <string name="data_title" msgid="4456619761533380816">"Podaci i pristup"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Sve kategorije"</string>
-    <string name="see_all_categories" msgid="5599882403901010434">"Pogledajte sve kategorije"</string>
+    <string name="see_all_categories" msgid="5599882403901010434">"Pregled svih kategorija"</string>
     <string name="no_data" msgid="1906986019249068659">"Nema podataka"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Dopuštenja aplikacija"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljajte aplikacijama i dopuštenjima"</string>
@@ -34,15 +34,15 @@
     <string name="entry_details_title" msgid="590184849040247850">"Pojedinosti o unosu"</string>
     <string name="backup_title" msgid="211503191266235085">"Sigurnosna kopija"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Izvori podataka i prioritet"</string>
-    <string name="set_units_title" msgid="2657822539603758029">"Postavi jedinice"</string>
+    <string name="set_units_title" msgid="2657822539603758029">"Postavite jedinice"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Nedavni pristup"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Nijedna aplikacija nije pristupila Health Connectu u posljednje vrijeme"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Pogledajte sve nedavne pristupe"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Pogledajte koje su aplikacije pristupile vašim podacima u posljednja 24 sata"</string>
     <string name="today_header" msgid="1006837293203834373">"Danas"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Jučer"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Čitaj: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Zapiši: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Čitanje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Bilježenje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljajte dopuštenjima"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Vrijeme: %s"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"pristup podacima o zdravlju"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Očitavanje potrošenih kalorija"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Aplikaciji omogućuje očitavanje podataka o potrošenim kalorijama"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Čitanje u pozadini"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"čitanje u pozadini"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Čitanje zdravstvenih podataka u pozadini"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Pristupanje podacima u pozadini"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima u pozadini?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Dopustite aplikaciji da pristupa podacima Health Connecta kad ne upotrebljavate aplikaciju"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ako dopustite, ova aplikacija može pristupati podacima Health Connecta kad ne upotrebljavate aplikaciju."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Pristupanje prijašnjim podacima"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa prijašnjim podacima?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Dopustite aplikaciji da pristupa podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Dopustite aplikaciji da pristupa prijašnjim podacima Health Connecta"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dopustite, aplikacija može pristupati podacima Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Ako dopustite, aplikacija može pristupati prijašnjim podacima Health Connecta."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Očitavanje aktivne potrošnje kalorija"</string>
@@ -96,8 +103,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"ruta za vježbanje"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Zapiši rutu za vježbanje"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Očitaj rutu vježbe"</string>
-    <!-- no translation found for exercise_routes_read_content_description (9001690141308870706) -->
-    <skip />
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Čitanje ruta za vježbu"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Planovi tjelovježbe"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"planovi tjelovježbe"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Pročitajte planove tjelovježbe"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Sastavite planove tjelovježbe"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Udaljenost"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"udaljenost"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Očitavanje udaljenosti"</string>
@@ -253,14 +263,15 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Dopusti sve"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne dopuštaj"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Odaberite podatke za koje želite da ih ova aplikacija čita ili bilježi u Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Ako date pristup za čitanje, aplikacija može čitati nove podatke i podatke iz proteklih 30 dana"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Ako date pristup za čitanje, aplikacija može čitati nove podatke i podatke iz proteklih 30 dana"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Ako date pristup za čitanje, aplikacija može čitati nove i prijašnje podatke"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa Health Connectu?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"U <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> razvojnog programera možete saznati kako aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> postupa s vašim podacima"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima o privatnosti"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Želite li ukloniti sva dopuštenja?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Ukloni sve"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti bilježiti podatke iz Health Connecta.\n\nTo ne utječe na druga dopuštenja koja ova aplikacija može imati, kao što su lokacija, fotoaparat ili mikrofon."</string>
-    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Izbriši podatke aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> i iz Health Connecta"</string>
+    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti bilježiti podatke iz Health Connecta.\n\nTo ne utječe na druga dopuštenja te aplikacije kao što su dopuštenja za upotrebu lokacije, kamere ili mikrofona."</string>
+    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Izbriši i podatke aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> iz Health Connecta"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Sljedeći dan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Prethodni dan"</string>
@@ -269,14 +280,15 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Odredite koje aplikacije mogu pristupati podacima pohranjenim u Health Connectu. Dodirnite aplikaciju da biste pregledali podatke koje može čitati ili bilježiti."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Dopušten pristup"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Nije dopušten pristup"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Potrebno je ažuriranje"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Postavke i pomoć"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Uskrati pristup svim aplikacijama"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Ima dopuštenje za čitanje"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"Ima dopuštenje za bilježenje"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"Nijedna aplikacija nema dopuštenje"</string>
-    <string name="no_apps_denied" msgid="743327680286446017">"Nijedna aplikacija nije odbijena"</string>
+    <string name="no_apps_denied" msgid="743327680286446017">"Nijednoj aplikaciji nije odbijeno dopuštenje"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Želite li ukloniti pristup za sve aplikacije?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Nijedna vaša aplikacija neće moći pristupati Health Connectu niti mu dodavati nove podatke. Time se ne brišu postojeći podaci.\n\nTo ne utječe na druga dopuštenja koja ova aplikacija može imati, kao što su lokacija, fotoaparat ili mikrofon."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Nijedna vaša aplikacija neće moći pristupati Health Connectu niti mu dodavati nove podatke. Time se ne brišu postojeći podaci.\n\nTo ne utječe na druga dopuštenja te aplikacije kao što su dopuštenja za upotrebu lokacije, kamere ili mikrofona."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Ukloni sve"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Upravljanje aplikacijom"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Pregledajte podatke aplikacije"</string>
@@ -284,13 +296,14 @@
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktivne aplikacije"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Ove aplikacije više nemaju pristup, no i dalje imaju pohranjene podatke u Health Connectu"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> može čitati podatke dodane nakon <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"Da biste upravljali drugim Androidovim dopuštenjima kojima ova aplikacija može pristupiti, otvorite Postavke &gt; Aplikacije"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Podaci koje dijelite s aplikacijom <xliff:g id="APP_NAME">%1$s</xliff:g> pokriveni su pravilima o privatnosti te aplikacije"</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"Da biste upravljali drugim Androidovim dopuštenjima kojima ova aplikacija može pristupati, otvorite Postavke &gt; Aplikacije"</string>
+    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Na podatke koje dijelite s aplikacijom <xliff:g id="APP_NAME">%1$s</xliff:g> primjenjuju se pravila o privatnosti te aplikacije"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Da biste upravljali drugim Androidovim dopuštenjima kojima ova aplikacija može pristupiti, otvorite Postavke i dodirnite Aplikacije"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Pročitajte pravila o privatnosti"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Pristupljeno u posljednja 24 sata"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Pristup aplikacije"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Trenutačno nije instalirana nijedna kompatibilna aplikacija"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Dodatni pristup"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Uklonjena dopuštenja aplikacije"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect uklonio je dopuštenja za aplikaciju <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect uklonio je dopuštenja za aplikacije <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -300,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zašto Health Connect uklanja dopuštenja aplikacije"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ako se aplikacija obustavi ili ukloni s Google Playa, Health Connect automatski uklanja njezina dopuštenja.\n\nTo znači da ta aplikacija više ne može pristupati podacima pohranjenim u Health Connectu. Ako je ta aplikacija prethodno bilježila podatke, prikazuje se na popisu neaktivnih aplikacija."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Shvaćam"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Stvaranje sigurnosne kopije i vraćanje"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Izvoz i uvoz"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Automatski izvezi"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Vraćanje podataka"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Učitavanje prethodno izvezenih podataka"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Uključeno"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Isključeno"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Odaberite učestalost"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Odaberite jednokratno spremanje podataka ili postavite automatsko spremanje u određenim intervalima."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Svakodnevno"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Tjedno"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mjesečno"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Lokacija izvoza"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Uključivanje šifriranja"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci se trebaju šifrirati da bi se mogli spremiti. Nitko, čak ni Google ili Health Connect, neće im moći pristupiti."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Izradite zaporku da biste zaštitili svoje šifrirane podatke. Ta će vam zaporka biti potrebna za uvoz i vraćanje podataka."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Zaporka"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovite zaporku"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite zaporku ili izgubite telefon, Health Connect ne može vam pomoći oporaviti spremljene podatke."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Natrag"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Počnite upotrebljavati Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect sprema podatke o vašem zdravlju i fitnessu te vam pruža jednostavan način za sinkronizaciju različitih aplikacija na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke s aplikacijama"</string>
@@ -321,7 +355,7 @@
     <string name="time_range_all" msgid="8167350212705839943">"Izbriši sve podatke"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"Želite li trajno izbrisati sve podatke?"</string>
     <string name="confirming_question_one_day" msgid="8001434729335611950">"Želite li trajno izbrisati sve podatke prikupljene u posljednja 24 sata?"</string>
-    <string name="confirming_question_one_week" msgid="5441506951423969587">"Želite li trajno izbrisati sve podatke prikupljene u proteklih sedam dana?"</string>
+    <string name="confirming_question_one_week" msgid="5441506951423969587">"Želite li trajno izbrisati sve podatke prikupljene u posljednjih sedam dana?"</string>
     <string name="confirming_question_one_month" msgid="4118595547587081940">"Želite li trajno izbrisati sve podatke prikupljene u posljednjih 30 dana?"</string>
     <string name="confirming_question_data_type_all" msgid="1173934949902602037">"Želite li trajno izbrisati sve podatke koji se odnose na <xliff:g id="DATA_TYPE">%s</xliff:g>?"</string>
     <string name="confirming_question_data_type_one_day" msgid="5386681714769751416">"Želite li trajno izbrisati podatke koji se odnose na <xliff:g id="DATA_TYPE">%s</xliff:g> prikupljene u posljednja 24 sata?"</string>
@@ -335,7 +369,7 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Želite li trajno izbrisati podatke aplikacije <xliff:g id="APP_DATA">%s</xliff:g> prikupljene u posljednja 24 sata?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Želite li trajno izbrisati podatke aplikacije <xliff:g id="APP_DATA">%s</xliff:g> prikupljene u posljednjih sedam dana?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Želite li trajno izbrisati podatke aplikacije <xliff:g id="APP_DATA">%s</xliff:g> prikupljene u posljednjih 30 dana?"</string>
-    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Uklonite i sva dopuštenja za aplikaciju <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> iz Health Connecta"</string>
+    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Ukloni i sva dopuštenja za aplikaciju <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> iz Health Connecta"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Želite li trajno izbrisati sve podatke koji se odnose na <xliff:g id="DATA_TYPE">%1$s</xliff:g> dodane iz aplikacije <xliff:g id="APP_DATA">%2$s</xliff:g>?"</string>
     <string name="confirming_question_single_entry" msgid="330919962071369305">"Želite li trajno izbrisati taj unos?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Povezane aplikacije više neće moći pristupiti tim podacima u Health Connectu"</string>
@@ -392,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Dvojbeno"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}few{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}one{# milisekunda}few{# milisekunde}other{# milisekundi}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 put}one{# put}few{# puta}other{# puta}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Aktivno: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Ukupno: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Koliko god je ponavljanja moguće"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Razina truda: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ponavljanje}one{# ponavljanje}few{# ponavljanja}other{# ponavljanja}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ponavljanje}one{# ponavljanje}few{# ponavljanja}other{# ponavljanja}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenti vježbe"</string>
@@ -629,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 funta}one{# funta}few{# funte}other{# funti}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}one{# stone}few{# stonea}other{# stonea}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}few{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 Celzijev stupanj}one{# Celzijev stupanj}few{# Celzijeva stupnja}other{# Celzijevih stupnjeva}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}few{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}few{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}few{# kelvina}other{# kelvina}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}few{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 Fahrenheitov stupanj}one{# Fahrenheitov stupanj}few{# Fahrenheitova stupnja}other{# Fahrenheitovih stupnjeva}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}few{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} Celzijev stupanj}one{{formattedValue} Celzijev stupanj}few{{formattedValue} Celzijeva stupnja}other{{formattedValue} Celzijevih stupnjeva}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}few{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} Fahrenheitov stupanj}one{{formattedValue} Fahrenheitov stupanj}few{{formattedValue} Fahrenheitova stupnja}other{{formattedValue} Fahrenheitovih stupnjeva}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}few{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}few{{formattedValue} kelvina}other{{formattedValue} kelvina}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (prosječna varijacija)}one{{formattedValue} ℃ (prosječna varijacija)}few{{formattedValue} ℃ (prosječna varijacija)}other{{formattedValue} ℃ (prosječna varijacija)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} Celzijev stupanj (prosječna varijacija)}one{{formattedValue} Celzijev stupanj (prosječna varijacija)}few{{formattedValue} Celzijeva stupnja (prosječna varijacija)}other{{formattedValue} Celzijevih stupnjeva (prosječna varijacija)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (prosječna varijacija)}one{{formattedValue} ℉ (prosječna varijacija)}few{{formattedValue} ℉ (prosječna varijacija)}other{{formattedValue} ℉ (prosječna varijacija)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Fahrenheitov stupanj (prosječna varijacija)}one{{formattedValue} Fahrenheitov stupanj (prosječna varijacija)}few{{formattedValue} Fahrenheitova stupnja (prosječna varijacija)}other{{formattedValue} Fahrenheitovih stupnjeva (prosječna varijacija)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (prosječna varijacija)}one{{formattedValue} K (prosječna varijacija)}few{{formattedValue} K (prosječna varijacija)}other{{formattedValue} K (prosječna varijacija)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (prosječna varijacija)}one{{formattedValue} kelvin (prosječna varijacija)}few{{formattedValue} kelvina (prosječna varijacija)}other{{formattedValue} kelvina (prosječna varijacija)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Pazuh"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Prst"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Čelo"</string>
@@ -645,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Uho"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Ručni zglob"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokacija mjerenja"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Referentna vrijednost"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Varijacija u odnosu na referentnu vrijednost"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milja}one{# milja}few{# milje}other{# milja}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}few{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milja}one{# milja}few{# milje}other{# milja}}"</string>
@@ -665,7 +719,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 posto}one{# posto}few{# posto}other{# posto}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Odustani"</string>
     <string name="units_title" msgid="6504086463237869339">"Jedinice"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Postavite jedinice za podatke"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Udaljenost"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Visina"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Težina"</string>
@@ -677,7 +730,7 @@
     <string name="height_unit_feet_label" msgid="3311723678628261399">"Stope i inči"</string>
     <string name="weight_unit_pound_label" msgid="8210663393844989211">"Funte"</string>
     <string name="weight_unit_kilogram_label" msgid="6623938920860887238">"Kilogrami"</string>
-    <string name="weight_unit_stone_label" msgid="3063787243474847180">"Stone"</string>
+    <string name="weight_unit_stone_label" msgid="3063787243474847180">"Kameni (stones)"</string>
     <string name="energy_unit_calorie_label" msgid="3412965811470957296">"Kalorije"</string>
     <string name="energy_unit_kilojoule_label" msgid="6481196724083455110">"Kilodžuli"</string>
     <string name="temperature_unit_celsius_label" msgid="4698347100553808449">"Celzij"</string>
@@ -705,7 +758,7 @@
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Automatski izbrisati podatke nakon # mjeseca?}one{Automatski izbrisati podatke nakon # mjeseca?}few{Automatski izbrisati podatke nakon # mjeseca?}other{Automatski izbrisati podatke nakon # mjeseci?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect automatski će izbrisati nove podatke nakon # mjeseca. Ta postavka također će izbrisati postojeće podatke starije od # mjeseca.}one{Health Connect automatski će izbrisati nove podatke nakon # mjeseca. Ta postavka također će izbrisati postojeće podatke starije od # mjeseca.}few{Health Connect automatski će izbrisati nove podatke nakon # mjeseca. Ta postavka također će izbrisati postojeće podatke starije od # mjeseca.}other{Health Connect automatski će izbrisati nove podatke nakon # mjeseci. Ta postavka također će izbrisati postojeće podatke starije od # mjeseci.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Postavi automatsko brisanje"</string>
-    <string name="deletion_started_title" msgid="1177766097121885025">"Izbrisat će se postojeći podaci"</string>
+    <string name="deletion_started_title" msgid="1177766097121885025">"Postojeći podaci će se izbrisati"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect izbrisat će sve podatke starije od # mjeseca. Može proći jedan dan prije nego što se te promjene pojave u vašim povezanim aplikacijama.}one{Health Connect izbrisat će sve podatke starije od # mjeseca. Može proći jedan dan prije nego što se te promjene pojave u vašim povezanim aplikacijama.}few{Health Connect izbrisat će sve podatke starije od # mjeseca. Može proći jedan dan prije nego što se te promjene pojave u vašim povezanim aplikacijama.}other{Health Connect izbrisat će sve podatke starije od # mjeseci. Može proći jedan dan prije nego što se te promjene pojave u vašim povezanim aplikacijama.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Podaci koji će se izbrisati"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Gotovo"</string>
@@ -716,8 +769,7 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Premjesti dolje"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Premjesti na vrh"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Premjesti na dno"</string>
-    <!-- no translation found for reorder_button_content_description (2685032520710743533) -->
-    <skip />
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Gumb za povlačenje i promjenu položaja aplikacije <xliff:g id="SELECTED_APP">%s</xliff:g> na popisu prioriteta"</string>
     <string name="remove_button_content_description" msgid="6170490900032612048">"Gumb za uklanjanje aplikacije <xliff:g id="SELECTED_APP">%s</xliff:g> s popisa prioriteta"</string>
     <string name="reorder_button_action_description" msgid="5197462036756192214">"Dodirnite dvaput i povucite za promjenu poretka"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"fitness, wellness"</string>
@@ -736,12 +788,20 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Samo aplikacije kojima omogućite pristup rutama za vježbu"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Kako mogu upravljati pristupom?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Možete upravljati pristupom aplikacije rutama za vježbu u postavkama Health Connecta"</string>
-    <!-- no translation found for request_route_allow (4427372851821847274) -->
-    <skip />
-    <!-- no translation found for request_route_allow_all (314830698958736916) -->
-    <skip />
-    <!-- no translation found for request_route_dont_allow (1186236234664957228) -->
-    <skip />
+    <string name="request_route_allow" msgid="4427372851821847274">"Dopusti ovu rutu"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Dopusti sve rute"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne dopuštaj"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Dopusti uvijek"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Dijeljenje rute za vježbanje"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Upravljajte načinom na koji ova aplikacija pristupa rutama za vježbanje iz povezanih aplikacija"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Pitaj svaki put"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Nemoj dopustiti"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Želite li omogućiti obje vrste podataka?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Želite li onemogućiti obje vrste podataka?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> treba pristup za čitanje za podatke o treniranju radi omogućivanja ruta za vježbu"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> zahtijeva pristup podacima o treniranju radi omogućivanja ruta za vježbu"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Da"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Ne"</string>
     <string name="back_button" msgid="780519527385993407">"Natrag"</string>
     <string name="loading" msgid="2526615755685950317">"Učitavanje…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integracija u tijeku"</string>
@@ -777,9 +837,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Nastavak integracije Health Connecta"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Da biste zadržali svoje podatke, ispunite ovo u roku od <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Potrebno je ažuriranje aplikacije"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> mora biti ažurirana kako bi i dalje funkcionirala s aplikacijom Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Neke se aplikacije moraju ažurirati kako bi i dalje funkcionirale s aplikacijom Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Aplikaciju <xliff:g id="APP_NAME">%1$s</xliff:g> potrebno je ažurirati da bi se nastavila sinkronizacija s Health Connectom"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Neke se aplikacije trebaju ažurirati da bi se nastavila sinkronizacija s Health Connectom"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Provjerite ima li ažuriranja"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Saznajte više"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Integracija Health Connecta"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Aplikacija Health Connect spremna je za integraciju sa sustavom Android. Ako aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> odmah omogućite pristup, neke značajke možda neće funkcionirati dok se ne dovrši integracija."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Aplikacija Health Connect spremna je za integraciju sa sustavom Android. Ako aplikacijama odmah omogućite pristup, neke značajke možda neće funkcionirati dok se ne dovrši integracija."</string>
@@ -799,11 +860,18 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Novosti"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Sada aplikaciji Health Connect možete pristupiti izravno putem postavki. Deinstalirajte aplikaciju Health Connect kad god želite da biste oslobodili prostor za pohranu."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Shvaćam"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Vraćanje je u tijeku"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect vraća podatke i dopuštenja. To može potrajati."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Vraćanje Health Connecta je u tijeku"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Shvaćam"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Potrebno je ažuriranje"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Prije nego što nastavite s vraćanjem podataka, ažurirajte sustav telefona."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Ažuriraj sada"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Ukupne vrijednosti podataka"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Izvori aplikacije"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Dodajte izvore aplikacije na popis da biste vidjeli kako se ukupne vrijednosti podataka mogu promijeniti. Uklanjanjem aplikacije s tog popisa prestat će pridonošenje ukupnim vrijednostima, no i dalje će imati dopuštenja za pisanje."</string>
-    <string name="data_sources_empty_state" msgid="1899652759274805556">"Nema izvora aplikacije"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Nakon što date dopuštenja aplikacije da biste pisali podatke <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, izvori će se prikazati ovdje."</string>
+    <string name="data_sources_empty_state" msgid="1899652759274805556">"Nema izvora aplikacija"</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Nakon što aplikacijama date dopuštenje da zapisuju podatke iz kategorije <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, izvori će se prikazati ovdje."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Kako funkcioniraju izvori i prioritizacija"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Dodaj aplikaciju"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Uređivanje izvora aplikacija"</string>
@@ -819,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Prošli mjesec"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Unosi"</string>
     <string name="tab_access" msgid="7818197975407243701">"Pristup"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Želite li dopustiti dodatni pristup za aplikaciju <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi pristupiti i ovim postavkama Health Connecta"</string>
 </resources>

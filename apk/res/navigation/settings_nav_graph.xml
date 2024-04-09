@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2022 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +21,8 @@
     <action
         android:id="@+id/action_deeplink_to_settingsManageAppPermissionsFragment"
         app:destination="@+id/settingsManageAppPermissionsFragment"
-        app:popUpToInclusive="true"
         app:popUpTo="@+id/settingsManagePermissionFragment"
-        />
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/settingsManagePermissionFragment"
@@ -37,7 +35,21 @@
 
     <fragment
         android:id="@+id/settingsManageAppPermissionsFragment"
-        android:label="@string/app_label"
         android:name="com.android.healthconnect.controller.permissions.app.SettingsManageAppPermissionsFragment"
-        />
+        android:label="@string/app_label">
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_manageAppFragment_to_additionalAccessFragment"
+            app:destination="@id/additionalAccessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/additionalAccessFragment"
+        android:name="com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessFragment"
+        android:label="@string/additional_access_label" >
+        <argument
+            android:name="android.intent.extra.PACKAGE_NAME"
+            app:argType="string" />
+    </fragment>
 </navigation>

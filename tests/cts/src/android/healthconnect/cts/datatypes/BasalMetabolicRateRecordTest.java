@@ -16,18 +16,11 @@
 
 package android.healthconnect.cts.datatypes;
 
-import static android.health.connect.datatypes.BasalMetabolicRateRecord.BASAL_CALORIES_TOTAL;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
-import android.health.connect.AggregateRecordsGroupedByDurationResponse;
-import android.health.connect.AggregateRecordsRequest;
-import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
-import android.health.connect.HealthDataCategory;
-import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordIdFilter;
@@ -41,7 +34,6 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
-import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
@@ -57,16 +49,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
@@ -152,8 +141,9 @@ public class BasalMetabolicRateRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
                                 .build());
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -175,8 +165,9 @@ public class BasalMetabolicRateRecordTest {
                         .setStartTime(Instant.now().minus(1, ChronoUnit.DAYS))
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -202,8 +193,9 @@ public class BasalMetabolicRateRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BasalMetabolicRateRecord testRecord = getCompleteBasalMetabolicRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalMetabolicRateRecord testRecord =
+                (BasalMetabolicRateRecord)
+                        TestUtils.insertRecord(getCompleteBasalMetabolicRateRecord());
         List<BasalMetabolicRateRecord> newBasalMetabolicRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BasalMetabolicRateRecord.class)
@@ -259,8 +251,10 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testDeleteBasalMetabolicRateRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBasalMetabolicRateRecord(), getCompleteBasalMetabolicRateRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -300,10 +294,12 @@ public class BasalMetabolicRateRecordTest {
     @Test
     public void testDeleteBasalMetabolicRateRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBasalMetabolicRateRecord(), getCompleteBasalMetabolicRateRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalMetabolicRateRecord(),
+                                getCompleteBasalMetabolicRateRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -323,657 +319,6 @@ public class BasalMetabolicRateRecordTest {
         String id = TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
         TestUtils.verifyDeleteRecords(BasalMetabolicRateRecord.class, timeRangeFilter);
         TestUtils.assertRecordNotFound(id, BasalMetabolicRateRecord.class);
-    }
-
-    static BasalMetabolicRateRecord getBasalMetabolicRateRecord(double power, Instant time) {
-        return new BasalMetabolicRateRecord.Builder(
-                        new Metadata.Builder().build(), time, Power.fromWatts(power))
-                .build();
-    }
-
-    static BasalMetabolicRateRecord getBasalMetabolicRateRecord(
-            double power, Instant time, ZoneOffset offset) {
-        return new BasalMetabolicRateRecord.Builder(
-                        new Metadata.Builder().build(), time, Power.fromWatts(power))
-                .setZoneOffset(offset)
-                .build();
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_noRecord() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(
-                                                        Instant.now().minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(Instant.now().minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        null);
-
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(1564500);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_lbm() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        List<Record> records =
-                List.of(LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(Instant.now(), 50000));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(
-                                                        Instant.now().minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(Instant.now().minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(1564500);
-
-        records =
-                List.of(
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                Instant.now().minus(2, ChronoUnit.DAYS), 50000));
-        response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(
-                                                        Instant.now().minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(Instant.now().minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(1450000);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_lbm_group() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(now, 50000),
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                now.minus(1, ChronoUnit.DAYS), 40000),
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                now.minus(2, ChronoUnit.DAYS), 30000),
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                now.minus(3, ChronoUnit.DAYS), 20000));
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(802000);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1018000);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1234000);
-
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        null);
-        assertThat(response).isNotNull();
-        assertThat(response.get(BASAL_CALORIES_TOTAL).getInCalories()).isWithin(1).of(3054000);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_groupByDuration_lbmDerived()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(now, 50000),
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                now.minus(1, ChronoUnit.DAYS), 40000),
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                now.minus(2, ChronoUnit.DAYS), 30000),
-                        LeanBodyMassRecordTest.getBaseLeanBodyMassRecord(
-                                now.minus(3, ChronoUnit.DAYS), 20000));
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(802000);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1018000);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1234000);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_profile_group() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        HeightRecordTest.getBaseHeightRecord(now, 1.8),
-                        WeightRecordTest.getBaseWeightRecord(now, 50000),
-                        HeightRecordTest.getBaseHeightRecord(now.minus(1, ChronoUnit.DAYS), 1.7),
-                        WeightRecordTest.getBaseWeightRecord(now.minus(1, ChronoUnit.DAYS), 40000),
-                        HeightRecordTest.getBaseHeightRecord(now.minus(2, ChronoUnit.DAYS), 1.6),
-                        WeightRecordTest.getBaseWeightRecord(now.minus(2, ChronoUnit.DAYS), 30000),
-                        HeightRecordTest.getBaseHeightRecord(now.minus(3, ChronoUnit.DAYS), 1.5),
-                        WeightRecordTest.getBaseWeightRecord(now.minus(3, ChronoUnit.DAYS), 20000));
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(909500);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1072000);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1234500);
-
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        null);
-        assertThat(response).isNotNull();
-        assertThat(response.get(BASAL_CALORIES_TOTAL).getInCalories()).isWithin(1).of(3216000);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_onlyWeightBeforeInterval_usesProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        WeightRecordTest.getBaseWeightRecord(
-                                now.minus(10, ChronoUnit.DAYS), /* weight= */ 40000));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(2469000);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_HeightAndWeightBeforeInterval_usesProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        WeightRecordTest.getBaseWeightRecord(
-                                now.minus(10, ChronoUnit.DAYS), /* weight= */ 40000),
-                        HeightRecordTest.getBaseHeightRecord(
-                                now.minus(9, ChronoUnit.DAYS), /* height= */ 2.0));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(2844000);
-    }
-
-    @Test
-    public void
-            testAggregation_basalCaloriesBurntTotal_HeightWeightBeforeAndAfterInterval_usesProfile()
-                    throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        WeightRecordTest.getBaseWeightRecord(
-                                now.minus(10, ChronoUnit.DAYS), /* weight= */ 40000),
-                        HeightRecordTest.getBaseHeightRecord(
-                                now.minus(9, ChronoUnit.DAYS), /* height= */ 1.8),
-                        WeightRecordTest.getBaseWeightRecord(
-                                now.minus(1, ChronoUnit.DAYS), /* weight= */ 60000),
-                        HeightRecordTest.getBaseHeightRecord(
-                                now.minus(1, ChronoUnit.DAYS), /* height= */ 1.9),
-                        HeightRecordTest.getBaseHeightRecord(now, /* height= */ 2.0),
-                        WeightRecordTest.getBaseWeightRecord(now, /* weight= */ 70000),
-                        HeightRecordTest.getBaseHeightRecord(now, /* height= */ 2.0));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now.minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(2594000);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_onlyWeightDuringInterval_usesProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        WeightRecordTest.getBaseWeightRecord(
-                                now.minus(1, ChronoUnit.DAYS), /* weight= */ 40000));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(2799000);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_onlyWeightAfterInterval_usesDefaultProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(WeightRecordTest.getBaseWeightRecord(now, /* weight= */ 40000));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now.minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(1564500);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_onlyHeightBeforeInterval_usesProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        HeightRecordTest.getBaseHeightRecord(
-                                now.minus(10, ChronoUnit.DAYS), /* height= */ 2.0));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(3504000);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_onlyHeightDuringInterval_usesProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        HeightRecordTest.getBaseHeightRecord(
-                                now.minus(1, ChronoUnit.DAYS), /* height= */ 2.0));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(3316500);
-    }
-
-    @Test
-    public void testAggregation_basalCaloriesBurntTotal_onlyHeightAfterInterval_usesDefaultProfile()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(HeightRecordTest.getBaseHeightRecord(now, /* height= */ 2.0));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(now.minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(1564500);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_groupByDuration_profileDerived()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        HeightRecordTest.getBaseHeightRecord(now, 1.8),
-                        WeightRecordTest.getBaseWeightRecord(now, 50000),
-                        HeightRecordTest.getBaseHeightRecord(now.minus(1, ChronoUnit.DAYS), 1.7),
-                        WeightRecordTest.getBaseWeightRecord(now.minus(1, ChronoUnit.DAYS), 40000),
-                        HeightRecordTest.getBaseHeightRecord(now.minus(2, ChronoUnit.DAYS), 1.6),
-                        WeightRecordTest.getBaseWeightRecord(now.minus(2, ChronoUnit.DAYS), 30000),
-                        HeightRecordTest.getBaseHeightRecord(now.minus(3, ChronoUnit.DAYS), 1.5),
-                        WeightRecordTest.getBaseWeightRecord(now.minus(3, ChronoUnit.DAYS), 20000));
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(909500);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1072000);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(1234500);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        List<Record> records =
-                Arrays.asList(
-                        getBasalMetabolicRateRecord(30.0, Instant.now().minus(3, ChronoUnit.DAYS)),
-                        getBasalMetabolicRateRecord(75.0, Instant.now().minus(2, ChronoUnit.DAYS)));
-        AggregateRecordsResponse<Energy> oldResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(
-                                                        Instant.now().minus(10, ChronoUnit.DAYS))
-                                                .setEndTime(Instant.now().minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        List<Record> recordNew =
-                List.of(getBasalMetabolicRateRecord(46, Instant.now().minus(1, ChronoUnit.DAYS)));
-        AggregateRecordsResponse<Energy> newResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(
-                                                        Instant.now().minus(10, ChronoUnit.DAYS))
-                                                .setEndTime(Instant.now())
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        recordNew);
-        assertThat(newResponse.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy newEnergy = newResponse.get(BASAL_CALORIES_TOTAL);
-        Energy oldEnergy = oldResponse.get(BASAL_CALORIES_TOTAL);
-        assertThat(oldEnergy.getInCalories() / 1000).isWithin(1).of(13118);
-        assertThat(newEnergy.getInCalories() / 1000).isGreaterThan(13118);
-        assertThat((double) Math.round(newEnergy.getInCalories() - oldEnergy.getInCalories()))
-                .isWithin(1)
-                .of(949440);
-        Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(BASAL_CALORIES_TOTAL);
-        for (DataOrigin itr : newDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
-        Set<DataOrigin> oldDataOrigin = oldResponse.getDataOrigins(BASAL_CALORIES_TOTAL);
-        for (DataOrigin itr : oldDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_groupDuration() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        getBasalMetabolicRateRecord(50.0, now),
-                        getBasalMetabolicRateRecord(40.0, now.minus(1, ChronoUnit.DAYS)),
-                        getBasalMetabolicRateRecord(30.0, now.minus(2, ChronoUnit.DAYS)),
-                        getBasalMetabolicRateRecord(20.0, now.minus(3, ChronoUnit.DAYS)));
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(412800);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(619200);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(825600);
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        null);
-        assertThat(response).isNotNull();
-        assertThat(response.get(BASAL_CALORIES_TOTAL).getInCalories()).isWithin(1).of(1857600);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_groupDurationLocalFilter()
-            throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        ZoneOffset offset = ZoneOffset.MIN;
-        LocalDateTime nowLocal = LocalDateTime.ofInstant(now, offset);
-
-        List<Record> records =
-                List.of(
-                        getBasalMetabolicRateRecord(50.0, now, offset),
-                        getBasalMetabolicRateRecord(40.0, now.minus(1, ChronoUnit.DAYS), offset),
-                        getBasalMetabolicRateRecord(30.0, now.minus(2, ChronoUnit.DAYS), offset),
-                        getBasalMetabolicRateRecord(20.0, now.minus(3, ChronoUnit.DAYS), offset));
-        var request =
-                new AggregateRecordsRequest.Builder<Energy>(
-                                new LocalTimeRangeFilter.Builder()
-                                        .setStartTime(nowLocal.minusDays(3))
-                                        .setEndTime(nowLocal)
-                                        .build())
-                        .addAggregationType(BASAL_CALORIES_TOTAL)
-                        .build();
-
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(request, Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(412800);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(619200);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(825600);
-
-        AggregateRecordsResponse<Energy> response = TestUtils.getAggregateResponse(request, null);
-        assertThat(response).isNotNull();
-        assertThat(response.get(BASAL_CALORIES_TOTAL).getInCalories()).isWithin(1).of(1857600);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_group() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant now = Instant.now();
-        List<Record> records =
-                List.of(
-                        getBasalMetabolicRateRecord(50.0, now),
-                        getBasalMetabolicRateRecord(40.0, now.minus(1, ChronoUnit.DAYS)),
-                        getBasalMetabolicRateRecord(30.0, now.minus(2, ChronoUnit.DAYS)),
-                        getBasalMetabolicRateRecord(20.0, now.minus(3, ChronoUnit.DAYS)));
-        TestUtils.insertRecords(records);
-        List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
-                TestUtils.getAggregateResponseGroupByDuration(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(3, ChronoUnit.DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        Duration.ofDays(1));
-        assertThat(responses).isNotNull();
-        assertThat(responses.get(0).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(412800);
-        assertThat(responses.get(1).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(619200);
-        assertThat(responses.get(2).get(BASAL_CALORIES_TOTAL).getInCalories())
-                .isWithin(1)
-                .of(825600);
-    }
-
-    @Test
-    public void testAggregation_BasalCaloriesBurntTotal_profile() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        List<Record> records =
-                List.of(
-                        HeightRecordTest.getBaseHeightRecord(
-                                Instant.now().minus(2, ChronoUnit.DAYS), 1.8),
-                        WeightRecordTest.getBaseWeightRecord(
-                                Instant.now().minus(2, ChronoUnit.DAYS), 50000));
-        AggregateRecordsResponse<Energy> response =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(
-                                                        Instant.now().minus(2, ChronoUnit.DAYS))
-                                                .setEndTime(Instant.now().minus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(response.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        Energy energy = response.get(BASAL_CALORIES_TOTAL);
-        assertThat(energy.getInCalories()).isWithin(1).of(1397000);
     }
 
     @Test
@@ -1130,8 +475,9 @@ public class BasalMetabolicRateRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBasalMetabolicRateRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBasalMetabolicRateRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -1183,47 +529,6 @@ public class BasalMetabolicRateRecordTest {
         new BasalMetabolicRateRecord.Builder(
                         new Metadata.Builder().build(), Instant.now(), Power.fromWatts(484.26))
                 .build();
-    }
-
-    @Test
-    public void testAggregate_withDifferentTimeZone() throws Exception {
-        TestUtils.setupAggregation(PACKAGE_NAME, HealthDataCategory.BODY_MEASUREMENTS);
-        Instant instant = Instant.now().minus(1, ChronoUnit.DAYS);
-        List<Record> records =
-                List.of(
-                        getBasalMetabolicRateRecord(
-                                20.0, instant.plus(20, ChronoUnit.MINUTES), ZoneOffset.ofHours(2)),
-                        getBasalMetabolicRateRecord(
-                                30.0, instant.plus(10, ChronoUnit.MINUTES), ZoneOffset.ofHours(3)),
-                        getBasalMetabolicRateRecord(
-                                40.0, instant.plus(30, ChronoUnit.MINUTES), ZoneOffset.ofHours(1)));
-        AggregateRecordsResponse<Energy> oldResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        records);
-        assertThat(oldResponse.getZoneOffset(BASAL_CALORIES_TOTAL))
-                .isEqualTo(ZoneOffset.ofHours(3));
-        List<Record> recordNew =
-                Arrays.asList(getBasalMetabolicRateRecord(50.0, instant, ZoneOffset.ofHours(5)));
-        AggregateRecordsResponse<Energy> newResponse =
-                TestUtils.getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(Instant.ofEpochMilli(0))
-                                                .setEndTime(Instant.now().plus(1, ChronoUnit.DAYS))
-                                                .build())
-                                .addAggregationType(BASAL_CALORIES_TOTAL)
-                                .build(),
-                        recordNew);
-        assertThat(newResponse.get(BASAL_CALORIES_TOTAL)).isNotNull();
-        assertThat(newResponse.getZoneOffset(BASAL_CALORIES_TOTAL))
-                .isEqualTo(ZoneOffset.ofHours(5));
     }
 
     private static BasalMetabolicRateRecord getBasalMetabolicRateRecord_update(

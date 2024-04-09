@@ -61,6 +61,8 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
 
     @Override
     public void after() {
+        AppInfoHelper.getInstance().clearCache();
+        DeviceInfoHelper.getInstance().clearCache();
         deleteDir(mMockDataDirectory);
         mStaticMockSession.finishMocking();
     }

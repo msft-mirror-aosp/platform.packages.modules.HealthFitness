@@ -153,8 +153,10 @@ public class CyclingPedalingCadenceRecordTest {
                         new ReadRecordsRequestUsingFilters.Builder<>(
                                         CyclingPedalingCadenceRecord.class)
                                 .build());
-        CyclingPedalingCadenceRecord testRecord = getCompleteCyclingPedalingCadenceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        CyclingPedalingCadenceRecord testRecord =
+                (CyclingPedalingCadenceRecord)
+                        TestUtils.insertRecord(getCompleteCyclingPedalingCadenceRecord());
         List<CyclingPedalingCadenceRecord> newCyclingPedalingCadenceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -177,8 +179,10 @@ public class CyclingPedalingCadenceRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        CyclingPedalingCadenceRecord testRecord = getCompleteCyclingPedalingCadenceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        CyclingPedalingCadenceRecord testRecord =
+                (CyclingPedalingCadenceRecord)
+                        TestUtils.insertRecord(getCompleteCyclingPedalingCadenceRecord());
         List<CyclingPedalingCadenceRecord> newCyclingPedalingCadenceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -206,8 +210,9 @@ public class CyclingPedalingCadenceRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        CyclingPedalingCadenceRecord testRecord = getCompleteCyclingPedalingCadenceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        CyclingPedalingCadenceRecord testRecord =
+                (CyclingPedalingCadenceRecord)
+                        TestUtils.insertRecord(getCompleteCyclingPedalingCadenceRecord());
         List<CyclingPedalingCadenceRecord> newCyclingPedalingCadenceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -279,10 +284,10 @@ public class CyclingPedalingCadenceRecordTest {
     public void testDeleteCyclingPedalingCadenceRecord_recordId_filters()
             throws InterruptedException {
         List<Record> records =
-                List.of(
-                        getBaseCyclingPedalingCadenceRecord(),
-                        getCompleteCyclingPedalingCadenceRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -322,12 +327,12 @@ public class CyclingPedalingCadenceRecordTest {
     @Test
     public void testDeleteCyclingPedalingCadenceRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(
-                        getBaseCyclingPedalingCadenceRecord(),
-                        getCompleteCyclingPedalingCadenceRecord());
-        List<Record> insertedRecords = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecords) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -514,8 +519,8 @@ public class CyclingPedalingCadenceRecordTest {
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         List<Record> testRecord =
-                Collections.singletonList(getCompleteCyclingPedalingCadenceRecord());
-        TestUtils.insertRecords(testRecord);
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteCyclingPedalingCadenceRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -578,9 +583,10 @@ public class CyclingPedalingCadenceRecordTest {
 
     private void testReadCyclingPedalingCadenceRecordIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteCyclingPedalingCadenceRecord(),
-                        getCompleteCyclingPedalingCadenceRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
         readCyclingPedalingCadenceRecordUsingIds(recordList);
     }
 
@@ -595,9 +601,8 @@ public class CyclingPedalingCadenceRecordTest {
         assertThat(result.containsAll(insertedRecords)).isTrue();
     }
 
-    private void readCyclingPedalingCadenceRecordUsingIds(List<Record> recordList)
+    private void readCyclingPedalingCadenceRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<CyclingPedalingCadenceRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(CyclingPedalingCadenceRecord.class);
         for (Record record : insertedRecords) {

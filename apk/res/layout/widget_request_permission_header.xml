@@ -47,6 +47,7 @@
         style="?attr/textAppearanceSummaryLarge"/>
 
     <TextView
+        android:id="@+id/history_access"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/spacing_normal"

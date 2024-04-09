@@ -11,7 +11,6 @@ import org.junit.Test
 class HealthConnectSearchIndexablesProviderTest {
 
     private val INDEX_KEY_HOME = "health_connect_settings_key_home"
-    private val INDEX_KEY_PERMISSIONS = "health_connect_settings_key_permissions"
     private val INDEX_KEY_DATA = "health_connect_settings_key_data"
 
     private lateinit var provider: HealthConnectSearchIndexablesProvider
@@ -24,7 +23,7 @@ class HealthConnectSearchIndexablesProviderTest {
     @Test
     fun queryRawDataShouldReturnThreeRows() {
         val cursor = provider.queryRawData(null)
-        assertEquals(3, cursor.count)
+        assertEquals(2, cursor.count)
     }
 
     @Test
@@ -36,12 +35,6 @@ class HealthConnectSearchIndexablesProviderTest {
         val homeIndex = cursor.getString(COLUMN_INDEX_RAW_KEY)
 
         assertEquals(INDEX_KEY_HOME, homeIndex)
-
-        cursor.moveToNext()
-
-        val permissionsIndex = cursor.getString(COLUMN_INDEX_RAW_KEY)
-
-        assertEquals(INDEX_KEY_PERMISSIONS, permissionsIndex)
 
         cursor.moveToNext()
 

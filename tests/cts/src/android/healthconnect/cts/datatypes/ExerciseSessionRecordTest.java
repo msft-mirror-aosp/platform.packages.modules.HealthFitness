@@ -22,15 +22,20 @@ import static android.healthconnect.cts.utils.DataFactory.buildExerciseRoute;
 import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
 import static android.healthconnect.cts.utils.DataFactory.buildLocationTimePoint;
 import static android.healthconnect.cts.utils.DataFactory.generateMetadata;
+import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflection;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
+import static android.healthconnect.cts.utils.TestUtils.insertRecordAndGetId;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
+import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -63,7 +68,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -187,11 +194,11 @@ public class ExerciseSessionRecordTest {
                                 ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
                         .setRoute(route)
                         .build();
-        List<Record> recordList = TestUtils.insertRecords(Collections.singletonList(record));
+        ExerciseSessionRecord testRecord = (ExerciseSessionRecord) TestUtils.insertRecord(record);
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
-        request.addId(recordList.get(0).getMetadata().getId());
+        request.addId(testRecord.getMetadata().getId());
 
         ExerciseSessionRecord insertedRecord = TestUtils.readRecords(request.build()).get(0);
         assertThat(insertedRecord.hasRoute()).isTrue();
@@ -200,7 +207,7 @@ public class ExerciseSessionRecordTest {
         TestUtils.updateRecords(
                 Collections.singletonList(
                         getExerciseSessionRecord_update(
-                                record, recordList.get(0).getMetadata().getId(), null)));
+                                record, testRecord.getMetadata().getId(), null)));
 
         insertedRecord = TestUtils.readRecords(request.build()).get(0);
         assertThat(insertedRecord.hasRoute()).isFalse();
@@ -329,17 +336,9 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
-    public void testInsertRecord_apiReturnsRequestedRecords() throws InterruptedException {
-        List<Record> records = Arrays.asList(buildExerciseSession(), buildExerciseSession());
-        List<Record> insertedRecords = TestUtils.insertRecords(records);
-        assertThat(records.size()).isEqualTo(insertedRecords.size());
-        assertThat(records).containsExactlyElementsIn(insertedRecords);
-    }
-
-    @Test
     public void testReadById_insertAndReadById_recordsAreEqual() throws InterruptedException {
-        List<Record> records = List.of(buildExerciseSession(), buildSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
@@ -351,8 +350,7 @@ public class ExerciseSessionRecordTest {
 
     @Test
     public void testReadById_insertAndReadByIdOne_recordsAreEqual() throws InterruptedException {
-        List<Record> records = List.of(buildExerciseSession());
-        TestUtils.insertRecords(records);
+        List<Record> records = TestUtils.insertRecords(List.of(buildExerciseSession()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
@@ -370,8 +368,8 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByClientId_recordsAreEqual()
             throws InterruptedException {
-        List<Record> records = List.of(buildExerciseSession(), buildSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
@@ -384,8 +382,9 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByDefaultFilter_filteredAll()
             throws InterruptedException {
-        List<Record> records = List.of(buildExerciseSession(), buildSessionMinimal());
-        assertThat(TestUtils.insertRecords(records)).hasSize(2);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
+        assertThat(records).hasSize(2);
 
         List<ExerciseSessionRecord> readRecords =
                 TestUtils.readRecords(
@@ -397,8 +396,8 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testReadByClientId_insertAndReadByTimeFilter_filteredCorrectly()
             throws InterruptedException {
-        List<Record> records = List.of(buildExerciseSession(), buildSessionMinimal());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         TimeInstantRangeFilter filter =
                 new TimeInstantRangeFilter.Builder()
@@ -421,20 +420,62 @@ public class ExerciseSessionRecordTest {
     @Test
     public void testDeleteRecords_insertAndDeleteById_recordsNotFoundAnymore()
             throws InterruptedException {
-        List<Record> records = List.of(buildExerciseSession(), buildSessionMinimal());
-        List<Record> insertedRecords = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(buildExerciseSession(), buildSessionMinimal()));
 
         TestUtils.assertRecordFound(
                 records.get(0).getMetadata().getId(), ExerciseSessionRecord.class);
         TestUtils.assertRecordFound(
                 records.get(1).getMetadata().getId(), ExerciseSessionRecord.class);
 
-        TestUtils.deleteRecords(insertedRecords);
+        TestUtils.deleteRecords(records);
 
         TestUtils.assertRecordNotFound(
                 records.get(0).getMetadata().getId(), ExerciseSessionRecord.class);
         TestUtils.assertRecordNotFound(
                 records.get(1).getMetadata().getId(), ExerciseSessionRecord.class);
+    }
+
+    @Test
+    public void testDeleteRecords_insertAndDeleteByLocalDate_deletedRecordsNotFound()
+            throws InterruptedException {
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.MIN);
+        String id1 =
+                insertRecordAndGetId(
+                        buildSession(
+                                now.toInstant(ZoneOffset.MIN),
+                                now.toInstant(ZoneOffset.MIN).plusSeconds(1),
+                                ZoneOffset.MIN));
+        String id2 =
+                insertRecordAndGetId(
+                        buildSession(
+                                now.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                now.toInstant(ZoneOffset.MAX).plusSeconds(3),
+                                ZoneOffset.MAX));
+        String id3 =
+                insertRecordAndGetId(
+                        buildSession(
+                                now.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                now.toInstant(ZoneOffset.MAX).plusSeconds(3),
+                                ZoneOffset.MAX));
+        TestUtils.assertRecordFound(id1, ExerciseSessionRecord.class);
+        TestUtils.assertRecordFound(id2, ExerciseSessionRecord.class);
+        TestUtils.assertRecordFound(id3, ExerciseSessionRecord.class);
+
+        TestUtils.verifyDeleteRecords(
+                new DeleteUsingFiltersRequest.Builder()
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .setTimeRangeFilter(
+                                new LocalTimeRangeFilter.Builder()
+                                        .setStartTime(now)
+                                        .setEndTime(now.plusSeconds(2))
+                                        .build())
+                        .build());
+
+        TestUtils.assertRecordNotFound(id1, ExerciseSessionRecord.class);
+        TestUtils.assertRecordNotFound(id2, ExerciseSessionRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, ExerciseSessionRecord.class);
     }
 
     @Test
@@ -575,8 +616,8 @@ public class ExerciseSessionRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(buildExerciseSession());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(buildExerciseSession()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -624,42 +665,210 @@ public class ExerciseSessionRecordTest {
     @Test
     public void insertRecords_sameClientRecordIdAndNewData_readNewData() throws Exception {
         int recordCount = 10;
-        List<ExerciseSessionRecord> records = new ArrayList<>();
-        List<ExerciseSessionRecord> newRecords = new ArrayList<>();
-        Instant now = Instant.now();
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, oldLat, oldLng);
+
         double newLat = 30;
         double newLng = 40;
+        List<ExerciseSessionRecord> newRecords = insertAndReadRecords(recordCount, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, newLat, newLng);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewerVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 0L;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, oldVersion, oldLat, oldLng);
+
+        long newVersion = 1L;
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords =
+                insertAndReadRecords(recordCount, newVersion, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, newLat, newLng);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndSameVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long version = 1L;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, version, oldLat, oldLng);
+
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords =
+                insertAndReadRecords(recordCount, version, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, newLat, newLng);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndOlderVersion_readOldData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 1L;
+        double oldLat = 10;
+        double oldLng = 20;
+        insertAndReadRecords(recordCount, oldVersion, oldLat, oldLng);
+
+        long newVersion = 0L;
+        double newLat = 30;
+        double newLng = 40;
+        List<ExerciseSessionRecord> newRecords =
+                insertAndReadRecords(recordCount, newVersion, newLat, newLng);
+
+        for (ExerciseSessionRecord record : newRecords) {
+            assertRoute(record, oldLat, oldLng);
+        }
+    }
+
+    @Test
+    public void updateRecords_byId_readNewData() throws Exception {
+        Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+        List<Record> insertedRecords =
+                insertRecords(
+                        buildSession(
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                /* lat= */ 1,
+                                /* lng= */ -1),
+                        buildSession(
+                                now.minusMillis(3),
+                                now.minusMillis(2),
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                /* lat= */ 3,
+                                /* lng= */ -3));
+        List<String> ids = getRecordIds(insertedRecords);
+
+        List<Record> updatedRecords =
+                List.of(
+                        buildSession(
+                                ids.get(0),
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                /* lat= */ 10,
+                                /* lng= */ -10),
+                        buildSession(
+                                ids.get(1),
+                                now.minusMillis(30),
+                                now.minusMillis(20),
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                ids.get(2),
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                /* lat= */ 30,
+                                /* lng= */ -30));
+        updateRecords(updatedRecords);
+
+        readAndAssertEquals(updatedRecords);
+    }
+
+    @Test
+    public void updateRecords_byClientRecordId_readNewData() throws Exception {
+        Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+        List<Record> insertedRecords =
+                insertRecords(
+                        buildSession(
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                "id1",
+                                /* lat= */ 1,
+                                /* lng= */ -1),
+                        buildSession(
+                                now.minusMillis(3),
+                                now.minusMillis(2),
+                                "id2",
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                "id3",
+                                /* lat= */ 3,
+                                /* lng= */ -3));
+
+        List<Record> updatedRecords =
+                List.of(
+                        buildSession(
+                                now.minusMillis(2),
+                                now.minusMillis(1),
+                                "id1",
+                                /* lat= */ 10,
+                                /* lng= */ -10),
+                        buildSession(
+                                now.minusMillis(30),
+                                now.minusMillis(20),
+                                "id2",
+                                /* lat= */ 2,
+                                /* lng= */ -2),
+                        buildSession(
+                                now.minusMillis(4),
+                                now.minusMillis(3),
+                                "id3",
+                                /* lat= */ 30,
+                                /* lng= */ -30));
+        updateRecords(updatedRecords);
+        copyRecordIdsViaReflection(insertedRecords, updatedRecords);
+
+        readAndAssertEquals(updatedRecords);
+    }
+
+    private static void assertRoute(ExerciseSessionRecord record, double lat, double lng) {
+        ExerciseRoute route = record.getRoute();
+        assertThat(route).isNotNull();
+
+        assertThat(
+                        route.getRouteLocations().stream()
+                                .map(loc -> new Pair<>(loc.getLatitude(), loc.getLongitude()))
+                                .distinct()
+                                .toList())
+                .containsExactly(new Pair<>(lat, lng));
+    }
+
+    private static List<ExerciseSessionRecord> insertAndReadRecords(
+            int recordCount, double lat, double lng) throws Exception {
+        return insertAndReadRecords(recordCount, /* version= */ 0L, lat, lng);
+    }
+
+    private static List<ExerciseSessionRecord> insertAndReadRecords(
+            int recordCount, long version, double lat, double lng) throws Exception {
+        List<ExerciseSessionRecord> records = new ArrayList<>();
+        Instant now = Instant.now();
         for (int i = 0; i < recordCount; i++) {
             Instant startTime = now.minusSeconds(i + 1);
             Instant endTime = now.minusSeconds(i);
             String clientRecordId = "client_id_" + i;
-            Location location = new Location.Builder(startTime, 10, 20).build();
-            Location newLocation = new Location.Builder(startTime, newLat, newLng).build();
-            records.add(buildSession(startTime, endTime, clientRecordId, location));
-            newRecords.add(buildSession(startTime, endTime, clientRecordId, newLocation));
+            Location location = new Location.Builder(startTime, lat, lng).build();
+            records.add(buildSession(startTime, endTime, clientRecordId, version, location));
         }
         List<Record> insertedRecords = insertRecords(records);
         assertThat(insertedRecords).hasSize(recordCount);
-
-        List<Record> newInsertedRecords = insertRecords(newRecords);
-        assertThat(newInsertedRecords).hasSize(recordCount);
 
         List<ExerciseSessionRecord> readRecords =
                 readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(ExerciseSessionRecord.class)
                                 .build());
         assertThat(readRecords).hasSize(recordCount);
-        for (ExerciseSessionRecord record : readRecords) {
-            ExerciseRoute route = record.getRoute();
-            assertThat(route).isNotNull();
 
-            assertThat(
-                            route.getRouteLocations().stream()
-                                    .map(loc -> new Pair<>(loc.getLatitude(), loc.getLongitude()))
-                                    .distinct()
-                                    .toList())
-                    .containsExactly(new Pair<>(newLat, newLng));
-        }
+        return readRecords;
     }
 
     private ExerciseSessionRecord buildRecordWithOneSegment(int sessionType, int segmentType) {
@@ -717,19 +926,99 @@ public class ExerciseSessionRecordTest {
     }
 
     private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, ZoneOffset zoneOffset) {
+        return buildSession(
+                /* id= */ null,
+                startTime,
+                zoneOffset,
+                endTime,
+                zoneOffset,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0,
+                buildLocationTimePoint(startTime));
+    }
+
+    private static ExerciseSessionRecord buildSession(
             Instant startTime, Instant endTime, String clientRecordId) {
         return buildSession(startTime, endTime, clientRecordId, buildLocationTimePoint(startTime));
     }
 
     private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, double lat, double lng) {
+        return buildSession(/* id= */ null, startTime, endTime, lat, lng);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            String id, Instant startTime, Instant endTime, double lat, double lng) {
+        return buildSession(
+                id,
+                startTime,
+                endTime,
+                /* clientRecordId= */ null,
+                /* clientRecordVersion= */ 0,
+                new Location.Builder(startTime, lat, lng).build());
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            Instant startTime, Instant endTime, String clientRecordId, double lat, double lng) {
+        return buildSession(
+                startTime,
+                endTime,
+                clientRecordId,
+                /* clientRecordVersion= */ 0L,
+                new Location.Builder(startTime, lat, lng).build());
+    }
+
+    private static ExerciseSessionRecord buildSession(
             Instant startTime, Instant endTime, String clientRecordId, Location location) {
+        return buildSession(
+                startTime, endTime, clientRecordId, /* clientRecordVersion= */ 0L, location);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            Location location) {
+        return buildSession(
+                /* id= */ null, startTime, endTime, clientRecordId, clientRecordVersion, location);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            String id,
+            Instant startTime,
+            Instant endTime,
+            String clientRecordId,
+            long clientRecordVersion,
+            Location location) {
+        return buildSession(
+                id,
+                startTime,
+                ZoneOffset.MIN,
+                endTime,
+                ZoneOffset.MAX,
+                clientRecordId,
+                clientRecordVersion,
+                location);
+    }
+
+    private static ExerciseSessionRecord buildSession(
+            String id,
+            Instant startTime,
+            ZoneOffset startZoneOffset,
+            Instant endTime,
+            ZoneOffset endZoneOffset,
+            String clientRecordId,
+            long clientRecordVersion,
+            Location location) {
         return new ExerciseSessionRecord.Builder(
-                        buildMetadata(clientRecordId),
+                        buildMetadata(id, clientRecordId, clientRecordVersion),
                         startTime,
                         endTime,
                         ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
-                .setEndZoneOffset(ZoneOffset.MAX)
-                .setStartZoneOffset(ZoneOffset.MIN)
+                .setEndZoneOffset(endZoneOffset)
+                .setStartZoneOffset(startZoneOffset)
                 .setRoute(new ExerciseRoute(List.of(location)))
                 .setNotes("notes")
                 .setTitle("title")
@@ -746,13 +1035,23 @@ public class ExerciseSessionRecordTest {
     }
 
     private static Metadata buildMetadata(String clientRecordId) {
+        return buildMetadata(clientRecordId, /* clientRecordVersion= */ 0L);
+    }
+
+    private static Metadata buildMetadata(String clientRecordId, long clientRecordVersion) {
+        return buildMetadata(UUID.randomUUID().toString(), clientRecordId, clientRecordVersion);
+    }
+
+    private static Metadata buildMetadata(
+            String id, String clientRecordId, long clientRecordVersion) {
         return new Metadata.Builder()
                 .setDataOrigin(
                         new DataOrigin.Builder()
                                 .setPackageName("android.healthconnect.cts")
                                 .build())
-                .setId(UUID.randomUUID().toString())
+                .setId(id != null ? id : "")
                 .setClientRecordId(clientRecordId)
+                .setClientRecordVersion(clientRecordVersion)
                 .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
                 .build();
     }

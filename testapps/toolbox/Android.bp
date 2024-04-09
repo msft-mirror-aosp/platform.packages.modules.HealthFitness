@@ -37,7 +37,9 @@ android_library {
         "androidx.navigation_navigation-fragment-ktx",
         "androidx.navigation_navigation-runtime-ktx",
         "androidx.navigation_navigation-ui-ktx",
-        "androidx.annotation_annotation"
+        "androidx.annotation_annotation",
+        "androidx.work_work-runtime",
+        "androidx.concurrent_concurrent-futures-ktx",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     apex_available: ["com.android.healthfitness"],
@@ -49,6 +51,42 @@ android_app {
     min_sdk_version: "34",
     rename_resources_package: false,
     updatable: true,
+    certificate: "platform",
+    static_libs: [
+        "HealthConnectToolboxLibrary"
+    ],
+    apex_available: ["com.android.healthfitness"],
+}
+
+android_app {
+    name: "HealthConnectToolbox2",
+    sdk_version: "module_current",
+    min_sdk_version: "34",
+    rename_resources_package: false,
+    updatable: true,
+    package_name: "com.android.healthconnect.testapps.toolbox2",
+    manifest: "AndroidManifest2.xml",
+    additional_manifests: [
+        "AndroidManifest.xml",
+    ],
+    certificate: "platform",
+    static_libs: [
+        "HealthConnectToolboxLibrary"
+    ],
+    apex_available: ["com.android.healthfitness"],
+}
+
+android_app {
+    name: "HealthConnectToolbox3",
+    sdk_version: "module_current",
+    min_sdk_version: "34",
+    rename_resources_package: false,
+    updatable: true,
+    package_name: "com.android.healthconnect.testapps.toolbox3",
+    manifest: "AndroidManifest3.xml",
+    additional_manifests: [
+        "AndroidManifest.xml",
+    ],
     certificate: "platform",
     static_libs: [
         "HealthConnectToolboxLibrary"

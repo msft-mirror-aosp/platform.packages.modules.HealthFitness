@@ -111,11 +111,12 @@ public class HealthConnectWithoutManagePermissionsTest {
     }
 
     @Test
-    public void testMakeHealthPermissionsRequestable_noManageHealthPermissions_securityException() {
+    public void
+            setHealthPermissionsUserFixedFlagValue_noManageHealthPermissions_securityException() {
         assertThrows(
                 SecurityException.class,
                 () ->
-                        mHealthConnectManager.makeHealthPermissionsRequestable(
-                                DEFAULT_APP_PACKAGE, List.of()));
+                        mHealthConnectManager.setHealthPermissionsUserFixedFlagValue(
+                                DEFAULT_APP_PACKAGE, List.of(), false));
     }
 }

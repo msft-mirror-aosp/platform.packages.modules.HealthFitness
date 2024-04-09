@@ -29,10 +29,13 @@ import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static com.google.common.truth.Truth.assertThat;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
 
 import android.content.Context;
+import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
@@ -49,6 +52,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class ReadByFilterTests {
@@ -114,15 +119,14 @@ public class ReadByFilterTests {
     public void filterByDataOrigin_dataOfOtherOriginsExcluded() throws Exception {
         Instant startTime = Instant.now().minus(1, DAYS);
         String id =
-                insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50)
-                        .get(0);
+                insertStepsRecordViaTestApp(mContext, startTime, startTime.plusMillis(1000), 50);
         insertRecords(
                 List.of(
                         getStepsRecord(
                                 100,
                                 startTime.plusMillis(1000),
                                 startTime.plusMillis(2000),
-                                "own_steps")));
+                                /* clientId= */ "own_steps")));
 
         ReadRecordsRequest<StepsRecord> ownDataRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class)
@@ -151,7 +155,7 @@ public class ReadByFilterTests {
                                 100,
                                 startTime.plusMillis(1000),
                                 startTime.plusMillis(2000),
-                                "own_steps")));
+                                /* clientId= */ "own_steps")));
 
         ReadRecordsRequest<StepsRecord> request =
                 new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class).build();
@@ -172,6 +176,97 @@ public class ReadByFilterTests {
                         .build();
         List<StepsRecord> stepsRecords = readRecords(invalidOriginRequest);
         assertThat(stepsRecords).isEmpty();
+    }
+
+    @Test
+    public void filterByTimeRange_physicalTime_returnsDataWithinRange() throws Exception {
+        Instant filterStartTime = Instant.now().minus(1, DAYS).truncatedTo(DAYS);
+        Instant filterEndTime = filterStartTime.plus(6, HOURS);
+        insertRecords(
+                List.of(
+                        getDistanceRecord(
+                                123.0,
+                                filterStartTime,
+                                filterStartTime.plus(2, HOURS),
+                                /* clientId= */ "dataStartTime=filterStartTime"),
+                        getDistanceRecord(
+                                456.0,
+                                filterEndTime.minus(2, HOURS),
+                                filterEndTime,
+                                /* clientId= */ "dataEndTime=filterEndTime"),
+                        getDistanceRecord(
+                                789.0,
+                                filterStartTime.minusMillis(1),
+                                filterStartTime,
+                                /* clientId= */ "dataEndTime=filterStartTime"),
+                        getDistanceRecord(
+                                952.7,
+                                filterEndTime,
+                                filterEndTime.plusMillis(1),
+                                /* clientId= */ "dataStartTime=filterEndTime")));
+
+        TimeInstantRangeFilter timeFilter =
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(filterStartTime)
+                        .setEndTime(filterEndTime)
+                        .build();
+        ReadRecordsRequest<DistanceRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class)
+                        .setTimeRangeFilter(timeFilter)
+                        .build();
+
+        List<DistanceRecord> records = readRecords(request);
+        assertThat(records).hasSize(2);
+        assertClientId(records.get(0), "dataStartTime=filterStartTime");
+        assertClientId(records.get(1), "dataEndTime=filterEndTime");
+    }
+
+    @Test
+    public void filterByTimeRange_localTime_returnsDataWithinRange() throws Exception {
+        ZoneId defaultZone = ZoneId.systemDefault();
+        LocalDateTime filterStartTime = LocalDateTime.now(defaultZone).minusDays(1);
+        LocalDateTime filterEndTime = filterStartTime.plusHours(6);
+        insertRecords(
+                List.of(
+                        getDistanceRecord(
+                                123.0,
+                                toInstant(filterStartTime),
+                                toInstant(filterStartTime.plusHours(2)),
+                                /* clientId= */ "dataStartTime=filterStartTime"),
+                        getDistanceRecord(
+                                456.0,
+                                toInstant(filterEndTime.minusHours(2)),
+                                toInstant(filterEndTime),
+                                /* clientId= */ "dataEndTime=filterEndTime"),
+                        getDistanceRecord(
+                                789.0,
+                                toInstant(filterStartTime).minusMillis(1),
+                                toInstant(filterStartTime),
+                                /* clientId= */ "dataEndTime=filterStartTime"),
+                        getDistanceRecord(
+                                952.7,
+                                toInstant(filterEndTime),
+                                toInstant(filterEndTime).plusMillis(1),
+                                /* clientId= */ "dataStartTime=filterEndTime")));
+
+        LocalTimeRangeFilter timeFilter =
+                new LocalTimeRangeFilter.Builder()
+                        .setStartTime(filterStartTime)
+                        .setEndTime(filterEndTime)
+                        .build();
+        ReadRecordsRequest<DistanceRecord> request =
+                new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class)
+                        .setTimeRangeFilter(timeFilter)
+                        .build();
+
+        List<DistanceRecord> records = readRecords(request);
+        assertThat(records).hasSize(2);
+        assertClientId(records.get(0), "dataStartTime=filterStartTime");
+        assertClientId(records.get(1), "dataEndTime=filterEndTime");
+    }
+
+    private static Instant toInstant(LocalDateTime time) {
+        return time.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     private static void assertClientId(Record record, String expected) {

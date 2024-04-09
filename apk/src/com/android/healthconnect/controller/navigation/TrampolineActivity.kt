@@ -23,6 +23,7 @@ import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import com.android.healthconnect.controller.MainActivity
 import com.android.healthconnect.controller.data.DataManagementActivity
@@ -49,7 +50,8 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
         // Handles unsupported devices and user profiles.
         if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
             Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
@@ -64,11 +66,6 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         }
 
         val targetIntent = getTargetIntent()
-        if (targetIntent == null) {
-            Log.e(TAG, "Invalid Intent Action, finishing!")
-            finish()
-            return
-        }
 
         // Handles showing Health Connect Onboarding.
         if (shouldRedirectToOnboardingActivity(this)) {
@@ -81,7 +78,7 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
         finish()
     }
 
-    private fun getTargetIntent(): Intent? {
+    private fun getTargetIntent(): Intent {
         return when (intent.action) {
             HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS -> {
                 Intent(this, MainActivity::class.java)
@@ -98,8 +95,10 @@ class TrampolineActivity : Hilt_TrampolineActivity() {
                     }
                 }
             }
+
             else -> {
-                null
+                // Default to open Health Connect MainActivity
+                Intent(this, MainActivity::class.java)
             }
         }
     }

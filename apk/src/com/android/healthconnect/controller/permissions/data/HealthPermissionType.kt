@@ -24,6 +24,7 @@ enum class HealthPermissionType(val category: Int) {
     DISTANCE(HealthPermissionCategory.DISTANCE),
     ELEVATION_GAINED(HealthPermissionCategory.ELEVATION_GAINED),
     EXERCISE(HealthPermissionCategory.EXERCISE),
+    PLANNED_EXERCISE(HealthPermissionCategory.PLANNED_EXERCISE),
     FLOORS_CLIMBED(HealthPermissionCategory.FLOORS_CLIMBED),
     STEPS(HealthPermissionCategory.STEPS),
     TOTAL_CALORIES_BURNED(HealthPermissionCategory.TOTAL_CALORIES_BURNED),
@@ -66,6 +67,7 @@ enum class HealthPermissionType(val category: Int) {
     OXYGEN_SATURATION(HealthPermissionCategory.OXYGEN_SATURATION),
     RESPIRATORY_RATE(HealthPermissionCategory.RESPIRATORY_RATE),
     RESTING_HEART_RATE(HealthPermissionCategory.RESTING_HEART_RATE),
+    SKIN_TEMPERATURE(HealthPermissionCategory.SKIN_TEMPERATURE),
 }
 
 fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissionType {
@@ -78,6 +80,7 @@ fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissio
         HealthPermissionCategory.DISTANCE -> HealthPermissionType.DISTANCE
         HealthPermissionCategory.ELEVATION_GAINED -> HealthPermissionType.ELEVATION_GAINED
         HealthPermissionCategory.EXERCISE -> HealthPermissionType.EXERCISE
+        HealthPermissionCategory.PLANNED_EXERCISE -> HealthPermissionType.PLANNED_EXERCISE
         HealthPermissionCategory.FLOORS_CLIMBED -> HealthPermissionType.FLOORS_CLIMBED
         HealthPermissionCategory.STEPS -> HealthPermissionType.STEPS
         HealthPermissionCategory.TOTAL_CALORIES_BURNED -> HealthPermissionType.TOTAL_CALORIES_BURNED
@@ -117,6 +120,7 @@ fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissio
         HealthPermissionCategory.OXYGEN_SATURATION -> HealthPermissionType.OXYGEN_SATURATION
         HealthPermissionCategory.RESPIRATORY_RATE -> HealthPermissionType.RESPIRATORY_RATE
         HealthPermissionCategory.RESTING_HEART_RATE -> HealthPermissionType.RESTING_HEART_RATE
+        HealthPermissionCategory.SKIN_TEMPERATURE -> HealthPermissionType.SKIN_TEMPERATURE
         else -> throw IllegalArgumentException("PermissionType is not supported.")
     }
 }

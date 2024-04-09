@@ -15,8 +15,10 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import android.health.connect.HealthPermissions
+import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
@@ -43,24 +45,36 @@ class HealthPermissionTest {
     }
 
     @Test
-    fun fromPermission_returnsCorrectReadHealthPermission() {
+    fun fromPermission_returnsCorrectReadDataTypePermission() {
         assertThat(fromPermissionString("android.permission.health.READ_ACTIVE_CALORIES_BURNED"))
-            .isEqualTo(HealthPermission(ACTIVE_CALORIES_BURNED, PermissionsAccessType.READ))
+            .isEqualTo(DataTypePermission(ACTIVE_CALORIES_BURNED, PermissionsAccessType.READ))
     }
 
     @Test
-    fun fromPermission_returnsCorrectWriteHealthPermission() {
+    fun fromPermission_returnsCorrectWriteDataTypePermission() {
         assertThat(fromPermissionString("android.permission.health.WRITE_BLOOD_GLUCOSE"))
-            .isEqualTo(HealthPermission(BLOOD_GLUCOSE, PermissionsAccessType.WRITE))
+            .isEqualTo(DataTypePermission(BLOOD_GLUCOSE, PermissionsAccessType.WRITE))
     }
 
     @Test
-    fun fromPermissionString_canParseAllHealthPermissions() {
-        val allPermissions = healthPermissionReader.getHealthPermissions()
+    fun fromPermissionString_canParseAllDataTypePermissions() {
+        val allPermissions =
+            healthPermissionReader.getHealthPermissions().filterNot { perm ->
+                healthPermissionReader.isAdditionalPermission(perm)
+            }
         for (permissionString in allPermissions) {
             assertThat(fromPermissionString(permissionString).toString())
                 .isEqualTo(permissionString)
         }
+    }
+
+    @Test
+    fun fromPermissionString_returnsCorrectAdditionalPermission() {
+        assertThat(fromPermissionString("android.permission.health.READ_HEALTH_DATA_HISTORY"))
+            .isEqualTo(AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_HISTORY))
+
+        assertThat(fromPermissionString("android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"))
+            .isEqualTo(AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND))
     }
 
     @Test

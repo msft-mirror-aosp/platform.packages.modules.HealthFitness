@@ -16,8 +16,10 @@
 package com.android.healthconnect.testapps.toolbox.utils
 
 import android.content.Context
+import android.content.Intent
 import android.health.connect.HealthConnectManager
 import android.health.connect.InsertRecordsResponse
+import android.health.connect.ReadRecordsRequest
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.ReadRecordsResponse
 import android.health.connect.TimeRangeFilter
@@ -33,6 +35,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.io.Serializable
 
 class GeneralUtils {
 
@@ -92,8 +95,7 @@ class GeneralUtils {
             val fieldNameToValue: MutableMap<String, Any> = emptyMap<String, Any>().toMutableMap()
             val fields: List<Field> =
                 obj.java.declaredFields.filter { field ->
-                    Modifier.isStatic(field.modifiers) &&
-                        field.type == Int::class.java
+                    Modifier.isStatic(field.modifiers) && field.type == Int::class.java
                 }
             for (field in fields) {
                 fieldNameToValue[field.name] = field.get(obj)!!
@@ -120,5 +122,31 @@ class GeneralUtils {
             Log.d("READ_RECORDS", "Read ${records.size} records")
             return records
         }
+
+        suspend fun <T : Record> readRecords(
+            manager: HealthConnectManager,
+            request: ReadRecordsRequest<T>,
+        ): List<T> {
+            val records =
+                suspendCancellableCoroutine<ReadRecordsResponse<T>> { continuation ->
+                        manager.readRecords(
+                            request, Runnable::run, continuation.asOutcomeReceiver())
+                    }
+                    .records
+            Log.d("READ_RECORDS", "Read ${records.size} records")
+            return records
+        }
+
+        inline fun <reified T> Context.requireSystemService(): T =
+            requireNotNull(getSystemService(T::class.java))
+
+        fun Intent.requireStringExtra(name: String): String =
+            requireNotNull(getStringExtra(name))
+
+        fun Intent.requireByteArrayExtra(name: String): ByteArray =
+            requireNotNull(getByteArrayExtra(name))
+
+        inline fun <reified T : Serializable> Intent.requireSerializable(name: String): T =
+            requireNotNull(getSerializableExtra(name, T::class.java))
     }
 }

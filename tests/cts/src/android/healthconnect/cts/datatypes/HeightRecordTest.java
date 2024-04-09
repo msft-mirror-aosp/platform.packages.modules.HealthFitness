@@ -19,9 +19,12 @@ package android.healthconnect.cts.datatypes;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_AVG;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_MAX;
 import static android.health.connect.datatypes.HeightRecord.HEIGHT_MIN;
+import static android.healthconnect.cts.utils.TestUtils.copyRecordIdsViaReflection;
 import static android.healthconnect.cts.utils.TestUtils.distinctByUuid;
+import static android.healthconnect.cts.utils.TestUtils.getRecordIds;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
+import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -143,8 +146,8 @@ public class HeightRecordTest {
         List<HeightRecord> oldHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
-        HeightRecord testRecord = getCompleteHeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HeightRecord testRecord = (HeightRecord) TestUtils.insertRecord(getCompleteHeightRecord());
         List<HeightRecord> newHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
@@ -159,8 +162,8 @@ public class HeightRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        HeightRecord testRecord = getCompleteHeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HeightRecord testRecord = (HeightRecord) TestUtils.insertRecord(getCompleteHeightRecord());
         List<HeightRecord> newHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class)
@@ -181,8 +184,8 @@ public class HeightRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        HeightRecord testRecord = getCompleteHeightRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HeightRecord testRecord = (HeightRecord) TestUtils.insertRecord(getCompleteHeightRecord());
         List<HeightRecord> newHeightRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class)
@@ -210,7 +213,7 @@ public class HeightRecordTest {
         assertThat(newHeightRecords.size()).isEqualTo(0);
     }
 
-    private void readHeightRecordUsingClientId(List<Record> insertedRecord)
+    private void readHeightRecordUsingClientId(List<? extends Record> insertedRecord)
             throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<HeightRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeightRecord.class);
@@ -222,7 +225,8 @@ public class HeightRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readHeightRecordUsingIds(List<Record> recordList) throws InterruptedException {
+    private void readHeightRecordUsingIds(List<? extends Record> recordList)
+            throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<HeightRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeightRecord.class);
         for (Record record : recordList) {
@@ -261,8 +265,8 @@ public class HeightRecordTest {
 
     @Test
     public void testDeleteHeightRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseHeightRecord(), getCompleteHeightRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseHeightRecord(), getCompleteHeightRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -299,10 +303,10 @@ public class HeightRecordTest {
 
     @Test
     public void testDeleteHeightRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseHeightRecord(), getCompleteHeightRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseHeightRecord(), getCompleteHeightRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -506,8 +510,8 @@ public class HeightRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteHeightRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteHeightRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -555,29 +559,130 @@ public class HeightRecordTest {
     @Test
     public void insertRecords_sameClientRecordIdAndNewData_readNewData() throws Exception {
         int recordCount = 10;
-        List<HeightRecord> records = new ArrayList<>();
-        List<HeightRecord> newRecords = new ArrayList<>();
-        Instant now = Instant.now();
+        insertAndReadRecords(recordCount, Length.fromMeters(1.0));
+
         Length newHeight = Length.fromMeters(2.0);
+        List<HeightRecord> newRecords = insertAndReadRecords(recordCount, newHeight);
+
+        for (HeightRecord record : newRecords) {
+            assertThat(record.getHeight()).isEqualTo(newHeight);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndNewerVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 0L;
+        Length oldHeight = Length.fromMeters(1.0);
+        insertAndReadRecords(recordCount, oldVersion, oldHeight);
+
+        long newVersion = 1L;
+        Length newHeight = Length.fromMeters(2.0);
+        List<HeightRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newHeight);
+
+        for (HeightRecord record : newRecords) {
+            assertThat(record.getHeight()).isEqualTo(newHeight);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndSameVersion_readNewData() throws Exception {
+        int recordCount = 10;
+        long version = 1L;
+        Length oldHeight = Length.fromMeters(1.0);
+        insertAndReadRecords(recordCount, version, oldHeight);
+
+        Length newHeight = Length.fromMeters(2.0);
+        List<HeightRecord> newRecords = insertAndReadRecords(recordCount, version, newHeight);
+
+        for (HeightRecord record : newRecords) {
+            assertThat(record.getHeight()).isEqualTo(newHeight);
+        }
+    }
+
+    @Test
+    public void insertRecords_sameClientRecordIdAndOlderVersion_readOldData() throws Exception {
+        int recordCount = 10;
+        long oldVersion = 1L;
+        Length oldHeight = Length.fromMeters(1.0);
+        insertAndReadRecords(recordCount, oldVersion, oldHeight);
+
+        long newVersion = 0L;
+        Length newHeight = Length.fromMeters(2.0);
+        List<HeightRecord> newRecords = insertAndReadRecords(recordCount, newVersion, newHeight);
+
+        for (HeightRecord record : newRecords) {
+            assertThat(record.getHeight()).isEqualTo(oldHeight);
+        }
+    }
+
+    @Test
+    public void updateRecords_byId_readNewData() throws Exception {
+        Instant now = Instant.now();
+        List<Record> insertedRecords =
+                insertRecords(
+                        getCompleteHeightRecord(now.minusMillis(1), Length.fromMeters(1.1)),
+                        getCompleteHeightRecord(now.minusMillis(2), Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(now.minusMillis(3), Length.fromMeters(1.3)));
+        List<String> insertedIds = getRecordIds(insertedRecords);
+
+        List<Record> updatedRecords =
+                List.of(
+                        getCompleteHeightRecord(
+                                insertedIds.get(0), now.minusMillis(1), Length.fromMeters(2.1)),
+                        getCompleteHeightRecord(
+                                insertedIds.get(1), now.minusMillis(20), Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(
+                                insertedIds.get(2), now.minusMillis(30), Length.fromMeters(2.3)));
+        updateRecords(updatedRecords);
+
+        readHeightRecordUsingIds(updatedRecords);
+    }
+
+    @Test
+    public void updateRecords_byClientRecordId_readNewData() throws Exception {
+        Instant now = Instant.now();
+        List<Record> insertedRecords =
+                insertRecords(
+                        getCompleteHeightRecord(now.minusMillis(1), "id1", Length.fromMeters(1.1)),
+                        getCompleteHeightRecord(now.minusMillis(2), "id2", Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(now.minusMillis(3), "id3", Length.fromMeters(1.3)));
+
+        List<HeightRecord> updatedRecords =
+                List.of(
+                        getCompleteHeightRecord(now.minusMillis(1), "id1", Length.fromMeters(2.1)),
+                        getCompleteHeightRecord(now.minusMillis(20), "id2", Length.fromMeters(1.2)),
+                        getCompleteHeightRecord(
+                                now.minusMillis(30), "id3", Length.fromMeters(2.3)));
+        updateRecords(updatedRecords);
+        copyRecordIdsViaReflection(insertedRecords, updatedRecords);
+
+        readHeightRecordUsingIds(updatedRecords);
+    }
+
+    private static List<HeightRecord> insertAndReadRecords(int count, Length height)
+            throws Exception {
+        return insertAndReadRecords(count, /* version= */ 0L, height);
+    }
+
+    private static List<HeightRecord> insertAndReadRecords(
+            int recordCount, long version, Length height) throws Exception {
+        List<HeightRecord> records = new ArrayList<>();
+        Instant now = Instant.now();
         for (int i = 0; i < recordCount; i++) {
             Instant time = now.minusMillis(i);
             String clientRecordId = "client_id_" + i;
-            records.add(getCompleteHeightRecord(time, clientRecordId, Length.fromMeters(1.0)));
-            newRecords.add(getCompleteHeightRecord(time, clientRecordId, newHeight));
+            records.add(getCompleteHeightRecord(time, clientRecordId, version, height));
         }
         List<Record> insertedRecords = insertRecords(records);
         assertThat(insertedRecords).hasSize(recordCount);
-
-        List<Record> newInsertedRecords = insertRecords(newRecords);
-        assertThat(newInsertedRecords).hasSize(recordCount);
 
         List<HeightRecord> readRecords =
                 readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HeightRecord.class).build());
         assertThat(readRecords).hasSize(recordCount);
-        for (HeightRecord record : readRecords) {
-            assertThat(record.getHeight()).isEqualTo(newHeight);
-        }
+
+        return readRecords;
     }
 
     HeightRecord getHeightRecord_update(Record record, String id, String clientRecordId) {
@@ -610,14 +715,6 @@ public class HeightRecordTest {
                 .build();
     }
 
-    static HeightRecord getBaseHeightRecord(Instant time, double height) {
-        return new HeightRecord.Builder(
-                        new Metadata.Builder().setClientRecordId("HR" + Math.random()).build(),
-                        time,
-                        Length.fromMeters(height))
-                .build();
-    }
-
     private static HeightRecord getCompleteHeightRecord() {
         return getCompleteHeightRecord(Instant.now(), /* clientRecordId= */ "HR" + Math.random());
     }
@@ -626,8 +723,32 @@ public class HeightRecordTest {
         return getCompleteHeightRecord(time, clientRecordId, Length.fromMeters(1.0));
     }
 
+    private static HeightRecord getCompleteHeightRecord(String id, Instant time, Length height) {
+        return getCompleteHeightRecord(
+                id, time, /* clientRecordId= */ null, /* clientRecordVersion= */ 0L, height);
+    }
+
+    private static HeightRecord getCompleteHeightRecord(Instant time, Length height) {
+        return getCompleteHeightRecord(
+                time, /* clientRecordId= */ null, /* clientRecordVersion= */ 0L, height);
+    }
+
     private static HeightRecord getCompleteHeightRecord(
             Instant time, String clientRecordId, Length height) {
+        return getCompleteHeightRecord(time, clientRecordId, /* clientRecordVersion= */ 0L, height);
+    }
+
+    private static HeightRecord getCompleteHeightRecord(
+            Instant time, String clientRecordId, long clientRecordVersion, Length height) {
+        return getCompleteHeightRecord(null, time, clientRecordId, clientRecordVersion, height);
+    }
+
+    private static HeightRecord getCompleteHeightRecord(
+            String id,
+            Instant time,
+            String clientRecordId,
+            long clientRecordVersion,
+            Length height) {
         Device device =
                 new Device.Builder()
                         .setManufacturer("google")
@@ -637,8 +758,12 @@ public class HeightRecordTest {
         DataOrigin dataOrigin =
                 new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
         Metadata.Builder testMetadataBuilder = new Metadata.Builder();
+        if (id != null) {
+            testMetadataBuilder.setId(id);
+        }
         testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
         testMetadataBuilder.setClientRecordId(clientRecordId);
+        testMetadataBuilder.setClientRecordVersion(clientRecordVersion);
         testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
 
         return new HeightRecord.Builder(testMetadataBuilder.build(), time, height)

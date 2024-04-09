@@ -19,6 +19,7 @@
 package com.android.healthconnect.controller.data
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -26,7 +27,8 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
-import com.android.healthconnect.controller.migration.api.MigrationState
+import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState
+import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
@@ -43,8 +45,12 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
         setContentView(R.layout.activity_data_management)
-        if (featureUtils.isNewInformationArchitectureEnabled()) {
+        if (savedInstanceState == null && featureUtils.isNewInformationArchitectureEnabled()) {
             updateNavGraphToNewIA()
         }
 
@@ -55,8 +61,9 @@ class DataManagementActivity : Hilt_DataManagementActivity() {
 
         migrationViewModel.migrationState.observe(this) { migrationState ->
             when (migrationState) {
-                is MigrationViewModel.MigrationFragmentState.WithData -> {
-                    if (migrationState.migrationState == MigrationState.COMPLETE) {
+                is MigrationFragmentState.WithData -> {
+                    if (migrationState.migrationRestoreState.migrationUiState ==
+                        MigrationUiState.COMPLETE) {
                         maybeShowWhatsNewDialog(this)
                     }
                 }
