@@ -117,8 +117,9 @@ public class BodyFatRecordTest {
         List<BodyFatRecord> oldBodyFatRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyFatRecord.class).build());
-        BodyFatRecord testRecord = getCompleteBodyFatRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BodyFatRecord testRecord =
+                (BodyFatRecord) TestUtils.insertRecord(getCompleteBodyFatRecord());
         List<BodyFatRecord> newBodyFatRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyFatRecord.class).build());
@@ -133,8 +134,8 @@ public class BodyFatRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BodyFatRecord testRecord = getCompleteBodyFatRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BodyFatRecord testRecord =
+                (BodyFatRecord) TestUtils.insertRecord(getCompleteBodyFatRecord());
         List<BodyFatRecord> newBodyFatRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyFatRecord.class)
@@ -155,8 +156,8 @@ public class BodyFatRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BodyFatRecord testRecord = getCompleteBodyFatRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BodyFatRecord testRecord =
+                (BodyFatRecord) TestUtils.insertRecord(getCompleteBodyFatRecord());
         List<BodyFatRecord> newBodyFatRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BodyFatRecord.class)
@@ -235,8 +236,9 @@ public class BodyFatRecordTest {
 
     @Test
     public void testDeleteBodyFatRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseBodyFatRecord(), getCompleteBodyFatRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseBodyFatRecord(), getCompleteBodyFatRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -273,10 +275,11 @@ public class BodyFatRecordTest {
 
     @Test
     public void testDeleteBodyFatRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseBodyFatRecord(), getCompleteBodyFatRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseBodyFatRecord(), getCompleteBodyFatRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -453,8 +456,8 @@ public class BodyFatRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBodyFatRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteBodyFatRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

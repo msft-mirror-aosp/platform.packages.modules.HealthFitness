@@ -139,8 +139,10 @@ public class BasalBodyTemperatureRecordTest {
                         new ReadRecordsRequestUsingFilters.Builder<>(
                                         BasalBodyTemperatureRecord.class)
                                 .build());
-        BasalBodyTemperatureRecord testRecord = getCompleteBasalBodyTemperatureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        List<Record> records =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBasalBodyTemperatureRecord()));
+        BasalBodyTemperatureRecord testRecord = (BasalBodyTemperatureRecord) records.get(0);
         List<BasalBodyTemperatureRecord> newBasalBodyTemperatureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -163,8 +165,9 @@ public class BasalBodyTemperatureRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BasalBodyTemperatureRecord testRecord = getCompleteBasalBodyTemperatureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BasalBodyTemperatureRecord testRecord =
+                (BasalBodyTemperatureRecord)
+                        TestUtils.insertRecord(getCompleteBasalBodyTemperatureRecord());
         List<BasalBodyTemperatureRecord> newBasalBodyTemperatureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -192,8 +195,10 @@ public class BasalBodyTemperatureRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BasalBodyTemperatureRecord testRecord = getCompleteBasalBodyTemperatureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BasalBodyTemperatureRecord testRecord =
+                (BasalBodyTemperatureRecord)
+                        TestUtils.insertRecord(getCompleteBasalBodyTemperatureRecord());
         List<BasalBodyTemperatureRecord> newBasalBodyTemperatureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -420,10 +425,10 @@ public class BasalBodyTemperatureRecordTest {
     public void testDeleteBasalBodyTemperatureRecord_recordId_filters()
             throws InterruptedException {
         List<Record> records =
-                List.of(
-                        getBaseBasalBodyTemperatureRecord(),
-                        getCompleteBasalBodyTemperatureRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalBodyTemperatureRecord(),
+                                getCompleteBasalBodyTemperatureRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -463,12 +468,12 @@ public class BasalBodyTemperatureRecordTest {
     @Test
     public void testDeleteBasalBodyTemperatureRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(
-                        getBaseBasalBodyTemperatureRecord(),
-                        getCompleteBasalBodyTemperatureRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseBasalBodyTemperatureRecord(),
+                                getCompleteBasalBodyTemperatureRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -509,8 +514,8 @@ public class BasalBodyTemperatureRecordTest {
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         List<Record> testRecord =
-                Collections.singletonList(getCompleteBasalBodyTemperatureRecord());
-        TestUtils.insertRecords(testRecord);
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBasalBodyTemperatureRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

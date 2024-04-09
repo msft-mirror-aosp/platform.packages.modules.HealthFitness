@@ -117,8 +117,9 @@ public class BoneMassRecordTest {
         List<BoneMassRecord> oldBoneMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BoneMassRecord.class).build());
-        BoneMassRecord testRecord = getCompleteBoneMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BoneMassRecord testRecord =
+                (BoneMassRecord) TestUtils.insertRecord(getCompleteBoneMassRecord());
         List<BoneMassRecord> newBoneMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BoneMassRecord.class).build());
@@ -134,8 +135,9 @@ public class BoneMassRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BoneMassRecord testRecord = getCompleteBoneMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BoneMassRecord testRecord =
+                (BoneMassRecord) TestUtils.insertRecord(getCompleteBoneMassRecord());
         List<BoneMassRecord> newBoneMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BoneMassRecord.class)
@@ -158,8 +160,9 @@ public class BoneMassRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BoneMassRecord testRecord = getCompleteBoneMassRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        BoneMassRecord testRecord =
+                (BoneMassRecord) TestUtils.insertRecord(getCompleteBoneMassRecord());
         List<BoneMassRecord> newBoneMassRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BoneMassRecord.class)
@@ -239,9 +242,9 @@ public class BoneMassRecordTest {
     @Test
     public void testDeleteBoneMassRecord_recordId_filters() throws InterruptedException {
         List<Record> records = List.of(getBaseBoneMassRecord(), getCompleteBoneMassRecord());
-        TestUtils.insertRecords(records);
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
 
-        for (Record record : records) {
+        for (Record record : insertedRecords) {
             TestUtils.verifyDeleteRecords(
                     new DeleteUsingFiltersRequest.Builder()
                             .addRecordType(record.getClass())
@@ -276,10 +279,11 @@ public class BoneMassRecordTest {
 
     @Test
     public void testDeleteBoneMassRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseBoneMassRecord(), getCompleteBoneMassRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseBoneMassRecord(), getCompleteBoneMassRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -450,8 +454,8 @@ public class BoneMassRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBoneMassRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteBoneMassRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

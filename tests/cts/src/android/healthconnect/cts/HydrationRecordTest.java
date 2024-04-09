@@ -130,8 +130,9 @@ public class HydrationRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HydrationRecord.class)
                                 .build());
-        HydrationRecord testRecord = getCompleteHydrationRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HydrationRecord testRecord =
+                (HydrationRecord) TestUtils.insertRecord(getCompleteHydrationRecord());
         List<HydrationRecord> newHydrationRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HydrationRecord.class)
@@ -148,8 +149,9 @@ public class HydrationRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        HydrationRecord testRecord = getCompleteHydrationRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HydrationRecord testRecord =
+                (HydrationRecord) TestUtils.insertRecord(getCompleteHydrationRecord());
         List<HydrationRecord> newHydrationRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HydrationRecord.class)
@@ -172,8 +174,9 @@ public class HydrationRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        HydrationRecord testRecord = getCompleteHydrationRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        HydrationRecord testRecord =
+                (HydrationRecord) TestUtils.insertRecord(getCompleteHydrationRecord());
         List<HydrationRecord> newHydrationRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(HydrationRecord.class)
@@ -226,8 +229,9 @@ public class HydrationRecordTest {
 
     @Test
     public void testDeleteHydrationRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseHydrationRecord(), getCompleteHydrationRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseHydrationRecord(), getCompleteHydrationRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -265,10 +269,11 @@ public class HydrationRecordTest {
 
     @Test
     public void testDeleteHydrationRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseHydrationRecord(), getCompleteHydrationRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseHydrationRecord(), getCompleteHydrationRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -484,8 +489,8 @@ public class HydrationRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteHydrationRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteHydrationRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

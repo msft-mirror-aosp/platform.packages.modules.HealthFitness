@@ -138,8 +138,8 @@ public class BloodPressureRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodPressureRecord.class)
                                 .build());
-        BloodPressureRecord testRecord = getCompleteBloodPressureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BloodPressureRecord testRecord =
+                (BloodPressureRecord) TestUtils.insertRecord(getCompleteBloodPressureRecord());
         List<BloodPressureRecord> newBloodPressureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodPressureRecord.class)
@@ -159,8 +159,8 @@ public class BloodPressureRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        BloodPressureRecord testRecord = getCompleteBloodPressureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BloodPressureRecord testRecord =
+                (BloodPressureRecord) TestUtils.insertRecord(getCompleteBloodPressureRecord());
         List<BloodPressureRecord> newBloodPressureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodPressureRecord.class)
@@ -186,8 +186,8 @@ public class BloodPressureRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        BloodPressureRecord testRecord = getCompleteBloodPressureRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+        BloodPressureRecord testRecord =
+                (BloodPressureRecord) TestUtils.insertRecord(getCompleteBloodPressureRecord());
         List<BloodPressureRecord> newBloodPressureRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(BloodPressureRecord.class)
@@ -273,8 +273,8 @@ public class BloodPressureRecordTest {
     @Test
     public void testDeleteBloodPressureRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBloodPressureRecord(), getCompleteBloodPressureRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseBloodPressureRecord(), getCompleteBloodPressureRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -313,10 +313,10 @@ public class BloodPressureRecordTest {
     @Test
     public void testDeleteBloodPressureRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseBloodPressureRecord(), getCompleteBloodPressureRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseBloodPressureRecord(), getCompleteBloodPressureRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -579,8 +579,9 @@ public class BloodPressureRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteBloodPressureRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteBloodPressureRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

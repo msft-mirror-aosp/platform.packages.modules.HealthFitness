@@ -143,8 +143,9 @@ public class DistanceRecordTest {
         List<DistanceRecord> oldDistanceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class).build());
-        DistanceRecord testRecord = getCompleteDistanceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        DistanceRecord testRecord =
+                (DistanceRecord) TestUtils.insertRecord(getCompleteDistanceRecord());
         List<DistanceRecord> newDistanceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class).build());
@@ -160,8 +161,9 @@ public class DistanceRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        DistanceRecord testRecord = getCompleteDistanceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        DistanceRecord testRecord =
+                (DistanceRecord) TestUtils.insertRecord(getCompleteDistanceRecord());
         List<DistanceRecord> newDistanceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class)
@@ -184,8 +186,9 @@ public class DistanceRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        DistanceRecord testRecord = getCompleteDistanceRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        DistanceRecord testRecord =
+                (DistanceRecord) TestUtils.insertRecord(getCompleteDistanceRecord());
         List<DistanceRecord> newDistanceRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(DistanceRecord.class)
@@ -238,8 +241,9 @@ public class DistanceRecordTest {
 
     @Test
     public void testDeleteDistanceRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseDistanceRecord(), getCompleteDistanceRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseDistanceRecord(), getCompleteDistanceRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -276,10 +280,11 @@ public class DistanceRecordTest {
 
     @Test
     public void testDeleteDistanceRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseDistanceRecord(), getCompleteDistanceRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(
+                        List.of(getBaseDistanceRecord(), getCompleteDistanceRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -532,8 +537,8 @@ public class DistanceRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteDistanceRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteDistanceRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
