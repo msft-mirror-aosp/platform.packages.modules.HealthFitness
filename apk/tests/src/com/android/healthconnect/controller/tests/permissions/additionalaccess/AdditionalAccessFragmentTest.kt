@@ -56,15 +56,21 @@ import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito.reset
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -76,6 +82,7 @@ class AdditionalAccessFragmentTest {
 
     @BindValue val permissionsViewModel: AppPermissionViewModel = mock()
     @BindValue val additionalAccessViewModel: AdditionalAccessViewModel = mock()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
@@ -97,6 +104,11 @@ class AdditionalAccessFragmentTest {
         whenever(additionalAccessViewModel.showEnableExerciseEvent)
             .thenReturn(MediatorLiveData(EnableExerciseDialogEvent()))
         whenever(additionalAccessViewModel.loadAccessDate(any())).thenReturn(NOW)
+    }
+
+    @After
+    fun teardown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -128,6 +140,10 @@ class AdditionalAccessFragmentTest {
 
         onView(withText(R.string.route_permissions_label)).check(matches(isDisplayed()))
         onView(withText(R.string.route_permissions_ask)).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ADDITIONAL_ACCESS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.EXERCISE_ROUTES_BUTTON)
     }
 
     @Test
@@ -194,6 +210,9 @@ class AdditionalAccessFragmentTest {
             assertThat(historyPreference?.isChecked).isTrue()
             assertThat(historyPreference?.isEnabled).isTrue()
         }
+
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.EXERCISE_ROUTES_BUTTON)
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.HISTORY_READ_BUTTON)
     }
 
     @Test
@@ -270,6 +289,9 @@ class AdditionalAccessFragmentTest {
             assertThat(backgroundPreference?.isChecked).isTrue()
             assertThat(backgroundPreference?.isEnabled).isTrue()
         }
+
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.EXERCISE_ROUTES_BUTTON)
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.BACKGROUND_READ_BUTTON)
     }
 
     @Test
@@ -360,6 +382,10 @@ class AdditionalAccessFragmentTest {
             assertThat(backgroundPreference?.isChecked).isTrue()
             assertThat(backgroundPreference?.isEnabled).isTrue()
         }
+
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.EXERCISE_ROUTES_BUTTON)
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.HISTORY_READ_BUTTON)
+        verify(healthConnectLogger).logImpression(AdditionalAccessElement.BACKGROUND_READ_BUTTON)
     }
 
     @Test
@@ -431,6 +457,15 @@ class AdditionalAccessFragmentTest {
         onIdle()
 
         onView(withId(R.id.exercise_routes_permission_dialog)).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logInteraction(AdditionalAccessElement.EXERCISE_ROUTES_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AdditionalAccessElement.EXERCISE_ROUTES_DIALOG_CONTAINER)
+        verify(healthConnectLogger)
+            .logImpression(AdditionalAccessElement.EXERCISE_ROUTES_DIALOG_DENY_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AdditionalAccessElement.EXERCISE_ROUTES_ASK_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(AdditionalAccessElement.EXERCISE_ROUTES_ALLOW_ALL_BUTTON)
     }
 
     @Test

@@ -22,7 +22,12 @@ import android.health.connect.datatypes.ExerciseSegmentType
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Velocity
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ItemDataEntrySeparator
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseBlockEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseStepEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseSessionRecordFormatter
 import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
 import com.android.healthconnect.controller.tests.utils.getPlannedExerciseSessionRecord
@@ -146,9 +151,15 @@ class PlannedExerciseSessionRecordFormatterTest {
                         exerciseBlocks = exerciseBlocks)))
             .isEqualTo(
                 listOf(
-                    FormattedEntry.PlannedExerciseBlockEntry(
-                        block = exerciseBlock1, title = "Warm up x1", titleA11y = "Warm up 1 time"),
-                    FormattedEntry.PlannedExerciseStepEntry(
+                    ItemDataEntrySeparator(),
+                    SessionHeader("Notes"),
+                    FormattedSectionContent("Morning quick run by the park"),
+                    ItemDataEntrySeparator(),
+                    PlannedExerciseBlockEntry(
+                        block = exerciseBlock1,
+                        title = "Warm up: 1 time",
+                        titleA11y = "Warm up 1 time"),
+                    PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
                                 exerciseSegmentType =
@@ -163,11 +174,23 @@ class PlannedExerciseSessionRecordFormatterTest {
                                             Velocity.fromMetersPerSecond(15.0)))),
                         title = "1 km Running",
                         titleA11y = "1 kilometre Running"),
-                    FormattedEntry.PlannedExerciseBlockEntry(
+                    ExercisePerformanceGoalEntry(
+                        goal = ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                        title = "100 bpm - 150 bpm",
+                        titleA11y = "100 beats per minute - 150 beats per minute"),
+                    ExercisePerformanceGoalEntry(
+                        goal =
+                            ExercisePerformanceGoal.SpeedGoal(
+                                Velocity.fromMetersPerSecond(25.0),
+                                Velocity.fromMetersPerSecond(15.0)),
+                        title = "90 km/h - 54 km/h",
+                        titleA11y = "90 kilometres per hour - 54 kilometres per hour"),
+                    ItemDataEntrySeparator(),
+                    PlannedExerciseBlockEntry(
                         block = exerciseBlock2,
-                        title = "Main set x1",
+                        title = "Main set: 1 time",
                         titleA11y = "Main set 1 time"),
-                    FormattedEntry.PlannedExerciseStepEntry(
+                    PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
                                 exerciseSegmentType =
@@ -181,6 +204,19 @@ class PlannedExerciseSessionRecordFormatterTest {
                                             Velocity.fromMetersPerSecond(50.0),
                                             Velocity.fromMetersPerSecond(25.0)))),
                         title = "4 km Running",
-                        titleA11y = "4 kilometres Running")))
+                        titleA11y = "4 kilometres Running"),
+                    ExercisePerformanceGoalEntry(
+                        goal = ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                        title = "150 bpm - 180 bpm",
+                        titleA11y = "150 beats per minute - 180 beats per minute"),
+                    ExercisePerformanceGoalEntry(
+                        goal =
+                            ExercisePerformanceGoal.SpeedGoal(
+                                Velocity.fromMetersPerSecond(50.0),
+                                Velocity.fromMetersPerSecond(25.0)),
+                        title = "180 km/h - 90 km/h",
+                        titleA11y = "180 kilometres per hour - 90 kilometres per hour"),
+                    ItemDataEntrySeparator()),
+            )
     }
 }

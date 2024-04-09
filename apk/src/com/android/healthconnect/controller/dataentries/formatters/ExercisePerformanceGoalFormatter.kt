@@ -21,6 +21,7 @@ import android.icu.text.MessageFormat
 import android.util.Log
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -37,7 +38,7 @@ constructor(
         goal: ExercisePerformanceGoal,
         unitPreferences: UnitPreferences
     ): FormattedEntry {
-        return FormattedEntry.ExercisePerformanceGoalEntry(
+        return ExercisePerformanceGoalEntry(
             goal = goal,
             title = formatPerformanceGoal(goal, unitPreferences),
             titleA11y = formatPerformanceGoalA11y(goal, unitPreferences))
