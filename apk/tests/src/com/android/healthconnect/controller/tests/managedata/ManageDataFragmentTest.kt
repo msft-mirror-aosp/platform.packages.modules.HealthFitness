@@ -100,6 +100,16 @@ class ManageDataFragmentTest {
     }
 
     @Test
+    fun manageDataFragment_importExportFlagOff_backupButtonNotDisplayed() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsImportExportEnabled(false)
+        launchFragment<ManageDataFragment>(Bundle())
+
+        onView(withText("Auto-delete")).check(matches(isDisplayed()))
+        onView(withText("Set units")).check(matches(isDisplayed()))
+        onView(withText("Backup and restore")).check(doesNotExist())
+    }
+
+    @Test
     fun autoDelete_navigatesToAutoDelete() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
         launchFragment<ManageDataFragment>(Bundle()) {
@@ -143,5 +153,20 @@ class ManageDataFragmentTest {
         onView(withText("Set units")).perform(click())
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.setUnitsFragment)
         verify(healthConnectLogger).logInteraction(ManageDataElement.SET_UNITS_BUTTON)
+    }
+
+    @Test
+    fun manageDataFragment_importExportFlagOn_navigatesToBackupAndRestoreSettingsFragment() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsImportExportEnabled(true)
+        launchFragment<ManageDataFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.manageDataFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Backup and restore")).check(matches(isDisplayed()))
+        onView(withText("Backup and restore")).perform(click())
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.backupAndRestoreSettingsFragment)
     }
 }

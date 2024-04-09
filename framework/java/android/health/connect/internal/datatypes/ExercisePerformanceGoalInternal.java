@@ -37,7 +37,7 @@ public abstract class ExercisePerformanceGoalInternal {
     abstract void writeFieldsToParcel(Parcel parcel);
 
     /** Subclass identifier used during serialization/deserialization. */
-    abstract int getTypeId();
+    public abstract int getTypeId();
 
     /** Serialize to parcel. */
     public static void writeToParcel(
@@ -74,7 +74,10 @@ public abstract class ExercisePerformanceGoalInternal {
                 case RateOfPerceivedExertionGoalInternal.RATE_OF_PERCEIVED_EXERTION_TYPE_ID:
                     result.add(RateOfPerceivedExertionGoalInternal.readFieldsFromParcel(parcel));
                     break;
-                case ExerciseCompletionGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
+                case AmrapGoalInternal.AMRAP_GOAL_TYPE_ID:
+                    result.add(AmrapGoalInternal.INSTANCE);
+                    break;
+                case ExercisePerformanceGoalInternal.UnknownGoalInternal.UNKNOWN_GOAL_TYPE_ID:
                     result.add(UnknownGoalInternal.INSTANCE);
                     break;
                 default:
@@ -113,6 +116,8 @@ public abstract class ExercisePerformanceGoalInternal {
             ExercisePerformanceGoal.RateOfPerceivedExertionGoal goal =
                     (ExercisePerformanceGoal.RateOfPerceivedExertionGoal) externalObject;
             return new RateOfPerceivedExertionGoalInternal(goal.getRpe());
+        } else if (externalObject instanceof ExercisePerformanceGoal.AmrapGoal) {
+            return AmrapGoalInternal.INSTANCE;
         } else {
             return UnknownGoalInternal.INSTANCE;
         }
@@ -126,7 +131,7 @@ public abstract class ExercisePerformanceGoalInternal {
     public static final class UnknownGoalInternal extends ExercisePerformanceGoalInternal {
         public static final UnknownGoalInternal INSTANCE = new UnknownGoalInternal();
 
-        static final int UNKNOWN_GOAL_TYPE_ID = 0;
+        public static final int UNKNOWN_GOAL_TYPE_ID = 0;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -134,7 +139,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return UNKNOWN_GOAL_TYPE_ID;
         }
 
@@ -147,7 +152,7 @@ public abstract class ExercisePerformanceGoalInternal {
     }
 
     public static final class PowerGoalInternal extends ExercisePerformanceGoalInternal {
-        static final int POWER_GOAL_TYPE_ID = 1;
+        public static final int POWER_GOAL_TYPE_ID = 1;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -161,7 +166,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return POWER_GOAL_TYPE_ID;
         }
 
@@ -188,7 +193,7 @@ public abstract class ExercisePerformanceGoalInternal {
     }
 
     public static final class SpeedGoalInternal extends ExercisePerformanceGoalInternal {
-        static final int SPEED_GOAL_TYPE_ID = 2;
+        public static final int SPEED_GOAL_TYPE_ID = 2;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -203,7 +208,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return SPEED_GOAL_TYPE_ID;
         }
 
@@ -230,7 +235,7 @@ public abstract class ExercisePerformanceGoalInternal {
     }
 
     public static final class CadenceGoalInternal extends ExercisePerformanceGoalInternal {
-        static final int CADENCE_GOAL_TYPE_ID = 3;
+        public static final int CADENCE_GOAL_TYPE_ID = 3;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -243,7 +248,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return CADENCE_GOAL_TYPE_ID;
         }
 
@@ -270,7 +275,7 @@ public abstract class ExercisePerformanceGoalInternal {
     }
 
     public static final class HeartRateGoalInternal extends ExercisePerformanceGoalInternal {
-        static final int HEART_RATE_GOAL_TYPE_ID = 4;
+        public static final int HEART_RATE_GOAL_TYPE_ID = 4;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -283,7 +288,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return HEART_RATE_GOAL_TYPE_ID;
         }
 
@@ -310,7 +315,7 @@ public abstract class ExercisePerformanceGoalInternal {
     }
 
     public static final class WeightGoalInternal extends ExercisePerformanceGoalInternal {
-        static final int WEIGHT_GOAL_TYPE_ID = 5;
+        public static final int WEIGHT_GOAL_TYPE_ID = 5;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -322,7 +327,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return WEIGHT_GOAL_TYPE_ID;
         }
 
@@ -344,7 +349,7 @@ public abstract class ExercisePerformanceGoalInternal {
 
     public static final class RateOfPerceivedExertionGoalInternal
             extends ExercisePerformanceGoalInternal {
-        static final int RATE_OF_PERCEIVED_EXERTION_TYPE_ID = 6;
+        public static final int RATE_OF_PERCEIVED_EXERTION_TYPE_ID = 6;
 
         @Override
         void writeFieldsToParcel(Parcel parcel) {
@@ -356,7 +361,7 @@ public abstract class ExercisePerformanceGoalInternal {
         }
 
         @Override
-        int getTypeId() {
+        public int getTypeId() {
             return RATE_OF_PERCEIVED_EXERTION_TYPE_ID;
         }
 
@@ -373,6 +378,29 @@ public abstract class ExercisePerformanceGoalInternal {
         @Override
         public ExercisePerformanceGoal toExternalObject() {
             return new ExercisePerformanceGoal.RateOfPerceivedExertionGoal(mRpe);
+        }
+    }
+
+    public static final class AmrapGoalInternal extends ExercisePerformanceGoalInternal {
+        public static final AmrapGoalInternal INSTANCE = new AmrapGoalInternal();
+
+        public static final int AMRAP_GOAL_TYPE_ID = 7;
+
+        @Override
+        void writeFieldsToParcel(Parcel parcel) {
+            // No fields to write.
+        }
+
+        @Override
+        public int getTypeId() {
+            return AMRAP_GOAL_TYPE_ID;
+        }
+
+        AmrapGoalInternal() {}
+
+        @Override
+        public ExercisePerformanceGoal toExternalObject() {
+            return ExercisePerformanceGoal.AmrapGoal.INSTANCE;
         }
     }
 }

@@ -18,7 +18,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
-    <string name="health_connect_summary" msgid="6401520186678972547">"Toegang van apps tot gezondheidsgegevens beheren"</string>
+    <string name="health_connect_summary" msgid="6401520186678972547">"Beheer de toegang van apps tot gezondheidsgegevens"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Rechten en gegevens"</string>
     <string name="home_subtitle" msgid="1750033322147357163">"Beheer de gezondheids- en fitnessgegevens op je telefoon en bepaal welke apps er toegang toe krijgen"</string>
     <string name="data_title" msgid="4456619761533380816">"Gegevens en toegang"</string>
@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Bekijk welke apps in de afgelopen 24 uur toegang hebben gehad tot je gegevens"</string>
     <string name="today_header" msgid="1006837293203834373">"Vandaag"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Gisteren"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lezen: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Schrijven: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Lezen: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Schrijven: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Rechten beheren"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tijd: %s"</string>
@@ -58,7 +58,7 @@
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"cyclus bijhouden"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Voeding"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"voeding"</string>
-    <string name="browse_data_category" msgid="4813955610391357638">"Browsen in gegevens"</string>
+    <string name="browse_data_category" msgid="4813955610391357638">"Browsen door gegevens"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"Gegevens beheren"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Gegevens exporteren"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Alle gegevens verwijderen"</string>
@@ -81,9 +81,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"je gezondheidsgegevens openen"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Verbrande calorieën lezen"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Hiermee kan een app de verbrande calorieën lezen"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lezen op de achtergrond"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"lezen op de achtergrond"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Gezondheidsgegevens lezen op de achtergrond"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Toegang tot gegevens op de achtergrond"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot gegevens op de achtergrond?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Geef deze app toegang tot Health Connect-gegevens als je de app niet gebruikt"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Als je dit toestaat, heeft deze app toegang tot Health Connect-gegevens als je de app niet gebruikt."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Toegang tot eerdere gegevens"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot eerdere gegevens?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Geef deze app toegang tot Health Connect-gegevens die vóór <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> zijn toegevoegd"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Geef deze app toegang tot eerdere Health Connect-gegevens"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Als je dit toestaat, heeft deze app toegang tot Health Connect-gegevens die vóór <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> zijn toegevoegd."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Als je dit toestaat, heeft deze app toegang tot eerdere Health Connect-gegevens."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Verbrande actieve calorieën"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"verbrande actieve calorieën"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Gegevens over verbrande actieve calorieën lezen"</string>
@@ -256,11 +263,12 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Alles toestaan"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Niet toestaan"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Bepaal welke gegevens deze app mag lezen of schrijven in Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Als je leesrechten geeft, kan deze app nieuwe gegevens en gegevens van de afgelopen 30 dagen lezen"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Als je leestoegang geeft, kan de app nieuwe gegevens en gegevens van de afgelopen 30 dagen lezen"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Als je leestoegang geeft, kan de app nieuwe en eerdere gegevens lezen"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> toegang geven tot Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"In het <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> van de ontwikkelaar lees je hoe <xliff:g id="APP_NAME">%1$s</xliff:g> omgaat met je gegevens."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privacybeleid"</string>
-    <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"All rechten verwijderen?"</string>
+    <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Alle rechten verwijderen?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Alles verwijderen"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan geen gegevens van Health Connect meer lezen of schrijven.\n\nDit heeft geen effect op andere rechten die deze app misschien heeft, zoals voor locatie, de camera of de microfoon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Gegevens van <xliff:g id="APP_NAME">%1$s</xliff:g> ook verwijderen uit Health Connect"</string>
@@ -269,28 +277,28 @@
     <string name="navigation_previous_day" msgid="718353386484938584">"Vorige dag"</string>
     <string name="default_error" msgid="7966868260616403475">"Er is iets misgegaan. Probeer het opnieuw."</string>
     <string name="health_permission_header_description" msgid="7497601695462373927">"Apps met dit recht kunnen de gegevens over je gezondheid en fitness lezen en schrijven."</string>
-    <string name="connected_apps_text" msgid="1177626440966855831">"Bepaal welke apps toegang hebben tot gegevens die zijn opgeslagen in Health Connect. Tik op een app om de gegevens te bekijken die de app kan lezen of schrijven."</string>
+    <string name="connected_apps_text" msgid="1177626440966855831">"Bepaal welke apps toegang hebben tot gegevens die zijn opgeslagen in Health Connect. Tik op een app om te weten welke gegevens de app kan lezen of schrijven."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Toegang toegestaan"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Toegang niet toegestaan"</string>
     <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Moet worden geüpdatet"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Instellingen en hulp"</string>
-    <string name="disconnect_all_apps" msgid="748945115977534726">"Toegang verwijderen voor alle apps"</string>
+    <string name="disconnect_all_apps" msgid="748945115977534726">"Toegang voor alle apps intrekken"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Toestemming om te lezen"</string>
     <string name="manage_permissions_write_header" msgid="6876806848658168370">"Toestemming om te schrijven"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"Geen apps toegestaan"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Geen apps geweigerd"</string>
-    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Toegang verwijderen voor alle apps?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Geen van je apps heeft toegang tot gegevens van Health Connect of kan nieuwe gegevens toevoegen. Bestaande gegevens worden niet verwijderd.\n\nDit heeft geen effect op andere rechten die deze app misschien heeft, zoals voor locatie, de camera of de microfoon."</string>
+    <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Toegang voor alle apps intrekken?"</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Geen van je apps heeft toegang tot gegevens van Health Connect en kan ook geen nieuwe gegevens toevoegen. Bestaande gegevens worden niet verwijderd.\n\nDit heeft geen invloed op eventuele andere rechten van deze app, zoals voor locatie, de camera of de microfoon."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Alles verwijderen"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"App beheren"</string>
     <string name="see_app_data" msgid="3951030076195119476">"App-gegevens bekijken"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"App-gegevens verwijderen"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Inactieve apps"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Deze apps hebben geen toegang meer, maar hebben nog wel opgeslagen gegevens in Health Connect"</string>
-    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan gegevens lezen die zijn toegevoegd na <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"Ga naar Instellingen &gt; Apps als je andere Android-rechten voor deze app wilt beheren."</string>
+    <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> kan gegevens lezen die zijn toegevoegd na <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>."</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"Ga naar Instellingen &gt; Apps om andere Android-rechten te geven aan deze app."</string>
     <string name="manage_permissions_rationale" msgid="9183689798847740274">"Gegevens die je met <xliff:g id="APP_NAME">%1$s</xliff:g> deelt, vallen onder het privacybeleid van die app."</string>
-    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Ga naar Instellingen en tik op Apps als je andere Android-rechten voor deze app wilt beheren."</string>
+    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Ga naar Instellingen en tik op Apps om andere Android-rechten te geven aan deze app."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Privacybeleid lezen"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Geopend in de afgelopen 24 uur"</string>
     <string name="app_access_title" msgid="7137018424885371763">"App-toegang"</string>
@@ -305,30 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Waarom Health Connect app-rechten verwijdert"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Als een app wordt opgeschort of verwijderd van Google Play, verwijdert Health Connect automatisch de rechten voor die app.\n\nDit betekent dat de app geen toegang meer heeft tot gegevens die zijn opgeslagen in Health Connect. Heeft de app eerder gegevens geschreven, dan verschijnt deze in de lijst met inactieve apps."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
-    <!-- no translation found for export_settings_screen_title (887671826359158339) -->
-    <skip />
-    <!-- no translation found for export_settings_screen_description (5477618165331360989) -->
-    <skip />
-    <!-- no translation found for setup_button (1407942598553043961) -->
-    <skip />
-    <!-- no translation found for export_settings_header (2435738153550683355) -->
-    <skip />
-    <!-- no translation found for auto_save (7146497593975616076) -->
-    <skip />
-    <!-- no translation found for choose_frequency (1077467424225083246) -->
-    <skip />
-    <!-- no translation found for choose_frequency_description (752601326653048254) -->
-    <skip />
-    <!-- no translation found for frequency_daily (3596412357416125727) -->
-    <skip />
-    <!-- no translation found for frequency_weekly (7302587625019573393) -->
-    <skip />
-    <!-- no translation found for frequency_monthly (729674398053825938) -->
-    <skip />
-    <!-- no translation found for export_back_button (3550795479165524982) -->
-    <skip />
-    <!-- no translation found for export_next_button (657930567137105172) -->
-    <skip />
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up maken en terugzetten"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Exporteren en importeren"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Automatisch exporteren"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Gegevens herstellen"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Eerder geëxporteerde gegevens laden"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Uit"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Frequentie kiezen"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Kies of je gegevens eenmalig wilt opslaan of ze op regelmatige tijdstippen automatisch wilt laten opslaan."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Dagelijks"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Wekelijks"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Maandelijks"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Exportlocatie"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Versleuteling aanzetten"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Gegevens moeten worden versleuteld voordat ze worden opgeslagen. Niemand heeft er toegang toe, zelfs niet Google of Health Connect."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Maak een wachtwoord om je versleutelde gegevens te beschermen. Je hebt dit wachtwoord nodig om je gegevens te importeren en te herstellen."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Wachtwoord"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Herhaal je wachtwoord"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Als je je wachtwoord bent vergeten en je telefoon kwijtraakt, kan Health Connect je niet helpen om je opgeslagen gegevens te herstellen."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Terug"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Volgende"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Aan de slag met Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect slaat je gezondheids- en fitnessgegevens op zodat je de verschillende apps op je telefoon makkelijk kunt synchroniseren"</string>
     <string name="share_data" msgid="3481932156368883946">"Gegevens delen met je apps"</string>
@@ -364,7 +369,7 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"<xliff:g id="APP_DATA">%s</xliff:g>-gegevens van de afgelopen 24 uur definitief verwijderen?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"<xliff:g id="APP_DATA">%s</xliff:g>-gegevens van de afgelopen 7 dagen definitief verwijderen?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"<xliff:g id="APP_DATA">%s</xliff:g>-gegevens van de afgelopen 30 dagen definitief verwijderen?"</string>
-    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Ook alle rechten voor <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> uit Health Connect verwijderen"</string>
+    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Alle rechten voor <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> ook verwijderen uit Health Connect"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Alle gegevens voor <xliff:g id="DATA_TYPE">%1$s</xliff:g> die zijn toegevoegd door <xliff:g id="APP_DATA">%2$s</xliff:g> definitief verwijderen?"</string>
     <string name="confirming_question_single_entry" msgid="330919962071369305">"Deze invoer definitief verwijderen?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"Gekoppelde apps hebben geen toegang meer tot deze gegevens via Health Connect"</string>
@@ -421,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Onduidelijk"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milliseconde}other{# milliseconden}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 keer}other{# keer}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Actief: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Totaal: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Zoveel herhalingen als mogelijk"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Inspanningsniveau: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 herh.}other{# herh.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 herhaling}other{# herhalingen}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Oefeningssegmenten"</string>
@@ -658,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 pound}other{# pound}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stones}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 graad Celsius}other{# graden Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 graad Fahrenheit}other{# graden Fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} graad Celsius}other{{formattedValue} graden Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} graad Fahrenheit}other{{formattedValue} graden Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (gemiddelde variatie)}other{{formattedValue} ℃ (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} graad Celsius (gemiddelde variatie)}other{{formattedValue} graden Celsius (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (gemiddelde variatie)}other{{formattedValue} ℉ (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} graad Fahrenheit (gemiddelde variatie)}other{{formattedValue} graden Fahrenheit (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (gemiddelde variatie)}other{{formattedValue} K (gemiddelde variatie)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (gemiddelde variatie)}other{{formattedValue} kelvin (gemiddelde variatie)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Oksel"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Vinger"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Voorhoofd"</string>
@@ -674,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Oor"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pols"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Meetlocatie"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Basislijn"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variatie ten opzichte van basislijn"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mijl}other{# mijl}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mijl}other{# mijl}}"</string>
@@ -714,10 +739,10 @@
     <string name="help_and_feedback" msgid="4772169905005369871">"Hulp en feedback"</string>
     <string name="cant_see_all_your_apps_description" msgid="7344859063463536472">"Als je een geïnstalleerde app niet ziet, is die misschien nog niet compatibel met Health Connect"</string>
     <string name="things_to_try" msgid="8200374691546152703">"Stappen die je kunt proberen"</string>
-    <string name="check_for_updates" msgid="3841090978657783101">"Checken op updates"</string>
+    <string name="check_for_updates" msgid="3841090978657783101">"Zoeken naar updates"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"Zorg dat geïnstalleerde apps up-to-date zijn"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Alle compatibele apps bekijken"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Apps vinden op Google Play"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Vind apps op Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Feedback sturen"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Vertel ons welke gezondheids- en fitness-apps met Health Connect moeten samenwerken"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
@@ -734,7 +759,7 @@
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect verwijdert nieuwe gegevens automatisch na # maand. Als je dit instelt, worden bestaande gegevens ouder dan # maand ook verwijderd.}other{Health Connect verwijdert nieuwe gegevens automatisch na # maanden. Als je dit instelt, worden bestaande gegevens ouder dan # maanden ook verwijderd.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Automatisch verwijderen instellen"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Bestaande gegevens worden verwijderd"</string>
-    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect verwijdert alle gegevens ouder dan # maand. Het kan een dag duren voordat deze wijzigingen worden getoond in je gekoppelde apps.}other{Health Connect verwijdert alle gegevens ouder dan # maanden. Het kan een dag duren voordat deze wijzigingen worden getoond in je gekoppelde apps.}}"</string>
+    <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Health Connect verwijdert alle gegevens ouder dan # maand. Deze wijzigingen kunnen pas een dag later worden getoond in je gekoppelde apps.}other{Health Connect verwijdert alle gegevens ouder dan # maanden. Deze wijzigingen kunnen pas een dag later worden getoond in je gekoppelde apps.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Gegevens worden verwijderd uit deze categorieën"</string>
     <string name="deletion_started_done_button" msgid="1232018689825054257">"Klaar"</string>
     <string name="priority_dialog_title" msgid="7360654442596118085">"App-prioriteit instellen"</string>
@@ -768,21 +793,15 @@
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Niet toestaan"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Altijd toestaan"</string>
     <string name="route_permissions_label" msgid="5201501195020295860">"Trainingsroutes delen"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Beheer hoe deze app toegang heeft tot trainingsroutes van gekoppelde apps"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Beheer de toegang van deze app tot trainingsroutes van gekoppelde apps"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Altijd vragen"</string>
     <string name="route_permissions_deny" msgid="4263802925221258853">"Niet toestaan"</string>
-    <!-- no translation found for exercise_permission_dialog_enable_title (4310997044811843391) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_title (1011777519918396883) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_enabled_summary (3404390796688813585) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_disable_summary (397599718182778347) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_positive_button (4545939654888655556) -->
-    <skip />
-    <!-- no translation found for exercise_permission_dialog_negative_button (7433304732406274998) -->
-    <skip />
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Beide gegevenstypen aanzetten?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Beide gegevenstypen uitzetten?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> heeft leestoegang tot training nodig om trainingsroutes aan te zetten"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> heeft toegang tot training nodig om trainingsroutes aan te zetten"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Ja"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nee"</string>
     <string name="back_button" msgid="780519527385993407">"Terug"</string>
     <string name="loading" msgid="2526615755685950317">"Laden…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integratie is bezig"</string>
@@ -820,7 +839,7 @@
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"App-update nodig"</string>
     <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> moet worden geüpdatet om te blijven synchroniseren met Health Connect"</string>
     <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Sommige apps moeten worden geüpdatet om te blijven synchroniseren met Health Connect"</string>
-    <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Checken op updates"</string>
+    <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Zoeken naar updates"</string>
     <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Meer informatie"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connect-integratie"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect is klaar voor integratie met je Android-systeem. Als je <xliff:g id="APP_NAME">%1$s</xliff:g> nu toegang geeft, werken sommige functies misschien pas nadat de integratie is afgerond."</string>
@@ -852,7 +871,7 @@
     <string name="app_sources_header" msgid="6343062519512947665">"App-bronnen"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Voeg app-bronnen aan de lijst toe om te zien hoe de gegevenstotalen kunnen veranderen. Als je een app uit deze lijst verwijdert, draagt die niet meer bij aan de totalen. De app heeft nog wel schrijfrechten."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Geen app-bronnen"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Zodra je app-rechten verleent om <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>-gegevens te schrijven, komen de bronnen hier te staan."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Zodra je app-rechten verleent om gegevens van de categorie \'<xliff:g id="CATEGORY_NAME">%1$s</xliff:g>\' te schrijven, komen de bronnen hier te staan."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Hoe bronnen en prioritering werken"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Een app toevoegen"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"App-bronnen bewerken"</string>
@@ -868,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Vorige maand"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Items"</string>
     <string name="tab_access" msgid="7818197975407243701">"Toegang"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Aanvullende toegang geven voor <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> wil ook toegang tot deze Health Connect-instellingen"</string>
 </resources>

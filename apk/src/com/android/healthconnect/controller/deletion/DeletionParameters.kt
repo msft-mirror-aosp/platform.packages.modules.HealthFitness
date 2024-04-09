@@ -18,7 +18,7 @@ package com.android.healthconnect.controller.deletion
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.StringRes
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.lowercaseTitle
 import java.time.Duration.ofDays
 import java.time.Instant
@@ -84,7 +84,7 @@ data class DeletionParameters(
                 (deletionType as DeletionType.DeletionTypeHealthPermissionTypeFromApp)
                     .healthPermissionType
 
-        return HealthPermissionStrings.fromPermissionType(healthPermissionType).lowercaseLabel
+        return DataTypePermissionStrings.fromPermissionType(healthPermissionType).lowercaseLabel
     }
 
     @StringRes

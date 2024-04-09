@@ -3,7 +3,7 @@ package com.android.healthconnect.controller.tests.data.access
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.LoadAccessUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -69,7 +69,7 @@ class LoadAccessUseCaseTest {
     fun invoke_returnsCorrectApps() = runTest {
         fakeLoadPermissionTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
-            HealthPermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+            DataTypePermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
         fakeFakeGetGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 

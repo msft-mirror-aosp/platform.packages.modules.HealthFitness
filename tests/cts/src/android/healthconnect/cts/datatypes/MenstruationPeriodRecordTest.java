@@ -90,9 +90,10 @@ public class MenstruationPeriodRecordTest {
     @Test
     public void testReadMenstruationPeriodRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteMenstruationPeriodRecord(),
-                        getCompleteMenstruationPeriodRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteMenstruationPeriodRecord(),
+                                getCompleteMenstruationPeriodRecord()));
         readMenstruationPeriodRecordUsingIds(recordList);
     }
 
@@ -134,8 +135,10 @@ public class MenstruationPeriodRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationPeriodRecord.class)
                                 .build());
-        MenstruationPeriodRecord testRecord = getCompleteMenstruationPeriodRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        MenstruationPeriodRecord testRecord =
+                (MenstruationPeriodRecord)
+                        TestUtils.insertRecord(getCompleteMenstruationPeriodRecord());
         List<MenstruationPeriodRecord> newMenstruationPeriodRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationPeriodRecord.class)
@@ -157,8 +160,10 @@ public class MenstruationPeriodRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        MenstruationPeriodRecord testRecord = getCompleteMenstruationPeriodRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        MenstruationPeriodRecord testRecord =
+                (MenstruationPeriodRecord)
+                        TestUtils.insertRecord(getCompleteMenstruationPeriodRecord());
         List<MenstruationPeriodRecord> newMenstruationPeriodRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationPeriodRecord.class)
@@ -184,8 +189,10 @@ public class MenstruationPeriodRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        MenstruationPeriodRecord testRecord = getCompleteMenstruationPeriodRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        MenstruationPeriodRecord testRecord =
+                (MenstruationPeriodRecord)
+                        TestUtils.insertRecord(getCompleteMenstruationPeriodRecord());
         List<MenstruationPeriodRecord> newMenstruationPeriodRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(MenstruationPeriodRecord.class)
@@ -240,8 +247,10 @@ public class MenstruationPeriodRecordTest {
     @Test
     public void testDeleteMenstruationPeriodRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseMenstruationPeriodRecord(), getCompleteMenstruationPeriodRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseMenstruationPeriodRecord(),
+                                getCompleteMenstruationPeriodRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -281,10 +290,12 @@ public class MenstruationPeriodRecordTest {
     @Test
     public void testDeleteMenstruationPeriodRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseMenstruationPeriodRecord(), getCompleteMenstruationPeriodRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseMenstruationPeriodRecord(),
+                                getCompleteMenstruationPeriodRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -498,8 +509,9 @@ public class MenstruationPeriodRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteMenstruationPeriodRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteMenstruationPeriodRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -531,9 +543,8 @@ public class MenstruationPeriodRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readMenstruationPeriodRecordUsingIds(List<Record> recordList)
+    private void readMenstruationPeriodRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<MenstruationPeriodRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(MenstruationPeriodRecord.class);
         for (Record record : insertedRecords) {
@@ -544,7 +555,7 @@ public class MenstruationPeriodRecordTest {
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<MenstruationPeriodRecord> result = TestUtils.readRecords(requestUsingIds);
         assertThat(result).hasSize(insertedRecords.size());
-        assertThat(result).containsExactlyElementsIn(recordList);
+        assertThat(result).containsExactlyElementsIn(insertedRecords);
     }
 
     MenstruationPeriodRecord getMenstruationPeriodRecord_update(

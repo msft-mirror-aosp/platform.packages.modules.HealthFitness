@@ -33,6 +33,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCatego
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
+import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.utils.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
@@ -41,6 +42,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class to maintain the health connect DB. Actual operations are performed by {@link
@@ -50,7 +52,9 @@ import java.util.List;
  */
 public class HealthConnectDatabase extends SQLiteOpenHelper {
     private static final String TAG = "HealthConnectDatabase";
-    private static final int DATABASE_VERSION = 11;
+    // Whenever we are bumping the database version, take a look at potential problems described in:
+    // go/hc-handling-database-upgrades.
+    private static final int DATABASE_VERSION = 12;
     private static final String DEFAULT_DATABASE_NAME = "healthconnect.db";
     @NonNull private final Collection<RecordHelper<?>> mRecordHelpers;
     private final Context mContext;
@@ -69,6 +73,14 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     public void onCreate(@NonNull SQLiteDatabase db) {
         for (CreateTableRequest createTableRequest : getCreateTableRequests()) {
             createTable(db, createTableRequest);
+        }
+        // SQL does not support adding foreign keys after column creation. Thus, we must add the
+        // foreign keys when the column is created. To avoid attempting to create a foreign key
+        // constraint before the referenced table has been created, we add columns with foreign
+        // keys after all tables have been created.
+        for (AlterTableRequest alterTableRequest :
+                getAlterTableRequestsForColumnsWithForeignKeys()) {
+            db.execSQL(alterTableRequest.getAlterTableAddColumnsCommand());
         }
     }
 
@@ -117,6 +129,14 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
         requests.add(PriorityMigrationHelper.getInstance().getCreateTableRequest());
 
         return requests;
+    }
+
+    private List<AlterTableRequest> getAlterTableRequestsForColumnsWithForeignKeys() {
+        return mRecordHelpers.stream()
+                .flatMap(
+                        recordHelper ->
+                                recordHelper.getColumnsToCreateWithForeignKeyConstraints().stream())
+                .collect(Collectors.toList());
     }
 
     /** Runs create table request on database. */

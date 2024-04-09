@@ -48,6 +48,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_NUTRITION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_OVULATION_TEST;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_OXYGEN_SATURATION;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_POWER;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_RESPIRATORY_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE;
@@ -118,6 +119,7 @@ public final class RecordTypeRecordCategoryMapper {
                         put(RECORD_TYPE_MENSTRUATION_PERIOD, CYCLE_TRACKING);
                         put(RECORD_TYPE_INTERMENSTRUAL_BLEEDING, CYCLE_TRACKING);
                         put(RECORD_TYPE_EXERCISE_SESSION, ACTIVITY);
+                        put(RECORD_TYPE_PLANNED_EXERCISE_SESSION, ACTIVITY);
                         put(RECORD_TYPE_SLEEP_SESSION, SLEEP);
                     }
                 };

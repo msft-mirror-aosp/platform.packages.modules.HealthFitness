@@ -26,6 +26,9 @@ filegroup {
 
 java_sdk_library {
     name: "service-healthfitness",
+    permitted_packages: [
+        "com.android.server.healthconnect",
+    ],
     srcs: [":service-healthfitness-sources"],
     sdk_version: "system_server_current",
     min_sdk_version: "34",
@@ -43,9 +46,9 @@ java_sdk_library {
         "modules-utils-preconditions",
     ],
     static_libs: [
-        "guava",
         "modules-utils-backgroundthread",
     ],
+    jarjar_rules: "jarjar-rules.txt",
     installable: true,
     optimize: {
         proguard_flags_files: ["proguard.flags"],

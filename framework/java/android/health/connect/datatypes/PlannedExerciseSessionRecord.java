@@ -84,7 +84,14 @@ public final class PlannedExerciseSessionRecord extends IntervalRecord {
             @NonNull List<PlannedExerciseBlock> blocks,
             @Nullable String completedExerciseSessionId,
             boolean skipValidation) {
-        super(metadata, startTime, startZoneOffset, endTime, endZoneOffset, skipValidation);
+        super(
+                metadata,
+                startTime,
+                startZoneOffset,
+                endTime,
+                endZoneOffset,
+                skipValidation,
+                /* enforceFutureTimeRestrictions= */ false);
         mHasExplicitTime = hasExplicitTime;
         mTitle = title;
         mNotes = notes;
