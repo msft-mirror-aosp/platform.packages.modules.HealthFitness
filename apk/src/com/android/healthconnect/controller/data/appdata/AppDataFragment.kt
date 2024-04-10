@@ -23,8 +23,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceCategory
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermissionStrings
-import com.android.healthconnect.controller.permissions.shared.Constants
+import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
 import com.android.healthconnect.controller.shared.preference.HealthPreference
@@ -128,14 +128,14 @@ open class AppDataFragment : Hilt_AppDataFragment() {
 
             permissionTypesPerCategory.data
                 .sortedBy {
-                    getString(HealthPermissionStrings.fromPermissionType(it).uppercaseLabel)
+                    getString(DataTypePermissionStrings.fromPermissionType(it).uppercaseLabel)
                 }
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
                         HealthPreference(requireContext()).also {
                             it.icon = categoryIcon
                             it.setTitle(
-                                HealthPermissionStrings.fromPermissionType(permissionType)
+                                DataTypePermissionStrings.fromPermissionType(permissionType)
                                     .uppercaseLabel)
                             it.setOnPreferenceClickListener {
                                 // TODO(b/281811925): Add in upcoming cl.

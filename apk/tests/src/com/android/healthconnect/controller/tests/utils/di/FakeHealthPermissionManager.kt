@@ -23,6 +23,11 @@ import java.time.Instant
 class FakeHealthPermissionManager : HealthPermissionManager {
 
     private val grantedPermissions = mutableMapOf<String, MutableList<String>>()
+    private val healthPermissionFlags = mutableMapOf<String, Map<String, Int>>()
+
+    fun setHealthPermissionFlags(packageName: String, flags: Map<String, Int>) {
+        healthPermissionFlags[packageName] = flags
+    }
 
     fun setGrantedPermissionsForTest(packageName: String, permissions: List<String>) {
         grantedPermissions[packageName] = permissions.toMutableList()
@@ -36,11 +41,15 @@ class FakeHealthPermissionManager : HealthPermissionManager {
         packageName: String,
         permissions: List<String>
     ): Map<String, Int> {
-        TODO("Not yet implemented")
+        return healthPermissionFlags.getOrDefault(packageName, mapOf())
     }
 
-    override fun makeHealthPermissionsRequestable(packageName: String, permissions: List<String>) {
-        TODO("Not yet implemented")
+    override fun setHealthPermissionsUserFixedFlagValue(
+        packageName: String,
+        permissions: List<String>,
+        value: Boolean
+    ) {
+        // do nothing
     }
 
     override fun grantHealthPermission(packageName: String, permissionName: String) {

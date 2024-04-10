@@ -19,9 +19,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.utils.DatePickerFactory
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
@@ -56,6 +58,7 @@ constructor(
     private val dateFormatter = LocalDateTimeFormatter(context)
     private var selectedDate: Instant = timeSource.currentTimeMillis().toInstant()
     private var onDateChangedListener: OnDateChangedListener? = null
+    private var maxDate: Instant? = timeSource.currentTimeMillis().toInstant()
 
     init {
         val hiltEntryPoint =
@@ -81,6 +84,11 @@ constructor(
 
     fun getDate(): Instant {
         return selectedDate
+    }
+
+    fun setMaxDate(instant: Instant?) {
+        maxDate = instant
+        updateSelectedDate()
     }
 
     private fun bindNextDayButton(view: View) {
@@ -109,8 +117,9 @@ constructor(
         logger.logImpression(DataEntriesElement.SELECT_DATE_BUTTON)
         selectedDateView.setOnClickListener {
             logger.logInteraction(DataEntriesElement.SELECT_DATE_BUTTON)
-            val today = timeSource.currentTimeMillis().toInstant()
-            val datePickerDialog = DatePickerFactory.create(context, selectedDate, today)
+            val datePickerDialog = DatePickerFactory.create(context, selectedDate, maxDate)
+            setMaxDate(datePickerDialog.datePicker.maxDate.toInstant())
+
             datePickerDialog.setOnDateSetListener { _, year, month, day ->
                 // OnDateSetListener returns months as Int from ( 0 - 11 ), getInstant accept month
                 // as integer from 1 - 12
@@ -119,6 +128,19 @@ constructor(
             }
             datePickerDialog.show()
         }
+        selectedDateView.accessibilityDelegate =
+            object : AccessibilityDelegate() {
+                override fun onInitializeAccessibilityNodeInfo(
+                    host: View,
+                    info: AccessibilityNodeInfo
+                ) {
+                    super.onInitializeAccessibilityNodeInfo(host, info)
+                    info.addAction(
+                        AccessibilityNodeInfo.AccessibilityAction(
+                            AccessibilityNodeInfoCompat.ACTION_CLICK,
+                            context.getString(R.string.selected_date_view_action_description)))
+                }
+            }
     }
 
     private fun updateSelectedDate() {
@@ -126,9 +148,13 @@ constructor(
         selectedDateView.text = dateFormatter.formatLongDate(selectedDate)
         selectedDateView.contentDescription = dateFormatter.formatLongDate(selectedDate)
         selectedDateView.sendAccessibilityEvent(AccessibilityEvent.TYPE_ANNOUNCEMENT)
-        val today = timeSource.currentTimeMillis().toInstant().toLocalDate().atStartOfDay()
         val curDate = selectedDate.toLocalDate().atStartOfDay()
-        nextDayButton.isEnabled = curDate.isBefore(today)
+        nextDayButton.isEnabled =
+            if (maxDate != null) {
+                curDate.isBefore(maxDate?.toLocalDate()?.atStartOfDay())
+            } else {
+                true
+            }
     }
 
     interface OnDateChangedListener {

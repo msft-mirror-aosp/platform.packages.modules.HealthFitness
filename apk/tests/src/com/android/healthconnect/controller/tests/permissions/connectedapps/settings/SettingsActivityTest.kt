@@ -20,18 +20,18 @@ import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.onboarding.OnboardingActivity
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.SettingsActivity
@@ -41,20 +41,21 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionManager
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.whenever
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import java.time.Instant
+import java.time.ZoneId
+import java.util.Locale
+import java.util.TimeZone
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import java.time.Instant
-import java.time.ZoneId
-import java.util.Locale
-import java.util.TimeZone
 
 @UninstallModules(HealthPermissionManagerModule::class)
 @HiltAndroidTest
@@ -62,8 +63,7 @@ class SettingsActivityTest {
 
     private lateinit var context: Context
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue
     val viewModel: AppPermissionViewModel = Mockito.mock(AppPermissionViewModel::class.java)
@@ -76,26 +76,21 @@ class SettingsActivityTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         hiltRule.inject()
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
-            TEST_APP_PACKAGE_NAME, listOf()
-        )
+            TEST_APP_PACKAGE_NAME, listOf())
         whenever(viewModel.grantedPermissions).then {
-            MutableLiveData<Set<HealthPermission>>(
-                emptySet()
-            )
+            MutableLiveData<Set<DataTypePermission>>(emptySet())
         }
-
-        val sharedPreference =
-            context.getSharedPreferences(OnboardingActivity.USER_ACTIVITY_TRACKER, Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean(OnboardingActivity.ONBOARDING_SHOWN_PREF_KEY, true)
-        editor.apply()
+        showOnboarding(context, false)
 
         // Needed for the fragment
         whenever(viewModel.revokeAllPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
-        whenever(viewModel.allAppPermissionsGranted).then { MutableLiveData(false) }
-        whenever(viewModel.atLeastOnePermissionGranted).then { MutableLiveData(false) }
+        whenever(viewModel.showDisableExerciseRouteEvent)
+            .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
+
+        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
 
@@ -104,19 +99,17 @@ class SettingsActivityTest {
                 AppMetadata(
                     TEST_APP_PACKAGE_NAME,
                     TEST_APP_NAME,
-                    context.getDrawable(R.drawable.health_connect_logo)
-                )
-            )
-
+                    context.getDrawable(R.drawable.health_connect_logo)))
         }
         val writePermission =
-            HealthPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            HealthPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(viewModel.appPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
     }
 
     @Test
@@ -127,13 +120,11 @@ class SettingsActivityTest {
         intent.putExtras(bundle)
 
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { false }
-        whenever(viewModel.shouldNavigateToFragment).then {
-            MutableLiveData(
-                false
-            )
+        whenever(viewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)).then {
+            false
         }
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             Thread.sleep(4_000) // Need to wait for Activity to close before checking state
             Assert.assertEquals(Lifecycle.State.DESTROYED, scenario.state)
         }
@@ -147,13 +138,11 @@ class SettingsActivityTest {
         intent.putExtras(bundle)
 
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
-        whenever(viewModel.shouldNavigateToFragment).then {
-            MutableLiveData(
-                true
-            )
+        whenever(viewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)).then {
+            true
         }
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         }
     }
@@ -166,13 +155,11 @@ class SettingsActivityTest {
         intent.putExtras(bundle)
 
         whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { false }
-        whenever(viewModel.shouldNavigateToFragment).then {
-            MutableLiveData(
-                true
-            )
+        whenever(viewModel.shouldNavigateToAppPermissionsFragment(TEST_APP_PACKAGE_NAME)).then {
+            true
         }
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
+        launch<SettingsActivity>(intent).use { scenario ->
             onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         }
     }
@@ -181,10 +168,12 @@ class SettingsActivityTest {
     fun settingsActivity_navigatesToManagePermissionsFragment_ifNoPackageName() {
         val intent = Intent(context, SettingsActivity::class.java)
 
-        ActivityScenario.launch<SettingsActivity>(intent).use { scenario ->
-            onView(withText("Apps with this permission can read and write your" +
-                    " health and fitness data.")).check(matches(isDisplayed()))
+        launch<SettingsActivity>(intent).use { scenario ->
+            onView(
+                    withText(
+                        "Apps with this permission can read and write your" +
+                            " health and fitness data."))
+                .check(matches(isDisplayed()))
         }
     }
-
 }

@@ -21,6 +21,7 @@ import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.utils.boldAppName
 import com.android.healthconnect.controller.utils.convertTextViewIntoLink
 
 internal class RequestPermissionHeaderPreference
@@ -33,9 +34,11 @@ constructor(
 ) : Preference(context, attrs, defStyleAttr, defStyleRes) {
 
     private lateinit var title: TextView
+    private lateinit var historyAccess: TextView
     private lateinit var privacyPolicy: TextView
     private var appName: String? = null
     private var onRationaleLinkClicked: (() -> Unit)? = null
+    private var historyAccessGranted: Boolean = false
 
     init {
         layoutResource = R.layout.widget_request_permission_header
@@ -46,18 +49,32 @@ constructor(
         super.onBindViewHolder(holder)
         title = holder.findViewById(R.id.title) as TextView
         updateTitle()
+        historyAccess = holder.findViewById(R.id.history_access) as TextView
+        updateHistoryAccess()
         privacyPolicy = holder.findViewById(R.id.privacy_policy) as TextView
         updatePrivacyString()
     }
 
-    fun bind(appName: String, onRationaleLinkClicked: () -> Unit) {
+    fun bind(appName: String, historyAccessGranted: Boolean, onRationaleLinkClicked: () -> Unit) {
         this.appName = appName
+        this.historyAccessGranted = historyAccessGranted
         this.onRationaleLinkClicked = onRationaleLinkClicked
         notifyChanged()
     }
 
     private fun updateTitle() {
-        title.text = context.getString(R.string.request_permissions_header_title, appName)
+        val text = context.getString(R.string.request_permissions_header_title, appName)
+        title.text = boldAppName(appName, text)
+    }
+
+    private fun updateHistoryAccess() {
+        if (historyAccessGranted) {
+            historyAccess.text =
+                context.getString(R.string.request_permissions_header_time_frame_history_desc)
+        } else {
+            historyAccess.text =
+                context.getString(R.string.request_permissions_header_time_frame_desc)
+        }
     }
 
     private fun updatePrivacyString() {

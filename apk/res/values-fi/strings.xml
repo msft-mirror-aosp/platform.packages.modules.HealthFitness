@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Katso, mitkä sovellukset ovat käyttäneet dataa 24 viime tunnin aikana"</string>
     <string name="today_header" msgid="1006837293203834373">"Tänään"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Eilen"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Luettu: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Kirjoitettu: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Luettu: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Kirjoitettu: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Muuta lupia"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Aika: %s"</string>
@@ -75,14 +75,22 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Data sisältää aktiivisuusajan, harjoitustyypin, kierrosten, toistojen, harjoituskertojen ja uintityylin kaltaisia tietoja"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Data sisältää univaiheiden ja unikertojen kaltaisia tietoja"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Katso kaikki merkinnät"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"muuta"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Poista data"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"pääsy terveysdataan"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Lukea poltetut kalorit"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Sallii sovelluksen lukea dataa poltetuista kaloreista"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lukeminen taustalla"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"lukeminen taustalla"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Lue terveysdataa taustalla"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Pääsy dataan taustalla"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Voiko <xliff:g id="APP_NAME">%1$s</xliff:g> saada pääsyn dataan taustalla?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Kun et käytä sovellusta, salli sille pääsy Health Connectin dataan"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Jos sallit pääsyoikeudet, tämä sovellus saa pääsyn Health Connectin dataan, kun et käytä sovellusta."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Pääsy aiempaan dataan"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Voiko <xliff:g id="APP_NAME">%1$s</xliff:g> saada pääsyn aiempaan dataan?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Salli sovellukselle pääsy Health Connectin dataan, joka on lisätty ennen <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Salli sovellukselle pääsy aiempaan Health Connectin dataan"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Jos sallit pääsyoikeudet, tämä sovellus saa pääsyn Health Connectin dataan, joka on lisätty ennen <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Jos sallit pääsyoikeudet, tämä sovellus saa pääsyn aiempaan Health Connectin dataan."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Liikunnan aikana poltetut kalorit"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"liikunnan aikana poltetut kalorit"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lukee liikunnan aikana poltetut kalorit"</string>
@@ -95,7 +103,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"liikuntareitti"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Kirjoittaa liikuntareitin"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lue liikuntareitti"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Lue kaikki harjoitusreitit"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lue harjoitusreitit"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Treenisuunnitelmat"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"treenisuunnitelmat"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Lue treenisuunnitelmat"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Kirjoita treenisuunnitelmia"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Etäisyys"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"etäisyys"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Lukee etäisyysdataa"</string>
@@ -240,6 +252,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"leposyke"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Lukee leposykedataa"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Kirjoittaa leposykedataa"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Ihon lämpötila"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ihon lämpötila"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lue ihon lämpötila"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Kirjoita ihon lämpötila"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Salli sovelluksen “<xliff:g id="APP_NAME">%1$s</xliff:g>” lukea"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Salli sovelluksen “<xliff:g id="APP_NAME">%1$s</xliff:g>” kirjoittaa"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Peru"</string>
@@ -247,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Salli kaikki"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Älä salli"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Valitse, mitä Health Connect dataa‑ haluat sovelluksen kirjoittavan tai lukevan"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Jos annat lukuluvan, sovellus voi lukea uutta dataa ja dataa 30 viime päivältä"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Jos annat lukupääsyoikeudet, sovellus voi lukea uutta dataa ja dataa 30 viime päivältä"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Jos annat lukupääsyoikeudet, sovellus voi lukea uutta ja aiempaa dataa"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Saako <xliff:g id="APP_NAME">%1$s</xliff:g> pääsyn Health Connectiin?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Voit lukea <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> siitä, miten <xliff:g id="APP_NAME">%1$s</xliff:g> käsittelee dataasi"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"tietosuojakäytännöstä"</string>
@@ -263,6 +280,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Päätä, mitkä sovellukset voivat käyttää Health Connectiin tallennettua dataa. Napauta sovellusta, niin näet datan, jota se voi lukea tai kirjoittaa."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Pääsy myönnetty"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Ei myönnettyä pääsyä"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Päivityksiä tarvitaan"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Asetukset ja ohje"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Poista lupa kaikilta sovelluksilta"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Lukeminen sallittu"</string>
@@ -283,8 +301,9 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Jos haluat muuttaa muita Android-lupia, jotka sovellukselle on myönnetty, valitse Asetukset ja sitten Sovellukset"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lue tietosuojakäytäntö"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Käytetty 24 viime tunnin aikana"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Sovelluksen pääsyoikeudet"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Sovellusten pääsyoikeudet"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Sinulla ei ole tällä hetkellä asennettuna yhteensopivia sovelluksia"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Lisäluvat"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Poistetut sovellusluvat"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect poisti luvat sovellukselta: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect poisti luvat näiltä: <xliff:g id="APP_DATA_0">%1$s</xliff:g> ja <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -294,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Miksi Health Connect poistaa sovelluslupia"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Jos sovellus on jäädytetty tai poistettu Google Playsta, Health Connect poistaa sovelluksen luvat automaattisesti.\n\nTämä tarkoittaa, että sovelluksella ei ole enää pääsyä Health Connectiin tallennettuun dataasi. Jos sovelluksessa on aiemmin kirjoitettua dataa, se näkyy epäaktiivisten sovellusten luettelossa."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Varmuuskopioiminen ja palauttaminen"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Vienti ja tuonti"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Vie automaattisesti"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Palauta data"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Lataa aiemmin viety data"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Päällä"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Pois päältä"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Valitse tallennustiheys"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Valitse että data tallennetaan kerran tai automaattisesti tiettyinä aikoina."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Päivittäin"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Viikoittain"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Kuukausittain"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Vientikohde"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Salauksen laittaminen päälle"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data on suojattava ennen sen tallentamista. Kukaan, ei edes Google tai Health Connect, saa pääsyä siihen."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Suojaa salattua dataa luomalla salasana. Tarvitset tämän salasanan, jos haluat tuoda tai palauttaa datan."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Salasana"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Lisää salasana uudelleen"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Jos unohdat salasanan ja kadotat puhelimen, Health Connect ei voi auttaa palauttamaan tallennetun datan."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Takaisin"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Seuraava"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Aloita Health Connectin käyttö"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect tallentaa terveys‑ ja kuntoiludatasi ja tarjoaa helpon tavan synkronoida eri sovelluksia puhelimellasi"</string>
     <string name="share_data" msgid="3481932156368883946">"Jaa dataa sovelluksille"</string>
@@ -308,7 +348,7 @@
     <string name="time_range_message_all" msgid="7280888587242744729">"Tämä poistaa kaiken valitulla ajanjaksolla Health Connectiin lisätyn datan pysyvästi"</string>
     <string name="time_range_message_data_type" msgid="1896125004829258195">"Tämä poistaa kaiken tällaisen Health Connectiin valitulla ajanjaksolla lisätyn datan: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"Tämä poistaa kaiken tällaisen Health Connectiin valitulla ajanjaksolla lisätyn datan: <xliff:g id="CATEGORY">%s</xliff:g>"</string>
-    <string name="time_range_message_app_data" msgid="2590800457710603556">"Tämä poistaa kaiken tällaisen Health Connectiin valitulla ajanjaksolla lisätyn datan: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
+    <string name="time_range_message_app_data" msgid="2590800457710603556">"Tämä poistaa kaiken Health Connectiin valitulla ajanjaksolla lisätyn <xliff:g id="APP_DATA">%s</xliff:g> -datan"</string>
     <string name="time_range_one_day" msgid="7162709826595446727">"Poista 24 viime tuntia"</string>
     <string name="time_range_one_week" msgid="8754523384275645434">"Poista seitsemän viime päivää"</string>
     <string name="time_range_one_month" msgid="3034747870231999766">"Poista 30 viime päivää"</string>
@@ -325,10 +365,10 @@
     <string name="confirming_question_category_one_day" msgid="4886776948515472679">"Poistetaanko tällainen data 24 viime tunnin ajalta pysyvästi: <xliff:g id="CATEGORY">%s</xliff:g>?"</string>
     <string name="confirming_question_category_one_week" msgid="1790565625674277693">"Poistetaanko tällainen data seitsemän viime päivän ajalta pysyvästi: <xliff:g id="CATEGORY">%s</xliff:g>?"</string>
     <string name="confirming_question_category_one_month" msgid="9181788460112796273">"Poistetaanko tällainen data 30 viime päivän ajalta pysyvästi: <xliff:g id="CATEGORY">%s</xliff:g>?"</string>
-    <string name="confirming_question_app_data_all" msgid="4818571921949673097">"Poistetaanko tällainen data kaikilta ajanjaksoilta pysyvästi: <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
-    <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Poistetaanko tällainen data 24 viime tunnin ajalta pysyvästi: <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
-    <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Poistetaanko tällainen data seitsemän viime päivän ajalta pysyvästi: <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
-    <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Poistetaanko tällainen data 30 viime päivän ajalta pysyvästi: <xliff:g id="APP_DATA">%s</xliff:g>?"</string>
+    <string name="confirming_question_app_data_all" msgid="4818571921949673097">"Poistetaanko <xliff:g id="APP_DATA">%s</xliff:g> -data kaikilta ajanjaksoilta pysyvästi?"</string>
+    <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"Poistetaanko <xliff:g id="APP_DATA">%s</xliff:g> -data 24 viime tunnin ajalta pysyvästi?"</string>
+    <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"Poistetaanko <xliff:g id="APP_DATA">%s</xliff:g> -data seitsemän viime päivän ajalta pysyvästi?"</string>
+    <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"Poistetaanko <xliff:g id="APP_DATA">%s</xliff:g> -data 30 viime päivän ajalta pysyvästi?"</string>
     <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Poista myös kaikki <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g>-luvat Health Connectista"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"Poistetaanko pysyvästi kaikki data (<xliff:g id="DATA_TYPE">%1$s</xliff:g>), jota <xliff:g id="APP_DATA">%2$s</xliff:g> on lisännyt?"</string>
     <string name="confirming_question_single_entry" msgid="330919962071369305">"Poistetaanko tämä pysyvästi?"</string>
@@ -347,8 +387,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Poistetaan Health Connect ‑dataa"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Poistetaan Health Connect ‑dataa"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Datan poistaminen"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Poista datamerkintä"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Poista merkintä"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Poista datamerkintä: <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Poista merkintä: <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Yhteensä: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 watti}other{# watti}}"</string>
@@ -386,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Tulokseton"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 millisekunti}other{# millisekuntia}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisekunti}other{# millisekuntia}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 kerran}other{# kertaa}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Aktiivinen: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Yhteensä: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Mahdollisimman monta toistoa"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Rasitustaso: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 toisto}other{# toistoa}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 toisto}other{# toistoa}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Liikunta"</string>
@@ -623,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 pauna}other{# paunaa}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stonea}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part}, {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 celsiusaste}other{# celsiusastetta}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelviniä}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 fahrenheitaste}other{# fahrenheitastetta}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} celsiusaste}other{{formattedValue} celsiusastetta}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} fahrenheitaste}other{{formattedValue} fahrenheitastetta}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kelviniä}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (keskimääräinen vaihtelu)}other{{formattedValue} ℃ (keskimääräinen vaihtelu)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} celsiusaste (keskim. vaihtelu)}other{{formattedValue} celsiusastetta (keskim. vaihtelu)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (keskimääräinen vaihtelu)}other{{formattedValue} ℉ (keskimääräinen vaihtelu)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} fahrenheitaste (keskim. vaihtelu)}other{{formattedValue} fahrenheitastetta (keskim. vaihtelu)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (keskimääräinen vaihtelu)}other{{formattedValue} K (keskimääräinen vaihtelu)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (keskim. vaihtelu)}other{{formattedValue} kelviniä (keskim. vaihtelu)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Kainalo"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Sormi"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Otsa"</string>
@@ -639,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Korva"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Ranne"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Mittaamiskohta"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Perustaso"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Vaihtelu perusarvoon verrattuna"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 maili}other{# mailia}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 maili}other{# mailia}}"</string>
@@ -659,7 +719,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 prosentti}other{# prosenttia}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Peru"</string>
     <string name="units_title" msgid="6504086463237869339">"Yksiköt"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Valitse datayksiköt"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Etäisyys"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Pituus"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Paino"</string>
@@ -710,6 +769,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Siirrä alas"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Siirrä ylös"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Siirrä loppuun"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Painike, jolla voit vetää ja muuttaa sovelluksen (<xliff:g id="SELECTED_APP">%s</xliff:g>) paikkaa tärkeiden listalla"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"Painike, jolla <xliff:g id="SELECTED_APP">%s</xliff:g> poistuu tärkeiden listalta"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Järjestä uudelleen: kaksoisnapauta ja vedä"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"kuntoilu, hyvinvointi"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"luvat"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, terveysdata, terveyskategoriat, datan pääsyoikeudet, toiminta, kehon mittaustulokset, kierron seuranta, ravitsemus, uni, elintoiminnot"</string>
@@ -726,6 +788,20 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Vain sovellukset, joille myönnät pääsyn harjoitusreitteihin"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Miten voin ylläpitää pääsyä?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Voit ylläpitää sovellusten pääsyä harjoitusreitteihin Health Connectin asetuksissa"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Salli tämä reitti"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Salli kaikki reitit"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Älä salli"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Salli aina"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Liikuntareitin jakaminen"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Hallitse sovelluksen pääsyä liikuntareitteihin liitetyissä sovelluksissa"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Kysy aina"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Älä salli"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Otetaanko molemmat datatyypit käyttöön?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Poistetaanko molemmat datatyypit käytöstä?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> tarvitsee harjoitusten lukuoikeuden, jotta harjoitusreitit voidaan ottaa käyttöön"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> tarvitsee pääsyn harjoituksiin, jotta harjoitusreitit voidaan ottaa käyttöön"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Kyllä"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Ei"</string>
     <string name="back_button" msgid="780519527385993407">"Takaisin"</string>
     <string name="loading" msgid="2526615755685950317">"Ladataan…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Integrointi käynnissä"</string>
@@ -761,9 +837,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Jatka Health Connectin integrointia"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Jos haluat säilyttää datasi, sinulla on <xliff:g id="TIME_NEEDED">%1$s</xliff:g> aikaa tehdä integrointi"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Sovellus täytyy päivittää"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> täytyy päivittää, jotta voit jatkaa Health Connectin käyttöä"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Jotkin sovellukset täytyy päivittää, jotta voit jatkaa Health Connectin käyttöä"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> täytyy päivittää, jotta voit jatkaa Health Connectin kanssa synkronoimista"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Jotkin sovellukset on päivitettävä, jotta voit jatkaa Health Connectin kanssa synkronoimista"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Tarkista päivitykset"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Lue lisää"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Health Connectin integrointi"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect on valmis integroitavaksi Android-järjestelmään. Jos <xliff:g id="APP_NAME">%1$s</xliff:g> saa nyt pääsyoikeudet, kaikki ominaisuudet eivät välttämättä toimi, ennen kuin integrointi on valmis."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect on valmis integroitavaksi Android-järjestelmään. Jos sovellukset saavat nyt pääsyoikeudet, kaikki ominaisuudet eivät välttämättä toimi, ennen kuin integrointi on valmis."</string>
@@ -783,6 +860,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Uutta"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Voit nyt käyttää Health Connectia suoraan asetuksista. Voit poistaa Health Connect ‑sovelluksen milloin tahansa vapauttaaksesi tallennustilaa."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Palautus on meneillään"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect palauttaa dataa ja lupia, Tähän voi mennä jonkin aikaa."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Health Connectin palautus on kesken"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Päivitys tarvitaan"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Päivitä puhelimen järjestelmä ennen kuin jatkat datan palauttamista"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Päivitä nyt"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Datan tulokset"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Sovelluslähteet"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Lisää listaan sovelluslähteitä, niin näet miten datan tulokset voivat muuttua. Jos sovellus poistetaan listalta, se ei enää osallistu tuloksiin, mutta sen kirjoituslupa säilyy."</string>
@@ -803,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Viime kuukausi"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Merkinnät"</string>
     <string name="tab_access" msgid="7818197975407243701">"Pääsy"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Voiko <xliff:g id="APP_NAME">%1$s</xliff:g> saada lisäpääsyoikeudet?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> haluaa myös pääsyn näihin Health Connectin asetuksiin"</string>
 </resources>

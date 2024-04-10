@@ -57,6 +57,7 @@ public class UpsertTableRequest {
     private Integer mRecordType;
     private RecordInternal<?> mRecordInternal;
     private RecordHelper<?> mRecordHelper;
+    private List<String> mPostUpsertCommands = Collections.emptyList();
 
     private ArrayMap<String, Boolean> mExtraWritePermissionsStateMapping;
 
@@ -205,10 +206,10 @@ public class UpsertTableRequest {
     }
 
     @NonNull
-    public List<String> getAllChildTablesToDelete() {
+    public List<RecordHelper.TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate() {
         return mRecordHelper == null
                 ? Collections.emptyList()
-                : mRecordHelper.getChildTablesToDeleteOnRecordUpsert(
+                : mRecordHelper.getChildTablesWithRowsToBeDeletedDuringUpdate(
                         mExtraWritePermissionsStateMapping);
     }
 
@@ -228,6 +229,17 @@ public class UpsertTableRequest {
     public <T extends RecordInternal<?>> UpsertTableRequest setExtraWritePermissionsStateMapping(
             ArrayMap<String, Boolean> extraWritePermissionsToState) {
         mExtraWritePermissionsStateMapping = extraWritePermissionsToState;
+        return this;
+    }
+
+    /** Get SQL commands to be exected after this upsert has completed. */
+    public List<String> getPostUpsertCommands() {
+        return mPostUpsertCommands;
+    }
+
+    /** Set SQL commands to be exected after this upsert has completed. */
+    public UpsertTableRequest setPostUpsertCommands(List<String> commands) {
+        mPostUpsertCommands = commands;
         return this;
     }
 

@@ -12,8 +12,6 @@ import javax.inject.Singleton
 interface FeatureUtils {
     fun isSessionTypesEnabled(): Boolean
 
-    fun isExerciseRouteEnabled(): Boolean
-
     fun isExerciseRouteReadAllEnabled(): Boolean
 
     fun isEntryPointsEnabled(): Boolean
@@ -23,6 +21,14 @@ interface FeatureUtils {
     fun isNewInformationArchitectureEnabled(): Boolean
 
     fun isBackgroundReadEnabled(): Boolean
+
+    fun isHistoryReadEnabled(): Boolean
+
+    fun isImportExportEnabled(): Boolean
+
+    fun isSkinTemperatureEnabled(): Boolean
+
+    fun isPlannedExerciseEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -38,6 +44,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
             "aggregation_source_controls_enable"
         private const val PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED =
             "new_information_architecture_enable"
+        private const val PROPERTY_IMPORT_EXPORT_ENABLED = "import_export_enable"
     }
 
     private val lock = Any()
@@ -51,21 +58,20 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_SESSIONS_TYPE_ENABLED, true)
 
-    private var isExerciseRouteEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_EXERCISE_ROUTE_ENABLED, true)
-
-    private var isExerciseRouteReadAllEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED, true)
+    private var isExerciseRouteReadAllEnabled = true
 
     private var isEntryPointsEnabled =
         DeviceConfig.getBoolean(HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_ENTRY_POINTS_ENABLED, true)
 
     private var isNewAppPriorityEnabled = true
+
     private var isNewInformationArchitectureEnabled =
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
+
+    private var isImportExportEnabled =
+        DeviceConfig.getBoolean(
+            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_IMPORT_EXPORT_ENABLED, false)
 
     override fun isNewAppPriorityEnabled(): Boolean {
         synchronized(lock) {
@@ -82,12 +88,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     override fun isSessionTypesEnabled(): Boolean {
         synchronized(lock) {
             return isSessionTypesEnabled
-        }
-    }
-
-    override fun isExerciseRouteEnabled(): Boolean {
-        synchronized(lock) {
-            return isExerciseRouteEnabled
         }
     }
 
@@ -109,16 +109,42 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         }
     }
 
+    override fun isHistoryReadEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
+    override fun isImportExportEnabled(): Boolean {
+        synchronized(lock) {
+            return isImportExportEnabled
+        }
+    }
+
+    override fun isPlannedExerciseEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
+    override fun isSkinTemperatureEnabled(): Boolean {
+        synchronized(lock) {
+            return false
+        }
+    }
+
     override fun onPropertiesChanged(properties: DeviceConfig.Properties) {
         synchronized(lock) {
             if (!properties.namespace.equals(HEALTH_FITNESS_FLAGS_NAMESPACE)) {
                 return
             }
+
             for (name in properties.keyset) {
                 when (name) {
-                    PROPERTY_EXERCISE_ROUTE_ENABLED ->
-                        isExerciseRouteEnabled =
-                            properties.getBoolean(PROPERTY_EXERCISE_ROUTE_ENABLED, true)
+                    PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED -> {
+                        isExerciseRouteReadAllEnabled =
+                            properties.getBoolean(PROPERTY_EXERCISE_ROUTE_READ_ALL_ENABLED, true)
+                    }
                     PROPERTY_SESSIONS_TYPE_ENABLED ->
                         isSessionTypesEnabled =
                             properties.getBoolean(PROPERTY_SESSIONS_TYPE_ENABLED, true)
@@ -130,6 +156,9 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                         isNewInformationArchitectureEnabled =
                             properties.getBoolean(
                                 PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
+                    PROPERTY_IMPORT_EXPORT_ENABLED ->
+                        isImportExportEnabled =
+                            properties.getBoolean(PROPERTY_IMPORT_EXPORT_ENABLED, false)
                 }
             }
         }

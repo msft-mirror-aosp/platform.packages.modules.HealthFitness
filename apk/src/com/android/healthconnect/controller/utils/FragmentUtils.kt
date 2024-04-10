@@ -26,8 +26,11 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.dialog.ProgressDialogFragment
+import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ToolbarElement
 import dagger.hilt.android.EntryPointAccessors
@@ -101,4 +104,14 @@ fun Fragment.dismissLoadingDialog() {
     if (dialog != null && dialog is ProgressDialogFragment) {
         dialog.dismiss()
     }
+}
+
+/** Returns a [Lazy] delegate to load the PreferenceFragment's preferences. */
+inline fun <P : Preference> HealthPreferenceFragment.pref(key: String): Lazy<P> {
+    return lazy { findPreference(key)!! }
+}
+
+/** Returns a [Lazy] delegate to load the PreferenceFragment's preferences. */
+inline fun <P : Preference> PreferenceFragmentCompat.pref(key: String): Lazy<P> {
+    return lazy { findPreference(key)!! }
 }

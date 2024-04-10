@@ -22,7 +22,7 @@ import androidx.annotation.StringRes
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.dataentries.formatters.shared.EntryFormatter
-import com.android.healthconnect.controller.dataentries.formatters.shared.SessionDetailsFormatter
+import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,7 +33,7 @@ class CyclingPedalingCadenceFormatter
 @Inject
 constructor(@ApplicationContext private val context: Context) :
     EntryFormatter<CyclingPedalingCadenceRecord>(context),
-    SessionDetailsFormatter<CyclingPedalingCadenceRecord> {
+    RecordDetailsFormatter<CyclingPedalingCadenceRecord> {
 
     private val timeFormatter = LocalDateTimeFormatter(context)
 

@@ -39,7 +39,7 @@ import java.util.Objects;
 public final class CreateTableRequest {
     public static final String TAG = "HealthConnectCreate";
     public static final String FOREIGN_KEY_COMMAND = " FOREIGN KEY (";
-    private static final String CREATE_INDEX_COMMAND = "CREATE INDEX  idx_";
+    private static final String CREATE_INDEX_COMMAND = "CREATE INDEX IF NOT EXISTS idx_";
     private static final String CREATE_TABLE_COMMAND = "CREATE TABLE IF NOT EXISTS ";
     private static final String UNIQUE_COMMAND = "UNIQUE ( ";
     private final String mTableName;

@@ -19,6 +19,7 @@ package com.android.server.healthconnect;
 import static android.health.connect.Constants.DEFAULT_INT;
 
 import static com.android.server.healthconnect.HealthConnectDailyJobs.HC_DAILY_JOB;
+import static com.android.server.healthconnect.exportimport.ExportImportJobs.PERIODIC_EXPORT_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_COMPLETE_JOB_NAME;
 import static com.android.server.healthconnect.migration.MigrationConstants.MIGRATION_PAUSE_JOB_NAME;
 
@@ -31,12 +32,13 @@ import android.app.job.JobService;
 import android.health.connect.Constants;
 import android.util.Slog;
 
+import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 
 import java.util.Objects;
 
 /**
- * A service that is run periodically and triggers other periodic tasks..
+ * Health Connect wrapper around JobService.
  *
  * @hide
  */
@@ -47,7 +49,7 @@ public class HealthConnectDailyService extends JobService {
     @UserIdInt private static volatile int sCurrentUserId;
 
     /**
-     * Called everytime when the operation corresponding to this service is to be performed,
+     * Routes the job to the right place based on the job name, after performing common checks.,
      *
      * <p>Please handle exceptions for each task within the task. Do not crash the job as it might
      * result in failure of other tasks being triggered from the job.
@@ -69,15 +71,14 @@ public class HealthConnectDailyService extends JobService {
         // This service executes each incoming job on a Handler running on the application's
         // main thread. This means that we must offload the execution logic to background executor.
         switch (jobName) {
-            case HC_DAILY_JOB -> {
+            case HC_DAILY_JOB:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             HealthConnectDailyJobs.execute(getApplicationContext(), params);
                             jobFinished(params, false);
                         });
                 return true;
-            }
-            case MIGRATION_COMPLETE_JOB_NAME -> {
+            case MIGRATION_COMPLETE_JOB_NAME:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationCompletionJob(
@@ -85,8 +86,7 @@ public class HealthConnectDailyService extends JobService {
                             jobFinished(params, false);
                         });
                 return true;
-            }
-            case MIGRATION_PAUSE_JOB_NAME -> {
+            case MIGRATION_PAUSE_JOB_NAME:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
                             MigrationStateChangeJob.executeMigrationPauseJob(
@@ -94,10 +94,16 @@ public class HealthConnectDailyService extends JobService {
                             jobFinished(params, false);
                         });
                 return true;
-            }
-            default -> {
+            case PERIODIC_EXPORT_JOB_NAME:
+                HealthConnectThreadScheduler.scheduleInternalTask(
+                        () -> {
+                            ExportImportJobs.executePeriodicExportJob(getApplicationContext());
+                            jobFinished(params, false);
+                        });
+                return true;
+            default:
                 Slog.w(TAG, "Job name " + jobName + " is not supported.");
-            }
+                break;
         }
         return false;
     }

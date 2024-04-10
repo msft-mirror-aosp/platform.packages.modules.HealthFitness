@@ -32,6 +32,7 @@ import android.annotation.SystemApi;
 import android.annotation.SystemService;
 import android.annotation.TestApi;
 import android.annotation.UserHandleAware;
+import android.annotation.WorkerThread;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -76,6 +77,7 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.InternalExternalRecordConverter;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -338,6 +340,8 @@ public class HealthConnectManager {
      * hold the permission, a {@link java.lang.SecurityException} is thrown. If the package or
      * permission is invalid, a {@link java.lang.IllegalArgumentException} is thrown.
      *
+     * <p><b>Note:</b> This API sets {@code PackageManager.FLAG_PERMISSION_USER_SET}.
+     *
      * @hide
      */
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
@@ -356,6 +360,10 @@ public class HealthConnectManager {
      * application. If the application is not allowed to hold the permission, a {@link
      * java.lang.SecurityException} is thrown. If the package or permission is invalid, a {@link
      * java.lang.IllegalArgumentException} is thrown.
+     *
+     * <p><b>Note:</b> This API sets {@code PackageManager.FLAG_PERMISSION_USER_SET} or {@code
+     * PackageManager.FLAG_PERMISSION_USER_FIXED} based on the number of revocations of a particular
+     * permission for a package.
      *
      * @hide
      */
@@ -437,9 +445,9 @@ public class HealthConnectManager {
     }
 
     /**
-     * Allow provided permissions to be requested again if they previously were denied multiple
-     * times by the users.
+     * Sets/clears {@link PackageManager#FLAG_PERMISSION_USER_FIXED} for given health permissions.
      *
+     * @param value whether to set or clear the flag, {@code true} means set, {@code false} - clear.
      * @throws IllegalArgumentException if the package doesn't exist, any of the permissions are not
      *     Health permissions or not declared by the app.
      * @throws NullPointerException if any of the arguments is {@code null}.
@@ -449,10 +457,11 @@ public class HealthConnectManager {
      */
     @RequiresPermission(MANAGE_HEALTH_PERMISSIONS)
     @UserHandleAware
-    public void makeHealthPermissionsRequestable(
-            @NonNull String packageName, @NonNull List<String> permissions) {
+    public void setHealthPermissionsUserFixedFlagValue(
+            @NonNull String packageName, @NonNull List<String> permissions, boolean value) {
         try {
-            mService.makeHealthPermissionsRequestable(packageName, mContext.getUser(), permissions);
+            mService.setHealthPermissionsUserFixedFlagValue(
+                    packageName, mContext.getUser(), permissions, value);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -1686,6 +1695,46 @@ public class HealthConnectManager {
                     requiredSdkExtension,
                     wrapMigrationCallback(executor, callback));
 
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Configures the settings for the scheduled export of Health Connect data.
+     *
+     * @param settings Settings to use for the scheduled export. Use null to clear the settings.
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @SuppressWarnings("NullAway") // TODO: b/178748627 - fix this suppression.
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void configureScheduledExport(@Nullable ScheduledExportSettings settings) {
+        try {
+            mService.configureScheduledExport(settings, mContext.getUser());
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Returns currently set period between scheduled exports for this user.
+     *
+     * <p>If you are calling this function for the first time after a user unlock, this might take
+     * some time so consider calling this on a thread.
+     *
+     * @return Period between scheduled exports in days, 0 is returned if period between scheduled
+     *     exports is not set.
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    @IntRange(from = 0, to = 30)
+    public int getScheduledExportPeriodInDays() {
+        try {
+            return mService.getScheduledExportPeriodInDays(mContext.getUser());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }

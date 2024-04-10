@@ -29,5 +29,6 @@ data class ConnectedAppMetadata(
 enum class ConnectedAppStatus {
     ALLOWED,
     DENIED,
-    INACTIVE
+    INACTIVE,
+    NEEDS_UPDATE
 }

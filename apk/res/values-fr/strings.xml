@@ -41,8 +41,8 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Découvrez quelles applis ont accédé à vos données au cours des dernières 24 heures"</string>
     <string name="today_header" msgid="1006837293203834373">"Aujourd\'hui"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Hier"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lecture : %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Écriture : %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Lecture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Écriture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
     <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Temps : %s"</string>
@@ -75,14 +75,22 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Ces données incluent des informations comme la durée d\'activité, le type d\'exercice, les tours, les répétitions, les sessions ou les mouvements de nage"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Ces données incluent des informations comme les phases et les sessions de sommeil"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Voir toutes les entrées"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"modifier"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Supprimer ces données"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Santé Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"accéder à vos données de forme physique"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Lire les calories brûlées"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Autorise l\'appli à répondre à lire les calories brûlées"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lecture en arrière-plan"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"lecture en arrière-plan"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Lire les données de forme physique en arrière-plan"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Accéder aux données en arrière-plan"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données en arrière-plan ?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Autoriser cette appli à accéder aux données de Santé Connect lorsque vous ne l\'utilisez pas"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Si vous l\'y autorisez, cette appli peut accéder aux données de Santé Connect lorsque vous ne l\'utilisez pas."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Accéder aux données précédentes"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données précédentes ?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Autoriser cette appli à accéder aux données de Santé Connect ajoutées avant le <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Autoriser cette appli à accéder aux données précédentes de Santé Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Si vous l\'y autorisez, cette appli peut accéder aux données de Santé Connect ajoutées avant le <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Si vous l\'y autorisez, cette appli peut accéder aux données précédentes de Santé Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories brûlées en activité"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calories brûlées en activité"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lire les calories brûlées en activité"</string>
@@ -95,7 +103,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"parcours sportif"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Écrire le parcours sportif"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lire le parcours sportif"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Lire tous les parcours sportifs"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lisez des itinéraires d\'exercice"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Programmes de formation"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"programmes de formation"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Lire les programmes de formation"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Écrire les programmes de formation"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distance"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distance"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Lire la distance"</string>
@@ -208,8 +220,8 @@
     <string name="basal_body_temperature_lowercase_label" msgid="3363829208971016662">"température basale"</string>
     <string name="basal_body_temperature_read_content_description" msgid="3342604362011725500">"Lire la température basale"</string>
     <string name="basal_body_temperature_write_content_description" msgid="1081636817359407622">"Modifier la température basale"</string>
-    <string name="blood_glucose_uppercase_label" msgid="7462421849184720721">"Taux de glycémie"</string>
-    <string name="blood_glucose_lowercase_label" msgid="5036157221577793772">"taux de glycémie"</string>
+    <string name="blood_glucose_uppercase_label" msgid="7462421849184720721">"Glycémie"</string>
+    <string name="blood_glucose_lowercase_label" msgid="5036157221577793772">"glycémie"</string>
     <string name="blood_glucose_read_content_description" msgid="563393834563809318">"Lire le taux de glycémie"</string>
     <string name="blood_glucose_write_content_description" msgid="7688360165458091174">"Modifier le taux de glycémie"</string>
     <string name="blood_pressure_uppercase_label" msgid="1091450873620857062">"Tension artérielle"</string>
@@ -240,6 +252,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"fréquence cardiaque au repos"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Lire la fréquence cardiaque au repos"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Modifier la fréquence cardiaque au repos"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Température cutanée"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"température cutanée"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lire la température cutanée"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Indiquer la température cutanée"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à lire"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à écrire"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annuler"</string>
@@ -247,7 +263,8 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Tout autoriser"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ne pas autoriser"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Sélectionnez les données que cette appli peut lire ou modifier dans Santé Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Si vous accordez un accès en lecture, cette appli peut lire les nouvelles données et celles des 30 derniers jours"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si vous autorisez un accès en lecture, l\'appli peut lire les nouvelles données et celles des 30 derniers jours"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si vous autorisez un accès en lecture, l\'appli peut lire les nouvelles données ainsi que les données précédentes"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder à Santé Connect ?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Consultez les <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> du développeur pour découvrir comment <xliff:g id="APP_NAME">%1$s</xliff:g> gère vos données."</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"règles de confidentialité"</string>
@@ -263,6 +280,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Contrôlez les applis autorisées à accéder aux données stockées dans Santé Connect. Appuyez sur une appli pour consulter les données qu\'elle peut lire ou modifier."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Accès autorisé"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Accès non autorisé"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Mise à jour nécessaire"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Paramètres et aide"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Retirer l\'accès aux applis"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Lecture autorisée"</string>
@@ -279,12 +297,13 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Ces applis n\'ont plus accès à Santé Connect, mais ont encore des données qui y sont stockées"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> peut lire les données ajoutées après le <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"Pour gérer d\'autres autorisations Android concernant cette appli, sélectionnez Paramètres &gt; Applis"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Les données que vous partagez avec l\'appli <xliff:g id="APP_NAME">%1$s</xliff:g> sont soumises à ses règles de confidentialité."</string>
+    <string name="manage_permissions_rationale" msgid="9183689798847740274">"Les données que vous partagez avec l\'appli <xliff:g id="APP_NAME">%1$s</xliff:g> sont soumises à ses règles de confidentialité"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Pour gérer d\'autres autorisations Android concernant cette appli, sélectionnez \"Paramètres\", puis appuyez sur \"Applis\""</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lire les règles de confidentialité"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Accès au cours des dernières 24 heures"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Accès de l\'appli"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune appli compatible n\'est installée pour le moment"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaires"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorisations d\'applis retirées"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Santé Connect a retiré les autorisations de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Santé Connect a retiré les autorisations de <xliff:g id="APP_DATA_0">%1$s</xliff:g> et <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -294,6 +313,27 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pourquoi Santé Connect retire des autorisations d\'applis"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si une appli est suspendue ou retirée de Google Play, Santé Connect retire automatiquement les autorisations associées.\n\nL\'appli n\'a alors plus accès aux données stockées dans Santé Connect. Si cette appli a déjà écrit des données, elle figure dans la liste des applis inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sauvegarder et restaurer"</string>
+    <string name="export_and_import_title" msgid="3241901922222465397">"Exporter et importer"</string>
+    <string name="export_automatically" msgid="8820158546399774250">"Exporter automatiquement"</string>
+    <string name="restore_data" msgid="3401173690437871417">"Restaurer les données"</string>
+    <string name="restore_data_description" msgid="6505730490741240861">"Charger les données précédemment exportées"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Activé"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Désactivé"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Choisir la fréquence"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Vous pouvez choisir d\'enregistrer vos données une seule fois ou de les enregistrer automatiquement à intervalles réguliers."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Tous les jours"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Toutes les semaines"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Tous les mois"</string>
+    <string name="export_location_title" msgid="9016990510649325641">"Emplacement de l\'exportation"</string>
+    <string name="export_encryption_title" msgid="8910343790595514359">"Activer le chiffrement"</string>
+    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Les données doivent être chiffrées avant d\'être enregistrées. Personne, y compris Google ou Health Connect, ne pourra y accéder."</string>
+    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Créez un mot de passe pour protéger vos données chiffrées. Vous aurez besoin de ce mot de passe pour importer et restaurer vos données."</string>
+    <string name="export_password_hint" msgid="7095895042846772342">"Mot de passe"</string>
+    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Répéter le mot de passe"</string>
+    <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Health Connect ne pourra pas vous aider à récupérer vos données enregistrées."</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Premiers pas avec Santé Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Santé Connect stocke vos données de santé et de remise en forme, et vous permet de synchroniser facilement les différentes applis de votre téléphone"</string>
     <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applis"</string>
@@ -347,8 +387,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Suppression des données Santé Connect…"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Suppression des données Santé Connect…"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Suppression des données…"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Supprimer la saisie de données"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Supprimer l\'entrée"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Supprimer la saisie de données <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Supprimer l\'entrée <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Total : <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}one{# W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 watt}one{# watt}other{# watts}}"</string>
@@ -386,6 +426,11 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Non concluant"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milliseconde}one{# milliseconde}other{# millisecondes}}"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 fois}one{# fois}other{# fois}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"En activité : <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Total : <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Autant de répétitions que possible"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Niveau d\'effort : <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 répétition}one{# répétition}other{# répétitions}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 répétition}one{# répétition}other{# répétitions}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segments d\'exercice"</string>
@@ -505,7 +550,7 @@
     <string name="sleep_session_default" msgid="7376764686701487196">"<xliff:g id="DURATION"> %1$s</xliff:g> de sommeil"</string>
     <string name="sleep_stage_default" msgid="1539043695578480733">"<xliff:g id="DURATION">%1$s</xliff:g> : <xliff:g id="NAME">%2$s</xliff:g>"</string>
     <string name="sleep_stage_awake" msgid="4526767634444460862">"éveillé"</string>
-    <string name="sleep_stage_awake_in_bed" msgid="5533385496857888503">"éveillé au lit"</string>
+    <string name="sleep_stage_awake_in_bed" msgid="5533385496857888503">"éveillé, au lit"</string>
     <string name="sleep_stage_sleeping" msgid="5122840110107303518">"endormi"</string>
     <string name="sleep_stage_out_of_bed" msgid="522297068981578046">"hors du lit"</string>
     <string name="sleep_stage_rem" msgid="1694477904067543104">"en sommeil paradoxal"</string>
@@ -544,7 +589,7 @@
     <string name="body_position_standing_up" msgid="1221924915768574594">"Debout"</string>
     <string name="body_position_sitting_down" msgid="8053875174780552282">"Assis"</string>
     <string name="body_position_lying_down" msgid="1472381098179371143">"Allongé"</string>
-    <string name="body_position_reclining" msgid="5676889701646839079">"Étendu"</string>
+    <string name="body_position_reclining" msgid="5676889701646839079">"Allongé"</string>
     <string name="blood_pressure_left_wrist" msgid="2047244346984766880">"Poignet gauche"</string>
     <string name="blood_pressure_right_wrist" msgid="1488133877790549424">"Poignet droit"</string>
     <string name="blood_pressure_left_arm" msgid="5150436840115504433">"Haut du bras gauche"</string>
@@ -623,12 +668,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 livre}one{# livre}other{# livres}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}one{# stone}other{# stones}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 degré Celsius}one{# degré Celsius}other{# degrés Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}one{# kelvin}other{# kelvins}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 degré Fahrenheit}one{# degré Fahrenheit}other{# degrés Fahrenheit}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}one{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} degré Celsius}one{{formattedValue} degré Celsius}other{{formattedValue} degrés Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}one{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} degré Fahrenheit}one{{formattedValue} degré Fahrenheit}other{{formattedValue} degrés Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}one{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}one{{formattedValue} kelvin}other{{formattedValue} kelvins}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (variation moy.)}one{{formattedValue} ℃ (variation moy.)}other{{formattedValue} ℃ (variation moy.)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} degré Celsius (variation moyenne)}one{{formattedValue} degré Celsius (variation moyenne)}other{{formattedValue} degrés Celsius (variation moyenne)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (variation moy.)}one{{formattedValue} ℉ (variation moy.)}other{{formattedValue} ℉ (variation moy.)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} degré Fahrenheit (variation moyenne)}one{{formattedValue} degré Fahrenheit (variation moyenne)}other{{formattedValue} degrés Fahrenheit (variation moyenne)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (variation moy.)}one{{formattedValue} K (variation moy.)}other{{formattedValue} K (variation moy.)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (variation moyenne)}one{{formattedValue} kelvin (variation moyenne)}other{{formattedValue} kelvins (variation moyenne)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Aisselle"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Doigt"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Front"</string>
@@ -639,6 +696,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Oreille"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Poignet"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagin"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lieu de mesure"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Référence"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variation par rapport aux valeurs de référence"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}one{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mile}one{# mile}other{# miles}}"</string>
@@ -659,7 +719,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 pour cent}one{# pour cent}other{# pour cent}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Annuler"</string>
     <string name="units_title" msgid="6504086463237869339">"Unités"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Configurer les unités de données"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Distance"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Taille"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Poids"</string>
@@ -681,9 +740,9 @@
     <string name="cant_see_all_your_apps_description" msgid="7344859063463536472">"Si vous ne voyez pas une appli installée, elle n\'est peut-être pas encore compatible avec Santé Connect"</string>
     <string name="things_to_try" msgid="8200374691546152703">"À essayer"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"Rechercher les mises à jour"</string>
-    <string name="check_for_updates_description" msgid="1347667778199095160">"Vérifier que les applis installées sont à jour"</string>
+    <string name="check_for_updates_description" msgid="1347667778199095160">"Vérifiez que les applis installées sont à jour"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Voir toutes les applis compatibles"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Rechercher des applis sur Google Play"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Recherchez des applis sur Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Envoyer des commentaires"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Dites-nous quelles applis de santé et de fitness vous souhaitez utiliser avec Santé Connect"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
@@ -695,10 +754,10 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Au bout de # mois}one{Au bout de # mois}other{Au bout de # mois}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Jamais"</string>
     <string name="range_off" msgid="8178520557618184215">"Désactivée"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Lorsque vous modifiez ces paramètres, Santé Connect supprime les données existantes pour tenir compte de vos nouvelles préférences"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Lorsque vous modifiez ces paramètres, Santé Connect supprime les données existantes en tenant compte de vos nouvelles préférences"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Supprimer automatiquement les données au bout de # mois ?}one{Supprimer automatiquement les données au bout de # mois ?}other{Supprimer automatiquement les données au bout de # mois ?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Santé Connect supprimera automatiquement les nouvelles données au bout de # mois. Avec ce paramètre, les données existantes datant de plus de # mois seront aussi supprimées.}one{Santé Connect supprimera automatiquement les nouvelles données au bout de # mois. Avec ce paramètre, les données existantes datant de plus de # mois seront aussi supprimées.}other{Santé Connect supprimera automatiquement les nouvelles données au bout de # mois. Avec ce paramètre, les données existantes datant de plus de # mois seront aussi supprimées.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Configurer la suppression automatique"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Confirmer"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Les données existantes seront supprimées"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Santé Connect supprimera les données datant de plus de # mois. Il peut s\'écouler un jour avant que ces modifications ne s\'appliquent dans vos applis connectées.}one{Santé Connect supprimera les données datant de plus de # mois. Il peut s\'écouler un jour avant que ces modifications ne s\'appliquent dans vos applis connectées.}other{Santé Connect supprimera les données datant de plus de # mois. Il peut s\'écouler un jour avant que ces modifications ne s\'appliquent dans vos applis connectées.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Données à supprimer parmi les suivantes"</string>
@@ -710,6 +769,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Déplacer vers le bas"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Première position"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Dernière position"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Bouton pour faire glisser et réorganiser <xliff:g id="SELECTED_APP">%s</xliff:g> dans la liste des priorités"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"Bouton pour supprimer <xliff:g id="SELECTED_APP">%s</xliff:g> de la liste des priorités"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Appuyez deux fois et faites glisser pour réorganiser"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"remise en forme, bien-être"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"autorisations"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"Santé Connect, données de forme physique, catégories de santé, accès aux données, activité, données corporelles, suivi du cycle, nutrition, sommeil, constantes"</string>
@@ -726,6 +788,20 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Seules les applis que vous autorisez à accéder à vos parcours sportifs"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Comment puis-je gérer l\'accès ?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Vous pouvez gérer l\'accès de cette appli aux parcours sportifs dans les paramètres Santé Connect"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Autoriser cet itinéraire"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Autoriser tous les itinéraires"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne pas autoriser"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Toujours autoriser"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Partage du parcours sportif"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Contrôlez la manière dont cette appli accède aux parcours sportifs d\'applis connectées"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Toujours demander"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Ne pas autoriser"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Activer les deux types de données ?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Désactiver les deux types de données ?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Pour pouvoir activer les parcours sportifs, <xliff:g id="APP_NAME">%1$s</xliff:g> doit disposer d\'un droit de lecture de l\'exercice"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"Pour pouvoir activer les parcours sportifs, <xliff:g id="APP_NAME">%1$s</xliff:g> doit disposer d\'un accès à l\'exercice"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Oui"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Non"</string>
     <string name="back_button" msgid="780519527385993407">"Retour"</string>
     <string name="loading" msgid="2526615755685950317">"Chargement…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Intégration en cours"</string>
@@ -761,9 +837,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Reprendre l\'intégration de Santé Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Pour conserver vos données, effectuez l\'opération sous <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Mise à jour d\'application requise"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> doit être mis à jour pour continuer de fonctionner avec Santé Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Certaines applis doivent être mises à jour pour continuer de fonctionner avec Santé Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"<xliff:g id="APP_NAME">%1$s</xliff:g> doit être mise à jour afin de pouvoir continuer à être synchronisée avec Santé Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Certaines applis doivent être mises à jour afin de pouvoir continuer à être synchronisées avec Santé Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Rechercher les mises à jour"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"En savoir plus"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Intégration de Santé Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Santé Connect est prêt à être intégré à votre système Android. Si vous autorisez <xliff:g id="APP_NAME">%1$s</xliff:g> à y accéder avant que l\'intégration soit terminée, il se peut que vous ne puissiez pas profiter de certaines fonctionnalités."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Santé Connect est prête à être intégrée à votre système Android. Si vous accordez l\'accès à des applis maintenant, certaines fonctionnalités risquent de ne pas fonctionner jusqu\'à ce que l\'intégration soit terminée."</string>
@@ -783,11 +860,18 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nouveautés"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Vous pouvez désormais accéder à Santé Connect directement depuis les paramètres. Désinstallez l\'application Santé Connect à tout moment pour libérer de l\'espace de stockage."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"OK"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Restauration en cours"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Santé Connect restaure les données et les autorisations. Cela peut prendre un certain temps."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Santé Connect : restauration en cours"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"OK"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Mise à jour requise"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Avant de poursuivre la restauration de vos données, mettez à jour votre système de téléphonie."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Mettre à jour"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Totaux de données"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Sources d\'applications"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Ajoutez des sources d\'applications à la liste pour voir comment les totaux de données peuvent changer. Supprimer une application de cette liste l\'empêchera de contribuer aux totaux, mais elle disposera toujours d\'autorisations d\'écriture."</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"Aucune source d\'application"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Une fois que vous aurez accordé des autorisations d\'application pour écrire des données <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, des sources s\'afficheront ici."</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Une fois que vous aurez autorisé des applications à écrire des données <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, des sources s\'afficheront ici."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Fonctionnement de la priorisation des sources"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Ajouter une application"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Modifier les sources d\'application"</string>
@@ -803,4 +887,6 @@
     <string name="last_month_header" msgid="1359164797239191253">"Mois dernier"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Entrées"</string>
     <string name="tab_access" msgid="7818197975407243701">"Accès"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Autoriser les accès supplémentaires pour <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> souhaite également accéder à ces paramètres de Santé Connect"</string>
 </resources>

@@ -45,7 +45,7 @@ class SeriesDataItemViewBinder(
                 context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_heart_rate_entry, parent, false)
+            .inflate(R.layout.item_series_data_entry, parent, false)
     }
 
     override fun bind(view: View, data: SeriesDataEntry, index: Int) {
@@ -64,6 +64,9 @@ class SeriesDataItemViewBinder(
         deleteButton.isVisible = showSecondAction
         divider.isVisible = showSecondAction
 
+        deleteButton.contentDescription =
+            view.resources.getString(
+                R.string.data_point_action_content_description, data.headerA11y)
         deleteButton.setOnClickListener {
             logger.logInteraction(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
             onDeleteEntryClicked?.onDeleteEntry(data.uuid, data.dataType, index)

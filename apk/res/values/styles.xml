@@ -101,6 +101,11 @@
         <item name="android:lineHeight">15sp</item>
     </style>
 
+    <style name="TextAppearance.HealthConnect.CategoryTitle" parent="@style/TextAppearance.CategoryTitle.SettingsLib">
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
     <!-- END REGION -->
 
     <!-- REGION BUTTONS -->
@@ -164,6 +169,17 @@
         <item name="android:textAppearance">?attr/textAppearanceLabel</item>
     </style>
 
+    <style name="PermissionGrantButtonMid"
+        parent="@android:style/Widget.DeviceDefault.Button.Borderless.Colored">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:background">@drawable/grant_permissions_buttons_mid</item>
+        <item name="android:textColor">@android:color/system_neutral1_900</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabel</item>
+    </style>
+
     <style name="PermissionGrantButtonBottom"
         parent="@android:style/Widget.DeviceDefault.Button.Borderless.Colored">
         <item name="android:layout_width">match_parent</item>
@@ -206,7 +222,7 @@
     </style>
 
     <style name="Widget.HealthConnect.CalendarSpinner" parent="android:style/Widget.Material.Spinner">
-        <item name="android:background">@drawable/settingslib_spinner_background</item>
+        <item name="android:background">@drawable/spinner_background</item>
         <item name="android:popupBackground">@drawable/settingslib_spinner_dropdown_background
         </item>
         <item name="android:paddingStart">@dimen/spacing_normal</item>
@@ -239,10 +255,5 @@
         <item name="tabTextColor">?android:attr/textColorSecondary</item>
         <item name="tabBackground">@drawable/tab_background</item>
         <item name="tabTextAppearance">?attr/textAppearanceSubheader</item>
-    </style>
-
-    <style name="PreferenceCategoryTitleTextStyle.HealthConnect">
-        <item name="android:textAppearance">?attr/preferenceCategoryTitleTextAppearance</item>
-        <item name="android:textColor">?attr/preferenceCategoryTitleTextColor</item>
     </style>
 </resources>

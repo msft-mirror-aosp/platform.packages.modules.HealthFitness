@@ -67,6 +67,7 @@ public class TestAppReceiver extends BroadcastReceiver {
     public static final String EXTRA_RESULT_ERROR_MESSAGE = "extra.ERROR_MESSAGE";
     public static final String EXTRA_RECORD_COUNT = "extra.RECORD_COUNT";
     public static final String EXTRA_RECORD_IDS = "extra.RECORD_IDS";
+    public static final String EXTRA_RECORD_CLIENT_IDS = "extra.RECORD_CLIENT_IDS";
 
     /**
      * This is used to represent either times for InstantRecords or start times for IntervalRecords.
@@ -110,22 +111,22 @@ public class TestAppReceiver extends BroadcastReceiver {
     }
 
     private static void insertStepsRecords(Context context, Intent intent) {
-        BlockingOutcomeReceiver<InsertRecordsResponse> outcome = new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
         getHealthConnectManager(context)
                 .insertRecords(createStepsRecords(intent), newSingleThreadExecutor(), outcome);
         sendInsertRecordsResult(context, intent, outcome);
     }
 
     private static void insertWeightRecords(Context context, Intent intent) {
-        BlockingOutcomeReceiver<InsertRecordsResponse> outcome = new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
         getHealthConnectManager(context)
                 .insertRecords(createWeightRecords(intent), newSingleThreadExecutor(), outcome);
         sendInsertRecordsResult(context, intent, outcome);
     }
 
     private void readRecordsForOtherApp(Context context, Intent intent) {
-        final BlockingOutcomeReceiver<ReadRecordsResponse<ActiveCaloriesBurnedRecord>> outcome =
-                new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<ReadRecordsResponse<ActiveCaloriesBurnedRecord>> outcome =
+                new DefaultOutcomeReceiver<>();
 
         getHealthConnectManager(context)
                 .readRecords(
@@ -143,8 +144,8 @@ public class TestAppReceiver extends BroadcastReceiver {
     }
 
     private void aggregate(Context context, Intent intent) {
-        final BlockingOutcomeReceiver<AggregateRecordsResponse<Energy>> outcome =
-                new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<AggregateRecordsResponse<Energy>> outcome =
+                new DefaultOutcomeReceiver<>();
 
         getHealthConnectManager(context)
                 .aggregate(
@@ -162,8 +163,7 @@ public class TestAppReceiver extends BroadcastReceiver {
     }
 
     private void getChangeLogToken(Context context, Intent intent) {
-        final BlockingOutcomeReceiver<ChangeLogTokenResponse> outcome =
-                new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<ChangeLogTokenResponse> outcome = new DefaultOutcomeReceiver<>();
 
         getHealthConnectManager(context)
                 .getChangeLogToken(
@@ -185,7 +185,7 @@ public class TestAppReceiver extends BroadcastReceiver {
 
     private void getChangeLogs(Context context, Intent intent) {
         String token = intent.getStringExtra(EXTRA_TOKEN);
-        final BlockingOutcomeReceiver<ChangeLogsResponse> outcome = new BlockingOutcomeReceiver<>();
+        DefaultOutcomeReceiver<ChangeLogsResponse> outcome = new DefaultOutcomeReceiver<>();
 
         getHealthConnectManager(context)
                 .getChangeLogs(
@@ -203,7 +203,7 @@ public class TestAppReceiver extends BroadcastReceiver {
     private static void sendReadRecordsResult(
             Context context,
             Intent intent,
-            BlockingOutcomeReceiver<? extends ReadRecordsResponse<?>> outcome) {
+            DefaultOutcomeReceiver<? extends ReadRecordsResponse<?>> outcome) {
         final HealthConnectException error = outcome.getError();
         if (error != null) {
             sendError(context, intent, error);
@@ -218,7 +218,7 @@ public class TestAppReceiver extends BroadcastReceiver {
     private static void sendInsertRecordsResult(
             Context context,
             Intent intent,
-            BlockingOutcomeReceiver<? extends InsertRecordsResponse> outcome) {
+            DefaultOutcomeReceiver<? extends InsertRecordsResponse> outcome) {
         final HealthConnectException error = outcome.getError();
         if (error != null) {
             sendError(context, intent, error);
@@ -239,7 +239,7 @@ public class TestAppReceiver extends BroadcastReceiver {
     }
 
     private static void sendResult(
-            Context context, Intent intent, BlockingOutcomeReceiver<?> outcomeReceiver) {
+            Context context, Intent intent, DefaultOutcomeReceiver<?> outcomeReceiver) {
         final HealthConnectException error = outcomeReceiver.getError();
         if (error != null) {
             sendError(context, intent, error);
@@ -272,34 +272,41 @@ public class TestAppReceiver extends BroadcastReceiver {
     private static List<Record> createStepsRecords(Intent intent) {
         List<Instant> startTimes = getTimes(intent, EXTRA_TIMES);
         List<Instant> endTimes = getTimes(intent, EXTRA_END_TIMES);
+        String[] clientIds = intent.getStringArrayExtra(EXTRA_RECORD_CLIENT_IDS);
         long[] values = intent.getLongArrayExtra(EXTRA_RECORD_VALUES);
 
         List<Record> result = new ArrayList<>();
         for (int i = 0; i < startTimes.size(); i++) {
-            result.add(createStepsRecord(startTimes.get(i), endTimes.get(i), values[i]));
+            result.add(
+                    createStepsRecord(startTimes.get(i), endTimes.get(i), clientIds[i], values[i]));
         }
         return result;
     }
 
-    private static StepsRecord createStepsRecord(Instant startTime, Instant endTime, long steps) {
-        return new StepsRecord.Builder(new Metadata.Builder().build(), startTime, endTime, steps)
-                .build();
+    private static StepsRecord createStepsRecord(
+            Instant startTime, Instant endTime, String clientId, long steps) {
+        Metadata.Builder metadataBuilder = new Metadata.Builder();
+        metadataBuilder.setClientRecordId(clientId);
+        return new StepsRecord.Builder(metadataBuilder.build(), startTime, endTime, steps).build();
     }
 
     private static List<Record> createWeightRecords(Intent intent) {
         List<Instant> times = getTimes(intent, EXTRA_TIMES);
-        long[] values = intent.getLongArrayExtra(EXTRA_RECORD_VALUES);
+        String[] clientIds = intent.getStringArrayExtra(EXTRA_RECORD_CLIENT_IDS);
+        double[] values = intent.getDoubleArrayExtra(EXTRA_RECORD_VALUES);
 
         List<Record> result = new ArrayList<>();
         for (int i = 0; i < times.size(); i++) {
-            result.add(createWeightRecord(times.get(i), values[i]));
+            result.add(createWeightRecord(times.get(i), clientIds[i], values[i]));
         }
         return result;
     }
 
-    private static WeightRecord createWeightRecord(Instant time, long weight) {
+    private static WeightRecord createWeightRecord(Instant time, String clientId, double weight) {
         return new WeightRecord.Builder(
-                        new Metadata.Builder().build(), time, Mass.fromGrams((double) weight))
+                        new Metadata.Builder().setClientRecordId(clientId).build(),
+                        time,
+                        Mass.fromGrams(weight))
                 .build();
     }
 
