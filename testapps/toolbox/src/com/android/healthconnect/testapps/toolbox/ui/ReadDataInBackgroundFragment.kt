@@ -19,13 +19,13 @@ import android.health.connect.datatypes.StepsRecord
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.android.healthconnect.testapps.toolbox.PKG_TOOLBOX_2
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.ToolboxProxyPayload
 import com.android.healthconnect.testapps.toolbox.callToolbox
+import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.showMessageDialog
 import kotlinx.coroutines.launch
 
 class ReadDataInBackgroundFragment : Fragment(R.layout.fragment_read_data_in_background) {
@@ -47,11 +47,7 @@ class ReadDataInBackgroundFragment : Fragment(R.layout.fragment_read_data_in_bac
                     payload = payload,
                 )
 
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.app_label)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setMessage(response ?: "No response")
-                .show()
+            requireContext().showMessageDialog(response ?: "No response")
         }
     }
 }

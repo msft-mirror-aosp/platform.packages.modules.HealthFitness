@@ -132,6 +132,9 @@ class HomeFragment : Fragment() {
         view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {
             goToReadDataInBackgroundPage()
         }
+        view.requireViewById<Button>(R.id.read_data_in_foreground_button).setOnClickListener {
+            goToReadDataInForegroundPage()
+        }
 
         view.findViewById<Button>(R.id.request_combined_permissions).setOnClickListener {
             requestCombinedPermissions()
@@ -271,5 +274,8 @@ class HomeFragment : Fragment() {
 
     private fun goToReadDataInBackgroundPage() {
         mNavigationController.navigate(R.id.action_homeFragment_to_readDataInBackground)
+    }
+    private fun goToReadDataInForegroundPage() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_readDataInForeground)
     }
 }
