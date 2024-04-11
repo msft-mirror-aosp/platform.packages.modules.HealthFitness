@@ -120,8 +120,8 @@ public class SpeedRecordTest {
         List<SpeedRecord> oldSpeedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SpeedRecord.class).build());
-        SpeedRecord testRecord = getCompleteSpeedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        SpeedRecord testRecord = (SpeedRecord) TestUtils.insertRecord(getCompleteSpeedRecord());
         List<SpeedRecord> newSpeedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SpeedRecord.class).build());
@@ -136,8 +136,8 @@ public class SpeedRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        SpeedRecord testRecord = getCompleteSpeedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        SpeedRecord testRecord = (SpeedRecord) TestUtils.insertRecord(getCompleteSpeedRecord());
         List<SpeedRecord> newSpeedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SpeedRecord.class)
@@ -158,8 +158,8 @@ public class SpeedRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        SpeedRecord testRecord = getCompleteSpeedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        SpeedRecord testRecord = (SpeedRecord) TestUtils.insertRecord(getCompleteSpeedRecord());
         List<SpeedRecord> newSpeedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SpeedRecord.class)
@@ -217,8 +217,8 @@ public class SpeedRecordTest {
 
     @Test
     public void testDeleteSpeedRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseSpeedRecord(), getCompleteSpeedRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseSpeedRecord(), getCompleteSpeedRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -255,10 +255,10 @@ public class SpeedRecordTest {
 
     @Test
     public void testDeleteSpeedRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseSpeedRecord(), getCompleteSpeedRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseSpeedRecord(), getCompleteSpeedRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -321,8 +321,8 @@ public class SpeedRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteSpeedRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteSpeedRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -341,7 +341,9 @@ public class SpeedRecordTest {
     }
 
     private void testReadSpeedRecordIds() throws InterruptedException {
-        List<Record> recordList = Arrays.asList(getCompleteSpeedRecord(), getCompleteSpeedRecord());
+        List<Record> recordList =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompleteSpeedRecord(), getCompleteSpeedRecord()));
         readSpeedRecordUsingIds(recordList);
     }
 
