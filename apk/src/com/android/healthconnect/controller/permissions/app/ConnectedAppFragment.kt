@@ -178,6 +178,20 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             }
         }
 
+        childFragmentManager.setFragmentResultListener(DISCONNECT_CANCELED_EVENT, this) { _, _ ->
+            allowAllPreference.isChecked = true
+        }
+
+        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
+            val permissionsUpdated = appPermissionViewModel.revokeAllPermissions(packageName)
+            if (!permissionsUpdated) {
+                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
+            }
+            if (bundle.containsKey(KEY_DELETE_DATA) && bundle.getBoolean(KEY_DELETE_DATA)) {
+                appPermissionViewModel.deleteAppData(packageName, appName)
+            }
+        }
+
         setupAllowAllPreference()
         setupManageDataPreferenceCategory()
         setupHeader()
@@ -272,20 +286,6 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        childFragmentManager.setFragmentResultListener(DISCONNECT_CANCELED_EVENT, this) { _, _ ->
-            allowAllPreference.isChecked = true
-        }
-
-        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
-            val permissionsUpdated = appPermissionViewModel.revokeAllPermissions(packageName)
-            if (!permissionsUpdated) {
-                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
-            }
-            if (bundle.containsKey(KEY_DELETE_DATA) && bundle.getBoolean(KEY_DELETE_DATA)) {
-                appPermissionViewModel.deleteAppData(packageName, appName)
-            }
-        }
-
         DisconnectDialogFragment(appName).show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
 
