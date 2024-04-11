@@ -140,8 +140,10 @@ public class TotalCaloriesBurnedRecordTest {
                         new ReadRecordsRequestUsingFilters.Builder<>(
                                         TotalCaloriesBurnedRecord.class)
                                 .build());
-        TotalCaloriesBurnedRecord testRecord = getCompleteTotalCaloriesBurnedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        TotalCaloriesBurnedRecord testRecord =
+                (TotalCaloriesBurnedRecord)
+                        TestUtils.insertRecord(getCompleteTotalCaloriesBurnedRecord());
         List<TotalCaloriesBurnedRecord> newTotalCaloriesBurnedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -164,8 +166,10 @@ public class TotalCaloriesBurnedRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        TotalCaloriesBurnedRecord testRecord = getCompleteTotalCaloriesBurnedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        TotalCaloriesBurnedRecord testRecord =
+                (TotalCaloriesBurnedRecord)
+                        TestUtils.insertRecord(getCompleteTotalCaloriesBurnedRecord());
         List<TotalCaloriesBurnedRecord> newTotalCaloriesBurnedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -193,8 +197,10 @@ public class TotalCaloriesBurnedRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        TotalCaloriesBurnedRecord testRecord = getCompleteTotalCaloriesBurnedRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        TotalCaloriesBurnedRecord testRecord =
+                (TotalCaloriesBurnedRecord)
+                        TestUtils.insertRecord(getCompleteTotalCaloriesBurnedRecord());
         List<TotalCaloriesBurnedRecord> newTotalCaloriesBurnedRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(
@@ -423,8 +429,9 @@ public class TotalCaloriesBurnedRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteTotalCaloriesBurnedRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteTotalCaloriesBurnedRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

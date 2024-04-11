@@ -123,8 +123,8 @@ public class Vo2MaxRecordTest {
         List<Vo2MaxRecord> oldVo2MaxRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(Vo2MaxRecord.class).build());
-        Vo2MaxRecord testRecord = getCompleteVo2MaxRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        Vo2MaxRecord testRecord = (Vo2MaxRecord) TestUtils.insertRecord(getCompleteVo2MaxRecord());
         List<Vo2MaxRecord> newVo2MaxRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(Vo2MaxRecord.class).build());
@@ -139,8 +139,8 @@ public class Vo2MaxRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        Vo2MaxRecord testRecord = getCompleteVo2MaxRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        Vo2MaxRecord testRecord = (Vo2MaxRecord) TestUtils.insertRecord(getCompleteVo2MaxRecord());
         List<Vo2MaxRecord> newVo2MaxRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(Vo2MaxRecord.class)
@@ -161,8 +161,8 @@ public class Vo2MaxRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        Vo2MaxRecord testRecord = getCompleteVo2MaxRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        Vo2MaxRecord testRecord = (Vo2MaxRecord) TestUtils.insertRecord(getCompleteVo2MaxRecord());
         List<Vo2MaxRecord> newVo2MaxRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(Vo2MaxRecord.class)
@@ -243,8 +243,8 @@ public class Vo2MaxRecordTest {
 
     @Test
     public void testDeleteVo2MaxRecord_recordId_filters() throws InterruptedException {
-        List<Record> records = List.of(getBaseVo2MaxRecord(), getCompleteVo2MaxRecord());
-        TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseVo2MaxRecord(), getCompleteVo2MaxRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -281,10 +281,10 @@ public class Vo2MaxRecordTest {
 
     @Test
     public void testDeleteVo2MaxRecord_usingIds() throws InterruptedException {
-        List<Record> records = List.of(getBaseVo2MaxRecord(), getCompleteVo2MaxRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+        List<Record> records =
+                TestUtils.insertRecords(List.of(getBaseVo2MaxRecord(), getCompleteVo2MaxRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -452,8 +452,8 @@ public class Vo2MaxRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteVo2MaxRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(getCompleteVo2MaxRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(

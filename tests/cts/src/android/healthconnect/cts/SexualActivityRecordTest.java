@@ -125,8 +125,9 @@ public class SexualActivityRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SexualActivityRecord.class)
                                 .build());
-        SexualActivityRecord testRecord = getCompleteSexualActivityRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        SexualActivityRecord testRecord =
+                (SexualActivityRecord) TestUtils.insertRecord(getCompleteSexualActivityRecord());
         List<SexualActivityRecord> newSexualActivityRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SexualActivityRecord.class)
@@ -146,8 +147,9 @@ public class SexualActivityRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        SexualActivityRecord testRecord = getCompleteSexualActivityRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        SexualActivityRecord testRecord =
+                (SexualActivityRecord) TestUtils.insertRecord(getCompleteSexualActivityRecord());
         List<SexualActivityRecord> newSexualActivityRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SexualActivityRecord.class)
@@ -173,8 +175,9 @@ public class SexualActivityRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        SexualActivityRecord testRecord = getCompleteSexualActivityRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        SexualActivityRecord testRecord =
+                (SexualActivityRecord) TestUtils.insertRecord(getCompleteSexualActivityRecord());
         List<SexualActivityRecord> newSexualActivityRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(SexualActivityRecord.class)
@@ -256,8 +259,8 @@ public class SexualActivityRecordTest {
     @Test
     public void testDeleteSexualActivityRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseSexualActivityRecord(), getCompleteSexualActivityRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseSexualActivityRecord(), getCompleteSexualActivityRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -296,10 +299,10 @@ public class SexualActivityRecordTest {
     @Test
     public void testDeleteSexualActivityRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseSexualActivityRecord(), getCompleteSexualActivityRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(getBaseSexualActivityRecord(), getCompleteSexualActivityRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -468,8 +471,9 @@ public class SexualActivityRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteSexualActivityRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteSexualActivityRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
