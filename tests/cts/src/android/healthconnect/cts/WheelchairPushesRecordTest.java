@@ -90,8 +90,10 @@ public class WheelchairPushesRecordTest {
     @Test
     public void testReadWheelchairPushesRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteWheelchairPushesRecord(), getCompleteWheelchairPushesRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteWheelchairPushesRecord(),
+                                getCompleteWheelchairPushesRecord()));
         readWheelchairPushesRecordUsingIds(recordList);
     }
 
@@ -457,9 +459,8 @@ public class WheelchairPushesRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readWheelchairPushesRecordUsingIds(List<Record> recordList)
+    private void readWheelchairPushesRecordUsingIds(List<Record> records)
             throws InterruptedException {
-        List<Record> records = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<WheelchairPushesRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(WheelchairPushesRecord.class);
         for (Record record : records) {

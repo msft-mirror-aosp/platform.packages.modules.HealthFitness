@@ -525,9 +525,10 @@ public class CyclingPedalingCadenceRecordTest {
 
     private void testReadCyclingPedalingCadenceRecordIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteCyclingPedalingCadenceRecord(),
-                        getCompleteCyclingPedalingCadenceRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteCyclingPedalingCadenceRecord(),
+                                getCompleteCyclingPedalingCadenceRecord()));
         readCyclingPedalingCadenceRecordUsingIds(recordList);
     }
 
@@ -542,9 +543,8 @@ public class CyclingPedalingCadenceRecordTest {
         assertThat(result.containsAll(insertedRecords)).isTrue();
     }
 
-    private void readCyclingPedalingCadenceRecordUsingIds(List<Record> recordList)
+    private void readCyclingPedalingCadenceRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<CyclingPedalingCadenceRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(CyclingPedalingCadenceRecord.class);
         for (Record record : insertedRecords) {
