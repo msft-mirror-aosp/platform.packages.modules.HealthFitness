@@ -89,9 +89,10 @@ public class IntermenstrualBleedingRecordTest {
     @Test
     public void testReadIntermenstrualBleedingRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteIntermenstrualBleedingRecord(),
-                        getCompleteIntermenstrualBleedingRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteIntermenstrualBleedingRecord(),
+                                getCompleteIntermenstrualBleedingRecord()));
         readIntermenstrualBleedingRecordUsingIds(recordList);
     }
 
@@ -541,9 +542,8 @@ public class IntermenstrualBleedingRecordTest {
         readIntermenstrualBleedingRecordUsingIds(insertedRecords);
     }
 
-    private void readIntermenstrualBleedingRecordUsingIds(List<Record> recordList)
+    private void readIntermenstrualBleedingRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<IntermenstrualBleedingRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(IntermenstrualBleedingRecord.class);
         for (Record record : insertedRecords) {

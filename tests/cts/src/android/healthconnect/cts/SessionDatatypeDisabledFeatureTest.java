@@ -81,11 +81,11 @@ public class SessionDatatypeDisabledFeatureTest {
     public void testReadExerciseSession_insertAndRead_sessionIsNotAvailable()
             throws InterruptedException {
         List<Record> records = List.of(TestUtils.buildExerciseSession());
-        TestUtils.insertRecords(records);
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
         setSessionDatatypesFeatureEnabledFlag(false);
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
-        request.addId(records.get(0).getMetadata().getId());
+        request.addId(insertedRecords.get(0).getMetadata().getId());
         List<ExerciseSessionRecord> readRecords = TestUtils.readRecords(request.build());
         assertThat(readRecords).isEmpty();
     }
@@ -108,12 +108,12 @@ public class SessionDatatypeDisabledFeatureTest {
     public void testReadSleepSession_insertAndRead_sessionIsNotAvailable()
             throws InterruptedException {
         List<Record> records = List.of(TestUtils.buildSleepSession());
-        TestUtils.insertRecords(records);
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
         setSessionDatatypesFeatureEnabledFlag(false);
 
         ReadRecordsRequestUsingIds.Builder<SleepSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SleepSessionRecord.class);
-        request.addId(records.get(0).getMetadata().getId());
+        request.addId(insertedRecords.get(0).getMetadata().getId());
         List<SleepSessionRecord> readRecords = TestUtils.readRecords(request.build());
         assertThat(readRecords).isEmpty();
     }

@@ -223,8 +223,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
 
-        List<Record> testRecord = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord = TestUtils.insertRecords(TestUtils.getTestRecords());
         TestUtils.deleteRecords(testRecord);
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
@@ -250,8 +249,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
 
-        List<Record> testRecord = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord = TestUtils.insertRecords(TestUtils.getTestRecords());
         TestUtils.deleteRecords(testRecord);
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
@@ -278,14 +276,14 @@ public class HealthConnectChangeLogsTests {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(TestUtils.getStepsRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(Collections.singletonList(TestUtils.getStepsRecord()));
         TestUtils.deleteRecords(testRecord);
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(1);
-        testRecord = Collections.singletonList(TestUtils.getHeartRateRecord());
-        TestUtils.insertRecords(testRecord);
+        testRecord =
+                TestUtils.insertRecords(Collections.singletonList(TestUtils.getHeartRateRecord()));
         TestUtils.deleteRecords(testRecord);
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
@@ -301,8 +299,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
 
-        List<Record> testRecord = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord = TestUtils.insertRecords(TestUtils.getTestRecords());
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
     }
@@ -317,8 +314,7 @@ public class HealthConnectChangeLogsTests {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.hasMorePages()).isFalse();
 
-        List<Record> testRecord = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord = TestUtils.insertRecords(TestUtils.getTestRecords());
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.hasMorePages()).isTrue();
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
@@ -346,8 +342,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.hasMorePages()).isFalse();
-        List<Record> testRecord = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord = TestUtils.insertRecords(TestUtils.getTestRecords());
         ChangeLogsResponse newResponse = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(newResponse.getUpsertedRecords().size()).isEqualTo(testRecord.size());
     }
@@ -364,8 +359,7 @@ public class HealthConnectChangeLogsTests {
         ChangeLogsResponse response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.hasMorePages()).isFalse();
-        List<Record> testRecord = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord = TestUtils.insertRecords(TestUtils.getTestRecords());
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(testRecord.size());
         assertThat(response.hasMorePages()).isFalse();
