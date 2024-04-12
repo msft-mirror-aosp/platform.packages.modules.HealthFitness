@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.dataentries.formatters
 
 import android.content.Context
 import android.health.connect.datatypes.ExercisePerformanceGoal
+import android.health.connect.datatypes.ExerciseSegmentType
 import android.icu.text.MessageFormat
 import android.util.Log
 import com.android.healthconnect.controller.R
@@ -33,20 +34,28 @@ constructor(
     @ApplicationContext private val context: Context,
     private val speedFormatter: SpeedFormatter
 ) {
+    private val ACTIVITY_TYPES_WITH_CADENCE_MOTION =
+        listOf(
+            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_BIKING,
+            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_BIKING_STATIONARY,
+            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ROWING_MACHINE,
+            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_WHEELCHAIR)
 
     fun formatGoal(
         goal: ExercisePerformanceGoal,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
+        exerciseSegmentType: Int
     ): FormattedEntry {
         return ExercisePerformanceGoalEntry(
             goal = goal,
-            title = formatPerformanceGoal(goal, unitPreferences),
-            titleA11y = formatPerformanceGoalA11y(goal, unitPreferences))
+            title = formatPerformanceGoal(goal, unitPreferences, exerciseSegmentType),
+            titleA11y = formatPerformanceGoalA11y(goal, unitPreferences, exerciseSegmentType))
     }
 
     private fun formatPerformanceGoal(
         performanceGoal: ExercisePerformanceGoal,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
+        exerciseSegmentType: Int
     ): String {
         return when (performanceGoal) {
             is ExercisePerformanceGoal.PowerGoal ->
@@ -60,26 +69,33 @@ constructor(
                         mapOf("value" to performanceGoal.maxPower.inWatts)))
             is ExercisePerformanceGoal.AmrapGoal ->
                 context.getString(R.string.amrap_performance_goal)
-            is ExercisePerformanceGoal.CadenceGoal ->
-                context.getString(
+            is ExercisePerformanceGoal.CadenceGoal -> {
+                if (ACTIVITY_TYPES_WITH_CADENCE_MOTION.contains(exerciseSegmentType)) {
+                    return context.getString(
+                        R.string.performance_goals_range,
+                        MessageFormat.format(
+                            context.getString(R.string.cycling_rpm),
+                            mapOf("count" to performanceGoal.minRpm)),
+                        MessageFormat.format(
+                            context.getString(R.string.cycling_rpm),
+                            mapOf("count" to performanceGoal.maxRpm)))
+                }
+                return context.getString(
                     R.string.performance_goals_range,
                     MessageFormat.format(
-                        context.getString(R.string.cycling_rpm),
-                        mapOf("count" to performanceGoal.minRpm)),
+                        context.getString(R.string.steps_per_minute),
+                        mapOf("value" to performanceGoal.minRpm)),
                     MessageFormat.format(
-                        context.getString(R.string.cycling_rpm),
-                        mapOf("count" to performanceGoal.maxRpm)))
+                        context.getString(R.string.steps_per_minute),
+                        mapOf("value" to performanceGoal.maxRpm)))
+            }
             is ExercisePerformanceGoal.SpeedGoal ->
                 context.getString(
                     R.string.performance_goals_range,
                     speedFormatter.formatSpeedValue(
-                        SpeedFormatter(context).getUnitRes(unitPreferences),
-                        performanceGoal.minSpeed.inMetersPerSecond,
-                        unitPreferences),
+                        performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),
                     speedFormatter.formatSpeedValue(
-                        SpeedFormatter(context).getUnitRes(unitPreferences),
-                        performanceGoal.maxSpeed.inMetersPerSecond,
-                        unitPreferences))
+                        performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))
             is ExercisePerformanceGoal.HeartRateGoal ->
                 context.getString(
                     R.string.performance_goals_range,
@@ -103,7 +119,8 @@ constructor(
 
     private fun formatPerformanceGoalA11y(
         performanceGoal: ExercisePerformanceGoal,
-        unitPreferences: UnitPreferences
+        unitPreferences: UnitPreferences,
+        exerciseSegmentType: Int
     ): String {
         return when (performanceGoal) {
             is ExercisePerformanceGoal.PowerGoal ->
@@ -117,26 +134,33 @@ constructor(
                         mapOf("value" to performanceGoal.maxPower.inWatts)))
             is ExercisePerformanceGoal.AmrapGoal ->
                 context.getString(R.string.amrap_performance_goal)
-            is ExercisePerformanceGoal.CadenceGoal ->
-                context.getString(
+            is ExercisePerformanceGoal.CadenceGoal -> {
+                if (ACTIVITY_TYPES_WITH_CADENCE_MOTION.contains(exerciseSegmentType)) {
+                    return context.getString(
+                        R.string.performance_goals_range,
+                        MessageFormat.format(
+                            context.getString(R.string.cycling_rpm_long),
+                            mapOf("count" to performanceGoal.minRpm)),
+                        MessageFormat.format(
+                            context.getString(R.string.cycling_rpm_long),
+                            mapOf("count" to performanceGoal.maxRpm)))
+                }
+                return context.getString(
                     R.string.performance_goals_range,
                     MessageFormat.format(
-                        context.getString(R.string.cycling_rpm_long),
-                        mapOf("count" to performanceGoal.minRpm)),
+                        context.getString(R.string.steps_per_minute_long),
+                        mapOf("value" to performanceGoal.minRpm)),
                     MessageFormat.format(
-                        context.getString(R.string.cycling_rpm_long),
-                        mapOf("count" to performanceGoal.maxRpm)))
+                        context.getString(R.string.steps_per_minute_long),
+                        mapOf("value" to performanceGoal.maxRpm)))
+            }
             is ExercisePerformanceGoal.SpeedGoal ->
                 context.getString(
                     R.string.performance_goals_range,
-                    speedFormatter.formatSpeedValue(
-                        SpeedFormatter(context).getA11yUnitRes(unitPreferences),
-                        performanceGoal.minSpeed.inMetersPerSecond,
-                        unitPreferences),
-                    speedFormatter.formatSpeedValue(
-                        SpeedFormatter(context).getA11yUnitRes(unitPreferences),
-                        performanceGoal.maxSpeed.inMetersPerSecond,
-                        unitPreferences))
+                    speedFormatter.formatA11ySpeedValue(
+                        performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),
+                    speedFormatter.formatA11ySpeedValue(
+                        performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))
             is ExercisePerformanceGoal.HeartRateGoal ->
                 context.getString(
                     R.string.performance_goals_range,

@@ -31,6 +31,7 @@
   <string name="seed_random_data">Seed Random Data</string>
   <string name="read_data_in_background">Read Data in Background</string>
   <string name="read_data_in_foreground">Read Data in Foreground</string>
+  <string name="exit_process">Exit Process</string>
   <string name="all_permissions_already_granted_toast">Permissions already granted, please manage them via HC App</string>
   <string name="all_permissions_success">All permissions were successfully granted</string>
   <string name="number_of_permissions_not_granted">%1$d permissions were not granted</string>

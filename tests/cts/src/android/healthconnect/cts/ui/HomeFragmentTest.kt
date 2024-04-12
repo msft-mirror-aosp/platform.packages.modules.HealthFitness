@@ -28,6 +28,7 @@ import androidx.test.filters.FlakyTest
 import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
+import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
@@ -80,8 +81,7 @@ class HomeFragmentTest : HealthConnectBaseTest() {
             clickOnText("App permissions")
 
             waitDisplayed(By.text("Allowed access"))
-            // TODO(b/265789268): Fix flaky "Not allowed access" not found.
-            // waitDisplayed(By.text("Not allowed access"))
+            waitDisplayed(By.text("Not allowed access"), waitTimeout = Duration.ofSeconds(10))
         }
     }
 

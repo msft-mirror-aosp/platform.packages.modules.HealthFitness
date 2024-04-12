@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Keçmiş dataya giriş"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinə keçmiş dataya giriş icazəsi verilsin?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Bu tətbiqin <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarixindən əvvəl əlavə edilmiş Health Connect datasına girişinə icazə verin"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Bu tətbiqin keçmiş Health Connect datasına girişinə icazə verin"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Bu tətbiqin bütün keçmiş Health Connect datasına girişinə icazə verin"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"İcazə versəniz, bu tətbiq added before <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarixindən əvvəl əlavə edilmiş Health Connect datasına daxil ola bilər."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"İcazə versəniz, bu tətbiq keçmiş Health Connect datasına daxil ola bilər."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"İcazə versəniz, bu tətbiq bütün keçmiş Health Connect datasına daxil ola bilər."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Sərf edilmiş aktiv kalori"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"sərf edilmiş aktiv kalori"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Sərf edilmiş aktiv kalorini oxumaq"</string>
@@ -271,6 +271,9 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Bütün icazələr silinsin?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Hamısını silin"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> artıq Health Connect\'dən heç bir datanı oxuya və ya yaza bilməyəcək.\n\nBu, bu tətbiqin məkan, kamera və ya mikrofon kimi malik ola biləcəyi digər icazələrə təsir etmir."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect-dən arxa fon datası da daxil olmaqla heç bir datanı oxumayacaq və ya yazmayacaq.\n\nTətbiqin məkan, kamera və ya mikrofon kimi digər icazələrinə təsir etmir."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect-dən keçmiş dataya giriş daxil olmaqla heç bir datanı oxumayacaq və ya yazmayacaq.\n\nTətbiqin məkan, kamera və ya mikrofon kimi digər icazələrinə təsir etmir."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect-dən arxa fon və keçmiş data da daxil olmaqla heç bir datanı oxumayacaq və ya yazmayacaq.\n\nTətbiqin məkan, kamera və ya mikrofon kimi digər icazələrinə təsir etmir."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Həmçinin Health Connect\'dən <xliff:g id="APP_NAME">%1$s</xliff:g> datasını silin"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Növbəti gün"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Seçilmiş gün"</string>
@@ -304,6 +307,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Tətbiq girişi"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Quraşdırılmış uyğun tətbiq yoxdur"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Əlavə giriş"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Bu tətbiq üçün əlavə icazələr silindi"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Tətbiq icazələri silinib"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect bunlar üçün icazələri silib: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect bunlar üçün icazələri silib: <xliff:g id="APP_DATA_0">%1$s</xliff:g> və <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -325,12 +329,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Günlük"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Həftəlik"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Aylıq"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Eksport yeri"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Şifrlənməni yandırın"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data yadda saxlanmazdan əvvəl şifrlənməlidir. Hətta Google və ya Health Connect də dataya daxil ola bilməyəcək."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Şifrlənmiş datanı qorumaq üçün parol yaradın. Datanı import və bərpa etmək üçün bu parol lazım olacaq."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Parol"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Parolu təkrar edin"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Parollar uyğun gəlmir"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Parolu unutsanız və telefonu itirsəniz, Health Connect yadda saxlanılmış datanı bərpa etməyə kömək edə bilməz."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"Növbəti"</string>
@@ -426,6 +432,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nəticəsiz"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisaniyə}other{# millisaniyə}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 dəfə}other{# dəfə}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktiv: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Cəmi: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +800,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Bütün marşrutlara icazə verin"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"İcazə verməyin"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Həmişə icazə verilsin"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"İdman marşrutunun paylaşılması"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Bu tətbiqin qoşulmuş tətbiqlərdən idman marşrutlarına girişini idarə edin"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"İdman marşrutlarına giriş"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinə marşrutlara giriş imkanı verin"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Hər dəfə soruşulsun"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"İcazə verilməsin"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"İcazə verməyin"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Hər iki data növü aktivləşdirilsin?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Hər iki data növü deaktiv edilsin?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> məşq marşrutlarının aktivləşdirilməsi üçün məşqə girişin oxunmasını tələb edir"</string>
@@ -889,4 +897,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Giriş"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> tətbiqinə əlavə giriş verilsin?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> həmçinin bu Health Connect ayarlarına giriş istəyir"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu tətbiq üçün arxa fon və ya keçmiş dataya girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu tətbiq üçün arxa fonda girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu tətbiq üçün keçmiş dataya girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
 </resources>

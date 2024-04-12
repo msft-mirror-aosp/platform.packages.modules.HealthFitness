@@ -50,7 +50,16 @@
             android:layout_height="0dp"
             android:layout_marginVertical="@dimen/spacing_large"
             android:layout_weight="1"
-            android:orientation="vertical"/>
+            android:orientation="vertical">
+            <!-- b/325917283 temporary solution for the e2e prototype. Remove once we use proper storage UI APIs. -->
+            <Button
+                android:id="@+id/open_export_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/button_size"
+                android:text="Open export destination"
+                style="@style/Widget.HealthConnect.DialogButton.Full" />
+        </LinearLayout>
 
         <include layout="@layout/widget_export_navigation_buttons" />
     </LinearLayout>

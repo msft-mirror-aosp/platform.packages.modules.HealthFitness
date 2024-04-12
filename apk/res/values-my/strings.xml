@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"ယခင်ဒေတာ သုံးခွင့်"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> အား ယခင်ဒေတာ သုံးခွင့်ပြုမလား။"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"ဤအက်ပ်ကို <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> မတိုင်မီ ထည့်ထားသော Health Connect ဒေတာ သုံးခွင့်ပြုနိုင်သည်"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"ဤအက်ပ်ကို ယခင် Health Connect ဒေတာ သုံးခွင့်ပြုနိုင်သည်"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"ဤအက်ပ်ကို ယခင် Health Connect ဒေတာအားလုံး သုံးခွင့်ပြုနိုင်သည်"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"ခွင့်ပြုပါက ဤအက်ပ်သည် <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> မတိုင်မီ ထည့်ထားသော Health Connect ဒေတာ သုံးနိုင်သည်။"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"ခွင့်ပြုပါက ဤအက်ပ်သည် ယခင် Health Connect ဒေတာ သုံးနိုင်သည်။"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"ခွင့်ပြုပါက ဤအက်ပ်သည် ယခင် Health Connect ဒေတာအားလုံးကို သုံးနိုင်သည်။"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"လောင်ကျွမ်းသည့် လှုပ်ရှားကယ်လိုရီ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"လောင်ကျွမ်းသည့် လှုပ်ရှားကယ်လိုရီ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"လောင်ကျွမ်းသည့် လှုပ်ရှားကယ်လိုရီကို ဖတ်ရန်"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ခွင့်ပြုချက်အားလုံး ဖယ်ရှားမလား။"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"အားလုံး ဖယ်ရှားရန်"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော တည်နေရာ၊ ကင်မရာ (သို့) မိုက်ခရိုဖုန်းကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect မှ <xliff:g id="APP_NAME">%1$s</xliff:g> ဒေတာကိုလည်း ဖျက်ရန်"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"နောက်ရက်"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ရွေးထားသောနေ့"</string>
@@ -304,6 +310,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"အက်ပ်သုံးခွင့်"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"တွဲသုံးနိုင်သောအက်ပ်များကို လောလောဆယ် ထည့်သွင်းမထားပါ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"နောက်ထပ်သုံးခွင့်"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ဖယ်ရှားထားသည့် အက်ပ်ခွင့်ပြုချက်များ"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect က <xliff:g id="APP_DATA">%s</xliff:g> အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားလိုက်သည်"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect က <xliff:g id="APP_DATA_0">%1$s</xliff:g> နှင့် <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> အတွက် ခွင့်ပြုချက်များကို ဖယ်ရှားလိုက်သည်"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"နေ့စဉ်"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"အပတ်စဉ်"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"လစဉ်"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"တည်နေရာ ထုတ်ယူခြင်း"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"အသွင်ဝှက်ခြင်း ဖွင့်ပါ"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ဒေတာကို မသိမ်းမီ အသွင်ဝှက်ထားရမည်။ Google (သို့) ‘ကျန်းမာရေး အချိတ်အဆက်’ ပင်လျှင် ၎င်းကို သုံးနိုင်မည်မဟုတ်ပါ။"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"အသွင်ဝှက်ထားသော သင့်ဒေတာကို ကာကွယ်ရန် စကားဝှက်ပြုလုပ်ပါ။ သင့်ဒေတာကို ထည့်သွင်းပြီး ပြန်ယူရန် ဤစကားဝှက် လိုအပ်ပါမည်။"</string>
     <string name="export_password_hint" msgid="7095895042846772342">"စကားဝှက်"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"စကားဝှက် ပြန်ရိုက်ပါ"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"စကားဝှက်များ မတူညီပါ"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"စကားဝှက်မေ့သွားပြီး သင့်ဖုန်းပျောက်သွားပါက ‘ကျန်းမာရေး အချိတ်အဆက်’ သည် သိမ်းထားသော သင့်ဒေတာကို ပြန်လည်ရယူရာတွင် မကူညီနိုင်ပါ။"</string>
     <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"မရေရာ"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{၁ ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{၁ မီလီစက္ကန့်}other{# မီလီစက္ကန့်}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{၁ ကြိမ်}other{# ကြိမ်}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"လှုပ်ရှားကယ်လိုရီ လောင်ကျွမ်းမှု- <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"စုစုပေါင်း- <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"လမ်းကြောင်းအားလုံး ခွင့်ပြုရန်"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ခွင့်မပြုပါ"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"အမြဲခွင့်ပြုရန်"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"လေ့ကျင့်ခန်းလမ်းကြောင်း မျှဝေခြင်း"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"ချိတ်ဆက်ထားသောအက်ပ်များမှ လေ့ကျင့်ခန်းလမ်းကြောင်းများကို ဤအက်ပ်က မည်သို့သုံးနိုင်ကြောင်း သတ်မှတ်ပါ"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"လေ့ကျင့်ခန်းလမ်းကြောင်းများ သုံးခွင့်"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> ကို လမ်းကြောင်းများ သုံးခွင့်ပေးပါ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"အကြိမ်တိုင်း မေးရန်"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"ခွင့်မပြုပါ"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ဒေတာအမျိုးအစား နှစ်ခုစလုံးကို ဖွင့်မလား။"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ဒေတာအမျိုးအစား နှစ်ခုစလုံးကို ပိတ်မလား။"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် ဖွင့်ထားမည့် လေ့ကျင့်ခန်းလမ်းကြောင်းများအတိုင်း လေ့ကျင့်ရန် ဖတ်ခွင့်လိုအပ်သည်"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"သုံးခွင့်"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> အတွက် နောက်ထပ်သုံးခွင့်ပြုမလား။"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် ဤ Health Connect ဆက်တင်များကိုလည်း သုံးလိုသည်"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

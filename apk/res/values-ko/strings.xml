@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"이전 데이터에 액세스"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 이전 데이터에 액세스하도록 허용하시겠습니까?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"이 앱에서 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> 이전에 추가된 헬스 커넥트 데이터에 액세스하도록 허용"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"이 앱에서 이전 헬스 커넥트 데이터에 액세스하도록 허용"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"이 앱에서 모든 이전 헬스 커넥트 데이터에 액세스하도록 허용"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"허용하면 이 앱에서 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> 이전에 추가된 헬스 커넥트 데이터에 액세스할 수 있습니다."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"허용하면 이 앱에서 이전 헬스 커넥트 데이터에 액세스할 수 있습니다."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"허용하면 이 앱에서 모든 이전 헬스 커넥트 데이터에 액세스할 수 있습니다."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"활동 칼로리 소모량"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"활동 칼로리 소모량"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"활동 칼로리 소모량 읽기"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"모든 권한을 삭제하시겠습니까?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"전체 삭제"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 더 이상 헬스 커넥트의 데이터를 읽거나 쓸 수 없습니다.\n\n위치, 카메라, 마이크 등 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"헬스 커넥트에서 <xliff:g id="APP_NAME">%1$s</xliff:g> 데이터도 삭제"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"다음 날"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"선택한 날짜"</string>
@@ -304,6 +310,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"앱 액세스"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"현재 설치되어 있는 호환 앱이 없습니다"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"추가 액세스"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"앱 권한 삭제됨"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"헬스 커넥트에서 <xliff:g id="APP_DATA">%s</xliff:g>의 권한을 삭제했습니다."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"헬스 커넥트에서 <xliff:g id="APP_DATA_0">%1$s</xliff:g> 및 <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>의 권한을 삭제했습니다."</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"매일"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"매주"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"매달"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"내보내기 위치"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"암호화 사용 설정"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"데이터는 저장되기 전에 암호화되어야 합니다. Google이나 헬스 커넥트를 포함한 누구도 해당 데이터에 액세스할 수 없습니다."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"비밀번호를 만들고 암호화된 데이터를 보호하세요. 데이트를 가져오고 복원하려면 이 비밀번호가 필요합니다."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"비밀번호"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"비밀번호 확인"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"비밀번호가 일치하지 않음"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"비밀번호를 잊어버리고 휴대전화를 분실한 경우 헬스 커넥트는 저장된 데이터를 복구하는 데 도움을 줄 수 없습니다."</string>
     <string name="export_back_button" msgid="3550795479165524982">"뒤로"</string>
     <string name="export_next_button" msgid="657930567137105172">"다음"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"무효"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1ms}other{#ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1밀리초}other{#밀리초}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1회}other{#회}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"활동 칼로리 소모량: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"총 칼로리 소모량: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"모든 경로 허용"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"허용 안 함"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"항상 허용"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"운동 경로 공유"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"이 앱에서 연결된 앱의 운동 경로에 액세스하는 방식을 제어합니다."</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"운동 경로 액세스"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 운동 경로에 액세스하도록 허용"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"항상 확인"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"허용 안함"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"두 데이터 유형을 모두 사용 설정하시겠습니까?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"두 데이터 유형을 모두 사용 중지하시겠습니까?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"운동 경로를 사용 설정하려면 <xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 운동에 대해 읽기 액세스 권한이 필요합니다"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"액세스"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에 대한 추가 액세스를 허용하시겠습니까?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 이러한 헬스 커넥트 설정에도 액세스하려고 합니다."</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

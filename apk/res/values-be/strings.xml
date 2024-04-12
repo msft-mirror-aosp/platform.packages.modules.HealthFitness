@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Доступ да мінулых даных"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да мінулых даных?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Дазволіць праграме доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Дазволіць праграме доступ да мінулых даных платформы \"Здароўе і спорт\""</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дазволіць праграме доступ да ўсіх мінулых даных платформы \"Здароўе і спорт\""</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да мінулых даных платформы \"Здароўе і спорт\"."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да ўсіх мінулых даных платформы \"Здароўе і спорт\"."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Зрасходаваныя актыўныя калорыі"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"зрасходаваныя актыўныя калорыі"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Счытваць даныя пра зрасходаваныя актыўныя калорыі"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Выдаліць усе дазволы?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Выдаліць усе"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> больш не зможа счытваць і запісваць даныя з праграмы \"Здароўе і спорт\".\n\nГэта не паўплывае на іншыя дазволы, якія можа мець гэта праграма, напрыклад на доступ да геаданых, камеры ці мікрафона."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Таксама выдаліць даныя праграмы \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" з праграмы \"Здароўе і спорт\""</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Наступны дзень"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Абраны дзень"</string>
@@ -304,6 +310,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"Доступы праграмы"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"У вас не ўсталяваны сумяшчальныя праграмы"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Пашыраны доступ"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Выдаленыя дазволы праграм"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграмы \"<xliff:g id="APP_DATA">%s</xliff:g>\""</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Дазволы на доступ да даных праграмы \"Здароўе і спорт\" выдалены для праграм \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" і \"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\""</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Штодзень"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Штотыдзень"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Штомесяц"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Экспарт геаданых"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Уключыце шыфраванне"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перад захаваннем даныя трэба зашыфраваць. Ніхто, нават Google ці Здароўе і спорт, не змогуць атрымаць да іх доступ."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Стварыце пароль, каб абараніць зашыфраваныя даныя. Гэты пароль спатрэбіцца, калі вы захочаце імпартаваць і аднавіць даныя."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Пароль"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Увядзіце пароль яшчэ раз"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Паролі не супадаюць"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Калі вы забудзеце пароль і згубіце тэлефон, то не зможаце аднавіць захаваныя даныя праз Здароўе і спорт."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далей"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Недастаткова даных"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 мс}one{# мс}few{# мс}many{# мс}other{# мс}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 мілісекунда}one{# мілісекунда}few{# мілісекунды}many{# мілісекунд}other{# мілісекунды}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 раз}one{# раз}few{# разы}many{# разоў}other{# разу}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Спалена праз фізічную актыўнасць: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Усяго: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Дазволіць усе маршруты"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дазваляць"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Заўсёды дазваляць"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Абагульванне маршрутаў трэніровак"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Наладзьце доступ гэтай праграмы да даных пра маршруты трэніровак з падключаных праграм"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Доступ да маршрутаў трэніровак"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Даць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да маршрутаў"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Заўсёды пытацца"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Не дазваляць"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Уключыць абодва тыпы даных?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Адключыць абодва тыпы даных?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Каб маршруты трэніровак былі ўключаны, праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" патрабуецца доступ да трэніровак (доступ для чытання)"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"Доступ"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" пашыраны доступ?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Праграма \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" таксама запытвае доступ да наступных налад платформы \"Здароўе і спорт\""</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

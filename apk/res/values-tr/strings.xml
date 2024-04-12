@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Geçmiş verilere erişme"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının geçmiş verilere erişmesine izin verilsin mi?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Bu uygulamanın, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarihinden önce eklenen Health Connect verilerine erişmesine izin verir"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Bu uygulamanın geçmiş Health Connect verilerine erişmesine izin verir"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Bu uygulamanın geçmiş tüm Health Connect verilerine erişmesine izin verir"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"İzin verdiğiniz takdirde bu uygulama, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarihinden önce eklenen Health Connect verilerine erişebilir."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"İzin verdiğiniz takdirde bu uygulama, geçmiş Health Connect verilerine erişebilir."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"İzin verdiğiniz takdirde bu uygulama, geçmiş tüm Health Connect verilerine erişebilir."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Yakılan aktif kalori"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"yakılan aktif kalori"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Yakılan aktif kaloriyi oku"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Tüm izinler kaldırılsın mı?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Tümünü kaldır"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> artık Health Connect\'teki verileri okuyamayacak veya yazamayacak.\n\nBu durum, uygulamanın sahip olabileceği konum, kamera veya mikrofon gibi diğer izinleri etkilemez."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"<xliff:g id="APP_NAME">%1$s</xliff:g> verilerini de Health Connect\'ten sil"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Sonraki gün"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Seçili gün"</string>
@@ -304,6 +310,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"Uygulama erişimi"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Şu anda yüklü olan uyumlu uygulamanız yok"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Ek erişim"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Uygulama izinleri kaldırıldı"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect, <xliff:g id="APP_DATA">%s</xliff:g> için izinleri kaldırdı"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect, <xliff:g id="APP_DATA_0">%1$s</xliff:g> ve <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> için izinleri kaldırdı"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Günlük"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Haftalık"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Aylık"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Dışa aktarma konumu"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Şifrelemeyi etkinleştir"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Verilerin kaydedilmeden önce şifrelenmesi gerekir. Google veya Health Connect de dahil hiç kimse bu verilere erişemez."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Şifrelenmiş verilerinizi korumak için şifre oluşturun. Verilerinizi içe aktarıp geri yüklemek için bu şifreye ihtiyacınız olacak."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Şifre"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Şifreyi tekrar girin"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Şifreler eşleşmiyor"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Şifrenizi unutursanız ve telefonunuzu kaybederseniz Health Connect, kayıtlı verilerinizi kurtarmanıza yardımcı olamaz."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Geçersiz"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms.}other{# ms.}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisaniye}other{# milisaniye}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 kez}other{# kez}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Etkin: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Toplam: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Tüm rotalara izin ver"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"İzin verme"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Her zaman izin ver"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Egzersiz rotası paylaşımı"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Bu uygulamanın, bağlı uygulamalardan egzersiz rotalarına erişme şeklini kontrol edin"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Antrenman rotalarına erişim"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının rotalara erişmesine izin verin"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Her zaman sor"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"İzin verme"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Her iki veri türü de etkinleştirilsin mi?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Her iki veri türü de devre dışı bırakılsın mı?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Egzersiz rotalarının etkinleştirilmesi için <xliff:g id="APP_NAME">%1$s</xliff:g> adlı uygulamanın, egzersiz verilerine okuma erişimi olması gerekir"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"Erişim"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasına ek erişim verilsin mi?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g>, şu Health Connect ayarlarına da erişmek istiyor"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

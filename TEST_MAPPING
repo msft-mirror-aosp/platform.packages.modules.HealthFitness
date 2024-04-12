@@ -1,18 +1,48 @@
 {
   "healthfitness-mainline-presubmit": [
     {
-      "name" : "HealthConnectControllerUITests",
-      "options": [
-                {
-                    "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
-                }
-      ]
-    },
-    {
       "name": "CtsHealthFitnessDeviceTestCases"
     },
     {
       "name": "CtsHealthFitnessDeviceTestCasesNoPermission"
+    },
+    {
+       "name": "HealthConnectControllerDataScreensNewTests"
+    },
+    {
+       "name": "HealthConnectControllerDataScreensOldTests",
+       "options": [
+                 {
+                      "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
+                  }
+       ]
+    },
+    {
+       "name": "HealthConnectControllerDeletionTests"
+    },
+    {
+       "name": "HealthConnectControllerExerciseRouteTests"
+    },
+    {
+       "name": "HealthConnectControllerExportTests"
+    },
+    {
+       "name": "HealthConnectControllerHomePageAndOnboardingTests"
+    },
+    {
+       "name": "HealthConnectControllerManageDataTests"
+    },
+    {
+       "name": "HealthConnectControllerMigrationTests"
+    },
+    {
+       "name": "HealthConnectControllerNavigationTests"
+    },
+    {
+       "name": "HealthConnectControllerPermissionTests"
+    },
+    {
+       "name": "HealthConnectControllerExtraTests"
     }
   ],
   "mainline-presubmit": [

@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Acessar dados antigos"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados antigos?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Permitir que este app acesse dados da Conexão Saúde antes de <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Permitir que este app acesse dados antigos da Conexão Saúde"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permitir que este app acesse todos dados antigos da Conexão Saúde"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Se você autorizar, este app poderá acessar dados da Conexão Saúde adicionados antes de <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Se você autorizar, este app poderá acessar os dados antigos da Conexão Saúde."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Se você autorizar, este app poderá acessar todos os dados antigos da Conexão Saúde."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorias ativas queimadas"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calorias ativas queimadas"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Ler informações de calorias ativas queimadas"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Remover todas as permissões?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Remover tudo"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> não vai poder ler nem gravar dados da plataforma Conexão Saúde.\n\nIsso não afeta outras permissões do app, como de localização, câmera ou microfone."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Também excluir dados do app <xliff:g id="APP_NAME">%1$s</xliff:g> da plataforma Conexão Saúde"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Dia seguinte"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dia selecionado"</string>
@@ -301,9 +307,11 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Para gerenciar outras permissões do Android que esse app pode acessar, vá até \"Configurações\" e toque em \"Apps\""</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Leia a Política de Privacidade"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Acessado nas últimas 24 horas"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Acesso do app"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Acesso de apps"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Não há apps compatíveis instalados no momento"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acesso adicional"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permissões de apps removidas"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"A plataforma Conexão Saúde removeu as permissões do app <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"A plataforma Conexão Saúde removeu as permissões dos apps <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensalmente"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Exportar local"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Ative a criptografia"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Os dados precisam ser criptografados antes de serem salvos. Ninguém, nem mesmo o Google ou a Conexão Saúde, terá acesso a eles."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crie uma senha para proteger seus dados criptografados. Você vai precisar dela para importar e restaurar seus dados."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Senha"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Repita a senha"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"As senhas não são iguais"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Se você esquecer a senha e perder o smartphone, a Conexão Saúde não poderá ajudar na recuperação dos dados salvos."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Voltar"</string>
     <string name="export_next_button" msgid="657930567137105172">"Próxima"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Inconclusivo"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1ms}one{#ms}other{#ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milissegundo}one{# milissegundo}other{# milissegundos}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 vez}one{# vez}other{# vezes}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Em atividade: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permitir todos os trajetos"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Não permitir"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Sempre permitir"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Compartilhamento de trajetos de exercícios"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Controle como este app acessa trajetos de exercícios de apps conectados"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Acessar trajetos de exercícios"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse trajetos"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Perguntar sempre"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Não permitir"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Ativar os dois tipos de dados?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Desativar os dois tipos de dados?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> precisa ter acesso de leitura aos exercícios para que os trajetos sejam ativados"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"Acesso"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> tenha mais acesso?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"O app <xliff:g id="APP_NAME">%1$s</xliff:g> também quer acessar as configurações da Conexão Saúde"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

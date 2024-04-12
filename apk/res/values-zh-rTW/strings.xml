@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"存取過往資料"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"要允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取過往資料嗎？"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"允許這個應用程式存取 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前加入健康資料同步的資料"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"允許這個應用程式存取健康資料同步的過往資料"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"允許這個應用程式存取所有先前的「健康資料同步」資料"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"如果允許，這個應用程式將可存取 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前加入健康資料同步的資料。"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"如果允許，這個應用程式將可存取健康資料同步的過往資料。"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"如果允許，這個應用程式就能存取所有先前的「健康資料同步」資料。"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"活動卡路里燃燒量"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"活動卡路里燃燒量"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"讀取活動卡路里燃燒量資料"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"要移除所有權限嗎？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"全部移除"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」將無法在「健康資料同步」中讀取或寫入任何資料。\n\n這不會影響這個應用程式可能擁有的其他權限，例如位置資訊、相機或麥克風的存取權。"</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"一併刪除「健康資料同步」內的「<xliff:g id="APP_NAME">%1$s</xliff:g>」資料"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"後一天"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"所選日期"</string>
@@ -297,13 +303,15 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"這些應用程式已無存取權，但仍有資料儲存在「健康資料同步」中"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以讀取 <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>後新增的資料"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"如要管理這個應用程式可以存取的其他 Android 權限，請依序前往「設定」&gt;「應用程式」"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"你與「<xliff:g id="APP_NAME">%1$s</xliff:g>」分享的資料受該應用程式的隱私權政策規範"</string>
+    <string name="manage_permissions_rationale" msgid="9183689798847740274">"你與「<xliff:g id="APP_NAME">%1$s</xliff:g>」分享的資料適用於該應用程式的隱私權政策"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"如要管理這個應用程式可以存取的其他 Android 權限，請前往「設定」，然後輕觸「應用程式」"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"閱讀隱私權政策"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次存取時間：過去 24 小時內"</string>
     <string name="app_access_title" msgid="7137018424885371763">"應用程式存取權"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"你目前未安裝任何相容的應用程式"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"額外存取權"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"應用程式權限已移除"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"「健康資料同步」已移除「<xliff:g id="APP_DATA">%s</xliff:g>」的權限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"「健康資料同步」已移除「<xliff:g id="APP_DATA_0">%1$s</xliff:g>」和「<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>」的權限"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每週"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"匯出位置"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"開啟加密功能"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"資料需要先加密再儲存。包括 Google 或健康資料同步在內，沒有人可以存取這些資料。"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"建立密碼可保護加密的資料。你需要使用這組密碼，才能匯入及還原資料。"</string>
     <string name="export_password_hint" msgid="7095895042846772342">"密碼"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"再次輸入密碼"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"密碼不符"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"如果你忘記密碼且遺失手機，健康資料同步就無法協助你復原已儲存的資料。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"不明確"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 毫秒}other{# 毫秒}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 毫秒}other{# 毫秒}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 次}other{# 次}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"活動卡路里燃燒量：<xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"卡路里燃燒總量：<xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -620,8 +632,8 @@
     <string name="chromium" msgid="807851794929222026">"鉻"</string>
     <string name="copper" msgid="8603012497089601260">"銅"</string>
     <string name="dietary_fiber" msgid="6928876454420561553">"膳食纖維"</string>
-    <string name="energy_consumed_total" msgid="7866804137119190606">"能量"</string>
-    <string name="energy_consumed_from_fat" msgid="8637734004867176038">"來自脂肪的能量"</string>
+    <string name="energy_consumed_total" msgid="7866804137119190606">"熱量"</string>
+    <string name="energy_consumed_from_fat" msgid="8637734004867176038">"來自脂肪的熱量"</string>
     <string name="folate" msgid="7728279545427110321">"葉酸"</string>
     <string name="folic_acid" msgid="6861953414423667870">"葉酸"</string>
     <string name="iodine" msgid="2896913103021799237">"碘"</string>
@@ -722,7 +734,7 @@
     <string name="distance_unit_title" msgid="4696952932438418209">"距離"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"身高"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"體重"</string>
-    <string name="energy_unit_title" msgid="1714627395963766769">"能量"</string>
+    <string name="energy_unit_title" msgid="1714627395963766769">"熱量"</string>
     <string name="temperature_unit_title" msgid="1973985121774654017">"溫度"</string>
     <string name="distance_unit_kilometers_label" msgid="1361363017122240294">"公里"</string>
     <string name="distance_unit_miles_label" msgid="848850214987608211">"英里"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"允許存取所有路線"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"不允許"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"一律允許"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"分享運動路線"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"控管這個應用程式如何存取連結應用程式中的運動路線資訊"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"存取運動路線"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"允許「<xliff:g id="APP_NAME">%1$s</xliff:g>」存取路線"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"每次都詢問"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"不允許"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"要啟用這兩種資料類型嗎？"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"要停用這兩種資料類型嗎？"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> 需要具備運動資料讀取權限，才能啟用運動路線"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"存取權"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"要授予「<xliff:g id="APP_NAME">%1$s</xliff:g>」額外存取權嗎？"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」還想存取這些健康資料同步設定"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

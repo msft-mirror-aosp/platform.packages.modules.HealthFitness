@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Přístup k dřívějším datům"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k dřívějším datům?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Povolit této aplikaci přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Povolit této aplikaci přístup k dřívějším datům Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povolit této aplikaci přístup ke všem dřívějším datům Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Pokud toto povolíte, bude mít aplikace přístup k dřívějším datům Health Connect."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Pokud toto povolíte, bude mít aplikace přístup ke všem dřívějším datům Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorie spálené aktivitou"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorie spálené aktivitou"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Číst kalorie spálené aktivitou"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Odebrat všechna oprávnění?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Odstranit vše"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> již nebude moci číst ani zapisovat žádná data ze služby Health Connect.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Také vymazat data aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> ze služby Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Další den"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný den"</string>
@@ -290,7 +296,7 @@
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Odebrat přístup všem aplikacím?"</string>
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Žádné z vašich aplikací nebudou mít přístup k datům služby Health Connect a nebudou moci přidávat nová. Touto akcí nesmažete žádná existující data.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Odstranit vše"</string>
-    <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Spravovat aplikaci"</string>
+    <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Správa aplikace"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Zobrazit data aplikace"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Smazat data aplikace"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktivní aplikace"</string>
@@ -301,9 +307,11 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Pokud chcete spravovat ostatní oprávnění Androidu, ke kterým má aplikace přístup, přejděte do Nastavení a klepněte na Aplikace"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Zobrazit zásady ochrany soukromí"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Použito během posledních 24 hodin"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Přístup aplikací"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Přístup aplikace"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálně nemáte nainstalované žádné kompatibilní aplikace"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Další přístup"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odebrání oprávnění aplikacím"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Aplikace Health Connect odebrala oprávnění aplikaci <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Aplikace Health Connect odebrala oprávnění aplikacím <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Každý den"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Každý týden"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Každý měsíc"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Umístění pro export"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Zapnout šifrování"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data musí být před uložením zašifrována. Nikdo k nim nebude mít přístup, ani Google nebo aplikace Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Vytvořte heslo, které bude chránit vaše zašifrovaná data. Toto heslo budete potřebovat při importu a obnovení dat."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Heslo"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Zopakujte heslo"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Hesla se neshodují"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Pokud zapomenete heslo a ztratíte telefon, aplikace Health Connect uložená data obnovit nedokáže."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Zpět"</string>
     <string name="export_next_button" msgid="657930567137105172">"Další"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neprůkazný výsledek"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}many{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}few{# milisekundy}many{# milisekundy}other{# milisekund}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1×}few{#×}many{#×}other{#×}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktivní: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Celkem: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Povolit všechny trasy"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nepovolovat"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Vždy povolit"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Sdílení tréninkových tras"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Určete, jak má tato aplikace přistupovat k tréninkovým trasám z připojených aplikací"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Přístup k trasám cvičení"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Povolte aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k trasám"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pokaždé se zeptat"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Nepovolovat"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Povolit oba typy dat?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Zakázat oba typy dat?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> potřebuje přístup ke čtení pro cvičení, aby mohla aktivovat trasy cvičení"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"Přístup"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> další přístup?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> chce také získat přístup k těmto nastavením Health Connect"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

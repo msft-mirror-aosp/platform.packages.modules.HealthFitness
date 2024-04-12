@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Dostęp do wcześniejszych danych"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do wcześniejszych danych?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Zezwól tej aplikacji na dostęp do danych z Health Connect dodanych przed <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Zezwól tej aplikacji na dostęp do wcześniejszych danych z Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Zezwól tej aplikacji na dostęp do wszystkich wcześniejszych danych z Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Jeśli na to zezwolisz, aplikacja będzie miała dostęp do danych z Health Connect dodanych przed <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Jeśli na to zezwolisz, aplikacja będzie miała dostęp do wcześniejszych danych z Health Connect."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Jeśli na to zezwolisz, aplikacja będzie miała dostęp do wszystkich wcześniejszych danych z Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorie spalone podczas aktywności"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorie spalone podczas aktywności"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Odczytuj informacje o kaloriach spalonych podczas aktywności"</string>
@@ -260,7 +260,7 @@
     <string name="write_permission_category" msgid="1529702804865008111">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na zapisywanie"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Anuluj"</string>
     <string name="request_permissions_allow" msgid="4201324235711040631">"Zezwól"</string>
-    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Zezwól na wszystkie"</string>
+    <string name="request_permissions_allow_all" msgid="3419414351406638770">"Zezwalaj na wszystko"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Nie zezwalaj"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Wybierz, które dane aplikacja będzie mogła odczytywać lub zapisywać w Health Connect."</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Jeśli przyznasz uprawnienia do odczytu, aplikacja będzie mogła odczytywać nowe dane i dane z ostatnich 30 dni"</string>
@@ -271,6 +271,9 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Usunąć wszystkie uprawnienia?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Usuń wszystko"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym danych w tle) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym wcześniejszych danych) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym danych w tle i wcześniejszych danych) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Usuń z Health Connect także dane zapisane w aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Następny dzień"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Wybrany dzień"</string>
@@ -304,6 +307,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Dostęp aplikacji"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Nie masz obecnie zainstalowanych żadnych zgodnych aplikacji"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatkowy dostęp"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Usunięto dodatkowe uprawnienia dla tej aplikacji"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Uprawnienia aplikacji zostały usunięte"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Aplikacja Health Connect usunęła uprawnienia aplikacji <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Aplikacja Health Connect usunęła uprawnienia aplikacji <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -325,12 +329,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Codziennie"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Co tydzień"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Co miesiąc"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Lokalizacja eksportu"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Włącz szyfrowanie"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Przed zapisaniem dane trzeba zaszyfrować. Nikt nie będzie mieć do nich dostępu, nawet Google i Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Utwórz hasło, aby chronić swoje zaszyfrowane dane. Będziesz go potrzebować do zaimportowania i przywrócenia danych."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Hasło"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Powtórz hasło"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Hasła nie są identyczne"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Jeśli zapomnisz hasło lub zgubisz telefon, Health Connect nie będzie w stanie Ci pomóc odzyskać zapisanych danych."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Wstecz"</string>
     <string name="export_next_button" msgid="657930567137105172">"Dalej"</string>
@@ -426,6 +432,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Wynik nierozstrzygający"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}many{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}few{# milisekundy}many{# milisekund}other{# milisekundy}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Notatki"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 raz}few{# razy}many{# razy}other{# raza}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Kalorie spalone podczas aktywności: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Łącznie: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +799,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Zezwalaj na wszystkie trasy"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nie zezwalaj"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Zawsze zezwalaj"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Udostępnianie trasy ćwiczeń"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Określ, jak aplikacja ma uzyskiwać dostęp do tras ćwiczeń z połączonych aplikacji"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Dostęp do tras ćwiczeń"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Zezwalaj aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dostęp do tras ćwiczeń"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Zawsze pytaj"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Nie zezwalaj"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Nie zezwalaj"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Włączyć oba typy danych?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Wyłączyć oba typy danych?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Aby można było korzystać z tras ćwiczeń, <xliff:g id="APP_NAME">%1$s</xliff:g> wymaga dostępu do odczytywania ćwiczeń"</string>
@@ -889,4 +896,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Dostęp"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Zezwolić aplikacji <xliff:g id="APP_NAME">%1$s</xliff:g> na dodatkowy dostęp?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> wymaga też dostępu do tych ustawień Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aby przyznać tej aplikacji dostęp w tle lub dostęp do wcześniejszych danych, włącz co najmniej 1 uprawnienie do odczytu"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Aby przyznać tej aplikacji dostęp w tle, włącz co najmniej 1 uprawnienie do odczytu"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Aby przyznać tej aplikacji dostęp do wcześniejszych danych, włącz co najmniej 1 uprawnienie do odczytu"</string>
 </resources>

@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"访问过去的数据"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问过去的数据？"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"允许此应用访问过去的“健康数据共享”数据"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"允许此应用访问过去的所有“健康数据共享”数据"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"如果您允许，此应用可以访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据。"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"如果您允许，此应用可以访问过去的“健康数据共享”数据。"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"如果您允许，此应用可以访问过去的所有“健康数据共享”数据。"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"运动消耗的卡路里"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"运动消耗的卡路里"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"读取运动消耗的卡路里数据"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"要撤消所有权限吗？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"全部移除"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法继续在“健康数据共享”中读取或写入任何数据。\n\n这不会影响此应用可能拥有的其他权限，例如位置信息、摄像头或麦克风权限。"</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"同时删除“健康数据共享”中的“<xliff:g id="APP_NAME">%1$s</xliff:g>”数据"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"后一天"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"选定的日期"</string>
@@ -304,6 +310,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"应用访问权限"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"您目前没有安装任何兼容应用"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"额外访问权限"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"已撤消应用权限"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"健康数据共享已撤消“<xliff:g id="APP_DATA">%s</xliff:g>”的权限"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"健康数据共享已撤消“<xliff:g id="APP_DATA_0">%1$s</xliff:g>”和“<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>”的权限"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每周"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"导出位置"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"开启加密功能"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"数据在保存前需要进行加密。任何人都无法访问数据，包括 Google 或“健康数据共享”在内。"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"创建密码可保护已加密的数据。导入和恢复数据时需要此密码。"</string>
     <string name="export_password_hint" msgid="7095895042846772342">"密码"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"再次输入密码"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"密码不一致"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"如果您忘记了密码、丢失了手机，“健康数据共享”无法帮助您恢复已保存的数据。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"继续"</string>
@@ -426,6 +436,8 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"不明确"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 毫秒}other{# 毫秒}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 毫秒}other{# 毫秒}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 次}other{# 次}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"活动消耗的卡路里数：<xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"消耗的总卡路里数：<xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -792,10 +804,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"允许访问所有路线"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"不允许"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"始终允许"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"锻炼路线分享"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"控制此应用如何获取关联的应用内的锻炼路线"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"读取锻炼路线"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”读取路线信息"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"每次都询问"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"不允许"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"是否要启用这两种数据类型？"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"是否要停用这两种数据类型？"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> 需要读取锻炼数据，才能启用锻炼路线"</string>
@@ -889,4 +902,10 @@
     <string name="tab_access" msgid="7818197975407243701">"有访问权限的应用"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”获得其他访问权限？"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”还想访问这些“健康数据共享”设置"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

@@ -41,7 +41,6 @@ import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.units.Energy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.DeviceConfigRule;
 import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 import android.healthconnect.test.app.DefaultOutcomeReceiver;
@@ -64,10 +63,6 @@ import java.util.concurrent.Executors;
 public class BackgroundReadTest {
 
     private static final String PKG_TEST_APP = "android.healthconnect.test.app";
-
-    @Rule
-    public final DeviceConfigRule mDeviceConfigRule =
-            new DeviceConfigRule("background_read_enable", "true");
 
     private Context mContext;
     private PackageManager mPackageManager;
@@ -124,10 +119,10 @@ public class BackgroundReadTest {
         mManager.insertRecords(
                 List.of(
                         new ActiveCaloriesBurnedRecord.Builder(
-                                new Metadata.Builder().build(),
-                                Instant.now().minusSeconds(60),
-                                Instant.now(),
-                                Energy.fromCalories(100.0))
+                                        new Metadata.Builder().build(),
+                                        Instant.now().minusSeconds(60),
+                                        Instant.now(),
+                                        Energy.fromCalories(100.0))
                                 .build()),
                 Executors.newSingleThreadExecutor(),
                 outcomeReceiver);
