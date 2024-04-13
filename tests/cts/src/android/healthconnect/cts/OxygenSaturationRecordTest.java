@@ -129,8 +129,10 @@ public class OxygenSaturationRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(OxygenSaturationRecord.class)
                                 .build());
-        OxygenSaturationRecord testRecord = getCompleteOxygenSaturationRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        OxygenSaturationRecord testRecord =
+                (OxygenSaturationRecord)
+                        TestUtils.insertRecord(getCompleteOxygenSaturationRecord());
         List<OxygenSaturationRecord> newOxygenSaturationRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(OxygenSaturationRecord.class)
@@ -152,8 +154,10 @@ public class OxygenSaturationRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        OxygenSaturationRecord testRecord = getCompleteOxygenSaturationRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        OxygenSaturationRecord testRecord =
+                (OxygenSaturationRecord)
+                        TestUtils.insertRecord(getCompleteOxygenSaturationRecord());
         List<OxygenSaturationRecord> newOxygenSaturationRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(OxygenSaturationRecord.class)
@@ -179,8 +183,10 @@ public class OxygenSaturationRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        OxygenSaturationRecord testRecord = getCompleteOxygenSaturationRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        OxygenSaturationRecord testRecord =
+                (OxygenSaturationRecord)
+                        TestUtils.insertRecord(getCompleteOxygenSaturationRecord());
         List<OxygenSaturationRecord> newOxygenSaturationRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(OxygenSaturationRecord.class)
@@ -263,8 +269,10 @@ public class OxygenSaturationRecordTest {
     @Test
     public void testDeleteOxygenSaturationRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseOxygenSaturationRecord(), getCompleteOxygenSaturationRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseOxygenSaturationRecord(),
+                                getCompleteOxygenSaturationRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -303,10 +311,12 @@ public class OxygenSaturationRecordTest {
     @Test
     public void testDeleteOxygenSaturationRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseOxygenSaturationRecord(), getCompleteOxygenSaturationRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseOxygenSaturationRecord(),
+                                getCompleteOxygenSaturationRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -486,8 +496,9 @@ public class OxygenSaturationRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteOxygenSaturationRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> insertedRecords =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteOxygenSaturationRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -496,7 +507,10 @@ public class OxygenSaturationRecordTest {
                                 .map(Metadata::getId)
                                 .toList())
                 .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+                        insertedRecords.stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList());
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(
