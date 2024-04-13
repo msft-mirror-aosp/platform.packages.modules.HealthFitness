@@ -23,6 +23,8 @@ import android.util.Log
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
+import com.android.healthconnect.controller.dataentries.formatters.SpeedFormatter.Companion.ACTIVITY_TYPES_WITH_PACE_VELOCITY
+import com.android.healthconnect.controller.dataentries.formatters.SpeedFormatter.Companion.SWIMMING_ACTIVITY_TYPES
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -90,12 +92,21 @@ constructor(
                         mapOf("value" to performanceGoal.maxRpm)))
             }
             is ExercisePerformanceGoal.SpeedGoal ->
-                context.getString(
-                    R.string.performance_goals_range,
-                    speedFormatter.formatSpeedValue(
-                        performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),
-                    speedFormatter.formatSpeedValue(
-                        performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))
+                if (ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType) ||
+                    SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType))
+                    context.getString(
+                        R.string.performance_goals_range,
+                        speedFormatter.formatSpeedValue(
+                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType),
+                        speedFormatter.formatSpeedValue(
+                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType))
+                else
+                    context.getString(
+                        R.string.performance_goals_range,
+                        speedFormatter.formatSpeedValue(
+                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),
+                        speedFormatter.formatSpeedValue(
+                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))
             is ExercisePerformanceGoal.HeartRateGoal ->
                 context.getString(
                     R.string.performance_goals_range,
@@ -155,12 +166,21 @@ constructor(
                         mapOf("value" to performanceGoal.maxRpm)))
             }
             is ExercisePerformanceGoal.SpeedGoal ->
-                context.getString(
-                    R.string.performance_goals_range,
-                    speedFormatter.formatA11ySpeedValue(
-                        performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),
-                    speedFormatter.formatA11ySpeedValue(
-                        performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))
+                if (ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType) ||
+                    SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType))
+                    context.getString(
+                        R.string.performance_goals_range,
+                        speedFormatter.formatA11ySpeedValue(
+                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType),
+                        speedFormatter.formatA11ySpeedValue(
+                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType))
+                else
+                    context.getString(
+                        R.string.performance_goals_range,
+                        speedFormatter.formatA11ySpeedValue(
+                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),
+                        speedFormatter.formatA11ySpeedValue(
+                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))
             is ExercisePerformanceGoal.HeartRateGoal ->
                 context.getString(
                     R.string.performance_goals_range,

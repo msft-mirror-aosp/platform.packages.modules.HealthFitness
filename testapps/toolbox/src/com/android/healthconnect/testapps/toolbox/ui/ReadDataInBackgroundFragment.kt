@@ -33,7 +33,16 @@ class ReadDataInBackgroundFragment : Fragment(R.layout.fragment_read_data_in_bac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.requireViewById<Button>(R.id.read_steps_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.read_own_steps_button).setOnClickListener {
+            callToolbox2(
+                ToolboxProxyPayload.ReadRecords(
+                    type = StepsRecord::class.java,
+                    packageNames = listOf(PKG_TOOLBOX_2),
+                )
+            )
+        }
+
+        view.requireViewById<Button>(R.id.read_all_steps_button).setOnClickListener {
             callToolbox2(ToolboxProxyPayload.ReadRecords(type = StepsRecord::class.java))
         }
     }

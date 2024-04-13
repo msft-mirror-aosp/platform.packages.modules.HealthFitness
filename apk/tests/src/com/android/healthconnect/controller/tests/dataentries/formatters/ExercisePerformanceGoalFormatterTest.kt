@@ -27,7 +27,6 @@ import android.health.connect.datatypes.ExercisePerformanceGoal.RateOfPerceivedE
 import android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal.UnknownGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal.WeightGoal
-import android.health.connect.datatypes.ExerciseSegmentType
 import android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_BIKING
 import android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING
 import android.health.connect.datatypes.ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE
@@ -171,26 +170,48 @@ class ExercisePerformanceGoalFormatterTest {
                 FormattedEntry.ExercisePerformanceGoalEntry(
                     SpeedGoal(
                         Velocity.fromMetersPerSecond(10.0), Velocity.fromMetersPerSecond(20.0)),
-                    title = "01:40 min/km - 00:50 min/km",
-                    titleA11y = "01:40 minute per kilometer - 00:50 minute per kilometer"))
+                    title = "00:50 min/km - 01:40 min/km",
+                    titleA11y = "00:50 minute per kilometer - 01:40 minute per kilometer"))
     }
 
     @Test
-    fun formatGoal_swimmingExerciseSegmentType_speedPerformanceGoal_metricSystem() = runBlocking {
-        unitPreferences.setDistanceUnit(DistanceUnit.KILOMETERS)
-        Truth.assertThat(
-                formatter.formatGoal(
-                    SpeedGoal(
-                        Velocity.fromMetersPerSecond(10.0), Velocity.fromMetersPerSecond(20.0)),
-                    unitPreferences = unitPreferences,
-                    ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE))
-            .isEqualTo(
-                FormattedEntry.ExercisePerformanceGoalEntry(
-                    SpeedGoal(
-                        Velocity.fromMetersPerSecond(10.0), Velocity.fromMetersPerSecond(20.0)),
-                    title = "00:10 min/100 meters - 00:05 min/100 meters",
-                    titleA11y = "00:10 minute per 100 meters - 00:05 minute per 100 meters"))
-    }
+    fun formatGoal_swimmingExerciseSegmentType_speedPerformanceGoal_metricSystem_localeUK() =
+        runBlocking {
+            unitPreferences.setDistanceUnit(DistanceUnit.KILOMETERS)
+            Truth.assertThat(
+                    formatter.formatGoal(
+                        SpeedGoal(
+                            Velocity.fromMetersPerSecond(50.0),
+                            Velocity.fromMetersPerSecond(100.0)),
+                        unitPreferences = unitPreferences,
+                        EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE))
+                .isEqualTo(
+                    FormattedEntry.ExercisePerformanceGoalEntry(
+                        SpeedGoal(
+                            Velocity.fromMetersPerSecond(50.0),
+                            Velocity.fromMetersPerSecond(100.0)),
+                        title = "00:01 min/100 meters - 00:02 min/100 meters",
+                        titleA11y = "00:01 minute per 100 meters - 00:02 minute per 100 meters"))
+        }
+
+    @Test
+    fun formatGoal_swimmingExerciseSegmentType_speedPerformanceGoal_imperialSystem_localeUS() =
+        runBlocking {
+            Locale.setDefault(Locale.US)
+            unitPreferences.setDistanceUnit(DistanceUnit.MILES)
+            Truth.assertThat(
+                    formatter.formatGoal(
+                        SpeedGoal(
+                            Velocity.fromMetersPerSecond(25.0), Velocity.fromMetersPerSecond(50.0)),
+                        unitPreferences = unitPreferences,
+                        EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE))
+                .isEqualTo(
+                    FormattedEntry.ExercisePerformanceGoalEntry(
+                        SpeedGoal(
+                            Velocity.fromMetersPerSecond(25.0), Velocity.fromMetersPerSecond(50.0)),
+                        title = "00:01 min/100 yards - 00:03 min/100 yards",
+                        titleA11y = "00:01 minute per 100 yards - 00:03 minute per 100 yards"))
+        }
 
     @Test
     fun formatGoal_speedPerformanceGoal_imperialSystem() = runBlocking {
@@ -222,25 +243,8 @@ class ExercisePerformanceGoalFormatterTest {
                 FormattedEntry.ExercisePerformanceGoalEntry(
                     SpeedGoal(
                         Velocity.fromMetersPerSecond(10.0), Velocity.fromMetersPerSecond(20.0)),
-                    title = "02:40 min/mile - 01:20 min/mile",
-                    titleA11y = "02:40 minute per mile - 01:20 minute per mile"))
-    }
-
-    @Test
-    fun formatGoal_swimmingExerciseSegmentType_speedPerformanceGoal_imperialSystem() = runBlocking {
-        unitPreferences.setDistanceUnit(DistanceUnit.MILES)
-        Truth.assertThat(
-                formatter.formatGoal(
-                    SpeedGoal(
-                        Velocity.fromMetersPerSecond(100.0), Velocity.fromMetersPerSecond(200.0)),
-                    unitPreferences = unitPreferences,
-                    EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE))
-            .isEqualTo(
-                FormattedEntry.ExercisePerformanceGoalEntry(
-                    SpeedGoal(
-                        Velocity.fromMetersPerSecond(100.0), Velocity.fromMetersPerSecond(200.0)),
-                    title = "26:49 min/100 miles - 13:24 min/100 miles",
-                    titleA11y = "26:49 minute per 100 miles - 13:24 minute per 100 miles"))
+                    title = "01:20 min/mile - 02:40 min/mile",
+                    titleA11y = "01:20 minute per mile - 02:40 minute per mile"))
     }
 
     @Test

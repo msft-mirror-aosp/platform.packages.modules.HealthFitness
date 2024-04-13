@@ -126,6 +126,7 @@
 
   <!-- region Background Reading screen -->
   <string name="background_read_title">Read Data In Background Via Toolbox 2</string>
+  <string name="background_read_own_steps">Read Own Steps</string>
   <string name="background_read_all_steps">Read All Steps</string>
   <!--endregion-->
 

@@ -561,9 +561,9 @@
     <string name="velocity_minute_miles_long" translation_description="Speed in minute per mile formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per mile</string>
     <string name="velocity_minute_km_long" translation_description="Speed in minute per kilometer formatted audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per kilometer</string>
 
-    <string name="velocity_minute_per_one_hundred_miles" translation_description="Speed in minute per one hundred miles formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 miles</string>
+    <string name="velocity_minute_per_one_hundred_yards" translation_description="Speed in minute per one hundred yards formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 yards</string>
     <string name="velocity_minute_per_one_hundred_meters" translation_description="Speed in minute per one hundred meters formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 meters</string>
-    <string name="velocity_minute_per_one_hundred_miles_long" translation_description="Speed in minute per one hundred miles formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 miles</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" translation_description="Speed in minute per one hundred yards formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 yards</string>
     <string name="velocity_minute_per_one_hundred_meters_long" translation_description="Speed in minute per one hundred meters formatted audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 meters</string>
 
     <string name="heart_rate_series_range" translatable="false"><xliff:g example="100 bpm" id="min">%1$s</xliff:g> - <xliff:g example="109 bpm" id="max">%2$s</xliff:g></string>

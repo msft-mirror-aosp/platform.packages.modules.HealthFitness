@@ -34,6 +34,7 @@ import com.android.healthconnect.controller.dataentries.units.SpeedConverter.con
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.Locale
 import javax.inject.Inject
 
 /** Formatter for printing Speed series data. */
@@ -42,24 +43,7 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
 
     private val timeFormatter = LocalDateTimeFormatter(context)
 
-    private val ACTIVITY_TYPES_WITH_PACE_VELOCITY =
-        listOf(
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ELLIPTICAL,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING_TREADMILL,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_WALKING,
-        )
-
-    private val SWIMMING_ACTIVITY_TYPES =
-        listOf(
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BREASTSTROKE,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BUTTERFLY,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_FREESTYLE,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_MIXED,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_OPEN_WATER,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_OTHER,
-            ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_POOL)
+    private val METER_TO_YARD = 1.09361
 
     override suspend fun formatRecord(
         record: SpeedRecord,
@@ -157,10 +141,10 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
         unitPreferences: UnitPreferences,
         exerciseSegmentType: Int
     ): String {
-        if (ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType)) {
+        if (Companion.ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerDistance(
                 getUnitResInMinPerDistance(unitPreferences), speed, unitPreferences)
-        } else if (SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType)) {
+        } else if (Companion.SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerOneHundredDistance(
                 getUnitResInMinPerOneHundredDistance(unitPreferences), speed, unitPreferences)
         }
@@ -173,11 +157,11 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
         unitPreferences: UnitPreferences,
         exerciseSegmentType: Int
     ): String {
-        if (ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType)) {
+        if (Companion.ACTIVITY_TYPES_WITH_PACE_VELOCITY.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerDistance(
                 getA11yUnitResInMinPerDistance(unitPreferences), speed, unitPreferences)
         }
-        if (SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType)) {
+        if (Companion.SWIMMING_ACTIVITY_TYPES.contains(exerciseSegmentType)) {
             return formatSpeedValueToMinPerOneHundredDistance(
                 getA11yUnitResInMinPerOneHundredDistance(unitPreferences), speed, unitPreferences)
         }
@@ -225,15 +209,13 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
         unitPreferences: UnitPreferences
     ): String {
         val timePerUnitInSeconds =
-            if (unitPreferences.getDistanceUnit() == KILOMETERS) {
+            if (unitPreferences.getDistanceUnit() == MILES &&
+                Locale.getDefault().equals(Locale.US)) {
+                val yardsPerSecond = speed.inMetersPerSecond * METER_TO_YARD
+                if (yardsPerSecond != 0.0) 100 / yardsPerSecond else yardsPerSecond
+            } else {
                 if (speed.inMetersPerSecond != 0.0) 100 / speed.inMetersPerSecond
                 else speed.inMetersPerSecond
-            } else {
-                val speedInMilePerHour =
-                    convertToDistancePerHour(
-                        unitPreferences.getDistanceUnit(), speed.inMetersPerSecond)
-                if (speedInMilePerHour != 0.0) (100 * 3600) / speedInMilePerHour
-                else speedInMilePerHour
             }
 
         // Display "--:--" if pace value is unrealistic
@@ -246,15 +228,41 @@ class SpeedFormatter @Inject constructor(@ApplicationContext private val context
 
     private fun getUnitResInMinPerOneHundredDistance(unitPreferences: UnitPreferences): Int {
         return when (unitPreferences.getDistanceUnit()) {
-            MILES -> R.string.velocity_minute_per_one_hundred_miles
+            MILES ->
+                if (Locale.getDefault().equals(Locale.US))
+                    R.string.velocity_minute_per_one_hundred_yards
+                else R.string.velocity_minute_per_one_hundred_meters
             KILOMETERS -> R.string.velocity_minute_per_one_hundred_meters
         }
     }
 
     private fun getA11yUnitResInMinPerOneHundredDistance(unitPreferences: UnitPreferences): Int {
         return when (unitPreferences.getDistanceUnit()) {
-            MILES -> R.string.velocity_minute_per_one_hundred_miles_long
+            MILES ->
+                if (Locale.getDefault().equals(Locale.US))
+                    R.string.velocity_minute_per_one_hundred_yards_long
+                else R.string.velocity_minute_per_one_hundred_meters_long
             KILOMETERS -> R.string.velocity_minute_per_one_hundred_meters_long
         }
+    }
+
+    companion object {
+        val ACTIVITY_TYPES_WITH_PACE_VELOCITY =
+            listOf(
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_ELLIPTICAL,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING_TREADMILL,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_WALKING,
+            )
+        val SWIMMING_ACTIVITY_TYPES =
+            listOf(
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BACKSTROKE,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BREASTSTROKE,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_BUTTERFLY,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_FREESTYLE,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_MIXED,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_OPEN_WATER,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_OTHER,
+                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_SWIMMING_POOL)
     }
 }

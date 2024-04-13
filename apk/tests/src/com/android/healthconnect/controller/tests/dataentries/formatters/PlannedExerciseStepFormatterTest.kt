@@ -111,8 +111,8 @@ class PlannedExerciseStepFormatterTest {
                     FormattedEntry.ExercisePerformanceGoalEntry(
                         ExercisePerformanceGoal.SpeedGoal(
                             Velocity.fromMetersPerSecond(15.0), Velocity.fromMetersPerSecond(25.0)),
-                        title = "01:06 min/km - 00:40 min/km",
-                        titleA11y = "01:06 minute per kilometer - 00:40 minute per kilometer"),
+                        title = "00:40 min/km - 01:06 min/km",
+                        titleA11y = "00:40 minute per kilometer - 01:06 minute per kilometer"),
                 ))
     }
 

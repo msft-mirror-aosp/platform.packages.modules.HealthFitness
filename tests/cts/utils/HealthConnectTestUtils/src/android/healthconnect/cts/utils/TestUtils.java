@@ -32,9 +32,13 @@ import static android.health.connect.HealthPermissionCategory.STEPS;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_FILTERS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PACKAGE_NAMES;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_CLIENT_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
@@ -854,11 +858,39 @@ public final class TestUtils {
                 WRITE_ALLOWLISTED_DEVICE_CONFIG);
     }
 
+    /** Reads {@link StepsRecord}s using record IDs. */
+    public static void readStepsRecordsUsingRecordIdsViaTestApp(
+            Context context, List<String> recordIds) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_RECORD_IDS, new ArrayList<>(recordIds));
+        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS, extras);
+    }
+
+    /** Reads {@link StepsRecord}s using package name filters. */
+    public static void readStepsRecordsUsingFiltersViaTestApp(
+            Context context, List<String> packageNameFilters) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
+        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_FILTERS, extras);
+    }
+
+    /** Aggregates {@link StepsRecord}s using package name filters. */
+    public static void aggregateStepsCount(Context context, List<String> packageNameFilters) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
+        sendCommandToTestAppReceiver(context, ACTION_AGGREGATE_STEPS_COUNT, extras);
+    }
+
     public static void sendCommandToTestAppReceiver(Context context, String action) {
         sendCommandToTestAppReceiver(context, action, /* extras= */ null);
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
+        // This call to reset() is important!
+        // reset() needs to be called every time before a call is made to the test app, otherwise,
+        // TestReceiver won't receive the result from the test app.
+        android.healthconnect.cts.utils.TestReceiver.reset();
+
         final Intent intent = new Intent(action).setClassName(PKG_TEST_APP, TEST_APP_RECEIVER);
         intent.putExtra(EXTRA_SENDER_PACKAGE_NAME, context.getPackageName());
         if (extras != null) {
@@ -879,8 +911,19 @@ public final class TestUtils {
         }
     }
 
+    /** Sets up the priority list for aggregation tests. */
+    public static void setupAggregation(
+            ThrowingConsumer<Record> inserter, String packageName, int dataCategory)
+            throws Exception {
+        inserter.acceptOrThrow(getAnUnaggregatableRecord(packageName));
+        setupAggregation(List.of(packageName), dataCategory);
+    }
+
     /**
      * Sets up the priority list for aggregation tests.
+     *
+     * <p>In order for this method to work, eac of the {@code packageNames} needs to have at least
+     * one record of any type in the HC DB before this method is called.
      *
      * <p>This is mainly used to setup priority list for a test app, so a test can read aggregation
      * of data inserted by a test app. It would be nicer if this method take an instance of a test
@@ -888,23 +931,19 @@ public final class TestUtils {
      * the dependency where the TestAppProxy comes from, which then would create a dependency cycle
      * because TestAppProxy's dependency is already using this TestUtils class.
      */
-    public static void setupAggregation(
-            ThrowingConsumer<Record> inserter, String packageName, int dataCategory)
+    public static void setupAggregation(List<String> packageNames, int dataCategory)
             throws Exception {
-        inserter.acceptOrThrow(getAnUnaggregatableRecord(packageName));
-
-        // Add the packageName inserting the records to the priority list manually
+        // Add the packageNames inserting the records to the priority list manually
         // Since CTS tests get their permissions granted at install time and skip
         // the Health Connect APIs that would otherwise add the packageName to the priority list
-        updatePriorityWithManageHealthDataPermission(dataCategory, Arrays.asList(packageName));
+        updatePriorityWithManageHealthDataPermission(dataCategory, packageNames);
         FetchDataOriginsPriorityOrderResponse newPriority =
                 getPriorityWithManageHealthDataPermission(dataCategory);
         List<String> newPriorityString =
                 newPriority.getDataOriginsPriorityOrder().stream()
                         .map(DataOrigin::getPackageName)
                         .toList();
-        assertThat(newPriorityString.size()).isEqualTo(1);
-        assertThat(newPriorityString.get(0)).isEqualTo(packageName);
+        assertThat(newPriorityString).isEqualTo(packageNames);
     }
 
     /** Inserts a record that does not support aggregation to enable the priority list. */
@@ -1107,7 +1146,6 @@ public final class TestUtils {
         bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
         bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
         bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {value});
-        android.healthconnect.cts.utils.TestReceiver.reset();
         sendCommandToTestAppReceiver(context, ACTION_INSERT_STEPS_RECORDS, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
                 .getStringArrayList(EXTRA_RECORD_IDS)
@@ -1126,7 +1164,6 @@ public final class TestUtils {
         bundle.putLongArray(EXTRA_TIMES, new long[] {time.toEpochMilli()});
         bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
         bundle.putDoubleArray(EXTRA_RECORD_VALUES, new double[] {value});
-        android.healthconnect.cts.utils.TestReceiver.reset();
         sendCommandToTestAppReceiver(context, ACTION_INSERT_WEIGHT_RECORDS, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
                 .getStringArrayList(EXTRA_RECORD_IDS)
