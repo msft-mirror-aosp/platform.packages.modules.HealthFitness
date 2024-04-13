@@ -46,7 +46,6 @@ import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
-import android.healthconnect.cts.utils.DeviceConfigRule;
 import android.healthconnect.cts.utils.TestReceiver;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -67,10 +66,6 @@ public class HistoricAccessLimitWithPermissionTest {
 
     private Context mContext;
     private Instant mNow;
-
-    @Rule
-    public final DeviceConfigRule mDeviceConfigRule =
-            new DeviceConfigRule("history_read_enable", "true");
 
     @Rule
     public final AssumptionCheckerRule mSupportedHardwareRule =

@@ -68,6 +68,11 @@ sealed class FormattedEntry(open val uuid: String) {
 
     data class FormattedSectionTitle(val title: String) : FormattedEntry(uuid = "")
 
+    data class FormattedSectionContent(val title: String, val bulleted: Boolean = false) :
+        FormattedEntry(uuid = "")
+
+    data class ItemDataEntrySeparator(val title: String = "") : FormattedEntry(uuid = "")
+
     data class ReverseSessionDetail(
         override val uuid: String,
         val header: String,
@@ -115,6 +120,8 @@ sealed class FormattedEntry(open val uuid: String) {
         val title: String,
         val titleA11y: String
     ) : FormattedEntry(uuid = "")
+
+    data class PlannedExerciseSessionNotesEntry(val notes: String) : FormattedEntry(uuid = "")
 
     data class ExercisePerformanceGoalEntry(
         val goal: ExercisePerformanceGoal,

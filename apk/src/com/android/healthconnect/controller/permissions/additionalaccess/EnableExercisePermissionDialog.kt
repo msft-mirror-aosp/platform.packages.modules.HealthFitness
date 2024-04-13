@@ -28,9 +28,9 @@ import androidx.fragment.app.activityViewModels
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ENABLE_EXERCISE_PERMISSION_DIALOG_CONTAINER
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ENABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ENABLE_EXERCISE_PERMISSION_DIALOG_POSITIVE_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.ENABLE_EXERCISE_PERMISSION_DIALOG_CONTAINER
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.ENABLE_EXERCISE_PERMISSION_DIALOG_NEGATIVE_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.ENABLE_EXERCISE_PERMISSION_DIALOG_POSITIVE_BUTTON
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

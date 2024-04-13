@@ -160,6 +160,8 @@ class DataEntriesFragmentTest {
         onView(withText("4:00 PM - 5:00 PM • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("Swimming • Freestyle Technique Bootcamp")).check(matches(isDisplayed()))
         verify(healthConnectLogger, times(2))
+            .logImpression(DataEntriesElement.PLANNED_EXERCISE_SESSION_ENTRY_BUTTON)
+        verify(healthConnectLogger, times(2))
             .logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
     }
 

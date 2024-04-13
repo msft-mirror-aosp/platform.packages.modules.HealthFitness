@@ -20,6 +20,7 @@ import android.health.connect.datatypes.PlannedExerciseBlock
 import android.icu.text.MessageFormat
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseBlockEntry
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -35,13 +36,17 @@ constructor(
     fun formatBlock(
         block: PlannedExerciseBlock,
     ): FormattedEntry {
-        return FormattedEntry.PlannedExerciseBlockEntry(
+        return PlannedExerciseBlockEntry(
             block = block, title = formatBlockTitle(block), titleA11y = formatBlockTitleA11y(block))
     }
 
     private fun formatBlockTitle(block: PlannedExerciseBlock): String {
         return context.getString(
-            R.string.planned_exercise_block_title, block.description, block.repetitions.toString())
+            R.string.planned_exercise_block_title,
+            block.description,
+            MessageFormat.format(
+                context.getString(R.string.planned_exercise_block_repetitions),
+                mapOf("count" to block.repetitions)))
     }
 
     private fun formatBlockTitleA11y(block: PlannedExerciseBlock): String {
@@ -61,6 +66,9 @@ constructor(
         return buildList {
             exerciseSteps.forEach { plannedExerciseStep ->
                 add(plannedExerciseStepFormatter.formatStep(plannedExerciseStep, unitPreferences))
+                addAll(
+                    plannedExerciseStepFormatter.formatStepDetails(
+                        plannedExerciseStep, unitPreferences))
             }
         }
     }

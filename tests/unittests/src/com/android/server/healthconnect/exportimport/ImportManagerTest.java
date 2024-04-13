@@ -89,7 +89,7 @@ public class ImportManagerTest {
     }
 
     @Test
-    public void testRunImport_copiesAllData() throws Exception {
+    public void copiesAllData() throws Exception {
         List<String> uuids =
                 mTransactionTestUtils.insertRecords(
                         TEST_PACKAGE_NAME,
@@ -97,13 +97,12 @@ public class ImportManagerTest {
                         createBloodPressureRecord(234, 120.0, 80.0));
 
         File originalDb = mTransactionManager.getDatabasePath();
-        File copy = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
-
-        Files.copy(originalDb.toPath(), copy.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(copy.toPath());
+        mImportManager.runImport(dbToImport.toPath());
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -119,5 +118,16 @@ public class ImportManagerTest {
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
         assertThat(records.get(1).getUuid()).isEqualTo(UUID.fromString(uuids.get(1)));
+    }
+
+    @Test
+    public void deletesTheDatabase() throws Exception {
+        File originalDb = mTransactionManager.getDatabasePath();
+        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        mImportManager.runImport(dbToImport.toPath());
+
+        assertThat(mImportManager.getDbFile().exists()).isFalse();
     }
 }

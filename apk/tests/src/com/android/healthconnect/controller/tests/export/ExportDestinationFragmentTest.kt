@@ -57,8 +57,8 @@ class ExportDestinationFragmentTest {
     fun exportDestinationFragment_isDisplayedCorrectly() {
         launchFragment<ExportDestinationFragment>(Bundle())
 
-        onView(withId(R.id.export_location_header_upload_icon)).check(matches(isDisplayed()))
-        onView(withText("Export location")).check(matches(isDisplayed()))
+        onView(withId(R.id.export_destination_header_upload_icon)).check(matches(isDisplayed()))
+        onView(withText("Choose where to export")).check(matches(isDisplayed()))
 
         onView(withText("Back")).check(matches(isDisplayed()))
         onView(withText("Next")).check(matches(isDisplayed()))

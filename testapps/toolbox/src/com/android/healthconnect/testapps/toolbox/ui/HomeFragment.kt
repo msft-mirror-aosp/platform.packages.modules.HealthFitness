@@ -43,6 +43,7 @@ import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel
+import kotlin.system.exitProcess
 
 /** Home fragment for Health Connect Toolbox. */
 class HomeFragment : Fragment() {
@@ -130,6 +131,12 @@ class HomeFragment : Fragment() {
         }
         view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {
             goToReadDataInBackgroundPage()
+        }
+        view.requireViewById<Button>(R.id.read_data_in_foreground_button).setOnClickListener {
+            goToReadDataInForegroundPage()
+        }
+        view.requireViewById<Button>(R.id.exit_process_button).setOnClickListener {
+            exitProcess(status = 0)
         }
 
         view.findViewById<Button>(R.id.request_combined_permissions).setOnClickListener {
@@ -270,5 +277,9 @@ class HomeFragment : Fragment() {
 
     private fun goToReadDataInBackgroundPage() {
         mNavigationController.navigate(R.id.action_homeFragment_to_readDataInBackground)
+    }
+
+    private fun goToReadDataInForegroundPage() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_readDataInForeground)
     }
 }
