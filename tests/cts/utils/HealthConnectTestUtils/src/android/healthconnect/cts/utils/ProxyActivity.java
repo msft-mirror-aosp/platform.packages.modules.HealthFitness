@@ -105,12 +105,17 @@ public class ProxyActivity extends Activity {
 
         Instrumentation.ActivityResult result = scenario.getResult();
 
-        Exception exception =
-                result.getResultData().getParcelableExtra(PROXY_ACTIVITY_ERROR, Exception.class);
+        Intent resultData = result.getResultData();
+        if (resultData != null) {
+            Exception exception =
+                    result.getResultData()
+                            .getParcelableExtra(PROXY_ACTIVITY_ERROR, Exception.class);
 
-        if (exception != null) {
-            throw exception;
+            if (exception != null) {
+                throw exception;
+            }
         }
+
 
         return result;
     }

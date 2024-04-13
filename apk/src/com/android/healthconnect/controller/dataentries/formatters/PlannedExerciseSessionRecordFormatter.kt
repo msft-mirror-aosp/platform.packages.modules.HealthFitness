@@ -19,6 +19,9 @@ import android.content.Context
 import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ItemDataEntrySeparator
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.dataentries.formatters.ExerciseSessionFormatter.Companion.getExerciseType
 import com.android.healthconnect.controller.dataentries.formatters.shared.BaseFormatter
 import com.android.healthconnect.controller.dataentries.formatters.shared.RecordDetailsFormatter
@@ -69,11 +72,18 @@ constructor(
     ): List<FormattedEntry> {
         val exerciseBlock = record.blocks
         return buildList {
+            if (!record.notes.isNullOrBlank()) {
+                add(ItemDataEntrySeparator())
+                add(SessionHeader(context.getString(R.string.planned_exercise_session_notes_title)))
+                add(FormattedSectionContent(record.notes.toString()))
+                add(ItemDataEntrySeparator())
+            }
             exerciseBlock.forEach { plannedExerciseBlock ->
                 add(plannedExerciseBlockFormatter.formatBlock(plannedExerciseBlock))
                 addAll(
                     plannedExerciseBlockFormatter.formatBlockDetails(
                         plannedExerciseBlock, unitPreferences))
+                add(ItemDataEntrySeparator())
             }
         }
     }

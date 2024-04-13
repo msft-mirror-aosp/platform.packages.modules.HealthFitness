@@ -36,10 +36,10 @@ import com.android.healthconnect.controller.permissions.additionalaccess.Permiss
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.NEVER_ALLOW
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_ALLOW_ALL_BUTTON
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_ASK_BUTTON
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_DIALOG_CONTAINER
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_DIALOG_DENY_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_ALLOW_ALL_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_ASK_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_DIALOG_CONTAINER
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_DIALOG_DENY_BUTTON
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

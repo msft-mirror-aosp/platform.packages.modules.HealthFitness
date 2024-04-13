@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"I-access ang nakaraang data"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang nakaraang data?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Payagan ang app na ito na i-access ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Payagan ang app na ito na i-access ang nakaraang data ng Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Payagan ang app na ito na i-access ang lahat ng nakaraang data ng Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Kung papayagan mo, maa-access ng app na ito ang data ng Health Connect na idinagdag bago ang <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Kung papayagan mo, maa-access ng app na ito ang nakaraang data ng Health Connect."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Kung papayagan mo, maa-access ng app na ito ang lahat ng nakaraang data ng Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Mga calorie na na-burn habang aktibo"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"mga calorie na na-burn habang aktibo"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"I-read ang mga calorie na na-burn habang aktibo"</string>
@@ -271,6 +271,9 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Alisin ang lahat ng pahintulot?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Alisin lahat"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang data sa background.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang data sa background at dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"I-delete din ang data ng <xliff:g id="APP_NAME">%1$s</xliff:g> mula sa Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Kinabukasan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Piniling araw"</string>
@@ -304,6 +307,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Access ng app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Wala kang anumang compatible na naka-install na app sa kasalukuyan"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Karagdagang access"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Inalis ang mga karagdagang pahintulot para sa app na ito"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Inalis ang mga pahintulot sa app"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Inalis ng Health Connect ang mga pahintulot para sa <xliff:g id="APP_DATA_0">%1$s</xliff:g> at <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -325,12 +329,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Araw-araw"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Linggo-linggo"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Buwanan"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Lokasyon ng pag-export"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"I-on ang pag-encrypt"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Kailangang naka-encrypt ang data bago ito i-save. Walang sinuman, kahit na Google o Health Connect, ang makakapag-access dito."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Gumawa ng password para protektahan ang iyong naka-encrypt na data. Kakailanganin mo ang password na ito para ma-import at ma-restore ang iyong data."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Password"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ulitin ang password"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Hindi tugma ang mga password"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Kung makalimutan mo ang iyong password at mawala ang telepono mo, hindi ka matutulungan ng Health Connect na ma-recover ang iyong na-save na data."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Bumalik"</string>
     <string name="export_next_button" msgid="657930567137105172">"Susunod"</string>
@@ -401,6 +407,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}one{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milya kada oras}one{# milya kada oras}other{# na milya kada oras}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometro kada oras}one{# kilometro kada oras}other{# na kilometro kada oras}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"mula <xliff:g id="START_TIME">%1$s</xliff:g> hanggang <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"mula <xliff:g id="START_TIME">%1$s</xliff:g> hanggang <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 pagtutulak ng wheelchair}one{# pagtutulak ng wheelchair}other{# na pagtutulak ng wheelchair}}"</string>
@@ -426,11 +448,15 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Walang malinaw na resulta"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisecond}one{# millisecond}other{# na millisecond}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 beses}one{# beses}other{# na beses}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktibo: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Kabuuan: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Kahit ilang rep na posible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Antas ng pagsisikap: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ulit}one{# ulit}other{# na ulit}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ulit}one{# ulit}other{# na ulit}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Mga segment ng pag-eehersisyo"</string>
@@ -792,10 +818,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Payagan ang lahat ng ruta"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Huwag payagan"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Palaging payagan"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Pagbabahagi ng ruta ng pag-eehersisyo"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Kontrolin kung paano ina-access ng app na ito ang mga ruta ng pag-eehersisyo mula sa mga nakakonektang app"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"I-access ang mga ruta ng ehersisyo"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Payagan ang <xliff:g id="APP_NAME">%1$s</xliff:g> na i-access ang mga ruta"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Tanungin palagi"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Huwag payagan"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Huwag payagan"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"I-enable ang parehong uri ng data?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"I-disable ang parehong uri ng data?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Kailangan ng <xliff:g id="APP_NAME">%1$s</xliff:g> ng access sa pag-read sa ehersisyo para ma-enable ang mga ruta ng ehersisyo"</string>
@@ -889,4 +915,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Access"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Payagan ang karagdagang access para sa <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Gusto ring i-access ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang mga settng ng Health Connect na ito"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background o access sa dating data para sa app na ito"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background para sa app na ito"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Mag-enable ng kahit man lang isang read permission para ma-on ang access sa dating data para sa app na ito"</string>
 </resources>

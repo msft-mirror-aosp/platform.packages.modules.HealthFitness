@@ -21,6 +21,9 @@
     <uses-permission android:name="android.permission.health.WRITE_HEIGHT"/>
     <uses-permission android:name="android.permission.health.WRITE_BODY_FAT"/>
 
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
+    <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>
+
     <application android:label="Health Connect cts test app">
         <uses-library android:name="android.test.runner"/>
 
@@ -37,6 +40,13 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="any.action"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="android.healthconnect.cts.utils.ProxyActivity"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.healthconnect.cts.ACTION_START_ACTIVITY_FOR_RESULT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
     </application>

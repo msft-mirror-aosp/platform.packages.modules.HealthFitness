@@ -70,8 +70,8 @@ class PlannedExerciseStepFormatterTest {
                             listOf(
                                 HeartRateGoal(100, 150),
                                 ExercisePerformanceGoal.SpeedGoal(
-                                    Velocity.fromMetersPerSecond(25.0),
-                                    Velocity.fromMetersPerSecond(15.0))))
+                                    Velocity.fromMetersPerSecond(15.0),
+                                    Velocity.fromMetersPerSecond(25.0))))
                         .build(),
                     unitPreferences))
             .isEqualTo(
@@ -82,8 +82,8 @@ class PlannedExerciseStepFormatterTest {
                                 listOf(
                                     HeartRateGoal(100, 150),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(25.0),
-                                        Velocity.fromMetersPerSecond(15.0))))
+                                        Velocity.fromMetersPerSecond(15.0),
+                                        Velocity.fromMetersPerSecond(25.0))))
                             .build(),
                     title = "1 km Running",
                     titleA11y = "1 kilometre Running"))
@@ -98,8 +98,8 @@ class PlannedExerciseStepFormatterTest {
                             listOf(
                                 HeartRateGoal(100, 150),
                                 ExercisePerformanceGoal.SpeedGoal(
-                                    Velocity.fromMetersPerSecond(25.0),
-                                    Velocity.fromMetersPerSecond(15.0))))
+                                    Velocity.fromMetersPerSecond(15.0),
+                                    Velocity.fromMetersPerSecond(25.0))))
                         .build(),
                     unitPreferences))
             .isEqualTo(
@@ -110,9 +110,9 @@ class PlannedExerciseStepFormatterTest {
                         titleA11y = "100 beats per minute - 150 beats per minute"),
                     FormattedEntry.ExercisePerformanceGoalEntry(
                         ExercisePerformanceGoal.SpeedGoal(
-                            Velocity.fromMetersPerSecond(25.0), Velocity.fromMetersPerSecond(15.0)),
-                        title = "90 km/h - 54 km/h",
-                        titleA11y = "90 kilometres per hour - 54 kilometres per hour"),
+                            Velocity.fromMetersPerSecond(15.0), Velocity.fromMetersPerSecond(25.0)),
+                        title = "00:40 min/km - 01:06 min/km",
+                        titleA11y = "00:40 minute per kilometer - 01:06 minute per kilometer"),
                 ))
     }
 

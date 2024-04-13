@@ -172,12 +172,6 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @VisibleForTesting
     public static final boolean ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE = true;
 
-    @VisibleForTesting public static final boolean BACKGROUND_READ_DEFAULT_FLAG_VALUE = false;
-    @VisibleForTesting public static final boolean HISTORY_READ_DEFAULT_FLAG_VALUE = false;
-
-    @VisibleForTesting
-    public static final boolean ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE = true;
-
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static HealthConnectDeviceConfigManager sDeviceConfigManager;
 
@@ -290,18 +284,10 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
-    private boolean mBackgroundReadFeatureEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    BACKGROUND_READ_FEATURE_FLAG,
-                    BACKGROUND_READ_DEFAULT_FLAG_VALUE);
+    private boolean mBackgroundReadFeatureEnabled = true;
 
     @GuardedBy("mLock")
-    private boolean mHistoryReadFeatureEnabled =
-            DeviceConfig.getBoolean(
-                    HEALTH_FITNESS_NAMESPACE,
-                    HISTORY_READ_FEATURE_FLAG,
-                    HISTORY_READ_DEFAULT_FLAG_VALUE);
+    private boolean mHistoryReadFeatureEnabled = true;
 
     @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
@@ -744,15 +730,10 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                         ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE);
                         break;
                     case BACKGROUND_READ_FEATURE_FLAG:
-                        mBackgroundReadFeatureEnabled =
-                                properties.getBoolean(
-                                        BACKGROUND_READ_FEATURE_FLAG,
-                                        BACKGROUND_READ_DEFAULT_FLAG_VALUE);
+                        mBackgroundReadFeatureEnabled = true;
                         break;
                     case HISTORY_READ_FEATURE_FLAG:
-                        mHistoryReadFeatureEnabled =
-                                properties.getBoolean(
-                                        HISTORY_READ_FEATURE_FLAG, HISTORY_READ_DEFAULT_FLAG_VALUE);
+                        mHistoryReadFeatureEnabled = true;
                         break;
                     case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
                         mAggregationSourceControlsEnabled = true;

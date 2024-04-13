@@ -17,6 +17,7 @@ package com.android.healthconnect.testapps.toolbox.utils
 
 import android.health.connect.datatypes.InstantRecord
 import android.health.connect.datatypes.IntervalRecord
+import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
 
@@ -28,13 +29,18 @@ internal fun Record.asString(): String =
     buildString {
         append(this@asString.javaClass.simpleName)
         append('(')
-        append(metadataAsString())
+        append(metadata.asString())
+        append(", ")
+        append(timesAsString())
         append(", ")
         append(dataAsString())
         append(')')
     }
 
-private fun Record.metadataAsString(): String =
+private fun Metadata.asString(): String =
+    "packageName=${dataOrigin.packageName}}"
+
+private fun Record.timesAsString(): String =
     when (this) {
         is InstantRecord -> "time=$time"
         is IntervalRecord -> "startTime=$startTime, endTime=$endTime"
