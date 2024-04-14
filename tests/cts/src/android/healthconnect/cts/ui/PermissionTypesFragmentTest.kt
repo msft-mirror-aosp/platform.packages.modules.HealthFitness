@@ -27,14 +27,20 @@ import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 /** CTS test for HealthConnect Permission types screen. */
 class PermissionTypesFragmentTest : HealthConnectBaseTest() {
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     companion object {
         private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =

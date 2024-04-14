@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"อนุญาตให้เข้าถึงข้อมูลในอดีต"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลในอดีตใช่ไหม"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"อนุญาตให้แอปเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"อนุญาตให้แอปเข้าถึงข้อมูล Health Connect ในอดีต"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect ทั้งหมดในอดีต"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ในอดีต"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ทั้งหมดในอดีต"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"แคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"แคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"อ่านข้อมูลแคลอรี่ที่ใช้ไปในการเคลื่อนไหวร่างกาย"</string>
@@ -271,6 +271,9 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"นำสิทธิ์ทั้งหมดออกใช่ไหม"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"นำออกทั้งหมด"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงอินเทอร์เน็ตที่ใช้งานอยู่เบื้องหลัง\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงอินเทอร์เน็ตที่ใช้งานอยู่เบื้องหลังและข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"ลบข้อมูล <xliff:g id="APP_NAME">%1$s</xliff:g> ออกจาก Health Connect ด้วย"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"วันถัดไป"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"วันที่เลือก"</string>
@@ -304,6 +307,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"สิทธิ์การเข้าถึงของแอป"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ตอนนี้คุณยังไม่ได้ติดตั้งแอปที่เข้ากันได้"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"การเข้าถึงเพิ่มเติม"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"นำสิทธิ์เพิ่มเติมสำหรับแอปนี้ออกแล้ว"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"สิทธิ์ของแอปที่ถูกนำออก"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA">%s</xliff:g> ออกแล้ว"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA_0">%1$s</xliff:g> และ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ออกแล้ว"</string>
@@ -325,12 +329,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ทุกเดือน"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"ตำแหน่งการส่งออก"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"เปิดการเข้ารหัส"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ต้องเข้ารหัสข้อมูลก่อนที่จะทำการบันทึก ไม่มีใครสามารถเข้าถึงข้อมูลได้ แม้แต่ Google หรือ Health Connect เอง"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"สร้างรหัสผ่านเพื่อปกป้องข้อมูลที่เข้ารหัส คุณต้องใช้รหัสผ่านนี้เพื่อนำเข้าและกู้คืนข้อคุณ"</string>
     <string name="export_password_hint" msgid="7095895042846772342">"รหัสผ่าน"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"ป้อนรหัสผ่านอีกครั้ง"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"รหัสผ่านไม่ตรงกัน"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"หากลืมรหัสผ่านและทำโทรศัพท์สูญหาย Health Connect จะช่วยคุณกู้คืนข้อมูลที่บันทึกไว้ไม่ได้"</string>
     <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
@@ -401,6 +407,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 กม./ชม.}other{# กม./ชม.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 ไมล์ต่อชั่วโมง}other{# ไมล์ต่อชั่วโมง}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 กิโลเมตรต่อชั่วโมง}other{# กิโลเมตรต่อชั่วโมง}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"ตั้งแต่ <xliff:g id="START_TIME">%1$s</xliff:g> ถึง <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"ตั้งแต่ <xliff:g id="START_TIME">%1$s</xliff:g> ถึง <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{วีลแชร์พุช 1 ครั้ง}other{วีลแชร์พุช # ครั้ง}}"</string>
@@ -426,11 +448,15 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"ไม่มีผลสรุปแน่ชัด"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 มิลลิวินาที}other{# มิลลิวินาที}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 มิลลิวินาที}other{# มิลลิวินาที}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 ครั้ง}other{# ครั้ง}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"ขณะทำกิจกรรม: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"รวม: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"จำนวนครั้งมากที่สุดเท่าที่จะเป็นไปได้"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"ระดับความพยายาม: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ครั้ง}other{# ครั้ง}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ครั้ง}other{# ครั้ง}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"กลุ่มการออกกำลังกาย"</string>
@@ -792,10 +818,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"อนุญาตเส้นทางทั้งหมด"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ไม่อนุญาต"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"อนุญาตเสมอ"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"แชร์เส้นทางออกกำลังกาย"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"ควบคุมวิธีที่แอปนี้เข้าถึงเส้นทางออกกำลังกายจากแอปที่เชื่อมต่อ"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"เข้าถึงเส้นทางการออกกำลังกาย"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงเส้นทาง"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ถามทุกครั้ง"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"ไม่อนุญาต"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"ไม่อนุญาต"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"เปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ปิดใช้ข้อมูลทั้ง 2 ประเภทใช่ไหม"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการสิทธิ์เข้าถึงและอ่านข้อมูลการออกกำลังกายเพื่อเปิดใช้เส้นทางการออกกำลังกาย"</string>
@@ -889,4 +915,7 @@
     <string name="tab_access" msgid="7818197975407243701">"การเข้าถึง"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"อนุญาตการเข้าถึงเพิ่มเติมสำหรับ <xliff:g id="APP_NAME">%1$s</xliff:g> ใช่ไหม"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการเข้าถึงการตั้งค่า Health Connect เหล่านี้ด้วย"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเล่นขณะล็อกหน้าจอหรือการเข้าถึงข้อมูลในอดีตสำหรับแอปนี้"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเข้าถึงเมื่ออยู่เบื้องหลังสำหรับแอปนี้"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเข้าถึงข้อมูลในอดีตสำหรับแอปนี้"</string>
 </resources>

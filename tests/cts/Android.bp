@@ -182,6 +182,7 @@ android_test {
     libs: [
         "android.test.runner",
         "android.test.base",
+        "android.test.mock",
         "framework-healthfitness",
     ],
     srcs: [
@@ -200,6 +201,9 @@ android_test {
     static_libs: [
         "androidx.test.rules",
         "androidx.test.ext.truth",
+        "androidx.test.core",
+        "platform-test-annotations",
+        "mockito-kotlin2",
         "compatibility-device-util-axt",
         "ctstestrunner-axt",
         "cts-wm-util",
