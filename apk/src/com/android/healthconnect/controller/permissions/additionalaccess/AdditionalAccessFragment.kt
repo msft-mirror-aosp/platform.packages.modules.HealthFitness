@@ -35,8 +35,10 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.shared.preference.HealthSwitchPreference
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
-import com.android.healthconnect.controller.utils.NavigationUtils
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.EXERCISE_ROUTES_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.BACKGROUND_READ_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.EXERCISE_ROUTES_BUTTON
+import com.android.healthconnect.controller.utils.logging.AdditionalAccessElement.HISTORY_READ_BUTTON
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.AppHeaderPreference
@@ -48,8 +50,7 @@ import javax.inject.Inject
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
 
-    @Inject lateinit var navigationUtils: NavigationUtils
-
+    @Inject lateinit var healthConnectLogger: HealthConnectLogger
     private val permissionsViewModel: AppPermissionViewModel by activityViewModels()
     private val viewModel: AdditionalAccessViewModel by activityViewModels()
 
@@ -112,6 +113,8 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
         if (state == NOT_DECLARED) {
             return
         }
+
+        healthConnectLogger.logImpression(EXERCISE_ROUTES_BUTTON)
         exerciseRoutePref.apply {
             logName = EXERCISE_ROUTES_BUTTON
             exerciseRoutePref.setSummary(
@@ -169,9 +172,12 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
                 }
 
             historicReadPref.isVisible = true
+            healthConnectLogger.logImpression(HISTORY_READ_BUTTON)
             historicReadPref.isChecked = state.historyReadUIState.isGranted
             historicReadPref.isEnabled = state.historyReadUIState.isEnabled
             historicReadPref.summary = summary
+            historicReadPref.logNameActive = HISTORY_READ_BUTTON
+            historicReadPref.logNameInactive = HISTORY_READ_BUTTON
             historicReadPref.setOnPreferenceChangeListener { _, newValue ->
                 viewModel.updatePermission(
                     packageName, HealthPermissions.READ_HEALTH_DATA_HISTORY, newValue as Boolean)
@@ -181,8 +187,11 @@ class AdditionalAccessFragment : Hilt_AdditionalAccessFragment() {
 
         if (state.backgroundReadUIState.isDeclared) {
             backgroundReadPref.isVisible = true
+            healthConnectLogger.logImpression(BACKGROUND_READ_BUTTON)
             backgroundReadPref.isChecked = state.backgroundReadUIState.isGranted
             backgroundReadPref.isEnabled = state.backgroundReadUIState.isEnabled
+            historicReadPref.logNameActive = BACKGROUND_READ_BUTTON
+            historicReadPref.logNameInactive = BACKGROUND_READ_BUTTON
             backgroundReadPref.setOnPreferenceChangeListener { _, newValue ->
                 viewModel.updatePermission(
                     packageName,

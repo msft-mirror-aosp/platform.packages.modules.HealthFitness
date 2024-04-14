@@ -438,7 +438,7 @@
     <string name="frequency_weekly" description="Label used to show that the automatic export frequency is set as weekly. [CHAR_LIMIT=40]">Weekly</string>
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
 
-    <string name="export_location_title" description="Title of the 'export location' screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Export location</string>
+    <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to export</string>
 
     <string name="export_encryption_title" description="Title of the 'turn on encryption' screen where users can set up their passwords for data encryption. [CHAR_LIMIT=40]">Turn on encryption</string>
     <string name="export_encryption_safety_description" description="The safety description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Data needs to be encrypted before it is saved. No one, not even Google or Health&#160;Connect, will be able to access it.</string>
@@ -556,6 +556,16 @@
     <string name="velocity_speed_miles_long" translation_description="Speed in miles per hour formatted for audible announcement. [ICU SYNTAX][CHAR LIMIT=100]">{value, plural, =1 {1 mile per hour} other {# miles per hour}}</string>
     <string name="velocity_speed_km_long" translation_description="Speed in kilometers per hour formatted audible announcement. [ICU SYNTAX][CHAR LIMIT=100]">{value, plural, =1 {1 kilometer per hour} other {# kilometers per hour}}</string>
 
+    <string name="velocity_minute_miles" translation_description="Speed in minute per mile formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/mile</string>
+    <string name="velocity_minute_km" translation_description="Speed in minute per kilometer formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/km</string>
+    <string name="velocity_minute_miles_long" translation_description="Speed in minute per mile formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per mile</string>
+    <string name="velocity_minute_km_long" translation_description="Speed in minute per kilometer formatted audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per kilometer</string>
+
+    <string name="velocity_minute_per_one_hundred_yards" translation_description="Speed in minute per one hundred yards formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 yards</string>
+    <string name="velocity_minute_per_one_hundred_meters" translation_description="Speed in minute per one hundred meters formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 meters</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" translation_description="Speed in minute per one hundred yards formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 yards</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" translation_description="Speed in minute per one hundred meters formatted audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 meters</string>
+
     <string name="heart_rate_series_range" translatable="false"><xliff:g example="100 bpm" id="min">%1$s</xliff:g> - <xliff:g example="109 bpm" id="max">%2$s</xliff:g></string>
     <string name="heart_rate_series_range_long" translatable="false"> from <xliff:g example="100 beats per minute" id="min">%1$s</xliff:g> to <xliff:g example="109 beats per minute" id="max">%2$s</xliff:g></string>
 
@@ -601,8 +611,10 @@
 
     <!-- region training plans -->
     <string name="planned_exercise_session_title" translatable="false"><xliff:g example="Swimming" id="type">%1$s</xliff:g> • <xliff:g example="Freestyle Technique Bootcamp" id="title">%2$s</xliff:g></string>
-    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> x<xliff:g example="2" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_session_notes_title" description="Title for notes section.">Notes</string>
+    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g>: <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
     <string name="planned_exercise_block_a11y_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_block_details_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g>: <xliff:g example="2" id="repetition">%2$d</xliff:g></string>
     <string name="planned_exercise_block_repetitions" description="Repetitions of an exercise set. [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 time} other {# times}}</string>
     <string name="planned_exercise_step_title" translatable="false"><xliff:g example="400m" id="completion_goal">%1$s</xliff:g> <xliff:g example="Breaststroke" id="exercise_segment_type">%2$s</xliff:g></string>
     <string name="distance_with_variable_rest_goal_formatted" translatable="false"><xliff:g example="400m" id="distance">%1$s</xliff:g>\@<xliff:g example="4 hours" id="duration">%2$s</xliff:g> </string>
@@ -611,6 +623,8 @@
     <string name="performance_goals_range" translatable="false"><xliff:g example="100W" id="min_value">%1$s</xliff:g> - <xliff:g example="200W" id="max_value">%2$s</xliff:g></string>
     <string name="amrap_performance_goal" description="Label for as many reps as possible performance goal">As many reps as possible</string>
     <string name="rate_of_perceived_exertion_goal" description="Label for rate of perceived exertion goal">Effort level: <xliff:g example="4" id="value">%1$d</xliff:g>/10</string>
+    <string name="bulleted_content" translatable="false">• <xliff:g example="Focus on breathing" id="title">%1$s</xliff:g></string>
+    <string name="elapsed_time_placeholder" description="Value to represent time for un realistic data input.">--:--</string>
     <!-- endregion -->
 
     <!--  region activity -->

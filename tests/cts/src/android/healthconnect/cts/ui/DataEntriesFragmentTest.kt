@@ -24,12 +24,15 @@ import android.healthconnect.cts.lib.UiTestUtils
 import android.healthconnect.cts.lib.UiTestUtils.clickOnContentDescription
 import android.healthconnect.cts.lib.UiTestUtils.clickOnDescContains
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
+import android.healthconnect.cts.lib.UiTestUtils.scrollDownToAndClick
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.utils.RevokedHealthPermissionRule
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.insertRecords
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 import java.time.Instant
 import java.time.Period.ofDays
 import java.time.ZoneId
@@ -39,6 +42,10 @@ import org.junit.Test
 
 /** CTS test for HealthConnect Data entries screen. */
 class DataEntriesFragmentTest : HealthConnectBaseTest() {
+
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     companion object {
         private const val TAG = "DataEntriesFragmentTest"
@@ -100,7 +107,7 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            clickOnText("See all entries")
+            scrollDownToAndClick(By.text("See all entries"))
 
             waitDisplayed(By.text("0.5 km"))
         }
@@ -113,7 +120,7 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
             clickOnText("Activity")
             clickOnText("Distance")
 
-            clickOnText("See all entries")
+            scrollDownToAndClick(By.text("See all entries"))
             clickOnContentDescription("More options")
             clickOnText("Set units")
             clickOnText("Distance")
@@ -130,7 +137,7 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            clickOnText("See all entries")
+            scrollDownToAndClick(By.text("See all entries"))
 
             // Delete entry
             clickOnDescContains("Delete data entry")
@@ -145,7 +152,7 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            clickOnText("See all entries")
+            scrollDownToAndClick(By.text("See all entries"))
 
             clickOnDescContains(Instant.now().atZone(ZoneId.systemDefault()).year.toString())
             clickOnText("1")
@@ -159,7 +166,7 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         context.launchDataActivity {
             clickOnText("Activity")
             clickOnText("Distance")
-            clickOnText("See all entries")
+            scrollDownToAndClick(By.text("See all entries"))
 
             clickOnContentDescription("Previous day")
 
