@@ -21,6 +21,7 @@ import android.content.Intent
 import android.health.connect.HealthConnectManager
 import android.health.connect.ReadRecordsRequestUsingFilters
 import android.health.connect.TimeInstantRangeFilter
+import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.Record
 import androidx.work.ListenableWorker
 import androidx.work.OneTimeWorkRequestBuilder
@@ -70,8 +71,14 @@ suspend fun callToolbox(
 
 /** A payload to be sent to [ToolboxProxyReceiver] as part of a request. */
 sealed interface ToolboxProxyPayload : Serializable {
+
+    /**
+     * Reads records of the specified [type] contributed by apps specified by the [packageNames]
+     * list, or by all apps if the [packageNames] list is empty.
+     */
     data class ReadRecords(
         val type: Class<out Record>,
+        val packageNames: List<String> = emptyList(),
     ) : ToolboxProxyPayload
 }
 
@@ -191,6 +198,11 @@ class ToolboxProxyWorker(
                         .setEndTime(Instant.now())
                         .build()
                 )
+                .apply {
+                    for (pkg in payload.packageNames) {
+                        addDataOrigins(DataOrigin.Builder().setPackageName(pkg).build())
+                    }
+                }
                 .build(),
         ).joinToString(separator = "\n", transform = Record::asString)
 }

@@ -105,13 +105,13 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     override fun isBackgroundReadEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
     override fun isHistoryReadEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
@@ -123,13 +123,13 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     override fun isPlannedExerciseEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
     override fun isSkinTemperatureEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 

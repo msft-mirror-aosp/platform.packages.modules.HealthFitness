@@ -405,7 +405,7 @@ class ConnectedAppFragmentTest {
     }
 
     @Test
-    fun test_footerWithGrantTime_isDisplayed() {
+    fun footerWithGrantTime_whenNoHistoryRead_isDisplayed() {
         val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
@@ -421,6 +421,38 @@ class ConnectedAppFragmentTest {
                     "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
                         "To manage other Android permissions this app can " +
+                        "access, go to Settings > Apps" +
+                        "\n\n" +
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
+    }
+
+    @Test
+    fun footerWithGrantTime_whenHistoryRead_isNotDisplayed() {
+        val permission = DataTypePermission(DISTANCE, READ)
+        whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
+        whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
+            .thenReturn(true)
+        whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
+            .thenReturn(Intent())
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(AdditionalAccessViewModel.State(
+                historyReadUIState = AdditionalAccessViewModel.AdditionalPermissionState(
+                    isDeclared = true,
+                    isEnabled = false,
+                    isGranted = false
+                )
+            ))
+        }
+        launchFragment<ConnectedAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(
+            withText("To manage other Android permissions this app can " +
                         "access, go to Settings > Apps" +
                         "\n\n" +
                         "Data you share with $TEST_APP_NAME is covered by their privacy policy"))

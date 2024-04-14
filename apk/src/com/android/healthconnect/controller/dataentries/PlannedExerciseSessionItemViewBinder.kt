@@ -41,8 +41,7 @@ class PlannedExerciseSessionItemViewBinder(
     override fun newView(parent: ViewGroup): View {
         val context = parent.context.applicationContext
         val hiltEntryPoint =
-            EntryPointAccessors.fromApplication(
-                context.applicationContext, HealthConnectLoggerEntryPoint::class.java)
+            EntryPointAccessors.fromApplication(context, HealthConnectLoggerEntryPoint::class.java)
         logger = hiltEntryPoint.logger()
         return LayoutInflater.from(parent.context).inflate(R.layout.item_data_entry, parent, false)
     }
@@ -53,6 +52,7 @@ class PlannedExerciseSessionItemViewBinder(
         val header = view.findViewById<TextView>(R.id.item_data_entry_header)
         val title = view.findViewById<TextView>(R.id.item_data_entry_title)
         val deleteButton = view.findViewById<ImageButton>(R.id.item_data_entry_delete)
+        logger.logImpression(DataEntriesElement.PLANNED_EXERCISE_SESSION_ENTRY_BUTTON)
         if (showSecondAction) {
             logger.logImpression(DataEntriesElement.DATA_ENTRY_DELETE_BUTTON)
         }
@@ -70,7 +70,10 @@ class PlannedExerciseSessionItemViewBinder(
             onDeleteEntryClicked?.onDeleteEntry(data.uuid, data.dataType, index)
         }
         if (showSecondAction) {
-            container.setOnClickListener { onItemClickedListener?.onItemClicked(data.uuid, index) }
+            container.setOnClickListener {
+                logger.logInteraction(DataEntriesElement.PLANNED_EXERCISE_SESSION_ENTRY_BUTTON)
+                onItemClickedListener?.onItemClicked(data.uuid, index)
+            }
         } else {
             container.isClickable = false
         }
