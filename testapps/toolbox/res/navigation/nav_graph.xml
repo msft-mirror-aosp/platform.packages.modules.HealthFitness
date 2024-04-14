@@ -33,6 +33,9 @@
     <action
         android:id="@+id/action_homeFragment_to_readDataInBackground"
         app:destination="@id/read_data_in_background_screen" />
+    <action
+        android:id="@+id/action_homeFragment_to_readDataInForeground"
+        app:destination="@id/read_data_in_foreground_screen" />
   </fragment>
 
   <fragment
@@ -80,6 +83,13 @@
       android:name="com.android.healthconnect.testapps.toolbox.ui.ReadDataInBackgroundFragment"
       android:label="fragment_read_data_in_background"
       tools:layout="@layout/fragment_read_data_in_background">
+  </fragment>
+
+  <fragment
+      android:id="@+id/read_data_in_foreground_screen"
+      android:name="com.android.healthconnect.testapps.toolbox.ui.ReadDataInForegroundFragment"
+      android:label="fragment_read_data_in_foreground"
+      tools:layout="@layout/fragment_read_data_in_foreground">
   </fragment>
 
 </navigation>

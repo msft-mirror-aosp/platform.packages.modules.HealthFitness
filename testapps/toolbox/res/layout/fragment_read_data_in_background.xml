@@ -34,7 +34,15 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/read_steps_button"
+            android:id="@+id/read_own_steps_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/background_read_own_steps" />
+
+        <Button
+            android:id="@+id/read_all_steps_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

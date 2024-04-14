@@ -88,9 +88,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Пристап до минатите податоци"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Да се дозволи <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до минатите податоци?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Дозволете апликацијава да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Дозволете апликацијава да пристапува до минатите податоци од Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дозволете апликацијава да пристапува до сите минати податоци од Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Ако дозволите, апликацијава ќе може да пристапува до податоците од Health Connect додадени пред <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Ако дозволите, апликацијава ќе може да пристапува до минатите податоци од Health Connect."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ако дозволите, апликацијава ќе може да пристапува до сите минати податоци од Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Активно потрошени калории"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"активно потрошени калории"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Читање активно потрошени калории"</string>
@@ -271,6 +271,12 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Да се отстранат сите дозволи?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Отстрани ги сите"</string>
     <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> веќе нема да може да чита или запишува податоци од Health Connect.\n\nОва не влијае на другите дозволи што може да ги има оваа апликација, како локација, камера или микрофон."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
+    <skip />
+    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
+    <skip />
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Избриши ги и податоците на <xliff:g id="APP_NAME">%1$s</xliff:g> од Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Следниот ден"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Избран ден"</string>
@@ -304,6 +310,8 @@
     <string name="app_access_title" msgid="7137018424885371763">"Пристап на апликацијата"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Во моментов немате инсталирано компатибилни апликации"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Дополнителен пристап"</string>
+    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Отстранети дозволи за апликации"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ги отстрани дозволите за <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ги отстрани дозволите за <xliff:g id="APP_DATA_0">%1$s</xliff:g> и <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -325,12 +333,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Дневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Седмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Месечно"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Извезете ја локацијата"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Вклучете шифрирање"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Податоците треба да се шифрираат пред да се зачуваат. Никој, па ни Google, ни Health Connect, нема да може да пристапат до нив."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Создајте лозинка за да ги заштитите шифрираните податоци. Лозинкава ќе ви треба за да ги увезете и вратите податоците."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Лозинка"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Повторете ја лозинката"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Лозинките не се совпаѓаат"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Ако ја заборавите лозинката и го изгубите телефонот, Health Connect не може да ви помогне да ги вратите зачуваните податоци."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Следно"</string>
@@ -401,6 +411,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}one{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 милја на час}one{# милја на час}other{# милји на час}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 километар на час}one{# километар на час}other{# километри на час}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"од <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"од <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 туркање на инвалидска количка}one{# туркање на инвалидска количка}other{# туркања на инвалидска количка}}"</string>
@@ -426,11 +452,15 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Неодредена"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 милисекунда}one{# милисекунда}other{# милисекунди}}"</string>
+    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
+    <skip />
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{Еднаш}one{# пат}other{# пати}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Активни: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Вкупно: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Што е можно повеќе повторувања"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Ниво на напор: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 повт.}one{# повт.}other{# повт.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 повторување}one{# повторување}other{# повторувања}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Сегменти на вежбање"</string>
@@ -792,10 +822,11 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Дозволи ги сите маршути"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дозволувај"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Секогаш дозволувај"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Споделување на маршрутата за вежбање"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Контролирајте го пристапот на апликацијава до маршрутите за вежбање од поврзаните апликации"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Пристап до маршрутите за вежбање"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Дозволете <xliff:g id="APP_NAME">%1$s</xliff:g> да пристапува до маршрутите"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Секогаш прашувај"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Не дозволувај"</string>
+    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
+    <skip />
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Да се овозможат двата типа податоци?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Да се оневозможат двата типа податоци?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> бара пристап за читање до вежбање за да се овозможат маршрутите за вежбање"</string>
@@ -889,4 +920,10 @@
     <string name="tab_access" msgid="7818197975407243701">"Пристап"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Да се дозволи дополнителен пристап за <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"И <xliff:g id="APP_NAME">%1$s</xliff:g> сака да пристапува до поставкиве за Health Connect"</string>
+    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
+    <skip />
+    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
+    <skip />
+    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
+    <skip />
 </resources>

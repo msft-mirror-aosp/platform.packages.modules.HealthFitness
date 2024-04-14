@@ -16,19 +16,33 @@
 
 package com.android.healthconnect.controller.export
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.export.api.ExportSettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Export destination fragment for Health Connect. */
 @AndroidEntryPoint(Fragment::class)
 class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
+
+    private val contract = ActivityResultContracts.StartActivityForResult()
+    private val saveResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(contract, ::onSave)
+
+    private val viewModel: ExportSettingsViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,6 +63,33 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
             findNavController()
                 .navigate(R.id.action_exportDestinationFragment_to_exportEncryptionFragment)
         }
+
+        // TODO: b/325917283 - the temporary UI to open the document API for e2e prototype.
+        // Replace it once we use proper storage UI APIs.
+        val openExportDestinationButton = view.findViewById<Button>(R.id.open_export_destination)
+        openExportDestinationButton?.setOnClickListener {
+            saveResultLauncher.launch(
+                    Intent(Intent.ACTION_CREATE_DOCUMENT)
+                            .addFlags(
+                                    Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                            .setType("application/zip")
+                            .addCategory(Intent.CATEGORY_OPENABLE))
+        }
         return view
+    }
+
+    private fun onSave(result: ActivityResult) {
+        // TODO: b/325917283 - the temporary UI solution to open the document API for e2e prototype.
+        // Replace it once we use proper storage UI APIs.
+        if (result.resultCode == Activity.RESULT_OK) {
+            val fileUri = result.data?.data ?: return
+            requireContext()
+                .contentResolver
+                .takePersistableUriPermission(fileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            viewModel.updateExportUri(fileUri)
+            findNavController()
+                .navigate(R.id.action_exportDestinationFragment_to_exportEncryptionFragment)
+        }
     }
 }
