@@ -120,8 +120,9 @@ public class RespiratoryRateRecordTest {
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RespiratoryRateRecord.class)
                                 .build());
-        RespiratoryRateRecord testRecord = getCompleteRespiratoryRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        RespiratoryRateRecord testRecord =
+                (RespiratoryRateRecord) TestUtils.insertRecord(getCompleteRespiratoryRateRecord());
         List<RespiratoryRateRecord> newRespiratoryRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RespiratoryRateRecord.class)
@@ -142,8 +143,9 @@ public class RespiratoryRateRecordTest {
                         .setStartTime(Instant.now())
                         .setEndTime(Instant.now().plusMillis(3000))
                         .build();
-        RespiratoryRateRecord testRecord = getCompleteRespiratoryRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        RespiratoryRateRecord testRecord =
+                (RespiratoryRateRecord) TestUtils.insertRecord(getCompleteRespiratoryRateRecord());
         List<RespiratoryRateRecord> newRespiratoryRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RespiratoryRateRecord.class)
@@ -169,8 +171,9 @@ public class RespiratoryRateRecordTest {
                                                 .setPackageName(context.getPackageName())
                                                 .build())
                                 .build());
-        RespiratoryRateRecord testRecord = getCompleteRespiratoryRateRecord();
-        TestUtils.insertRecords(Collections.singletonList(testRecord));
+
+        RespiratoryRateRecord testRecord =
+                (RespiratoryRateRecord) TestUtils.insertRecord(getCompleteRespiratoryRateRecord());
         List<RespiratoryRateRecord> newRespiratoryRateRecords =
                 TestUtils.readRecords(
                         new ReadRecordsRequestUsingFilters.Builder<>(RespiratoryRateRecord.class)
@@ -253,8 +256,10 @@ public class RespiratoryRateRecordTest {
     @Test
     public void testDeleteRespiratoryRateRecord_recordId_filters() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseRespiratoryRateRecord(), getCompleteRespiratoryRateRecord());
-        TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseRespiratoryRateRecord(),
+                                getCompleteRespiratoryRateRecord()));
 
         for (Record record : records) {
             TestUtils.verifyDeleteRecords(
@@ -293,10 +298,12 @@ public class RespiratoryRateRecordTest {
     @Test
     public void testDeleteRespiratoryRateRecord_usingIds() throws InterruptedException {
         List<Record> records =
-                List.of(getBaseRespiratoryRateRecord(), getCompleteRespiratoryRateRecord());
-        List<Record> insertedRecord = TestUtils.insertRecords(records);
+                TestUtils.insertRecords(
+                        List.of(
+                                getBaseRespiratoryRateRecord(),
+                                getCompleteRespiratoryRateRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
-        for (Record record : insertedRecord) {
+        for (Record record : records) {
             recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
         }
 
@@ -475,8 +482,9 @@ public class RespiratoryRateRecordTest {
         assertThat(response.getUpsertedRecords().size()).isEqualTo(0);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
-        List<Record> testRecord = Collections.singletonList(getCompleteRespiratoryRateRecord());
-        TestUtils.insertRecords(testRecord);
+        List<Record> testRecord =
+                TestUtils.insertRecords(
+                        Collections.singletonList(getCompleteRespiratoryRateRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
