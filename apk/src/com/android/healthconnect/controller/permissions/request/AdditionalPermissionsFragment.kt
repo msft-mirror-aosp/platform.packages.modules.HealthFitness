@@ -141,8 +141,8 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
         category.removeAll()
         category.isVisible = true
 
-        category.addPreference(getBackgroundReadPreference())
         category.addPreference(getHistoryReadPreference(appMetadata))
+        category.addPreference(getBackgroundReadPreference())
     }
 
     private fun getBackgroundReadPreference(): HealthSwitchPreference {

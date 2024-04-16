@@ -23,7 +23,6 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 
 import static com.google.common.truth.Truth.assertThat;
 
-
 import android.content.Context;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
@@ -68,8 +67,7 @@ public final class DataFactory {
     // truncate to MILLIS because HC does, so reduce flakiness in some tests.
     public static final Instant NOW = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     public static final Instant SESSION_START_TIME = NOW.minus(10, ChronoUnit.DAYS);
-    public static final Instant SESSION_END_TIME =
-            NOW.minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
+    public static final Instant SESSION_END_TIME = SESSION_START_TIME.plus(1, ChronoUnit.HOURS);
 
     public static Device buildDevice() {
         return new Device.Builder()
