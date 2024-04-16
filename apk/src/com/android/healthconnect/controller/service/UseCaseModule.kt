@@ -49,7 +49,11 @@ import com.android.healthconnect.controller.export.api.ILoadExportSettingsUseCas
 import com.android.healthconnect.controller.export.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.export.api.LoadExportSettingsUseCase
 import com.android.healthconnect.controller.export.api.UpdateExportSettingsUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
@@ -108,6 +112,20 @@ class UseCaseModule {
         loadEntriesHelper: LoadEntriesHelper
     ): ILoadDataEntriesUseCase {
         return LoadDataEntriesUseCase(dispatcher, loadEntriesHelper)
+    }
+
+    @Provides
+    fun providesExerciseRoutePermissionUseCase(
+        loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
+        getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
+        getGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): ILoadExerciseRoutePermissionUseCase {
+        return LoadExerciseRoutePermissionUseCase(
+            loadDeclaredHealthPermissionUseCase,
+            getHealthPermissionsFlagsUseCase,
+            getGrantedHealthPermissionsUseCase,
+            dispatcher)
     }
 
     @Provides
