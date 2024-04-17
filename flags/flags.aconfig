@@ -39,11 +39,3 @@ flag {
     description: "Permission to enable reading past health data."
     bug: "325430290"
 }
-
-flag {
-    name: "personal_health_record"
-    is_exported: true
-    namespace: "healthconnect"
-    description: "Flag for adding new PHR features."
-    bug: "329271826"
-}

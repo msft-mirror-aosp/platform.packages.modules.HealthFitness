@@ -1,0 +1,10 @@
+package: "com.android.healthfitness.flags"
+container: "com.android.healthfitness"
+
+flag {
+    name: "personal_health_record"
+    is_exported: true
+    namespace: "healthfitness"
+    description: "Flag for adding new PHR features."
+    bug: "329271826"
+}

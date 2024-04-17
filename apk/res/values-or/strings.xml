@@ -30,6 +30,8 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ଟିରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପର ଆକ୍ସେସ ଅଛି"</string>
+    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
+    <skip />
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"କିଛି ନାହିଁ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ଏଣ୍ଟ୍ରି ବିବରଣୀ"</string>
     <string name="backup_title" msgid="211503191266235085">"ବେକଅପ ନିଅନ୍ତୁ"</string>
@@ -270,7 +272,8 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"ଗୋପନୀୟତା ନୀତି"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ସବୁ ଅନୁମତିକୁ କାଢ଼ି ଦେବେ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"ସବୁ କାଢ଼ି ଦିଅନ୍ତୁ"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କ୍ୟାମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
+    <skip />
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଏବଂ ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
@@ -407,6 +410,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 କିମି/ଘ}other{# କିମି/ଘ}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{ଘଣ୍ଟା ପ୍ରତି 1 ମାଇଲ}other{ଘଣ୍ଟା ପ୍ରତି # ମାଇଲ}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{ଘଣ୍ଟା ପ୍ରତି 1 କିଲୋମିଟର}other{ଘଣ୍ଟା ପ୍ରତି # କିଲୋମିଟର}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>ରୁ <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>ରୁ <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1ଟି ହ୍ୱିଲଚେୟାର ପୁସ}other{#ଟି ହ୍ୱିଲଚେୟାର ପୁସ}}"</string>
@@ -432,13 +451,14 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"ଅସ୍ପଷ୍ଟ"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ମିଲିସେକେଣ୍ଡ}other{# ମିଲିସେକେଣ୍ଡ}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ମିଲିସେକେଣ୍ଡ}other{# ମିଲିସେକେଣ୍ଡ}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"ନୋଟଗୁଡ଼ିକ"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 ଥର}other{# ଥର}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"ସକ୍ରିୟ: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"ମୋଟ: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"ଯଥା ସମ୍ଭବ ଅଧିକ ରିପିଟିସନ"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"ପ୍ରଚେଷ୍ଟା ଲେଭେଲ: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ଥର ରିପିଟିସନ}other{# ଥର ରିପିଟିସନ}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ଥର ରିପିଟିସନ}other{# ଥର ରିପିଟିସନ}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"ବ୍ୟାୟାମର ସେଗମେଣ୍ଟଗୁଡ଼ିକ"</string>

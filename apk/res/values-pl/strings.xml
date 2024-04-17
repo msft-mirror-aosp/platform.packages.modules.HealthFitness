@@ -30,6 +30,8 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Aplikacje mające dostęp: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> z <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Aplikacje mające dostęp: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacja ma dostęp"</string>
+    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
+    <skip />
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Brak"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Szczegóły wpisu"</string>
     <string name="backup_title" msgid="211503191266235085">"Kopia zapasowa"</string>
@@ -270,7 +272,8 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"polityka prywatności"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Usunąć wszystkie uprawnienia?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Usuń wszystko"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
+    <skip />
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym danych w tle) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym wcześniejszych danych) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym danych w tle i wcześniejszych danych) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
@@ -329,8 +332,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Codziennie"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Co tydzień"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Co miesiąc"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Wybierz, gdzie chcesz eksportować dane"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Włącz szyfrowanie"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Przed zapisaniem dane trzeba zaszyfrować. Nikt nie będzie mieć do nich dostępu, nawet Google i Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Utwórz hasło, aby chronić swoje zaszyfrowane dane. Będziesz go potrzebować do zaimportowania i przywrócenia danych."</string>
@@ -407,6 +409,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}few{# km/h}many{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mila na godzinę}few{# mile na godzinę}many{# mil na godzinę}other{# mili na godzinę}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometr na godzinę}few{# kilometry na godzinę}many{# kilometrów na godzinę}other{# kilometra na godzinę}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/milę"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minuta na milę"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minuta na kilometr"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min / 100 jardów"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min / 100 metrów"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minuta na 100 jardów"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minuta na 100 metrów"</string>
     <string name="time_range_long" msgid="5067423945245490288">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 pchnięcie wózka inwalidzkiego}few{# pchnięcia wózka inwalidzkiego}many{# pchnięć wózka inwalidzkiego}other{# pchnięcia wózka inwalidzkiego}}"</string>
@@ -438,6 +448,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Łącznie: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Maksymalna liczba powtórzeń"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Poziom wysiłku: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 powt.}few{# powt.}many{# powt.}other{# powt.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 powtórzenie}few{# powtórzenia}many{# powtórzeń}other{# powtórzenia}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Czas aktywności"</string>

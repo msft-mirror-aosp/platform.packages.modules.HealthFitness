@@ -30,6 +30,8 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> of <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps have access"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> apps have access"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app has access"</string>
+    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
+    <skip />
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"None"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Entry details"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
@@ -270,7 +272,8 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privacy policy"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Remove all permissions?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Remove all"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> will no longer be able to read or write any data from Health Connect.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
+    <skip />
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> will no longer be able to read or write any data from Health Connect, including background data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> will no longer be able to read or write any data from Health Connect, including past data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> will no longer be able to read or write any data from Health Connect, including background and past data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone."</string>
@@ -329,8 +332,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Daily"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Weekly"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Monthly"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Choose where to export"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Turn on encryption"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data needs to be encrypted before it is saved. No one, not even Google or Health Connect, will be able to access it."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Create a password to protect your encrypted data. You will need this password to import and restore your data."</string>
@@ -407,6 +409,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mile per hour}other{# miles per hour}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometer per hour}other{# kilometers per hour}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/mile"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minute per mile"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minute per kilometer"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yards"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 meters"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minute per 100 yards"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minute per 100 meters"</string>
     <string name="time_range_long" msgid="5067423945245490288">"from <xliff:g id="START_TIME">%1$s</xliff:g> to <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"from <xliff:g id="START_TIME">%1$s</xliff:g> to <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 wheelchair push}other{# wheelchair pushes}}"</string>
@@ -438,6 +448,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"As many reps as possible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Effort level: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rep}other{# reps}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetition}other{# repetitions}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Exercise segments"</string>

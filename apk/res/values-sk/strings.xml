@@ -30,6 +30,8 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Prístup má tento počet aplikácií: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> z <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Prístup má tento počet aplikácií: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Prístup má <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikácia"</string>
+    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
+    <skip />
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Žiadne"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Podrobnosti o zázname"</string>
     <string name="backup_title" msgid="211503191266235085">"Záloha"</string>
@@ -270,7 +272,8 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravidlách ochrany súkromia"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Chcete odstrániť všetky povolenia?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Odstrániť všetky"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako je poloha, kamera alebo mikrofón."</string>
+    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
+    <skip />
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať. Týka sa to aj dát na pozadí.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako je poloha, kamera alebo mikrofón."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať. Týka sa to aj minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako je poloha, kamera alebo mikrofón."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> už nebude môcť čítať údaje z Dát o zdraví ani ich do nich zapisovať. Týka sa to aj dát na pozadí a minulých údajov.\n\nNeovplyvní to ďalšie povolenia, ktoré táto aplikácia môže mať, ako je poloha, kamera alebo mikrofón."</string>
@@ -407,6 +410,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}few{# km/h}many{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 míľa za hodinu}few{# míle za hodinu}many{# míle za hodinu}other{# míľ za hodinu}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometer za hodinu}few{# kilometre za hodinu}many{# kilometra za hodinu}other{# kilometrov za hodinu}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 potlačenie invalidného vozíka}few{# potlačenia invalidného vozíka}many{# potlačenia invalidného vozíka}other{# potlačení invalidného vozíka}}"</string>
@@ -432,13 +451,14 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nepreukázateľná"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}many{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}few{# milisekundy}many{# milisekundy}other{# milisekúnd}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Poznámky"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1-krát}few{#-krát}many{#-krát}other{#-krát}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Počas aktivity: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Celkove: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Čo najviac opakovaní"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Stupeň úsilia: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 opak.}few{# opak.}many{# reps}other{# opak.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 opakovanie}few{# opakovania}many{# repetitions}other{# opakovaní}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenty cvičenia"</string>

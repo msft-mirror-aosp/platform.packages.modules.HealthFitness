@@ -30,6 +30,8 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> application(s) sur <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ont accès"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> applications ont accès"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> application a accès"</string>
+    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
+    <skip />
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Aucune"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Détails de l\'entrée"</string>
     <string name="backup_title" msgid="211503191266235085">"Sauvegarde"</string>
@@ -270,13 +272,11 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politique de confidentialité"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Retirer toutes les autorisations?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Tout retirer"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
-    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
+    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
     <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données en arrière-plan.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données antérieures.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données en arrière-plan ou antérieures.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Supprimer également les données de <xliff:g id="APP_NAME">%1$s</xliff:g> de Connexion santé"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Jour suivant"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Jour sélectionné"</string>
@@ -310,8 +310,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accès des applications"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune application compatible n\'est actuellement installée"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaire"</string>
-    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
-    <skip />
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Retrait des autorisations supplémentaires pour cette application"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorisations d\'applications retirées"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Connexion santé a retiré les autorisations pour <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Connexion santé a retiré les autorisations pour <xliff:g id="APP_DATA_0">%1$s</xliff:g> et <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -411,6 +410,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}one{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mille à l\'heure}one{# mille à l\'heure}other{# milles à l\'heure}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilomètre à l\'heure}one{# kilomètre à l\'heure}other{# kilomètres à l\'heure}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"de <xliff:g id="START_TIME">%1$s</xliff:g> à <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"de <xliff:g id="START_TIME">%1$s</xliff:g> à <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 poussée de fauteuil roulant}one{# poussée de fauteuil roulant}other{# poussées de fauteuil roulant}}"</string>
@@ -436,13 +451,14 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Non concluant"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milliseconde}one{# milliseconde}other{# millisecondes}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Remarques"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 fois}one{# fois}other{# fois}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Actives : <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Total : <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Autant de répétitions que possible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Niveau d\'effort : <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
+    <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rép.}one{# rép.}other{# rép.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 répétition}one{# répétition}other{# répétitions}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segments d\'exercice"</string>
@@ -807,8 +823,7 @@
     <string name="route_permissions_label" msgid="6293377940884373190">"Accédez à tous les itinéraires d\'exercice"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Autorisez <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux itinéraires"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Toujours demander"</string>
-    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
-    <skip />
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Ne pas autoriser"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Activer les deux types de données?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Désactiver les deux types de données?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> nécessite l\'accès à la lecture des données d\'exercice pour activer les itinéraires d\'exercice"</string>
@@ -902,10 +917,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Accès"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Autoriser un accès supplémentaire pour <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> veut également accéder à ces paramètres de Connexion santé"</string>
-    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
-    <skip />
-    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
-    <skip />
-    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
-    <skip />
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activez au moins une autorisation de lecture afin de permettre l\'accès en arrière-plan ou aux données antérieures pour cette application"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Activez au moins une autorisation de lecture afin de permettre l\'accès en arrière-plan pour cette application"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Activez au moins une autorisation de lecture afin de permettre l\'accès aux données antérieures pour cette application"</string>
 </resources>
