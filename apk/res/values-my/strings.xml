@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"အက်ပ် <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ခုအနက် <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ခုတွင် သုံးခွင့်ရှိသည်"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"အက်ပ် <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ခုတွင် သုံးခွင့်ရှိသည်"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"အက်ပ် <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ခုတွင် သုံးခွင့်ရှိသည်"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{အက်ပ် ၁ ခုတွင် ခွင့်ပြုချက်ရှိသည်}other{အက်ပ် # ခုတွင် ခွင့်ပြုချက်ရှိသည်}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"မရှိ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ထည့်သွင်းမှု အသေးစိတ်"</string>
     <string name="backup_title" msgid="211503191266235085">"အရန်သိမ်းရန်"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"ရေးရန်- <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"၊ "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ခွင့်ပြုချက်များကို စီမံရန်"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"အချိန်- %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"လှုပ်ရှားမှု"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"လှုပ်ရှားမှု"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ခန္ဓာကိုယ် တိုင်းတာချက်များ"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"ကိုယ်ရေးအချက်အလက်လုံခြုံမှုဆိုင်ရာ မူဝါဒ"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ခွင့်ပြုချက်အားလုံး ဖယ်ရှားမလား။"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"အားလုံး ဖယ်ရှားရန်"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော ကင်မရာ၊ မိုက်ခရိုဖုန်း (သို့) တည်နေရာကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် နောက်ခံတွင်အသုံးပြုသောဒေတာ အပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော တည်နေရာ၊ ကင်မရာ (သို့) မိုက်ခရိုဖုန်းကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် ယခင်ဒေတာအပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော တည်နေရာ၊ ကင်မရာ (သို့) မိုက်ခရိုဖုန်းကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> သည် နောက်ခံတွင်အသုံးပြုသောဒေတာနှင့် ယခင်ဒေတာအပါအဝင် Health Connect မှ ဒေတာများကို ဖတ်နိုင် (သို့) ရေးနိုင်တော့မည် မဟုတ်ပါ။\n\n၎င်းသည် ဤအက်ပ်တွင်ရှိနိုင်သော တည်နေရာ၊ ကင်မရာ (သို့) မိုက်ခရိုဖုန်းကဲ့သို့ အခြားခွင့်ပြုချက်များပေါ် သက်ရောက်မှုမရှိပါ။"</string>

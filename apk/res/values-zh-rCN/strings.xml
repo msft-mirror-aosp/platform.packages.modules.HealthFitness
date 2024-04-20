@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用（共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 个）拥有访问权限"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 个应用拥有访问权限}other{# 个应用拥有访问权限}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"无"</string>
     <string name="entry_details_title" msgid="590184849040247850">"详细数据"</string>
     <string name="backup_title" msgid="211503191266235085">"备份"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"写入：<xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理权限"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"时间：%s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"活动"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活动"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身体测量数据"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"隐私权政策"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"要撤消所有权限吗？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"全部移除"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据。\n\n这不会影响此应用可能拥有的其他权限，例如摄像头、麦克风或位置信息使用权。"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据，包括后台数据。\n\n这不会影响此应用可能拥有的其他权限，例如位置信息、摄像头或麦克风使用权。"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据，包括历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如位置信息、摄像头或麦克风使用权。"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”将无法再读取“健康数据共享”中的任何数据或向其中写入数据，包括后台和历史数据。\n\n这不会影响此应用可能拥有的其他权限，例如位置信息、摄像头或麦克风使用权。"</string>

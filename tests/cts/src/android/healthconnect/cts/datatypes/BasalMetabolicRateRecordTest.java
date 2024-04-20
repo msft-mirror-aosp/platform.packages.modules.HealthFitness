@@ -16,7 +16,13 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
+import static android.health.connect.RecordIdFilter.fromId;
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -300,7 +306,7 @@ public class BasalMetabolicRateRecordTest {
                                 getCompleteBasalMetabolicRateRecord()));
         List<RecordIdFilter> recordIds = new ArrayList<>(records.size());
         for (Record record : records) {
-            recordIds.add(RecordIdFilter.fromId(record.getClass(), record.getMetadata().getId()));
+            recordIds.add(fromId(record.getClass(), record.getMetadata().getId()));
         }
 
         TestUtils.verifyDeleteRecords(recordIds);
@@ -319,6 +325,45 @@ public class BasalMetabolicRateRecordTest {
         String id = TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
         TestUtils.verifyDeleteRecords(BasalMetabolicRateRecord.class, timeRangeFilter);
         TestUtils.assertRecordNotFound(id, BasalMetabolicRateRecord.class);
+    }
+
+    @Test
+    public void testDeleteBasalMetabolicRateRecord_usingIds_forAnotherApp_fails() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseBasalMetabolicRateRecord());
+
+        HealthConnectException error =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.verifyDeleteRecords(
+                                        List.of(fromId(BasalMetabolicRateRecord.class, id))));
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void testDeleteBasalMetabolicRateRecord_usingTime_forAnotherApp_notDeleted()
+            throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteBasalMetabolicRateRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseBasalMetabolicRateRecord());
+
+        TestUtils.verifyDeleteRecords(
+                BasalMetabolicRateRecord.class,
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.EPOCH)
+                        .setEndTime(Instant.now())
+                        .build());
+
+        List<BasalMetabolicRateRecord> records =
+                TestUtils.readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(BasalMetabolicRateRecord.class)
+                                .addId(id)
+                                .build());
+
+        assertThat(records).isNotEmpty();
+        assertThat(records.get(0).getMetadata().getId()).isEqualTo(id);
     }
 
     @Test

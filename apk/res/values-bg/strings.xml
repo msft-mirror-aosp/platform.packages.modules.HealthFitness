@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> от <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> приложения имат достъп"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> приложения имат достъп"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> приложение има достъп"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 приложение има достъп}other{# приложения имат достъп}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Няма"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Подробности за записа"</string>
     <string name="backup_title" msgid="211503191266235085">"Създаване на резервни копия"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Записване: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управление на разрешенията"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Час: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активност"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активност"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Мерки на тялото"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"декларацията за поверителност"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Да се премахнат ли всички разрешения?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Премахване на всички"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително данни на заден план.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително предишни данни.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> вече няма да може да чете, нито да записва данни от Health Connect, включително данни на заден план и предишни данни.\n\nТова няма да засегне другите разрешения, с които приложението може да разполага, като например за достъп до местоположението, камерата или микрофона."</string>

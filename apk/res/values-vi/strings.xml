@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ứng dụng có quyền truy cập"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ứng dụng có quyền truy cập"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ứng dụng có quyền truy cập"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ứng dụng có quyền truy cập}other{# ứng dụng có quyền truy cập}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Không có"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Thông tin nhập"</string>
     <string name="backup_title" msgid="211503191266235085">"Sao lưu"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Ghi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Quản lý quyền"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Thời gian: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Hoạt động"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"hoạt động"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Số đo cơ thể"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"chính sách quyền riêng tư"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Xoá tất cả các quyền?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Xoá tất cả"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect nữa.\n\nĐiều này không ảnh hưởng đến các quyền khác mà ứng dụng này có thể có, chẳng hạn như camera, micrô hoặc thông tin vị trí."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect được nữa, kể cả dữ liệu nền.\n\nĐiều này không ảnh hưởng đến những quyền khác mà ứng dụng này có thể có (chẳng hạn như quyền truy cập thông tin vị trí, camera hoặc micrô)."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect được nữa.\n\nĐiều này không ảnh hưởng đến những quyền khác mà ứng dụng này có thể có (chẳng hạn như quyền truy cập thông tin vị trí, camera hoặc micrô)."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect được nữa, kể cả dữ liệu nền và dữ liệu trước đây.\n\nĐiều này không ảnh hưởng đến những quyền khác mà ứng dụng này có thể có (chẳng hạn như quyền truy cập thông tin vị trí, camera hoặc micrô)."</string>
@@ -725,7 +724,7 @@
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Cổ tay"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Âm đạo"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Vị trí đo"</string>
-    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Cơ sở"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Giá trị cơ sở"</string>
     <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Chênh lệch so với giá trị cơ sở"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 dặm}other{# dặm}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>

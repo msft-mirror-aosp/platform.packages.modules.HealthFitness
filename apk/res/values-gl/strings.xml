@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicacións teñen acceso"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicacións teñen acceso"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicación ten acceso"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Unha aplicación ten acceso}other{# aplicacións teñen acceso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ningunha"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalles da entrada"</string>
     <string name="backup_title" msgid="211503191266235085">"Copia de seguranza"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Xestionar permisos"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tempo: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividade"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"actividade"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medicións corporais"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidade"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Queres quitar todos os permisos?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Quitar todos"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> deixará de poder ler e escribir datos de Saúde conectada.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> xa non poderá ler nin escribir datos de Saúde conectada, incluídos os datos en segundo plano.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> xa non poderá ler nin escribir datos de Saúde conectada, incluídos os datos anteriores.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> xa non poderá ler nin escribir datos de Saúde conectada, incluídos os datos anteriores e en segundo plano.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
@@ -785,7 +784,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Cando cambias esta opción de configuración, Saúde conectada elimina os datos que teñas almacenados segundo as túas novas preferencias"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Queres que os datos se eliminen de forma automática tras # mes?}other{Queres que os datos se eliminen de forma automática tras # meses?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Saúde conectada eliminará automaticamente os datos novos tras # mes. Con esta configuración tamén se eliminarán os datos que xa teñas almacenados desde hai máis de # mes.}other{Saúde conectada eliminará automaticamente os datos novos tras # meses. Con esta configuración tamén se eliminarán os datos que xa teñas almacenados desde hai máis de # meses.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Establecer eliminación automática"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Fixar eliminación automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Eliminaranse os datos que xa teñas"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Saúde conectada eliminará todos os datos que teñan máis de # mes. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}other{Saúde conectada eliminará todos os datos que teñan máis de # meses. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Os datos eliminaranse das seguintes categorías"</string>

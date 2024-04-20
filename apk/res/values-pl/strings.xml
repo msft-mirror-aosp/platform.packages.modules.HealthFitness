@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Aplikacje mające dostęp: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> z <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Aplikacje mające dostęp: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacja ma dostęp"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikacja ma dostęp}few{# aplikacje mają dostęp}many{# aplikacji ma dostęp}other{# aplikacji ma dostęp}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Brak"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Szczegóły wpisu"</string>
     <string name="backup_title" msgid="211503191266235085">"Kopia zapasowa"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Zapis: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Zarządzaj uprawnieniami"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Czas: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktywność"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktywność"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Pomiary ciała"</string>
@@ -256,7 +256,7 @@
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Zapisuj dane o tętnie spoczynkowym"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Temperatura ciała"</string>
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura ciała"</string>
-    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Odczytuj temperaturę ciała"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Odczytuj temperaturę skóry"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisuj temperaturę ciała"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na odczytywanie"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na zapisywanie"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"polityka prywatności"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Usunąć wszystkie uprawnienia?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Usuń wszystko"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect ani ich zapisywać.\n\nNie wpływa to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące aparatu, mikrofonu czy lokalizacji."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym danych w tle) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym wcześniejszych danych) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> nie będzie już mogła odczytywać żadnych danych z Health Connect (w tym danych w tle i wcześniejszych danych) ani ich zapisywać.\n\nNie wpływa na to na inne uprawnienia, które może mieć ta aplikacja, np. dotyczące lokalizacji, aparatu czy mikrofonu."</string>

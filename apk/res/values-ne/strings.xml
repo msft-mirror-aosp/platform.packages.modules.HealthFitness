@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> मध्ये <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{एउटा एपलाई अनुमति दिइएको छ}other{# वटा एपलाई अनुमति दिइएको छ}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"कुनै पनि एप कनेक्ट गरिएको छैन"</string>
     <string name="entry_details_title" msgid="590184849040247850">"इन्ट्रीसम्बन्धी विवरणहरू"</string>
     <string name="backup_title" msgid="211503191266235085">"ब्याकअप गर्नुहोस्"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"राइट एक्सेस: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"अनुमतिहरू व्यवस्थापन गर्नुहोस्"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"समय: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"क्रियाकलाप"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"क्रियाकलाप"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"शारीरिक नाप"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"गोपनीयता नीति"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"एपलाई दिइएका सबै अनुमति हटाउने हो?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"सबै हटाउनुहोस्"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अबदेखि Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका क्यामेरा, माइक्रोफोन वा लोकेसनलगायतका कुरा प्रयोग गर्ने अनुमति बदलिने छैन।"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब ब्याकग्राउन्ड डेटासहित Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोन प्रयोग गर्नेलगायतका अनुमतिमा कुनै प्रभाव पार्दैन।"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब पुरानो डेटासहित Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोन प्रयोग गर्नेलगायतका अनुमतिमा कुनै प्रभाव पार्दैन।"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब ब्याकग्राउन्ड र पुरानो डेटासहित Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोन प्रयोग गर्नेलगायतका अनुमतिमा कुनै प्रभाव पार्दैन।"</string>
@@ -332,8 +331,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"दैनिक"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"साप्ताहिक"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"मासिक"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"डेटा एक्सपोर्ट गर्ने स्थान छनौट गर्नुहोस्"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"इन्क्रिप्सन गर्ने सुविधा अन गर्नुहोस्"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"डेटा इन्क्रिप्ट गरेपछि मात्र सेभ गर्नु पर्ने हुन्छ। Google वा Health Connect लगायत कसैले पनि यो डेटा प्रयोग गर्न सक्ने छैनन्।"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"इन्क्रिप्ट गरिएको डेटा सुरक्षित गर्न पासवर्ड राख्नुहोस्। तपाईंले आफ्नो डेटा इम्पोर्ट र रिस्टोर गर्न यो पासवर्ड प्रयोग गर्नु पर्ने हुन्छ।"</string>
@@ -410,22 +408,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{१ कि.मि./घण्टा}other{# कि.मि./घण्टा}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{१ माइल प्रति घण्टा}other{# माइल प्रति घण्टा}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{१ किलोमिटर प्रति घण्टा}other{# किलोमिटर प्रति घण्टा}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/माइल"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/कि.मि."</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"प्रति माइल <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"प्रति किलोमिटर <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/१०० यार्ड"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/१०० मिटर"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"प्रति १०० यार्ड <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"प्रति १०० मिटर <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> देखि <xliff:g id="END_TIME">%2$s</xliff:g> सम्म"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> देखि <xliff:g id="END_TIME">%2$s</xliff:g> सम्म"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{१ पटक ह्विलचेयर ठेलियो}other{# पटक ह्विलचेयर ठेलियो}}"</string>
@@ -457,8 +447,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"कुल: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"जति सक्दो धेरै दोहोर्‌याउने"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"शारीरिक परिश्रमको स्तर: <xliff:g id="VALUE">%1$d</xliff:g>/१०"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"कसरतका खण्डहरू"</string>

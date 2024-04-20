@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"يملك تطبيق واحد (<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>) الإذن بالوصول"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{هناك تطبيق واحد مسموح له بالوصول إلى البيانات}zero{هناك # تطبيق مسموح له بالوصول إلى البيانات}two{هناك تطبيقان مسموح لهما بالوصول إلى البيانات}few{هناك # تطبيقات مسموح لها بالوصول إلى البيانات}many{هناك # تطبيقًا مسموح له بالوصول إلى البيانات}other{هناك # تطبيق مسموح له بالوصول إلى البيانات}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ما مِن تطبيقات"</string>
     <string name="entry_details_title" msgid="590184849040247850">"تفاصيل الإدخال"</string>
     <string name="backup_title" msgid="211503191266235085">"الاحتفاظ بنسخة احتياطية"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"الكتابة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"إدارة الأذونات"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"الوقت: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"النشاط"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"النشاط"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"قياسات الجسم"</string>
@@ -86,7 +86,7 @@
     <string name="background_read_title" msgid="5061383169517186234">"الوصول إلى البيانات في الخلفية"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"هل تريد السماح بوصول \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إلى البيانات في الخلفية؟"</string>
     <string name="background_read_description" msgid="3203594555849969283">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect في حال عدم استخدام التطبيق"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"إذا منحت هذا الإذن، فسيُسمح لهذا التطبيق بالوصول إلى بيانات Health Connect في حال عدم استخدام التطبيق."</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من الوصول إلى بيانات Health Connect حتّى عند عدم استخدامك للتطبيق."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"الوصول إلى البيانات السابقة"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"هل تريد منح \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن الوصول إلى البيانات السابقة؟"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect التي تمت إضافتها قبل ‎<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"سياسة الخصوصية"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"هل تريد إزالة كل الأذونات؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"إزالة الكل"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"لم يعد بإمكان \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" تعديل أي بيانات من تطبيق Health Connect أو الاطّلاع عليها.\n\nلا يؤثر هذا الإجراء في الأذونات الأخرى التي قد تُمنح لهذا التطبيق، مثل أذونات الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"لن يتمكّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أي بيانات من تطبيق Health Connect أو كتابتها، بما في ذلك بيانات الخلفية.\n\nولا يؤثِّر هذا الإجراء في الأذونات الأخرى التي قد تُمنَح لهذا التطبيق، مثل الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"لن يتمكّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أي بيانات من تطبيق Health Connect أو كتابتها، بما في ذلك البيانات السابقة.\n\nولا يؤثِّر هذا الإجراء في الأذونات الأخرى التي قد تُمنَح لهذا التطبيق، مثل الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"لن يتمكّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أي بيانات من تطبيق Health Connect أو كتابتها، بما في ذلك بيانات الخلفية أو البيانات السابقة.\n\nولا يؤثِّر هذا الإجراء في الأذونات الأخرى التي قد تُمنَح لهذا التطبيق، مثل الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>

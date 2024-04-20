@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> rakendusel <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>-st on juurdepääs"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> rakendusel on juurdepääs"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> rakendusel on juurdepääs"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Ühel rakendusel on juurdepääs}other{# rakendusel on juurdepääs}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Pole"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Kirje üksikasjad"</string>
     <string name="backup_title" msgid="211503191266235085">"Varundamine"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Kirjutamine: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Lubade haldamine"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Aeg: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Tegevus"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"tegevus"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Keha mõõtmisandmed"</string>
@@ -83,11 +83,11 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"juurdepääs teie terviseandmetele"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Põletatud kalorite arvu lugemine"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Võimaldab rakendusel lugeda põletatud kalorite arvu"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Andke juurdepääs andmetele, kui rakendus töötab taustal"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Anna juurdepääs andmetele, kui rakendus töötab taustal"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Kas anda rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> juurdepääs andmetele, kui rakendus töötab taustal?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Lubage sellel rakendusel pääseda juurde Health Connecti andmetele, kui te rakendust ei kasuta"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Kui annate loa, saab see rakendus juurdepääsu Health Connecti andmetele, kui te rakendust ei kasuta."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Andke juurdepääs varasematele andmetele"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Anna juurdepääs varasematele andmetele"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Kas anda rakendusele <xliff:g id="APP_NAME">%1$s</xliff:g> lisajuurdepääs andmetele?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Lubage sellel rakendusel pääseda juurde Health Connecti andmetele, mis on lisatud enne kuupäeva <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Lubage sellel rakendusel pääseda juurde kõigile varasematele Health Connecti andmetele"</string>
@@ -254,8 +254,8 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"pulss puhkamisel"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Puhkamisaegse pulsi lugemine"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Puhkamisaegse pulsi kirjutamine"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Naha temperatuur"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"naha temperatuur"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Nahatemperatuur"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"nahatemperatuur"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Saate lugeda naha temperatuuri"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Saate kirjutada välja naha temperatuuri"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Luba rakendusel „<xliff:g id="APP_NAME">%1$s</xliff:g>“ lugeda"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"privaatsuseeskirjadest"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Kas eemaldada kõik load?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Eemalda kõik"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ei saa edaspidi Health Connecti andmeid lugeda ega kirjutada.\n\nSee ei mõjuta rakenduse teisi lubasid, näiteks kaamerale, mikrofonile ja asukohale juurdepääsemise lubasid."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ei saa edaspidi Health Connecti andmeid (sh taustaandmeid) lugeda ega kirjutada.\n\nSee ei mõjuta rakenduse teisi lubasid, näiteks asukohale, kaamerale ja mikrofonile juurdepääsemise lubasid."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ei saa edaspidi Health Connecti andmeid (sh varasemaid andmeid) lugeda ega kirjutada.\n\nSee ei mõjuta rakenduse teisi lubasid, näiteks asukohale, kaamerale ja mikrofonile juurdepääsemise lubasid."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ei saa edaspidi Health Connecti andmeid (sh taustaandmeid ja varasemaid andmeid) lugeda ega kirjutada.\n\nSee ei mõjuta rakenduse teisi lubasid, näiteks asukohale, kaamerale ja mikrofonile juurdepääsemise lubasid."</string>

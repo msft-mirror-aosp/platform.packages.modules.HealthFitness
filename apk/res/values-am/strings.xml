@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"ከ<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> መተግበሪያዎች ውስጥ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> መዳረሻ አላቸው"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> መተግበሪያዎች መዳረሻ አላቸው"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> መተግበሪያ መዳረሻ አለው"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 መተግበሪያ መዳረሻ አለው}one{# መተግበሪያ መዳረሻ አለው}other{# መተግበሪያዎች መዳረሻ አላቸው}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ምንም"</string>
     <string name="entry_details_title" msgid="590184849040247850">"የግቤት ዝርዝሮች"</string>
     <string name="backup_title" msgid="211503191266235085">"ምትኬ"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"የተጻፈ፦ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"፣ "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ፈቃዶችን አስተዳድር"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"ጊዜ:- %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"እንቅስቃሴ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"እንቅስቃሴ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"የሰውነት አካል መለኪያዎች"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"የግላዊነት መመሪያ"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ሁሉም ፈቃዶች ይወገዱ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"ሁሉንም አስወግድ"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ከእንግዲህ ከጤና አገናኝ የመጣ ማንኛውንም ውሂብ ማንበብ ወይም መጻፍ አይችልም።\n\nይህ መተግበሪያ እንደ ካሜራ፣ ማይክሮፎን ወይም አካባቢ ያሉ ሊኖሩ በሚችሉ ሌሎች ፈቃዶች ላይ ተጽዕኖ አያሳርፍም።"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ከጤና አገናኝ የመጣ ማንኛውም ውሂብ፣ የዳራ ውሂብን ጨምሮ ከእንግዲህ ማንበብ ወይም መጻፍ አይችልም።\n\nይህ መተግበሪያ ሊኖሩት የሚችሉትን እንደ አካባቢ፣ ካሜራ ወይም ማይክሮፎን ባሉ ሌሎች ፈቃዶች ላይ ተጽዕኖ አያሳርፍም።"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ከጤና አገናኝ የመጣ ማንኛውም ውሂብ፣ ያለፈ ውሂብን ጨምሮ ከእንግዲህ ማንበብ ወይም መጻፍ አይችልም።\n\nይህ መተግበሪያ ሊኖሩት የሚችሉትን እንደ አካባቢ፣ ካሜራ ወይም ማይክሮፎን ባሉ ሌሎች ፈቃዶች ላይ ተጽዕኖ አያሳርፍም።"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ከጤና አገናኝ የመጣ ማንኛውም ውሂብ፣ የዳራ ወይም ያለፈ ውሂብን ጨምሮ ከእንግዲህ ማንበብ ወይም መጻፍ አይችልም።\n\nይህ መተግበሪያ ሊኖሩት የሚችሉትን እንደ አካባቢ፣ ካሜራ ወይም ማይክሮፎን ባሉ ሌሎች ፈቃዶች ላይ ተጽዕኖ አያሳርፍም።"</string>

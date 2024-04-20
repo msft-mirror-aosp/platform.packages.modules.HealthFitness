@@ -20,7 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Керуйте доступом додатків до даних про здоров’я"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Дозволи й дані"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Керуйте даними про здоров’я та фізичну активність на телефоні, а також визначайте додатки, які матимуть доступ до даних"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Керуйте даними про здоров’я і фізичну активність на телефоні, а також визначайте додатки, які матимуть доступ до даних"</string>
     <string name="data_title" msgid="4456619761533380816">"Дані й доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Усі категорії"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Переглянути всі категорії"</string>
@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Додатки, що мають доступ: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> з <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Додатки, що мають доступ: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> додаток має доступ"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 додаток має доступ}one{# додаток має доступ}few{# додатки мають доступ}many{# додатків мають доступ}other{# додатка мають доступ}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Немає"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Деталі запису"</string>
     <string name="backup_title" msgid="211503191266235085">"Резервне копіювання"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Записано такі дані: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Керувати дозволами"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Час: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активність"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активність"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Параметри тіла"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"політиці конфіденційності"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Вилучити всі дозволи?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Вилучити всі"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect.\n\nЦе не вплине на інші дозволи, надані цьому додатку (наприклад, на доступ до камери, мікрофона чи геоданих)."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect, зокрема у фоновому режимі.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад на доступ до геоданих, камери чи мікрофона."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect, зокрема минулі дані.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад на доступ до геоданих, камери чи мікрофона."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect, зокрема минулі дані чи дані у фоновому режимі.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад на доступ до геоданих, камери чи мікрофона."</string>

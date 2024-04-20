@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps tienen acceso"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> apps tienen acceso"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app tiene acceso"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app tiene acceso}other{# apps tienen acceso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ninguna"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Información de la entrada"</string>
     <string name="backup_title" msgid="211503191266235085">"Copia de seguridad"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrar permisos"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tiempo: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividad"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"actividad"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medidas corporales"</string>
@@ -85,11 +85,11 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que la app lea las calorías quemadas"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Acceso a los datos en segundo plano"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Permite que esta app acceda a los datos de Health Connect cuando la app no está en uso"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta app acceda a los datos de Health Connect cuando la app no está en uso"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect cuando la app no está en uso."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos antiguos"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos antiguos?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Permite que esta app acceda a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta app acceda a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permite que esta app acceda a todos los datos anteriores de Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si estás de acuerdo, esta app podrá acceder a todos los datos anteriores de Health Connect."</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidad"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"¿Quieres quitar todos los permisos?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Quitar todo"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ya no podrá leer ni escribir datos de Health Connect.\n\nEsto no afecta otros permisos que la app pueda tener, como la cámara, el micrófono o la ubicación."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ya no podrá leer ni escribir datos de Health Connect, incluidos los datos en segundo plano.\n\nEsto no afecta otros permisos que la app pueda tener, como la ubicación, la cámara o el micrófono."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ya no podrá leer ni escribir datos de Health Connect, incluidos los datos anteriores.\n\nEsto no afecta otros permisos que la app pueda tener, como la ubicación, la cámara o el micrófono."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ya no podrá leer ni escribir datos de Health Connect, incluidos los datos anteriores y en segundo plano.\n\nEsto no afecta otros permisos que la app pueda tener, como la ubicación, la cámara o el micrófono."</string>

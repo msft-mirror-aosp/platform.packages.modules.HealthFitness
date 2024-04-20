@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>টি অ্যাপের মধ্যে <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>টির অ্যাক্সেস আছে"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>টি অ্যাপের অ্যাক্সেস আছে"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>টি অ্যাপের অ্যাক্সেস আছে"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{১টি অ্যাপের অ্যাক্সেস আছে}one{#টি অ্যাপের অ্যাক্সেস আছে}other{#টি অ্যাপের অ্যাক্সেস আছে}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"কোনওটিই নয়"</string>
     <string name="entry_details_title" msgid="590184849040247850">"এন্ট্রি সংক্রান্ত বিবরণ"</string>
     <string name="backup_title" msgid="211503191266235085">"ব্যাক-আপ নিন"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"লিখুন: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"অনুমতি ম্যানেজ করুন"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"সময়: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"অ্যাক্টিভিটি"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"অ্যাক্টিভিটি"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"শরীরের পরিমাপ সংক্রান্ত ডেটা"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"গোপনীয়তা নীতি"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"সব অনুমতি সরাবেন?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"সবকটি সরান"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Health Connect থেকে <xliff:g id="APP_NAME">%1$s</xliff:g> আর কোনও ডেটা পড়তে অথবা লিখতে পারবে না।\n\nএই অ্যাপে অন্যান্য অনুমতি থাকলেও এটি সেসবের উপরে কোনও প্রভাব ফেলে না, যেমন ক্যামেরা, মাইক্রোফোন বা লোকেশন।"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ব্যাকগ্রাউন্ড ডেটা ছাড়াও Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nলোকেশন, ক্যামেরা বা মাইক্রোফোনের মতো এই অ্যাপের জন্য অন্য কোনও কিছুতে অনুমতি থাকলে তাতে কোনও প্রভাব পড়বে না।"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> পুরনো ডেটা ছাড়াও Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nলোকেশন, ক্যামেরা বা মাইক্রোফোনের মতো এই অ্যাপের জন্য অন্য কোনও কিছুতে অনুমতি থাকলে তাতে কোনও প্রভাব পড়বে না।"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ব্যাকগ্রাউন্ড ও পুরনো ডেটা ছাড়াও Health Connect-এর কোনও ডেটা দেখতে বা এডিট করতে পারবে না।\n\nলোকেশন, ক্যামেরা বা মাইক্রোফোনের মতো এই অ্যাপের জন্য অন্য কোনও কিছুতে অনুমতি থাকলে তাতে কোনও প্রভাব পড়বে না।"</string>

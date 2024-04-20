@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> पैकी <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> अ‍ॅप्सना अ‍ॅक्सेस आहे"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> अ‍ॅप्सना अ‍ॅक्सेस आहे"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ॲपला अ‍ॅक्सेस आहे"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{१ ॲपला अ‍ॅक्सेस आहे}other{# अ‍ॅप्सना अ‍ॅक्सेस आहे}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"काहीही नाही"</string>
     <string name="entry_details_title" msgid="590184849040247850">"एंट्रीचे तपशील"</string>
     <string name="backup_title" msgid="211503191266235085">"बॅकअप"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"राइट: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"परवानग्या व्यवस्थापित करा"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"वेळ: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"ॲक्टिव्हिटी"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ॲक्टिव्हिटी"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"शरीराचे मोजमाप"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"गोपनीयता धोरण"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"सर्व परवानग्या काढून टाकायच्या का?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"सर्व काढून टाका"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> हे यापुढे Health Connect वरील कोणताही डेटा रीड किंवा राइट करू शकणार नाही.\n\nयामुळे या अ‍ॅपच्या कॅमेरा, मायक्रोफोन किंवा स्थान यांसारख्या इतर परवानग्यांवर परिणाम होत नाही."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला यापुढे बॅकग्राउंड डेटाच्या समावेशासह Health Connect वरून कोणताही डेटा रीड किंवा राइट करता येणार नाही.\n\nयामुळे या अ‍ॅपच्या स्थान, कॅमेरा किंवा मायक्रोफोन यांसारख्या इतर परवानग्यांवर परिणाम होत नाही."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला यापुढे मागील डेटाच्या समावेशासह Health Connect वरून कोणताही डेटा रीड किंवा राइट करता येणार नाही.\n\nयामुळे या अ‍ॅपच्या स्थान, कॅमेरा किंवा मायक्रोफोन यांसारख्या इतर परवानग्यांवर परिणाम होत नाही."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला यापुढे बॅकग्राउंड डेटा आणि मागील डेटाच्या समावेशासह Health Connect वरून कोणताही डेटा रीड किंवा राइट करता येणार नाही.\n\nयामुळे या अ‍ॅपच्या स्थान, कॅमेरा किंवा मायक्रोफोन यांसारख्या इतर परवानग्यांवर परिणाम होत नाही."</string>

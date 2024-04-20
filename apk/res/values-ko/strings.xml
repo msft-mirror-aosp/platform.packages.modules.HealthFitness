@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"앱 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>개 중 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"앱 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"앱 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>개에 액세스 권한이 있음"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{앱 1개에 액세스 권한이 있음}other{앱 #개에 액세스 권한이 있음}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"없음"</string>
     <string name="entry_details_title" msgid="590184849040247850">"항목 세부정보"</string>
     <string name="backup_title" msgid="211503191266235085">"백업"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"쓰기: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"권한 관리"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"시간: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"활동"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"활동"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"신체 측정"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"개인정보처리방침"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"모든 권한을 삭제하시겠습니까?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"전체 삭제"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 더 이상 헬스 커넥트의 데이터를 읽거나 쓸 수 없습니다.\n\n카메라, 마이크, 위치 등 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 더 이상 헬스 커넥트의 데이터(백그라운드 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n위치, 카메라, 마이크 등 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 더 이상 헬스 커넥트의 데이터(과거 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n위치, 카메라, 마이크 등 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱이 더 이상 헬스 커넥트의 데이터(백그라운드 및 과거 데이터 포함)를 읽거나 쓸 수 없습니다.\n\n위치, 카메라, 마이크 등 이 앱에 부여된 다른 권한에는 영향을 미치지 않습니다."</string>

@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ଟିରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପର ଆକ୍ସେସ ଅଛି"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ଆପର ଆକ୍ସେସ ଅଛି}other{# ଆପ୍ସର ଆକ୍ସେସ ଅଛି}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"କିଛି ନାହିଁ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ଏଣ୍ଟ୍ରି ବିବରଣୀ"</string>
     <string name="backup_title" msgid="211503191266235085">"ବେକଅପ ନିଅନ୍ତୁ"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"ଲେଖନ୍ତୁ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ଅନୁମତିଗୁଡ଼ିକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"ସମୟ: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"କାର୍ଯ୍ୟକଳାପ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"କାର୍ଯ୍ୟକଳାପ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ଶରୀର ପରିମାପ"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"ଗୋପନୀୟତା ନୀତି"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ସବୁ ଅନୁମତିକୁ କାଢ଼ି ଦେବେ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"ସବୁ କାଢ଼ି ଦିଅନ୍ତୁ"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର କେମେରା, ମାଇକ୍ରୋଫୋନ କିମ୍ବା ଲୋକେସନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଏବଂ ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>

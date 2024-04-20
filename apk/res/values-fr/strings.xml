@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> applis sur <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ont accès"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> applis ont accès"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> appli a accès"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 appli a accès}one{# appli a accès}other{# applis ont accès}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Aucune"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Détails de l\'entrée"</string>
     <string name="backup_title" msgid="211503191266235085">"Sauvegarde"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Écriture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Temps : %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activité"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activité"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Données corporelles"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"règles de confidentialité"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Supprimer toutes les autorisations ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Tout supprimer"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à l\'appareil photo, au micro ou à la localisation."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données en arrière-plan.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données déjà enregistrées.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données en arrière-plan et les données déjà enregistrées.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
@@ -332,8 +331,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Tous les jours"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Toutes les semaines"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Tous les mois"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Choisissez l\'emplacement d\'exportation"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Activer le chiffrement"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Les données doivent être chiffrées avant d\'être enregistrées. Personne, y compris Google ou Health Connect, ne pourra y accéder."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Créez un mot de passe pour protéger vos données chiffrées. Vous aurez besoin de ce mot de passe pour importer et restaurer vos données."</string>
@@ -410,22 +408,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}one{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mile par heure}one{# mile par heure}other{# miles par heure}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilomètre par heure}one{# kilomètre par heure}other{# kilomètres par heure}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/mile"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minute(s) par mile"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minute(s) par kilomètre"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yards"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 mètres"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minute(s) par 100 yards"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minute(s) par 100 mètres"</string>
     <string name="time_range_long" msgid="5067423945245490288">"de <xliff:g id="START_TIME">%1$s</xliff:g> à <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"de <xliff:g id="START_TIME">%1$s</xliff:g> à <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 poussée de fauteuil roulant}one{# poussée de fauteuil roulant}other{# poussées de fauteuil roulant}}"</string>
@@ -457,8 +447,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Total : <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Autant de répétitions que possible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Niveau d\'effort : <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 répétition}one{# répétition}other{# répétitions}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 répétition}one{# répétition}other{# répétitions}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segments d\'exercice"</string>

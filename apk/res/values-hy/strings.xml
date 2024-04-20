@@ -30,8 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Հասանելի են <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> հավելվածից <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>-ին"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Հասանելի են <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> հավելվածի"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Հասանելի են <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> հավելվածի"</string>
-    <!-- no translation found for connected_apps_connected_subtitle (7412413366085718583) -->
-    <skip />
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Հասանելի է 1 հավելվածի}one{Հասանելի է # հավելվածի}other{Հասանելի է # հավելվածի}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ընտրված տարրեր չկան"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Գրառման մանրամասները"</string>
     <string name="backup_title" msgid="211503191266235085">"Պահուստավորում"</string>
@@ -47,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Գրանցել՝ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Կառավարել թույլտվությունները"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Ժամանակը՝ %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Ակտիվություն"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ակտիվություն"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Մարմնի պարամետրեր"</string>
@@ -272,8 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"գաղտնիության քաղաքականություն"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Հեռացնե՞լ բոլոր թույլտվությունները"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Հեռացնել բոլորը"</string>
-    <!-- no translation found for permissions_disconnect_dialog_message (7961269838207365478) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեսախցիկի, խոսափողի կամ տեղորոշման։"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածն այլևս չի կարողանա որևէ տվյալ կարդալ կամ գրանցել Health Connect-ում, այդ թվում՝ տվյալներ փոխանակել ֆոնային ռեժիմում։\n\nՍա չի ազդի այս հավելվածի մյուս թույլտվությունների վրա, օրինակ՝ տեղորոշման, տեսախցիկի կամ խոսափողի։"</string>
@@ -821,7 +820,7 @@
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Չթույլատրել"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Միշտ թույլատրել"</string>
     <string name="route_permissions_label" msgid="6293377940884373190">"Մարզումների երթուղիների հասանելիություն"</string>
-    <string name="route_permissions_summary" msgid="704859311037374130">"Հասանելի դարձրեք <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին երթուղիները"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Հասանելի դարձրեք երթուղիները <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Ամեն անգամ հարցնել"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Չեղարկել"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Միացնե՞լ տվյալների երկու տեսակներն էլ"</string>
