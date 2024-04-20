@@ -28,14 +28,11 @@ import android.health.connect.datatypes.StepsRecord;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +44,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class ReadTransactionRequestTest {
     @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
-
-    @Before
-    public void setup() {
-        HealthConnectUserContext context = testRule.getUserContext();
-        TransactionManager.getInstance(context);
-    }
 
     @Test
     public void createReadByFilterRequest_noPageToken_correctPaginationInfo() {

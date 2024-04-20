@@ -17,7 +17,12 @@
 package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.datatypes.TotalCaloriesBurnedRecord.ENERGY_TOTAL;
+import static android.healthconnect.cts.aggregation.DataFactory.getActiveCaloriesBurnedRecord;
 import static android.healthconnect.cts.aggregation.DataFactory.getBasalMetabolicRateRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getBaseHeightRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getBaseLeanBodyMassRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getBaseWeightRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getTimeFilter;
 import static android.healthconnect.cts.aggregation.Utils.assertEnergyWithTolerance;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
@@ -25,12 +30,16 @@ import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteDat
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
+import static android.healthconnect.cts.utils.TestUtils.insertRecord;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static java.time.Instant.EPOCH;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsRequest;
@@ -39,7 +48,6 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
-import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.units.Energy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
@@ -59,9 +67,11 @@ import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
-public class TotalCaloriesAggregationTest {
+public final class TotalCaloriesAggregationTest {
+    private static final double DEFAULT_BASAL_CALORIES_PER_DAY =
+            getBasalCaloriesPerDay(/* weightKg= */ 73, /* heightCm= */ 170);
+
     private final String mPackageName =
             ApplicationProvider.getApplicationContext().getPackageName();
 
@@ -82,81 +92,179 @@ public class TotalCaloriesAggregationTest {
     }
 
     @Test
-    public void testAggregation_totalCaloriesBurnt() throws Exception {
+    public void totalCaloriesBurned_derivedFromDefaultBasalCalories() throws Exception {
         Instant now = Instant.now();
-        insertRecords(
-                List.of(
-                        getBaseTotalCaloriesBurnedRecord(now.minus(1, DAYS)),
-                        getBaseTotalCaloriesBurnedRecord(now.minus(2, DAYS))));
-        AggregateRecordsResponse<Energy> oldResponse =
-                getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(5, DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(ENERGY_TOTAL)
-                                .addDataOriginsFilter(getDataOrigin(mPackageName))
-                                .build());
 
-        insertRecords(
-                List.of(
-                        getBaseTotalCaloriesBurnedRecord(now.minus(3, DAYS)),
-                        getBaseTotalCaloriesBurnedRecord(now.minus(4, DAYS))));
-        AggregateRecordsResponse<Energy> newResponse =
-                getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(5, DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(ENERGY_TOTAL)
-                                .addDataOriginsFilter(getDataOrigin(mPackageName))
-                                .build());
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
 
-        Energy totEnergyBefore = oldResponse.get(ENERGY_TOTAL);
-        Energy totEnergyAfter = newResponse.get(ENERGY_TOTAL);
-        assertThat(totEnergyBefore).isNotNull();
-        assertThat(totEnergyAfter).isNotNull();
-        // The default total calories burned for one day is approx 1564.5 kCals
-        assertThat(totEnergyBefore.getInCalories()).isWithin(1).of(4_693_520);
-        assertThat(totEnergyAfter.getInCalories()).isWithin(1).of(1_564_540);
-
-        Set<DataOrigin> newDataOrigin = newResponse.getDataOrigins(ENERGY_TOTAL);
-        for (DataOrigin itr : newDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
-        Set<DataOrigin> oldDataOrigin = oldResponse.getDataOrigins(ENERGY_TOTAL);
-        for (DataOrigin itr : oldDataOrigin) {
-            assertThat(itr.getPackageName()).isEqualTo("android.healthconnect.cts");
-        }
+        assertEnergyWithTolerance(response.get(ENERGY_TOTAL), DEFAULT_BASAL_CALORIES_PER_DAY);
     }
 
     @Test
-    public void testAggregation_totalCaloriesBurnt_activeCalories() throws Exception {
+    public void totalCaloriesBurned_derivedFromWeightAndHeight() throws Exception {
+        Instant now = Instant.now();
+        double heightCm = 180;
+        double weightKg = 85;
+        insertRecords(
+                List.of(
+                        getBaseHeightRecord(EPOCH, heightCm / 100),
+                        getBaseWeightRecord(EPOCH, weightKg)));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        assertEnergyWithTolerance(
+                response.get(ENERGY_TOTAL), getBasalCaloriesPerDay(weightKg, heightCm));
+    }
+
+    @Test
+    public void totalCaloriesBurned_derivedFromLbm() throws Exception {
+        Instant now = Instant.now();
+        double lbmKg = 50;
+        insertRecord(getBaseLeanBodyMassRecord(EPOCH, lbmKg * 1000));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        assertEnergyWithTolerance(response.get(ENERGY_TOTAL), getBasalCaloriesPerDay(lbmKg));
+    }
+
+    @Test
+    public void totalCaloriesBurned_derivedFromBmr() throws Exception {
+        Instant now = Instant.now();
+        double bmrWatt = 35;
+        insertRecord(getBasalMetabolicRateRecord(bmrWatt, EPOCH));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        assertEnergyWithTolerance(response.get(ENERGY_TOTAL), wattToCalPerDay(bmrWatt));
+    }
+
+    @Test
+    public void totalCaloriesBurned_hasActiveCaloriesData_sumActiveAndBasalCalories()
+            throws Exception {
+        Instant now = Instant.now();
+        double activeCalories = 201230.3;
+        insertRecord(
+                getActiveCaloriesBurnedRecord(
+                        activeCalories, now.minus(3, HOURS), now.minus(2, HOURS)));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        assertEnergyWithTolerance(
+                response.get(ENERGY_TOTAL), DEFAULT_BASAL_CALORIES_PER_DAY + activeCalories);
+    }
+
+    @Test
+    public void totalCaloriesBurned_hasTotalCaloriesData_addBasalCaloriesAtGaps() throws Exception {
+        Instant now = Instant.now();
+        double totalCalories = 204560.3;
+        insertRecord(
+                getTotalCaloriesBurnedRecord(
+                        totalCalories, now.minus(3, HOURS), now.minus(2, HOURS)));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        assertEnergyWithTolerance(
+                response.get(ENERGY_TOTAL),
+                DEFAULT_BASAL_CALORIES_PER_DAY * 23 / 24 + totalCalories);
+    }
+
+    @Test
+    public void totalCaloriesBurned_hasActiveAndTotalCaloriesData_addBasalCaloriesAtGaps()
+            throws Exception {
+        Instant now = Instant.now();
+        double totalCalories = 2009870.3;
+        double activeCalories = 15120.6;
+        double overlappingActiveCalories = 30000;
+        insertRecords(
+                getTotalCaloriesBurnedRecord(
+                        totalCalories, now.minus(24, HOURS), now.minus(2, HOURS)),
+                getActiveCaloriesBurnedRecord(
+                        overlappingActiveCalories, now.minus(150, MINUTES), now.minus(1, HOURS)),
+                getActiveCaloriesBurnedRecord(activeCalories, now.minus(1, HOURS), now));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        // overlappingActiveCalories overlaps with totalCalories by 30 minutes out of 90 minutes
+        // for the overlapping part, we use total calories directly, not derive from active + basal
+        double partialActiveCalories = overlappingActiveCalories * 2 / 3;
+        double expected =
+                DEFAULT_BASAL_CALORIES_PER_DAY * 2 / 24
+                        + totalCalories
+                        + activeCalories
+                        + partialActiveCalories;
+        assertEnergyWithTolerance(response.get(ENERGY_TOTAL), expected);
+    }
+
+    @Test
+    public void totalCaloriesBurned_totalCaloriesDataWithoutGap_equalsToTotalCalories()
+            throws Exception {
+        Instant now = Instant.now();
+        double totalCalories = 2009870.3;
+        insertRecords(getTotalCaloriesBurnedRecord(totalCalories, now.minus(1, DAYS), now));
+
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(1, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
+
+        assertEnergyWithTolerance(response.get(ENERGY_TOTAL), totalCalories);
+    }
+
+    @Test
+    public void totalCaloriesBurned_deriveBasalAndActiveAndTotalCalories() throws Exception {
         Instant now = Instant.now();
         insertRecords(
                 Arrays.asList(
-                        getBaseTotalCaloriesBurnedRecord(now.minus(1, DAYS)),
-                        getBaseTotalCaloriesBurnedRecord(now.minus(2, DAYS)),
-                        getBaseActiveCaloriesBurnedRecord(now.minus(4, DAYS), 20)));
+                        getTotalCaloriesBurnedRecord(10, now.minus(1, DAYS), now),
+                        getTotalCaloriesBurnedRecord(10, now.minus(2, DAYS), now.minus(1, DAYS)),
+                        getActiveCaloriesBurnedRecord(20, now.minus(4, DAYS), now.minus(3, DAYS))));
 
-        AggregateRecordsResponse<Energy> response =
-                getAggregateResponse(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setStartTime(now.minus(5, DAYS))
-                                                .setEndTime(now)
-                                                .build())
-                                .addAggregationType(ENERGY_TOTAL)
-                                .addDataOriginsFilter(getDataOrigin(mPackageName))
-                                .build());
+        AggregateRecordsRequest<Energy> request =
+                new AggregateRecordsRequest.Builder<Energy>(getTimeFilter(now.minus(5, DAYS), now))
+                        .addAggregationType(ENERGY_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Energy> response = getAggregateResponse(request);
 
-        assertEnergyWithTolerance(response.get(ENERGY_TOTAL), 4693540);
+        // -5    -4    -3    -2    -1    now (days)
+        // |_____|_____|_____|_____|_____|
+        // basal basal+ basal total total
+        //       active       (10)  (10)
+        //        (20)
+        assertEnergyWithTolerance(
+                response.get(ENERGY_TOTAL), DEFAULT_BASAL_CALORIES_PER_DAY * 3 + 40);
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy() throws Exception {
+    public void testAggregation_totalCaloriesBurned_activeCalories_groupBy() throws Exception {
         Instant now = Instant.now();
         getAggregateResponseGroupByPeriod(
                 new AggregateRecordsRequest.Builder<Energy>(
@@ -171,7 +279,7 @@ public class TotalCaloriesAggregationTest {
     }
 
     @Test
-    public void testAggregation_totalCaloriesBurnt_activeCalories_groupBy_duration()
+    public void testAggregation_totalCaloriesBurned_activeCalories_groupBy_duration()
             throws Exception {
         Instant now = Instant.now();
         insertRecords(
@@ -235,12 +343,10 @@ public class TotalCaloriesAggregationTest {
         assertEnergyWithTolerance(responses.get(4).get(ENERGY_TOTAL), 10);
     }
 
-    private static TotalCaloriesBurnedRecord getBaseTotalCaloriesBurnedRecord(Instant startTime) {
+    private static TotalCaloriesBurnedRecord getTotalCaloriesBurnedRecord(
+            double calories, Instant start, Instant end) {
         return new TotalCaloriesBurnedRecord.Builder(
-                        getEmptyMetadata(),
-                        startTime,
-                        startTime.plus(1, DAYS),
-                        Energy.fromCalories(10.0))
+                        getEmptyMetadata(), start, end, Energy.fromCalories(calories))
                 .build();
     }
 
@@ -284,5 +390,22 @@ public class TotalCaloriesAggregationTest {
                 .setStartZoneOffset(offset)
                 .setEndZoneOffset(offset)
                 .build();
+    }
+
+    private static double getBasalCaloriesPerDay(double weightKg, double heightCm) {
+        // We use Mifflin-St Jeor Equation to calculate BMR
+        // BMR (kcal/day) = 10 * weight in kg + 6.25 * height in cm
+        //                  -5 * age in years + gender constant
+        // gender constant: Men(5), Women(-161), Unspecified(-78)
+        double defaultAge = 30;
+        return (10 * weightKg + 6.25 * heightCm - 5 * defaultAge - 78) * 1000;
+    }
+
+    private static double getBasalCaloriesPerDay(double lbmKg) {
+        return (370 + 21.6 * lbmKg) * 1000;
+    }
+
+    private static double wattToCalPerDay(double watt) {
+        return watt * 860 * 24;
     }
 }

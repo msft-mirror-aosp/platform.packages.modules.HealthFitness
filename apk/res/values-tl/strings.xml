@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> sa <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> (na) app ang may access"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> (na) app ang may access"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app ang may access"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app ang may access}one{# app ang may access}other{# na app ang may access}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Wala"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Mga detalye ng entry"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Na-write: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Pamahalaan ang mga pahintulot"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Oras: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktibidad"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktibidad"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Mga sukat ng katawan"</string>
@@ -270,7 +272,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"patakaran sa privacy"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Alisin ang lahat ng pahintulot?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Alisin lahat"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng camera, mikropono, o lokasyon."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang data sa background.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Hindi na mari-read o mara-write ng <xliff:g id="APP_NAME">%1$s</xliff:g> ang anumang data mula sa Health Connect, kabilang ang data sa background at dating data.\n\nHindi nito maaapektuhan ang iba pang pahintulot na posibleng mayroon ang app na ito, gaya ng lokasyon, camera, o mikropono."</string>
@@ -415,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -448,8 +450,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Walang malinaw na resulta"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisecond}one{# millisecond}other{# na millisecond}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Mga Tala"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 beses}one{# beses}other{# na beses}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktibo: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Kabuuan: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>

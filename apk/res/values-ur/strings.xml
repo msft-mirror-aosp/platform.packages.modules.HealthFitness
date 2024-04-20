@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> میں سے <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپس کو رسائی حاصل ہے"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپس کو رسائی حاصل ہے"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپ کو رسائی حاصل ہے"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ایپ کو رسائی حاصل ہے}other{# ایپس کو رسائی حاصل ہے}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"کوئی نہیں"</string>
     <string name="entry_details_title" msgid="590184849040247850">"اندراج کی تفصیلات"</string>
     <string name="backup_title" msgid="211503191266235085">"بیک اپ لیں"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"لکھیں: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"اجازتوں کا نظم کریں"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"وقت: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"سرگرمی"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"سرگرمی"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"جسمانی پیمائشوں سے متعلق ڈیٹا"</string>
@@ -270,10 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"رازداری کی پالیسی"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"تمام اجازتیں ہٹائیں؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"سبھی ہٹائیں"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> اب Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے مقام، کیمرا یا مائیکروفون کو متاثر نہیں کرتی ہے۔"</string>
-    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے مقام، کیمرا یا مائیکروفون کو متاثر نہیں کرتی ہے۔"</string>
-    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے مقام، کیمرا یا مائیکروفون کو متاثر نہیں کرتی ہے۔"</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر اور ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے مقام، کیمرا یا مائیکروفون کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ہیلتھ کنیکٹ سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر اور ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"نیز Health Connect سے <xliff:g id="APP_NAME">%1$s</xliff:g> کا ڈیٹا حذف کریں"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"اگلا دن"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"منتخب کردہ یوم"</string>
@@ -415,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -448,8 +450,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"غیر فیصلہ کُن"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ملی سیکنڈ}other{# ملی سیکنڈ}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ملی سیکنڈ}other{# ملی سیکنڈ}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"نوٹس"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 بار}other{# بار}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"فعال: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"کل: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>

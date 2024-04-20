@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"App con accesso: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> su <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Hanno accesso <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Ha accesso <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app ha accesso}other{# app hanno accesso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nessuna"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Dettagli voce"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Accesso in scrittura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestisci autorizzazioni"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tempo: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Attività"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"attività"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Misurazioni corporee"</string>
@@ -270,13 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"norme sulla privacy"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Rimuovere tutte le autorizzazioni?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Rimuovi tutto"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
-    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come fotocamera, microfono o posizione."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute, inclusi i dati in background.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute, inclusi i dati precedenti.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute, inclusi i dati in background e i dati precedenti.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Elimina anche i dati di <xliff:g id="APP_NAME">%1$s</xliff:g> da Connessione Salute"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Giorno successivo"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Giorno selezionato"</string>
@@ -310,8 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accesso dell\'app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Al momento non hai app compatibili installate"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accesso aggiuntivo"</string>
-    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
-    <skip />
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorizzazioni aggiuntive rimosse per questa app"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorizzazioni app rimosse"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Connessione Salute ha rimosso le autorizzazioni per <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Connessione Salute ha rimosso le autorizzazioni per <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -419,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -777,7 +775,7 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Elimina automaticamente"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Elimina automaticamente"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Gestisci per quanto tempo i dati sono memorizzati in Connessione Salute impostando l\'eliminazione automatica dopo un determinato periodo di tempo"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Gestisci la durata di conservazione dei tuoi dati in Connessione Salute programmando la loro eliminazione dopo un periodo prestabilito"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Scopri di più sull\'eliminazione automatica"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Elimina i dati automaticamente"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Dopo # mese}other{Dopo # mesi}}"</string>
@@ -824,8 +822,7 @@
     <string name="route_permissions_label" msgid="6293377940884373190">"Accedi ai percorsi degli allenamenti"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Consenti all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere ai percorsi degli allenamenti"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Chiedi ogni volta"</string>
-    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
-    <skip />
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Non consentire"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Abilitare entrambi i tipi di dati?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Disattivare entrambi i tipi di dati?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ha bisogno dell\'accesso di lettura agli allenamenti per abilitarne i percorsi"</string>
@@ -919,10 +916,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Accesso"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Consentire l\'accesso aggiuntivo per l\'app <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"L\'app <xliff:g id="APP_NAME">%1$s</xliff:g> vuole accedere anche a queste impostazioni di Connessione Salute"</string>
-    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
-    <skip />
-    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
-    <skip />
-    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
-    <skip />
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Abilita almeno un permesso di lettura per attivare l\'accesso in background o ai dati precedenti per questa app"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Abilita almeno un permesso di lettura per attivare l\'accesso in background per questa app"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Abilita almeno un permesso di lettura per attivare l\'accesso ai dati precedenti per questa app"</string>
 </resources>

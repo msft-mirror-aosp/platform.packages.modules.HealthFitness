@@ -22,8 +22,13 @@ import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
+import android.health.connect.datatypes.HeightRecord;
+import android.health.connect.datatypes.LeanBodyMassRecord;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
+import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 
 import java.time.Instant;
@@ -73,5 +78,20 @@ public final class DataFactory {
     /** Returns a {@link LocalTimeRangeFilter} with given {@code start} and {@code end} time. */
     static LocalTimeRangeFilter getTimeFilter(LocalDateTime start, LocalDateTime end) {
         return new LocalTimeRangeFilter.Builder().setStartTime(start).setEndTime(end).build();
+    }
+
+    static LeanBodyMassRecord getBaseLeanBodyMassRecord(Instant time, double grams) {
+        return new LeanBodyMassRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(grams))
+                .build();
+    }
+
+    static HeightRecord getBaseHeightRecord(Instant time, double heightMeter) {
+        return new HeightRecord.Builder(getEmptyMetadata(), time, Length.fromMeters(heightMeter))
+                .build();
+    }
+
+    static WeightRecord getBaseWeightRecord(Instant time, double weightKg) {
+        return new WeightRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(weightKg * 1000))
+                .build();
     }
 }
