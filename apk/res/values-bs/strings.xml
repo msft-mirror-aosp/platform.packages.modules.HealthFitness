@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Broj aplikacija koje imaju pristup: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Pristup ima sljedeći broj aplikacija: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija ima pristup"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikacija ima pristup}one{# aplikacija ima pristup}few{# aplikacije imaju pristup}other{# aplikacija ima pristup}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ništa"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalji unosa"</string>
     <string name="backup_title" msgid="211503191266235085">"Sigurnosna kopija"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Zapisivanje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljajte odobrenjima"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Vrijeme: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivnost"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivnost"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Tjelesne mjere"</string>
@@ -87,9 +89,9 @@
     <string name="background_read_request_description" msgid="1664402237648709581">"Ako dozvolite pristup, ova aplikacija može pristupiti podacima aplikacije Health Connect kad ne koristite aplikaciju."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Pristup prethodnim podacima"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Dozvoliti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupi prethodnim podacima?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Dozvolite ovoj aplikaciji pristup podacima aplikacije Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Dozvolite ovoj aplikaciji pristup podacima aplikacije Health Connect koji su dodani prije dana <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Dozvolite ovoj aplikaciji da pristupa svim prijašnjim podacima Health Connecta"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dozvolite pristup, ova aplikacija može pristupiti podacima aplikacije Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dozvolite pristup, ova aplikacija može pristupiti podacima aplikacije Health Connect koji su dodani prije dana <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ako joj dozvolite, aplikacija će moći pristupati svim prijašnjim podacima Health Connecta."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorije potrošene kroz aktivnost"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorije potrošene kroz aktivnost"</string>
@@ -270,10 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima privatnosti"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Ukloniti sva odobrenja?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Ukloni sve"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta.\n\nOvo ne utiče na druga odobrenja koja ova aplikacija može imati, kao što su lokacija, kamera ili mikrofon."</string>
-    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti bilježiti podatke iz Health Connecta, uključujući pozadinske podatke.\n\nTo ne utječe na druga dopuštenja koja ova aplikacija može imati, kao što su lokacija, kamera ili mikrofon."</string>
-    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti bilježiti podatke iz Health Connecta, uključujući prethodne podatke.\n\nTo ne utječe na druga dopuštenja koja ova aplikacija može imati, kao što su lokacija, fotoaparat ili mikrofon."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti bilježiti podatke iz Health Connecta, uključujući pozadinske podatke ili prethodne podatke.\n\nTo ne utječe na druga dopuštenja koja ova aplikacija može imati, kao što su dopuštenja za upotrebu lokacije, kamere ili mikrofona."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta.\n\nOvo ne utiče na druga odobrenja koja ova aplikacija može imati, kao što je odobrenje za lokaciju, mikrofon ili kameru."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta, uključujući pozadinske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta, uključujući historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta, uključujući pozadinske i historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Izbriši i podatke aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> iz Health Connecta"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Sljedeći dan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
@@ -307,7 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Pristup aplikacije"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Trenutno nemate instaliranu nijednu kompatibilnu aplikaciju"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatni pristup"</string>
-    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjena su dodatna dopuštenja za ovu aplikaciju"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjena su dodatna odobrenja za ovu aplikaciju"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odobrenja za aplikaciju su uklonjena"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect je uklonio odobrenja za aplikaciju <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect je uklonio odobrenja za aplikacije <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -415,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -448,8 +450,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nejasno"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}few{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}one{# milisekunda}few{# milisekunde}other{# milisekundi}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Bilješke"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{Jedanput}one{# put}few{# puta}other{# puta}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktivno: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Ukupno: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -821,7 +822,7 @@
     <string name="route_permissions_label" msgid="6293377940884373190">"Pristup rutama vježbanja"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Dozvolite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa rutama"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pitaj svaki put"</string>
-    <string name="route_permissions_deny" msgid="4955644777239169593">"Ne dopuštaj"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Nemoj dozvoliti"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Omogućiti obje vrste podataka?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Onemogućiti obje vrste podataka?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> treba pristup čitanju podataka o vježbanju radi omogućavanja ruta vježbanja"</string>
@@ -915,7 +916,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Pristup"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Dozvoliti dodatni pristup aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> također želi pristupiti ovim postavkama aplikacije Health Connect"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup pozadinskim podacima ili prethodnim podacima za ovu aplikaciju"</string>
-    <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup iz pozadine za ovu aplikaciju"</string>
-    <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogućite barem jedno dopuštenje za čitanje da biste uključili pristup prethodnim podacima za ovu aplikaciju"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogućite najmanje jedno odobrenje za čitanje da za ovu aplikaciju uključite pristup iz pozadine ili pristup historijskim podacima"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogućite najmanje jedno odobrenje za čitanje da za ovu aplikaciju uključite pristup iz pozadine"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogućite najmanje jedno odobrenje za čitanje da za ovu aplikaciju uključite pristup historijskim podacima"</string>
 </resources>
