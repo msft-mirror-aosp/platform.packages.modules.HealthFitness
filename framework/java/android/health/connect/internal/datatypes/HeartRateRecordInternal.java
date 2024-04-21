@@ -55,7 +55,7 @@ public class HeartRateRecordInternal
         }
 
         @Override
-        public boolean equals(@NonNull Object object) {
+        public boolean equals(@Nullable Object object) {
             if (super.equals(object) && object instanceof HeartRateRecordInternal.HeartRateSample) {
                 HeartRateRecordInternal.HeartRateSample other =
                         (HeartRateRecordInternal.HeartRateSample) object;
