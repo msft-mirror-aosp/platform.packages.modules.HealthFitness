@@ -85,7 +85,7 @@ public final class TransactionTestUtils {
                         records,
                         mContext,
                         /* isInsertRequest= */ true,
-                        /* useProvidedUuid = */ false,
+                        /* useProvidedUuid= */ false,
                         /* skipPackageNameAndLogs= */ false));
     }
 
@@ -141,6 +141,28 @@ public final class TransactionTestUtils {
                         .setRoute(createExerciseRoute(startTime))
                         .setStartTime(startTime.toEpochMilli())
                         .setEndTime(startTime.plus(ofMinutes(10)).toEpochMilli());
+    }
+
+    /** Inserts one single fake access log. */
+    public void insertAccessLog() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("record_type", "fake_record_type");
+        contentValues.put("app_id", "fake_app_id");
+        contentValues.put("access_time", "fake_access_time");
+        contentValues.put("operation_type", "fake_operation_type");
+        mTransactionManager.insert(
+                new UpsertTableRequest(AccessLogsHelper.TABLE_NAME, contentValues));
+    }
+
+    /** Inserts one single fake change log. */
+    public void insertChangeLog() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("record_type", "fake_record_type");
+        contentValues.put("app_id", "fake_app_id");
+        contentValues.put("uuids", "fake_uuids");
+        contentValues.put("operation_type", "fake_operation_type");
+        mTransactionManager.insert(
+                new UpsertTableRequest(ChangeLogsHelper.TABLE_NAME, contentValues));
     }
 
     private static ExerciseRouteInternal createExerciseRoute(Instant startTime) {

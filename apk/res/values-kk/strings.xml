@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> қолданбаға рұқсат берілген."</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> қолданбаға рұқсат берілген."</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> қолданбаға рұқсат берілген."</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 қолданбаға рұқсат берілген.}other{# қолданбаға рұқсат берілген.}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ешқандай"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Енгізілген дерек мәліметтері"</string>
     <string name="backup_title" msgid="211503191266235085">"Сақтық көшірме жасау"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Жазу: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Рұқсаттарды басқару"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Уақыт: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Қимыл"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"Қимыл"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Дене өлшемдері"</string>
@@ -270,13 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"құпиялық саясаты"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Барлық рұқсатты өшіру керек пе?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Барлығын өшіру"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді оқи немесе жаза алмайды.\n\nБұл жағдай локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
-    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді оқи алмайды немесе жаза алмайды.\n\nБұл жағдай локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді, соның ішінде фондық деректі оқи немесе жаза алмайды.\n\nБұл локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді, соның ішінде бұрынғы деректі оқи немесе жаза алмайды.\n\nБұл локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді, соның ішінде фондық және бұрынғы деректі оқи немесе жаза алмайды.\n\nБұл локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect-тен <xliff:g id="APP_NAME">%1$s</xliff:g> деректері де жойылсын"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Келесі күн"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Таңдалған күн"</string>
@@ -310,8 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Қолданба рұқсаты"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Орнатылған үйлесімді қолданбалар жоқ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Қосымша пайдалану рұқсаты"</string>
-    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
-    <skip />
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Бұл қолданбаның қосымша рұқсаттары өшірілді."</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Қолданба рұқсаттары өшірілді"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect платформасы <xliff:g id="APP_DATA">%s</xliff:g> қолданбасы үшін рұқсаттарды өшірді."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect платформасы <xliff:g id="APP_DATA_0">%1$s</xliff:g> және <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> қолданбалары үшін рұқсаттарды өшірді."</string>
@@ -419,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -452,8 +450,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Әлсіз"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 мс}other{# мс}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 миллисекунд}other{# миллисекунд}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Ескертпелер"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 рет}other{# рет}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Белсенді: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Барлығы: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -825,8 +822,7 @@
     <string name="route_permissions_label" msgid="6293377940884373190">"Жаттығу бағыттарын пайдалану"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына бағыттарды пайдалануға рұқсат беру"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Әрдайым сұрау"</string>
-    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
-    <skip />
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Рұқсат бермеу"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Екі дерек түрін де қосу керек пе?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Екі дерек түрін де өшіру керек пе?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына жаттығу бағыттарын қосу үшін жаттығу деректерін оқу рұқсаты қажет."</string>
@@ -920,10 +916,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Пайдалану рұқсаты"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына қосымша пайдалану рұқсаты берілсін бе?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы сондай-ақ осы Health Connect параметрлерін пайдалануға рұқсат сұрайды."</string>
-    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
-    <skip />
-    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
-    <skip />
-    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
-    <skip />
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Осы қолданбаға фондық режимде кіру немесе оның бұрынғы деректерін алу мүмкіндігін іске қосу үшін кемінде бір оқу рұқсатын қосыңыз."</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Осы қолданбаға фондық режимде кіру мүмкіндігін іске қосу үшін кемінде бір оқу рұқсатын қосыңыз."</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Осы қолданбаның бұрынғы деректерін алу мүмкіндігін іске қосу үшін кемінде бір оқу рұқсатын қосыңыз."</string>
 </resources>

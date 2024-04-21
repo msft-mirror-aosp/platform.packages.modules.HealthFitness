@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicacións teñen acceso"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicacións teñen acceso"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicación ten acceso"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Unha aplicación ten acceso}other{# aplicacións teñen acceso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Ningunha"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalles da entrada"</string>
     <string name="backup_title" msgid="211503191266235085">"Copia de seguranza"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Xestionar permisos"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tempo: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividade"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"actividade"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medicións corporais"</string>
@@ -270,13 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privacidade"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Queres quitar todos os permisos?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Quitar todos"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> deixará de poder ler e escribir datos de Saúde conectada.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
-    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> deixará de poder ler e escribir datos de Saúde conectada.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> xa non poderá ler nin escribir datos de Saúde conectada, incluídos os datos en segundo plano.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> xa non poderá ler nin escribir datos de Saúde conectada, incluídos os datos anteriores.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> xa non poderá ler nin escribir datos de Saúde conectada, incluídos os datos anteriores e en segundo plano.\n\nEsta acción non lles afecta a outros permisos que poida ter esta aplicación, como os de acceso á localización, á cámara ou ao micrófono."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Eliminar tamén os datos de <xliff:g id="APP_NAME">%1$s</xliff:g> almacenados en Saúde conectada"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Día seguinte"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Día seleccionado"</string>
@@ -310,8 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Acceso da aplicación"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Nestes momentos non tes instalada ningunha aplicación compatible"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acceso adicional"</string>
-    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
-    <skip />
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Quitáronse os permisos adicionais para esta aplicación"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permisos de aplicacións quitados"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Saúde conectada quitou os permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -419,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -452,8 +450,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Non concluínte"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisegundo}other{# milisegundos}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Notas"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 vez}other{# veces}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Calorías activas: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -787,7 +784,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"Cando cambias esta opción de configuración, Saúde conectada elimina os datos que teñas almacenados segundo as túas novas preferencias"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Queres que os datos se eliminen de forma automática tras # mes?}other{Queres que os datos se eliminen de forma automática tras # meses?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Saúde conectada eliminará automaticamente os datos novos tras # mes. Con esta configuración tamén se eliminarán os datos que xa teñas almacenados desde hai máis de # mes.}other{Saúde conectada eliminará automaticamente os datos novos tras # meses. Con esta configuración tamén se eliminarán os datos que xa teñas almacenados desde hai máis de # meses.}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"Establecer eliminación automática"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"Fixar eliminación automática"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"Eliminaranse os datos que xa teñas"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{Saúde conectada eliminará todos os datos que teñan máis de # mes. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}other{Saúde conectada eliminará todos os datos que teñan máis de # meses. Pode que estes cambios tarden un día en aplicarse nas túas aplicacións conectadas.}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"Os datos eliminaranse das seguintes categorías"</string>
@@ -825,8 +822,7 @@
     <string name="route_permissions_label" msgid="6293377940884373190">"Acceso ás rutas de exercicio"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Permite que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda ás rutas"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Preguntar sempre"</string>
-    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
-    <skip />
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Non permitir"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Queres activar os dous tipos de datos?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Queres desactivar os dous tipos de datos?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> require permiso de lectura dos exercicios para que se activen as rutas de exercicio"</string>
@@ -920,10 +916,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Acceso"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Queres permitir o acceso adicional de <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> tamén quere ter acceso a estas opcións de configuración de Saúde conectada"</string>
-    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
-    <skip />
-    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
-    <skip />
-    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
-    <skip />
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activa polo menos un permiso de lectura para habilitar o acceso aos datos anteriores ou en segundo plano por parte desta aplicación"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Activa polo menos un permiso de lectura para habilitar o acceso en segundo plano por parte desta aplicación"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Activa polo menos un permiso de lectura para habilitar o acceso aos datos anteriores por parte desta aplicación"</string>
 </resources>

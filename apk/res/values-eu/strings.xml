@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikaziok dute sarbidea"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikaziok dute sarbidea"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikaziok du sarbidea"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikaziok du sarbidea}other{# aplikaziok dute sarbidea}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Batek ere ez"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Sarreraren xehetasunak"</string>
     <string name="backup_title" msgid="211503191266235085">"Babeskopiak"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Idazteko baimena: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Kudeatu baimenak"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Ordua: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Jarduerak"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"jarduerak"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Gorputzaren neurketak"</string>
@@ -270,13 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pribatutasun-gidalerroak"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Baimen guztiak kendu nahi dituzu?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Kendu guztiak"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kokapena, kamera edo mikrofonoa erabiltzeari buruzkoei)."</string>
-    <!-- no translation found for permissions_disconnect_dialog_message_background (8655975996293893596) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_history (3793206180295111081) -->
-    <skip />
-    <!-- no translation found for permissions_disconnect_dialog_message_combined (4163369526932602203) -->
-    <skip />
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kamera, mikrofonoa edo kokapena erabiltzeari buruzkoei)."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, atzeko planoko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kokapena, kamera edo mikrofonoa erabiltzeari buruzkoei)."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kokapena, kamera edo mikrofonoa erabiltzeari buruzkoei)."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aurrerantzean, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak ezingo du Health Connect-en gordetako daturik irakurri edo idatzi, atzeko planoko eta iraganeko datuak barne.\n\nAldaketak ez die eragingo aplikazioaren beste baimen batzuei (esaterako, kokapena, kamera edo mikrofonoa erabiltzeari buruzkoei)."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Halaber, ezabatu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioko datuak Health Connect-etik"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Hurrengo eguna"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Hautatutako eguna"</string>
@@ -310,8 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Aplikazioak duen sarbidea"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Une honetan ez daukazu aplikazio bateragarririk instalatuta"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Sarbide gehigarria"</string>
-    <!-- no translation found for removed_additional_permissions_toast (3443687215509477284) -->
-    <skip />
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Kendu dira aplikazio honen baimen gehigarriak"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Kendutako aplikazio-baimenak"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> aplikazioaren baimenak kendu ditu Health Connect-ek"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g> eta <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> aplikazioen baimenak kendu ditu Health Connect-ek"</string>
@@ -419,11 +417,11 @@
     <skip />
     <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles (899650153323007686) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
     <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_miles_long (3286896831757792291) -->
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
     <skip />
     <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
     <skip />
@@ -452,8 +450,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Ezin da ondorioztatu"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisegundo}other{# milisegundo}}"</string>
-    <!-- no translation found for planned_exercise_session_notes_title (5398114870366766242) -->
-    <skip />
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Oharrak"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 aldiz}other{# aldiz}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktibo: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Guztira: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -825,8 +822,7 @@
     <string name="route_permissions_label" msgid="6293377940884373190">"Ariketei dagozkien ibilbideak atzitu"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Eman ibilbideak atzitzeko baimena <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Galdetu beti"</string>
-    <!-- no translation found for route_permissions_deny (4955644777239169593) -->
-    <skip />
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Ez eman baimenik"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Bi datu motak gaitu nahi dituzu?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Bi datu motak desgaitu nahi dituzu?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Ariketen ibilbideak gaitu ahal izateko, datuak irakurtzeko baimena behar du <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak"</string>
@@ -920,10 +916,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Erabiltzeko baimena dutenak"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Baimen gehigarriak eman nahi dizkiozu <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioari?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"Halaber, <xliff:g id="APP_NAME">%1$s</xliff:g> aplikazioak Health Connect-en ezarpen hauek erabili nahi ditu"</string>
-    <!-- no translation found for additional_access_combined_footer (5967785355544362840) -->
-    <skip />
-    <!-- no translation found for additional_access_background_footer (1638739578431818525) -->
-    <skip />
-    <!-- no translation found for additional_access_history_footer (5326814559930548467) -->
-    <skip />
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aplikazio honetan atzeko planoa edo iraganeko datuak atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Aplikazio honetan atzeko planoa atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Aplikazio honetan iraganeko datuak atzitzeko aukera aktibatzeko, gaitu irakurtzeko baimen bat gutxienez"</string>
 </resources>

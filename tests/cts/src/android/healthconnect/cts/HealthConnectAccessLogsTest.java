@@ -30,6 +30,7 @@ import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
@@ -171,20 +172,45 @@ public class HealthConnectAccessLogsTest {
     }
 
     @Test
-    public void testAccessLogs_afterInsert() throws InterruptedException {
+    public void testAccessLogs_insert_singleRecordType() throws InterruptedException {
+        List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
+        List<Record> testRecord = Collections.singletonList(getStepsRecord());
+        TestUtils.insertRecords(testRecord);
+
+        // Wait for some time before fetching access logs as they are updated in the background.
+        Thread.sleep(500);
+
+        List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
+        AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
+
+        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(1);
+        assertThat(accessLog.getOperationType())
+                .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_UPSERT);
+        assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
+        assertThat(accessLog.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
+        assertThat(accessLog.getAccessTime()).isNotNull();
+    }
+
+    @Test
+    public void testAccessLogs_insert_multipleRecordTypes() throws InterruptedException {
         List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
         List<Record> testRecord = getTestRecords();
         TestUtils.insertRecords(testRecord);
+
         // Wait for some time before fetching access logs as they are updated in the background.
         Thread.sleep(500);
+
         List<AccessLog> newAccessLogsResponse = TestUtils.queryAccessLogs();
         AccessLog accessLog = newAccessLogsResponse.get(newAccessLogsResponse.size() - 1);
-        assertThat(newAccessLogsResponse.size()).isGreaterThan(oldAccessLogsResponse.size());
+
+        assertThat(newAccessLogsResponse.size() - oldAccessLogsResponse.size()).isEqualTo(1);
         assertThat(accessLog.getOperationType())
                 .isEqualTo(AccessLog.OperationType.OPERATION_TYPE_UPSERT);
         assertThat(accessLog.getRecordTypes()).contains(StepsRecord.class);
         assertThat(accessLog.getRecordTypes()).contains(HeartRateRecord.class);
         assertThat(accessLog.getRecordTypes()).contains(BasalMetabolicRateRecord.class);
+        assertThat(accessLog.getRecordTypes()).contains(ExerciseSessionRecord.class);
+        assertThat(accessLog.getPackageName()).isEqualTo(SELF_PACKAGE_NAME);
         assertThat(accessLog.getAccessTime()).isNotNull();
     }
 }
