@@ -50,8 +50,15 @@ import org.junit.Assert.assertThrows
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 
 class ExerciseRouteRequestTest : HealthConnectBaseTest() {
+    @get:Rule
+    val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule
+    val freezeRotationRule = FreezeRotationRule()
 
     companion object {
         private const val READ_ROUTES_ALL_FEATURE_FLAG = "exercise_routes_read_all_enable"

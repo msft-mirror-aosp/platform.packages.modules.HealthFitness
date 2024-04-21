@@ -59,15 +59,16 @@ class HealthPermissionReaderTest {
 
         assertThat(permissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .containsExactly(
-                HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
-                HealthPermissions.READ_EXERCISE.toHealthPermission(),
-                HealthPermissions.WRITE_EXERCISE.toHealthPermission(),
-                HealthPermissions.WRITE_SLEEP.toHealthPermission(),
-                HealthPermissions.READ_SLEEP.toHealthPermission(),
                 HealthPermissions.READ_ACTIVE_CALORIES_BURNED.toHealthPermission(),
                 HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED.toHealthPermission(),
+                HealthPermissions.READ_EXERCISE.toHealthPermission(),
+                HealthPermissions.WRITE_EXERCISE.toHealthPermission(),
+                HealthPermissions.READ_SLEEP.toHealthPermission(),
+                HealthPermissions.WRITE_SLEEP.toHealthPermission(),
+                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES,
+                HealthPermissions.WRITE_EXERCISE_ROUTE.toHealthPermission(),
                 HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND,
-                HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES)
+                HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY)
     }
 
     @Test

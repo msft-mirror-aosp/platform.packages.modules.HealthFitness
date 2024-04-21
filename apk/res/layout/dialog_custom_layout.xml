@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:gravity="start"
             android:layout_marginTop="@dimen/spacing_normal"
+            android:textDirection="locale"
             style="?attr/textAppearanceSummary" />
 
     </LinearLayout>
