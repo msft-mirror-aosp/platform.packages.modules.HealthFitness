@@ -42,7 +42,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,7 +72,7 @@ public class ImportManagerTest {
     @Before
     public void setUp() throws Exception {
         mContext = mDatabaseTestRule.getUserContext();
-        mTransactionManager = TransactionManager.getInstance(mContext);
+        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         TestUtils.runWithShellPermissionIdentity(
@@ -81,11 +80,6 @@ public class ImportManagerTest {
                 Manifest.permission.READ_DEVICE_CONFIG);
 
         mImportManager = new ImportManager(mContext);
-    }
-
-    @After
-    public void tearDown() {
-        TransactionManager.clearInstance();
     }
 
     @Test

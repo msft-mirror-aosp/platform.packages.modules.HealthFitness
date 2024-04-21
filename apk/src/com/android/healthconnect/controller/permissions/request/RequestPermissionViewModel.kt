@@ -281,11 +281,14 @@ constructor(
             grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }
+        val declaredPermissions = healthPermissionReader.getDeclaredHealthPermissions(packageName)
 
         val filteredPermissions =
             permissions
                 // Do not show hidden permissions
                 .filterNot { permission -> healthPermissionReader.shouldHidePermission(permission) }
+                // Do not show undeclared permissions
+                .filter { permission -> declaredPermissions.contains(permission) }
                 // Filter invalid health permissions
                 // This will also transform each permission into DataType or Additional
                 .mapNotNull { permissionString ->
