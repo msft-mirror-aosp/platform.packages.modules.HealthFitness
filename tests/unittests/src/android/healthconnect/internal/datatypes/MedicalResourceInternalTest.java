@@ -21,31 +21,34 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalResource;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
+import android.os.Parcel;
 
 import org.junit.Test;
 
 public class MedicalResourceInternalTest {
     @Test
-    public void testMedicalResourceBuilder_defaultFields() {
-        MedicalResource resource = new MedicalResource.Builder().build();
+    public void testMedicalResourceInternal_writeToParcelThenRestore_objectsAreIdentical() {
+        MedicalResourceInternal original =
+                new MedicalResourceInternal().setType(MEDICAL_RESOURCE_TYPE_UNKNOWN);
 
-        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel);
+        parcel.setDataPosition(0);
+        MedicalResourceInternal restored = MedicalResourceInternal.readFromParcel(parcel);
+
+        assertThat(restored).isEqualTo(original);
+        parcel.recycle();
     }
 
     @Test
-    public void testMedicalResourceBuilder_correctFields() {
-        MedicalResource resource =
-                new MedicalResource.Builder().setType(MEDICAL_RESOURCE_TYPE_UNKNOWN).build();
+    public void testMedicalResourceInternal_convertToExternalAndBack_objectsAreIdentical() {
+        MedicalResourceInternal original =
+                new MedicalResourceInternal().setType(MEDICAL_RESOURCE_TYPE_UNKNOWN);
 
-        assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
-    }
+        MedicalResource external = original.toExternalResource();
+        MedicalResourceInternal restored = MedicalResourceInternal.fromExternalResource(external);
 
-    @Test
-    public void testMedicalResourceBuilder_fromExistingInstance() {
-        MedicalResource original =
-                new MedicalResource.Builder().setType(MEDICAL_RESOURCE_TYPE_UNKNOWN).build();
-        MedicalResource resource = new MedicalResource.Builder(original).build();
-
-        assertThat(resource.getType()).isEqualTo(original.getType());
+        assertThat(restored).isEqualTo(original);
     }
 }
