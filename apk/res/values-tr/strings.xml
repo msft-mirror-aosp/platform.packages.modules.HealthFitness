@@ -38,7 +38,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Birimleri ayarla"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"En son erişim"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Yakın zamanda hiçbir uygulama Health Connect\'e erişmedi"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Son erişimin tamamını gör"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Son erişimlerin hepsini göster"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Son 24 saat içinde hangi uygulamaların verilerinize eriştiğini görün"</string>
     <string name="today_header" msgid="1006837293203834373">"Bugün"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Dün"</string>

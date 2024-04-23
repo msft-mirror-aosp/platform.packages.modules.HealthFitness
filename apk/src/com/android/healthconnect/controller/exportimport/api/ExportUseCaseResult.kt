@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
-/** User configured settings for scheduled export of Health Connect data. */
-sealed class ExportSettings {
-    object Loading : ExportSettings()
+/** Data class that holds result from export use cases. */
+sealed class ExportUseCaseResult<out T> {
+    data class Success<T>(var data: T) : ExportUseCaseResult<T>()
 
-    object LoadingFailed : ExportSettings()
-
-    data class WithData(val frequency: ExportFrequency) : ExportSettings()
+    data class Failed(val exception: Exception) : ExportUseCaseResult<Nothing>()
 }

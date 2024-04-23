@@ -21,7 +21,7 @@
     <string name="health_connect_summary" msgid="6401520186678972547">"Эрүүл мэндийн өгөгдлийн аппын хандалтыг удирдах"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Зөвшөөрөл болон өгөгдөл"</string>
     <string name="home_subtitle" msgid="1750033322147357163">"Утсан дээрээ эрүүл мэнд, фитнесийн өгөгдлөө удирдаж, үүнд ямар аппууд хандаж болохыг хянана уу"</string>
-    <string name="data_title" msgid="4456619761533380816">"Өгөгдөл болон хандалт"</string>
+    <string name="data_title" msgid="4456619761533380816">"Өгөгдөл, хандалт"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Бүх ангилал"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Бүх ангиллыг харах"</string>
     <string name="no_data" msgid="1906986019249068659">"Өгөгдөл байхгүй байна"</string>
@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Бичсэн: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Зөвшөөрлийг удирдах"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Цаг: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Дасгал, хөдөлгөөн"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"дасгал, хөдөлгөөн"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Биеийн хэмжээ"</string>

@@ -55,7 +55,7 @@
     <string name="sleep_category_uppercase" msgid="3422452674899706786">"Ұйқы"</string>
     <string name="sleep_category_lowercase" msgid="842609634386839011">"ұйқы"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"Маңызды көрсеткіштер"</string>
-    <string name="vitals_category_lowercase" msgid="4664457787866407963">"маңызды көрсеткіштер"</string>
+    <string name="vitals_category_lowercase" msgid="4664457787866407963">"Маңызды көрсеткіштер"</string>
     <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"Етеккір циклін бақылау"</string>
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"етеккір циклін бақылау"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Тамақтану"</string>
@@ -255,7 +255,7 @@
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Тынығу кезіндегі жүрек қағысы деректерін оқу"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Тынығу кезіндегі жүрек қағысы деректерін жазу"</string>
     <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Тері температурасы"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"тері температурасы"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"Тері температурасы"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Тері температурасын оқу"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Тері температурасын жазу"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" қолданбасына оқуға рұқсат беру"</string>
@@ -276,7 +276,7 @@
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді, соның ішінде фондық деректі оқи немесе жаза алмайды.\n\nБұл локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді, соның ішінде бұрынғы деректі оқи немесе жаза алмайды.\n\nБұл локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасы бұдан былай Health Connect-тегі деректерді, соның ішінде фондық және бұрынғы деректі оқи немесе жаза алмайды.\n\nБұл локацияны, камераны немесе микрофонды пайдалану сияқты осы қолданбадағы басқа рұқсаттарға әсер етпейді."</string>
-    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect-тен <xliff:g id="APP_NAME">%1$s</xliff:g> деректері де жойылсын"</string>
+    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect-тен <xliff:g id="APP_NAME">%1$s</xliff:g> деректері де жойылсын."</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Келесі күн"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Таңдалған күн"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"Алдыңғы күн"</string>
@@ -707,11 +707,11 @@
     <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} Фаренгейт градусы}other{{formattedValue} Фаренгейт градусы}}"</string>
     <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
     <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} кельвин}other{{formattedValue} кельвин}}"</string>
-    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (орташа айырмашылық)}other{{formattedValue}℃ (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (орташа ауытқу)}other{{formattedValue}℃ (орташа ауытқу)}}"</string>
     <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} Цельсий градусы (орташа айырмашылық)}other{{formattedValue} Цельсий градусы (орташа айырмашылық)}}"</string>
-    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (орташа айырмашылық)}other{{formattedValue}℉ (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (орташа ауытқу)}other{{formattedValue}℉ (орташа ауытқу)}}"</string>
     <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Фаренгейт градусы (орташа айырмашылық)}other{{formattedValue} Фаренгейт градусы (орташа айырмашылық)}}"</string>
-    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (орташа айырмашылық)}other{{formattedValue}K (орташа айырмашылық)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (орташа ауытқу)}other{{formattedValue}K (орташа ауытқу)}}"</string>
     <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} кельвин (орташа айырмашылық)}other{{formattedValue} кельвин (орташа айырмашылық)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Қолтық"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Саусақ"</string>
@@ -725,7 +725,7 @@
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Қынап"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Температура өлшенген орын"</string>
     <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Негізгі"</string>
-    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Негізгі температурамен салыстырғандағы айырмашылық"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Негізгі температурамен салыстырғандағы ауытқу"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миля}other{# миля}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 км}other{# км}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 миля}other{# миля}}"</string>
@@ -819,7 +819,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Барлық бағытқа рұқсат ету"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Рұқсат етпеу"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Әрқашан рұқсат беру"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Жаттығу бағыттарын пайдалану"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Жаттығу маршруттарын пайдалану"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына бағыттарды пайдалануға рұқсат беру"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Әрдайым сұрау"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Рұқсат бермеу"</string>

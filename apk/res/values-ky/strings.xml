@@ -32,13 +32,13 @@
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> колдонмо пайдалана алат"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 колдонмо пайдалана алат}other{# колдонмо пайдалана алат}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Жок"</string>
-    <string name="entry_details_title" msgid="590184849040247850">"Киргизилген маалыматтын чоо-жайы"</string>
+    <string name="entry_details_title" msgid="590184849040247850">"Киргизилген нерселердин чоо-жайы"</string>
     <string name="backup_title" msgid="211503191266235085">"Камдык көчүрмөнү сактоо"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Маалымат булактары жана маанилүүлүгү"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Бирдиктерди тууралоо"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Соңку колдонмолор"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Health Connect\'ти бир да колдонмо пайдаланган жок"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Бардык акыркы кирүүлөрдү көрүү"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Акыркы колдонулган нерселердин баарын көрүү"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Соңку 24 саатта кайсы колдонмолор кайсы маалыматты көргөнүн биле аласыз"</string>
     <string name="today_header" msgid="1006837293203834373">"Бүгүн"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Кечээ"</string>
@@ -67,7 +67,7 @@
     <string name="no_categories" msgid="2636778482437506241">"Health Connect\'те эч нерсе жок"</string>
     <string name="permission_types_title" msgid="7698058200557389436">"Ден-соолугуңузга байланыштуу нерселер"</string>
     <string name="app_priority_button" msgid="3126133977893705098">"Колдонмонун маанилүүлүгү"</string>
-    <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> байланыштуу нерселерди өчүрүү"</string>
+    <string name="delete_category_data_button" msgid="2324773398768267043">"Эмнени өчүрүш керек: <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Бардык колдонмолор"</string>
     <string name="can_read" msgid="4568261079308309564">"Кайсы маалыматты көрө алат: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
     <string name="can_write" msgid="5082414937218423823">"Кайсы маалыматты жаза алат: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
@@ -85,12 +85,12 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Колдонмо күйгүзүлгөн калорияларды окуй алат"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Маалыматтарды фондо колдонуу"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> колдонмосуна маалыматтарды фондо колдонууга уруксат бересизби?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Колдонмо иштебей турганда, ага Health Connect маалыматын колдонууга уруксат берүү"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Уруксат берсеңиз, бул колдонмо иштебей турса да, ага Health Connect платформасындагы нерселер жеткиликтүү болот"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Эгер уруксат берсеңиз, бул колдонмо иштебей турганда да, Health Connect маалыматын колдоно берет."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Мурунку маалыматты колдонуу"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> колдонмосуна мурунку маалыматты колдонууга уруксат бересизби?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Колдонмого <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> чейин кошулган Health Connect маалыматын колдонууга уруксат берүү"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Колдонмого бардык мурунку Health Connect маалыматын колдонууга уруксат берүү"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Бул колдонмого Health Connect платформасына <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> чейин кошулган нерселерди жеткиликтүү кыласыз"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Бул колдонмого Health Connect платформасында буга чейин сакталган нерселерди жеткиликтүү кыласыз."</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Эгер уруксат берсеңиз, бул колдонмо <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> чейин кошулган Health Connect маалыматын колдоно алат."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Эгер уруксат берсеңиз, бул колдонмо бардык мурунку Health Connect маалыматын колдоно алат."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Кыймылдаганда күйгөн калориялар"</string>
@@ -707,11 +707,11 @@
     <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} градус (Фаренгейт боюнча)}other{{formattedValue} градус (Фаренгейт боюнча)}}"</string>
     <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
     <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} кельвин}other{{formattedValue} кельвин}}"</string>
-    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (орточо айырмачылык)}other{{formattedValue}℃ (орточо айырмачылык)}}"</string>
-    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{Цельсий боюнча {formattedValue} градус (орточо айырмачылык)}other{Цельсий боюнча {formattedValue} градус (орточо айырмачылык)}}"</string>
-    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (орточо айырмачылык)}other{{formattedValue}℉ (орточо айырмачылык)}}"</string>
-    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{Фаренгейт боюнча {formattedValue} градус (орточо айырмачылык)}other{Фаренгейт боюнча {formattedValue} градус (орточо айырмачылык)}}"</string>
-    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}К (орточо айырмачылык)}other{{formattedValue}К (орточо айырмачылык)}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (орточо айырма)}other{{formattedValue}℃ (орточо айырма)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{Цельсий боюнча {formattedValue} градус (орточо айырма)}other{Цельсий боюнча {formattedValue} градус (орточо айырма)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (орточо айырма)}other{{formattedValue}℉ (орточо айырма)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{Фаренгейт боюнча {formattedValue} градус (орточо айырма)}other{Фаренгейт боюнча {formattedValue} градус (орточо айырма)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}К (орточо айырма)}other{{formattedValue}К (орточо айырма)}}"</string>
     <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} кельвин (орточо айрмачылык)}other{{formattedValue} кельвин (орточо айрмачылык)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Колтук"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Манжа"</string>

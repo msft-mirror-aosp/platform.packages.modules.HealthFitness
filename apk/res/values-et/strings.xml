@@ -309,7 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Rakenduste juurdepääs"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Teil pole praegu ühtegi ühilduvat rakendust installitud"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Täiendav juurdepääs"</string>
-    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Eemaldati selle rakenduse lisaload"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Selle rakenduse lisaload eemaldati"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Rakendused, mille load eemaldati"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect eemaldas rakenduse <xliff:g id="APP_DATA">%s</xliff:g> load"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect eemaldas rakenduste <xliff:g id="APP_DATA_0">%1$s</xliff:g> ja <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> load"</string>
