@@ -20,7 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Connessione Salute"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Gestisci l\'accesso delle app ai dati sulla salute"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Autorizzazioni e dati"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Gestisci i dati relativi alla salute e all\'attività fisica sul telefono e stabilisci a quali app concedere l\'accesso"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Gestisci i dati relativi alla salute e all\'attività fisica sullo smartphone e stabilisci a quali app concedere l\'accesso"</string>
     <string name="data_title" msgid="4456619761533380816">"Dati e accesso"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Tutte le categorie"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Vedi tutte le categorie"</string>
@@ -331,8 +331,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Ogni giorno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ogni settimana"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ogni mese"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Scegli dove esportare"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Attiva la crittografia"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Devi criptare i dati prima di salvarli. Nessuno, nemmeno Google o Connessione Salute, potrà accedervi."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea una password per proteggere i tuoi dati criptati. La password ti servirà per importare e ripristinare i tuoi dati."</string>
@@ -409,22 +408,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 miglio orario}other{# miglia orarie}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 chilometro orario}other{# chilometri orari}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/miglio"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per miglio"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per chilometro"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 iarde"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metri"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per 100 iarde"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per 100 metri"</string>
     <string name="time_range_long" msgid="5067423945245490288">"dalle ore <xliff:g id="START_TIME">%1$s</xliff:g> alle ore <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"dal giorno <xliff:g id="START_TIME">%1$s</xliff:g> al giorno <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 spinta in sedia a rotelle}other{# spinte in sedia a rotelle}}"</string>
@@ -456,8 +447,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Totali: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Maggior numero di ripetizioni"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Livello sforzo: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rip}other{# rip}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ripetizione}other{# ripetizioni}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenti esercizio fisico"</string>
@@ -724,8 +714,8 @@
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Polso"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Punto di misurazione"</string>
-    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Baseline"</string>
-    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variazione da baseline"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Temperatura di riferimento"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variazione da temperatura di riferimento"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 miglio}other{# miglia}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 miglio}other{# miglia}}"</string>

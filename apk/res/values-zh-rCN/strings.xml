@@ -27,7 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"无数据"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"应用权限"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"管理应用和权限"</string>
-    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用（共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 个）拥有访问权限"</string>
+    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限（共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 个应用）"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 个应用拥有访问权限}other{# 个应用拥有访问权限}}"</string>
@@ -84,12 +84,12 @@
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"读取消耗的卡路里数"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"允许该应用读取消耗的卡路里数"</string>
     <string name="background_read_title" msgid="5061383169517186234">"访问后台数据"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问后台数据？"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"要允许 <xliff:g id="APP_NAME">%1$s</xliff:g> 访问后台数据吗？"</string>
     <string name="background_read_description" msgid="3203594555849969283">"允许此应用在您不使用此应用时访问“健康数据共享”数据"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"如果您允许，此应用可以在您不使用此应用时访问“健康数据共享”数据。"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"访问过去的数据"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问过去的数据？"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"允许此应用访问在<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"允许此应用访问过去的所有“健康数据共享”数据"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"如果您允许，此应用可以访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据。"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"如果您允许，此应用可以访问过去的所有“健康数据共享”数据。"</string>
@@ -914,8 +914,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"上个月"</string>
     <string name="tab_entries" msgid="3402700951602029493">"条目"</string>
     <string name="tab_access" msgid="7818197975407243701">"有访问权限的应用"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”获得其他访问权限？"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”还想访问这些“健康数据共享”设置"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"允许 <xliff:g id="APP_NAME">%1$s</xliff:g> 获得额外访问权限？"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> 还想访问这些“健康数据共享”设置"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"请至少启用一项读取权限，以便为此应用开启后台或历史数据使用权"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"请至少启用一项读取权限，以便为此应用开启后台使用权"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"请至少启用一项读取权限，以便为此应用开启历史数据使用权"</string>

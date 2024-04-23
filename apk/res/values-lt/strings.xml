@@ -331,8 +331,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Kasdien"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Kas savaitę"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Kas mėnesį"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Pasirinkimas, kur eksportuoti"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Šifruotės įjungimas"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Duomenis reikia prieš išsaugant užšifruoti. Jų negalės pasiekti niekas, netgi „Google“ ar „Health Connect“."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Kurkite slaptažodį šifruotiems duomenims apsaugoti. Šio slaptažodžio reikės duomenims importuoti ir atkurti."</string>
@@ -409,22 +408,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/val.}one{# km/val.}few{# km/val.}many{# km/val.}other{# km/val.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mylia per valandą}one{# mylia per valandą}few{# mylios per valandą}many{# mylios per valandą}other{# mylių per valandą}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometras per valandą}one{# kilometras per valandą}few{# kilometrai per valandą}many{# kilometro per valandą}other{# kilometrų per valandą}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min./mylia"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min./km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> min. myliai"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> min. kilometrui"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min./100 jardų"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min./100 m"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> min. 100 jardų"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> min. 100 metrų"</string>
     <string name="time_range_long" msgid="5067423945245490288">"nuo <xliff:g id="START_TIME">%1$s</xliff:g> iki <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"nuo <xliff:g id="START_TIME">%1$s</xliff:g> iki <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 neįgaliųjų vežimėlio pastūmimas}one{# neįgaliųjų vežimėlio pastūmimas}few{# neįgaliųjų vežimėlio pastūmimai}many{# neįgaliųjų vežimėlio pastūmimo}other{# neįgaliųjų vežimėlio pastūmimų}}"</string>
@@ -456,8 +447,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Iš viso: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Kartoti kiek pavyksta"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Pastangų lygis: <xliff:g id="VALUE">%1$d</xliff:g> iš 10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 pakartojimas}one{# pakartojimas}few{# pakartojimai}many{# pakartojimo}other{# pakartojimų}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 pakartojimas}one{# pakartojimas}few{# pakartojimai}many{# pakartojimo}other{# pakartojimų}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Mankštos segmentai"</string>

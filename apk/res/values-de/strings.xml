@@ -707,11 +707,11 @@
     <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} Grad Fahrenheit}other{{formattedValue} Grad Fahrenheit}}"</string>
     <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
     <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} Kelvin}other{{formattedValue} Kelvin}}"</string>
-    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (durchschn. Abweichung)}other{{formattedValue} ℃ (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{Durchschn. Abweichung: {formattedValue} ℃}other{Durchschn. Abweichung: {formattedValue} ℃}}"</string>
     <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} Grad Celsius (durchschn. Abweichung)}other{{formattedValue} Grad Celsius (durchschn. Abweichung)}}"</string>
-    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (durchschn. Abweichung)}other{{formattedValue} ℉ (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{Durchschn. Abweichung: {formattedValue} °F}other{Durchschn. Abweichung: {formattedValue} °F}}"</string>
     <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Grad Fahrenheit (durchschn. Abweichung)}other{{formattedValue} Grad Fahrenheit (durchschn. Abweichung)}}"</string>
-    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (durchschn. Abweichung)}other{{formattedValue} K (durchschn. Abweichung)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{Durchschn. Abweichung: {formattedValue} K}other{Durchschn. Abweichung: {formattedValue} K}}"</string>
     <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} Kelvin (durchschn. Abweichung)}other{{formattedValue} Kelvin (durchschn. Abweichung)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Achselhöhle"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Finger"</string>
@@ -724,8 +724,8 @@
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Handgelenk"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Messort"</string>
-    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Normalbereich"</string>
-    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Abweichung vom Normalbereich"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Normalwert"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Abweichung vom Normalwert"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 Meile}other{# Meilen}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 Meile}other{# Meilen}}"</string>

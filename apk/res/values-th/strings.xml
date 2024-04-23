@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"เขียน: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"จัดการสิทธิ์"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"เวลา: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"กิจกรรม"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"กิจกรรม"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"การตรวจวัดร่างกาย"</string>
@@ -89,7 +88,7 @@
     <string name="background_read_request_description" msgid="1664402237648709581">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect เมื่อคุณไม่ได้ใช้แอป"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"อนุญาตให้เข้าถึงข้อมูลในอดีต"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลในอดีตใช่ไหม"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"อนุญาตให้แอปเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect ทั้งหมดในอดีต"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ทั้งหมดในอดีต"</string>
