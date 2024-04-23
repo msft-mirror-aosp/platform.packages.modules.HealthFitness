@@ -169,8 +169,14 @@ constructor(
 
     /** Whether the user has enabled this permission in the Permission Request screen. */
     fun isPermissionLocallyGranted(permission: HealthPermission): Boolean {
-        return _grantedDataTypePermissions.value.orEmpty().contains(permission) ||
-            _grantedAdditionalPermissions.value.orEmpty().contains(permission)
+        return if (permission is DataTypePermission) {
+            _grantedDataTypePermissions.value.orEmpty().contains(permission)
+        } else {
+            // when only one additional permission, there's no locally granted state, so by
+            // default it is true
+            _grantedAdditionalPermissions.value.orEmpty().contains(permission) ||
+                _additionalPermissionsList.value.orEmpty().size == 1
+        }
     }
 
     /** Returns true if any of the requested permissions is USER_FIXED, false otherwise. */
@@ -275,11 +281,14 @@ constructor(
             grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }
+        val declaredPermissions = healthPermissionReader.getDeclaredHealthPermissions(packageName)
 
         val filteredPermissions =
             permissions
                 // Do not show hidden permissions
                 .filterNot { permission -> healthPermissionReader.shouldHidePermission(permission) }
+                // Do not show undeclared permissions
+                .filter { permission -> declaredPermissions.contains(permission) }
                 // Filter invalid health permissions
                 // This will also transform each permission into DataType or Additional
                 .mapNotNull { permissionString ->

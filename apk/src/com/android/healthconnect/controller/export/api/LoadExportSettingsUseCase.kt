@@ -17,7 +17,6 @@
 package com.android.healthconnect.controller.export.api
 
 import android.health.connect.HealthConnectException
-import android.health.connect.HealthConnectManager
 import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,7 +27,7 @@ import kotlinx.coroutines.withContext
 class LoadExportSettingsUseCase
 @Inject
 constructor(
-    private val healthConnectManager: HealthConnectManager,
+    private val healthDataExportManager: HealthDataExportManager,
 ) : ILoadExportSettingsUseCase {
     companion object {
         private const val TAG = "LoadExportSettingsUseCase"
@@ -38,7 +37,7 @@ constructor(
     override suspend operator fun invoke(): ExportUseCaseResult<ExportFrequency> =
         withContext(Dispatchers.IO) {
             try {
-                val periodInDays = healthConnectManager.scheduledExportPeriodInDays
+                val periodInDays = healthDataExportManager.getScheduledExportPeriodInDays()
                 val frequency = fromPeriodInDays(periodInDays)
                 ExportUseCaseResult.Success(frequency)
             } catch (ex: HealthConnectException) {

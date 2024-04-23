@@ -29,6 +29,7 @@
     <string name="connected_apps_button_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> of <xliff:g example="3" id="num_possible_apps">%2$s</xliff:g> apps have access</string>
     <string name="connected_apps_all_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> apps have access</string>
     <string name="connected_apps_one_app_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens with one app connected. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> app has access</string>
+    <string name="connected_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [ICU SYNTAX][CHAR_LIMIT=NONE]">{count, plural, =1 {1 app has access} other {# apps have access}}</string>
     <string name="connected_apps_button_no_permissions_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens, when no apps are connected. [CHAR_LIMIT=NONE]">None</string>
     <string name="entry_details_title" description="Label for a screen that list an entry details. [CHAR_LIMIT=40]">Entry details</string>
     <!--  endregion -->
@@ -51,7 +52,7 @@
     <string name="write_data_access_label" description="Label used to indicate that app performed write (insertion, deletion or update) access to specified data types (as opposed to reading the data), as in 'Write: Steps, Heart rate'. [CHAR_LIMIT=NONE]">Write: <xliff:g example="heart rate" id="data_type">%s</xliff:g></string>
     <string name="data_type_separator" description="Separator (comma and whitespace in English) for a potentially long list of data type names listed in data access entry, as in 'Write: Steps, Distance, Calories'. [CHAR_LIMIT=NONE]">,\u0020</string>
     <string name="manage_permissions" description="Text for floating action button that takes users from Recent Access apps to the App permissions screen [CHAR LIMIT=40]">Manage permissions</string>
-    <string name="recent_access_time_content_descritption" description="Content description for time section of recent access preference providing better context for accessibility talk back. [CHAR_LIMIT=NONE]">Time: %s</string>
+    <string name="recent_access_time_content_descritption" description="Content description for time section of recent access preference providing better context for accessibility talk back. [CHAR_LIMIT=NONE]">Time: <xliff:g example="13:05" id="recent_access_time">%1$s</xliff:g></string>
     <!--endregion-->
 
     <!--region Data categories  -->
@@ -123,9 +124,9 @@
     <string name="historic_access_title" description="Title for permission to access past health data. [CHAR_LIMIT=NONE]">Access past data</string>
     <string name="historic_access_request_title" description="Title for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access past data?</string>
     <string name="historic_access_description" description="Description for permission to access past health data. [CHAR_LIMIT=NONE]">Allow this app to access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g></string>
-    <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access past Health&#160;Connect data</string>
+    <string name="historic_access_description_fallback" description="Description for permission to access past health data when there is no access date [CHAR_LIMIT=NONE]">Allow this app to access all past Health&#160;Connect data</string>
     <string name="historic_access_request_description" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access Health&#160;Connect data added before <xliff:g example="22 January 2022" id="data_access_date">%1$s</xliff:g>.</string>
-    <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access past Health&#160;Connect data.</string>
+    <string name="historic_access_request_description_fallback" description="Description for screen to give permission to an app to access past health data. [CHAR_LIMIT=NONE]">If you allow, this app can access all past Health&#160;Connect data.</string>
     <!--endregion-->
 
     <!-- region Activity data types -->
@@ -363,7 +364,10 @@
     <string name="request_permissions_privacy_policy" description="Link text that open's a third party app's data privacy policy [CHAR_LIMIT=NONE]">privacy policy</string>
     <string name="permissions_disconnect_dialog_title" description="Title for dialog asking the user to confirm they want to remove all permissions for an app [CHAR_LIMIT=40]">Remove all permissions?</string>
     <string name="permissions_disconnect_dialog_disconnect" description="Label for dialog button to confirm removal of all permissions for an app [CHAR_LIMIT=20]">Remove all</string>
-    <string name="permissions_disconnect_dialog_message" description="Text informing the user that an app will no longer be able to read or write data after the permissions have been removed. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> will no longer be able to read or write any data from Health&#160;Connect.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone.</string>
+    <string name="permissions_disconnect_dialog_message" description="Text informing the user that an app will no longer be able to read or write data after the permissions have been removed. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> will no longer be able to read or write any data from Health&#160;Connect.\n\nThis doesn\'t affect other permissions this app may have, like camera, microphone, or location.</string>
+    <string name="permissions_disconnect_dialog_message_background" description="Text informing the user that an app will no longer be able to read or write data after the permissions have been removed, including the background read permission. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> will no longer be able to read or write any data from Health&#160;Connect, including background data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone.</string>
+    <string name="permissions_disconnect_dialog_message_history" description="Text informing the user that an app will no longer be able to read or write data after the permissions have been removed, including the history read permission. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> will no longer be able to read or write any data from Health&#160;Connect, including past data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone.</string>
+    <string name="permissions_disconnect_dialog_message_combined" description="Text informing the user that an app will no longer be able to read or write data after the permissions have been removed, including the background and history permissions. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> will no longer be able to read or write any data from Health&#160;Connect, including background and past data.\n\nThis doesn\'t affect other permissions this app may have, like location, camera, or microphone.</string>    <!--endregion-->
     <string name="permissions_disconnect_dialog_checkbox" description="Text of a checkbox to decide whether to delete or not all data written by the app that is being disconnected by the user. Note: Health Connect is the brand. [CHAR_LIMIT=NONE]">Also delete <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> data from Health&#160;Connect</string>
     <!--endregion-->
 
@@ -403,7 +407,7 @@
     <string name="app_access_title" description="Title of screen for a user to manage the health and fitness data a particular app has access to [CHAR_LIMIT=40]">App access</string>
     <string name="connected_apps_empty_list_section_title" description="Title of section when there are no connected apps">You don\'t currently have any compatible apps installed</string>
     <string name="additional_access_label" description="Label of a button that opens additional permissions access for an app. [CHAR_LIMIT=40]">Additional access</string>
-
+    <string name="removed_additional_permissions_toast" description="Message letting the user know that additional permissions have also been removed for this app">Removed additional permissions for this app</string>
     <!--endregion-->
 
     <!--region Denied Apps -->
@@ -435,13 +439,14 @@
     <string name="frequency_weekly" description="Label used to show that the automatic export frequency is set as weekly. [CHAR_LIMIT=40]">Weekly</string>
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
 
-    <string name="export_location_title" description="Title of the 'export location' screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Export location</string>
+    <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to export</string>
 
     <string name="export_encryption_title" description="Title of the 'turn on encryption' screen where users can set up their passwords for data encryption. [CHAR_LIMIT=40]">Turn on encryption</string>
     <string name="export_encryption_safety_description" description="The safety description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Data needs to be encrypted before it is saved. No one, not even Google or Health&#160;Connect, will be able to access it.</string>
     <string name="export_encryption_instruction_description" description="The instruction description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Create a password to protect your encrypted data. You will need this password to import and restore your data.</string>
     <string name="export_password_hint" description="Placeholder text on the input field which reminds users to enter their password here. [CHAR_LIMIT=50]">Password</string>
     <string name="export_repeat_password_hint" description="Placeholder text on the input field which reminds users to repeat their password here. [CHAR_LIMIT=50]">Repeat password</string>
+    <string name="export_passwords_mismatch_error" description="Text shown to the users that indicates the entered password and the repeated password do not match. [CHAR_LIMIT=NONE]">Passwords don\'t match</string>
     <string name="export_encryption_warning" description="Description to warn users the importance to remember their passwords.">If you forget your password and lose your phone, Health&#160;Connect cannot help you recover your saved data.</string>
 
     <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow.">Back</string>
@@ -552,6 +557,16 @@
     <string name="velocity_speed_miles_long" translation_description="Speed in miles per hour formatted for audible announcement. [ICU SYNTAX][CHAR LIMIT=100]">{value, plural, =1 {1 mile per hour} other {# miles per hour}}</string>
     <string name="velocity_speed_km_long" translation_description="Speed in kilometers per hour formatted audible announcement. [ICU SYNTAX][CHAR LIMIT=100]">{value, plural, =1 {1 kilometer per hour} other {# kilometers per hour}}</string>
 
+    <string name="velocity_minute_miles" translation_description="Speed in minute per mile formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/mile</string>
+    <string name="velocity_minute_km" translation_description="Speed in minute per kilometer formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/km</string>
+    <string name="velocity_minute_miles_long" translation_description="Speed in minute per mile formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per mile</string>
+    <string name="velocity_minute_km_long" translation_description="Speed in minute per kilometer formatted audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per kilometer</string>
+
+    <string name="velocity_minute_per_one_hundred_yards" translation_description="Speed in minute per one hundred yards formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 yards</string>
+    <string name="velocity_minute_per_one_hundred_meters" translation_description="Speed in minute per one hundred meters formatted."><xliff:g example="1:30" id="minute">%1$s</xliff:g> min/100 meters</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" translation_description="Speed in minute per one hundred yards formatted for audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 yards</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" translation_description="Speed in minute per one hundred meters formatted audible announcement."><xliff:g example="1:30" id="minute">%1$s</xliff:g> minute per 100 meters</string>
+
     <string name="heart_rate_series_range" translatable="false"><xliff:g example="100 bpm" id="min">%1$s</xliff:g> - <xliff:g example="109 bpm" id="max">%2$s</xliff:g></string>
     <string name="heart_rate_series_range_long" translatable="false"> from <xliff:g example="100 beats per minute" id="min">%1$s</xliff:g> to <xliff:g example="109 beats per minute" id="max">%2$s</xliff:g></string>
 
@@ -597,8 +612,10 @@
 
     <!-- region training plans -->
     <string name="planned_exercise_session_title" translatable="false"><xliff:g example="Swimming" id="type">%1$s</xliff:g> • <xliff:g example="Freestyle Technique Bootcamp" id="title">%2$s</xliff:g></string>
-    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> x<xliff:g example="2" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_session_notes_title" description="Title for notes section.">Notes</string>
+    <string name="planned_exercise_block_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g>: <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
     <string name="planned_exercise_block_a11y_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g> <xliff:g example="2 times" id="repetition">%2$s</xliff:g></string>
+    <string name="planned_exercise_block_details_title" translatable="false"><xliff:g example="Warm up" id="title">%1$s</xliff:g>: <xliff:g example="2" id="repetition">%2$d</xliff:g></string>
     <string name="planned_exercise_block_repetitions" description="Repetitions of an exercise set. [ICU SYNTAX][CHAR LIMIT=50]">{count, plural, =1 {1 time} other {# times}}</string>
     <string name="planned_exercise_step_title" translatable="false"><xliff:g example="400m" id="completion_goal">%1$s</xliff:g> <xliff:g example="Breaststroke" id="exercise_segment_type">%2$s</xliff:g></string>
     <string name="distance_with_variable_rest_goal_formatted" translatable="false"><xliff:g example="400m" id="distance">%1$s</xliff:g>\@<xliff:g example="4 hours" id="duration">%2$s</xliff:g> </string>
@@ -607,6 +624,8 @@
     <string name="performance_goals_range" translatable="false"><xliff:g example="100W" id="min_value">%1$s</xliff:g> - <xliff:g example="200W" id="max_value">%2$s</xliff:g></string>
     <string name="amrap_performance_goal" description="Label for as many reps as possible performance goal">As many reps as possible</string>
     <string name="rate_of_perceived_exertion_goal" description="Label for rate of perceived exertion goal">Effort level: <xliff:g example="4" id="value">%1$d</xliff:g>/10</string>
+    <string name="bulleted_content" translatable="false">• <xliff:g example="Focus on breathing" id="title">%1$s</xliff:g></string>
+    <string name="elapsed_time_placeholder" description="Value to represent time for un realistic data input.">--:--</string>
     <!-- endregion -->
 
     <!--  region activity -->
@@ -1070,10 +1089,10 @@
     <string name="request_route_allow_all" description="Label for button in the route request dialog to allow an app access all exercise routes from now on [CHAR_LIMIT=30]">Allow all routes</string>
     <string name="request_route_dont_allow" description="Label for button in the route request dialog to deny an app access to the requested route [CHAR_LIMIT=20]">Don\'t allow</string>
     <string name="route_permissions_always_allow" description="Label for button in the route read request dialog to allow an app access all exercise routes from now on.">Always allow</string>
-    <string name="route_permissions_label" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Exercise route sharing</string>
-    <string name="route_permissions_summary" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Control how this app accesses exercise routes from connected apps</string>
+    <string name="route_permissions_label" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Access exercise routes</string>
+    <string name="route_permissions_summary" description="Summary of the section explaining in more details what it means to give read exercise route permission access to an app.">Allow <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> to access routes</string>
     <string name="route_permissions_ask" description="Label for button in the route read request dialog to require an app to ask for a permission next time they need it.">Ask every time</string>
-    <string name="route_permissions_deny" description="Label for button in the route read request dialog to to deny with prejudice a permission grant.">Don\u2019t allow</string>
+    <string name="route_permissions_deny" description="Label for button in the route read request dialog to to deny with prejudice a permission grant.">Don\'t allow</string>
     <string name="exercise_permission_dialog_enable_title" description="Title for a dialog to ask users to disable exercise and exercise routes permissions.">Enable both data types? </string>
     <string name="exercise_permission_dialog_disable_title" description="Title for a dialog to ask users to disable exercise and exercise routes permissions.">Disable both data types? </string>
     <string name="exercise_permission_dialog_enabled_summary" description="Summary for a dialog explaining in more details that read access for exercise is needed when enabling exercise routes"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> needs read access to exercise for exercise routes to be enabled</string>
@@ -1229,5 +1248,8 @@
     <!-- region Additional Access -->
     <string name="request_additional_permissions_header_title" description="Title for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]">Allow additional access for <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>?</string>
     <string name="request_additional_permissions_description" description="Description for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> also wants to access these Health&#160;Connect settings</string>
+    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
+    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
+    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
     <!--  endregion -->
 </resources>

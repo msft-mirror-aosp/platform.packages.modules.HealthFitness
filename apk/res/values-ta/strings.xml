@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ஆப்ஸில் <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ஆப்ஸுக்கு அணுகல் உள்ளது"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ஆப்ஸுக்கு அணுகல் உள்ளது"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ஆப்ஸுக்கு அணுகல் உள்ளது"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ஆப்ஸுக்கு அணுகல் உள்ளது}other{# ஆப்ஸுக்கு அணுகல் உள்ளன}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ஏதுமில்லை"</string>
     <string name="entry_details_title" msgid="590184849040247850">"உள்ளீட்டு விவரங்கள்"</string>
     <string name="backup_title" msgid="211503191266235085">"காப்புப் பிரதி எடு"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"எழுதப்பட்டவை: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"அனுமதிகளை நிர்வகியுங்கள்"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"நேரம்: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"செயல்பாடு"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"செயல்பாடு"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"உடல் அளவீடுகள்"</string>
@@ -81,26 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"உங்கள் உடல் ஆரோக்கியம் தொடர்பான தரவை அணுகும்"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"எரித்த கலோரிகளை வாசிக்கும்"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"எரிக்கப்பட்ட கலோரிகள் குறித்த தரவை வாசிக்க ஆப்ஸை அனுமதிக்கும்"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"பின்னணியில் தரவை அணுகுதல்"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"பின்னணியில் தரவை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"நீங்கள் ஆப்ஸைப் பயன்படுத்தாதபோது, Health Connect தரவை அணுக இந்த ஆப்ஸை அனுமதிக்கவும்"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"அனுமதித்தால், நீங்கள் ஆப்ஸைப் பயன்படுத்தாதபோது, Health Connect தரவை இந்த ஆப்ஸ் அணுகும்."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"முந்தைய தரவை அணுகுதல்"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"முந்தைய தரவை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கவா?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>க்கு முன்பு சேர்க்கப்பட்ட Health Connect தரவை அணுக இந்த ஆப்ஸை அனுமதிக்கவும்"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"முந்தைய Health Connect தரவு அனைத்தையும் அணுக இந்த ஆப்ஸை அனுமதிக்கலாம்"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"அனுமதித்தால், <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>க்கு முன்பு சேர்க்கப்பட்ட Health Connect தரவை இந்த ஆப்ஸ் பயன்படுத்தும்."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"நீங்கள் அனுமதித்தால், முந்தைய Health Connect தரவு அனைத்தையும் இந்த ஆப்ஸால் அணுக முடியும்."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"செயல்பாட்டின்போது எரிக்கப்பட்ட கலோரிகள்"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"செயல்பாட்டின் மூலம் எரிக்கப்பட்ட கலோரிகள்"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"செயல்பாட்டின்போது எரிக்கப்பட்ட கலோரிகள் தொடர்பான தரவை வாசிக்கும்"</string>
@@ -273,16 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"அனைத்தையும் அனுமதி"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"அனுமதிக்க வேண்டாம்"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Health Connectடில் இந்த ஆப்ஸ் எந்தத் தரவை வாசிக்க/எழுத வேண்டும் என்பதை நீங்கள் தேர்வுசெய்யவும்"</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"வாசிப்பதற்கான அணுகலை வழங்கினால், புதிய தரவையும் கடந்த 30 நாட்களில் பெறப்பட்ட தரவையும் ஆப்ஸ் வாசிக்க முடியும்"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"வாசிப்பதற்கான அணுகலை வழங்கினால், புதிய தரவையும் முந்தைய தரவையும் ஆப்ஸ் வாசிக்க முடியும்"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Health Connectடை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்க வேண்டுமா?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸ் உங்கள் தரவை எப்படிக் கையாளுகிறது என்பதை டெவெலப்பரின் <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> பக்கத்தில் நீங்கள் அறிந்துகொள்ளலாம்"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"தனியுரிமைக் கொள்கை"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"எல்லா அனுமதிகளையும் அகற்றவா?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"அனைத்தையும் அகற்று"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Health Connect ஆப்ஸிலுள்ள எந்தவொரு தரவையும் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் இனி எழுதவோ படிக்கவோ முடியாது.\n\nஇது இந்த ஆப்ஸுக்கு வழங்கப்பட்டுள்ள பிற அனுமதிகளில் (இருப்பிடம், கேமரா, மைக்ரோஃபோன் போன்றவை) எந்த மாற்றத்தையும் ஏற்படுத்தாது."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Health Connect ஆப்ஸிலுள்ள எந்தவொரு தரவையும் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் இனி திருத்தவோ பார்க்கவோ முடியாது.\n\nஇது இந்த ஆப்ஸுக்கு வழங்கப்பட்டுள்ள பிற அனுமதிகளில் (கேமரா, மைக்ரோஃபோன், இருப்பிடம் போன்றவை) எந்த மாற்றத்தையும் ஏற்படுத்தாது."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"பின்புலத் தரவு உட்பட Health Connect ஆப்ஸிலுள்ள எந்தவொரு தரவையும் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் இனி திருத்தவோ பார்க்கவோ முடியாது.\n\nஇது இந்த ஆப்ஸுக்கு வழங்கப்பட்டுள்ள பிற அனுமதிகளில் (இருப்பிடம், கேமரா, மைக்ரோஃபோன் போன்றவை) எந்த மாற்றத்தையும் ஏற்படுத்தாது."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"கடந்தகாலத் தரவு உட்பட Health Connect ஆப்ஸிலுள்ள எந்தவொரு தரவையும் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் இனி திருத்தவோ பார்க்கவோ முடியாது.\n\nஇது இந்த ஆப்ஸுக்கு வழங்கப்பட்டுள்ள பிற அனுமதிகளில் (இருப்பிடம், கேமரா, மைக்ரோஃபோன் போன்றவை) எந்த மாற்றத்தையும் ஏற்படுத்தாது."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"பின்புலத் தரவு, கடந்தகாலத் தரவு உட்பட Health Connect ஆப்ஸிலுள்ள எந்தவொரு தரவையும் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸால் இனி திருத்தவோ பார்க்கவோ முடியாது.\n\nஇது இந்த ஆப்ஸுக்கு வழங்கப்பட்டுள்ள பிற அனுமதிகளில் (இருப்பிடம், கேமரா, மைக்ரோஃபோன் போன்றவை) எந்த மாற்றத்தையும் ஏற்படுத்தாது."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connectடில் இருந்து <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸின் தரவையும் நீக்கு"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"அடுத்த நாள்"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"தேர்ந்தெடுத்துள்ள நாள்"</string>
@@ -316,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"ஆப்ஸ் அணுகல்"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"தற்போது இணக்கமான ஆப்ஸ் எதுவும் நிறுவப்பட்டிருக்கவில்லை"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"கூடுதல் அணுகல்"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"இந்த ஆப்ஸுக்கான கூடுதல் அனுமதிகள் அகற்றப்பட்டன"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"அகற்றப்பட்ட ஆப்ஸ் அனுமதிகள்"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"<xliff:g id="APP_DATA">%s</xliff:g> ஆப்ஸுக்கான அனுமதிகளை Health Connect அகற்றியுள்ளது"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"<xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ஆகிய ஆப்ஸுக்கான அனுமதிகளை Health Connect அகற்றியுள்ளது"</string>
@@ -337,12 +331,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"தினமும்"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"வாரந்தோறும்"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"மாதந்தோறும்"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"பதிவேற்றுவதற்கான இடம்"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"என்க்ரிப்ஷனை இயக்குதல்"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"தரவு சேமிக்கப்படுவதற்கு முன்பு என்க்ரிப்ஷன் செய்யப்பட்டிருக்க வேண்டும். Google, Health Connect உட்பட யாராலும் அதை அணுக முடியாது."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"என்க்ரிப்ஷன் செய்யப்பட்ட உங்கள் தரவைப் பாதுகாக்க கடவுச்சொல்லை உருவாக்கவும். உங்கள் தரவை பதிவிறக்குவதற்கும் மீட்டெடுப்பதற்கும் இந்தக் கடவுச்சொல் உங்களுக்குத் தேவைப்படும்."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"கடவுச்சொல்"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"கடவுச்சொல்லை மீண்டும் டைப் செய்யவும்"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"கடவுச்சொற்கள் பொருந்தவில்லை"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"உங்கள் கடவுச்சொல்லை மறந்துவிட்டாலோ மொபைலைத் தொலைத்துவிட்டாலோ, சேமிக்கப்பட்ட உங்கள் தரவை மீட்டெடுக்க Health Connect உதவாது."</string>
     <string name="export_back_button" msgid="3550795479165524982">"பின்செல்"</string>
     <string name="export_next_button" msgid="657930567137105172">"அடுத்து"</string>
@@ -413,6 +409,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 கிமீ/ம.நே.}other{# கிமீ/ம.நே.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 மைல்/மணிநேரம்}other{# மைல்/மணிநேரம்}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 கிலோமீட்டர்/மணிநேரம்}other{# கிலோமீட்டர்/மணிநேரம்}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> முதல் <xliff:g id="END_TIME">%2$s</xliff:g> வரை"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> முதல் <xliff:g id="END_TIME">%2$s</xliff:g> வரை"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 வீல்சேர் புஷ்}other{# வீல்சேர் புஷ்கள்}}"</string>
@@ -438,15 +450,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"உறுதியாகத் தெரியவில்லை"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 மிவி}other{# மிவி}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 மில்லிவினாடி}other{# மில்லிவினாடி}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"குறிப்புகள்"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 முறை}other{# முறை}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"செயலிலுள்ளது: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"மொத்தம்: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"முடிந்தவரை அதிகமான எண்ணிக்கையில் செய்யுங்கள்"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"முயற்சிக்கான மதிப்பு: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
     <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 சுற்று}other{# சுற்றுகள்}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 சுற்று}other{# சுற்றுகள்}}"</string>
@@ -809,10 +819,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"அனைத்து வழிமுறைகளையும் அனுமதி"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"அனுமதிக்க வேண்டாம்"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"எப்போதும் அனுமதி"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"உடற்பயிற்சிப் பாதையைப் பகிர்தல்"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"இணைக்கப்பட்ட ஆப்ஸிடம் இருந்து பெற்ற உடற்பயிற்சிப் பாதைகளை இந்த ஆப்ஸ் அணுகும் விதத்தைக் கட்டுப்படுத்தலாம்"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"உடற்பயிற்சிக்கான பயண வழிகளை அணுகுதல்"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"பயண வழிகளை அணுக <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸை அனுமதிக்கும்"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ஒவ்வொரு முறையும் கேள்"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"அனுமதிக்க வேண்டாம்"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"அனுமதிக்க வேண்டாம்"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"இரண்டு தரவு வகைகளையும் இயக்கவா?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"இரண்டு தரவு வகைகளையும் முடக்கவா?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"உடற்பயிற்சி வழக்கங்களை இயக்க வேண்டுமெனில் <xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸுக்கு உடற்பயிற்சியைப் படிப்பதற்கான அணுகல் தேவை"</string>
@@ -904,8 +914,9 @@
     <string name="last_month_header" msgid="1359164797239191253">"கடந்த மாதம்"</string>
     <string name="tab_entries" msgid="3402700951602029493">"உள்ளீடுகள்"</string>
     <string name="tab_access" msgid="7818197975407243701">"அணுகல்"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g>க்கான கூடுதல் அணுகலை அனுமதிக்கவா?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ஆப்ஸ் இந்த Health Connect அமைப்புகளையும் அணுகக் கேட்கிறது"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"இந்த ஆப்ஸுக்கான பின்புல அல்லது கடந்தகாலத் தரவு அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"இந்த ஆப்ஸுக்கான பின்புல அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"இந்த ஆப்ஸுக்கான கடந்தகாலத் தரவு அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
 </resources>

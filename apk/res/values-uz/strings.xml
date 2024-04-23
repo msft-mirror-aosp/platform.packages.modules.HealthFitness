@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ta ilovaga ruxsat berilgan"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ta ilovaga ruxsat berilgan"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ta ilovaga ruxsat berilgan"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ta ilovaga ruxsat berilgan}other{# ta ilovaga ruxsat berilgan}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Hech biri"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Qayd tafsilotlari"</string>
     <string name="backup_title" msgid="211503191266235085">"Zaxiralash"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Yozildi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Ruxsatlarni boshqarish"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Vaqt: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Faollik"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"faollik"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Jismoniy koʻrsatkichlar"</string>
@@ -81,26 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"salomatlik axborotiga kirish"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Sarflangan kaloriyani oʻqish"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Ilovaga sarflangan kaloriyalar miqdorini oʻqish uchun ruxsat beradi"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Orqa fonda maʼlumotlarga kirish"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga orqa fonda maʼlumotlarga kirish uchun ruxsat berilsinmi?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Ilovadan foydalanmayotganingizda unga Health Connect maʼlumotlariga kirishiga ruxsat bering"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ruxsat bersangiz, ilovadan foydalanmayotganingizda u Health Connect maʼlumotlariga kira oladi."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Saqlangan maʼlumotlarga kirish uchun ruxsat berish"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga saqlangan maʼlumotlarga kirish uchun ruxsat berilsinmi?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Siz bu ilovaga <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> sanasidan oldin qoʻshilgan Health Connect maʼlumotlariga ruxsat berishingiz mumkin"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Bu ilova Health Connect maʼlumotlariga kirishiga ruxsat bering"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ilova <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> gacha qoʻshilgan Health Connect maʼlumotlariga kirish huquqiga ega boʻladi"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ruxsat bersangiz, bu ilova saqlangan Health Connect maʼlumotlariga kira oladi."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Faol sarflangan kaloriyalar"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"faol sarflangan kaloriyalar"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Faol sarflangan kaloriyalar haqidagi axborotni oʻqish"</string>
@@ -273,16 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Hammasiga ruxsat"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Ruxsat berilmasin"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Ilova qanday axborotlarni oʻqishi yoki Health Connectga yozishi mumkinligini tanlang."</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Oʻqishga ruxsat bersangiz, ilova yangi maʼlumotlar va oxirgi 30 kunlik maʼlumotlarni oʻqiy oladi"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Oʻqishga ruxsat bersangiz, ilova yangi va eski maʼlumotlarni oʻqiy oladi"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connectga ulanishiga ruxsat berilsinmi?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi maʼlumotlaringizni qanday qayta ishlashi haqida dastur ishlab chiquvchining <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> orqali tanishishingiz mumkin"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"maxfiylik siyosati"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Barcha ruxsatlar taqiqlansinmi?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Hammasini tozalash"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect xizmatidagi axborotlarni oʻqishi yoki yozishi imkonsiz.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect xizmatidagi axborotlarni oʻqishi yoki yozishi imkonsiz.\n\nBu mazkur ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, fondagi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, oldingi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Endi <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasi Health Connect maʼlumotlarini, jumladan, fondagi va oldingi maʼlumotlarni oʻqiy olmaydi yoki yoza olmaydi.\n\nBu ushbu ilova oladigan joylashuv, kamera yoki mikrofon kabi boshqa ruxsatlarga taʼsir qilmaydi."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect ilovasidan <xliff:g id="APP_NAME">%1$s</xliff:g> maʼlumotlarini oʻchirish"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Keyingi kun"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Tanlangan kun"</string>
@@ -316,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Ilovaga ruxsat"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Mos ilovalar oʻrnatilmagan"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Kengaytirilgan ruxsat"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Bu ilova uchun qoʻshimcha ruxsatlar olib tashlandi"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Ilovadan olingan ruxsatlar"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g> ruxsatlarini olib tashladi"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> va <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ruxsatlarini olib tashladi"</string>
@@ -337,12 +331,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Kunlik"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Har hafta"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Oylik"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Joylashuv axborotini eksport qilish"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Shifrlashni yoqish"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Maʼlumotlar saqlanishidan oldin shifrlanishi kerak. Ular hech kimga koʻrinmaydi, hatto Google yoki Health Connect xizmatiga ham."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Shifrlangan maʼlumotlarni himoyalash uchun parol yarating. Bu parol maʼlumotlarni import qilish va tiklashda kerak boʻladi."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Parol"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Parolni qayta kiriting"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Parollar bir xil terilmadi"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Parolni unutsangiz yoki telefonni yoʻqotsangiz, Health Connect saqlangan maʼlumotlarni tiklashda yordam bera olmaydi."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Orqaga"</string>
     <string name="export_next_button" msgid="657930567137105172">"Keyingisi"</string>
@@ -413,6 +409,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/st}other{# km/st}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{Soatiga 1 mil}other{Soatiga # mil}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{Soatiga 1 kilometr}other{Soatiga # kilometr}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> – <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> – <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{nogironlar aravasini 1 marta itarish}other{nogironlar aravasini # marta itarish}}"</string>
@@ -438,15 +450,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Noaniq"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisoniya}other{# millisoniya}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Qaydlar"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 marta}other{# marta}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Faol: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Jami: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Iloji boricha koʻproq takrorlash"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Harakat darajasi: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
     <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 marta}other{# marta}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 marta}other{# marta}}"</string>
@@ -809,10 +819,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Barcha marshrutlarga ruxsat berish"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Ruxsat berilmasin"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Har doim ruxsat"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Mashgʻulot marshrutini ulashish"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Bu ilova ulangan ilovalardan mashgʻulot marshrutlariga qanday kirishini boshqaring"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Mashq marshrutlariga ruxsat"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> mashq marshrutlarini koʻrishiga ruxsat berish"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Har safar soʻralsin"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Rad etish"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Rad etish"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Har ikki maʼlumot turi yoqilsinmi?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Har ikki maʼlumot turi faolsizlantirilsinmi?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Mashq marshrutlarini yoqish uchun <xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga ularni oʻqishiga ruxsat berishingiz kerak."</string>
@@ -904,8 +914,9 @@
     <string name="last_month_header" msgid="1359164797239191253">"Avvalgi oy"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Maʼlumotlar kiritish"</string>
     <string name="tab_access" msgid="7818197975407243701">"Ruxsat"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> uchun qoʻshimcha ruxsat berilsinmi?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ham ushbu Health Connect sozlamalariga kirishni xohlaydi"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu ilovaga orqa fonda yoki avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu ilovaga fon rejimida ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu ilovaga avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
 </resources>

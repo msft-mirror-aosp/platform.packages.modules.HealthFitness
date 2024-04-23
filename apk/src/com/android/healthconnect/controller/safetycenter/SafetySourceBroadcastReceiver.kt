@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
 import android.content.pm.PackageManager
+import android.os.UserManager
 import android.safetycenter.SafetyCenterManager
 import android.safetycenter.SafetyCenterManager.ACTION_REFRESH_SAFETY_SOURCES
 import android.safetycenter.SafetyCenterManager.EXTRA_REFRESH_SAFETY_SOURCE_IDS
@@ -42,6 +43,10 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
         super.onReceive(context, intent)
         tryEnableLegacySettingsEntryPoint(context)
         if (!safetyCenterManagerWrapper.isEnabled(context)) {
+            return
+        }
+        // (b/320250695) HC doesn't support user profiles
+        if ((context.getSystemService(Context.USER_SERVICE) as UserManager).isProfile) {
             return
         }
         when (intent.action) {
@@ -65,7 +70,7 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
             else -> return
         }
     }
-    
+
     private fun tryEnableLegacySettingsEntryPoint(context: Context) {
         val legacySettingsEntryPointComponent =
             ComponentName(context.packageName, LEGACY_SETTINGS_ACTIVITY_ALIAS)
@@ -90,11 +95,10 @@ class SafetySourceBroadcastReceiver : Hilt_SafetySourceBroadcastReceiver() {
         // IoT devices do not have a UI to run these UI tests
         val pm: PackageManager = context.packageManager
         return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED) &&
-                !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
-                !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
-                !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
+            !pm.hasSystemFeature(PackageManager.FEATURE_WATCH) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK) &&
+            !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE))
     }
-
 
     private fun refreshSafetySources(
         context: Context,

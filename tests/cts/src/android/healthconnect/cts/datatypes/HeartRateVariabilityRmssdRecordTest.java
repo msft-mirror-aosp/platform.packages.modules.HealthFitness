@@ -91,9 +91,10 @@ public class HeartRateVariabilityRmssdRecordTest {
     @Test
     public void testReadHeartRateVariabilityRmssdRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteHeartRateVariabilityRmssdRecord(),
-                        getCompleteHeartRateVariabilityRmssdRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteHeartRateVariabilityRmssdRecord(),
+                                getCompleteHeartRateVariabilityRmssdRecord()));
         readHeartRateVariabilityRmssdRecordUsingIds(recordList);
     }
 
@@ -553,9 +554,8 @@ public class HeartRateVariabilityRmssdRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readHeartRateVariabilityRmssdRecordUsingIds(List<Record> recordList)
+    private void readHeartRateVariabilityRmssdRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<HeartRateVariabilityRmssdRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(HeartRateVariabilityRmssdRecord.class);
         for (Record record : insertedRecords) {

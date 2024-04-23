@@ -142,6 +142,7 @@ class SettingsManageAppPermissionsFragmentTest {
                         dataRestoreState = DataRestoreUiState.IDLE,
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
         }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
 
         // disable animations
         toggleAnimation(false)
@@ -291,7 +292,7 @@ class SettingsManageAppPermissionsFragmentTest {
     }
 
     @Test
-    fun supportedPackage_showsFooter() {
+    fun supportedPackage_whenNoHistoryRead_showsFooterWithGrantTime() {
         val writePermission =
             DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
@@ -320,6 +321,35 @@ class SettingsManageAppPermissionsFragmentTest {
     }
 
     @Test
+    fun supportedPackage_whenHistoryRead_showsFooterWithoutGrantTime() {
+        val writePermission =
+            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+        val readPermission =
+            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+        whenever(viewModel.appPermissions).then {
+            MutableLiveData(listOf(writePermission, readPermission))
+        }
+        whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
+        whenever(viewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)).then { true }
+
+        val scenario =
+            launchFragment<SettingsManageAppPermissionsFragment>(
+                bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+
+        onView(
+            withText(
+                "$TEST_APP_NAME can read data added after October 20, 2022" +
+                        "\n\n" +
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun additionalAccessState_notValid_hidesAdditionalAccess() {
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(AdditionalAccessViewModel.State())
@@ -337,6 +367,23 @@ class SettingsManageAppPermissionsFragmentTest {
             AdditionalAccessViewModel.State(
                 exerciseRoutePermissionUIState = PermissionUiState.ASK_EVERY_TIME,
                 exercisePermissionUIState = PermissionUiState.ASK_EVERY_TIME)
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<SettingsManageAppPermissionsFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME))
+
+        onView(withText(R.string.additional_access_label)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun additionalAccessState_onlyOneAdditionalPermission_showsAdditionalAccess() {
+        val validState =
+            AdditionalAccessViewModel.State(
+                backgroundReadUIState =
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true, isEnabled = false, isGranted = false))
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(validState)
         }

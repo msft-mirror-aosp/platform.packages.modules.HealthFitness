@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.home
 
 import android.content.Context
 import android.content.Intent
+import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -256,14 +257,11 @@ class HomeFragment : Hilt_HomeFragment() {
         if (numTotalApps == 0) {
             mConnectedAppsPreference?.summary =
                 getString(R.string.connected_apps_button_no_permissions_subtitle)
-        } else if (numAllowedApps == 1 && numAllowedApps == numTotalApps) {
-            mConnectedAppsPreference?.summary =
-                getString(
-                    R.string.connected_apps_one_app_connected_subtitle, numAllowedApps.toString())
         } else if (numAllowedApps == numTotalApps) {
             mConnectedAppsPreference?.summary =
-                getString(
-                    R.string.connected_apps_all_apps_connected_subtitle, numAllowedApps.toString())
+                MessageFormat.format(
+                    getString(R.string.connected_apps_connected_subtitle),
+                    mapOf("count" to numAllowedApps))
         } else {
             mConnectedAppsPreference?.summary =
                 getString(

@@ -44,13 +44,13 @@
             android:text="@string/launch_health_connect" />
 
         <Button
-            android:id="@+id/request_health_permissions_button"
+            android:id="@+id/request_data_type_permissions_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
-            android:text="@string/request_health_permissions" />
+            android:text="@string/request_data_type_permissions" />
 
         <Button
             android:id="@+id/request_route_button"
@@ -116,13 +116,13 @@
             android:text="@string/toggle_permission_intent_filter" />
 
         <Button
-            android:id="@+id/request_combined_permissions"
+            android:id="@+id/request_health_permissions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
-            android:text="@string/request_combined_permissions" />
+            android:text="@string/request_health_permissions" />
 
         <Button
             android:id="@+id/request_additional_permissions"
@@ -141,6 +141,42 @@
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
             android:text="@string/request_bg_read_permission" />
+
+        <Button
+            android:id="@+id/request_history_read_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/request_history_read_permission" />
+
+        <Button
+            android:id="@+id/read_data_in_background_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/read_data_in_background" />
+
+        <Button
+            android:id="@+id/read_data_in_foreground_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/read_data_in_foreground" />
+
+        <Button
+            android:id="@+id/exit_process_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/exit_process" />
 
     </LinearLayout>
 

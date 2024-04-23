@@ -20,7 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Керуйте доступом додатків до даних про здоров’я"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Дозволи й дані"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Керуйте даними про здоров’я та фізичну активність на телефоні, а також визначайте додатки, які матимуть доступ до даних"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Керуйте даними про здоров’я і фізичну активність на телефоні, а також визначайте додатки, які матимуть доступ до даних"</string>
     <string name="data_title" msgid="4456619761533380816">"Дані й доступ"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Усі категорії"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Переглянути всі категорії"</string>
@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Додатки, що мають доступ: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> з <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Додатки, що мають доступ: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> додаток має доступ"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 додаток має доступ}one{# додаток має доступ}few{# додатки мають доступ}many{# додатків мають доступ}other{# додатка мають доступ}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Немає"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Деталі запису"</string>
     <string name="backup_title" msgid="211503191266235085">"Резервне копіювання"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Записано такі дані: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Керувати дозволами"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Час: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активність"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активність"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Параметри тіла"</string>
@@ -81,26 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"доступ до даних про здоров’я"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Зчитувати спалені калорії"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Дозволяє додатку зчитувати дані про спалені калорії"</string>
-    <!-- no translation found for background_read_title (5061383169517186234) -->
-    <skip />
-    <!-- no translation found for background_read_request_title (8492898140120977977) -->
-    <skip />
-    <!-- no translation found for background_read_description (3203594555849969283) -->
-    <skip />
-    <!-- no translation found for background_read_request_description (1664402237648709581) -->
-    <skip />
-    <!-- no translation found for historic_access_title (3584594624937737030) -->
-    <skip />
-    <!-- no translation found for historic_access_request_title (4645920231853414742) -->
-    <skip />
-    <!-- no translation found for historic_access_description (2616669701088141765) -->
-    <skip />
-    <!-- no translation found for historic_access_description_fallback (2143495641153611603) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description (136335743939253358) -->
-    <skip />
-    <!-- no translation found for historic_access_request_description_fallback (7963417900733387912) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Доступ до даних у фоновому режимі"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до даних у фоновому режимі?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Дозвольте цьому додатку доступ до даних Health Connect, коли ви не користуєтеся ним"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Якщо надати дозвіл, цей додаток матиме доступ до даних Health Connect, коли ви не користуєтеся ним."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Доступ до минулих даних"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до минулих даних?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Дозвольте цьому додатку доступ до даних Health Connect, збережених до <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дозвольте цьому додатку доступ до всіх минулих даних Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Якщо надати цей дозвіл, додаток матиме доступ до даних Health Connect, збережених до <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Якщо надати цей дозвіл, додаток матиме доступ до всіх минулих даних Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Спалені калорії під час активності"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"кількість спалених активних калорій"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Зчитувати кількість спалених активних калорій"</string>
@@ -273,16 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Дозволити все"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Не дозволяти"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Виберіть дані, які цей додаток зможе читати або записувати в Health Connect."</string>
-    <!-- no translation found for request_permissions_header_time_frame_desc (3023660534681391973) -->
-    <skip />
-    <!-- no translation found for request_permissions_header_time_frame_history_desc (3792732353571153175) -->
-    <skip />
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Якщо ви дозволите доступ для перегляду, додаток зможе переглядати нові дані, а також дані за останні 30 днів"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Якщо ви дозволите доступ для перегляду, додаток зможе переглядати нові й минулі дані"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Надати додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Інформацію про те, як додаток <xliff:g id="APP_NAME">%1$s</xliff:g> обробляє ваші дані, можна знайти в <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> розробника"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"політиці конфіденційності"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Вилучити всі дозволи?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Вилучити всі"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе читати або записувати будь-які дані з Health Connect.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад доступ до геоданих, камери чи мікрофона."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect.\n\nЦе не вплине на інші дозволи, надані цьому додатку (наприклад, на доступ до камери, мікрофона чи геоданих)."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect, зокрема у фоновому режимі.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад на доступ до геоданих, камери чи мікрофона."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect, зокрема минулі дані.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад на доступ до геоданих, камери чи мікрофона."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> більше не зможе переглядати або записувати будь-які дані з Health Connect, зокрема минулі дані чи дані у фоновому режимі.\n\nЦе не вплине на інші дозволи, надані цьому додатку, наприклад на доступ до геоданих, камери чи мікрофона."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Також видалити дані додатка <xliff:g id="APP_NAME">%1$s</xliff:g> з Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Наступний день"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Вибраний день"</string>
@@ -316,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Доступ додатка"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Наразі у вас не встановлено сумісних додатків"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Додатковий доступ"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Для цього додатка видалено й інші дозволи"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Вилучені дозволи для додатків"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Сервіс Health Connect вилучив дозволи для додатка <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Сервіс Health Connect вилучив дозволи для додатків <xliff:g id="APP_DATA_0">%1$s</xliff:g> і <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -337,12 +331,14 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Щодня"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Щотижня"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Щомісяця"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Розташування експорту"</string>
+    <!-- no translation found for export_destination_title (1434632545224158402) -->
+    <skip />
     <string name="export_encryption_title" msgid="8910343790595514359">"Увімкніть шифрування"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перш ніж зберегти дані, їх потрібно зашифрувати. Доступу до них не матиме ніхто, навіть Google чи Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Створіть пароль, щоб захистити свої зашифровані дані. Він знадобиться вам для імпорту й відновлення даних."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Пароль"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Введіть пароль ще раз"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Паролі не збігаються"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Якщо ви забудете пароль і загубите телефон, Health Connect не зможе допомогти вам відновити збережені дані."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далі"</string>
@@ -413,6 +409,22 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 км/год}one{# км/год}few{# км/год}many{# км/год}other{# км/год}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 миля на годину}one{# миля на годину}few{# милі на годину}many{# миль на годину}other{# милі на годину}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 кілометр на годину}one{# кілометр на годину}few{# кілометри на годину}many{# кілометрів на годину}other{# кілометра на годину}}"</string>
+    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
+    <skip />
+    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
+    <skip />
+    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
+    <skip />
+    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
+    <skip />
     <string name="time_range_long" msgid="5067423945245490288">"від <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"від <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 поштовх інвалідного візка}one{# поштовх інвалідного візка}few{# поштовхи інвалідного візка}many{# поштовхів інвалідного візка}other{# поштовху інвалідного візка}}"</string>
@@ -438,15 +450,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Непереконливий результат"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 мс}one{# мс}few{# мс}many{# мс}other{# мс}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 мілісекунда}one{# мілісекунда}few{# мілісекунди}many{# мілісекунд}other{# мілісекунди}}"</string>
-    <!-- no translation found for planned_exercise_block_repetitions (230530785149273276) -->
-    <skip />
-    <!-- no translation found for active_calories_burned (1164230083046893828) -->
-    <skip />
-    <!-- no translation found for total_calories_burned (1674210345283541450) -->
-    <skip />
-    <!-- no translation found for amrap_performance_goal (2225285957050151025) -->
-    <skip />
-    <!-- no translation found for rate_of_perceived_exertion_goal (7025839991503747361) -->
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Примітки"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 раз}one{# раз}few{# рази}many{# разів}other{# разу}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Активні: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Усього: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Якнайбільше повторів"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Рівень зусиль: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
     <skip />
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 повтор}one{# повтор}few{# повтори}many{# повторів}other{# повтору}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 повтор}one{# повтор}few{# повтори}many{# повторів}other{# повтору}}"</string>
@@ -809,10 +819,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Дозволити всі маршрути"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дозволяти"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Завжди дозволяти"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Спільний доступ до маршрутів тренування"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Керуйте доступом цього додатка до маршрутів тренування з підключених додатків"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Доступ до маршрутів тренувань"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Дозвольте додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до маршрутів"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Запитувати щоразу"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Не дозволяти"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Не дозволяти"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Увімкнути обидва типи даних?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Вимкнути обидва типи даних?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Щоб увімкнути маршрути тренувань, додатку <xliff:g id="APP_NAME">%1$s</xliff:g> потрібен доступ для перегляду тренувань"</string>
@@ -904,8 +914,9 @@
     <string name="last_month_header" msgid="1359164797239191253">"Минулий місяць"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Записи"</string>
     <string name="tab_access" msgid="7818197975407243701">"Доступ"</string>
-    <!-- no translation found for request_additional_permissions_header_title (948421892753976588) -->
-    <skip />
-    <!-- no translation found for request_additional_permissions_description (4179425089090269042) -->
-    <skip />
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> розширений доступ?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> також запитує доступ до налаштувань Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Надайте принаймні один дозвіл на перегляд, щоб увімкнути для цього додатка доступ у фоновому режимі або до минулих даних"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Надайте принаймні один дозвіл на перегляд, щоб увімкнути для цього додатка доступ у фоновому режимі"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Надайте принаймні один дозвіл на перегляд, щоб увімкнути для цього додатка доступ до минулих даних"</string>
 </resources>

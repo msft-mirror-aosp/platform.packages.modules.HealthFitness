@@ -71,15 +71,15 @@ public class ExerciseRouteDisabledFeatureTest {
     @Test
     public void testReadRoute_insertAndRead_routeIsNotAvailable() throws InterruptedException {
         List<Record> records = List.of(buildExerciseSession());
-        TestUtils.insertRecords(records);
+        List<Record> insertedRecords = TestUtils.insertRecords(records);
         setExerciseRouteFeatureEnabledFlag(false);
-        ExerciseSessionRecord insertedRecord = (ExerciseSessionRecord) records.get(0);
+        ExerciseSessionRecord insertedRecord = (ExerciseSessionRecord) insertedRecords.get(0);
         assertThat(insertedRecord.hasRoute()).isTrue();
         assertThat(insertedRecord.getRoute()).isNotNull();
 
         ReadRecordsRequestUsingIds.Builder<ExerciseSessionRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class);
-        request.addId(records.get(0).getMetadata().getId());
+        request.addId(insertedRecords.get(0).getMetadata().getId());
         ExerciseSessionRecord readRecord = TestUtils.readRecords(request.build()).get(0);
         assertThat(readRecord.hasRoute()).isFalse();
         assertThat(readRecord.getRoute()).isNull();

@@ -19,15 +19,17 @@ import android.content.Context
 import android.health.connect.datatypes.ExerciseCompletionGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseSegmentType
-import android.health.connect.datatypes.PlannedExerciseBlock
-import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Velocity
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseBlockEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseStepEntry
 import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseBlockFormatter
 import com.android.healthconnect.controller.dataentries.units.DistanceUnit
 import com.android.healthconnect.controller.dataentries.units.UnitPreferences
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseStep
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -79,8 +81,8 @@ class PlannedExerciseBlockFormatterTest {
                                         Velocity.fromMetersPerSecond(15.0))))))
         assertThat(formatter.formatBlock(exerciseBlock))
             .isEqualTo(
-                FormattedEntry.PlannedExerciseBlockEntry(
-                    block = exerciseBlock, title = "Warm up x1", titleA11y = "Warm up 1 time"))
+                PlannedExerciseBlockEntry(
+                    block = exerciseBlock, title = "Warm up: 1 time", titleA11y = "Warm up 1 time"))
     }
 
     @Test
@@ -114,8 +116,10 @@ class PlannedExerciseBlockFormatterTest {
                                         Velocity.fromMetersPerSecond(50.0))))))
         assertThat(formatter.formatBlock(exerciseBlock))
             .isEqualTo(
-                FormattedEntry.PlannedExerciseBlockEntry(
-                    block = exerciseBlock, title = "Main set x2", titleA11y = "Main set 2 times"))
+                PlannedExerciseBlockEntry(
+                    block = exerciseBlock,
+                    title = "Main set: 2 times",
+                    titleA11y = "Main set 2 times"))
     }
 
     @Test
@@ -135,8 +139,8 @@ class PlannedExerciseBlockFormatterTest {
                                 listOf(
                                     ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(25.0),
-                                        Velocity.fromMetersPerSecond(15.0)))),
+                                        Velocity.fromMetersPerSecond(15.0),
+                                        Velocity.fromMetersPerSecond(25.0)))),
                         getPlannedExerciseStep(
                             exerciseSegmentType = ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_BIKING,
                             completionGoal =
@@ -145,12 +149,12 @@ class PlannedExerciseBlockFormatterTest {
                                 listOf(
                                     ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(60.0),
-                                        Velocity.fromMetersPerSecond(50.0))))))
+                                        Velocity.fromMetersPerSecond(50.0),
+                                        Velocity.fromMetersPerSecond(60.0))))))
         assertThat(formatter.formatBlockDetails(exerciseBlock, unitPreferences))
             .isEqualTo(
                 listOf(
-                    FormattedEntry.PlannedExerciseStepEntry(
+                    PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
                                 exerciseSegmentType =
@@ -161,11 +165,20 @@ class PlannedExerciseBlockFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(15.0)))),
+                                            Velocity.fromMetersPerSecond(15.0),
+                                            Velocity.fromMetersPerSecond(25.0)))),
                         title = "1 km Running",
                         titleA11y = "1 kilometre Running"),
-                    FormattedEntry.PlannedExerciseStepEntry(
+                    ExercisePerformanceGoalEntry(
+                        ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                        title = "100 bpm - 150 bpm",
+                        titleA11y = "100 beats per minute - 150 beats per minute"),
+                    ExercisePerformanceGoalEntry(
+                        ExercisePerformanceGoal.SpeedGoal(
+                            Velocity.fromMetersPerSecond(15.0), Velocity.fromMetersPerSecond(25.0)),
+                        title = "00:40 min/km - 01:06 min/km",
+                        titleA11y = "00:40 minute per kilometer - 01:06 minute per kilometer"),
+                    PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
                                 exerciseSegmentType =
@@ -176,31 +189,19 @@ class PlannedExerciseBlockFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(60.0),
-                                            Velocity.fromMetersPerSecond(50.0)))),
+                                            Velocity.fromMetersPerSecond(50.0),
+                                            Velocity.fromMetersPerSecond(60.0)))),
                         title = "3.5 km Cycling",
-                        titleA11y = "3.5 kilometres Cycling")))
-    }
-
-    private fun getPlannedExerciseBlock(
-        repetitions: Int,
-        description: String,
-        exerciseSteps: List<PlannedExerciseStep>
-    ): PlannedExerciseBlock {
-        return PlannedExerciseBlock.Builder(repetitions)
-            .setDescription(description)
-            .setSteps(exerciseSteps)
-            .build()
-    }
-
-    private fun getPlannedExerciseStep(
-        exerciseSegmentType: Int,
-        completionGoal: ExerciseCompletionGoal,
-        performanceGoals: List<ExercisePerformanceGoal>
-    ): PlannedExerciseStep {
-        return PlannedExerciseStep.Builder(
-                exerciseSegmentType, PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE, completionGoal)
-            .setPerformanceGoals(performanceGoals)
-            .build()
+                        titleA11y = "3.5 kilometres Cycling"),
+                    ExercisePerformanceGoalEntry(
+                        ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                        title = "150 bpm - 180 bpm",
+                        titleA11y = "150 beats per minute - 180 beats per minute"),
+                    ExercisePerformanceGoalEntry(
+                        ExercisePerformanceGoal.SpeedGoal(
+                            Velocity.fromMetersPerSecond(50.0), Velocity.fromMetersPerSecond(60.0)),
+                        title = "180 km/h - 216 km/h",
+                        titleA11y = "180 kilometres per hour - 216 kilometres per hour"),
+                ))
     }
 }
