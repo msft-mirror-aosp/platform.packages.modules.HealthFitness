@@ -170,7 +170,7 @@ public class TestAppProxy {
 
     /** Starts an activity on behalf of the app and returns the result. */
     public Instrumentation.ActivityResult startActivityForResult(Intent intent) throws Exception {
-        return startActivityForResult(intent, () -> {});
+        return startActivityForResult(intent, null);
     }
 
     /**
