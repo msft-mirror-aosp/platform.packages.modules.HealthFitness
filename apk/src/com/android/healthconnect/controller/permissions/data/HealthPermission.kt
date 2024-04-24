@@ -79,6 +79,13 @@ sealed class HealthPermission {
         companion object {
             fun fromPermissionString(permission: String): AdditionalPermission =
                 AdditionalPermission(permission)
+
+            // Predefined instances for convenience
+            val READ_HEALTH_DATA_HISTORY =
+                AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_HISTORY)
+            val READ_HEALTH_DATA_IN_BACKGROUND =
+                AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+            val READ_EXERCISE_ROUTES = AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
         }
 
         override fun toString(): String {

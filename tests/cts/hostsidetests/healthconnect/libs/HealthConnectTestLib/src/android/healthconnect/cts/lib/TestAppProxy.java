@@ -53,6 +53,9 @@ public class TestAppProxy {
             "android.healthconnect.cts.testhelper.TestAppReceiver";
     private static final long POLLING_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(20);
 
+    public static final TestAppProxy APP_WRITE_PERMS_ONLY =
+            TestAppProxy.forPackageName("android.healthconnect.cts.testapp.writePermsOnly");
+
     private final String mPackageName;
     private final boolean mInBackground;
 

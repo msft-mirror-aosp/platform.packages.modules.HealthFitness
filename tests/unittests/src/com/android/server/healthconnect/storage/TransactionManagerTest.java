@@ -37,7 +37,6 @@ import android.util.Pair;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
@@ -45,7 +44,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,15 +65,9 @@ public class TransactionManagerTest {
     @Before
     public void setup() {
         HealthConnectUserContext context = testRule.getUserContext();
-        mTransactionManager = TransactionManager.getInstance(context);
+        mTransactionManager = testRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-    }
-
-    @After
-    public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
-        TransactionManager.clearInstance();
     }
 
     @Test

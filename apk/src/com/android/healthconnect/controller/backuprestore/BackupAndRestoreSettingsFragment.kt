@@ -22,9 +22,9 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.export.api.ExportFrequency
-import com.android.healthconnect.controller.export.api.ExportSettings
-import com.android.healthconnect.controller.export.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.exportimport.api.ExportSettings
+import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint

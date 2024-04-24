@@ -41,6 +41,11 @@ import com.android.healthconnect.controller.tests.utils.toPermissionsList
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthconnect.controller.utils.logging.RequestBackgroundReadPermissionElement
+import com.android.healthconnect.controller.utils.logging.RequestCombinedAdditionalPermissionsElement
+import com.android.healthconnect.controller.utils.logging.RequestHistoryReadPermissionElement
+import com.android.healthconnect.controller.utils.logging.UIAction
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -52,6 +57,7 @@ import org.junit.Test
 import org.mockito.Matchers
 import org.mockito.Mockito
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -87,10 +93,8 @@ class AdditionalPermissionsFragmentTest {
             MutableLiveData(
                 AdditionalPermissionsInfo(
                     listOf(
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_HISTORY),
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)),
+                        AdditionalPermission.READ_HEALTH_DATA_HISTORY,
+                        AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND),
                     AppMetadata(TEST_APP_PACKAGE_NAME, TEST_APP_NAME, null)))
         }
 
@@ -110,6 +114,21 @@ class AdditionalPermissionsFragmentTest {
 
         onView(withText("Don't allow")).check(matches(isDisplayed()))
         onView(withText("Allow")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).setPageId(PageName.REQUEST_COMBINED_ADDITIONAL_PERMISSIONS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(
+                RequestCombinedAdditionalPermissionsElement
+                    .ALLOW_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(
+                RequestCombinedAdditionalPermissionsElement
+                    .CANCEL_COMBINED_ADDITIONAL_PERMISSIONS_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(RequestCombinedAdditionalPermissionsElement.BACKGROUND_READ_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(RequestCombinedAdditionalPermissionsElement.HISTORY_READ_BUTTON)
     }
 
     @Test
@@ -117,9 +136,7 @@ class AdditionalPermissionsFragmentTest {
         Mockito.`when`(viewModel.additionalPermissionsInfo).then {
             MutableLiveData(
                 AdditionalPermissionsInfo(
-                    listOf(
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)),
+                    listOf(AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND),
                     AppMetadata(TEST_APP_PACKAGE_NAME, TEST_APP_NAME, null)))
         }
 
@@ -135,6 +152,13 @@ class AdditionalPermissionsFragmentTest {
 
         onView(withText("Don't allow")).check(matches(isDisplayed()))
         onView(withText("Allow")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).setPageId(PageName.REQUEST_BACKGROUND_READ_PERMISSION_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(RequestBackgroundReadPermissionElement.ALLOW_BACKGROUND_READ_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(RequestBackgroundReadPermissionElement.CANCEL_BACKGROUND_READ_BUTTON)
     }
 
     @Test
@@ -142,9 +166,7 @@ class AdditionalPermissionsFragmentTest {
         Mockito.`when`(viewModel.additionalPermissionsInfo).then {
             MutableLiveData(
                 AdditionalPermissionsInfo(
-                    listOf(
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_HISTORY)),
+                    listOf(AdditionalPermission.READ_HEALTH_DATA_HISTORY),
                     AppMetadata(TEST_APP_PACKAGE_NAME, TEST_APP_NAME, null)))
         }
 
@@ -159,6 +181,13 @@ class AdditionalPermissionsFragmentTest {
 
         onView(withText("Don't allow")).check(matches(isDisplayed()))
         onView(withText("Allow")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger).setPageId(PageName.REQUEST_HISTORY_READ_PERMISSION_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(RequestHistoryReadPermissionElement.ALLOW_HISTORY_READ_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(RequestHistoryReadPermissionElement.CANCEL_HISTORY_READ_BUTTON)
     }
 
     @Test
@@ -167,10 +196,8 @@ class AdditionalPermissionsFragmentTest {
             MutableLiveData(
                 AdditionalPermissionsInfo(
                     listOf(
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_HISTORY),
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)),
+                        AdditionalPermission.READ_HEALTH_DATA_HISTORY,
+                        AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND),
                     AppMetadata(TEST_APP_PACKAGE_NAME, TEST_APP_NAME, null)))
         }
 
@@ -181,7 +208,10 @@ class AdditionalPermissionsFragmentTest {
         Mockito.verify(viewModel)
             .updateHealthPermission(any(AdditionalPermission::class.java), Matchers.eq(true))
 
-        // TODO (b/331098724) test log interaction
+        verify(healthConnectLogger)
+            .logInteraction(
+                RequestCombinedAdditionalPermissionsElement.BACKGROUND_READ_BUTTON,
+                UIAction.ACTION_TOGGLE_ON)
     }
 
     @Test
@@ -190,34 +220,30 @@ class AdditionalPermissionsFragmentTest {
             MutableLiveData(
                 AdditionalPermissionsInfo(
                     listOf(
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_HISTORY),
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)),
+                        AdditionalPermission.READ_HEALTH_DATA_HISTORY,
+                        AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND),
                     AppMetadata(TEST_APP_PACKAGE_NAME, TEST_APP_NAME, null)))
         }
 
         Mockito.`when`(viewModel.grantedAdditionalPermissions).then {
-            MutableLiveData(
-                setOf(
-                    AdditionalPermission.fromPermissionString(
-                        HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)))
+            MutableLiveData(setOf(AdditionalPermission.READ_HEALTH_DATA_HISTORY))
         }
         Mockito.`when`(
                 viewModel.isPermissionLocallyGranted(
-                    eq(
-                        AdditionalPermission.fromPermissionString(
-                            HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND))))
+                    eq(AdditionalPermission.READ_HEALTH_DATA_HISTORY)))
             .thenReturn(true)
 
         launchFragment<AdditionalPermissionsFragment>(bundleOf())
-        onView(withText("Access data in the background")).check(matches(isDisplayed()))
-        onView(withText("Access data in the background")).perform(click())
+        onView(withText("Access past data")).check(matches(isDisplayed()))
+        onView(withText("Access past data")).perform(click())
 
         Mockito.verify(viewModel)
             .updateHealthPermission(any(AdditionalPermission::class.java), Matchers.eq(false))
 
-        // TODO log interaction
+        verify(healthConnectLogger)
+            .logInteraction(
+                RequestCombinedAdditionalPermissionsElement.HISTORY_READ_BUTTON,
+                UIAction.ACTION_TOGGLE_OFF)
     }
 
     @Test
@@ -287,7 +313,7 @@ class AdditionalPermissionsFragmentTest {
                     PermissionState.NOT_GRANTED)
         }
         whenever(viewModel.grantedAdditionalPermissions).then {
-            MutableLiveData(setOf(AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_HISTORY)))
+            MutableLiveData(setOf(AdditionalPermission.READ_HEALTH_DATA_HISTORY))
         }
 
         launchFragment<AdditionalPermissionsFragment>(bundleOf())

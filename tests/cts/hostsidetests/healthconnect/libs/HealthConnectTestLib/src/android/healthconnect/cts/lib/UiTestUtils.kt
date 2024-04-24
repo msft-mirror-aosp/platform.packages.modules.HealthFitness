@@ -18,23 +18,16 @@ package android.healthconnect.cts.lib
 import android.Manifest
 import android.Manifest.permission.REVOKE_RUNTIME_PERMISSIONS
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.health.connect.datatypes.*
 import android.health.connect.datatypes.units.Length
 import android.os.SystemClock
 import android.util.Log
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.BySelector
-import androidx.test.uiautomator.Direction
-import androidx.test.uiautomator.StaleObjectException
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiObject2
-import androidx.test.uiautomator.Until
+import androidx.test.uiautomator.*
 import com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity
-import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
-import com.android.compatibility.common.util.UiAutomatorUtils2.waitFindObject
-import com.android.compatibility.common.util.UiAutomatorUtils2.waitFindObjectOrNull
+import com.android.compatibility.common.util.UiAutomatorUtils2.*
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.TimeoutException
@@ -62,11 +55,20 @@ object UiTestUtils {
 
     const val TEST_APP_NAME = "Health Connect cts test app"
 
+    private const val MASK_PERMISSION_FLAGS =
+        (PackageManager.FLAG_PERMISSION_USER_SET or
+            PackageManager.FLAG_PERMISSION_USER_FIXED or
+            PackageManager.FLAG_PERMISSION_AUTO_REVOKED)
+
     /**
      * Waits for the given [selector] to be displayed and performs the given [uiObjectAction] on it.
      */
-    fun waitDisplayed(selector: BySelector, uiObjectAction: (UiObject2) -> Unit = {}) {
-        waitFor("$selector to be displayed", WAIT_TIMEOUT) {
+    fun waitDisplayed(
+        selector: BySelector,
+        waitTimeout: Duration = WAIT_TIMEOUT,
+        uiObjectAction: (UiObject2) -> Unit = {}
+    ) {
+        waitFor("$selector to be displayed", waitTimeout) {
             uiObjectAction(waitFindObject(selector, it.toMillis()))
             true
         }
@@ -99,6 +101,11 @@ object UiTestUtils {
     /** Clicks on [UiObject2] with given [text]. */
     fun clickOnText(string: String) {
         waitDisplayed(By.text(string)) { it.click() }
+    }
+
+    /** Clicks on [UiObject2] if the description contains given [string]. */
+    fun clickOnDescContains(string: String) {
+        waitDisplayed(By.descContains(string)) { it.click() }
     }
 
     fun deleteAllDataAndNavigateToHomeScreen() {
@@ -151,13 +158,6 @@ object UiTestUtils {
             if (text != null) waitDisplayed(By.text(text.toString()))
         }
     }
-
-    /**
-     * Waits for a button with the given [label] to be displayed and performs the given
-     * [uiObjectAction] on it.
-     */
-    fun waitButtonDisplayed(label: CharSequence, uiObjectAction: (UiObject2) -> Unit = {}) =
-        waitDisplayed(buttonSelector(label), uiObjectAction)
 
     /** Waits for the given [selector] not to be displayed. */
     fun waitNotDisplayed(selector: BySelector) {
@@ -212,10 +212,10 @@ object UiTestUtils {
             getUiDevice().waitForIdle()
             val durationSinceStart =
                 Duration.ofMillis(SystemClock.elapsedRealtime() - elapsedStartMillis)
-            if (durationSinceStart >= WAIT_TIMEOUT) {
+            if (durationSinceStart >= uiAutomatorConditionTimeout) {
                 break
             }
-            val remainingTime = WAIT_TIMEOUT - durationSinceStart
+            val remainingTime = uiAutomatorConditionTimeout - durationSinceStart
             val uiAutomatorTimeout = minOf(uiAutomatorConditionTimeout, remainingTime)
             try {
                 if (uiAutomatorCondition(uiAutomatorTimeout)) {
@@ -256,6 +256,10 @@ object UiTestUtils {
         return distanceRecord(TEST_APP_PACKAGE_NAME)
     }
 
+    fun distanceRecordFromTestApp(startTime: Instant): DistanceRecord {
+        return distanceRecord(TEST_APP_PACKAGE_NAME, startTime, startTime.plusSeconds(100))
+    }
+
     fun distanceRecordFromTestApp2(): DistanceRecord {
         return distanceRecord(TEST_APP_2_PACKAGE_NAME)
     }
@@ -275,6 +279,20 @@ object UiTestUtils {
         testMetadataBuilder.setDevice(TEST_DEVICE).setDataOrigin(dataOrigin)
         testMetadataBuilder.setClientRecordId("SR" + Math.random())
         return StepsRecord.Builder(testMetadataBuilder.build(), startTime, endTime, stepCount)
+            .build()
+    }
+
+    private fun distanceRecord(
+        packageName: String,
+        startTime: Instant,
+        endTime: Instant
+    ): DistanceRecord {
+        val dataOrigin: DataOrigin = DataOrigin.Builder().setPackageName(packageName).build()
+        val testMetadataBuilder: Metadata.Builder = Metadata.Builder()
+        testMetadataBuilder.setDevice(TEST_DEVICE).setDataOrigin(dataOrigin)
+        testMetadataBuilder.setClientRecordId("SR" + Math.random())
+        return DistanceRecord.Builder(
+                testMetadataBuilder.build(), startTime, endTime, Length.fromMeters(500.0))
             .build()
     }
 
@@ -303,7 +321,18 @@ object UiTestUtils {
 
     fun revokePermissionViaPackageManager(context: Context, packageName: String, permName: String) {
         val pm = context.packageManager
+
         if (pm.checkPermission(permName, packageName) == PERMISSION_DENIED) {
+            runWithShellPermissionIdentity(
+                {
+                    pm.updatePermissionFlags(
+                        permName,
+                        packageName,
+                        MASK_PERMISSION_FLAGS,
+                        PackageManager.FLAG_PERMISSION_USER_SET,
+                        context.user)
+                },
+                REVOKE_RUNTIME_PERMISSIONS)
             return
         }
         runWithShellPermissionIdentity(

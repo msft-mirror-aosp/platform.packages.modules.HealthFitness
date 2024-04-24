@@ -115,14 +115,18 @@ class DataTypePermissionsFragmentTest {
         }
         launchFragment<DataTypePermissionsFragment>(bundleOf())
 
-        onView(withText("Allow “$TEST_APP_NAME” to access Health Connect?"))
+        onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
+            .check(matches(isDisplayed()))
         onView(withText("Choose data you want this app to read or write to Health Connect"))
+            .check(matches(isDisplayed()))
         onView(
-            withText(
-                "If you give read access, this app can read new data and data from the past 30 days"))
+                withText(
+                    "If you give read access, the app can read new data and data from the past 30 days"))
+            .check(matches(isDisplayed()))
         onView(
-            withText(
-                "You can learn how “$TEST_APP_NAME” handles your data in the developer's privacy policy"))
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+            .check(matches(isDisplayed()))
 
         onView(withId(androidx.preference.R.id.recycler_view))
             .perform(
@@ -157,13 +161,16 @@ class DataTypePermissionsFragmentTest {
         `when`(viewModel.isHistoryAccessGranted()).thenReturn(true)
         launchFragment<DataTypePermissionsFragment>(bundleOf())
 
-        onView(withText("Allow “$TEST_APP_NAME” to access Health Connect?"))
+        onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
+            .check(matches(isDisplayed()))
         onView(withText("Choose data you want this app to read or write to Health Connect"))
+            .check(matches(isDisplayed()))
         onView(withText("If you give read access, the app can read new and past data"))
             .check(matches(isDisplayed()))
         onView(
-            withText(
-                "You can learn how “$TEST_APP_NAME” handles your data in the developer's privacy policy"))
+                withText(
+                    "You can learn how $TEST_APP_NAME handles your data in the developer's privacy policy"))
+            .check(matches(isDisplayed()))
     }
 
     @Test

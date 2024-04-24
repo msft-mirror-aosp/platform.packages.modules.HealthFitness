@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> alkalmazásból <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> rendelkezik hozzáféréssel"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> alkalmazás rendelkezik hozzáféréssel"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> alkalmazás rendelkezik hozzáféréssel"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 alkalmazás rendelkezik hozzáféréssel}other{# alkalmazás rendelkezik hozzáféréssel}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nincs"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Bejegyzés részletei"</string>
     <string name="backup_title" msgid="211503191266235085">"Biztonsági mentés"</string>
@@ -41,13 +42,12 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Megtekintheti, hogy mely alkalmazások fértek hozzá az Ön adataihoz az elmúlt 24 órában"</string>
     <string name="today_header" msgid="1006837293203834373">"Ma"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Tegnap"</string>
-    <!-- no translation found for read_data_access_label (8968758932021241976) -->
-    <skip />
-    <!-- no translation found for write_data_access_label (105976369853871061) -->
-    <skip />
+    <string name="read_data_access_label" msgid="8968758932021241976">"Olvasás: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Írás: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Engedélyek kezelése"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Idő: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"Tevékenységek"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"tevékenységek"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Testméretek"</string>
@@ -67,10 +67,10 @@
     <string name="no_categories" msgid="2636778482437506241">"Nincsenek adatai a Health Connect szolgáltatásban"</string>
     <string name="permission_types_title" msgid="7698058200557389436">"Saját adatok"</string>
     <string name="app_priority_button" msgid="3126133977893705098">"Alkalmazásprioritás"</string>
-    <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> kategóriájú adatok törlése"</string>
+    <string name="delete_category_data_button" msgid="2324773398768267043">"Adatok törlése: <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Összes alkalmazás"</string>
-    <string name="can_read" msgid="4568261079308309564">"Olvashatnak <xliff:g id="PERMISSION_TYPE">%s</xliff:g> típusú adatokat"</string>
-    <string name="can_write" msgid="5082414937218423823">"Írhatnak <xliff:g id="PERMISSION_TYPE">%s</xliff:g> típusú adatokat"</string>
+    <string name="can_read" msgid="4568261079308309564">"Olvashat <xliff:g id="PERMISSION_TYPE">%s</xliff:g> típusú adatokat"</string>
+    <string name="can_write" msgid="5082414937218423823">"Írhat <xliff:g id="PERMISSION_TYPE">%s</xliff:g> típusú adatokat"</string>
     <string name="inactive_apps" msgid="8956546286760797760">"Inaktív alkalmazások"</string>
     <string name="inactive_apps_message" msgid="4666501359079362486">"Ezek az alkalmazások többé nem írhatnak <xliff:g id="DATA_TYPE">%s</xliff:g> típusú adatokat, de továbbra is tárolnak adatokat a Health Connect szolgáltatásban"</string>
     <string name="data_access_empty_message" msgid="9084350402254264452">"Az alkalmazások többé nem olvashatnak vagy írhatnak <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> típusú adatokat, és a Health Connect a továbbiakban nem tárol <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> típusú adatokat."</string>
@@ -83,10 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"hozzáférés az egészségügyi adataihoz"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Elégetett kalória olvasása"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Engedélyezi az alkalmazásnak az elégetett kalória olvasását"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Olvasás a háttérben"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"olvasás a háttérben"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Egészségi adatok olvasása a háttérben"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"Múltbeli egészségügyi adatok beolvasása"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Hozzáférés az adatokhoz a háttérben"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Engedélyezi a(z) <xliff:g id="APP_NAME">%1$s</xliff:g> számára, hogy hozzáférjen az adatokhoz a háttérben?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Annak engedélyezése, hogy ez az alkalmazás hozzáférjen a Health Connect-adatokhoz, amikor Ön nem használja az appot."</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ha engedélyezi, ez az alkalmazás hozzáférhet a Health Connect-adatokhoz, amikor Ön nem használja az appot."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Hozzáférés korábbi adatokhoz"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Engedélyezi a(z) <xliff:g id="APP_NAME">%1$s</xliff:g> számára a korábbi adatokhoz való hozzáférést?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Annak engedélyezése, hogy ez az alkalmazás hozzáférjen a <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> előtt hozzáadott Health Connect-adatokhoz."</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Annak engedélyezése, hogy ez az alkalmazás hozzáférjen az összes korábbi Health Connect-adathoz"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ha engedélyezi, ez az alkalmazás hozzáférhet a(z) <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> előtt hozzáadott Health Connect-adatokhoz."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ha engedélyezi, ez az alkalmazás hozzáférhet az összes korábbi Health Connect-adathoz."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktívan elégetett kalória"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktívan elégetett kalória"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Aktívan elégetett kalóriára vonatkozó adatok olvasása"</string>
@@ -259,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Összes engedélyezése"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Tiltás"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Adja meg, hogy az alkalmazás milyen adatokat olvashasson, illetve írhasson a Health Connect számára"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Olvasási hozzáférés megadásával az alkalmazás olvashatja az új és az elmúlt 30 napból származó adatokat"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Olvasási hozzáférés megadásával az alkalmazás olvashatja az új és az elmúlt 30 napból származó adatokat."</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Olvasási hozzáférés megadásával az alkalmazás olvashatja az új és korábbi adatokat."</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Engedélyezi, hogy a(z) <xliff:g id="APP_NAME">%1$s</xliff:g> hozzáférjen a Health Connect szolgáltatáshoz?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazás adatkezeléséről a következő dokumentumban találhat további információt: fejlesztői <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"adatvédelmi irányelvek"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Az összes engedélyt megvonja?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Összes eltávolítása"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> a továbbiakban nem olvashatja vagy írhatja a Health Connect szolgáltatásban tárolt adatokat.\n\nEz nem befolyásolja azokat az egyéb (például a helyadatokhoz, a kamerához vagy a mikrofonhoz tartozó) engedélyeket, amelyekkel ez az alkalmazás esetleg rendelkezik."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> a továbbiakban nem olvashatja vagy írhatja a Health Connect szolgáltatásban tárolt adatokat.\n\nEz nem befolyásolja azokat az egyéb (például a kamerához, a mikrofonhoz vagy a helyadatokhoz tartozó) engedélyeket, amelyekkel ez az alkalmazás esetleg rendelkezik."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> a továbbiakban nem olvashatja vagy írhatja a Health Connect szolgáltatásban tárolt adatokat (például a háttéradatokat).\n\nEz nem befolyásolja azokat az egyéb (például a helyadatokhoz, a kamerához vagy a mikrofonhoz tartozó) engedélyeket, amelyekkel ez az alkalmazás esetleg rendelkezik."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> a továbbiakban nem olvashatja vagy írhatja a Health Connect szolgáltatásban tárolt (például korábbi) adatokat.\n\nEz nem befolyásolja azokat az egyéb (például a helyadatokhoz, a kamerához vagy a mikrofonhoz tartozó) engedélyeket, amelyekkel ez az alkalmazás esetleg rendelkezik."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> a továbbiakban nem olvashatja vagy írhatja a Health Connect szolgáltatásban tárolt (például háttér- vagy korábbi) adatokat.\n\nEz nem befolyásolja azokat az egyéb (például a helyadatokhoz, a kamerához vagy a mikrofonhoz tartozó) engedélyeket, amelyekkel ez az alkalmazás esetleg rendelkezik."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> adatai is törlődjenek a Health Connectből"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Következő nap"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Kiválasztott nap"</string>
@@ -299,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Alkalmazás-hozzáférés"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Jelenleg nincs kompatibilis alkalmazás telepítve"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"További hozzáférés"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Az alkalmazásra vonatkozó további engedélyek visszavonva"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Eltávolított alkalmazásengedélyek"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"A Health Connect eltávolította a következőnek megadott engedélyeket: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"A Health Connect eltávolította a következőknek megadott engedélyeket: <xliff:g id="APP_DATA_0">%1$s</xliff:g> és <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -310,25 +321,23 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Értem"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Biztonsági mentés és visszaállítás"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exportálás és importálás"</string>
-    <!-- no translation found for export_automatically (8820158546399774250) -->
-    <skip />
+    <string name="export_automatically" msgid="8820158546399774250">"Automatikus exportálás"</string>
     <string name="restore_data" msgid="3401173690437871417">"Adatok visszaállítása"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Betölthet korábban exportált adatokat"</string>
-    <!-- no translation found for automatic_export_on (6972389773963624315) -->
-    <skip />
-    <!-- no translation found for automatic_export_off (3270255845008880841) -->
-    <skip />
+    <string name="automatic_export_on" msgid="6972389773963624315">"Be"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Ki"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Gyakoriság kiválasztása"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Dönthet az egyszeri adatmentés mellett, vagy beállíthatja a rendszeres időközönkénti automatikus mentést."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Naponta"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Hetente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Havonta"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Exportálási hely"</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"Válassza ki az exportálás helyét"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Titkosítás bekapcsolása"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Az adatokat titkosítani kell a mentésük előtt. Senki, még a Google vagy a Health Connect sem tud majd hozzájuk férni."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Hozzon létre egy jelszót titkosított adatainak védelme érdekében. Erre a jelszóra adatai importálásához és visszaállításához lesz szüksége."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Jelszó"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Jelszó megismétlése"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"A jelszavak nem egyeznek"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Ha elfelejti a jelszavát, és elveszti a telefonját, a Health Connect nem tud segíteni az elveszett adatok visszaállításában."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Vissza"</string>
     <string name="export_next_button" msgid="657930567137105172">"Következő"</string>
@@ -399,6 +408,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/óra}other{# km/óra}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mérföld/óra}other{# mérföld/óra}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilométer per óra}other{# kilométer per óra}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/mérföld"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/mérföld"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/kilométer"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/100 méter"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> perc/100 méter"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>–<xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>–<xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 kerekesszékes tolódzkodás}other{# kerekesszékes tolódzkodás}}"</string>
@@ -424,6 +441,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nem mérvadó"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ezredmásodperc}other{# ezredmásodperc}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Megjegyzések"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 alkalom}other{# alkalom}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Aktív: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Összesen: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"A lehető legtöbb ismétlés"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Erőfeszítés szintje: 10/<xliff:g id="VALUE">%1$d</xliff:g>"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ismétlés}other{# ismétlés}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ismétlés}other{# ismétlés}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Edzéselemek"</string>
@@ -785,10 +809,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Összes útvonal engedélyezése"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Tiltás"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Engedélyezés mindig"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Edzési útvonal megosztása"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Annak szabályozása, hogy ez az alkalmazás hogyan férhet hozzá a társított alkalmazásokból származó edzési útvonalakhoz"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Hozzáférés az edzési útvonalakhoz"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Az edzési útvonalakhoz való hozzáférés engedélyezése a(z) <xliff:g id="APP_NAME">%1$s</xliff:g> appnak"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Mindig kérdezzen rá"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Tiltás"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Tiltás"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Mindkét adattípust engedélyezi?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Mindkét adattípust letiltja?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> alkalmazásnak olvasási hozzáférésre van szüksége az edzésekhez az edzési útvonalak engedélyezéséhez."</string>
@@ -880,4 +904,9 @@
     <string name="last_month_header" msgid="1359164797239191253">"Előző hónapban"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Bejegyzések"</string>
     <string name="tab_access" msgid="7818197975407243701">"Hozzáférés"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Engedélyezi a további hozzáférést a(z) <xliff:g id="APP_NAME">%1$s</xliff:g> számára?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> ezekhez a Health Connect-beállításokhoz is hozzá kíván férni."</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Engedélyezzen legalább egy olvasási engedélyt az alkalmazáshoz való háttérbeli vagy korábbi adathozzáférés bekapcsolásához"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Engedélyezzen legalább egy olvasási engedélyt az alkalmazáshoz való háttérhozzáférés bekapcsolásához"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Engedélyezzen legalább egy olvasási engedélyt az alkalmazáshoz való korábbi adathozzáférés bekapcsolásához"</string>
 </resources>
