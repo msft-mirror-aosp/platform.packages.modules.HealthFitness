@@ -451,6 +451,8 @@
 
     <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow.">Back</string>
     <string name="export_next_button" descrption="Text on a button that navigates to the next screen of the data saving setup flow.">Next</string>
+    <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page.">Cancel</string>
+    <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow.">Next</string>
     <!--endregion-->
 
     <!--region Onboarding -->

@@ -38,7 +38,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Tetapkan unit"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Akses terbaharu"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Tiada apl yang mengakses Health Connect baru-baru ini"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Lihat semua akses terkini"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Lihat semua akses terbaharu"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Lihat apl yang telah mengakses data anda dalam tempoh 24 jam yang lalu"</string>
     <string name="today_header" msgid="1006837293203834373">"Hari ini"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Semalam"</string>
@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Tulis: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Urus kebenaran"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Masa: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktiviti"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktiviti"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Ukuran badan"</string>
@@ -713,7 +712,7 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Telinga"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pergelangan tangan"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Faraj"</string>
-    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokasi ukuran"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokasi pengukuran"</string>
     <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Garis dasar"</string>
     <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variasi daripada garis dasar"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 batu}other{# batu}}"</string>

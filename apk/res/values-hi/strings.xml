@@ -55,7 +55,7 @@
     <string name="sleep_category_uppercase" msgid="3422452674899706786">"नींद"</string>
     <string name="sleep_category_lowercase" msgid="842609634386839011">"नींद से जुड़ी जानकारी"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"धड़कन, बीपी वगैरह का डेटा"</string>
-    <string name="vitals_category_lowercase" msgid="4664457787866407963">"ज़रूरी जानकारी"</string>
+    <string name="vitals_category_lowercase" msgid="4664457787866407963">"धड़कन, बीपी वगैरह का डेटा"</string>
     <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"पीरियड साइकल का डेटा"</string>
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"पीरियड साइकल का डेटा"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"पोषण"</string>
@@ -85,11 +85,11 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"इससे ऐप्लिकेशन को खर्च की गई कैलोरी का डेटा पढ़ने की अनुमति मिलती है"</string>
     <string name="background_read_title" msgid="5061383169517186234">"बैकग्राउंड में डेटा ऐक्सेस करें"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को, बैकग्राउंड में डेटा ऐक्सेस करने की अनुमति देनी है?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"ऐप्लिकेशन को यह अनुमति दें कि उसका इस्तेमाल न होने पर वह Health Connect का डेटा ऐक्सेस कर पाए"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"इस ऐप्लिकेशन को अनुमति देने पर, यह Health Connect का डेटा ऐक्सेस कर सकता है."</string>
+    <string name="background_read_description" msgid="3203594555849969283">"ऐप्लिकेशन को अनुमति दें कि जब उसका इस्तेमाल न किया जा रहा हो, तब भी वह Health Connect का डेटा ऐक्सेस कर पाए"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"अनुमति देने पर, यह ऐप्लिकेशन इस्तेमाल न किए जाने के दौरान भी Health Connect का डेटा ऐक्सेस कर पाएगा"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"पुराना डेटा ऐक्सेस करें"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को पुराना डेटा ऐक्सेस करने की अनुमति देनी है?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"इस ऐप्लिकेशन को, Health Connect का वह डेटा ऐक्सेस करने की अनुमति दें जो <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> से पहले जोड़ा गया है"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"ऐप्लिकेशन को <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> से पहले जोड़ा गया, Health Connect का डेटा ऐक्सेस करने की अनुमति दें"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"इस ऐप्लिकेशन को Health Connect का सारा पुराना डेटा ऐक्सेस करने की अनुमति दें"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"इस ऐप्लिकेशन को अनुमति देने पर, यह Health Connect का वह डेटा ऐक्सेस कर सकता है जिसे <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> से पहले जोड़ा गया है."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"इस ऐप्लिकेशन को अनुमति देने पर, यह Health Connect का सारा पुराना डेटा ऐक्सेस कर सकता है."</string>
@@ -276,7 +276,7 @@
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> के पास Health Connect के किसी भी डेटा को पढ़ने या उसमें बदलाव करने की अनुमति नहीं होगी. इसमें बैकग्राउंड डेटा ऐक्सेस करने की अनुमति भी शामिल है.\n\nऐसा करके, इस ऐप्लिकेशन की दूसरी अनुमतियों पर असर नहीं पड़ेगा. जैसे, जगह की जानकारी, कैमरे या माइक्रोफ़ोन के इस्तेमाल से जुड़ी अनुमतियां."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> के पास Health Connect के किसी भी डेटा को पढ़ने या उसमें बदलाव करने की अनुमति नहीं होगी. इसमें पहले से मौजूद डेटा को ऐक्सेस करने की अनुमति भी शामिल है.\n\nऐसा करके, इस ऐप्लिकेशन की दूसरी अनुमतियों पर असर नहीं पड़ेगा. जैसे, जगह की जानकारी, कैमरे या माइक्रोफ़ोन के इस्तेमाल से जुड़ी अनुमतियां."</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> के पास Health Connect के किसी भी डेटा को पढ़ने या उसमें बदलाव करने की अनुमति नहीं होगी. इसमें बैकग्राउंड और पहले से मौजूद डेटा को ऐक्सेस करने की अनुमति भी शामिल है.\n\nऐसा करके, इस ऐप्लिकेशन की दूसरी अनुमतियों पर असर नहीं पड़ेगा. जैसे, जगह की जानकारी, कैमरे या माइक्रोफ़ोन के इस्तेमाल से जुड़ी अनुमतियां."</string>
-    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect से <xliff:g id="APP_NAME">%1$s</xliff:g> का डेटा भी मिटाएं"</string>
+    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"<xliff:g id="APP_NAME">%1$s</xliff:g> का, Health Connect में सेव किया गया डेटा भी मिटाएं"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"अगला दिन"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"चुना गया दिन"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"पिछला दिन"</string>
@@ -297,7 +297,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"सभी अनुमतियां हटाएं"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"ऐप्लिकेशन मैनेज करें"</string>
     <string name="see_app_data" msgid="3951030076195119476">"ऐप्लिकेशन का डेटा देखें"</string>
-    <string name="delete_app_data" msgid="6890357774873859952">"ऐप्लिकेशन का डेटा मिटाएं"</string>
+    <string name="delete_app_data" msgid="6890357774873859952">"डिवाइस पर सेव किया गया, ऐप डेटा मिटाएं"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"इनऐक्टिव ऐप्लिकेशन"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ये ऐप्लिकेशन अब Health Connect को ऐक्सेस नहीं कर सकते. हालांकि, जो डेटा इन्होंने पहले सेव किया था वह अब भी Health Connect में मौजूद है"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g>, <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> के बाद सबमिट किए गए डेटा को देख सकता है"</string>

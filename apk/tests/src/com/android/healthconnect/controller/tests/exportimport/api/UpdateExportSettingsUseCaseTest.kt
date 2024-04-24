@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.tests.export.api
+package com.android.healthconnect.controller.tests.exportimport.api
 
 import android.health.connect.HealthConnectException
-import com.android.healthconnect.controller.export.api.ExportFrequency
-import com.android.healthconnect.controller.export.api.ExportUseCaseResult
-import com.android.healthconnect.controller.export.api.HealthDataExportManager
-import com.android.healthconnect.controller.export.api.LoadExportSettingsUseCase
+import android.health.connect.exportimport.ScheduledExportSettings
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
+import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
+import com.android.healthconnect.controller.exportimport.api.UpdateExportSettingsUseCase
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -28,36 +29,42 @@ import org.junit.Test
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.any
 
-class LoadExportSettingsUseCaseTest {
+class UpdateExportSettingsUseCaseTest {
 
-    private lateinit var useCase: LoadExportSettingsUseCase
+    private lateinit var useCase: UpdateExportSettingsUseCase
     private val healthDataExportManager: HealthDataExportManager =
         mock(HealthDataExportManager::class.java)
 
     @Before
     fun setup() {
-        useCase = LoadExportSettingsUseCase(healthDataExportManager)
+        useCase = UpdateExportSettingsUseCase(healthDataExportManager)
     }
 
     @Test
     fun invoke_callsHealthDataExportManager() = runTest {
-        doAnswer { _ -> 1 }.`when`(healthDataExportManager).getScheduledExportPeriodInDays()
-        val result = useCase.invoke()
+        doAnswer {}.`when`(healthDataExportManager).configureScheduledExport(any())
+        val settings =
+            ScheduledExportSettings.withPeriodInDays(
+                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
 
-        verify(healthDataExportManager).getScheduledExportPeriodInDays()
+        val result = useCase.invoke(settings)
+
+        verify(healthDataExportManager).configureScheduledExport(settings)
         assertThat(result is ExportUseCaseResult.Success).isTrue()
-        assertThat((result as ExportUseCaseResult.Success).data)
-            .isEqualTo(ExportFrequency.EXPORT_FREQUENCY_DAILY)
     }
 
     @Test
     fun invoke_callsHealthDataExportManager_returnsFailure() = runTest {
         doAnswer { throw HealthConnectException(HealthConnectException.ERROR_UNKNOWN) }
             .`when`(healthDataExportManager)
-            .getScheduledExportPeriodInDays()
+            .configureScheduledExport(any())
 
-        val result = useCase.invoke()
+        val settings =
+            ScheduledExportSettings.withPeriodInDays(
+                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays)
+        val result = useCase.invoke(settings)
 
         assertThat(result is ExportUseCaseResult.Failed).isTrue()
         assertThat((result as ExportUseCaseResult.Failed).exception is HealthConnectException)

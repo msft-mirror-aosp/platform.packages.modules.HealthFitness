@@ -27,7 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Não há dados"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Permissões do app"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Gerenciar apps e permissões"</string>
-    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps têm acesso"</string>
+    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps com acesso"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> apps têm acesso"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app tem acesso"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app tem acesso}one{# app tem acesso}other{# apps têm acesso}}"</string>
@@ -85,11 +85,11 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que o app leia as calorias queimadas"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Acessar dados em segundo plano"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados em segundo plano?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Permitir que este app acesse os dados da Conexão Saúde quando você não estiver usando o aplicativo"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Se você autorizar, este app poderá acessar os dados da Conexão Saúde quando você não estiver usando o aplicativo."</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permitir que o app acesse os dados da Conexão Saúde quando você não estiver usando o aplicativo"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Se você autorizar, o app poderá acessar os dados da Conexão Saúde quando você não estiver usando o aplicativo."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Acessar dados antigos"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Permitir que o app <xliff:g id="APP_NAME">%1$s</xliff:g> acesse dados antigos?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Permitir que este app acesse dados da Conexão Saúde antes de <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Permitir que o app acesse os dados da Conexão Saúde adicionados antes de <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permitir que este app acesse todos dados antigos da Conexão Saúde"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Se você autorizar, este app poderá acessar dados da Conexão Saúde adicionados antes de <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Se você autorizar, este app poderá acessar todos os dados antigos da Conexão Saúde."</string>

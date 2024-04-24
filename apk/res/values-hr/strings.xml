@@ -27,7 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Nema podataka"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Dopuštenja aplikacija"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljajte aplikacijama i dopuštenjima"</string>
-    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikacija/aplikacije ima/imaju pristup"</string>
+    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Aplikacije s pristupom: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Aplikacije koje imaju pristup: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija ima pristup"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikacija ima pristup}one{# aplikacija ima pristup}few{# aplikacije imaju pristup}other{# aplikacija ima pristup}}"</string>

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
-import android.health.connect.exportimport.ScheduledExportSettings
+/** User configured settings for scheduled export of Health Connect data. */
+sealed class ExportSettings {
+    object Loading : ExportSettings()
 
-/** Wrapper for HealthConnectManager export apis. */
-interface HealthDataExportManager {
-    fun getScheduledExportPeriodInDays(): Int
+    object LoadingFailed : ExportSettings()
 
-    fun configureScheduledExport(settings: ScheduledExportSettings)
+    data class WithData(val frequency: ExportFrequency) : ExportSettings()
 }

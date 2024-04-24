@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export
+package com.android.healthconnect.controller.exportimport
 
 import android.os.Bundle
 import android.text.Editable

@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Kirjoitettu: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Muuta lupia"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Aika: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Treeni"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"treeni"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Kehon mittaustulokset"</string>
@@ -819,7 +818,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Salli kaikki reitit"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Älä salli"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Salli aina"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Pääse liikuntareitteihin"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Pääsy liikuntareitteihin"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Salli sovellukselle (<xliff:g id="APP_NAME">%1$s</xliff:g>) pääsy reitteihin"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Kysy aina"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Älä salli"</string>

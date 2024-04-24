@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Записване: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управление на разрешенията"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активност"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активност"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Мерки на тялото"</string>
@@ -723,7 +722,7 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ухо"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Китка"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Вагина"</string>
-    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Местоположение на измерването"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Къде е извършено измерването"</string>
     <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Основна стойност"</string>
     <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Отклонение от основната стойност"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миля}other{# мили}}"</string>
