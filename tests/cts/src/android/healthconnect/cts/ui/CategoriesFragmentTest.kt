@@ -19,8 +19,8 @@ import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.StepsRecord
+import android.healthconnect.cts.TestUtils
 import android.healthconnect.cts.TestUtils.insertRecords
-import android.healthconnect.cts.TestUtils.setAutoDeletePeriod
 import android.healthconnect.cts.TestUtils.verifyDeleteRecords
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
@@ -42,6 +42,9 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             val records: List<Record> = listOf(stepsRecordFromTestApp(), stepsRecordFromTestApp())
             insertRecords(records)
         }
@@ -49,6 +52,9 @@ class CategoriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()

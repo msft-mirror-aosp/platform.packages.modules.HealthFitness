@@ -38,12 +38,14 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -68,6 +70,11 @@ public class SleepSessionRecordTest {
         // Temporary fix to set firstGrantTime for the correct user in HSUM.
         TestUtils.deleteAllStagedRemoteData();
     }
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws InterruptedException {

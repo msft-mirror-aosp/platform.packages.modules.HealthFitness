@@ -82,6 +82,7 @@ import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Mass;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
@@ -89,6 +90,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -155,6 +157,11 @@ public class NutritionRecordTest {
                     VITAMIN_E_TOTAL,
                     VITAMIN_K_TOTAL,
                     ZINC_TOTAL);
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws InterruptedException {

@@ -33,6 +33,7 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.UpdateDataOriginPriorityOrderRequest;
 import android.health.connect.datatypes.DataOrigin;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.os.OutcomeReceiver;
 
 import androidx.test.InstrumentationRegistry;
@@ -42,6 +43,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -61,6 +63,11 @@ public class HealthPermissionCategoryPriorityTests {
     private static final String TAG = "PermissionCategoryPriorityTests";
     private static final UiAutomation sUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {

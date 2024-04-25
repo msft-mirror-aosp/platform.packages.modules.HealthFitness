@@ -42,8 +42,9 @@ android_test {
         "compatibility-device-util-axt",
         "ctstestrunner-axt",
         "cts-wm-util",
-	"modules-utils-build",
+        "modules-utils-build",
         "testng",
+        "cts-healthconnect-utils"
     ],
     min_sdk_version: "UpsideDownCake",
     sdk_version: "module_current",
@@ -78,6 +79,7 @@ android_test {
         "ctstestrunner-axt",
         "cts-wm-util",
         "testng",
+        "cts-healthconnect-utils"
     ],
     min_sdk_version: "UpsideDownCake",
     sdk_version: "module_current",
@@ -114,7 +116,8 @@ android_test {
         "cts-wm-util",
         "testng",
         "cts-healthconnect-lib",
-        "cts-install-lib"
+        "cts-install-lib",
+        "cts-healthconnect-utils"
     ],
     min_sdk_version: "UpsideDownCake",
     sdk_version: "module_current",

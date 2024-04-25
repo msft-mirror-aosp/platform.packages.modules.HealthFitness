@@ -61,6 +61,9 @@ public class HealthConnectDailyLogsStatsTests extends DeviceTestCase implements 
 
     @Override
     protected void tearDown() throws Exception {
+        if (!isHardwareSupported(getDevice())) {
+            return;
+        }
         ConfigUtils.removeConfig(getDevice());
         ReportUtils.clearReports(getDevice());
         super.tearDown();

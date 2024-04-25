@@ -19,6 +19,7 @@ import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.BasalMetabolicRateRecord
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.StepsRecord
+import android.healthconnect.cts.TestUtils
 import android.healthconnect.cts.TestUtils.verifyDeleteRecords
 import android.healthconnect.cts.lib.ActivityLauncher.launchMainActivity
 import android.healthconnect.cts.lib.TestUtils.insertRecordAs
@@ -51,12 +52,18 @@ class HomeFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @BeforeClass
         fun setup() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             insertRecordAs(APP_A_WITH_READ_WRITE_PERMS)
         }
 
         @JvmStatic
         @AfterClass
         fun teardown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()
