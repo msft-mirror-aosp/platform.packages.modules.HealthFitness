@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Записано такі дані: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Керувати дозволами"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активність"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активність"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Параметри тіла"</string>
@@ -91,7 +90,7 @@
     <string name="historic_access_request_title" msgid="4645920231853414742">"Дозволити додатку <xliff:g id="APP_NAME">%1$s</xliff:g> доступ до минулих даних?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Дозвольте цьому додатку доступ до даних Health Connect, збережених до <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дозвольте цьому додатку доступ до всіх минулих даних Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Якщо надати цей дозвіл, додаток матиме доступ до даних Health Connect, збережених до <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Якщо надати цей дозвіл, додаток матиме доступ до даних Health Connect, збережених до <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Якщо надати цей дозвіл, додаток матиме доступ до всіх минулих даних Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Спалені калорії під час активності"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"кількість спалених активних калорій"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Щодня"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Щотижня"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Щомісяця"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Виберіть, куди експортувати дані"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Увімкніть шифрування"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перш ніж зберегти дані, їх потрібно зашифрувати. Доступу до них не матиме ніхто, навіть Google чи Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Створіть пароль, щоб захистити свої зашифровані дані. Він знадобиться вам для імпорту й відновлення даних."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Якщо ви забудете пароль і загубите телефон, Health Connect не зможе допомогти вам відновити збережені дані."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далі"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Початок роботи з Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Сервіс Health Connect зберігає ваші дані про здоров’я та фізичну активність, а також дає змогу легко синхронізувати їх із різними додатками на вашому телефоні"</string>
     <string name="share_data" msgid="3481932156368883946">"Діліться даними з додатками"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 км/год}one{# км/год}few{# км/год}many{# км/год}other{# км/год}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 миля на годину}one{# миля на годину}few{# милі на годину}many{# миль на годину}other{# милі на годину}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 кілометр на годину}one{# кілометр на годину}few{# кілометри на годину}many{# кілометрів на годину}other{# кілометра на годину}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/мил."</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/км"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на милю"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на кілометр"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/100 ярдів"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/100 метрів"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на 100 ярдів"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на 100 метрів"</string>
     <string name="time_range_long" msgid="5067423945245490288">"від <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"від <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 поштовх інвалідного візка}one{# поштовх інвалідного візка}few{# поштовхи інвалідного візка}many{# поштовхів інвалідного візка}other{# поштовху інвалідного візка}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Усього: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Якнайбільше повторів"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Рівень зусиль: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 повтор}one{# повтор}few{# повтори}many{# повторів}other{# повтору}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 повтор}one{# повтор}few{# повтори}many{# повторів}other{# повтору}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Сегменти тренування"</string>

@@ -75,7 +75,7 @@
     <string name="data_access_empty_message" msgid="9084350402254264452">"Sovellukset eivät voi enää lukea tai kirjoittaa dataa (<xliff:g id="DATA_TYPE_0">%1$s</xliff:g>), eikä dataa (<xliff:g id="DATA_TYPE_2">%2$s</xliff:g>) ole tallennettu Health Connectin"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Data sisältää aktiivisuusajan, harjoitustyypin, kierrosten, toistojen, harjoituskertojen ja uintityylin kaltaisia tietoja"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Data sisältää univaiheiden ja unikertojen kaltaisia tietoja"</string>
-    <string name="all_entries_button" msgid="5109091107239135235">"Katso kaikki merkinnät"</string>
+    <string name="all_entries_button" msgid="5109091107239135235">"Katso kaikki"</string>
     <string name="selected_date_view_action_description" msgid="6237240886988225664">"muuta"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Poista data"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
@@ -308,7 +308,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Sovellusten pääsyoikeudet"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Sinulla ei ole tällä hetkellä asennettuna yhteensopivia sovelluksia"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Lisäluvat"</string>
-    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Poistettiin lisäluvat sovellukselta"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Sovelluksen lisäluvat poistettu"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Poistetut sovellusluvat"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect poisti luvat sovellukselta: <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect poisti luvat näiltä: <xliff:g id="APP_DATA_0">%1$s</xliff:g> ja <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -330,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Päivittäin"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Viikoittain"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Kuukausittain"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Valitse, mihin data viedään"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Salauksen laittaminen päälle"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data on suojattava ennen sen tallentamista. Kukaan, ei edes Google tai Health Connect, saa pääsyä siihen."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Suojaa salattua dataa luomalla salasana. Tarvitset tämän salasanan, jos haluat tuoda tai palauttaa datan."</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Jos unohdat salasanan ja kadotat puhelimen, Health Connect ei voi auttaa palauttamaan tallennetun datan."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Takaisin"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seuraava"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Aloita Health Connectin käyttö"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect tallentaa terveys‑ ja kuntoiludatasi ja tarjoaa helpon tavan synkronoida eri sovelluksia puhelimellasi"</string>
     <string name="share_data" msgid="3481932156368883946">"Jaa dataa sovelluksille"</string>
@@ -408,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 maili tunnissa}other{# maili tunnissa}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometri tunnissa}other{# kilometri tunnissa}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/mi"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minuuttia/maili"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minuuttia/kilometri"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min / 100 yd"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min / 100 m"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minuutti / 100 jaardia"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minuutti / 100 metriä"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>‒<xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>‒<xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 pyörätuolin työntö}other{# pyörätuolin työntöä}}"</string>
@@ -455,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Yhteensä: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Mahdollisimman monta toistoa"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Rasitustaso: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 toisto}other{# toistoa}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 toisto}other{# toistoa}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Liikunta"</string>

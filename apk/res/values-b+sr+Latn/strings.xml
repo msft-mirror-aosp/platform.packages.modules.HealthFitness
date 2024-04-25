@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Upisano je: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljaj dozvolama"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Vreme: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivnosti"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivnosti"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Telesne mere"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite lozinku ili izgubite telefon, Povezivanje zdravlja ne može da vam pomogne da vratite sačuvane podatke."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Započnite sa Povezivanjem zdravlja"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Povezivanje zdravlja čuva vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizujete različite aplikacije na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Delite podatke sa aplikacijama"</string>

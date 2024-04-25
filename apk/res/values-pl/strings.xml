@@ -253,8 +253,8 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"tętno spoczynkowe"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Odczytuj dane o tętnie spoczynkowym"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Zapisuj dane o tętnie spoczynkowym"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Temperatura ciała"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura ciała"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Temperatura skóry"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura skóry"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Odczytuj temperaturę skóry"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Zapisuj temperaturę ciała"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Zezwól aplikacji „<xliff:g id="APP_NAME">%1$s</xliff:g>” na odczytywanie"</string>
@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Jeśli zapomnisz hasło lub zgubisz telefon, Health Connect nie będzie w stanie Ci pomóc odzyskać zapisanych danych."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Wstecz"</string>
     <string name="export_next_button" msgid="657930567137105172">"Dalej"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Pierwsze kroki w Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect przechowuje Twoje dane o zdrowiu i aktywności fizycznej oraz ułatwia synchronizację danych z różnych aplikacji na telefonie"</string>
     <string name="share_data" msgid="3481932156368883946">"Udostępniaj dane aplikacjom"</string>

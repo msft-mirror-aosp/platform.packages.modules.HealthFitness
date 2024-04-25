@@ -80,6 +80,30 @@ public final class DataFactory {
         return new LocalTimeRangeFilter.Builder().setStartTime(start).setEndTime(end).build();
     }
 
+    /** Returns an open start interval {@link TimeInstantRangeFilter} ending at {@code end} time. */
+    static TimeInstantRangeFilter getOpenStartTimeFilter(Instant end) {
+        return new TimeInstantRangeFilter.Builder().setEndTime(end).build();
+    }
+
+    /** Returns an open start interval {@link LocalTimeRangeFilter} ending at {@code end} time. */
+    static LocalTimeRangeFilter getOpenStartTimeFilter(LocalDateTime end) {
+        return new LocalTimeRangeFilter.Builder().setEndTime(end).build();
+    }
+
+    /**
+     * Returns an open end interval {@link TimeInstantRangeFilter} starting from {@code start} time.
+     */
+    static TimeInstantRangeFilter getOpenEndTimeFilter(Instant start) {
+        return new TimeInstantRangeFilter.Builder().setStartTime(start).build();
+    }
+
+    /**
+     * Returns an open end interval {@link TimeInstantRangeFilter} starting from {@code start} time.
+     */
+    static LocalTimeRangeFilter getOpenEndTimeFilter(LocalDateTime start) {
+        return new LocalTimeRangeFilter.Builder().setStartTime(start).build();
+    }
+
     static LeanBodyMassRecord getBaseLeanBodyMassRecord(Instant time, double grams) {
         return new LeanBodyMassRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(grams))
                 .build();

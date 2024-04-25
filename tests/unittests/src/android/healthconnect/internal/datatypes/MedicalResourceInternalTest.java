@@ -27,10 +27,13 @@ import android.os.Parcel;
 import org.junit.Test;
 
 public class MedicalResourceInternalTest {
+    private static final String MEDICAL_RESOURCE_ID = "medical_resource_id";
+    private static final String DATA_SOURCE_ID = "data_source_id";
+    private static final String DISPLAY_NAME = "display name";
+
     @Test
     public void testMedicalResourceInternal_writeToParcelThenRestore_objectsAreIdentical() {
-        MedicalResourceInternal original =
-                new MedicalResourceInternal().setType(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        MedicalResourceInternal original = buildMedicalResourceInternal();
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel);
@@ -43,12 +46,19 @@ public class MedicalResourceInternalTest {
 
     @Test
     public void testMedicalResourceInternal_convertToExternalAndBack_objectsAreIdentical() {
-        MedicalResourceInternal original =
-                new MedicalResourceInternal().setType(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        MedicalResourceInternal original = buildMedicalResourceInternal();
 
         MedicalResource external = original.toExternalResource();
         MedicalResourceInternal restored = MedicalResourceInternal.fromExternalResource(external);
 
         assertThat(restored).isEqualTo(original);
+    }
+
+    private static MedicalResourceInternal buildMedicalResourceInternal() {
+        return new MedicalResourceInternal()
+                .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                .setId(MEDICAL_RESOURCE_ID)
+                .setDataSourceId(DATA_SOURCE_ID)
+                .setDisplayName(DISPLAY_NAME);
     }
 }

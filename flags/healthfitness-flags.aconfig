@@ -8,3 +8,10 @@ flag {
     description: "Flag for adding new PHR features."
     bug: "329271826"
 }
+
+flag {
+    name: "export_import"
+    namespace: "healthfitness"
+    description: "Flag for adding new export/import feature."
+    bug: "318484778"
+}

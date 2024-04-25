@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"ប្រសិនបើអ្នកភ្លេចពាក្យសម្ងាត់របស់អ្នក និងបាត់ទូរសព្ទរបស់អ្នក នោះ Health Connect មិនអាចជួយអ្នកស្ដារឡើងវិញនូវទិន្នន័យដែលបានរក្សាទុករបស់អ្នកបានទេ។"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ថយក្រោយ"</string>
     <string name="export_next_button" msgid="657930567137105172">"បន្ទាប់"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"ចាប់ផ្ដើមជាមួយ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើទូរសព្ទ​របស់អ្នក"</string>
     <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>

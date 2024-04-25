@@ -16,6 +16,7 @@
 
 package android.health.connect.internal.datatypes;
 
+
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
@@ -24,13 +25,31 @@ import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
 
+
 /**
  * Internal representation of {@link MedicalResource}.
  *
  * @hide
  */
 public final class MedicalResourceInternal {
+    @NonNull private String mId = "";
     @MedicalResourceType private int mType;
+    @NonNull private String mDataSourceId = "";
+    @NonNull private String mDisplayName = "";
+
+    /** Returns the unique identifier of this data. */
+    @NonNull
+    public String getId() {
+        return mId;
+    }
+
+    /** Returns this object with the identifier. */
+    @NonNull
+    public MedicalResourceInternal setId(@NonNull String id) {
+        requireNonNull(id);
+        mId = id;
+        return this;
+    }
 
     /** Returns the medical resource type. */
     @MedicalResourceType
@@ -45,17 +64,50 @@ public final class MedicalResourceInternal {
         return this;
     }
 
+    /** Returns The data source ID where the data comes from. */
+    @NonNull
+    public String getDataSourceId() {
+        return mDataSourceId;
+    }
+
+    /** Returns this object with the data source ID. */
+    @NonNull
+    public MedicalResourceInternal setDataSourceId(@NonNull String dataSourceId) {
+        requireNonNull(dataSourceId);
+        mDataSourceId = dataSourceId;
+        return this;
+    }
+
+    /** Returns the display name. */
+    @NonNull
+    public String getDisplayName() {
+        return mDisplayName;
+    }
+
+    /** Returns this object with the display name. */
+    @NonNull
+    public MedicalResourceInternal setDisplayName(@NonNull String displayName) {
+        requireNonNull(displayName);
+        mDisplayName = displayName;
+        return this;
+    }
+
     /** Converts this object to an external representation. */
     @NonNull
     public MedicalResource toExternalResource() {
-        return new MedicalResource.Builder().setType(mType).build();
+        return new MedicalResource.Builder(getId(), getType(), getDataSourceId(), getDisplayName())
+                .build();
     }
 
     /** Converts to this object from an external representation. */
     @NonNull
     public static MedicalResourceInternal fromExternalResource(@NonNull MedicalResource external) {
         requireNonNull(external);
-        return new MedicalResourceInternal().setType(external.getType());
+        return new MedicalResourceInternal()
+                .setId(external.getId())
+                .setType(external.getType())
+                .setDataSourceId(external.getDataSourceId())
+                .setDisplayName(external.getDisplayName());
     }
 
     /**
@@ -65,7 +117,10 @@ public final class MedicalResourceInternal {
     @NonNull
     public void writeToParcel(@NonNull Parcel parcel) {
         requireNonNull(parcel);
+        parcel.writeString(getId());
         parcel.writeInt(getType());
+        parcel.writeString(getDataSourceId());
+        parcel.writeString(getDisplayName());
     }
 
     /**
@@ -75,18 +130,25 @@ public final class MedicalResourceInternal {
     @NonNull
     public static MedicalResourceInternal readFromParcel(@NonNull Parcel parcel) {
         requireNonNull(parcel);
-        return new MedicalResourceInternal().setType(parcel.readInt());
+        return new MedicalResourceInternal()
+                .setId(parcel.readString())
+                .setType(parcel.readInt())
+                .setDataSourceId(parcel.readString())
+                .setDisplayName(parcel.readString());
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MedicalResourceInternal that)) return false;
-        return getType() == that.getType();
+        return getId().equals(that.getId())
+                && getType() == that.getType()
+                && getDataSourceId().equals(that.getDataSourceId())
+                && getDisplayName().equals(that.getDisplayName());
     }
 
     @Override
     public int hashCode() {
-        return hash(getType());
+        return hash(getId(), getType(), getDataSourceId(), getDisplayName());
     }
 }

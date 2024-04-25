@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Écriture : <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gérer les autorisations"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Heure : <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activité"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activité"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Données corporelles"</string>
@@ -86,12 +85,12 @@
     <string name="background_read_title" msgid="5061383169517186234">"Accéder aux données en arrière-plan"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données en arrière-plan ?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Autoriser cette appli à accéder aux données de Santé Connect lorsque vous ne l\'utilisez pas"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Si vous l\'y autorisez, cette appli peut accéder aux données de Santé Connect lorsque vous ne l\'utilisez pas."</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Si vous l\'y autorisez, cette appli pourra accéder aux données de Santé Connect lorsque vous ne l\'utilisez pas."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Accéder aux données précédentes"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Autoriser <xliff:g id="APP_NAME">%1$s</xliff:g> à accéder aux données précédentes ?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Autoriser cette appli à accéder aux données de Santé Connect ajoutées avant le <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Autoriser cette appli à accéder à toutes les données précédentes de Santé Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Si vous l\'y autorisez, cette appli peut accéder aux données de Santé Connect ajoutées avant le <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Si vous l\'y autorisez, cette appli pourra accéder aux données de Santé Connect ajoutées avant le <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si vous l\'y autorisez, cette appli peut accéder à toutes les données précédentes de Santé Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories brûlées en activité"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calories brûlées en activité"</string>
@@ -275,7 +274,7 @@
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à l\'appareil photo, au micro ou à la localisation."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données en arrière-plan.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données déjà enregistrées.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données en arrière-plan et les données déjà enregistrées.\n\nCela n\'affecte pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus consulter ni modifier les données dans Santé Connect, y compris les données en arrière-plan et les données déjà enregistrées.\n\nCela n\'affectera pas les autres autorisations de cette appli, comme l\'accès à la position, à l\'appareil photo ou au micro."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Supprimer également les données <xliff:g id="APP_NAME">%1$s</xliff:g> de Santé Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Jour suivant"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Jour sélectionné"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Health Connect ne pourra pas vous aider à récupérer vos données enregistrées."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
     <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Premiers pas avec Santé Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Santé Connect stocke vos données de santé et de remise en forme, et vous permet de synchroniser facilement les différentes applis de votre téléphone"</string>
     <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applis"</string>
