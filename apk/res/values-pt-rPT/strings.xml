@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escrita: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gerir autorizações"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Atividade"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"atividade"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medições corporais"</string>
@@ -714,8 +713,8 @@
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pulso"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Local da medição"</string>
-    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Base"</string>
-    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variação do valor de referência"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Valor de referência"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variação em relação a valor de referência"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milha}other{# milhas}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milha}other{# milhas}}"</string>
@@ -809,7 +808,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permitir todos os trajetos"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Não permitir"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permitir sempre"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Acesso a trajetos de exercício"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Aceder a trajetos de exercício"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Permita que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda a trajetos"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Perguntar sempre"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Não permitir"</string>

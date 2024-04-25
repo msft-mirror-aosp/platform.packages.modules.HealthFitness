@@ -87,7 +87,7 @@
     <string name="background_read_request_title" msgid="8492898140120977977">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել տվյալները ֆոնային ռեժիմում"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Թույլատրեք այս հավելվածին օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործում հավելվածը"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Եթե թույլատրեք, այս հավելվածը կկարողանա օգտագործել Health Connect-ի տվյալները, երբ չեք օգտագործի հավելվածը։"</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Թույլատրել նախկին տվյալների օգտագործումը"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Թույլատրել ավելի վաղ տվյալների հասանելիությունը"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Թույլատրե՞լ <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին օգտագործել նախկին տվյալները։"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի տվյալները, որոնք ավելացվել են մինչև <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Թույլատրել այս հավելվածին օգտագործել Health Connect-ի բոլոր նախկին տվյալները"</string>
@@ -254,8 +254,8 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"սրտի զարկերի հաճախականությունը հանգիստ վիճակում"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Կարդալ հանգիստ վիճակում սրտի զարկերի հաճախականության մասին տվյալները"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Գրանցել հանգիստ վիճակում սրտի զարկերի հաճախականության մասին տվյալները"</string>
-    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Մարմնի ջերմաստիճանը"</string>
-    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"մարմնի ջերմաստիճանը"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Մաշկի ջերմաստիճան"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"մաշկի ջերմաստիճան"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Կարդալ մարմնի ջերմաստիճանի տվյալները"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Գրել մարմնի ջերմաստիճանի տվյալները"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Թույլատրել <xliff:g id="APP_NAME">%1$s</xliff:g> հավելվածին կարդալ"</string>

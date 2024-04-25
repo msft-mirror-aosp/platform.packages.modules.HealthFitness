@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.tests.export.api
+package com.android.healthconnect.controller.tests.exportimport.api
 
 import android.health.connect.Constants.DEFAULT_INT
 import android.net.Uri
-import com.android.healthconnect.controller.export.api.ExportFrequency.EXPORT_FREQUENCY_DAILY
-import com.android.healthconnect.controller.export.api.ExportFrequency.EXPORT_FREQUENCY_MONTHLY
-import com.android.healthconnect.controller.export.api.ExportFrequency.EXPORT_FREQUENCY_WEEKLY
-import com.android.healthconnect.controller.export.api.ExportSettings
-import com.android.healthconnect.controller.export.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_DAILY
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_MONTHLY
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_WEEKLY
+import com.android.healthconnect.controller.exportimport.api.ExportSettings
+import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExportSettingsUseCase

@@ -171,7 +171,7 @@ class ExercisePerformanceGoalFormatterTest {
                     SpeedGoal(
                         Velocity.fromMetersPerSecond(10.0), Velocity.fromMetersPerSecond(20.0)),
                     title = "00:50 min/km - 01:40 min/km",
-                    titleA11y = "00:50 minute per kilometer - 01:40 minute per kilometer"))
+                    titleA11y = "00:50 minute per kilometre - 01:40 minute per kilometre"))
     }
 
     @Test
@@ -190,8 +190,8 @@ class ExercisePerformanceGoalFormatterTest {
                         SpeedGoal(
                             Velocity.fromMetersPerSecond(50.0),
                             Velocity.fromMetersPerSecond(100.0)),
-                        title = "00:01 min/100 meters - 00:02 min/100 meters",
-                        titleA11y = "00:01 minute per 100 meters - 00:02 minute per 100 meters"))
+                        title = "00:01 min/100 metres - 00:02 min/100 metres",
+                        titleA11y = "00:01 minute per 100 metres - 00:02 minute per 100 metres"))
         }
 
     @Test
@@ -262,7 +262,7 @@ class ExercisePerformanceGoalFormatterTest {
                         SpeedGoal(
                             Velocity.fromMetersPerSecond(0.0), Velocity.fromMetersPerSecond(0.0)),
                         title = "00:00 min/km - 00:00 min/km",
-                        titleA11y = "00:00 minute per kilometer - 00:00 minute per kilometer"))
+                        titleA11y = "00:00 minute per kilometre - 00:00 minute per kilometre"))
         }
 
     @Test

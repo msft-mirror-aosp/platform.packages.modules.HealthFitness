@@ -85,11 +85,11 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Aplikaciji omogoča branje porabljenih kalorij"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Dostop do podatkov v ozadju"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Želite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovoliti dostop do podatkov v ozadju?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Tej aplikaciji dovolite dostop do podatkov aplikacije Health Connect, ko ne uporabljate te aplikacije"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Če to dovolite, lahko ta aplikacija dostopa do podatkov aplikacije Health Connect, ko ne uporabljate te aplikacije."</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Tej aplikaciji dovolite dostop do podatkov storitve Health Connect, ko ne uporabljate te aplikacije"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Če to dovolite, lahko ta aplikacija dostopa do podatkov storitve Health Connect, ko ne uporabljate te aplikacije."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Dostop do preteklih podatkov"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Želite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovoliti dostop do preteklih podatkov?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Tej aplikaciji dovolite dostop do podatkov aplikacije Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Tej aplikaciji dovolite dostop do podatkov storitve Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Tej aplikaciji dovolite dostop do vseh preteklih podatkov aplikacije Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Če to dovolite, lahko ta aplikacija dostopa do podatkov aplikacije Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Če to dovolite, lahko ta aplikacija dostopa do vseh preteklih podatkov aplikacije Health Connect."</string>
@@ -915,7 +915,7 @@
     <string name="tab_entries" msgid="3402700951602029493">"Vnosi"</string>
     <string name="tab_access" msgid="7818197975407243701">"Dostop"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Želite dovoliti dodaten dostop za aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi dostopati tudi do teh nastavitev aplikacije Health Connect"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi dostopati tudi do teh nastavitev za Health Connect"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogočite vsaj eno dovoljenje za branje, če želite za to aplikacijo vklopiti dostop iz ozadja ali dostop do preteklih podatkov"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogočite vsaj eno dovoljenje za branje, če želite za to aplikacijo vklopiti dostop iz ozadja"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogočite vsaj eno dovoljenje za branje, če želite za to aplikacijo vklopiti dostop do preteklih podatkov"</string>

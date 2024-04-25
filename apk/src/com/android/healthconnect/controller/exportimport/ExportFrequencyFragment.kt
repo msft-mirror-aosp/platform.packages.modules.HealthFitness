@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export
+package com.android.healthconnect.controller.exportimport
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,9 +26,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.export.api.ExportFrequency
-import com.android.healthconnect.controller.export.api.ExportSettings
-import com.android.healthconnect.controller.export.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.exportimport.api.ExportSettings
+import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Export frequency fragment for Health Connect. */

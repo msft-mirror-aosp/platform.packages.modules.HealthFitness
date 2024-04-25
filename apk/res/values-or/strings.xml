@@ -83,8 +83,8 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"ଖର୍ଚ୍ଚ ହୋଇଥିବା କେଲୋରୀର ଡାଟା ପଢ଼"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"ଖର୍ଚ୍ଚ ହୋଇଥିବା କେଲୋରୀର ଡାଟା ପଢ଼ିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"ପୃଷ୍ଠପଟରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"ପୃଷ୍ଠପଟରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦେବେ?"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"ବେକଗ୍ରାଉଣ୍ଡରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"ବେକଗ୍ରାଉଣ୍ଡରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦେବେ?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"ଆପଣ ଆପ ବ୍ୟବହାର କରୁନଥିବା ସମୟରେ Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଏହି ଆପକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"ଯଦି ଆପଣ ଅନୁମତି ଦିଅନ୍ତି, ତେବେ ଆପଣ ଆପ ବ୍ୟବହାର କରୁନଥିବା ସମୟରେ ଏହି ଆପ Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିପାରିବ।"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"ଅତୀତର ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>

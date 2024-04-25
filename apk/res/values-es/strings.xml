@@ -86,13 +86,13 @@
     <string name="background_read_title" msgid="5061383169517186234">"Acceder a datos en segundo plano"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"¿Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta aplicación acceda a los datos de Salud conectada cuando no estés usándola"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Si lo permites, esta aplicación puede acceder a los datos de Salud conectada cuando no estés usándola."</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Si lo permites, esta aplicación podrá acceder a los datos de Salud conectada cuando no estés usándola."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Acceder a datos anteriores"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"¿Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos anteriores?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta aplicación acceda a los datos de Salud conectada añadidos antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permite que esta aplicación acceda a todos los datos anteriores de Salud conectada"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Si lo permites, esta aplicación puede acceder a los datos de Salud conectada añadidos antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si lo permites, esta aplicación puede acceder a todos los datos anteriores de Salud conectada."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Si lo permites, esta aplicación podrá acceder a los datos de Salud conectada añadidos antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si lo permites, esta aplicación podrá acceder a todos los datos anteriores de Salud conectada."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorías quemadas en actividad"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calorías quemadas en actividad"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Leer calorías quemadas en actividad"</string>
@@ -309,7 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Acceso de la aplicación"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Por ahora no tienes instalada ninguna aplicación compatible"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acceso adicional"</string>
-    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Los permisos adicionales para esta aplicación se han eliminado"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Se han quitado los permisos adicionales para esta aplicación"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Permisos de aplicaciones quitados"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Salud conectada ha quitado los permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Salud conectada ha quitado los permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> y <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
