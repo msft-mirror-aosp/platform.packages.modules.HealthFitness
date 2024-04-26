@@ -30,12 +30,15 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissions;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -72,6 +75,11 @@ public class HealthConnectWithManagePermissionsTest {
 
     private Context mContext;
     private HealthConnectManager mHealthConnectManager;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {

@@ -74,6 +74,7 @@ import android.health.connect.migration.MigrationException;
 import android.health.connect.migration.PermissionMigrationPayload;
 import android.health.connect.migration.PriorityMigrationPayload;
 import android.health.connect.migration.RecordMigrationPayload;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.os.Build;
 import android.os.OutcomeReceiver;
 import android.os.UserHandle;
@@ -194,6 +195,11 @@ public class DataMigrationTest {
             throw new IllegalArgumentException(exception);
         }
     }
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {

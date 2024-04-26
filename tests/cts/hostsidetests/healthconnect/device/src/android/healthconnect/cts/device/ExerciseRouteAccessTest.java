@@ -36,6 +36,7 @@ import android.app.UiAutomation;
 import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.datatypes.ExerciseSessionRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.os.Bundle;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -44,6 +45,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -52,6 +54,12 @@ import java.util.List;
 public class ExerciseRouteAccessTest {
 
     private UiAutomation mAutomation;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {
