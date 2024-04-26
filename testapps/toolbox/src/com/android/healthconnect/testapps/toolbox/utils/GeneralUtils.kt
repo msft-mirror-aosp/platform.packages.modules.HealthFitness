@@ -30,7 +30,9 @@ import android.health.connect.datatypes.Record
 import android.os.Build.MANUFACTURER
 import android.os.Build.MODEL
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.asOutcomeReceiver
+import com.android.healthconnect.testapps.toolbox.R
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import kotlin.reflect.KClass
@@ -148,5 +150,13 @@ class GeneralUtils {
 
         inline fun <reified T : Serializable> Intent.requireSerializable(name: String): T =
             requireNotNull(getSerializableExtra(name, T::class.java))
+
+        fun Context.showMessageDialog(text: String) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.app_label)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setMessage(text)
+                .show()
+        }
     }
 }

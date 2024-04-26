@@ -42,7 +42,6 @@ import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,17 +73,12 @@ public class TransactionManagerExerciseRoutesTest {
                 .getUiAutomation()
                 .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG);
         HealthConnectUserContext context = testRule.getUserContext();
-        mTransactionManager = TransactionManager.getInstance(context);
+        mTransactionManager = testRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(FOO_PACKAGE_NAME);
         mTransactionTestUtils.insertApp(BAR_PACKAGE_NAME);
         HealthConnectDeviceConfigManager.initializeInstance(context);
-    }
-
-    @After
-    public void tearDown() {
-        TransactionManager.clearInstance();
     }
 
     @Test

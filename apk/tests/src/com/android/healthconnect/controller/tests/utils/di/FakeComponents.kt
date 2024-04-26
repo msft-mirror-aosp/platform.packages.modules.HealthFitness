@@ -36,11 +36,14 @@ import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriori
 import com.android.healthconnect.controller.datasources.api.ILoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.ISleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
-import com.android.healthconnect.controller.export.api.ExportFrequency
-import com.android.healthconnect.controller.export.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
-import com.android.healthconnect.controller.export.api.ExportUseCaseResult
-import com.android.healthconnect.controller.export.api.ILoadExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
+import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
+import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -460,5 +463,25 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
     fun reset() {
         mostRecentSettings =
             ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+    }
+}
+
+class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
+
+    private var state =
+        ExerciseRouteState(
+            exercisePermissionState = PermissionUiState.ASK_EVERY_TIME,
+            exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME)
+
+    fun setExerciseRouteState(state: ExerciseRouteState) {
+        this.state = state
+    }
+
+    override suspend fun execute(input: String): ExerciseRouteState {
+        return this.state
+    }
+
+    override suspend fun invoke(input: String): UseCaseResults<ExerciseRouteState> {
+        return UseCaseResults.Success(this.state)
     }
 }

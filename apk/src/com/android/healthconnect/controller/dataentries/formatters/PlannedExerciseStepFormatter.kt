@@ -57,7 +57,7 @@ constructor(
                 performanceGoals.forEach { performanceGoal ->
                     add(
                         exercisePerformanceGoalFormatter.formatGoal(
-                            performanceGoal, unitPreferences))
+                            performanceGoal, unitPreferences, step.exerciseType))
                 }
             }
         }

@@ -18,8 +18,10 @@ package android.healthconnect.cts.aggregation;
 
 import static android.health.connect.datatypes.BasalMetabolicRateRecord.BASAL_CALORIES_TOTAL;
 import static android.healthconnect.cts.aggregation.DataFactory.getBasalMetabolicRateRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getBaseHeightRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getBaseLeanBodyMassRecord;
+import static android.healthconnect.cts.aggregation.DataFactory.getBaseWeightRecord;
 import static android.healthconnect.cts.aggregation.Utils.assertEnergyWithTolerance;
-import static android.healthconnect.cts.utils.DataFactory.getEmptyMetadata;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByDuration;
@@ -39,12 +41,7 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.DataOrigin;
-import android.health.connect.datatypes.HeightRecord;
-import android.health.connect.datatypes.LeanBodyMassRecord;
-import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.units.Energy;
-import android.health.connect.datatypes.units.Length;
-import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -197,13 +194,13 @@ public class BasalCaloriesAggregationTest {
         insertRecords(
                 List.of(
                         getBaseHeightRecord(now, 1.8),
-                        getBaseWeightRecord(now, 50000),
+                        getBaseWeightRecord(now, 50),
                         getBaseHeightRecord(now.minus(1, DAYS), 1.7),
-                        getBaseWeightRecord(now.minus(1, DAYS), 40000),
+                        getBaseWeightRecord(now.minus(1, DAYS), 40),
                         getBaseHeightRecord(now.minus(2, DAYS), 1.6),
-                        getBaseWeightRecord(now.minus(2, DAYS), 30000),
+                        getBaseWeightRecord(now.minus(2, DAYS), 30),
                         getBaseHeightRecord(now.minus(3, DAYS), 1.5),
-                        getBaseWeightRecord(now.minus(3, DAYS), 20000)));
+                        getBaseWeightRecord(now.minus(3, DAYS), 20)));
 
         List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
                 getAggregateResponseGroupByDuration(
@@ -238,7 +235,7 @@ public class BasalCaloriesAggregationTest {
     public void testAggregation_basalCaloriesBurntTotal_onlyWeightBeforeInterval_usesProfile()
             throws Exception {
         Instant now = Instant.now();
-        insertRecords(List.of(getBaseWeightRecord(now.minus(10, DAYS), /* weight= */ 40000)));
+        insertRecords(List.of(getBaseWeightRecord(now.minus(10, DAYS), /* weightKg= */ 40)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -259,8 +256,8 @@ public class BasalCaloriesAggregationTest {
         Instant now = Instant.now();
         insertRecords(
                 List.of(
-                        getBaseWeightRecord(now.minus(10, DAYS), /* weight= */ 40000),
-                        getBaseHeightRecord(now.minus(9, DAYS), /* height= */ 2.0)));
+                        getBaseWeightRecord(now.minus(10, DAYS), /* weightKg= */ 40),
+                        getBaseHeightRecord(now.minus(9, DAYS), /* heightMeter= */ 2.0)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -282,13 +279,13 @@ public class BasalCaloriesAggregationTest {
         Instant now = Instant.now();
         insertRecords(
                 List.of(
-                        getBaseWeightRecord(now.minus(10, DAYS), /* weight= */ 40000),
-                        getBaseHeightRecord(now.minus(9, DAYS), /* height= */ 1.8),
-                        getBaseWeightRecord(now.minus(1, DAYS), /* weight= */ 60000),
-                        getBaseHeightRecord(now.minus(1, DAYS), /* height= */ 1.9),
-                        getBaseHeightRecord(now, /* height= */ 2.0),
-                        getBaseWeightRecord(now, /* weight= */ 70000),
-                        getBaseHeightRecord(now, /* height= */ 2.0)));
+                        getBaseWeightRecord(now.minus(10, DAYS), /* weightKg= */ 40),
+                        getBaseHeightRecord(now.minus(9, DAYS), /* heightMeter= */ 1.8),
+                        getBaseWeightRecord(now.minus(1, DAYS), /* weightKg= */ 60),
+                        getBaseHeightRecord(now.minus(1, DAYS), /* heightMeter= */ 1.9),
+                        getBaseHeightRecord(now, /* heightMeter= */ 2.0),
+                        getBaseWeightRecord(now, /* weightKg= */ 70),
+                        getBaseHeightRecord(now, /* heightMeter= */ 2.0)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -307,7 +304,7 @@ public class BasalCaloriesAggregationTest {
     public void testAggregation_basalCaloriesBurntTotal_onlyWeightDuringInterval_usesProfile()
             throws Exception {
         Instant now = Instant.now();
-        insertRecords(List.of(getBaseWeightRecord(now.minus(1, DAYS), /* weight= */ 40000)));
+        insertRecords(List.of(getBaseWeightRecord(now.minus(1, DAYS), /* weightKg= */ 40)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -326,7 +323,7 @@ public class BasalCaloriesAggregationTest {
     public void testAggregation_basalCaloriesBurntTotal_onlyWeightAfterInterval_usesDefaultProfile()
             throws Exception {
         Instant now = Instant.now();
-        insertRecords(List.of(getBaseWeightRecord(now, /* weight= */ 40000)));
+        insertRecords(List.of(getBaseWeightRecord(now, /* weightKg= */ 40)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -345,7 +342,7 @@ public class BasalCaloriesAggregationTest {
     public void testAggregation_basalCaloriesBurntTotal_onlyHeightBeforeInterval_usesProfile()
             throws Exception {
         Instant now = Instant.now();
-        insertRecords(List.of(getBaseHeightRecord(now.minus(10, DAYS), /* height= */ 2.0)));
+        insertRecords(List.of(getBaseHeightRecord(now.minus(10, DAYS), /* heightMeter= */ 2.0)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -364,7 +361,7 @@ public class BasalCaloriesAggregationTest {
     public void testAggregation_basalCaloriesBurntTotal_onlyHeightDuringInterval_usesProfile()
             throws Exception {
         Instant now = Instant.now();
-        insertRecords(List.of(getBaseHeightRecord(now.minus(1, DAYS), /* height= */ 2.0)));
+        insertRecords(List.of(getBaseHeightRecord(now.minus(1, DAYS), /* heightMeter= */ 2.0)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -383,7 +380,7 @@ public class BasalCaloriesAggregationTest {
     public void testAggregation_basalCaloriesBurntTotal_onlyHeightAfterInterval_usesDefaultProfile()
             throws Exception {
         Instant now = Instant.now();
-        insertRecords(List.of(getBaseHeightRecord(now, /* height= */ 2.0)));
+        insertRecords(List.of(getBaseHeightRecord(now, /* heightMeter= */ 2.0)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -405,13 +402,13 @@ public class BasalCaloriesAggregationTest {
         insertRecords(
                 List.of(
                         getBaseHeightRecord(now, 1.8),
-                        getBaseWeightRecord(now, 50000),
+                        getBaseWeightRecord(now, 50),
                         getBaseHeightRecord(now.minus(1, DAYS), 1.7),
-                        getBaseWeightRecord(now.minus(1, DAYS), 40000),
+                        getBaseWeightRecord(now.minus(1, DAYS), 40),
                         getBaseHeightRecord(now.minus(2, DAYS), 1.6),
-                        getBaseWeightRecord(now.minus(2, DAYS), 30000),
+                        getBaseWeightRecord(now.minus(2, DAYS), 30),
                         getBaseHeightRecord(now.minus(3, DAYS), 1.5),
-                        getBaseWeightRecord(now.minus(3, DAYS), 20000)));
+                        getBaseWeightRecord(now.minus(3, DAYS), 20)));
 
         List<AggregateRecordsGroupedByDurationResponse<Energy>> responses =
                 getAggregateResponseGroupByDuration(
@@ -580,7 +577,7 @@ public class BasalCaloriesAggregationTest {
         insertRecords(
                 List.of(
                         getBaseHeightRecord(Instant.now().minus(2, DAYS), 1.8),
-                        getBaseWeightRecord(Instant.now().minus(2, DAYS), 50000)));
+                        getBaseWeightRecord(Instant.now().minus(2, DAYS), 50)));
 
         AggregateRecordsResponse<Energy> response =
                 getAggregateResponse(
@@ -633,19 +630,5 @@ public class BasalCaloriesAggregationTest {
         assertThat(newResponse.get(BASAL_CALORIES_TOTAL)).isNotNull();
         assertThat(newResponse.getZoneOffset(BASAL_CALORIES_TOTAL))
                 .isEqualTo(ZoneOffset.ofHours(5));
-    }
-
-    private static LeanBodyMassRecord getBaseLeanBodyMassRecord(Instant time, double value) {
-        return new LeanBodyMassRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(value))
-                .build();
-    }
-
-    private static HeightRecord getBaseHeightRecord(Instant time, double height) {
-        return new HeightRecord.Builder(getEmptyMetadata(), time, Length.fromMeters(height))
-                .build();
-    }
-
-    private static WeightRecord getBaseWeightRecord(Instant time, double weight) {
-        return new WeightRecord.Builder(getEmptyMetadata(), time, Mass.fromGrams(weight)).build();
     }
 }

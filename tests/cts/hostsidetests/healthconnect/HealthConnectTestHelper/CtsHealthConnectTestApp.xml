@@ -32,7 +32,6 @@
     <uses-permission android:name="android.permission.health.READ_BLOOD_PRESSURE" />
     <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
 
-
     <application android:label="CtsHealthConnectTestApp">
         <uses-library android:name="android.test.runner"/>
 
