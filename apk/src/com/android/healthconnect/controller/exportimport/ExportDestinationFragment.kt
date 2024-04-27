@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export
+package com.android.healthconnect.controller.exportimport
 
 import android.app.Activity
 import android.content.Intent
@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.export.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Export destination fragment for Health Connect. */

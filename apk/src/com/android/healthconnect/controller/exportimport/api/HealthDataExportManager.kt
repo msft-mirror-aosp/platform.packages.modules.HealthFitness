@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
-/** Data class that holds result from export use cases. */
-sealed class ExportUseCaseResult<out T> {
-    data class Success<T>(var data: T) : ExportUseCaseResult<T>()
+import android.health.connect.exportimport.ScheduledExportSettings
 
-    data class Failed(val exception: Exception) : ExportUseCaseResult<Nothing>()
+/** Wrapper for HealthConnectManager export apis. */
+interface HealthDataExportManager {
+    fun getScheduledExportPeriodInDays(): Int
+
+    fun configureScheduledExport(settings: ScheduledExportSettings)
 }

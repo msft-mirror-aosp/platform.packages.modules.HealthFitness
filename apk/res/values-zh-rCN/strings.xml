@@ -27,7 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"无数据"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"应用权限"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"管理应用和权限"</string>
-    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用（共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 个）拥有访问权限"</string>
+    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限（共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 个应用）"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 个应用拥有访问权限}other{# 个应用拥有访问权限}}"</string>
@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"写入：<xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理权限"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"时间：<xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活动"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活动"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身体测量数据"</string>
@@ -84,12 +83,12 @@
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"读取消耗的卡路里数"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"允许该应用读取消耗的卡路里数"</string>
     <string name="background_read_title" msgid="5061383169517186234">"访问后台数据"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问后台数据？"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"允许此应用在您不使用此应用时访问“健康数据共享”数据"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"要允许 <xliff:g id="APP_NAME">%1$s</xliff:g> 访问后台数据吗？"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"允许此应用在后台访问“健康数据共享”数据"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"如果您允许，此应用可以在您不使用此应用时访问“健康数据共享”数据。"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"访问过去的数据"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”访问过去的数据？"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"允许此应用访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"允许此应用访问在<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"允许此应用访问过去的所有“健康数据共享”数据"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"如果您允许，此应用可以访问在 <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>之前添加的“健康数据共享”数据。"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"如果您允许，此应用可以访问过去的所有“健康数据共享”数据。"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每周"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"选择目标导出服务"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"开启加密功能"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"数据在保存前需要进行加密。任何人都无法访问数据，包括 Google 或“健康数据共享”在内。"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"创建密码可保护已加密的数据。导入和恢复数据时需要此密码。"</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"如果您忘记了密码、丢失了手机，“健康数据共享”无法帮助您恢复已保存的数据。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"继续"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"开始使用健康数据共享"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"健康数据共享会存储您的健康与健身数据，让您可以轻松同步手机上的不同应用"</string>
     <string name="share_data" msgid="3481932156368883946">"与应用分享数据"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 英里/小时}other{# 英里/小时}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 公里/小时}other{# 公里/小时}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> 分钟/英里"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> 分钟/公里"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"每英里用时 <xliff:g id="MINUTE">%1$s</xliff:g> 分钟"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"每公里用时 <xliff:g id="MINUTE">%1$s</xliff:g> 分钟"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> 分钟/100 码"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> 分钟/100 米"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"每 100 码用时 <xliff:g id="MINUTE">%1$s</xliff:g> 分钟"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"每 100 米用时 <xliff:g id="MINUTE">%1$s</xliff:g> 分钟"</string>
     <string name="time_range_long" msgid="5067423945245490288">"从 <xliff:g id="START_TIME">%1$s</xliff:g> 到 <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"从 <xliff:g id="START_TIME">%1$s</xliff:g>到 <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{推轮椅 1 次}other{推轮椅 # 次}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"消耗的总卡路里数：<xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"尽可能多地反复锻炼"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"努力水平：<xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{重复 1 次}other{重复 # 次}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{重复 1 次}other{重复 # 次}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"锻炼时段"</string>
@@ -914,8 +907,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"上个月"</string>
     <string name="tab_entries" msgid="3402700951602029493">"条目"</string>
     <string name="tab_access" msgid="7818197975407243701">"有访问权限的应用"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"允许“<xliff:g id="APP_NAME">%1$s</xliff:g>”获得其他访问权限？"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”还想访问这些“健康数据共享”设置"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"允许 <xliff:g id="APP_NAME">%1$s</xliff:g> 获得额外访问权限？"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> 还想访问这些“健康数据共享”设置"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"请至少启用一项读取权限，以便为此应用开启后台或历史数据使用权"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"请至少启用一项读取权限，以便为此应用开启后台使用权"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"请至少启用一项读取权限，以便为此应用开启历史数据使用权"</string>

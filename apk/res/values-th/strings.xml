@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"เขียน: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"จัดการสิทธิ์"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"เวลา: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"กิจกรรม"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"กิจกรรม"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"การตรวจวัดร่างกาย"</string>
@@ -83,13 +82,13 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"เข้าถึงข้อมูลสุขภาพของคุณ"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"อ่านข้อมูลแคลอรี่ที่ใช้ไป"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"อนุญาตให้แอปอ่านข้อมูลแคลอรี่ที่ใช้ไป"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"อนุญาตให้เข้าถึงข้อมูลในเบื้องหลัง"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"เข้าถึงข้อมูลในเบื้องหลัง"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลในเบื้องหลังใช่ไหม"</string>
     <string name="background_read_description" msgid="3203594555849969283">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect เมื่อคุณไม่ได้ใช้แอป"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect เมื่อคุณไม่ได้ใช้แอป"</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"อนุญาตให้เข้าถึงข้อมูลในอดีต"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"เข้าถึงข้อมูลในอดีต"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"อนุญาตให้ <xliff:g id="APP_NAME">%1$s</xliff:g> เข้าถึงข้อมูลในอดีตใช่ไหม"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"อนุญาตให้แอปเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"อนุญาตให้แอปนี้เข้าถึงข้อมูล Health Connect ทั้งหมดในอดีต"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ที่เพิ่มไว้ก่อนวันที่ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"หากอนุญาต แอปนี้จะสามารถเข้าถึงข้อมูล Health Connect ทั้งหมดในอดีต"</string>
@@ -275,7 +274,7 @@
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงกล้อง ไมโครโฟน หรือตำแหน่ง"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงอินเทอร์เน็ตที่ใช้งานอยู่เบื้องหลัง\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงอินเทอร์เน็ตที่ใช้งานอยู่เบื้องหลังและข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงข้อมูลในเบื้องหลังและข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"ลบข้อมูล <xliff:g id="APP_NAME">%1$s</xliff:g> ออกจาก Health Connect ด้วย"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"วันถัดไป"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"วันที่เลือก"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"หากลืมรหัสผ่านและทำโทรศัพท์สูญหาย Health Connect จะช่วยคุณกู้คืนข้อมูลที่บันทึกไว้ไม่ได้"</string>
     <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"เริ่มต้นใช้งาน Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย และให้คุณซิงค์แอปต่างๆ ในโทรศัพท์ได้โดยง่าย"</string>
     <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>

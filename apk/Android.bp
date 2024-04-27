@@ -47,7 +47,7 @@ filegroup {
 filegroup {
     name: "healthconnectController-export-apis",
     srcs: [
-        "src/com/android/healthconnect/controller/export/api/**/*.kt"
+        "src/com/android/healthconnect/controller/exportimport/api/**/*.kt"
     ]
 }
 

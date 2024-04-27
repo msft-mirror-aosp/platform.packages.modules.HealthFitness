@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
 /** User configured settings for scheduled export of Health Connect data. */
 sealed class ExportSettings {

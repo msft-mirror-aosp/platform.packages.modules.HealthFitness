@@ -45,10 +45,11 @@ import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorit
 import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.SleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.UpdatePriorityListUseCase
-import com.android.healthconnect.controller.export.api.ILoadExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.IUpdateExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.LoadExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.UpdateExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
+import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.UpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
@@ -294,15 +295,15 @@ class UseCaseModule {
 
     @Provides
     fun providesLoadExportSettingsUseCase(
-        healthConnectManager: HealthConnectManager
+        healthDataExportManager: HealthDataExportManager
     ): ILoadExportSettingsUseCase {
-        return LoadExportSettingsUseCase(healthConnectManager)
+        return LoadExportSettingsUseCase(healthDataExportManager)
     }
 
     @Provides
     fun providesUpdateExportSettingsUseCase(
-        healthConnectManager: HealthConnectManager
+        healthDataExportManager: HealthDataExportManager
     ): IUpdateExportSettingsUseCase {
-        return UpdateExportSettingsUseCase(healthConnectManager)
+        return UpdateExportSettingsUseCase(healthDataExportManager)
     }
 }
