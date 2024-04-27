@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Εγγραφή: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Διαχείριση αδειών"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ώρα: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Δραστηριότητα"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"δραστηριότητα"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Μετρήσεις σώματος"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Εάν ξεχάσετε τον κωδικό πρόσβασης και χάσετε το τηλέφωνό σας, το Health Connect δεν μπορεί να σας βοηθήσει να επαναφέρετε τα αποθηκευμένα δεδομένα σας."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Πίσω"</string>
     <string name="export_next_button" msgid="657930567137105172">"Επόμενο"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Ξεκινήστε με το Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Το Health Connect αποθηκεύει τα δεδομένα υγείας και φυσικής κατάστασής σας, προσφέροντας έναν απλό τρόπο συγχρονισμού των διαφορετικών εφαρμογών στο τηλέφωνό σας"</string>
     <string name="share_data" msgid="3481932156368883946">"Μοιραστείτε δεδομένα με τις εφαρμογές σας"</string>
@@ -714,7 +717,7 @@
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Καρπός"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Κόλπος"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Τοποθεσία μέτρησης"</string>
-    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Γραμμή βάσης"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Τιμή αναφοράς"</string>
     <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Μεταβολή από τη γραμμή βάσης"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 μίλι}other{# μίλια}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 χλμ.}other{# χλμ.}}"</string>

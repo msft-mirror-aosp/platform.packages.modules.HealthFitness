@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"សរសេរ៖ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"គ្រប់គ្រង​ការអនុញ្ញាត"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ម៉ោង៖ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"សកម្មភាព"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"សកម្មភាព"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"រង្វាស់រាងកាយ"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"ប្រសិនបើអ្នកភ្លេចពាក្យសម្ងាត់របស់អ្នក និងបាត់ទូរសព្ទរបស់អ្នក នោះ Health Connect មិនអាចជួយអ្នកស្ដារឡើងវិញនូវទិន្នន័យដែលបានរក្សាទុករបស់អ្នកបានទេ។"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ថយក្រោយ"</string>
     <string name="export_next_button" msgid="657930567137105172">"បន្ទាប់"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"ចាប់ផ្ដើមជាមួយ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើទូរសព្ទ​របស់អ្នក"</string>
     <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>
@@ -409,7 +412,7 @@
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 ម៉ាយល៍ក្នុងមួយម៉ោង}other{# ម៉ាយល៍​ក្នុងមួយម៉ោង}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 គីឡូម៉ែត្រក្នុងមួយម៉ោង}other{# គីឡូម៉ែត្រក្នុងមួយម៉ោង}}"</string>
     <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទីក្នុងមួយម៉ាយល៍"</string>
-    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទី/គីឡូម៉ែត្រ"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> ន/km"</string>
     <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទីក្នុងមួយម៉ាយល៍"</string>
     <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទីក្នុងមួយគីឡូម៉ែត្រ"</string>
     <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទី/100 យ៉ាដ"</string>

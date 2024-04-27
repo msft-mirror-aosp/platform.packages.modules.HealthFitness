@@ -53,18 +53,16 @@ import com.android.healthconnect.controller.dataentries.units.PowerConverter
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthconnect.controller.utils.SystemTimeSource
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.randomInstant
 import com.android.healthconnect.controller.utils.toInstant
-import com.android.healthconnect.controller.utils.toLocalDate
 import com.android.healthconnect.controller.utils.toLocalDateTime
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
-import java.time.Period
-import java.time.ZoneOffset
 import kotlin.random.Random
 import org.mockito.Mockito
+import java.time.ZoneOffset
 
 val NOW: Instant = Instant.parse("2022-10-20T07:06:05.432Z")
 val MIDNIGHT: Instant = Instant.parse("2022-10-20T00:00:00.000Z")
@@ -319,24 +317,6 @@ fun verifyBodyWaterMassListsEqual(actual: List<Record>, expected: List<Record>) 
 
 val START_TIME = Instant.parse("2023-06-12T22:30:00Z")
 
-val INSTANT_TODAY =
-    Instant.ofEpochMilli(SystemTimeSource.currentTimeMillis())
-        .toLocalDate()
-        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-        .toInstant()
-
-val INSTANT_YESTERDAY =
-    INSTANT_TODAY.toLocalDate()
-        .minus(Period.ofDays(1))
-        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-        .toInstant()
-
-val INSTANT_TWO_DAYS_AGO =
-    INSTANT_YESTERDAY.toLocalDate()
-        .minus(Period.ofDays(1))
-        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-        .toInstant()
-
 // pre-defined Instants within a day, week, and month of the START_TIME Instant
 val INSTANT_DAY: Instant = Instant.parse("2023-06-11T23:30:00Z")
 val INSTANT_DAY2: Instant = Instant.parse("2023-06-12T02:00:00Z")
@@ -400,18 +380,24 @@ val BODYWATERMASS_WEEK: BodyWaterMassRecord =
     getBodyWaterMassRecord(INSTANT_WEEK, Mass.fromGrams(1000.0))
 
 // records using today's date, yesterday's date, and the date two days ago - for header testing
-val DISTANCE_TWODAYSAGO_2000: DistanceRecord =
-    getDistanceRecord(Length.fromMeters(2000.0), INSTANT_TWO_DAYS_AGO)
-val WEIGHT_TWODAYSAGO_95: WeightRecord =
-    getWeightRecord(INSTANT_TWO_DAYS_AGO, Mass.fromGrams(95000.0))
-val OXYGENSATURATION_YESTERDAY_99: OxygenSaturationRecord =
-    getOxygenSaturationRecord(INSTANT_YESTERDAY, Percentage.fromValue(99.0))
-val DISTANCE_YESTERDAY_2500: DistanceRecord =
-    getDistanceRecord(Length.fromMeters(2500.0), INSTANT_YESTERDAY)
-val SLEEP_TODAY_0H30: SleepSessionRecord =
-    getSleepSessionRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(1800))
-val HYDRATION_TODAY_2L: HydrationRecord =
-    getHydrationRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(900), Volume.fromLiters(2.0))
+fun getMixedRecordsAcrossTwoDays(timeSource: TimeSource): List<Record> {
+    val instantToday: Instant = timeSource.currentLocalDateTime().toInstant()
+    val instantYesterday: Instant = timeSource.currentLocalDateTime().minusDays(1).toInstant()
+    return listOf(
+        getHydrationRecord(instantToday, instantToday.plusSeconds(900), Volume.fromLiters(2.0)),
+        getSleepSessionRecord(instantToday, instantToday.plusSeconds(1800)),
+        getDistanceRecord(Length.fromMeters(2500.0), instantYesterday),
+        getOxygenSaturationRecord(instantYesterday, Percentage.fromValue(99.0)))
+}
+
+fun getMixedRecordsAcrossThreeDays(timeSource: TimeSource): List<Record> {
+    val instantTwoDaysAgo: Instant = timeSource.currentLocalDateTime().minusDays(2).toInstant()
+    return getMixedRecordsAcrossTwoDays(timeSource)
+        .plus(
+            listOf(
+                getWeightRecord(instantTwoDaysAgo, Mass.fromGrams(95000.0)),
+                getDistanceRecord(Length.fromMeters(2000.0), instantTwoDaysAgo)))
+}
 
 // test data constants - end
 

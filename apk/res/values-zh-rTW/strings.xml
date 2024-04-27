@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"寫入：<xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理權限"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"時間：<xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活動"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活動"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身體測量資料"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"如果你忘記密碼且遺失手機，健康資料同步就無法協助你復原已儲存的資料。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"開始使用「健康資料同步」"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"「健康資料同步」會儲存健康與健身資料，方便你在手機上同步不同應用程式的資料"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>
