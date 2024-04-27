@@ -16,35 +16,26 @@
 
 package android.healthconnect.cts.device;
 
-import static android.healthconnect.cts.lib.TestUtils.CHANGE_LOGS_RESPONSE;
-import static android.healthconnect.cts.lib.TestUtils.CHANGE_LOG_TOKEN;
 import static android.healthconnect.cts.lib.TestUtils.READ_RECORDS_SIZE;
 import static android.healthconnect.cts.lib.TestUtils.RECORD_IDS;
 import static android.healthconnect.cts.lib.TestUtils.SUCCESS;
 import static android.healthconnect.cts.lib.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.lib.TestUtils.deleteRecordsAs;
-import static android.healthconnect.cts.lib.TestUtils.getChangeLogTokenAs;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordAs;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordWithAnotherAppPackageName;
 import static android.healthconnect.cts.lib.TestUtils.insertRecordWithGivenClientId;
-import static android.healthconnect.cts.lib.TestUtils.readChangeLogsUsingDataOriginFiltersAs;
 import static android.healthconnect.cts.lib.TestUtils.readRecords;
-import static android.healthconnect.cts.lib.TestUtils.readRecordsAs;
 import static android.healthconnect.cts.lib.TestUtils.readRecordsUsingDataOriginFiltersAs;
 import static android.healthconnect.cts.lib.TestUtils.updateRecordsAs;
-
-import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
-import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
-import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.ExerciseSessionRecord;
-import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.healthconnect.cts.lib.TestUtils;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.os.Bundle;
 
 import androidx.test.runner.AndroidJUnit4;
@@ -53,8 +44,7 @@ import com.android.cts.install.lib.TestApp;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -100,10 +90,11 @@ public class HealthConnectDeviceTest {
                     false,
                     "CtsHealthConnectTestAppWithDataManagePermission.apk");
 
-    @Before
-    public void setUp() {
-        Assume.assumeFalse(hasSystemFeature(AUTOMOTIVE_FEATURE));
-    }
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() {

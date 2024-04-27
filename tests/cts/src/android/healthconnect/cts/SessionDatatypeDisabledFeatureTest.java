@@ -25,6 +25,7 @@ import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.provider.DeviceConfig;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -34,6 +35,7 @@ import com.android.modules.utils.build.SdkLevel;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -55,6 +57,11 @@ public class SessionDatatypeDisabledFeatureTest {
                     .setStartTime(Instant.EPOCH)
                     .setEndTime(Instant.now())
                     .build();
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @After
     public void tearDown() throws InterruptedException {

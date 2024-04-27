@@ -38,6 +38,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.UserHandle;
@@ -59,6 +60,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -90,6 +92,12 @@ public class HealthConnectServiceImplTest {
     private MockitoSession mStaticMockSession;
     private UserHandle mUserHandle = UserHandle.of(UserHandle.myUserId());
     private File mMockDataDirectory;
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    android.healthconnect.cts.utils.TestUtils::isHardwareSupported,
+                    "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws Exception {

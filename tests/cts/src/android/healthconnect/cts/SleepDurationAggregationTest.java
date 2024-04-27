@@ -28,9 +28,11 @@ import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.SleepSessionRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -52,6 +54,11 @@ public class SleepDurationAggregationTest {
                     .build();
 
     private static final String PACKAGE_NAME = "android.healthconnect.cts";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() throws InterruptedException {

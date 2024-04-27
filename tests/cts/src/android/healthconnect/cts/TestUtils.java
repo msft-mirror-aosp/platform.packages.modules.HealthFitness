@@ -38,6 +38,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.app.UiAutomation;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
@@ -152,6 +153,19 @@ public class TestUtils {
 
     public static boolean isHardwareAutomotive() {
         return hasSystemFeature(AUTOMOTIVE_FEATURE);
+    }
+
+    public static boolean isHardwareSupported() {
+        return isHardwareSupported(ApplicationProvider.getApplicationContext());
+    }
+
+    /** returns true if the hardware is supported by HealthConnect. */
+    public static boolean isHardwareSupported(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return (!pm.hasSystemFeature(PackageManager.FEATURE_EMBEDDED)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_WATCH)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_LEANBACK)
+                && !pm.hasSystemFeature(PackageManager.FEATURE_AUTOMOTIVE));
     }
 
     public static ChangeLogTokenResponse getChangeLogToken(ChangeLogTokenRequest request)

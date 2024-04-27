@@ -92,7 +92,6 @@ class HealthConnectUiTestHelper {
                 TestHelperUtils.getStepsRecord()),
             mHealthConnectManager)
         context.launchMainActivity {
-            UiTestUtils.skipOnboardingIfAppears()
             UiTestUtils.waitDisplayed(By.text("Data and access"))
             UiTestUtils.clickOnText("Data and access")
 

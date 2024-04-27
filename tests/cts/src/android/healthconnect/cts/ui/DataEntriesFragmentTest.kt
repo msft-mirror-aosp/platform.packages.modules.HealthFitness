@@ -18,6 +18,7 @@ package android.healthconnect.cts.ui
 import android.health.connect.TimeInstantRangeFilter
 import android.health.connect.datatypes.DistanceRecord
 import android.health.connect.datatypes.StepsRecord
+import android.healthconnect.cts.TestUtils
 import android.healthconnect.cts.TestUtils.insertRecords
 import android.healthconnect.cts.TestUtils.verifyDeleteRecords
 import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
@@ -38,6 +39,9 @@ class DataEntriesFragmentTest : HealthConnectBaseTest() {
         @JvmStatic
         @AfterClass
         fun tearDown() {
+            if (!TestUtils.isHardwareSupported()) {
+                return
+            }
             verifyDeleteRecords(
                 StepsRecord::class.java,
                 TimeInstantRangeFilter.Builder()

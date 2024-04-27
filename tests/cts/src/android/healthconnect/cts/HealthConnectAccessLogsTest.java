@@ -25,10 +25,12 @@ import android.health.connect.datatypes.BasalMetabolicRateRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.platform.test.annotations.AppModeFull;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,6 +41,12 @@ import java.util.List;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectAccessLogsTest {
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
     @Test
     public void testAccessLogs_read_singleRecordType() throws InterruptedException {
         List<AccessLog> oldAccessLogsResponse = TestUtils.queryAccessLogs();
