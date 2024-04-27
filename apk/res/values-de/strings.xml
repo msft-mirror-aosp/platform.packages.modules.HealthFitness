@@ -444,7 +444,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nicht aussagekräftig"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 Millisekunde}other{# Millisekunden}}"</string>
-    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Hinweise"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Notizen"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1-mal}other{#-mal}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Leistungsumsatz: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Gesamt: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>

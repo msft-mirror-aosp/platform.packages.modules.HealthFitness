@@ -444,7 +444,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"무효"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1ms}other{#ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1밀리초}other{#밀리초}}"</string>
-    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"노트"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"메모"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1회}other{#회}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"활동 칼로리 소모량: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"총 칼로리 소모량: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>

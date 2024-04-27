@@ -105,8 +105,8 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"كتابة مسار التمرين الرياضي"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"قراءة مسار التمرين الرياضي"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"قراءة مسارات التمارين الرياضية"</string>
-    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"بيانات خطط التدريب"</string>
-    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"بيانات خطط التدريب"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"الخطط التدريبية"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"الخطط التدريبية"</string>
     <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"قراءة بيانات خطط التدريب"</string>
     <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"كتابة بيانات خطط التدريب"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"المسافة"</string>
@@ -528,7 +528,7 @@
     <string name="stretching" msgid="8667864173383423787">"تمارين التمدّد"</string>
     <string name="surfing" msgid="7612503593241904984">"ركوب الأمواج"</string>
     <string name="swimming_open_water" msgid="1030388267758027037">"السباحة في المياه المفتوحة"</string>
-    <string name="swimming_pool" msgid="1584809250142187550">"السباحة في حمام السباحة"</string>
+    <string name="swimming_pool" msgid="1584809250142187550">"السباحة في حوض سباحة"</string>
     <string name="swimming_freestyle" msgid="5969535751316106638">"حرة"</string>
     <string name="swimming_backstroke" msgid="7293002996518694035">"ظّهر"</string>
     <string name="swimming_breaststroke" msgid="7168282910654289593">"صَدر"</string>

@@ -412,7 +412,7 @@
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 ម៉ាយល៍ក្នុងមួយម៉ោង}other{# ម៉ាយល៍​ក្នុងមួយម៉ោង}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 គីឡូម៉ែត្រក្នុងមួយម៉ោង}other{# គីឡូម៉ែត្រក្នុងមួយម៉ោង}}"</string>
     <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទីក្នុងមួយម៉ាយល៍"</string>
-    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទី/គីឡូម៉ែត្រ"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> ន/km"</string>
     <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទីក្នុងមួយម៉ាយល៍"</string>
     <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទីក្នុងមួយគីឡូម៉ែត្រ"</string>
     <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> នាទី/100 យ៉ាដ"</string>
