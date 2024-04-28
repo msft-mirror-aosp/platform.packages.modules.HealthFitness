@@ -330,7 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"എല്ലാ ദിവസവും"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"പ്രതിവാരം"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"പ്രതിമാസം"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"എവിടേക്കാണ് എക്സ്പോർട്ട് ചെയ്യേണ്ടതെന്ന് തിരഞ്ഞെടുക്കൂ."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"എക്സ്പോർട്ട് ചെയ്യേണ്ട ഇടം തിരഞ്ഞെടുക്കൂ"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"എൻക്രിപ്‌ഷൻ ഓണാക്കുക"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ഡാറ്റ സംരക്ഷിക്കുന്നതിന് മുമ്പ് അത് എൻക്രിപ്റ്റ് ചെയ്യേണ്ടതുണ്ട്. ആർക്കും, Google-നോ Health Connect-നോ പോലും, അത് ആക്സസ് ചെയ്യാനാകില്ല."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"നിങ്ങളുടെ എൻ‍ക്രിപ്റ്റ് ചെയ്ത ഡാറ്റ പരിരക്ഷിക്കുന്നതിന് പാസ്‌വേഡ് സൃഷ്ടിക്കുക. നിങ്ങളുടെ ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യാനും പുനഃസ്ഥാപിക്കാനും നിങ്ങൾക്ക് ഈ പാസ്‌വേഡ് ആവശ്യമാണ്."</string>
@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"നിങ്ങൾ പാസ്‌വേഡ് മറക്കുകയും ഫോൺ നഷ്ടപ്പെടുകയും ചെയ്യുകയാണെങ്കിൽ, Health Connect-ന് നിങ്ങളുടെ സംരക്ഷിച്ച ഡാറ്റ വീണ്ടെടുക്കാൻ നിങ്ങളെ സഹായിക്കാനാകില്ല."</string>
     <string name="export_back_button" msgid="3550795479165524982">"മടങ്ങുക"</string>
     <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‌നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഫോണിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>

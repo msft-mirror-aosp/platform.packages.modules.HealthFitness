@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escribir: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Administrar permisos"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Actividad"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"actividad"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medidas corporales"</string>
@@ -84,12 +83,12 @@
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Medir calorías quemadas"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permite que la app lea las calorías quemadas"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Acceso a los datos en segundo plano"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"¿Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta app acceda a los datos de Health Connect cuando la app no está en uso"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect cuando la app no está en uso."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos antiguos"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos antiguos?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta app acceda a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta app acceda a los datos de Health Connect agregados antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permite que esta app acceda a todos los datos anteriores de Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si estás de acuerdo, esta app podrá acceder a todos los datos anteriores de Health Connect."</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Diariamente"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensualmente"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Elige dónde quieres exportar los datos"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Activa la encriptación"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Es necesario encriptar los datos antes de guardarlos. Nadie podrá acceder a ellos, ni siquiera Google o Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea una contraseña para proteger tus datos encriptados. La necesitarás para importar y restablecer los datos."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Si olvidas la contraseña y pierdes el teléfono, Health Connect no podrá ayudarte a recuperar tus datos guardados."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atrás"</string>
     <string name="export_next_button" msgid="657930567137105172">"Siguiente"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Comenzar a usar Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect almacena tus datos de salud y actividad física, lo que te brinda una manera simple de sincronizar las diferentes apps en tu teléfono."</string>
     <string name="share_data" msgid="3481932156368883946">"Compartir datos con tus apps"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milla por hora}other{# millas por hora}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilómetro por hora}other{# kilómetros por hora}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/milla"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minutos por milla"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minutos por kilómetro"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yardas"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metros"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minutos por 100 yardas"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minutos por 100 metros"</string>
     <string name="time_range_long" msgid="5067423945245490288">"de <xliff:g id="START_TIME">%1$s</xliff:g> a <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"de <xliff:g id="START_TIME">%1$s</xliff:g> a <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 impulso en silla de ruedas}other{# impulsos en silla de ruedas}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Tantas repeticiones como sea posible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nivel de esfuerzo: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 repetición}other{# repeticiones}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetición}other{# repeticiones}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmentos de ejercicio"</string>
@@ -914,7 +907,7 @@
     <string name="last_month_header" msgid="1359164797239191253">"El mes pasado"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Entradas"</string>
     <string name="tab_access" msgid="7818197975407243701">"Acceso"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"¿Quieres otorgarle acceso adicional a <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"¿Permitir acceso adicional en <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> también quiere acceder a estos parámetros de configuración de Health Connect"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano o de datos anteriores para esta app"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano para esta app"</string>

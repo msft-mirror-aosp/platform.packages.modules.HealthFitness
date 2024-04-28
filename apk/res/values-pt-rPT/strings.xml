@@ -20,7 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Saúde Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Faça a gestão do acesso de apps a dados de saúde"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Autorizações e dados"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Faça a gestão dos dados de saúde e fitness no seu telemóvel e defina que apps que podem aceder aos mesmos"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Faça a gestão dos dados de saúde e fitness no seu telemóvel e defina que apps podem aceder aos mesmos"</string>
     <string name="data_title" msgid="4456619761533380816">"Dados e acesso"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorias"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Ver todas as categorias"</string>
@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Se se esquecer da sua palavra-passe ou perder o telemóvel, a Saúde Connect não ajuda a recuperar os seus dados guardados."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Anterior"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Comece a usar a Saúde Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"A Saúde Connect armazena os seus dados de saúde e fitness, oferecendo-lhe uma forma simples de sincronizar as diferentes apps no seu telemóvel"</string>
     <string name="share_data" msgid="3481932156368883946">"Partilhar dados com as suas apps"</string>

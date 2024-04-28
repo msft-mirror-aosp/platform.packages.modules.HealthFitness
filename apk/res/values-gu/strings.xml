@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"લખો: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"પરવાનગીઓને મેનેજ કરો"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"સમય: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"પ્રવૃત્તિ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"પ્રવૃત્તિ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"શરીરના માપ"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"દરરોજ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"દર અઠવાડિયે"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"દર મહિને"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"ક્યા નિકાસ કરવી તે પસંદ કરો"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"એન્ક્રિપ્શન ચાલુ કરો"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ડેટા સાચવવામાં આવે તે પહેલાં તેને એન્ક્રિપ્ટ કરવો જરૂરી છે. કોઈપણ વ્યક્તિ, Google કે Health Connect પણ તેને ઍક્સેસ કરી શકશે નહીં."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"તમારા એન્ક્રિપ્ટેડ ડેટાને સુરક્ષિત રાખવા માટે કોઈ પાસવર્ડ બનાવો. તમારો ડેટા આયાત કરવા અને તેને રિસ્ટોર કરવા માટે, તમને આ પાસવર્ડની જરૂર પડશે."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"જો તમે તમારો પાસવર્ડ ભૂલી જાઓ અને તમારો ફોન ખોવાઈ ગયો હોય, તો Health Connect તમને તમારો સાચવેલો ડેટા રિકવર કરવામાં સહાય કરી શકશે નહીં."</string>
     <string name="export_back_button" msgid="3550795479165524982">"પાછળ"</string>
     <string name="export_next_button" msgid="657930567137105172">"આગળ"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect સાથે શરુ કરો"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect તમારો આરોગ્ય અને ફિટનેસ સંબંધિત ડેટા સ્ટોર કરે છે, જેનાથી તમે તમારા ફોન પર વિવિધ ઍપ સરળ રીતે સિંક કરી શકો છો"</string>
     <string name="share_data" msgid="3481932156368883946">"તમારી ઍપ સાથે ડેટા શેર કરો"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 કિમી/કલાક}one{# કિમી/કલાક}other{# કિમી/કલાક}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 માઇલ પ્રતિ કલાક}one{# માઇલ પ્રતિ કલાક}other{# માઇલ પ્રતિ કલાક}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 કિલોમીટર પ્રતિ કલાક}one{# કિલોમીટર પ્રતિ કલાક}other{# કિલોમીટર પ્રતિ કલાક}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ/માઇલ"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ/કિમી"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"પ્રતિ માઇલ <xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"પ્રતિ કિલોમીટર <xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ/100 યાર્ડ"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ/100 મીટર"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"પ્રતિ 100 યાર્ડ <xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"પ્રતિ 100 મીટર <xliff:g id="MINUTE">%1$s</xliff:g> મિનિટ"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>થી <xliff:g id="END_TIME">%2$s</xliff:g> સુધી"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>થી <xliff:g id="END_TIME">%2$s</xliff:g> સુધી"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 વ્હીલચેરને ધક્કો}one{# વ્હીલચેરને ધક્કો}other{# વ્હીલચેરને ધક્કા}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"કુલ: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"કસરતના શક્ય તેટલા પુનરાવર્તનો"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"પ્રયત્નનું લેવલ: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 પુનરાવર્તન}one{# પુનરાવર્તન}other{# પુનરાવર્તન}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 પુનરાવર્તન}one{# પુનરાવર્તન}other{# પુનરાવર્તન}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"વ્યાયામના સેગ્મેન્ટ"</string>

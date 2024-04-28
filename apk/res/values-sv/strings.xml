@@ -330,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"En gång om dagen"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"En gång i veckan"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"En gång i månaden"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Välj vart du vill exportera till"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Aktivera kryptering"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data måste krypteras innan den sparas. Ingen, inte ens Google eller Health Connect, kommer åt den."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Skapa ett lösenord för att skydda din krypterade data. Du behöver det här lösenordet för att importera och återställa datan."</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Om du glömmer lösenordet eller tappar bort telefonen kan Health Connect inte hjälpa dig att återställa din sparade data."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tillbaka"</string>
     <string name="export_next_button" msgid="657930567137105172">"Nästa"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Kom igång med Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lagrar din hälso- och träningsdata, så att du enkelt kan synkronisera olika appar på telefonen"</string>
     <string name="share_data" msgid="3481932156368883946">"Dela data med dina appar"</string>
@@ -408,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mile i timmen}other{# miles i timmen}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometer i timmen}other{# kilometer i timmen}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/mile"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per mile"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per kilometer"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 meter"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per 100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per 100 meter"</string>
     <string name="time_range_long" msgid="5067423945245490288">"från <xliff:g id="START_TIME">%1$s</xliff:g> till <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"från <xliff:g id="START_TIME">%1$s</xliff:g> till <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 armtag på rullstol}other{# armtag på rullstol}}"</string>
@@ -455,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Totalt: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Så många repetitioner som möjligt"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Ansträngningsnivå: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 repetition}other{# repetitioner}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetition}other{# repetitioner}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Träningssegment"</string>

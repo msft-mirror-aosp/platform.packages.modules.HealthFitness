@@ -274,7 +274,7 @@
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً دوربین، میکروفون، یا مکان) اثر نمی‌گذارد."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect را (ازجمله داده‌های پس‌زمینه) بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect را (ازجمله داده‌های قبلی) بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect را (ازجمله داده‌های پس‌زمینه و داده‌های قبلی) بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> دیگر نمی‌تواند هیچ‌کدام از داده‌های Health Connect ازجمله داده‌های پس‌زمینه و داده‌های قبلی را بخواند یا بنویسد.\n\nاین تنظیم بر دیگر اجازه‌هایی که این برنامه ممکن است داشته باشد (مثلاً مکان، دوربین، یا میکروفون) اثر نمی‌گذارد."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"داده‌های <xliff:g id="APP_NAME">%1$s</xliff:g> نیز از Health Connect حذف شود"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"روز بعد"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"روز انتخاب‌شده"</string>
@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"اگرگذرواژه‌تان را فراموش کردید و تلفنتان را گم کردید، Health Connect نمی‌تواند در بازیابی داده‌های ذخیره‌شده به شما کمک کند."</string>
     <string name="export_back_button" msgid="3550795479165524982">"برگشتن"</string>
     <string name="export_next_button" msgid="657930567137105172">"بعدی"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"شروع کار با Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect داده‌های سلامتی و تناسب اندام شما را ذخیره می‌کند و روشی ساده برای همگام‌سازی برنامه‌های مختلف تلفن دراختیارتان می‌گذارد"</string>
     <string name="share_data" msgid="3481932156368883946">"هم‌رسانی داده‌ها با برنامه‌ها"</string>
@@ -903,7 +907,7 @@
     <string name="last_month_header" msgid="1359164797239191253">"ماه گذشته"</string>
     <string name="tab_entries" msgid="3402700951602029493">"ورودی‌ها"</string>
     <string name="tab_access" msgid="7818197975407243701">"دسترسی"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه دسترسی بیشتر داده شود؟"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"به <xliff:g id="APP_NAME">%1$s</xliff:g> اجازه دسترسی اضافی داده شود؟"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> می‌خواهد به این تنظیمات Health Connect نیز دسترسی داشته باشد"</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"برای روشن کردن دسترسی پس‌زمینه‌ای یا دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"برای روشن کردن دسترسی پس‌زمینه‌ای برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>

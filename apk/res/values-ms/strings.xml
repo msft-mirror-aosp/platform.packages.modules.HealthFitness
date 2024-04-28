@@ -75,7 +75,7 @@
     <string name="data_access_empty_message" msgid="9084350402254264452">"Apl tidak lagi dapat membaca atau menulis <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> dan tiada data <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> yang disimpan dalam Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Data ini mengandungi maklumat seperti masa aktif, jenis senaman, pusingan, ulangan, sesi atau kuak renang."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Data ini mengandungi maklumat seperti peringkat tidur dan sesi tidur."</string>
-    <string name="all_entries_button" msgid="5109091107239135235">"Lihat semua entri"</string>
+    <string name="all_entries_button" msgid="5109091107239135235">"Lihat semua masukan"</string>
     <string name="selected_date_view_action_description" msgid="6237240886988225664">"tukar"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Padamkan data ini"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Jika anda terlupa kata laluan anda dan kehilangan telefon anda, Health Connect tidak dapat membantu anda memulihkan data anda yang disimpan."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Kembali"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seterusnya"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Bermula dengan Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect menyimpan data kesihatan dan kecergasan anda, menyediakan cara yang mudah untuk menyegerakkan pelbagai apl pada telefon anda"</string>
     <string name="share_data" msgid="3481932156368883946">"Kongsi data dengan apl anda"</string>

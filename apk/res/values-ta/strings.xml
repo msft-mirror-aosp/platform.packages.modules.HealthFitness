@@ -330,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"தினமும்"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"வாரந்தோறும்"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"மாதந்தோறும்"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"பதிவேற்ற வேண்டிய திரையைத் தேர்வுசெய்யவா?"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"என்க்ரிப்ஷனை இயக்குதல்"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"தரவு சேமிக்கப்படுவதற்கு முன்பு என்க்ரிப்ஷன் செய்யப்பட்டிருக்க வேண்டும். Google, Health Connect உட்பட யாராலும் அதை அணுக முடியாது."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"என்க்ரிப்ஷன் செய்யப்பட்ட உங்கள் தரவைப் பாதுகாக்க கடவுச்சொல்லை உருவாக்கவும். உங்கள் தரவை பதிவிறக்குவதற்கும் மீட்டெடுப்பதற்கும் இந்தக் கடவுச்சொல் உங்களுக்குத் தேவைப்படும்."</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"உங்கள் கடவுச்சொல்லை மறந்துவிட்டாலோ மொபைலைத் தொலைத்துவிட்டாலோ, சேமிக்கப்பட்ட உங்கள் தரவை மீட்டெடுக்க Health Connect உதவாது."</string>
     <string name="export_back_button" msgid="3550795479165524982">"பின்செல்"</string>
     <string name="export_next_button" msgid="657930567137105172">"அடுத்து"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குதல்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>
@@ -408,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 கிமீ/ம.நே.}other{# கிமீ/ம.நே.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 மைல்/மணிநேரம்}other{# மைல்/மணிநேரம்}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 கிலோமீட்டர்/மணிநேரம்}other{# கிலோமீட்டர்/மணிநேரம்}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமி/மைல்"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமி/கிமீ"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமிடம்/மைல்"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> கிலோமீட்டர்/நிமிடம்"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமி/100 யார்டுகள்"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமி/100 மீட்டர்"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமிடம்/100 யார்டுகள்"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> நிமிடம்/100 மீட்டர்"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> முதல் <xliff:g id="END_TIME">%2$s</xliff:g> வரை"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> முதல் <xliff:g id="END_TIME">%2$s</xliff:g> வரை"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 வீல்சேர் புஷ்}other{# வீல்சேர் புஷ்கள்}}"</string>
@@ -455,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"மொத்தம்: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"முடிந்தவரை அதிகமான எண்ணிக்கையில் செய்யுங்கள்"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"முயற்சிக்கான மதிப்பு: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 சுற்று}other{# சுற்றுகள்}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 சுற்று}other{# சுற்றுகள்}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"உடற்பயிற்சிப் பிரிவுகள்"</string>
