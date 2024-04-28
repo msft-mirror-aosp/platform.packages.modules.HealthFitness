@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.Constants.DEFAULT_INT
 import android.health.connect.exportimport.ScheduledExportSettings

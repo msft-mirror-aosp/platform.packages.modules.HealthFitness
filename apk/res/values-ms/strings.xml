@@ -38,7 +38,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"Tetapkan unit"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Akses terbaharu"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Tiada apl yang mengakses Health Connect baru-baru ini"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Lihat semua akses terkini"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Lihat semua akses terbaharu"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Lihat apl yang telah mengakses data anda dalam tempoh 24 jam yang lalu"</string>
     <string name="today_header" msgid="1006837293203834373">"Hari ini"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Semalam"</string>
@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Tulis: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Urus kebenaran"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Masa: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktiviti"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktiviti"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Ukuran badan"</string>
@@ -76,7 +75,7 @@
     <string name="data_access_empty_message" msgid="9084350402254264452">"Apl tidak lagi dapat membaca atau menulis <xliff:g id="DATA_TYPE_0">%1$s</xliff:g> dan tiada data <xliff:g id="DATA_TYPE_2">%2$s</xliff:g> yang disimpan dalam Health Connect"</string>
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Data ini mengandungi maklumat seperti masa aktif, jenis senaman, pusingan, ulangan, sesi atau kuak renang."</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Data ini mengandungi maklumat seperti peringkat tidur dan sesi tidur."</string>
-    <string name="all_entries_button" msgid="5109091107239135235">"Lihat semua entri"</string>
+    <string name="all_entries_button" msgid="5109091107239135235">"Lihat semua masukan"</string>
     <string name="selected_date_view_action_description" msgid="6237240886988225664">"tukar"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Padamkan data ini"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Jika anda terlupa kata laluan anda dan kehilangan telefon anda, Health Connect tidak dapat membantu anda memulihkan data anda yang disimpan."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Kembali"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seterusnya"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Bermula dengan Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect menyimpan data kesihatan dan kecergasan anda, menyediakan cara yang mudah untuk menyegerakkan pelbagai apl pada telefon anda"</string>
     <string name="share_data" msgid="3481932156368883946">"Kongsi data dengan apl anda"</string>
@@ -713,7 +716,7 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Telinga"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pergelangan tangan"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Faraj"</string>
-    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokasi ukuran"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Lokasi pengukuran"</string>
     <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Garis dasar"</string>
     <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variasi daripada garis dasar"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 batu}other{# batu}}"</string>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.tests.export
+package com.android.healthconnect.controller.tests.exportimport
 
 import android.content.Context
 import android.os.Bundle
@@ -29,7 +29,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.export.ExportDestinationFragment
+import com.android.healthconnect.controller.exportimport.ExportDestinationFragment
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule

@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Запіс: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Кіраваць дазволамі"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Актыўнасць"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"актыўнасць"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Параметры цела"</string>
@@ -91,7 +90,7 @@
     <string name="historic_access_request_title" msgid="4645920231853414742">"Дазволіць праграме \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" доступ да мінулых даных?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Дазволіць праграме доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Дазволіць праграме доступ да ўсіх мінулых даных платформы \"Здароўе і спорт\""</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да даных платформы \"Здароўе і спорт\", якія былі дададзены да <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Калі вы дасце гэты дазвол, праграма будзе мець доступ да ўсіх мінулых даных платформы \"Здароўе і спорт\"."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Зрасходаваныя актыўныя калорыі"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"зрасходаваныя актыўныя калорыі"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Штодзень"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Штотыдзень"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Штомесяц"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Выберыце, куды экспартаваць даныя"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Уключыце шыфраванне"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перад захаваннем даныя трэба зашыфраваць. Ніхто, нават Google ці Здароўе і спорт, не змогуць атрымаць да іх доступ."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Стварыце пароль, каб абараніць зашыфраваныя даныя. Гэты пароль спатрэбіцца, калі вы захочаце імпартаваць і аднавіць даныя."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Калі вы забудзеце пароль і згубіце тэлефон, то не зможаце аднавіць захаваныя даныя праз Здароўе і спорт."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далей"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на тэлефоне"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 км/гадз}one{# км/гадз}few{# км/гадз}many{# км/гадз}other{# км/гадз}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 міля ў гадзіну}one{# міля ў гадзіну}few{# мілі ў гадзіну}many{# міль у гадзіну}other{# мілі ў гадзіну}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 кіламетр у гадзіну}one{# кіламетр у гадзіну}few{# кіламетры ў гадзіну}many{# кіламетраў у гадзіну}other{# кіламетра ў гадзіну}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/міля"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/км"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на мілю"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на кіламетр"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/100 ярдаў"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> хв/100 метраў"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на 100 ярдаў"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> хв на 100 метраў"</string>
     <string name="time_range_long" msgid="5067423945245490288">"з <xliff:g id="START_TIME">%1$s</xliff:g> да <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"з <xliff:g id="START_TIME">%1$s</xliff:g> да <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 штуршок інваліднай каляскі}one{# штуршок інваліднай каляскі}few{# штуршкі інваліднай каляскі}many{# штуршкоў інваліднай каляскі}other{# штуршка інваліднай каляскі}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Усяго: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Максімальна магчымая колькасць паўтарэнняў"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Узровень нагрузкі: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 паўтарэнне}one{# паўтарэнне}few{# паўтарэнні}many{# паўтарэнняў}other{# паўтарэння}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 паўтарэнне}one{# паўтарэнне}few{# паўтарэнні}many{# паўтарэнняў}other{# паўтарэння}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Часткі практыкаванняў"</string>

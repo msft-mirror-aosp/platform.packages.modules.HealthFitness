@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escriptura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestiona els permisos"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activitat"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activitat"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Mesures corporals"</string>
@@ -309,7 +308,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accés de l\'aplicació"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Actualment no tens cap aplicació compatible instal·lada"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accés addicional"</string>
-    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S\'han suprimit els permisos addicionals d\'aquesta aplicació"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S\'han suprimit els permisos addicionals per a aquesta aplicació"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Aplicacions amb permisos suprimits"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Si oblides la contrasenya o perds el telèfon, Salut connectada no podrà ajudar-te a recuperar les teves dades desades."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Enrere"</string>
     <string name="export_next_button" msgid="657930567137105172">"Següent"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Comença amb Salut connectada"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Salut connectada emmagatzema les teves dades de salut i fitnes, i t\'ofereix una manera senzilla de sincronitzar les diverses aplicacions del telèfon"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparteix dades amb les aplicacions"</string>

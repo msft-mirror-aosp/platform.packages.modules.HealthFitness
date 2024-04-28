@@ -20,7 +20,7 @@
     <string name="app_label" msgid="4768580772453324183">"Saúde Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Faça a gestão do acesso de apps a dados de saúde"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Autorizações e dados"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Faça a gestão dos dados de saúde e fitness no seu telemóvel e defina que apps que podem aceder aos mesmos"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Faça a gestão dos dados de saúde e fitness no seu telemóvel e defina que apps podem aceder aos mesmos"</string>
     <string name="data_title" msgid="4456619761533380816">"Dados e acesso"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Todas as categorias"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Ver todas as categorias"</string>
@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escrita: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gerir autorizações"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Atividade"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"atividade"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Medições corporais"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Se se esquecer da sua palavra-passe ou perder o telemóvel, a Saúde Connect não ajuda a recuperar os seus dados guardados."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Anterior"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Comece a usar a Saúde Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"A Saúde Connect armazena os seus dados de saúde e fitness, oferecendo-lhe uma forma simples de sincronizar as diferentes apps no seu telemóvel"</string>
     <string name="share_data" msgid="3481932156368883946">"Partilhar dados com as suas apps"</string>
@@ -714,8 +717,8 @@
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Pulso"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
     <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Local da medição"</string>
-    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Base"</string>
-    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variação do valor de referência"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Valor de referência"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variação em relação a valor de referência"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 milha}other{# milhas}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 milha}other{# milhas}}"</string>
@@ -809,7 +812,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permitir todos os trajetos"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Não permitir"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permitir sempre"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"Acesso a trajetos de exercício"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Aceder a trajetos de exercício"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"Permita que a app <xliff:g id="APP_NAME">%1$s</xliff:g> aceda a trajetos"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Perguntar sempre"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Não permitir"</string>
