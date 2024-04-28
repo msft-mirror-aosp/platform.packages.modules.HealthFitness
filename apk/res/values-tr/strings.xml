@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Yazma: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"İzinleri yönetin"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Zaman: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Etkinlik"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"etkinlik"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Vücut ölçümleri"</string>
@@ -67,7 +66,7 @@
     <string name="no_categories" msgid="2636778482437506241">"Health Connect\'te hiç veriniz yok"</string>
     <string name="permission_types_title" msgid="7698058200557389436">"Verileriniz"</string>
     <string name="app_priority_button" msgid="3126133977893705098">"Uygulama önceliği"</string>
-    <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> verilerini sil"</string>
+    <string name="delete_category_data_button" msgid="2324773398768267043">"Verileri sil: <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Tüm uygulamalar"</string>
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> verilerini okuyabilir"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> verilerini yazabilir"</string>
@@ -83,11 +82,11 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"sağlık verinize erişme"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Yakılan kaloriyi okuma"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Uygulamanın yakılan kaloriyi okumasına izin verir"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"Verilere arka planda erişme"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"Verilere arka planda erişim"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının verilere arka planda erişmesine izin verilsin mi?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Bu uygulamanın, uygulamayı kullanmadığınız zamanlarda Health Connect verilerine erişmesine izin verir"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"İzin verdiğiniz takdirde bu uygulama, uygulamayı kullanmadığınız zamanlarda Health Connect verilerine erişebilir."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Geçmiş verilere erişme"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Geçmiş verilere erişim"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının geçmiş verilere erişmesine izin verilsin mi?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Bu uygulamanın, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarihinden önce eklenen Health Connect verilerine erişmesine izin verir"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Bu uygulamanın geçmiş tüm Health Connect verilerine erişmesine izin verir"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Günlük"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Haftalık"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Aylık"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Dışa aktarılacağı hedefi seçin"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Şifrelemeyi etkinleştir"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Verilerin kaydedilmeden önce şifrelenmesi gerekir. Google veya Health Connect de dahil hiç kimse bu verilere erişemez."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Şifrelenmiş verilerinizi korumak için şifre oluşturun. Verilerinizi içe aktarıp geri yüklemek için bu şifreye ihtiyacınız olacak."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Şifrenizi unutursanız ve telefonunuzu kaybederseniz Health Connect, kayıtlı verilerinizi kurtarmanıza yardımcı olamaz."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/sa.}other{# km/sa.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mil/saat}other{# mil/saat}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometre/saat}other{# kilometre/saat}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./km"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"Mil başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"Kilometre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./100 yarda"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./100 metre"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"100 yarda başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"100 metre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Tekerlekli sandalyede 1 şınav}other{Tekerlekli sandalyede # şınav}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Toplam: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Mümkün olduğunca fazla tekrar"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Efor düzeyi: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 tekrar}other{# tekrar}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 tekrar}other{# tekrar}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Egzersiz segmentleri"</string>

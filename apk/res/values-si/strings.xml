@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"ඔබට ඔබේ මුරපදය අමතක වී ඔබේ දුරකථනය නැති වුවහොත්, Health Connect හට ඔබේ සුරැකි දත්ත ප්‍රතිසාධනය කිරීමට උදවු කළ නොහැක."</string>
     <string name="export_back_button" msgid="3550795479165524982">"ආපසු"</string>
     <string name="export_next_button" msgid="657930567137105172">"මීළඟ"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect සමග පටන් ගන්න"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ඔබට ඔබේ දුරකථනයේ විවිධ යෙදුම් සමමුහූර්ත කිරීමට සරල ක්‍රමයක් ලබා දෙමින්, ඔබේ සෞඛ්‍ය සහ යෝග්‍යතා දත්ත ගබඩා කරයි"</string>
     <string name="share_data" msgid="3481932156368883946">"ඔබේ යෙදුම් සමග දත්ත බෙදා ගන්න"</string>

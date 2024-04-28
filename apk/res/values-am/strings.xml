@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"የተጻፈ፦ <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"፣ "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ፈቃዶችን አስተዳድር"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ሰዓት፦ <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"እንቅስቃሴ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"እንቅስቃሴ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"የሰውነት አካል መለኪያዎች"</string>
@@ -341,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"የይለፍ ቃልዎን ከረሱ እና ስልክዎ ከጠፋብዎት የጤና አገናኝ የተቀመጠውን ውሂብዎ መልሰው እንዲያገኙ ሊረዳዎት አይችልም።"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ተመለስ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ቀጣይ"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"በHealth Connect ይጀምሩ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"የጤና አገናኝ የእርስዎን የጤና እና አካል ብቃት ውሂብ ያከማቻል፣ ይህም በስልክዎ ላይ ያሉ የተለያዩ መተግበሪያዎችን ለማስመር ቀላል መንገድ ይሰጥዎታል"</string>
     <string name="share_data" msgid="3481932156368883946">"በመተግበሪያዎችዎ ውሂብን ያጋሩ"</string>

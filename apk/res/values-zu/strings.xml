@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Uma ukhohlwa iphasiwedi yakho bese ulahlekelwa yifoni yakho, i-Health Connect ayikwazi ukukusiza ukuthi uthole idatha yakho elondoloziwe."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Emuva"</string>
     <string name="export_next_button" msgid="657930567137105172">"Okulandelayo"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Qalisa nge-Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"I-Health Connect igcina ngokuvikelekile idatha yakho yezempilo nokufaneleka, okukunikeza indlela elula yokuvumelanisa ama-app ahlukile efonini yakho"</string>
     <string name="share_data" msgid="3481932156368883946">"Yabelana ngedatha nama-app akho"</string>

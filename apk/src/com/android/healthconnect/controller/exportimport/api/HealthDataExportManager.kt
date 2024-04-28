@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportSettings
-import javax.inject.Inject
 
-/** Implementation of the HealthExportManager interface. */
-class HealthDataExportManagerImpl @Inject constructor(private val manager: HealthConnectManager) :
-    HealthDataExportManager {
+/** Wrapper for HealthConnectManager export apis. */
+interface HealthDataExportManager {
+    fun getScheduledExportPeriodInDays(): Int
 
-    override fun getScheduledExportPeriodInDays(): Int {
-        return manager.scheduledExportPeriodInDays
-    }
-
-    override fun configureScheduledExport(settings: ScheduledExportSettings) {
-        return manager.configureScheduledExport(settings)
-    }
+    fun configureScheduledExport(settings: ScheduledExportSettings)
 }

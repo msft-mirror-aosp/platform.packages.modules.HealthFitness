@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"तुम्ही तुमचा पासवर्ड विसरल्यास आणि तुमचा फोन गमवल्यास, Health Connect हे तुमचा सेव्ह केलेला डेटा रिकव्हर करण्यात तुम्हाला मदत करू शकत नाही."</string>
     <string name="export_back_button" msgid="3550795479165524982">"मागे जा"</string>
     <string name="export_next_button" msgid="657930567137105172">"पुढे जा"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect सह सुरुवात करा"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect हे तुमचा आरोग्य आणि फिटनेसशी संबंधित डेटा स्टोअर करते व तुम्हाला तुमच्या फोनवरील वेगवेगळी अ‍ॅप्स सिंक करण्याचा सोपा मार्ग देते"</string>
     <string name="share_data" msgid="3481932156368883946">"तुमच्या अ‍ॅप्ससह डेटा शेअर करा"</string>

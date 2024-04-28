@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.service
+package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.HealthConnectManager
-import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
-import com.android.healthconnect.controller.exportimport.api.HealthDataExportManagerImpl
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import android.health.connect.exportimport.ScheduledExportSettings
+import javax.inject.Inject
 
-@Module
-@InstallIn(SingletonComponent::class)
-class HealthExportManagerModule {
-    @Provides
-    fun providesHealthExportManager(
-        healthConnectManager: HealthConnectManager
-    ): HealthDataExportManager {
-        return HealthDataExportManagerImpl(healthConnectManager)
+/** Implementation of the HealthExportManager interface. */
+class HealthDataExportManagerImpl @Inject constructor(private val manager: HealthConnectManager) :
+    HealthDataExportManager {
+
+    override fun getScheduledExportPeriodInDays(): Int {
+        return manager.scheduledExportPeriodInDays
+    }
+
+    override fun configureScheduledExport(settings: ScheduledExportSettings) {
+        return manager.configureScheduledExport(settings)
     }
 }
