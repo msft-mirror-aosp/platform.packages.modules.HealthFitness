@@ -27,7 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Nema podataka"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Dopuštenja aplikacija"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljajte aplikacijama i dopuštenjima"</string>
-    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikacija/aplikacije ima/imaju pristup"</string>
+    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Aplikacije s pristupom: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Aplikacije koje imaju pristup: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija ima pristup"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikacija ima pristup}one{# aplikacija ima pristup}few{# aplikacije imaju pristup}other{# aplikacija ima pristup}}"</string>
@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Bilježenje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljajte dopuštenjima"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Vrijeme: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivnost"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivnost"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Tjelesne mjere"</string>
@@ -86,12 +85,12 @@
     <string name="background_read_title" msgid="5061383169517186234">"Pristupanje podacima u pozadini"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa podacima u pozadini?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Dopustite aplikaciji da pristupa podacima Health Connecta kad ne upotrebljavate aplikaciju"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Ako dopustite, ova aplikacija može pristupati podacima Health Connecta kad ne upotrebljavate aplikaciju."</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Ako dopustite, ova aplikacija može pristupati podacima iz aplikacije Health Connect i kad je ne upotrebljavate."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Pristupanje prijašnjim podacima"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Želite li dopustiti aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> da pristupa prijašnjim podacima?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Dopustite aplikaciji da pristupa podacima Health Connecta koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Dopustite aplikaciji da pristupa svim prijašnjim podacima Health Connecta"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dopustite, aplikacija može pristupati podacima Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ako dopustite, aplikacija može pristupati podacima iz aplikacije Health Connect koji su dodani prije <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ako dopustite, aplikacija može pristupati svim prijašnjim podacima Health Connecta."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Aktivna potrošnja kalorija"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"aktivna potrošnja kalorija"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Svakodnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Tjedno"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mjesečno"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Odaberite gdje želite izvesti podatke"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Uključivanje šifriranja"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci se trebaju šifrirati da bi se mogli spremiti. Nitko, čak ni Google ili Health Connect, neće im moći pristupiti."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Izradite zaporku da biste zaštitili svoje šifrirane podatke. Ta će vam zaporka biti potrebna za uvoz i vraćanje podataka."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite zaporku ili izgubite telefon, Health Connect ne može vam pomoći oporaviti spremljene podatke."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Natrag"</string>
     <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Počnite upotrebljavati Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect sprema podatke o vašem zdravlju i fitnessu te vam pruža jednostavan način za sinkronizaciju različitih aplikacija na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke s aplikacijama"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}one{# km/h}few{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milja na sat}one{# milja na sat}few{# milje na sat}other{# milja na sat}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometar na sat}one{# kilometar na sat}few{# kilometra na sat}other{# kilometara na sat}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/milja"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> min po milji"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> min po kilometru"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yd"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metara"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> min po 100 yd"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> min po 100 metara"</string>
     <string name="time_range_long" msgid="5067423945245490288">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 pogurivanje invalidskih kolica}one{# pogurivanje invalidskih kolica}few{# pogurivanja invalidskih kolica}other{# pogurivanja invalidskih kolica}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Ukupno: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Koliko god je ponavljanja moguće"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Razina truda: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ponavljanje}one{# ponavljanje}few{# ponavljanja}other{# ponavljanja}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ponavljanje}one{# ponavljanje}few{# ponavljanja}other{# ponavljanja}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenti vježbe"</string>

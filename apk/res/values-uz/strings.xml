@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Yozildi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Ruxsatlarni boshqarish"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Vaqt: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Faollik"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"faollik"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Jismoniy koʻrsatkichlar"</string>
@@ -106,8 +105,8 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Mashq yoʻnalishini yozing"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Mashq yoʻnalishini oʻqish"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Mashqlar marshrutlarini oʻqish"</string>
-    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Shugʻullanish rejalari"</string>
-    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"shugʻullanish rejalari"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Mashgʻulot rejalari"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"mashgʻulot rejalari"</string>
     <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Shugʻullanish rejalarini koʻrish"</string>
     <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Shugʻullanish rejalarini yozish"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Masofa"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Kunlik"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Har hafta"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Oylik"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Qayerga eksport qilishni tanlang"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Shifrlashni yoqish"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Maʼlumotlar saqlanishidan oldin shifrlanishi kerak. Ular hech kimga koʻrinmaydi, hatto Google yoki Health Connect xizmatiga ham."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Shifrlangan maʼlumotlarni himoyalash uchun parol yarating. Bu parol maʼlumotlarni import qilish va tiklashda kerak boʻladi."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Parolni unutsangiz yoki telefonni yoʻqotsangiz, Health Connect saqlangan maʼlumotlarni tiklashda yordam bera olmaydi."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Orqaga"</string>
     <string name="export_next_button" msgid="657930567137105172">"Keyingisi"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect bilan ishlashni boshlash"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect salomatlik va fitnes maʼlumotlaringizni xavfsiz saqlaydi va telefondagi boshqa ilovalarga oson sinxronlash imkonini beradi"</string>
     <string name="share_data" msgid="3481932156368883946">"Ilovalarga axborot ulashish"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/st}other{# km/st}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{Soatiga 1 mil}other{Soatiga # mil}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{Soatiga 1 kilometr}other{Soatiga # kilometr}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> daq/mil"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> daq/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"miliga <xliff:g id="MINUTE">%1$s</xliff:g> daqiqa"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"kilometriga <xliff:g id="MINUTE">%1$s</xliff:g> daqiqa"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> daq/100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> daq/100 metr"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"har 100 yardga <xliff:g id="MINUTE">%1$s</xliff:g> daqiqa"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"har 100 metrga <xliff:g id="MINUTE">%1$s</xliff:g> daqiqa"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> – <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> – <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{nogironlar aravasini 1 marta itarish}other{nogironlar aravasini # marta itarish}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Jami: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Iloji boricha koʻproq takrorlash"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Harakat darajasi: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 marta}other{# marta}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 marta}other{# marta}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Mashq segmentlari"</string>

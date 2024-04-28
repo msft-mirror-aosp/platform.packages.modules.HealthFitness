@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Записване: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управление на разрешенията"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Час: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активност"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активност"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Мерки на тялото"</string>
@@ -88,10 +87,10 @@
     <string name="background_read_description" msgid="3203594555849969283">"Разрешете на това приложение да осъществява достъп до данните в Health Connect, когато не го използвате"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Ако предоставите разрешението, това приложение ще има достъп до данните в Health Connect, когато не го използвате."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Достъп до миналите данни"</string>
-    <string name="historic_access_request_title" msgid="4645920231853414742">"Да се разрешили на <xliff:g id="APP_NAME">%1$s</xliff:g> да осъществява достъп до миналите данни?"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Да се разреши ли на <xliff:g id="APP_NAME">%1$s</xliff:g> да осъществява достъп до миналите данни?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Разрешете на това приложение да осъществява достъп до данните в Health Connect, добавени преди <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Разрешете на това приложение да осъществява достъп до всички минали данни в Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Ако предоставите разрешението, това приложение ще има достъп до данните в Health Connect, добавени преди <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Ако предоставите разрешението, това приложение ще има достъп до данните в Health Connect, добавени преди <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ако предоставите разрешението, това приложение ще има достъп до всички минали данни в Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Изгорени калории от активност"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"изгорени калории от активност"</string>
@@ -106,7 +105,7 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Записване на маршрута за упражненията"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Четене на маршрута за упражненията"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Четене на маршрутите за упражнения"</string>
-    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Планове за трениране"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Планове за тренировки"</string>
     <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"планове за трениране"</string>
     <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Четене на плановете за трениране"</string>
     <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Записване на плановете за трениране"</string>
@@ -331,8 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ежеседмично"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ежемесечно"</string>
-    <!-- no translation found for export_destination_title (1434632545224158402) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Изберете къде да експортирате"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Включване на шифроването"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Данните трябва да бъдат шифровани, преди да бъдат запазени. Никой, включително Google и Health Connect, няма да има достъп до тях."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Създайте парола, за да защитите шифрованите си данни. Тя ще ви е нужна при импортиране и възстановяване на данните."</string>
@@ -342,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ако забравите паролата си или изгубите телефона си, Health Connect не може да ви помогне да възстановите запазените данни."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Напред"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="7930941018430608076">"Първи стъпки с Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect съхранява данните за здравословното ви състояние и физическата ви активност и ви предоставя лесен начин да синхронизирате различните приложения на телефона си"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделяне на данни с приложенията ви"</string>
@@ -409,22 +411,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 км/ч}other{# км/ч}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 миля в час}other{# мили в час}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 километър в час}other{# километра в час}}"</string>
-    <!-- no translation found for velocity_minute_miles (7700413725988014667) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km (4772380313506015301) -->
-    <skip />
-    <!-- no translation found for velocity_minute_miles_long (6889048307278340076) -->
-    <skip />
-    <!-- no translation found for velocity_minute_km_long (4037299863590066470) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards (647561643828842315) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters (4636956099725561607) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_yards_long (3005945921657283386) -->
-    <skip />
-    <!-- no translation found for velocity_minute_per_one_hundred_meters_long (6806485527680697198) -->
-    <skip />
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/миля"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/км"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> мин за миля"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> мин за километър"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/100 ярда"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/100 метра"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> мин за 100 ярда"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> мин за 100 метра"</string>
     <string name="time_range_long" msgid="5067423945245490288">"от <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"от <xliff:g id="START_TIME">%1$s</xliff:g> до <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 бутане на инвалидна количка}other{# бутания на инвалидна количка}}"</string>
@@ -456,8 +450,7 @@
     <string name="total_calories_burned" msgid="1674210345283541450">"Общо: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Възможно най-много повторения"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Ниво на натоварване: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
-    <!-- no translation found for elapsed_time_placeholder (5154979833935704302) -->
-    <skip />
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 повторение}other{# повторения}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 повторение}other{# повторения}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Сегменти от упражненията"</string>
@@ -723,7 +716,7 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ухо"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Китка"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Вагина"</string>
-    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Местоположение на измерването"</string>
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Къде е извършено измерването"</string>
     <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Основна стойност"</string>
     <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Отклонение от основната стойност"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миля}other{# мили}}"</string>

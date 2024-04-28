@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.healthconnect.controller.export.api
+package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.HealthConnectException
-import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.util.Log
 import javax.inject.Inject
@@ -29,7 +28,7 @@ import kotlinx.coroutines.withContext
 class UpdateExportSettingsUseCase
 @Inject
 constructor(
-    private val healthConnectManager: HealthConnectManager,
+    private val healthDataExportManager: HealthDataExportManager,
 ) : IUpdateExportSettingsUseCase {
     companion object {
         private const val TAG = "UpdateExportSettingsUseCase"
@@ -41,7 +40,7 @@ constructor(
     ): ExportUseCaseResult<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                healthConnectManager.configureScheduledExport(settings)
+                healthDataExportManager.configureScheduledExport(settings)
                 ExportUseCaseResult.Success(Unit)
             } catch (ex: HealthConnectException) {
                 Log.e(TAG, "Failed to update export settings ", ex)
