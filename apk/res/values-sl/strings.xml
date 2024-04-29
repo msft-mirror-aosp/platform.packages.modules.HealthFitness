@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Če pozabite geslo ali izgubite telefon, vam Health Connect ne more pomagati obnoviti shranjenih podatkov."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazaj"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprej"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Prekliči"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Naprej"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Začetek uporabe storitve Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect shranjuje vaše podatke o zdravju in telesni pripravljenosti ter vam omogoča, da na preprost način sinhronizirate različne aplikacije v telefonu."</string>
     <string name="share_data" msgid="3481932156368883946">"Deljenje podatkov z aplikacijami"</string>

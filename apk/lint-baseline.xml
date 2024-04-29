@@ -1,0 +1,1400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.4.0-alpha08" type="baseline" client="" dependencies="true" name="" variant="all" version="8.4.0-alpha08">
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord`"
+        errorLine1="    SKIN_TEMPERATURE(SkinTemperatureRecord::class.java),"
+        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/shared/DataType.kt"
+            line="99"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord`"
+        errorLine1="    PLANNED_EXERCISE(PlannedExerciseSessionRecord::class.java)"
+        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/shared/DataType.kt"
+            line="100"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Enum for switch requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal`"
+        errorLine1="        return when (performanceGoal) {"
+        errorLine2="                     ~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="62"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.PowerGoal`"
+        errorLine1="            is ExercisePerformanceGoal.PowerGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="63"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.PowerGoal#getMinPower`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.minPower.inWatts)),"
+        errorLine2="                                                         ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="68"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.PowerGoal#getMaxPower`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.maxPower.inWatts)))"
+        errorLine2="                                                         ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="71"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.AmrapGoal`"
+        errorLine1="            is ExercisePerformanceGoal.AmrapGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="72"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal`"
+        errorLine1="            is ExercisePerformanceGoal.CadenceGoal -> {"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="74"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMinRpm`"
+        errorLine1="                            mapOf(&quot;count&quot; to performanceGoal.minRpm)),"
+        errorLine2="                                                             ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="80"
+            column="62"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMaxRpm`"
+        errorLine1="                            mapOf(&quot;count&quot; to performanceGoal.maxRpm)))"
+        errorLine2="                                                             ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="83"
+            column="62"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMinRpm`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.minRpm)),"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="89"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMaxRpm`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.maxRpm)))"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="92"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal`"
+        errorLine1="            is ExercisePerformanceGoal.SpeedGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="94"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMaxSpeed`"
+        errorLine1="                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType),"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="100"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMinSpeed`"
+        errorLine1="                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType))"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="102"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMinSpeed`"
+        errorLine1="                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="107"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMaxSpeed`"
+        errorLine1="                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="109"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.HeartRateGoal`"
+        errorLine1="            is ExercisePerformanceGoal.HeartRateGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="110"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.HeartRateGoal#getMinBpm`"
+        errorLine1="                        mapOf(&quot;count&quot; to performanceGoal.minBpm)),"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="115"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.HeartRateGoal#getMaxBpm`"
+        errorLine1="                        mapOf(&quot;count&quot; to performanceGoal.maxBpm)))"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="118"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.WeightGoal`"
+        errorLine1="            is ExercisePerformanceGoal.WeightGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="119"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.WeightGoal#getMass`"
+        errorLine1="                    context, performanceGoal.mass, unitPreferences.getWeightUnit())"
+        errorLine2="                                             ~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="121"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.RateOfPerceivedExertionGoal`"
+        errorLine1="            is ExercisePerformanceGoal.RateOfPerceivedExertionGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="122"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.RateOfPerceivedExertionGoal#getRpe`"
+        errorLine1="                context.getString(R.string.rate_of_perceived_exertion_goal, performanceGoal.rpe)"
+        errorLine2="                                                                                            ~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="123"
+            column="93"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Enum for switch requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal`"
+        errorLine1="        return when (performanceGoal) {"
+        errorLine2="                     ~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="136"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.PowerGoal`"
+        errorLine1="            is ExercisePerformanceGoal.PowerGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="137"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.PowerGoal#getMinPower`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.minPower.inWatts)),"
+        errorLine2="                                                         ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="142"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.PowerGoal#getMaxPower`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.maxPower.inWatts)))"
+        errorLine2="                                                         ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="145"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.AmrapGoal`"
+        errorLine1="            is ExercisePerformanceGoal.AmrapGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="146"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal`"
+        errorLine1="            is ExercisePerformanceGoal.CadenceGoal -> {"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="148"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMinRpm`"
+        errorLine1="                            mapOf(&quot;count&quot; to performanceGoal.minRpm)),"
+        errorLine2="                                                             ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="154"
+            column="62"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMaxRpm`"
+        errorLine1="                            mapOf(&quot;count&quot; to performanceGoal.maxRpm)))"
+        errorLine2="                                                             ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="157"
+            column="62"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMinRpm`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.minRpm)),"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="163"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.CadenceGoal#getMaxRpm`"
+        errorLine1="                        mapOf(&quot;value&quot; to performanceGoal.maxRpm)))"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="166"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal`"
+        errorLine1="            is ExercisePerformanceGoal.SpeedGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="168"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMaxSpeed`"
+        errorLine1="                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType),"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="174"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMinSpeed`"
+        errorLine1="                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType))"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="176"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMinSpeed`"
+        errorLine1="                            performanceGoal.minSpeed, unitPreferences, exerciseSegmentType),"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="181"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.SpeedGoal#getMaxSpeed`"
+        errorLine1="                            performanceGoal.maxSpeed, unitPreferences, exerciseSegmentType))"
+        errorLine2="                                            ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="183"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.HeartRateGoal`"
+        errorLine1="            is ExercisePerformanceGoal.HeartRateGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="184"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.HeartRateGoal#getMinBpm`"
+        errorLine1="                        mapOf(&quot;count&quot; to performanceGoal.minBpm)),"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="189"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.HeartRateGoal#getMaxBpm`"
+        errorLine1="                        mapOf(&quot;count&quot; to performanceGoal.maxBpm)))"
+        errorLine2="                                                         ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="192"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.WeightGoal`"
+        errorLine1="            is ExercisePerformanceGoal.WeightGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="193"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.WeightGoal#getMass`"
+        errorLine1="                    context, performanceGoal.mass, unitPreferences.getWeightUnit())"
+        errorLine2="                                             ~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="195"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.RateOfPerceivedExertionGoal`"
+        errorLine1="            is ExercisePerformanceGoal.RateOfPerceivedExertionGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="196"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExercisePerformanceGoal.RateOfPerceivedExertionGoal#getRpe`"
+        errorLine1="                context.getString(R.string.rate_of_perceived_exertion_goal, performanceGoal.rpe)"
+        errorLine2="                                                                                            ~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/ExercisePerformanceGoalFormatter.kt"
+            line="197"
+            column="93"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord`"
+        errorLine1="            is SkinTemperatureRecord -> skinTemperatureFormatter.formatRecordDetails(record)"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/shared/HealthDataEntryDetailsFormatter.kt"
+            line="68"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord`"
+        errorLine1="            is PlannedExerciseSessionRecord ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/shared/HealthDataEntryDetailsFormatter.kt"
+            line="69"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord`"
+        errorLine1="            is SkinTemperatureRecord -> skinTemperatureFormatter.format(record, appName)"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/shared/HealthDataEntryFormatter.kt"
+            line="194"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord`"
+        errorLine1="            is PlannedExerciseSessionRecord ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/shared/HealthDataEntryFormatter.kt"
+            line="195"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord`"
+        errorLine1="            SKIN_TEMPERATURE to listOf(SkinTemperatureRecord::class.java),"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/shared/HealthPermissionToDatatypeMapper.kt"
+            line="138"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord`"
+        errorLine1="            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java))"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/shared/HealthPermissionToDatatypeMapper.kt"
+            line="139"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseBlock#getDescription`"
+        errorLine1="            block.description,"
+        errorLine2="                  ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseBlockFormatter.kt"
+            line="46"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseBlock#getRepetitions`"
+        errorLine1="                mapOf(&quot;count&quot; to block.repetitions)))"
+        errorLine2="                                       ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseBlockFormatter.kt"
+            line="49"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseBlock#getDescription`"
+        errorLine1="            block.description,"
+        errorLine2="                  ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseBlockFormatter.kt"
+            line="55"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseBlock#getRepetitions`"
+        errorLine1="                mapOf(&quot;count&quot; to block.repetitions)))"
+        errorLine2="                                       ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseBlockFormatter.kt"
+            line="58"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseBlock#getSteps`"
+        errorLine1="        val exerciseSteps = block.steps"
+        errorLine2="                                  ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseBlockFormatter.kt"
+            line="65"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord#getExerciseType`"
+        errorLine1="            getExerciseType(context, record.exerciseType),"
+        errorLine2="                                            ~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseSessionRecordFormatter.kt"
+            line="62"
+            column="45"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord#getTitle`"
+        errorLine1="            record.title)"
+        errorLine2="                   ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseSessionRecordFormatter.kt"
+            line="63"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord#getNotes`"
+        errorLine1="        return record.notes?.toString()"
+        errorLine2="                      ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseSessionRecordFormatter.kt"
+            line="67"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord#getBlocks`"
+        errorLine1="        val exerciseBlock = record.blocks"
+        errorLine2="                                   ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseSessionRecordFormatter.kt"
+            line="73"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord#getNotes`"
+        errorLine1="            if (!record.notes.isNullOrBlank()) {"
+        errorLine2="                        ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseSessionRecordFormatter.kt"
+            line="75"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseSessionRecord#getNotes`"
+        errorLine1="                add(FormattedSectionContent(record.notes.toString()))"
+        errorLine2="                                                   ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseSessionRecordFormatter.kt"
+            line="78"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getPerformanceGoals`"
+        errorLine1="        val performanceGoals = step.performanceGoals"
+        errorLine2="                                    ~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="50"
+            column="37"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getDescription`"
+        errorLine1="            if (!step.description.isNullOrBlank()) {"
+        errorLine2="                      ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="52"
+            column="23"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getDescription`"
+        errorLine1="                add(FormattedSectionContent(title = step.description.toString(), bulleted = true))"
+        errorLine2="                                                         ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="53"
+            column="58"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getExerciseType`"
+        errorLine1="                            performanceGoal, unitPreferences, step.exerciseType))"
+        errorLine2="                                                                   ~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="60"
+            column="68"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getCompletionGoal`"
+        errorLine1="        val completionGoal = step.completionGoal"
+        errorLine2="                                  ~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="70"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getExerciseType`"
+        errorLine1="        val exerciseSegmentType = step.exerciseType"
+        errorLine2="                                       ~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="71"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getCompletionGoal`"
+        errorLine1="        val completionGoal = step.completionGoal"
+        errorLine2="                                  ~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="82"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.PlannedExerciseStep#getExerciseType`"
+        errorLine1="        val exerciseSegmentType = step.exerciseType"
+        errorLine2="                                       ~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="83"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Enum for switch requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal`"
+        errorLine1="        return when (completionGoal) {"
+        errorLine2="                     ~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="94"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceGoal`"
+        errorLine1="            is ExerciseCompletionGoal.DistanceGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="95"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceGoal#getDistance`"
+        errorLine1="                LengthFormatter.formatValue(context, completionGoal.distance, unitPreferences)"
+        errorLine2="                                                                    ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="96"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DurationGoal`"
+        errorLine1="            is ExerciseCompletionGoal.DurationGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="97"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DurationGoal#getDuration`"
+        errorLine1="                DurationFormatter.formatDurationShort(context, completionGoal.duration)"
+        errorLine2="                                                                              ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="98"
+            column="79"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.StepsGoal`"
+        errorLine1="            is ExerciseCompletionGoal.StepsGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="99"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.StepsGoal#getSteps`"
+        errorLine1="                StepsFormatter(context).formatUnit(completionGoal.steps.toLong())"
+        errorLine2="                                                                  ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="100"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.RepetitionsGoal#getRepetitions`"
+        errorLine1="            is ExerciseCompletionGoal.RepetitionsGoal -> completionGoal.repetitions.toString()"
+        errorLine2="                                                                        ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="101"
+            column="73"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.RepetitionsGoal`"
+        errorLine1="            is ExerciseCompletionGoal.RepetitionsGoal -> completionGoal.repetitions.toString()"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="101"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.ActiveCaloriesBurnedGoal`"
+        errorLine1="            is ExerciseCompletionGoal.ActiveCaloriesBurnedGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="102"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.ActiveCaloriesBurnedGoal#getActiveCalories`"
+        errorLine1="                        context, completionGoal.activeCalories, unitPreferences))"
+        errorLine2="                                                ~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="106"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceWithVariableRestGoal`"
+        errorLine1="            is ExerciseCompletionGoal.DistanceWithVariableRestGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="107"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceWithVariableRestGoal#getDistance`"
+        errorLine1="                    LengthFormatter.formatValue(context, completionGoal.distance, unitPreferences),"
+        errorLine2="                                                                        ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="110"
+            column="73"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceWithVariableRestGoal#getDuration`"
+        errorLine1="                    DurationFormatter.formatDurationShort(context, completionGoal.duration))"
+        errorLine2="                                                                                  ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="111"
+            column="83"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.TotalCaloriesBurnedGoal`"
+        errorLine1="            is ExerciseCompletionGoal.TotalCaloriesBurnedGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="112"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.TotalCaloriesBurnedGoal#getTotalCalories`"
+        errorLine1="                        context, completionGoal.totalCalories, unitPreferences))"
+        errorLine2="                                                ~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="116"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Enum for switch requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal`"
+        errorLine1="        return when (completionGoal) {"
+        errorLine2="                     ~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="125"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceGoal`"
+        errorLine1="            is ExerciseCompletionGoal.DistanceGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="126"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceGoal#getDistance`"
+        errorLine1="                LengthFormatter.formatA11yValue(context, completionGoal.distance, unitPreferences)"
+        errorLine2="                                                                        ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="127"
+            column="73"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DurationGoal`"
+        errorLine1="            is ExerciseCompletionGoal.DurationGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="128"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DurationGoal#getDuration`"
+        errorLine1="                DurationFormatter.formatDurationLong(context, completionGoal.duration)"
+        errorLine2="                                                                             ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="129"
+            column="78"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.StepsGoal`"
+        errorLine1="            is ExerciseCompletionGoal.StepsGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="130"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.StepsGoal#getSteps`"
+        errorLine1="                StepsFormatter(context).formatA11yUnit(completionGoal.steps.toLong())"
+        errorLine2="                                                                      ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="131"
+            column="71"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.RepetitionsGoal#getRepetitions`"
+        errorLine1="            is ExerciseCompletionGoal.RepetitionsGoal -> completionGoal.repetitions.toString()"
+        errorLine2="                                                                        ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="132"
+            column="73"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.RepetitionsGoal`"
+        errorLine1="            is ExerciseCompletionGoal.RepetitionsGoal -> completionGoal.repetitions.toString()"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="132"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.ActiveCaloriesBurnedGoal`"
+        errorLine1="            is ExerciseCompletionGoal.ActiveCaloriesBurnedGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="133"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.ActiveCaloriesBurnedGoal#getActiveCalories`"
+        errorLine1="                        context, completionGoal.activeCalories, unitPreferences))"
+        errorLine2="                                                ~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="137"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceWithVariableRestGoal`"
+        errorLine1="            is ExerciseCompletionGoal.DistanceWithVariableRestGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="138"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceWithVariableRestGoal#getDistance`"
+        errorLine1="                        context, completionGoal.distance, unitPreferences),"
+        errorLine2="                                                ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="142"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.DistanceWithVariableRestGoal#getDuration`"
+        errorLine1="                    DurationFormatter.formatDurationLong(context, completionGoal.duration))"
+        errorLine2="                                                                                 ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="143"
+            column="82"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Class requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.TotalCaloriesBurnedGoal`"
+        errorLine1="            is ExerciseCompletionGoal.TotalCaloriesBurnedGoal ->"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="144"
+            column="16"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.ExerciseCompletionGoal.TotalCaloriesBurnedGoal#getTotalCalories`"
+        errorLine1="                        context, completionGoal.totalCalories, unitPreferences))"
+        errorLine2="                                                ~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/PlannedExerciseStepFormatter.kt"
+            line="148"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Cast from `SkinTemperatureRecord` to `Record` requires API level 35 (current min is 34)"
+        errorLine1="            dataType = getDataType(record))"
+        errorLine2="                                   ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="58"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getMeasurementLocation`"
+        errorLine1="            if (record.measurementLocation == MEASUREMENT_LOCATION_UNKNOWN) {"
+        errorLine2="                       ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="64"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getMeasurementLocation`"
+        errorLine1="                        header = formatLocation(context, record.measurementLocation),"
+        errorLine2="                                                                ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="74"
+            column="65"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getMeasurementLocation`"
+        errorLine1="                        headerA11y = formatLocation(context, record.measurementLocation)))"
+        errorLine2="                                                                    ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="75"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getBaseline`"
+        errorLine1="            if (record.baseline == null) {"
+        errorLine2="                       ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="79"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getBaseline`"
+        errorLine1="                        header = formatNullableTemperature(record.baseline, false),"
+        errorLine2="                                                                  ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="87"
+            column="67"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getBaseline`"
+        errorLine1="                        headerA11y = formatNullableTemperature(record.baseline, true)))"
+        errorLine2="                                                                      ~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="88"
+            column="71"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="            record.deltas"
+        errorLine2="                   ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="97"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getTime`"
+        errorLine1="                .sortedBy { it.time }"
+        errorLine2="                               ~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="98"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getTime`"
+        errorLine1="            header = timeFormatter.formatTime(delta.time),"
+        errorLine2="                                                    ~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="130"
+            column="53"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getTime`"
+        errorLine1="            headerA11y = timeFormatter.formatTime(delta.time),"
+        errorLine2="                                                        ~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="131"
+            column="57"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getDelta`"
+        errorLine1="                    context, delta.delta, unitPreferences),"
+        errorLine2="                                   ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="134"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getDelta`"
+        errorLine1="                    context, delta.delta, unitPreferences))"
+        errorLine2="                                   ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="137"
+            column="36"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="        return if (record.deltas.size == 1) {"
+        errorLine2="                          ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="144"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="            formatUnit(record.deltas.first().delta)"
+        errorLine2="                              ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="145"
+            column="31"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getDelta`"
+        errorLine1="            formatUnit(record.deltas.first().delta)"
+        errorLine2="                                             ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="145"
+            column="46"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="        return if (record.deltas.size == 1) {"
+        errorLine2="                          ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="155"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="            formatA11yUnit(record.deltas.first().delta)"
+        errorLine2="                                  ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="156"
+            column="35"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord.Delta#getDelta`"
+        errorLine1="            formatA11yUnit(record.deltas.first().delta)"
+        errorLine2="                                                 ~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="156"
+            column="50"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="        if (record.deltas.isEmpty()) {"
+        errorLine2="                   ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="175"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.units.TemperatureDelta#fromCelsius`"
+        errorLine1="            TemperatureDelta.fromCelsius("
+        errorLine2="                             ~~~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="179"
+            column="30"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="                record.deltas.sumOf { it.delta.inCelsius } / record.deltas.size)"
+        errorLine2="                       ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="180"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.SkinTemperatureRecord#getDeltas`"
+        errorLine1="                record.deltas.sumOf { it.delta.inCelsius } / record.deltas.size)"
+        errorLine2="                                                                    ~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/SkinTemperatureFormatter.kt"
+            line="180"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 35 (current min is 34): `android.health.connect.datatypes.units.TemperatureDelta#getInCelsius`"
+        errorLine1="                    temperatureDelta.inCelsius, unitPreferences.getTemperatureUnit()) * 10) / 10"
+        errorLine2="                                     ~~~~~~~~~">
+        <location
+            file="packages/modules/HealthFitness/apk/src/com/android/healthconnect/controller/dataentries/formatters/TemperatureDeltaFormatter.kt"
+            line="95"
+            column="38"/>
+    </issue>
+
+</issues>

@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Телефоныңызды ұмытып немесе жоғалтып алсаңыз, Health Connect сақталған деректерді қалпына келтіруге көмектесе алмайды."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Артқа"</string>
     <string name="export_next_button" msgid="657930567137105172">"Келесі"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Бас тарту"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Келесі"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect қолданбасымен жұмысты бастау"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect денсаулық және фитнес деректерін сақтап, телефонда әртүрлі қолданбаны синхрондаудың қарапайым жолын ұсынады."</string>
     <string name="share_data" msgid="3481932156368883946">"Деректерді қолданбалармен бөлісу"</string>

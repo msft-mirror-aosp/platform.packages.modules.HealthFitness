@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package healthconnect.exportimport;
+package com.android.server.healthconnect.exportimport;
 
+import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
+import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
@@ -32,7 +34,6 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.TestUtils;
-import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -96,7 +97,7 @@ public class ImportManagerTest {
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(dbToImport.toPath());
+        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -120,8 +121,11 @@ public class ImportManagerTest {
         File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        mImportManager.runImport(dbToImport.toPath());
+        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
 
-        assertThat(mImportManager.getDbFile().exists()).isFalse();
+        File databaseDir =
+                DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
+                        .getDatabaseDir();
+        assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
 }

@@ -133,7 +133,9 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         try {
             mUidToGrantTimeCache.put(uid, time);
             mDatastore.writeForUser(
-                    mUidToGrantTimeCache.extractUserGrantTimeState(user), user, DATA_TYPE_CURRENT);
+                    mUidToGrantTimeCache.extractUserGrantTimeStateUseSharedNames(user),
+                    user,
+                    DATA_TYPE_CURRENT);
         } finally {
             mGrantTimeLock.writeLock().unlock();
         }
@@ -226,7 +228,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                 }
 
                 UserGrantTimeState updatedState =
-                        mUidToGrantTimeCache.extractUserGrantTimeState(user);
+                        mUidToGrantTimeCache.extractUserGrantTimeStateUseSharedNames(user);
                 logIfInDebugMode("State after onPermissionsChanged :", updatedState);
                 mDatastore.writeForUser(updatedState, user, DATA_TYPE_CURRENT);
             } else {
@@ -245,12 +247,10 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         }
     }
 
-    // TODO(b/277063776): move two methods below to b&r classes.
-
-    /** Returns the state which should be backed up. */
-    public UserGrantTimeState createBackupState(UserHandle user) {
+    /** Returns the grant time state for this user. */
+    public UserGrantTimeState getGrantTimeStateForUser(UserHandle user) {
         initAndValidateUserStateIfNeedLocked(user);
-        return mUidToGrantTimeCache.extractUserBackupGrantTimeState(user);
+        return mUidToGrantTimeCache.extractUserGrantTimeStateDoNotUseSharedNames(user);
     }
 
     /**
@@ -262,7 +262,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
      * @param userId user for which the data is available.
      * @param state backup state to apply.
      */
-    public void applyAndStageBackupDataForUser(UserHandle userId, UserGrantTimeState state) {
+    public void applyAndStageGrantTimeStateForUser(UserHandle userId, UserGrantTimeState state) {
         initAndValidateUserStateIfNeedLocked(userId);
 
         mGrantTimeLock.writeLock().lock();
@@ -298,7 +298,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
             try {
                 mUidToGrantTimeCache.remove(removedPackageUid);
                 UserGrantTimeState updatedState =
-                        mUidToGrantTimeCache.extractUserGrantTimeState(userHandle);
+                        mUidToGrantTimeCache.extractUserGrantTimeStateUseSharedNames(userHandle);
                 logIfInDebugMode("State after package " + packageName + " removed: ", updatedState);
                 mDatastore.writeForUser(updatedState, userHandle, DATA_TYPE_CURRENT);
             } finally {
@@ -331,7 +331,9 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
         if (stateChanged) {
             mDatastore.writeForUser(
-                    mUidToGrantTimeCache.extractUserGrantTimeState(user), user, DATA_TYPE_CURRENT);
+                    mUidToGrantTimeCache.extractUserGrantTimeStateUseSharedNames(user),
+                    user,
+                    DATA_TYPE_CURRENT);
         }
     }
 
@@ -532,9 +534,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
             @NonNull UserGrantTimeState recordedState, @NonNull Set<String> validApps) {
         Set<String> recordedButNotValid =
                 new ArraySet<>(recordedState.getPackageGrantTimes().keySet());
-        if (validApps != null) {
-            recordedButNotValid.removeAll(validApps);
-        }
+        recordedButNotValid.removeAll(validApps);
 
         if (!recordedButNotValid.isEmpty()) {
             Log.w(
@@ -554,9 +554,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
             @NonNull UserGrantTimeState recordedState, @NonNull Set<String> validSharedUsers) {
         Set<String> recordedButNotValid =
                 new ArraySet<>(recordedState.getSharedUserGrantTimes().keySet());
-        if (validSharedUsers != null) {
-            recordedButNotValid.removeAll(validSharedUsers);
-        }
+        recordedButNotValid.removeAll(validSharedUsers);
 
         if (!recordedButNotValid.isEmpty()) {
             Log.w(
@@ -624,8 +622,13 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
             return mUidToGrantTime.put(uid, time);
         }
 
+        /**
+         * Get the grant time state for the user.
+         *
+         * <p>Prefer using shared user names for apps where present.
+         */
         @NonNull
-        UserGrantTimeState extractUserGrantTimeState(@NonNull UserHandle user) {
+        UserGrantTimeState extractUserGrantTimeStateUseSharedNames(@NonNull UserHandle user) {
             Map<String, Instant> sharedUserToGrantTime = new ArrayMap<>();
             Map<String, Instant> packageNameToGrantTime = new ArrayMap<>();
 
@@ -653,9 +656,14 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                     packageNameToGrantTime, sharedUserToGrantTime, CURRENT_VERSION);
         }
 
+        /**
+         * Get the grant time state for the user.
+         *
+         * <p>Always uses package names, even if shared user names for an app is present.
+         */
         @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         @NonNull
-        UserGrantTimeState extractUserBackupGrantTimeState(@NonNull UserHandle user) {
+        UserGrantTimeState extractUserGrantTimeStateDoNotUseSharedNames(@NonNull UserHandle user) {
             Map<String, Instant> sharedUserToGrantTime = new ArrayMap<>();
             Map<String, Instant> packageNameToGrantTime = new ArrayMap<>();
 

@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"如果您忘记了密码、丢失了手机，“健康数据共享”无法帮助您恢复已保存的数据。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"继续"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"取消"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"继续"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"开始使用健康数据共享"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"健康数据共享会存储您的健康与健身数据，让您可以轻松同步手机上的不同应用"</string>
     <string name="share_data" msgid="3481932156368883946">"与应用分享数据"</string>

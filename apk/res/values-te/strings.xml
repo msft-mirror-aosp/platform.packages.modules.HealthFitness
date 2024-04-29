@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"మీరు పాస్‌వర్డ్‌ను మర్చిపోయి, ఫోన్ పోగొట్టుకుంటే, సేవ్ చేయబడిన మీ డేటాను రికవర్ చేయడంలో Health Connect సహాయపడలేదు."</string>
     <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
     <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"రద్దు చేయండి"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"తర్వాత"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connectను ప్రారంభించండి"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు సంబంధించిన డేటాను స్టోర్ చేస్తుంది, తద్వారా మీరు మీ డేటాను ఫోన్​లోని విభిన్న రకాల యాప్‌లతో సులభంగా సింక్ చేయవచ్చు"</string>
     <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>

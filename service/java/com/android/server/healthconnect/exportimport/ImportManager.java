@@ -22,7 +22,6 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
 import android.util.Slog;
@@ -30,7 +29,6 @@ import android.util.Slog;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.utils.FilesUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,55 +44,60 @@ import java.nio.file.StandardCopyOption;
  */
 public final class ImportManager {
 
-    private static final String TAG = "HealthConnectImportManager";
-    private static final String STAGED_DATABASE_NAME = "health_connect_import.db";
+    @VisibleForTesting static final String IMPORT_DATABASE_DIR_NAME = "export_import";
 
-    private final StagedDatabaseContext mStagedDbContext;
+    @VisibleForTesting static final String IMPORT_DATABASE_FILE_NAME = "health_connect_import.db";
+
+    private static final String TAG = "HealthConnectImportManager";
+
+    private final Context mContext;
     private final DatabaseMerger mDatabaseMerger;
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public ImportManager(@NonNull Context context) {
         requireNonNull(context);
-        mStagedDbContext = new StagedDatabaseContext(context, context.getUser());
+        mContext = context;
         mDatabaseMerger = new DatabaseMerger(context);
     }
 
-    /** Updates import DB location. */
-    public void onUserSwitching(UserHandle currentForegroundUser) {
-        mStagedDbContext.setupForUser(currentForegroundUser);
-    }
-
     /** Reads and merges the backup data from a local file. */
-    public void runImport(Path pathToImport) {
-        File stagedDbFile = getDbFile();
+    public synchronized void runImport(Path pathToImport, UserHandle userHandle) {
+        Slog.i(TAG, "Import started");
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
+
+        File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
+        importDbFile.mkdirs();
         try {
-            Path destinationPath = FileSystems.getDefault().getPath(stagedDbFile.getAbsolutePath());
+            Path destinationPath = FileSystems.getDefault().getPath(importDbFile.getAbsolutePath());
             Files.copy(pathToImport, destinationPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException | SecurityException e) {
-            Slog.e(TAG, "Failed to get copy to destination: " + stagedDbFile.getName(), e);
-            stagedDbFile.delete();
+            Slog.e(TAG, "Failed to get copy to destination: " + importDbFile.getName(), e);
+            importDbFile.delete();
             return;
         }
 
-        if (canMerge(stagedDbFile)) {
+        if (canMerge(importDbFile)) {
             HealthConnectDatabase stagedDatabase =
-                    new HealthConnectDatabase(mStagedDbContext, STAGED_DATABASE_NAME);
+                    new HealthConnectDatabase(dbContext, IMPORT_DATABASE_FILE_NAME);
             mDatabaseMerger.merge(stagedDatabase);
         }
 
         // Delete the staged db as we are done merging.
-        Slog.i(TAG, "Deleting staged db after merging.");
-        mStagedDbContext.deleteDatabase(STAGED_DATABASE_NAME);
-        stagedDbFile.delete();
+        Slog.i(TAG, "Deleting staged db after merging");
+        dbContext.deleteDatabase(IMPORT_DATABASE_FILE_NAME);
+        importDbFile.delete();
+
+        Slog.i(TAG, "Import completed");
     }
 
-    private boolean canMerge(File stagedDbFile) {
+    private boolean canMerge(File importDbFile) {
         int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
-        if (stagedDbFile.exists()) {
-            try (SQLiteDatabase stagedDb =
+        if (importDbFile.exists()) {
+            try (SQLiteDatabase importDb =
                     SQLiteDatabase.openDatabase(
-                            stagedDbFile, new SQLiteDatabase.OpenParams.Builder().build())) {
-                int stagedDbVersion = stagedDb.getVersion();
+                            importDbFile, new SQLiteDatabase.OpenParams.Builder().build())) {
+                int stagedDbVersion = importDb.getVersion();
                 Slog.i(
                         TAG,
                         "merging staged data, current version = "
@@ -113,39 +116,5 @@ public final class ImportManager {
 
         Slog.i(TAG, "Starting the data merge.");
         return true;
-    }
-
-    @VisibleForTesting
-    public File getDbFile() {
-        return mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME);
-    }
-
-    /**
-     * {@link Context} for the staged health connect db.
-     *
-     * @hide
-     */
-    private static final class StagedDatabaseContext extends ContextWrapper {
-
-        private File mDatabaseDir;
-
-        @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-        StagedDatabaseContext(@NonNull Context context, UserHandle userHandle) {
-            super(context);
-            requireNonNull(context);
-            setupForUser(userHandle);
-        }
-
-        public void setupForUser(UserHandle userHandle) {
-            File hcDirectory =
-                    FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier());
-            mDatabaseDir = new File(hcDirectory, "remote_import");
-            mDatabaseDir.mkdirs();
-        }
-
-        @Override
-        public File getDatabasePath(String name) {
-            return new File(mDatabaseDir, name);
-        }
     }
 }

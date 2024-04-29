@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Parolu unutsanız və telefonu itirsəniz, Health Connect yadda saxlanılmış datanı bərpa etməyə kömək edə bilməz."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"Növbəti"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Ləğv edin"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Növbəti"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ilə başlayın"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect sağlamlıq və fitnes datanızı saxlayaraq, telefonunuzdakı müxtəlif tətbiqləri sinxronlaşdırmaq üçün sadə yol təqdim edir"</string>
     <string name="share_data" msgid="3481932156368883946">"Tətbiqlərinizlə data paylaşın"</string>

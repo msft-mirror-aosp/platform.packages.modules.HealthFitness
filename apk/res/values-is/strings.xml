@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ef þú gleymir aðgangsorðinu þínu og týnir símanum þínum getur Heilsutenging ekki hjálpað þér að endurheimta vistuðu gögnin þín."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Til baka"</string>
     <string name="export_next_button" msgid="657930567137105172">"Áfram"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Hætta við"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Áfram"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Byrjaðu að nota Heilsutengingu"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í símanum á einfaldan hátt"</string>
     <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>

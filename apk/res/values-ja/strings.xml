@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"パスワードを忘れたり、スマートフォンを紛失したりした場合、ヘルスコネクトでは保存されたデータを復元できなくなります。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"戻る"</string>
     <string name="export_next_button" msgid="657930567137105172">"次へ"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"キャンセル"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"次へ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ヘルスコネクトを使ってみる"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"ヘルスコネクトを利用すると、健康状態やフィットネスのデータを保存し、スマートフォン上のさまざまなアプリを簡単に同期することができます"</string>
     <string name="share_data" msgid="3481932156368883946">"アプリとデータを共有する"</string>

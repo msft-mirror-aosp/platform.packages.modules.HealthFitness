@@ -215,20 +215,12 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
         log("Data Restore state = " + getHealthConnectDataRestoreState());
     }
 
-    public void
-            testPermissionsControllerIsRestoredBeforeHCRestore_expectGrantTimeIsRestoredCorrectly()
-                    throws Exception {
+    public void testPermissionRestoredBeforeHCRestore_expectGrantTimeIsRestoredCorrectly()
+            throws Exception {
         // revoke all permissions for both test apps to remove all stored grant time as setup step
         revokeAllPermissionsWithDelay(TEST_APP_1_PACKAGE_NAME, "");
         revokeAllPermissionsWithDelay(TEST_APP_2_PACKAGE_NAME, "");
-        assertWithTimeout(
-                () ->
-                        assertThat(getHealthDataHistoricalAccessStartDate(TEST_APP_1_PACKAGE_NAME))
-                                .isNull());
-        assertWithTimeout(
-                () ->
-                        assertThat(getHealthDataHistoricalAccessStartDate(TEST_APP_2_PACKAGE_NAME))
-                                .isNull());
+
         // grant a permission to test app 1 to create grant time
         grantPermission(TEST_APP_1_PACKAGE_NAME, TEST_APP_DECLARED_PERMISSION);
         Instant historicAccessStartDate =
@@ -244,10 +236,8 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
         // contains only grant time for test app 1, not test app 2
         mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
 
-        // grant permissions to stimulate the case where permission controller module is restored
+        // grant permissions to simulate the case where permission controller module is restored
         // before HC module.
-        // Note: Currently, without permissions being granted before triggering restore, grant time
-        // would not be restored.
         Thread.sleep(1000); // add some delay so second grant time is definitely different
         revokeAllPermissions(TEST_APP_1_PACKAGE_NAME, "");
         grantPermission(TEST_APP_1_PACKAGE_NAME, TEST_APP_DECLARED_PERMISSION);
@@ -279,6 +269,47 @@ public class BackupRestoreE2ETest extends InstrumentationTestCase {
                 () ->
                         assertThat(getHealthDataHistoricalAccessStartDate(TEST_APP_2_PACKAGE_NAME))
                                 .isEqualTo(historicAccessStartDate2));
+    }
+
+    public void testPermissionsRestoredAfterHCRestore_expectGrantTimeIsRestoredCorrectly()
+            throws Exception {
+        // revoke all permissions for the test app to remove all stored grant time as setup step
+        revokeAllPermissionsWithDelay(TEST_APP_1_PACKAGE_NAME, "");
+
+        // grant a permission to test app to create grant time
+        grantPermission(TEST_APP_1_PACKAGE_NAME, TEST_APP_DECLARED_PERMISSION);
+        Instant historicAccessStartDate =
+                assertWithTimeoutAndReturn(
+                        () -> {
+                            Instant result =
+                                    getHealthDataHistoricalAccessStartDate(TEST_APP_1_PACKAGE_NAME);
+                            assertThat(result).isNotNull();
+                            return result;
+                        });
+
+        // trigger backup, the staged backup file should contains  grant time for test app 1.
+        mBackupUtils.backupNowAndAssertSuccess(mBackupRestoreApkPackageName);
+        Thread.sleep(1000); // add some delay so second grant time is definitely different
+
+        // revoke all permissions and then restore the grant time file.
+        revokeAllPermissions(TEST_APP_1_PACKAGE_NAME, "");
+        mBackupUtils.restoreAndAssertSuccess(LOCAL_TRANSPORT_TOKEN, mBackupRestoreApkPackageName);
+
+        // Since permissions haven't been restored, expect null access date.
+        assertWithTimeout(
+                () ->
+                        assertThat(getHealthDataHistoricalAccessStartDate(TEST_APP_1_PACKAGE_NAME))
+                                .isNull());
+
+        // grant permissions to simulate the case where permission controller module is restored
+        // after HC module.
+        grantPermission(TEST_APP_1_PACKAGE_NAME, TEST_APP_DECLARED_PERMISSION);
+
+        // assert that test app 1's grant time is restored correctly
+        assertWithTimeout(
+                () ->
+                        assertThat(getHealthDataHistoricalAccessStartDate(TEST_APP_1_PACKAGE_NAME))
+                                .isEqualTo(historicAccessStartDate));
     }
 
     private ActiveCaloriesBurnedRecord getCompleteActiveCaloriesBurnedRecord(long i) {

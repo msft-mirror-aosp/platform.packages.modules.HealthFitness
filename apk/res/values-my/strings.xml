@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"စကားဝှက်မေ့သွားပြီး သင့်ဖုန်းပျောက်သွားပါက ‘ကျန်းမာရေး အချိတ်အဆက်’ သည် သိမ်းထားသော သင့်ဒေတာကို ပြန်လည်ရယူရာတွင် မကူညီနိုင်ပါ။"</string>
     <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"မလုပ်တော့"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"ရှေ့သို့"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect စတင်အသုံးပြုခြင်း"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect သည် သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး ၎င်းဖြင့် သင့်ဖုန်းပေါ်ရှိ အက်ပ်အမျိုးမျိုးကို ရိုးရှင်းစွာစင့်ခ်လုပ်နိုင်သည်"</string>
     <string name="share_data" msgid="3481932156368883946">"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</string>

@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Se se esquecer da sua palavra-passe ou perder o telemóvel, a Saúde Connect não ajuda a recuperar os seus dados guardados."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Anterior"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seguinte"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Cancelar"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Seguinte"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comece a usar a Saúde Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"A Saúde Connect armazena os seus dados de saúde e fitness, oferecendo-lhe uma forma simples de sincronizar as diferentes apps no seu telemóvel"</string>
     <string name="share_data" msgid="3481932156368883946">"Partilhar dados com as suas apps"</string>

@@ -16,9 +16,12 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static java.util.Objects.requireNonNull;
+
 import android.annotation.NonNull;
 import android.content.Context;
 import android.os.ParcelFileDescriptor;
+import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
@@ -26,13 +29,11 @@ import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
-import com.android.server.healthconnect.utils.FilesUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -42,8 +43,11 @@ import java.util.List;
  * @hide
  */
 public class ExportManager {
-    private static final String EXPORT_DATABASE_DIR_NAME = "export_data";
-    private static final String EXPORT_DATABASE_FILE_NAME = "healthconnect_export.db";
+
+    @VisibleForTesting static final String EXPORT_DATABASE_DIR_NAME = "export_import";
+
+    @VisibleForTesting static final String EXPORT_DATABASE_FILE_NAME = "health_connect_export.db";
+
     private static final String TAG = "HealthConnectExportImport";
 
     // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
@@ -61,20 +65,18 @@ public class ExportManager {
 
     // TODO(b/325599879): Discuss if this is going to be a singleton or new instance every export.
     public ExportManager(@NonNull Context context) {
+        requireNonNull(context);
         mContext = context;
     }
 
     // TODO(b/325599879): Change visibility once there is a wrapper.
-
     /** Writes the backup data into a local file. */
-    public File exportLocally() {
-        Slog.d(TAG, "Incoming request to make a local copy for export");
+    public synchronized File exportLocally(UserHandle userHandle) {
+        Slog.i(TAG, "Export started");
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, EXPORT_DATABASE_DIR_NAME, userHandle);
 
-        File exportDir =
-                new File(
-                        FilesUtil.getDataSystemCeHCDirectoryForUser(
-                                mContext.getUser().getIdentifier()),
-                        EXPORT_DATABASE_DIR_NAME);
+        File exportDir = dbContext.getDatabaseDir();
         exportDir.mkdirs();
         File exportFile = new File(exportDir, EXPORT_DATABASE_FILE_NAME);
 
@@ -100,17 +102,16 @@ public class ExportManager {
             Slog.e(TAG, "Failed to create file for export", e);
         }
 
-        deleteLogTablesContent();
+        deleteLogTablesContent(dbContext);
 
+        Slog.i(TAG, "Export completed: " + exportFile.toPath().toAbsolutePath().toString());
         return exportFile;
     }
 
     // TODO(b/325599879): Double check if we need to vacuum the database after clearing the tables.
-    private void deleteLogTablesContent() {
+    private void deleteLogTablesContent(DatabaseContext dbContext) {
         try (HealthConnectDatabase exportDatabase =
-                new HealthConnectDatabase(
-                        mContext,
-                        Path.of(EXPORT_DATABASE_DIR_NAME, EXPORT_DATABASE_FILE_NAME).toString())) {
+                new HealthConnectDatabase(dbContext, EXPORT_DATABASE_FILE_NAME)) {
             for (String tableName : TABLES_TO_CLEAR) {
                 exportDatabase.getWritableDatabase().execSQL("DELETE FROM " + tableName + ";");
             }
