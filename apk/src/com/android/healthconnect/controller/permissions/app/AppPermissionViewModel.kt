@@ -24,8 +24,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
-import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
@@ -61,7 +62,7 @@ constructor(
     private val deleteAppDataUseCase: DeleteAppDataUseCase,
     private val loadAccessDateUseCase: LoadAccessDateUseCase,
     private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
-    private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase,
+    private val loadExerciseRoutePermissionUseCase: ILoadExerciseRoutePermissionUseCase,
     private val healthPermissionReader: HealthPermissionReader,
     private val featureUtils: FeatureUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
@@ -239,14 +240,32 @@ constructor(
             }
         _grantedPermissions.postValue(grantedPermissions)
 
-        // AND any additional permissions granted
         val lastReadPermissionRevoked =
             additionalPermissions.isNotEmpty() &&
                 (readPermissionsBeforeDisconnect > readPermissionsAfterDisconnect) &&
                 readPermissionsAfterDisconnect == 0
 
         if (lastReadPermissionRevoked) {
-            additionalPermissions.forEach { revokePermissionsStatusUseCase.invoke(packageName, it) }
+            // If exercise routes is already "Ask every time", do not revoke again
+            additionalPermissions.forEach { permission ->
+                if (permission == READ_EXERCISE_ROUTES) {
+                    val isExerciseRoutePermissionAskEveryTime = runBlocking {
+                        when (val exerciseRouteState =
+                            loadExerciseRoutePermissionUseCase(packageName)) {
+                            is UseCaseResults.Success -> {
+                                exerciseRouteState.data.exerciseRoutePermissionState ==
+                                    ASK_EVERY_TIME
+                            }
+                            else -> false
+                        }
+                    }
+
+                    if (isExerciseRoutePermissionAskEveryTime) {
+                        return@forEach
+                    }
+                }
+                revokePermissionsStatusUseCase.invoke(packageName, permission)
+            }
         }
 
         _lastReadPermissionDisconnected.postValue(lastReadPermissionRevoked)

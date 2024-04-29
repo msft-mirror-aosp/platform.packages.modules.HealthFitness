@@ -67,7 +67,7 @@
 
     <activity
         android:id="@+id/exportSetupActivity"
-        android:name="com.android.healthconnect.controller.export.ExportSetupActivity"/>
+        android:name="com.android.healthconnect.controller.exportimport.ExportSetupActivity"/>
 
     <fragment
         android:id="@+id/backupAndRestoreSettingsFragment"

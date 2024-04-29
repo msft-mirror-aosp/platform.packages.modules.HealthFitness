@@ -79,8 +79,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(15.0)))))),
+                                            Velocity.fromMetersPerSecond(15.0),
+                                            Velocity.fromMetersPerSecond(25.0)))))),
                 getPlannedExerciseBlock(
                     repetitions = 1,
                     description = "Main set",
@@ -95,8 +95,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(50.0),
-                                            Velocity.fromMetersPerSecond(25.0)))))))
+                                            Velocity.fromMetersPerSecond(25.0),
+                                            Velocity.fromMetersPerSecond(50.0)))))))
 
         assertThat(
                 formatter.formatTitle(
@@ -123,8 +123,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                 listOf(
                                     ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(25.0),
-                                        Velocity.fromMetersPerSecond(15.0))))))
+                                        Velocity.fromMetersPerSecond(15.0),
+                                        Velocity.fromMetersPerSecond(25.0))))))
         val exerciseBlock2 =
             getPlannedExerciseBlock(
                 repetitions = 1,
@@ -139,8 +139,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                 listOf(
                                     ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(50.0),
-                                        Velocity.fromMetersPerSecond(25.0))))))
+                                        Velocity.fromMetersPerSecond(25.0),
+                                        Velocity.fromMetersPerSecond(50.0))))))
         val exerciseBlocks = listOf(exerciseBlock1, exerciseBlock2)
 
         assertThat(
@@ -170,8 +170,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(15.0)))),
+                                            Velocity.fromMetersPerSecond(15.0),
+                                            Velocity.fromMetersPerSecond(25.0)))),
                         title = "1 km Running",
                         titleA11y = "1 kilometre Running"),
                     ExercisePerformanceGoalEntry(
@@ -181,10 +181,10 @@ class PlannedExerciseSessionRecordFormatterTest {
                     ExercisePerformanceGoalEntry(
                         goal =
                             ExercisePerformanceGoal.SpeedGoal(
-                                Velocity.fromMetersPerSecond(25.0),
-                                Velocity.fromMetersPerSecond(15.0)),
-                        title = "90 km/h - 54 km/h",
-                        titleA11y = "90 kilometres per hour - 54 kilometres per hour"),
+                                Velocity.fromMetersPerSecond(15.0),
+                                Velocity.fromMetersPerSecond(25.0)),
+                        title = "00:40 min/km - 01:06 min/km",
+                        titleA11y = "00:40 minute per kilometre - 01:06 minute per kilometre"),
                     ItemDataEntrySeparator(),
                     PlannedExerciseBlockEntry(
                         block = exerciseBlock2,
@@ -201,8 +201,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(50.0),
-                                            Velocity.fromMetersPerSecond(25.0)))),
+                                            Velocity.fromMetersPerSecond(25.0),
+                                            Velocity.fromMetersPerSecond(50.0)))),
                         title = "4 km Running",
                         titleA11y = "4 kilometres Running"),
                     ExercisePerformanceGoalEntry(
@@ -212,10 +212,10 @@ class PlannedExerciseSessionRecordFormatterTest {
                     ExercisePerformanceGoalEntry(
                         goal =
                             ExercisePerformanceGoal.SpeedGoal(
-                                Velocity.fromMetersPerSecond(50.0),
-                                Velocity.fromMetersPerSecond(25.0)),
-                        title = "180 km/h - 90 km/h",
-                        titleA11y = "180 kilometres per hour - 90 kilometres per hour"),
+                                Velocity.fromMetersPerSecond(25.0),
+                                Velocity.fromMetersPerSecond(50.0)),
+                        title = "00:20 min/km - 00:40 min/km",
+                        titleA11y = "00:20 minute per kilometre - 00:40 minute per kilometre"),
                     ItemDataEntrySeparator()),
             )
     }

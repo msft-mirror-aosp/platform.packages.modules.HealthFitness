@@ -390,6 +390,13 @@ class DataEntryDetailsFragmentTest {
         onView(withText("• This is a test exercise step")).check(matches(isDisplayed()))
         onView(withText("• 150 bpm - 180 bpm")).check(matches(isDisplayed()))
         onView(withText("• 180 km/h - 90 km/h")).check(matches(isDisplayed()))
+        verify(healthConnectLogger, times(2))
+            .logImpression((EntryDetailsElement.FORMATTED_SECTION_CONTENT_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.PLANNED_EXERCISE_BLOCK_ENTRY_VIEW))
+        verify(healthConnectLogger)
+            .logImpression((EntryDetailsElement.PLANNED_EXERCISE_STEP_ENTRY_VIEW))
+        verify(healthConnectLogger).logImpression((EntryDetailsElement.SESSION_DETAIL_HEADER_VIEW))
     }
 
     private fun getSleepStages(): List<FormattedEntry> {

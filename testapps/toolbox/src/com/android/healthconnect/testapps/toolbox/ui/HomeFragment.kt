@@ -36,13 +36,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.ALL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.Constants.BG_READ_PERMISSION
+import com.android.healthconnect.testapps.toolbox.Constants.DATA_TYPE_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
+import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel
+import kotlin.system.exitProcess
 
 /** Home fragment for Health Connect Toolbox. */
 class HomeFragment : Fragment() {
@@ -76,7 +78,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestPermissionResultHandler(permissionMap: Map<String, Boolean>) {
-        var numberOfPermissionsMissing = ALL_PERMISSIONS.size
+        var numberOfPermissionsMissing = HEALTH_PERMISSIONS.size
         for (value in permissionMap.values) {
             if (value) {
                 numberOfPermissionsMissing--
@@ -107,8 +109,8 @@ class HomeFragment : Fragment() {
         view.findViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
             launchHealthConnect()
         }
-        view.findViewById<Button>(R.id.request_health_permissions_button).setOnClickListener {
-            requestHealthPermissions()
+        view.findViewById<Button>(R.id.request_data_type_permissions_button).setOnClickListener {
+            requestDataTypePermissions()
         }
         view.findViewById<Button>(R.id.request_route_button).setOnClickListener {
             goToRequestRoute()
@@ -131,9 +133,15 @@ class HomeFragment : Fragment() {
         view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {
             goToReadDataInBackgroundPage()
         }
+        view.requireViewById<Button>(R.id.read_data_in_foreground_button).setOnClickListener {
+            goToReadDataInForegroundPage()
+        }
+        view.requireViewById<Button>(R.id.exit_process_button).setOnClickListener {
+            exitProcess(status = 0)
+        }
 
-        view.findViewById<Button>(R.id.request_combined_permissions).setOnClickListener {
-            requestCombinedPermissions()
+        view.findViewById<Button>(R.id.request_health_permissions).setOnClickListener {
+            requestHealthPermissions()
         }
 
         view.findViewById<Button>(R.id.request_additional_permissions).setOnClickListener {
@@ -143,6 +151,11 @@ class HomeFragment : Fragment() {
         view.findViewById<Button>(R.id.request_bg_read_permission).setOnClickListener {
             requestBgReadPermission()
         }
+
+        view.findViewById<Button>(R.id.request_history_read_permission).setOnClickListener {
+            requestHistoryReadPermission()
+        }
+
         // view
         //     .findViewById<Button>(R.id.seed_performance_insert_data_button_in_parallel)
         //     .setOnClickListener { performanceTestingViewModel.beginInsertingData(true) }
@@ -172,7 +185,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun isHealthPermissionMissing(): Boolean {
-        for (permission in HEALTH_PERMISSIONS) {
+        for (permission in DATA_TYPE_PERMISSIONS) {
             if (!isPermissionGranted(permission)) {
                 return true
             }
@@ -209,24 +222,24 @@ class HomeFragment : Fragment() {
         Toast.makeText(this.requireContext(), toastText, Toast.LENGTH_SHORT).show()
     }
 
-    private fun requestCombinedPermissions() {
+    private fun requestHealthPermissions() {
         if (!isHealthPermissionMissing()) {
             // all health granted, just need to request additional
             requestAdditionalPermissions()
             return
         } else if (!isAdditionalPermissionMissing()) {
             // all additional granted, just need to request health
-            requestHealthPermissions()
+            requestDataTypePermissions()
             return
         } else {
-            mRequestPermissionLauncher.launch(ALL_PERMISSIONS)
+            mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
             return
         }
     }
 
-    private fun requestHealthPermissions() {
+    private fun requestDataTypePermissions() {
         if (isHealthPermissionMissing()) {
-            mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
+            mRequestPermissionLauncher.launch(DATA_TYPE_PERMISSIONS)
             return
         }
         Toast.makeText(
@@ -249,8 +262,20 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestBgReadPermission() {
-        if (!isPermissionGranted(BG_READ_PERMISSION)) {
-            mRequestPermissionLauncher.launch(arrayOf(BG_READ_PERMISSION))
+        if (!isPermissionGranted(READ_HEALTH_DATA_IN_BACKGROUND)) {
+            mRequestPermissionLauncher.launch(arrayOf(READ_HEALTH_DATA_IN_BACKGROUND))
+        }
+
+        Toast.makeText(
+                this.requireContext(),
+                R.string.all_permissions_already_granted_toast,
+                Toast.LENGTH_LONG)
+            .show()
+    }
+
+    private fun requestHistoryReadPermission() {
+        if (!isPermissionGranted(READ_HEALTH_DATA_HISTORY)) {
+            mRequestPermissionLauncher.launch(arrayOf(READ_HEALTH_DATA_HISTORY))
         }
 
         Toast.makeText(
@@ -270,5 +295,9 @@ class HomeFragment : Fragment() {
 
     private fun goToReadDataInBackgroundPage() {
         mNavigationController.navigate(R.id.action_homeFragment_to_readDataInBackground)
+    }
+
+    private fun goToReadDataInForegroundPage() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_readDataInForeground)
     }
 }

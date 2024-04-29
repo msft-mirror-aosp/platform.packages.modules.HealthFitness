@@ -30,6 +30,7 @@
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> मध्ये <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{एउटा एपलाई अनुमति दिइएको छ}other{# वटा एपलाई अनुमति दिइएको छ}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"कुनै पनि एप कनेक्ट गरिएको छैन"</string>
     <string name="entry_details_title" msgid="590184849040247850">"इन्ट्रीसम्बन्धी विवरणहरू"</string>
     <string name="backup_title" msgid="211503191266235085">"ब्याकअप गर्नुहोस्"</string>
@@ -45,7 +46,8 @@
     <string name="write_data_access_label" msgid="105976369853871061">"राइट एक्सेस: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"अनुमतिहरू व्यवस्थापन गर्नुहोस्"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"समय: %s"</string>
+    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
+    <skip />
     <string name="activity_category_uppercase" msgid="136628843341377088">"क्रियाकलाप"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"क्रियाकलाप"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"शारीरिक नाप"</string>
@@ -88,9 +90,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"पुराना डेटा एक्सेस गर्ने अनुमति"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई पुराना डेटा एक्सेस गर्न दिने हो?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"यो एपलाई <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> अघि Health Connect मा हालिएका डेटा एक्सेस गर्न दिनुहोस्"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"यो एपलाई Health Connect का पुराना डेटा एक्सेस गर्न दिनुहोस्"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"यो एपलाई Health Connect को विगतको सबै डेटा एक्सेस गर्न दिनुहोस्"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"तपाईंले यो अनुमति दिनुभयो भने यो एपले <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> अघि Health Connect मा हालिएका डेटा एक्सेस गर्न सक्छ।"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"तपाईंले यो अनुमति दिनुभयो भने यो एपले Health Connect का पुराना डेटा एक्सेस गर्न सक्छ।"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"तपाईंले यो अनुमति दिनुभयो भने यो एपले Health Connect को विगतको सबै डेटा एक्सेस गर्न सक्छ।"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"सक्रिय हुँदा खर्च गरिएको क्यालोरी"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"सक्रिय हुँदा खर्च गरिएको क्यालोरी"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"सक्रिय हुँदा खर्च गरिएको क्यालोरी रिड गर्ने अनुमति दिनुहोस्"</string>
@@ -102,8 +104,8 @@
     <string name="exercise_route_uppercase_label" msgid="6678863538041931754">"कसरत गर्न जाने मार्ग"</string>
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"कसरत गर्न जाने मार्ग"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"कसरत गर्न जाने मार्ग राइट गर्नुहोस्"</string>
-    <string name="exercise_route_read_content_description" msgid="8394028537674463440">"कसरत गर्ने मार्गका बारेमा जानकारी रिड गरियोस्"</string>
-    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"कसरत गर्ने मार्गका बारेमा जानकारी रिड गरियोस्"</string>
+    <string name="exercise_route_read_content_description" msgid="8394028537674463440">"कसरत गर्ने मार्गका बारेमा जानकारी रिड गर्नुहोस्"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"कसरत गर्ने मार्गका बारेमा जानकारी रिड गर्नुहोस्"</string>
     <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"प्रशिक्षणसम्बन्धी योजनाहरू"</string>
     <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"प्रशिक्षणसम्बन्धी योजनाहरू"</string>
     <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"प्रशिक्षणसम्बन्धी योजनाहरू रिड गर्ने"</string>
@@ -270,8 +272,11 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"गोपनीयता नीति"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"एपलाई दिइएका सबै अनुमति हटाउने हो?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"सबै हटाउनुहोस्"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब उप्रान्त Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोनलगायतका कुरा प्रयोग गर्ने अनुमति बदलिने छैन।"</string>
-    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect बाट <xliff:g id="APP_NAME">%1$s</xliff:g> को डेटा पनि मेटाइयोस्"</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अबदेखि Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका क्यामेरा, माइक्रोफोन वा लोकेसनलगायतका कुरा प्रयोग गर्ने अनुमति बदलिने छैन।"</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब ब्याकग्राउन्ड डेटासहित Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोन प्रयोग गर्नेलगायतका अनुमतिमा कुनै प्रभाव पार्दैन।"</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब पुरानो डेटासहित Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोन प्रयोग गर्नेलगायतका अनुमतिमा कुनै प्रभाव पार्दैन।"</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले अब ब्याकग्राउन्ड र पुरानो डेटासहित Health Connect मा भएको कुनै पनि डेटा रिड वा राइट गर्न सक्ने छैन।\n\nयसले गर्दा यो एपलाई दिइएका लोकेसन, क्यामेरा वा माइक्रोफोन प्रयोग गर्नेलगायतका अनुमतिमा कुनै प्रभाव पार्दैन।"</string>
+    <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect बाट <xliff:g id="APP_NAME">%1$s</xliff:g> को डेटा पनि मेटाउनुहोस्"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"अर्को दिन"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"चयन गरिएको दिन"</string>
     <string name="navigation_previous_day" msgid="718353386484938584">"अघिल्लो दिन"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"एपलाई दिइएका अनुमति"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"तपाईंले अहिले कुनै पनि कम्प्याटिबल एप इन्स्टल गर्नुभएको छैन"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"अतिरिक्त एक्सेस"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"यो एपलाई दिइएका अतिरिक्त अनुमतिहरू हटाइएका छन्"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"एपलाई दिइएका अनुमति रद्द गरिएका छन्"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ले <xliff:g id="APP_DATA">%s</xliff:g> लाई दिइएका अनुमति रद्द गरेको छ"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ले <xliff:g id="APP_DATA_0">%1$s</xliff:g> र <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> लाई दिइएका अनुमति रद्द गरेको छ"</string>
@@ -325,12 +331,13 @@
     <string name="frequency_daily" msgid="3596412357416125727">"दैनिक"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"साप्ताहिक"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"मासिक"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"लोकेसन एक्स्पोर्ट गर्नुहोस्"</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"डेटा एक्सपोर्ट गर्ने स्थान छनौट गर्नुहोस्"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"इन्क्रिप्सन गर्ने सुविधा अन गर्नुहोस्"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"डेटा इन्क्रिप्ट गरेपछि मात्र सेभ गर्नु पर्ने हुन्छ। Google वा Health Connect लगायत कसैले पनि यो डेटा प्रयोग गर्न सक्ने छैनन्।"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"इन्क्रिप्ट गरिएको डेटा सुरक्षित गर्न पासवर्ड राख्नुहोस्। तपाईंले आफ्नो डेटा इम्पोर्ट र रिस्टोर गर्न यो पासवर्ड प्रयोग गर्नु पर्ने हुन्छ।"</string>
     <string name="export_password_hint" msgid="7095895042846772342">"पासवर्ड"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"पासवर्ड दोहोर्‍याउनुहोस्"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"पासवर्डहरू मिलेनन्"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"तपाईंले आफ्नो पासवर्ड बिर्सनुभयो र आफ्नो फोन हराउनुभयो भने Health Connect ले तपाईंलाई आफ्नो सेभ गरिएको डेटा रिकभर गर्न मद्दत गर्न सक्दैन।"</string>
     <string name="export_back_button" msgid="3550795479165524982">"पछाडि"</string>
     <string name="export_next_button" msgid="657930567137105172">"अर्को"</string>
@@ -349,9 +356,9 @@
     <string name="time_range_message_data_type" msgid="1896125004829258195">"तपाईंले डेटा मेटाउनुभयो भने छनौट गरिएको समयावधिमा Health Connect मा हालिएको <xliff:g id="DATA_TYPE">%s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटिन्छ"</string>
     <string name="time_range_message_category" msgid="1136451418397326356">"तपाईंले डेटा मेटाउनुभयो भने छनौट गरिएको समयावधिमा Health Connect मा हालिएको <xliff:g id="CATEGORY">%s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटिन्छ"</string>
     <string name="time_range_message_app_data" msgid="2590800457710603556">"तपाईंले डेटा मेटाउनुभयो भने छनौट गरिएको समयावधिमा Health Connect मा हालिएको <xliff:g id="APP_DATA">%s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटिन्छ"</string>
-    <string name="time_range_one_day" msgid="7162709826595446727">"पछिल्लो २४ घण्टाको डेटा मेटाइयोस्"</string>
-    <string name="time_range_one_week" msgid="8754523384275645434">"पछिल्लो ७ दिनको डेटा मेटाइयोस्"</string>
-    <string name="time_range_one_month" msgid="3034747870231999766">"पछिल्लो ३० दिनको डेटा मेटाइयोस्"</string>
+    <string name="time_range_one_day" msgid="7162709826595446727">"पछिल्लो २४ घण्टाको डेटा मेटाउनुहोस्"</string>
+    <string name="time_range_one_week" msgid="8754523384275645434">"पछिल्लो ७ दिनको डेटा मेटाउनुहोस्"</string>
+    <string name="time_range_one_month" msgid="3034747870231999766">"पछिल्लो ३० दिनको डेटा मेटाउनुहोस्"</string>
     <string name="time_range_all" msgid="8167350212705839943">"सबै डेटा मेटाउनुहोस्"</string>
     <string name="confirming_question_all" msgid="1585414659784742952">"विगतका सबै डेटा सदाका लागि मेटाउने हो?"</string>
     <string name="confirming_question_one_day" msgid="8001434729335611950">"पछिल्लो २४ घण्टाको सबै डेटा सदाका लागि मेटाउने हो?"</string>
@@ -369,7 +376,7 @@
     <string name="confirming_question_app_data_one_day" msgid="444028969015975031">"पछिल्लो २४ घण्टाको <xliff:g id="APP_DATA">%s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटाउने हो?"</string>
     <string name="confirming_question_app_data_one_week" msgid="2096555081811730496">"पछिल्ला ७ दिनको <xliff:g id="APP_DATA">%s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटाउने हो?"</string>
     <string name="confirming_question_app_data_one_month" msgid="6438241250825892892">"पछिल्ला ३० दिनको <xliff:g id="APP_DATA">%s</xliff:g> सम्बन्धी डेटा सदाका लागि मेटाउने हो?"</string>
-    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Health Connect बाट <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> लाई दिइएका सबै अनुमति पनि हटाइयोस्"</string>
+    <string name="confirming_question_app_remove_all_permissions" msgid="4170343072352701421">"Health Connect बाट <xliff:g id="APP_WITH_PERMISSIONS">%s</xliff:g> लाई दिइएका सबै अनुमति पनि हटाउनुहोस्"</string>
     <string name="confirming_question_data_type_from_app_all" msgid="8361163993548510509">"<xliff:g id="APP_DATA">%2$s</xliff:g> ले हालेका <xliff:g id="DATA_TYPE">%1$s</xliff:g> सम्बन्धी सबै डेटा सदाका लागि मेटाउने हो?"</string>
     <string name="confirming_question_single_entry" msgid="330919962071369305">"यो डेटा सदाका लागि मेटाउने हो?"</string>
     <string name="confirming_question_message" msgid="2934249835529079545">"कनेक्ट गरिएका एपहरू अबदेखि Health Connect मा भएको यो डेटा हेर्न वा प्रयोग गर्न सक्ने छैनन्"</string>
@@ -388,7 +395,7 @@
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Health Connect सम्बन्धी डेटा मेटाइँदै छ"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"डेटा मेटाउने कार्य"</string>
     <string name="data_point_action_content_description" msgid="6881048311770784455">"<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> डेटा इन्ट्री मेटाउनुहोस्"</string>
-    <string name="delete_data_point" msgid="1004049578454616738">"<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> इन्ट्री मेटाइयोस्"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g> इन्ट्री मेटाउनुहोस्"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"कुल: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{१ वाट}other{# वाट}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{१ वाट}other{# वाट}}"</string>
@@ -401,6 +408,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{१ कि.मि./घण्टा}other{# कि.मि./घण्टा}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{१ माइल प्रति घण्टा}other{# माइल प्रति घण्टा}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{१ किलोमिटर प्रति घण्टा}other{# किलोमिटर प्रति घण्टा}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/माइल"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/कि.मि."</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"प्रति माइल <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"प्रति किलोमिटर <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/१०० यार्ड"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> मिनेट/१०० मिटर"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"प्रति १०० यार्ड <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"प्रति १०० मिटर <xliff:g id="MINUTE">%1$s</xliff:g> मिनेट"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> देखि <xliff:g id="END_TIME">%2$s</xliff:g> सम्म"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> देखि <xliff:g id="END_TIME">%2$s</xliff:g> सम्म"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{१ पटक ह्विलचेयर ठेलियो}other{# पटक ह्विलचेयर ठेलियो}}"</string>
@@ -426,11 +441,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"अनिर्णित"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{१ मिलिसेकेन्ड}other{# मिलिसेकेन्ड}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{१ मिलिसेकेन्ड}other{# मिलिसेकेन्ड}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"नोटहरू"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{१ पटक}other{# पटक}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"सक्रिय: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"कुल: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"जति सक्दो धेरै दोहोर्‌याउने"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"शारीरिक परिश्रमको स्तर: <xliff:g id="VALUE">%1$d</xliff:g>/१०"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{१ पटक दोहोर्‍याइयो}other{# पटक दोहोर्‍याइयो}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"कसरतका खण्डहरू"</string>
@@ -791,11 +808,11 @@
     <string name="request_route_allow" msgid="4427372851821847274">"यो मार्गका बारेमा जानकारी एक्सेस गर्न दिनुहोस्"</string>
     <string name="request_route_allow_all" msgid="314830698958736916">"सबै मार्गका बारेमा जानकारी एक्सेस गर्न दिनुहोस्"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"अनुमति नदिनुहोस्"</string>
-    <string name="route_permissions_always_allow" msgid="1383816362804293137">"सधैँ अनुमति दिइयोस्"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"व्यायाम गर्न प्रयोग गर्ने मार्गसम्बन्धी जानकारी सेयर गर्ने अनुमति"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"यो एपले कनेक्ट गरिएका एपहरूबाट प्राप्त गरिएको व्यायाम गर्न प्रयोग गर्ने मार्गसम्बन्धी जानकारी कसरी प्रयोग गर्छ भन्ने कुरा नियन्त्रण गर्नुहोस्"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"सधैँ अनुमति दिनुहोस्"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"कसरत गर्ने मार्गको विवरण एक्सेस गर्नुहोस्"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई मार्गको विवरण एक्सेस गर्न दिनुहोस्"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"हरेक पटक सोधियोस्"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"अनुमति नदिइयोस्"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"अनुमति नदिनुहोस्"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"दुवै प्रकारका डेटा प्रयोग गर्ने अनुमति दिने हो?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"दुवै प्रकारका डेटा प्रयोग गर्ने अनुमति नदिने हो?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"कसरत गर्ने मार्गहरूको सुविधा प्रयोग गर्न <xliff:g id="APP_NAME">%1$s</xliff:g> लाई कसरतसम्बन्धी डेटा रिड गर्ने अनुमति दिनु पर्ने हुन्छ"</string>
@@ -889,4 +906,7 @@
     <string name="tab_access" msgid="7818197975407243701">"एक्सेस"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई थप अनुमति दिने हो?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले Health Connect का यी सेटिङ पनि एक्सेस गर्ने अनुमति माग्दै छ"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"यो एपका हकमा ब्याकग्राउन्ड वा पुरानो डेटा एक्सेस अन गर्न रिड गर्नेसम्बन्धी कम्तीमा एउटा अनुमति अन गर्नुहोस्"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"यो एपका हकमा ब्याकग्राउन्ड एक्सेस अन गर्न रिड गर्नेसम्बन्धी कम्तीमा एउटा अनुमति अन गर्नुहोस्"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"यो एपका हकमा पुरानो डेटा एक्सेस अन गर्न रिड गर्नेसम्बन्धी कम्तीमा एउटा अनुमति अन गर्नुहोस्"</string>
 </resources>
