@@ -185,6 +185,10 @@ android_library {
     ],
     kotlincflags: ["-Xjvm-default=all"],
     apex_available: ["com.android.healthfitness"],
+    lint: {
+        baseline_filename: "lint-baseline.xml",
+        error_checks: ["NewApi"],
+    },
 }
 
 android_app {
