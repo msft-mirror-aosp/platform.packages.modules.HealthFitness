@@ -1632,7 +1632,7 @@ public class HealthConnectManagerTest {
         StepsRecord testRecord = TestUtils.getStepsRecord();
 
         try {
-            TestUtils.insertRecords(Collections.singletonList(testRecord));
+            testRecord = (StepsRecord) TestUtils.insertRecord(testRecord);
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
@@ -1788,8 +1788,7 @@ public class HealthConnectManagerTest {
     public void testGetRecordTypeInfo_InsertRecords_correctContributingPackages() throws Exception {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> testRecords = TestUtils.insertRecords(TestUtils.getTestRecords());
 
         // Populate expected records. This method puts empty lists as contributing packages for all
         // records.
@@ -1849,8 +1848,7 @@ public class HealthConnectManagerTest {
             throws Exception {
         // Insert a sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> testRecords = TestUtils.insertRecords(TestUtils.getTestRecords());
 
         // Populate expected records. This method puts empty lists as contributing packages for all
         // records.
@@ -1914,11 +1912,9 @@ public class HealthConnectManagerTest {
             throws Exception {
         // Insert 2 sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> testRecords = TestUtils.insertRecords(TestUtils.getTestRecords());
 
-        List<Record> testRecords2 = TestUtils.getTestRecords();
-        TestUtils.insertRecords(testRecords2);
+        TestUtils.insertRecords(TestUtils.getTestRecords());
 
         // When recordTypes are modified the appInfo also gets updated and this update happens on
         // a background thread. To ensure the test has the latest values for appInfo, add a wait
