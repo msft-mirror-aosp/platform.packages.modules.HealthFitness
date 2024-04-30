@@ -101,7 +101,6 @@ android_test {
         "cts-healthconnect-utils",
     ],
     test_suites: [
-        "cts",
         "general-tests",
         "mts-healthfitness",
         "mcts-healthfitness",
@@ -133,7 +132,6 @@ java_test_host {
         "host/**/*.kt",
     ],
     test_suites: [
-        "cts",
         "general-tests",
         "mts-healthfitness",
         "mcts-healthfitness",

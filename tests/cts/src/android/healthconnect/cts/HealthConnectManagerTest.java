@@ -648,6 +648,18 @@ public class HealthConnectManagerTest {
         assertThat(getRecordById(records, id2).getProtein()).isEqualTo(protein2);
     }
 
+    // b/24128192
+    @Test
+    public void testInsertRecords_metadataGiven_responseDoesNotMutateMetadataReference()
+            throws InterruptedException {
+        Metadata metadata = DataFactory.getEmptyMetadata();
+        StepsRecord stepsRecord = DataFactory.getStepsRecord(20, metadata);
+
+        TestUtils.insertRecordAndGetId(stepsRecord);
+
+        assertThat(stepsRecord.getMetadata().getId()).isEmpty();
+    }
+
     @Test
     public void testAggregation_stepsCountTotal_acrossDST_works() throws Exception {
         ZoneOffset utcPlusOne = ZoneOffset.ofTotalSeconds(UTC.getTotalSeconds() + 3600);
