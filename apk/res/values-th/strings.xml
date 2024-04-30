@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"หากลืมรหัสผ่านและทำโทรศัพท์สูญหาย Health Connect จะช่วยคุณกู้คืนข้อมูลที่บันทึกไว้ไม่ได้"</string>
     <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"ยกเลิก"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"ถัดไป"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"เริ่มต้นใช้งาน Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย และให้คุณซิงค์แอปต่างๆ ในโทรศัพท์ได้โดยง่าย"</string>
     <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>
