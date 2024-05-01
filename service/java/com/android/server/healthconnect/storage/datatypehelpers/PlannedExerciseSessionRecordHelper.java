@@ -160,12 +160,6 @@ public final class PlannedExerciseSessionRecordHelper
     }
 
     @Override
-    @NonNull
-    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
-        return Collections.singletonList(getAlterTableRequestForPlannedExerciseFeature());
-    }
-
-    @Override
     List<CreateTableRequest> getChildTableCreateRequests() {
         return Arrays.asList(
                 new CreateTableRequest(

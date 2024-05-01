@@ -19,6 +19,7 @@ package com.android.server.healthconnect.storage;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE;
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_UNKNOWN;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
 
@@ -26,12 +27,27 @@ import android.annotation.NonNull;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.android.server.healthconnect.migration.PriorityMigrationHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsRequestHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
+import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.utils.DropTableRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /** Class that contains all database upgrades. */
@@ -40,18 +56,39 @@ final class DatabaseUpgradeHelper {
     public static final int DB_VERSION_GENERATED_LOCAL_TIME = 10;
     public static final int DB_VERSION_SKIN_TEMPERATURE = 11;
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS = 12;
+    // No schema changes between version 12 and 13. See ag/26747988 for more details.
+    public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
+
+    // Whenever we are bumping the database version, take a look at potential problems described in:
+    // go/hc-handling-database-upgrades.
+    // This value is used to update the database to the latest version. Update this to the latest
+    // version that we want to upgrade the database to.
+    static final int DATABASE_VERSION = DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE;
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
 
+    /**
+     * The method creates the initial set of tables in the database, and then applies each upgrade
+     * one after the other.
+     *
+     * <p>Keep the upgrades idempotent, since module rollbacks can mean that some upgrades are
+     * applied twice.
+     *
+     * <p>See go/hc-handling-database-upgrades for things to be taken care of when upgrading.
+     */
     static void onUpgrade(
             @NonNull SQLiteDatabase db,
             HealthConnectDatabase healthConnectDatabase,
             int oldVersion) {
+        // Note: This first upgrade is not idempotent since it only drops the set of initial tables.
+        // Some tables are left around, which can break foreign key constraints.
         if (oldVersion < DB_VERSION_UUID_BLOB) {
-            healthConnectDatabase.dropAllTables(db);
-            healthConnectDatabase.onCreate(db);
-            // OnCreate brings us to current schema. No further upgrades required, so return early.
-            return;
+            // Only drop the tables if the db existed beforehand.
+            if (oldVersion > 0) {
+                dropInitialSetOfTables(db);
+            }
+            createInitialSetOfTables(db);
         }
+
         if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
             forEachRecordHelper(it -> it.applyGeneratedLocalTimeUpgrade(db));
         }
@@ -63,6 +100,49 @@ final class DatabaseUpgradeHelper {
         if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
             applyPlannedExerciseDatabaseUpgrade(db);
         }
+    }
+
+    private static void createInitialSetOfTables(@NonNull SQLiteDatabase db) {
+        for (CreateTableRequest createTableRequest : getInitialCreateTableRequests()) {
+            HealthConnectDatabase.createTable(db, createTableRequest);
+        }
+    }
+
+    private static void dropInitialSetOfTables(SQLiteDatabase db) {
+        List<String> allTables =
+                getInitialCreateTableRequests().stream()
+                        .map(CreateTableRequest::getTableName)
+                        .toList();
+        for (String table : allTables) {
+            db.execSQL(new DropTableRequest(table).getCommand());
+        }
+    }
+
+    private static List<CreateTableRequest> getInitialCreateTableRequests() {
+        List<CreateTableRequest> requests = new ArrayList<>();
+
+        // Add all records that were part of the initial schema.
+        Map<Integer, RecordHelper<?>> recordHelperMap =
+                RecordHelperProvider.getInstance().getRecordHelpers();
+        recordHelperMap.entrySet().stream()
+                .filter(
+                        entry ->
+                                entry.getKey() > RECORD_TYPE_UNKNOWN
+                                        && entry.getKey() < RECORD_TYPE_SKIN_TEMPERATURE)
+                .forEach(entry -> requests.add(entry.getValue().getCreateTableRequest()));
+
+        requests.add(DeviceInfoHelper.getInstance().getCreateTableRequest());
+        requests.add(AppInfoHelper.getInstance().getCreateTableRequest());
+        requests.add(ActivityDateHelper.getInstance().getCreateTableRequest());
+        requests.add(ChangeLogsHelper.getInstance().getCreateTableRequest());
+        requests.add(ChangeLogsRequestHelper.getInstance().getCreateTableRequest());
+        requests.add(HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest());
+        requests.add(PreferenceHelper.getInstance().getCreateTableRequest());
+        requests.add(AccessLogsHelper.getInstance().getCreateTableRequest());
+        requests.add(MigrationEntityHelper.getInstance().getCreateTableRequest());
+        requests.add(PriorityMigrationHelper.getInstance().getCreateTableRequest());
+
+        return requests;
     }
 
     private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {

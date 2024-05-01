@@ -58,7 +58,6 @@ import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
-import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -315,22 +314,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     @NonNull
     protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * SQLite only permits FK constraints to be added at column creation time. This poses a problem
-     * however, as depending on the order (undefined) in which we ask record helpers to create their
-     * tables, the referenced column may not exist. The solution is to add columns with a FK in a
-     * separate step, after main table creation.
-     *
-     * <p>As a concrete example, the {@link
-     * android.health.connect.datatypes.PlannedExerciseSessionRecord} data type has references to
-     * exercise sessions, and thus necessitates a foreign key constraint to the ID column of the
-     * exercise session table.
-     */
-    @NonNull
-    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
         return Collections.emptyList();
     }
 
