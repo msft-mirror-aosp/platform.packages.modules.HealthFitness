@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Geskryf: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Bestuur toestemmings"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Tyd: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktiwiteit"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktiwiteit"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Liggaamsmetings"</string>
@@ -341,6 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Health Connect kan jou nie help om jou gestoorde data terug te stel as jy jou wagwoord vergeet of jou foon verloor nie."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Terug"</string>
     <string name="export_next_button" msgid="657930567137105172">"Volgende"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Kanselleer"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Volgende"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kom aan die gang met Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect berg jou gesondheid- en fiksheiddata en bied só ’n eenvoudige manier om die verskillende apps op jou foon te sinkroniseer"</string>
     <string name="share_data" msgid="3481932156368883946">"Deel data met jou apps"</string>

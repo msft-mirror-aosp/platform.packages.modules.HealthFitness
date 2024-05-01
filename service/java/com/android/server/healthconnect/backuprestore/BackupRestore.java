@@ -45,7 +45,6 @@ import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -67,6 +66,7 @@ import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
 import com.android.server.healthconnect.exportimport.DatabaseMerger;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
@@ -193,6 +193,8 @@ public final class BackupRestore {
     @VisibleForTesting
     static final String GRANT_TIME_FILE_NAME = "health-permissions-first-grant-times.xml";
 
+    @VisibleForTesting static final String STAGED_DATABASE_DIR = "remote_staged";
+
     @VisibleForTesting
     static final String STAGED_DATABASE_NAME = "healthconnect_staged.db";
 
@@ -201,7 +203,6 @@ public final class BackupRestore {
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final MigrationStateManager mMigrationStateManager;
 
-    private final StagedDatabaseContext mStagedDbContext;
     private final Context mContext;
     private final Object mMergingLock = new Object();
 
@@ -220,14 +221,12 @@ public final class BackupRestore {
         mMigrationStateManager = migrationStateManager;
         mContext = context;
         mCurrentForegroundUser = mContext.getUser();
-        mStagedDbContext = StagedDatabaseContext.create(context, mCurrentForegroundUser);
         mDatabaseMerger = new DatabaseMerger(context);
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
         Slog.d(TAG, "Performing user switch operations.");
         mCurrentForegroundUser = currentForegroundUser;
-        mStagedDbContext.updateForegroundUser(mCurrentForegroundUser);
         HealthConnectThreadScheduler.scheduleInternalTask(this::scheduleAllJobs);
     }
 
@@ -268,9 +267,11 @@ public final class BackupRestore {
     public void stageAllHealthConnectRemoteData(
             Map<String, ParcelFileDescriptor> pfdsByFileName,
             Map<String, HealthConnectException> exceptionsByFileName,
-            int userId,
+            @NonNull UserHandle userHandle,
             @NonNull IDataStagingFinishedCallback callback) {
-        File stagedRemoteDataDir = getStagedRemoteDataDirectoryForUser(userId);
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        File stagedRemoteDataDir = dbContext.getDatabaseDir();
         try {
             stagedRemoteDataDir.mkdirs();
 
@@ -403,10 +404,13 @@ public final class BackupRestore {
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
-            mStagedDbContext.deleteDatabase(STAGED_DATABASE_NAME);
-            FilesUtil.deleteDir(getStagedRemoteDataDirectoryForUser(userHandle.getIdentifier()));
+            dbContext.deleteDatabase(STAGED_DATABASE_NAME);
+            FilesUtil.deleteDir(dbContext.getDatabaseDir());
         }
         setDataDownloadState(DATA_DOWNLOAD_STATE_UNKNOWN, true /* force */);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_UNKNOWN, true /* force */);
@@ -456,8 +460,10 @@ public final class BackupRestore {
 
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
-    public Set<String> getStagedRemoteFileNames(int userId) {
-        File[] allFiles = getStagedRemoteDataDirectoryForUser(userId).listFiles();
+    public Set<String> getStagedRemoteFileNames(@NonNull UserHandle userHandle) {
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        File[] allFiles = dbContext.getDatabaseDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
         }
@@ -598,7 +604,9 @@ public final class BackupRestore {
         }
 
         int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
-        File stagedDbFile = mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME);
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
+        File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =
                          SQLiteDatabase.openDatabase(
@@ -623,8 +631,8 @@ public final class BackupRestore {
 
         Slog.i(TAG, "Starting the data merge.");
         setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS, false);
-        mergeGrantTimes();
-        mergeDatabase();
+        mergeGrantTimes(dbContext);
+        mergeDatabase(dbContext);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
     }
 
@@ -640,7 +648,7 @@ public final class BackupRestore {
         try {
             grantTimeFile.createNewFile();
             GrantTimeXmlHelper.serializeGrantTimes(
-                    grantTimeFile, mFirstGrantTimeManager.createBackupState(userHandle));
+                    grantTimeFile, mFirstGrantTimeManager.getGrantTimeStateForUser(userHandle));
             backupFilesByFileNames.put(grantTimeFile.getName(), grantTimeFile);
         } catch (IOException e) {
             Slog.e(TAG, "Could not create the grant time file for backup.", e);
@@ -935,13 +943,14 @@ public final class BackupRestore {
     }
 
     private void triggerMergingIfApplicable() {
-        HealthConnectThreadScheduler.scheduleInternalTask(() -> {
-            if (shouldAttemptMerging()) {
-                Slog.i(TAG, "Attempting merging.");
-                setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, true);
-                merge();
-            }
-        });
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    if (shouldAttemptMerging()) {
+                        Slog.i(TAG, "Attempting merging.");
+                        setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, true);
+                        merge();
+                    }
+                });
     }
 
     private long getRemainingTimeoutMillis(
@@ -967,14 +976,6 @@ public final class BackupRestore {
         }
     }
 
-    /**
-     * Get the dir for the user with all the staged data - either from the cloud restore or from the
-     * d2d process.
-     */
-    private static File getStagedRemoteDataDirectoryForUser(int userId) {
-        return getNamedHcDirectoryForUser("remote_staged", userId);
-    }
-
     private static File getBackupDataDirectoryForUser(int userId) {
         return getNamedHcDirectoryForUser("backup", userId);
     }
@@ -984,64 +985,29 @@ public final class BackupRestore {
         return new File(hcDirectoryForUser, dirName);
     }
 
-    private void mergeGrantTimes() {
+    private void mergeGrantTimes(DatabaseContext dbContext) {
         Slog.i(TAG, "Merging grant times.");
-        File restoredGrantTimeFile =
-                new File(
-                        getStagedRemoteDataDirectoryForUser(mCurrentForegroundUser.getIdentifier()),
-                        GRANT_TIME_FILE_NAME);
+        File restoredGrantTimeFile = new File(dbContext.getDatabaseDir(), GRANT_TIME_FILE_NAME);
         UserGrantTimeState userGrantTimeState =
                 GrantTimeXmlHelper.parseGrantTime(restoredGrantTimeFile);
-        mFirstGrantTimeManager.applyAndStageBackupDataForUser(
+        mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(
                 mCurrentForegroundUser, userGrantTimeState);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void mergeDatabase() {
+    private void mergeDatabase(DatabaseContext dbContext) {
         synchronized (mMergingLock) {
-            if (!mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
+            if (!dbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
                 Slog.i(TAG, "No staged db found.");
                 // no db was staged
                 return;
             }
 
-            mDatabaseMerger.merge(
-                    new HealthConnectDatabase(mStagedDbContext, STAGED_DATABASE_NAME));
+            mDatabaseMerger.merge(new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME));
 
             // Delete the staged db as we are done merging.
             Slog.i(TAG, "Deleting staged db after merging.");
-            mStagedDbContext.deleteDatabase(STAGED_DATABASE_NAME);
-        }
-    }
-
-    /**
-     * {@link Context} for the staged health connect db.
-     *
-     * @hide
-     */
-    static final class StagedDatabaseContext extends ContextWrapper {
-        private volatile UserHandle mCurrentForegroundUser;
-
-        StagedDatabaseContext(@NonNull Context context, UserHandle userHandle) {
-            super(context);
-            requireNonNull(context);
-            mCurrentForegroundUser = userHandle;
-        }
-
-        public void updateForegroundUser(UserHandle userHandle) {
-            mCurrentForegroundUser = userHandle;
-        }
-
-        @Override
-        public File getDatabasePath(String name) {
-            File stagedDataDir =
-                    getStagedRemoteDataDirectoryForUser(mCurrentForegroundUser.getIdentifier());
-            stagedDataDir.mkdirs();
-            return new File(stagedDataDir, name);
-        }
-
-        static StagedDatabaseContext create(@NonNull Context context, UserHandle handle) {
-            return new StagedDatabaseContext(context, handle);
+            dbContext.deleteDatabase(STAGED_DATABASE_NAME);
         }
     }
 

@@ -190,8 +190,8 @@ class ExercisePerformanceGoalFormatterTest {
                         SpeedGoal(
                             Velocity.fromMetersPerSecond(50.0),
                             Velocity.fromMetersPerSecond(100.0)),
-                        title = "00:01 min/100 meters - 00:02 min/100 meters",
-                        titleA11y = "00:01 minute per 100 meters - 00:02 minute per 100 meters"))
+                        title = "00:01 min/100 metres - 00:02 min/100 metres",
+                        titleA11y = "00:01 minute per 100 metres - 00:02 minute per 100 metres"))
         }
 
     @Test

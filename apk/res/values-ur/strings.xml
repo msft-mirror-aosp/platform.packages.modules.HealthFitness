@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"لکھیں: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"اجازتوں کا نظم کریں"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"وقت: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"سرگرمی"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"سرگرمی"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"جسمانی پیمائشوں سے متعلق ڈیٹا"</string>
@@ -272,7 +271,7 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"رازداری کی پالیسی"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"تمام اجازتیں ہٹائیں؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"سبھی ہٹائیں"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"ایپ <xliff:g id="APP_NAME">%1$s</xliff:g> ہیلتھ کنیکٹ سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nیہ دوسری اجازتیں جو اس ایپ کی ہو سکتی ہیں، جیسے کیمرا، مائیکروفون یا مقام کو متاثر نہیں کرتی ہے۔"</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> پس منظر اور ماضی کے ڈیٹا سمیت Health Connect سے مزید کوئی ڈیٹا پڑھ یا لکھ نہیں سکے گی۔\n\nاس سے اس ایپ کی دوسری اجازتیں متاثر نہیں ہوتی ہیں جیسے مقام، کیمرا یا مائیکروفون۔"</string>
@@ -341,6 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"اگر آپ اپنا پاس ورڈ بھول جاتے ہیں اور اپنا فون کھو دیتے ہیں تو Health Connect آپ کے محفوظ کردہ ڈیٹا کو بازیاب کرنے میں آپ کی مدد نہیں کر سکتا۔"</string>
     <string name="export_back_button" msgid="3550795479165524982">"واپس جائیں"</string>
     <string name="export_next_button" msgid="657930567137105172">"آگے جائیں"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"منسوخ کریں"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"آگے جائیں"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے فون پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>

@@ -38,7 +38,7 @@
     <string name="set_units_title" msgid="2657822539603758029">"ਇਕਾਈਆਂ ਸੈੱਟ ਕਰੋ"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"ਹਾਲੀਆ ਪਹੁੰਚ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"ਹਾਲ ਹੀ ਵਿੱਚ ਕਿਸੇ ਵੀ ਐਪ ਨੇ Health Connect ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕੀਤੀ"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"ਸਾਰੀਆਂ ਹਾਲੀਆ ਪਹੁੰਚ ਦੇਖੋ"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"ਹਾਲੀਆ ਪਹੁੰਚ ਕਰਨ ਵਾਲੀਆਂ ਸਾਰੀਆਂ ਐਪਾਂ ਦੇਖੋ"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"ਪਿਛਲੇ 24 ਘੰਟਿਆਂ ਵਿੱਚ ਤੁਹਾਡੇ ਡਾਟੇ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਵਾਲੀਆਂ ਐਪਾਂ ਦੇਖੋ"</string>
     <string name="today_header" msgid="1006837293203834373">"ਅੱਜ"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ਬੀਤਿਆ ਕੱਲ੍ਹ"</string>
@@ -340,6 +340,10 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"ਜੇ ਤੁਸੀਂ ਆਪਣਾ ਪਾਸਵਰਡ ਭੁੱਲ ਜਾਂਦੇ ਹੋ ਅਤੇ ਆਪਣਾ ਫ਼ੋਨ ਗੁਆ ਦਿੰਦੇ ਹੋ, ਤਾਂ Health Connect ਤੁਹਾਡੇ ਰੱਖਿਅਤ ਕੀਤੇ ਡਾਟੇ ਨੂੰ ਮੁੜ-ਹਾਸਲ ਕਰਨ ਵਿੱਚ ਤੁਹਾਡੀ ਮਦਦ ਨਹੀਂ ਕਰ ਸਕਦਾ।"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ਪਿੱਛੇ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ਅੱਗੇ"</string>
+    <!-- no translation found for import_cancel_button (2191598074422096715) -->
+    <skip />
+    <!-- no translation found for import_next_button (5706322508691854289) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ਨਾਲ ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ਤੁਹਾਨੂੰ ਆਪਣੇ ਫ਼ੋਨ \'ਤੇ ਵੱਖ-ਵੱਖ ਐਪਾਂ ਨੂੰ ਸਿੰਕ ਕਰਨ ਦਾ ਸਰਲ ਤਰੀਕਾ ਦੇ ਕੇ, ਤੁਹਾਡੇ ਸਿਹਤ ਅਤੇ ਫਿੱਟਨੈੱਸ ਸੰਬੰਧੀ ਡਾਟੇ ਨੂੰ ਸਟੋਰ ਕਰਦੀ ਹੈ"</string>
     <string name="share_data" msgid="3481932156368883946">"ਆਪਣੀਆਂ ਐਪਾਂ ਨਾਲ ਡਾਟਾ ਸਾਂਝਾ ਕਰੋ"</string>

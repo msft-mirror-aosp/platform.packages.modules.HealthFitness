@@ -648,6 +648,18 @@ public class HealthConnectManagerTest {
         assertThat(getRecordById(records, id2).getProtein()).isEqualTo(protein2);
     }
 
+    // b/24128192
+    @Test
+    public void testInsertRecords_metadataGiven_responseDoesNotMutateMetadataReference()
+            throws InterruptedException {
+        Metadata metadata = DataFactory.getEmptyMetadata();
+        StepsRecord stepsRecord = DataFactory.getStepsRecord(20, metadata);
+
+        TestUtils.insertRecordAndGetId(stepsRecord);
+
+        assertThat(stepsRecord.getMetadata().getId()).isEmpty();
+    }
+
     @Test
     public void testAggregation_stepsCountTotal_acrossDST_works() throws Exception {
         ZoneOffset utcPlusOne = ZoneOffset.ofTotalSeconds(UTC.getTotalSeconds() + 3600);
@@ -1549,7 +1561,7 @@ public class HealthConnectManagerTest {
         StepsRecord testRecord = DataFactory.getStepsRecord();
 
         try {
-            TestUtils.insertRecords(Collections.singletonList(testRecord));
+            testRecord = (StepsRecord) TestUtils.insertRecord(testRecord);
             Assert.fail();
         } catch (HealthConnectException exception) {
             assertThat(exception).isNotNull();
@@ -1707,7 +1719,7 @@ public class HealthConnectManagerTest {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
         List<Record> testRecords = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> insertedRecords = insertRecords(testRecords);
 
         // Populate expected records. This method puts empty lists as contributing packages for all
         // records.
@@ -1745,7 +1757,7 @@ public class HealthConnectManagerTest {
         verifyRecordTypeResponse(response, expectedResponseMap);
 
         // delete first set inserted records.
-        TestUtils.deleteRecords(testRecords);
+        TestUtils.deleteRecords(insertedRecords);
 
         // clear out contributing packages.
         TestUtils.populateAndResetExpectedResponseMap(expectedResponseMap);
@@ -1768,7 +1780,7 @@ public class HealthConnectManagerTest {
         // Insert a sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
         List<Record> testRecords = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> insertedRecords = insertRecords(testRecords);
 
         // Populate expected records. This method puts empty lists as contributing packages for all
         // records.
@@ -1806,10 +1818,10 @@ public class HealthConnectManagerTest {
 
         // delete 2 of the inserted records.
         ArrayList<Record> recordsToBeDeleted = new ArrayList<>();
-        for (int itr = 0; itr < testRecords.size() / 2; itr++) {
-            recordsToBeDeleted.add(testRecords.get(itr));
+        for (int itr = 0; itr < insertedRecords.size() / 2; itr++) {
+            recordsToBeDeleted.add(insertedRecords.get(itr));
             expectedResponseMap
-                    .get(testRecords.get(itr).getClass())
+                    .get(insertedRecords.get(itr).getClass())
                     .getContributingPackages()
                     .clear();
         }
@@ -1832,11 +1844,9 @@ public class HealthConnectManagerTest {
             throws Exception {
         // Insert 2 sets of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
-        List<Record> testRecords = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords);
+        List<Record> testRecords = TestUtils.insertRecords(DataFactory.getTestRecords());
 
-        List<Record> testRecords2 = DataFactory.getTestRecords();
-        TestUtils.insertRecords(testRecords2);
+        TestUtils.insertRecords(DataFactory.getTestRecords());
 
         // When recordTypes are modified the appInfo also gets updated and this update happens on
         // a background thread. To ensure the test has the latest values for appInfo, add a wait

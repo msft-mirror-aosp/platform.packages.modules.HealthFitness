@@ -166,10 +166,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         whereClauses.addNestedWhereClauses(
                 getFilterByStartAccessDateWhereClauses(
                         appInfoHelper.getAppInfoId(callingPackage), startDateAccess));
-        // start/end time filter
+        // data start time < filter end time
         whereClauses.addWhereLessThanClause(startTimeColumnName, endTime);
         if (endTimeColumnName != null) {
             // for IntervalRecord, filters by overlapping
+            // data end time >= filter start time
             whereClauses.addWhereGreaterThanOrEqualClause(endTimeColumnName, startTime);
         } else {
             // for InstantRecord, filters by whether time falls into [startTime, endTime)

@@ -1813,10 +1813,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             return;
                         }
                         mBackupRestore.stageAllHealthConnectRemoteData(
-                                pfdsByFileName,
-                                exceptionsByFileName,
-                                userHandle.getIdentifier(),
-                                callback);
+                                pfdsByFileName, exceptionsByFileName, userHandle, callback);
                     });
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "Exception encountered while staging", e);
@@ -2123,8 +2120,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @VisibleForTesting
-    Set<String> getStagedRemoteFileNames(int userId) {
-        return mBackupRestore.getStagedRemoteFileNames(userId);
+    Set<String> getStagedRemoteFileNames(@NonNull UserHandle userHandle) {
+        return mBackupRestore.getStagedRemoteFileNames(userHandle);
     }
 
     @NonNull

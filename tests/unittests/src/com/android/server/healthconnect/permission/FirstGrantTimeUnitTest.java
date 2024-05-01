@@ -268,7 +268,7 @@ public class FirstGrantTimeUnitTest {
                 .isNotNull();
         Instant backupTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(null, backupTime);
-        mGrantTimeManager.applyAndStageBackupDataForUser(CURRENT_USER, stagedState);
+        mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEqualTo(backupTime);
     }
@@ -281,7 +281,7 @@ public class FirstGrantTimeUnitTest {
 
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEqualTo(stateTime);
-        mGrantTimeManager.applyAndStageBackupDataForUser(CURRENT_USER, stagedState);
+        mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEqualTo(stateTime);
     }
@@ -293,7 +293,7 @@ public class FirstGrantTimeUnitTest {
         Instant stateTime = backupTime.plusSeconds(10);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, backupTime);
 
-        mGrantTimeManager.applyAndStageBackupDataForUser(CURRENT_USER, stagedState);
+        mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEqualTo(backupTime);
     }
@@ -303,7 +303,7 @@ public class FirstGrantTimeUnitTest {
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, stateTime.plusSeconds(1));
 
-        mGrantTimeManager.applyAndStageBackupDataForUser(CURRENT_USER, stagedState);
+        mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
                 .isEqualTo(stateTime);
     }
@@ -313,7 +313,7 @@ public class FirstGrantTimeUnitTest {
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         setupGrantTimeState(stateTime, null);
 
-        UserGrantTimeState state = mGrantTimeManager.createBackupState(CURRENT_USER);
+        UserGrantTimeState state = mGrantTimeManager.getGrantTimeStateForUser(CURRENT_USER);
         assertThat(state.getSharedUserGrantTimes()).isEmpty();
         assertThat(state.getPackageGrantTimes().containsKey(SELF_PACKAGE_NAME)).isTrue();
         assertThat(state.getPackageGrantTimes().get(SELF_PACKAGE_NAME)).isEqualTo(stateTime);

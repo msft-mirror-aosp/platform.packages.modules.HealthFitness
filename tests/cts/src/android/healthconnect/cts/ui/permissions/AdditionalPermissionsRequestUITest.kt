@@ -34,6 +34,7 @@ import androidx.test.uiautomator.By
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.compatibility.common.util.FreezeRotationRule
 import com.android.compatibility.common.util.SystemUtil
+import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
 import com.google.common.truth.Truth
 import org.junit.After
 import org.junit.Before
@@ -42,17 +43,16 @@ import org.junit.Test
 
 class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
 
-    @get:Rule
-    val disableAnimationRule = DisableAnimationRule()
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
 
-    @get:Rule
-    val freezeRotationRule = FreezeRotationRule()
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     @Before
     fun setup() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_HISTORY)
         revokePermissionViaPackageManager(
             context, TEST_APP_PACKAGE_NAME, READ_HEALTH_DATA_IN_BACKGROUND)
+        with(getUiDevice()) { executeShellCommand("settings put system font_scale 0.85") }
     }
 
     @After
@@ -138,9 +138,10 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
                 putExtra(PackageManager.EXTRA_REQUEST_PERMISSIONS_NAMES, permissions.toTypedArray())
                 putExtra(Intent.EXTRA_PACKAGE_NAME, TEST_APP_PACKAGE_NAME)
             }
+
         SystemUtil.runWithShellPermissionIdentity(
             {
-                val result = ProxyActivity.launchActivityForResult(intent) {}
+                val result = ProxyActivity.launchActivityForResult(intent)
                 Truth.assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
             },
             Manifest.permission.GRANT_RUNTIME_PERMISSIONS)

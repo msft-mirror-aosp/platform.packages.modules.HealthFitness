@@ -339,4 +339,11 @@ object UiTestUtils {
             { pm.revokeRuntimePermission(packageName, permName, context.user, /* reason= */ "") },
             REVOKE_RUNTIME_PERMISSIONS)
     }
+
+    fun setFont(device: UiDevice) {
+        with(device) {
+            executeShellCommand(
+                "shell settings put system font_scale 0.85")
+        }
+    }
 }

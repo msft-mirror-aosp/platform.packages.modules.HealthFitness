@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"쓰기: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"권한 관리"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"시간: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"활동"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"활동"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"신체 측정"</string>
@@ -341,6 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"비밀번호를 잊어버리고 휴대전화를 분실한 경우 헬스 커넥트는 저장된 데이터를 복구하는 데 도움을 줄 수 없습니다."</string>
     <string name="export_back_button" msgid="3550795479165524982">"뒤로"</string>
     <string name="export_next_button" msgid="657930567137105172">"다음"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"취소"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"다음"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"헬스 커넥트 시작하기"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"헬스 커넥트는 건강 및 피트니스 데이터를 저장하므로 휴대전화에 설치된 여러 앱을 간편하게 동기화할 수 있습니다."</string>
     <string name="share_data" msgid="3481932156368883946">"앱과 데이터 공유"</string>
@@ -441,7 +442,7 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"무효"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1ms}other{#ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1밀리초}other{#밀리초}}"</string>
-    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"노트"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"메모"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1회}other{#회}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"활동 칼로리 소모량: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"총 칼로리 소모량: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
@@ -904,8 +905,8 @@
     <string name="last_month_header" msgid="1359164797239191253">"지난달"</string>
     <string name="tab_entries" msgid="3402700951602029493">"항목"</string>
     <string name="tab_access" msgid="7818197975407243701">"액세스"</string>
-    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에 대한 추가 액세스를 허용하시겠습니까?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 이러한 헬스 커넥트 설정에도 액세스하려고 합니다."</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에 추가 액세스를 허용하시겠습니까?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> 앱에서 다음 헬스 커넥트 설정에도 액세스하려고 합니다."</string>
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"이 앱의 백그라운드 또는 과거 데이터 액세스를 사용 설정하려면 읽기 권한을 1개 이상 사용 설정하세요."</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"이 앱의 백그라운드 액세스를 사용 설정하려면 읽기 권한을 1개 이상 사용 설정하세요."</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"이 앱의 과거 데이터 액세스를 사용 설정하려면 읽기 권한을 1개 이상 사용 설정하세요."</string>

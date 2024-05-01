@@ -101,7 +101,6 @@ android_test {
         "cts-healthconnect-utils",
     ],
     test_suites: [
-        "cts",
         "general-tests",
         "mts-healthfitness",
         "mcts-healthfitness",
@@ -126,13 +125,13 @@ android_test {
 
 java_test_host {
     name: "CtsHealthConnectHostTestCases",
+    team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     srcs: [
         "host/**/*.java",
         "host/**/*.kt",
     ],
     test_suites: [
-        "cts",
         "general-tests",
         "mts-healthfitness",
         "mcts-healthfitness",

@@ -515,7 +515,12 @@ public class HealthConnectManager {
             // illegal argument exception.
             records.forEach((record) -> record.getMetadata().setId(""));
             List<RecordInternal<?>> recordInternals =
-                    records.stream().map(Record::toRecordInternal).collect(Collectors.toList());
+                    records.stream()
+                            .map(
+                                    record ->
+                                            record.toRecordInternal()
+                                                    .setPackageName(mContext.getPackageName()))
+                            .collect(Collectors.toList());
             mService.insertRecords(
                     mContext.getAttributionSource(),
                     new RecordsParcel(recordInternals),
@@ -527,8 +532,9 @@ public class HealthConnectManager {
                                     () ->
                                             callback.onResult(
                                                     new InsertRecordsResponse(
-                                                            getRecordsWithUids(
-                                                                    records, parcel.getUids()))));
+                                                            toExternalRecordsWithUuids(
+                                                                    recordInternals,
+                                                                    parcel.getUids()))));
                         }
 
                         @Override
@@ -1777,10 +1783,14 @@ public class HealthConnectManager {
         };
     }
 
-    private List<Record> getRecordsWithUids(List<Record> records, List<String> uids) {
+    private List<Record> toExternalRecordsWithUuids(
+            List<RecordInternal<?>> recordInternals, List<String> uuids) {
         int i = 0;
-        for (Record record : records) {
-            record.getMetadata().setId(uids.get(i++));
+        List<Record> records = new ArrayList<>();
+
+        for (RecordInternal recordInternal : recordInternals) {
+            recordInternal.setUuid(uuids.get(i++));
+            records.add(recordInternal.toExternalRecord());
         }
 
         return records;

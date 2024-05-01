@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"రాసింది: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"అనుమతులను మేనేజ్ చేయండి"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"సమయం: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"యాక్టివిటీ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"యాక్టివిటీ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"శరీర కొలతలు"</string>
@@ -341,6 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"మీరు పాస్‌వర్డ్‌ను మర్చిపోయి, ఫోన్ పోగొట్టుకుంటే, సేవ్ చేయబడిన మీ డేటాను రికవర్ చేయడంలో Health Connect సహాయపడలేదు."</string>
     <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
     <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"రద్దు చేయండి"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"తర్వాత"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connectను ప్రారంభించండి"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు సంబంధించిన డేటాను స్టోర్ చేస్తుంది, తద్వారా మీరు మీ డేటాను ఫోన్​లోని విభిన్న రకాల యాప్‌లతో సులభంగా సింక్ చేయవచ్చు"</string>
     <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package healthconnect.exportimport;
+package com.android.server.healthconnect.exportimport;
+
+import static com.android.server.healthconnect.exportimport.ExportManager.EXPORT_DATABASE_DIR_NAME;
+import static com.android.server.healthconnect.exportimport.ExportManager.EXPORT_DATABASE_FILE_NAME;
 
 import android.database.Cursor;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
@@ -23,7 +26,6 @@ import android.healthconnect.cts.utils.TestUtils;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
@@ -78,13 +80,16 @@ public class ExportManagerTest {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "/healthconnect.db");
+                new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "access_logs_table", 2);
 
-        mExportManager.exportLocally();
+        mExportManager.exportLocally(mContext.getUser());
 
         HealthConnectDatabase exportHealthConnectDatabase =
-                new HealthConnectDatabase(mContext, "/export_data/healthconnect_export.db");
+                new HealthConnectDatabase(
+                        DatabaseContext.create(
+                                mContext, EXPORT_DATABASE_DIR_NAME, mContext.getUser()),
+                        EXPORT_DATABASE_FILE_NAME);
         assertTableSize(exportHealthConnectDatabase, "access_logs_table", 0);
     }
 
@@ -93,13 +98,16 @@ public class ExportManagerTest {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
         HealthConnectDatabase originalDatabase =
-                new HealthConnectDatabase(mContext, "/healthconnect.db");
+                new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "change_logs_table", 2);
 
-        mExportManager.exportLocally();
+        mExportManager.exportLocally(mContext.getUser());
 
         HealthConnectDatabase exportHealthConnectDatabase =
-                new HealthConnectDatabase(mContext, "/export_data/healthconnect_export.db");
+                new HealthConnectDatabase(
+                        DatabaseContext.create(
+                                mContext, EXPORT_DATABASE_DIR_NAME, mContext.getUser()),
+                        EXPORT_DATABASE_FILE_NAME);
         assertTableSize(exportHealthConnectDatabase, "change_logs_table", 0);
     }
 

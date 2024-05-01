@@ -46,8 +46,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"寫入：<xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"管理權限"</string>
-    <!-- no translation found for recent_access_time_content_descritption (1137471676075811472) -->
-    <skip />
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"時間：<xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"活動"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"活動"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身體測量數據"</string>
@@ -302,7 +301,7 @@
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"這些應用程式不再擁有存取權，但仍有資料儲存在 Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」可以讀取 <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>後新增的資料"</string>
     <string name="other_android_permissions" msgid="8051485761573324702">"如要管理此應用程式可以存取的其他 Android 權限，請前往「設定」&gt; [應用程式]"</string>
-    <string name="manage_permissions_rationale" msgid="9183689798847740274">"你與「<xliff:g id="APP_NAME">%1$s</xliff:g>」分享的資料適用於該應用程式的私隱權政策"</string>
+    <string name="manage_permissions_rationale" msgid="9183689798847740274">"你與「<xliff:g id="APP_NAME">%1$s</xliff:g>」分享的資料將受應用程式的私隱權政策約束"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"如要管理此應用程式可以存取的其他 Android 權限，請前往「設定」，然後輕按 [應用程式]"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"閱讀私隱權政策"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"上次存取時間：過去 24 小時內"</string>
@@ -331,7 +330,7 @@
     <string name="frequency_daily" msgid="3596412357416125727">"每日"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"每週"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"每月"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"選擇匯出資料的儲存位置"</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"選擇要匯出的位置"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"開啟加密功能"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"資料需要先加密再儲存。包括 Google 或「健康資料同步」在內，沒有人可存取這些資料。"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"建立密碼可保護已加密的資料。你需要使用此密碼匯入及還原資料。"</string>
@@ -341,6 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"如果你忘記密碼且遺失手機，「健康資料同步」就無法協助你復原已儲存的資料。"</string>
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"取消"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"繼續"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"開始使用 Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect 能儲存健康和健身資料，方便你同步處理手機上各個應用程式的資料"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>
@@ -413,9 +414,9 @@
     <string name="velocity_minute_miles_long" msgid="6889048307278340076">"每英里 <xliff:g id="MINUTE">%1$s</xliff:g> 分鐘"</string>
     <string name="velocity_minute_km_long" msgid="4037299863590066470">"每公里 <xliff:g id="MINUTE">%1$s</xliff:g> 分鐘"</string>
     <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> 分鐘/100 碼"</string>
-    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> 分鐘/100 公尺"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> 分鐘/100 米"</string>
     <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"每 100 碼 <xliff:g id="MINUTE">%1$s</xliff:g> 分鐘"</string>
-    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"每 100 公尺 <xliff:g id="MINUTE">%1$s</xliff:g> 分鐘"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"每 100 米 <xliff:g id="MINUTE">%1$s</xliff:g> 分鐘"</string>
     <string name="time_range_long" msgid="5067423945245490288">"從 <xliff:g id="START_TIME">%1$s</xliff:g> 到 <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"從 <xliff:g id="START_TIME">%1$s</xliff:g>到 <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{推輪椅 1 下}other{推輪椅 # 下}}"</string>

@@ -88,7 +88,7 @@ public final class DatabaseMerger {
     /** Merge data */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public synchronized void merge(HealthConnectDatabase stagedDatabase) {
-        // Merge app info
+        Slog.i(TAG, "Merging app info");
 
         Map<Long, String> stagedPackageNamesByAppIds = new ArrayMap<>();
         try (Cursor cursor = read(stagedDatabase, new ReadTableRequest(AppInfoHelper.TABLE_NAME))) {
@@ -107,7 +107,7 @@ public final class DatabaseMerger {
             }
         }
 
-        // Merge records
+        Slog.i(TAG, "Merging records");
 
         // Determine the order in which we should migrate data types. This involves first
         // migrating data types according to the specified ordering overrides. Remaining
@@ -159,8 +159,10 @@ public final class DatabaseMerger {
                             .get(recordTypeToMigrate));
         }
 
-        Slog.i(TAG, "Sync app info records after restored data merge.");
+        Slog.i(TAG, "Syncing app info records after restored data merge");
         AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+
+        Slog.i(TAG, "Merging done");
     }
 
     private <T extends Record> void mergeRecordsOfType(

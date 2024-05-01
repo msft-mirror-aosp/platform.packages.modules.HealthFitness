@@ -271,10 +271,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politique de confidentialité"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Retirer toutes les autorisations?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Tout retirer"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme l\'appareil photo ou le microphone ou la position."</string>
-    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données en arrière-plan.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
-    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données antérieures.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données en arrière-plan ou antérieures.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme celles relatives à l\'appareil photo, au microphone ou à la position."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données en arrière-plan.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme celles relatives à la position, à l\'appareil photo ou au microphone."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données antérieures.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme celles relatives à la position, à l\'appareil photo ou au microphone."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ne pourra plus lire ni écrire de données dans Connexion santé, y compris les données en arrière-plan ou antérieures.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme celles relatives à la position, à l\'appareil photo ou au microphone."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Supprimer également les données de <xliff:g id="APP_NAME">%1$s</xliff:g> de Connexion santé"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Jour suivant"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Jour sélectionné"</string>
@@ -292,7 +292,7 @@
     <string name="no_apps_allowed" msgid="5794833581324128108">"Aucune application autorisée"</string>
     <string name="no_apps_denied" msgid="743327680286446017">"Aucune application refusée"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Retirer l\'accès pour toutes les applications?"</string>
-    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Aucune de vos applications ne pourra accéder aux données stockées dans Connexion santé ni en ajouter de nouvelles. Les données existantes ne seront pas supprimées.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme la position, l\'appareil photo ou le microphone."</string>
+    <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Aucune de vos applications ne pourra accéder aux données stockées dans Connexion santé ni en ajouter de nouvelles. Les données existantes ne seront pas supprimées.\n\nCela n\'a aucune incidence sur d\'autres autorisations dont peut disposer cette application, comme celles relatives à la position, à l\'appareil photo ou au microphone."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Tout retirer"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Gérer l\'application"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Afficher les données de l\'application"</string>
@@ -308,7 +308,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accès des applications"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aucune application compatible n\'est actuellement installée"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accès supplémentaire"</string>
-    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Retrait des autorisations supplémentaires pour cette application"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorisations supplémentaires retirées pour cette application"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorisations d\'applications retirées"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Connexion santé a retiré les autorisations pour <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Connexion santé a retiré les autorisations pour <xliff:g id="APP_DATA_0">%1$s</xliff:g> et <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -340,6 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Connexion santé ne peut pas vous aider à récupérer vos données enregistrées."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
     <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Annuler"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Suivant"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Premiers pas avec Connexion santé"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Connexion santé stocke vos données de santé et d\'activité physique, et vous offre un moyen simple de synchroniser les différentes applications de votre téléphone"</string>
     <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applications"</string>
