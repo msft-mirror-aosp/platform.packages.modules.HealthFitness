@@ -59,7 +59,7 @@ public class UpsertTableRequest {
     private RecordHelper<?> mRecordHelper;
     private List<String> mPostUpsertCommands = Collections.emptyList();
 
-    private ArrayMap<String, Boolean> mExtraWritePermissionsStateMapping;
+    @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsStateMapping;
 
     public UpsertTableRequest(@NonNull String table, @NonNull ContentValues contentValues) {
         this(table, contentValues, Collections.emptyList());
@@ -227,7 +227,7 @@ public class UpsertTableRequest {
     }
 
     public <T extends RecordInternal<?>> UpsertTableRequest setExtraWritePermissionsStateMapping(
-            ArrayMap<String, Boolean> extraWritePermissionsToState) {
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionsToState) {
         mExtraWritePermissionsStateMapping = extraWritePermissionsToState;
         return this;
     }

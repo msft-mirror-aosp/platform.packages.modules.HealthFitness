@@ -221,7 +221,7 @@ public final class ExerciseSessionRecordHelper
 
     @Override
     public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
-            ArrayMap<String, Boolean> extraWritePermissionToState) {
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToState) {
         ArrayList<TableColumnPair> childTablesToDelete = new ArrayList<>();
         childTablesToDelete.add(new TableColumnPair(EXERCISE_LAPS_RECORD_TABLE_NAME, PARENT_KEY));
         childTablesToDelete.add(
@@ -471,7 +471,8 @@ public final class ExerciseSessionRecordHelper
                 getNumberOfRecordsWithExerciseRoutes(recordInternals));
     }
 
-    private boolean canWriteExerciseRoute(ArrayMap<String, Boolean> extraWritePermissionToState) {
+    private boolean canWriteExerciseRoute(
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToState) {
         return extraWritePermissionToState != null
                 && Boolean.TRUE.equals(extraWritePermissionToState.get(WRITE_EXERCISE_ROUTE));
     }
