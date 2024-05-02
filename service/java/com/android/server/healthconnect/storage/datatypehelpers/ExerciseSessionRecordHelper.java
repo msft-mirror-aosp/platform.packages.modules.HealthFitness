@@ -450,12 +450,6 @@ public final class ExerciseSessionRecordHelper
     }
 
     @Override
-    @NonNull
-    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
-        return Collections.singletonList(getAlterTableRequestForPlannedExerciseFeature());
-    }
-
-    @Override
     public void logUpsertMetrics(
             @NonNull List<RecordInternal<?>> recordInternals, @NonNull String packageName) {
         Objects.requireNonNull(recordInternals);
