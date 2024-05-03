@@ -240,7 +240,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     @SuppressWarnings("unchecked")
     public UpsertTableRequest getUpsertTableRequest(
             RecordInternal<?> recordInternal,
-            ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
         ContentValues upsertValues = getContentValues((T) recordInternal);
         updateUpsertValuesIfRequired(upsertValues, extraWritePermissionToStateMap);
         UpsertTableRequest upsertTableRequest =
@@ -298,7 +298,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * during updates to determine which child rows should be deleted.
      */
     public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
-            ArrayMap<String, Boolean> extraWritePermissionToState) {
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToState) {
         return getAllChildTables().stream().map(it -> new TableColumnPair(it, PARENT_KEY)).toList();
     }
 

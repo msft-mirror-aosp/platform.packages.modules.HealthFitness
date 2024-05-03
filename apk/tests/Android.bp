@@ -53,7 +53,7 @@ java_defaults {
         "androidx.test.ext.truth",
         "androidx.test.rules",
         "compatibility-device-util-axt",
-        "mockito-kotlin2"
+        "mockito-kotlin2",
     ],
     libs: [
         "kotlin-annotations",
@@ -74,16 +74,15 @@ java_defaults {
         ":OldPermissionsTestApp",
     ],
     test_config_template: "AndroidTestTemplate.xml",
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
-
 
 java_library {
     name: "SafetyCenterTests",
     srcs: [
-        "src/**/safetycenter/*.kt"
+        "src/**/safetycenter/*.kt",
     ],
-    sdk_version: "system_current",
+    sdk_version: "module_current",
     min_sdk_version: "34",
     static_libs: [
         "kotlin-stdlib",
@@ -101,6 +100,7 @@ java_library {
     libs: [
         "android.test.mock.stubs",
         "android.test.mock",
+        "framework-permission-s",
     ],
 }
 
@@ -110,7 +110,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/data/**/*.java",
         "src/com/android/healthconnect/controller/tests/data/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -135,7 +135,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/permissiontypes/**/*.java",
         "src/com/android/healthconnect/controller/tests/permissiontypes/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -156,7 +156,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/selectabledeletion/**/*.kt",
         "src/com/android/healthconnect/controller/tests/selectabledeletion/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -173,7 +173,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/route/**/*.java",
         "src/com/android/healthconnect/controller/tests/route/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -190,14 +190,14 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/export/**/*.java",
         "src/com/android/healthconnect/controller/tests/export/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
     name: "HealthConnectControllerExportTests",
     srcs: [":export-tests-srcs"],
     static_libs: [
-        "HealthConnectExportApis"
+        "HealthConnectExportApis",
     ],
     defaults: ["health-connect-controller-tests-default"],
     package_name: "com.android.healthconnect.controller.tests.export",
@@ -214,7 +214,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/recentaccess/**/*.java",
         "src/com/android/healthconnect/controller/tests/recentaccess/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -233,7 +233,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/managedata/**/*.java",
         "src/com/android/healthconnect/controller/tests/managedata/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -250,14 +250,14 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/migration/**/*.java",
         "src/com/android/healthconnect/controller/tests/migration/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
     name: "HealthConnectControllerMigrationTests",
     srcs: [":migration-tests-srcs"],
     static_libs: [
-        "HealthConnectMigrationApis"
+        "HealthConnectMigrationApis",
     ],
     defaults: ["health-connect-controller-tests-default"],
     package_name: "com.android.healthconnect.controller.tests.migration",
@@ -270,7 +270,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/navigation/**/*.java",
         "src/com/android/healthconnect/controller/tests/navigation/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -289,7 +289,7 @@ filegroup {
         "src/com/android/healthconnect/controller/tests/shared/**/*.java",
         "src/com/android/healthconnect/controller/tests/shared/**/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -318,7 +318,7 @@ filegroup {
         ":permission-tests-srcs",
         "src/**/safetycenter/*.kt",
     ],
-    visibility: ["//visibility:private"]
+    visibility: ["//visibility:private"],
 }
 
 android_test {
@@ -329,7 +329,6 @@ android_test {
     instrumentation_target_package: "com.android.healthconnect.controller.tests.extras",
 }
 
-
 android_test {
     name: "HealthConnectControllerUITests",
     srcs: [
@@ -337,7 +336,7 @@ android_test {
         "src/**/*.kt",
     ],
     exclude_srcs: [
-        "src/**/safetycenter/*.kt"
+        "src/**/safetycenter/*.kt",
     ],
     defaults: ["health-connect-controller-tests-default"],
     static_libs: [
