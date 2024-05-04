@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Jos unohdat salasanan ja kadotat puhelimen, Health Connect ei voi auttaa palauttamaan tallennetun datan."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Takaisin"</string>
     <string name="export_next_button" msgid="657930567137105172">"Seuraava"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Peru"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Seuraava"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Aloita Health Connectin käyttö"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect tallentaa terveys‑ ja kuntoiludatasi ja tarjoaa helpon tavan synkronoida eri sovelluksia puhelimellasi"</string>
     <string name="share_data" msgid="3481932156368883946">"Jaa dataa sovelluksille"</string>
