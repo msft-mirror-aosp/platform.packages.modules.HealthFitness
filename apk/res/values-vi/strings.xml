@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Nếu bạn quên mật khẩu và mất điện thoại, Health Connect không thể giúp bạn khôi phục dữ liệu đã lưu."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Quay lại"</string>
     <string name="export_next_button" msgid="657930567137105172">"Tiếp theo"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Huỷ"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Tiếp theo"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Làm quen với Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>

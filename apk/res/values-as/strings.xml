@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"যদি আপুনি নিজৰ পাছৱৰ্ড পাহৰিছে আৰু ফ’নটো হেৰুৱায়, আপোনাৰ ছেভ কৰি থোৱা ডেটা উদ্ধাৰ কৰাত আপোনাক Health Connectএ সহায় কৰিব নোৱাৰে।"</string>
     <string name="export_back_button" msgid="3550795479165524982">"উভতি যাওক"</string>
     <string name="export_next_button" msgid="657930567137105172">"পৰৱৰ্তী"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"বাতিল কৰক"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"পৰৱৰ্তী"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connectৰ জৰিয়তে আৰম্ভ কৰক"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connectএ আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চা সম্পৰ্কীয় ডেটা ষ্ট’ৰ কৰি আপোনাক আপোনাৰ ফ’নত থকা বিভিন্ন এপ্‌সমূহ ছিংক কৰাৰ সহজ উপায় প্ৰদান কৰে"</string>
     <string name="share_data" msgid="3481932156368883946">"আপোনাৰ এপ্‌সমূহৰ সৈতে ডেটা শ্বেয়াৰ কৰক"</string>
