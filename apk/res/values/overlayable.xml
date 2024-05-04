@@ -75,7 +75,7 @@
             <!-- Backup and restore -->
             <item type="drawable" name="ic_repeat"/>
             <item type="drawable" name="ic_upload"/>
-            <item type="drawable" name="ic_settings_backup_restore"/>
+            <item type="drawable" name="ic_import"/>
 
             <item type="drawable" name="ic_lock"/>
             <item type="drawable" name="ic_warning"/>

@@ -88,6 +88,69 @@ public final class ScheduledExportSettingsTest {
         assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(7);
     }
 
+    @Test
+    public void testEquals_andHashCode_withPeriodInDays() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(7);
+
+        assertThat(settingsA).isEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withDifferentPeriodInDays() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(8);
+
+        assertThat(settingsA).isNotEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashcode_withSecretKey()
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        ScheduledExportSettings settingsA =
+                ScheduledExportSettings.withSecretKey(generateSecretKey(), TEST_SALT);
+        ScheduledExportSettings settingsB =
+                ScheduledExportSettings.withSecretKey(generateSecretKey(), TEST_SALT);
+
+        assertThat(settingsA).isEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withDifferentSecretKey()
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        ScheduledExportSettings settingsA =
+                ScheduledExportSettings.withSecretKey(generateSecretKey(), TEST_SALT);
+        PBEKeySpec pbeKeySpec = new PBEKeySpec(TEST_PASSWORD.toCharArray(), TEST_SALT, 1000, 100);
+        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        ScheduledExportSettings settingsB =
+                ScheduledExportSettings.withSecretKey(
+                        secretKeyFactory.generateSecret(pbeKeySpec).getEncoded(), TEST_SALT);
+
+        assertThat(settingsA).isNotEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withUri() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withUri(TEST_URI);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withUri(TEST_URI);
+
+        assertThat(settingsA).isEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withDifferentUri() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withUri(TEST_URI);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withUri(Uri.EMPTY);
+
+        assertThat(settingsA).isNotEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());
+    }
+
     private static byte[] generateSecretKey()
             throws NoSuchAlgorithmException, InvalidKeySpecException {
         PBEKeySpec pbeKeySpec = new PBEKeySpec(TEST_PASSWORD.toCharArray(), TEST_SALT, 1000, 256);

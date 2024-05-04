@@ -24,13 +24,11 @@ import android.health.connect.datatypes.MedicalResource;
 
 import org.junit.Test;
 
-import java.time.Instant;
 
 public class MedicalResourceTest {
     private static final String MEDICAL_RESOURCE_ID = "medical_resource_id";
     private static final String DATA_SOURCE_ID = "data_source_id";
-    private static final String DISPLAY_NAME = "display name";
-    private static final Instant RELEVANT_TIME = Instant.now();
+    private static final String DATA = "{\"resourceType\" : \"Immunization\"}";
 
     @Test
     public void testMedicalResourceBuilder_requiredFieldsOnly() {
@@ -39,23 +37,20 @@ public class MedicalResourceTest {
                                 MEDICAL_RESOURCE_ID,
                                 MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 DATA_SOURCE_ID,
-                                DISPLAY_NAME)
+                                DATA)
                         .build();
 
         assertThat(resource.getId()).isEqualTo(MEDICAL_RESOURCE_ID);
         assertThat(resource.getType()).isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
         assertThat(resource.getDataSourceId()).isEqualTo(DATA_SOURCE_ID);
-        assertThat(resource.getDisplayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(resource.getData()).isEqualTo(DATA);
     }
 
     @Test
     public void testMedicalResourceBuilder_fromExistingBuilder() {
         MedicalResource.Builder original =
                 new MedicalResource.Builder(
-                        MEDICAL_RESOURCE_ID,
-                        MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                        DATA_SOURCE_ID,
-                        DISPLAY_NAME);
+                        MEDICAL_RESOURCE_ID, MEDICAL_RESOURCE_TYPE_UNKNOWN, DATA_SOURCE_ID, DATA);
         MedicalResource resource = new MedicalResource.Builder(original).build();
 
         assertThat(resource).isEqualTo(original.build());
@@ -68,7 +63,7 @@ public class MedicalResourceTest {
                                 MEDICAL_RESOURCE_ID,
                                 MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 DATA_SOURCE_ID,
-                                DISPLAY_NAME)
+                                DATA)
                         .build();
         MedicalResource resource = new MedicalResource.Builder(original).build();
 
@@ -77,20 +72,21 @@ public class MedicalResourceTest {
 
     @Test
     public void testMedicalResourceBuilder_resetRequiredFields() {
+        String anotherData = "{\"resourceType\" : \"Allergy\"}";
         MedicalResource resource =
                 new MedicalResource.Builder(
                                 MEDICAL_RESOURCE_ID,
                                 MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 DATA_SOURCE_ID,
-                                DISPLAY_NAME)
+                                DATA)
                         .setId("another_id")
                         .setDataSourceId("another_data_source_id")
-                        .setDisplayName("another_display_name")
+                        .setData(anotherData)
                         .build();
 
         assertThat(resource.getId()).isEqualTo("another_id");
         assertThat(resource.getDataSourceId()).isEqualTo("another_data_source_id");
-        assertThat(resource.getDisplayName()).isEqualTo("another_display_name");
+        assertThat(resource.getData()).isEqualTo(anotherData);
     }
 
     @Test
@@ -100,15 +96,12 @@ public class MedicalResourceTest {
                                 MEDICAL_RESOURCE_ID,
                                 MEDICAL_RESOURCE_TYPE_UNKNOWN,
                                 DATA_SOURCE_ID,
-                                DISPLAY_NAME)
+                                DATA)
                         .build();
         String expectedPropertiesString =
                 String.format(
-                        "id=%s,type=%d,dataSourceId=%s,displayName=%s",
-                        MEDICAL_RESOURCE_ID,
-                        MEDICAL_RESOURCE_TYPE_UNKNOWN,
-                        DATA_SOURCE_ID,
-                        DISPLAY_NAME);
+                        "id=%s,type=%d,dataSourceId=%s,data=%s",
+                        MEDICAL_RESOURCE_ID, MEDICAL_RESOURCE_TYPE_UNKNOWN, DATA_SOURCE_ID, DATA);
 
         assertThat(resource.toString())
                 .isEqualTo(String.format("MedicalResource{%s}", expectedPropertiesString));

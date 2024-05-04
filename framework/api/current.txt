@@ -58,6 +58,7 @@ package android.health.connect {
     method public void getChangeLogToken(@NonNull android.health.connect.changelog.ChangeLogTokenRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.changelog.ChangeLogTokenResponse,android.health.connect.HealthConnectException>);
     method public void getChangeLogs(@NonNull android.health.connect.changelog.ChangeLogsRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.changelog.ChangeLogsResponse,android.health.connect.HealthConnectException>);
     method public void insertRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.InsertRecordsResponse,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull java.util.List<android.health.connect.MedicalIdFilter>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
     method public <T extends android.health.connect.datatypes.Record> void readRecords(@NonNull android.health.connect.ReadRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadRecordsResponse<T>,android.health.connect.HealthConnectException>);
     method public void updateRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
     field public static final String ACTION_MANAGE_HEALTH_PERMISSIONS = "android.health.connect.action.MANAGE_HEALTH_PERMISSIONS";
@@ -91,6 +92,7 @@ package android.health.connect {
     field public static final String READ_HYDRATION = "android.permission.health.READ_HYDRATION";
     field public static final String READ_INTERMENSTRUAL_BLEEDING = "android.permission.health.READ_INTERMENSTRUAL_BLEEDING";
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_RESOURCES_IMMUNIZATION = "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
@@ -129,6 +131,7 @@ package android.health.connect {
     field public static final String WRITE_HYDRATION = "android.permission.health.WRITE_HYDRATION";
     field public static final String WRITE_INTERMENSTRUAL_BLEEDING = "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING";
     field public static final String WRITE_LEAN_BODY_MASS = "android.permission.health.WRITE_LEAN_BODY_MASS";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_RESOURCES = "android.permission.health.WRITE_MEDICAL_RESOURCES";
     field public static final String WRITE_MENSTRUATION = "android.permission.health.WRITE_MENSTRUATION";
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
@@ -163,6 +166,11 @@ package android.health.connect {
     method @NonNull public android.health.connect.LocalTimeRangeFilter build();
     method @NonNull public android.health.connect.LocalTimeRangeFilter.Builder setEndTime(@Nullable java.time.LocalDateTime);
     method @NonNull public android.health.connect.LocalTimeRangeFilter.Builder setStartTime(@Nullable java.time.LocalDateTime);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalIdFilter {
+    method @NonNull public static android.health.connect.MedicalIdFilter fromId(@NonNull String);
+    method @NonNull public String getId();
   }
 
   public abstract class ReadRecordsRequest<T extends android.health.connect.datatypes.Record> {
@@ -996,6 +1004,25 @@ package android.health.connect.datatypes {
     field public static final int MEAL_TYPE_LUNCH = 2; // 0x2
     field public static final int MEAL_TYPE_SNACK = 4; // 0x4
     field public static final int MEAL_TYPE_UNKNOWN = 0; // 0x0
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResource {
+    method @NonNull public String getData();
+    method @NonNull public String getDataSourceId();
+    method @NonNull public String getId();
+    method public int getType();
+    field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
+  }
+
+  public static final class MedicalResource.Builder {
+    ctor public MedicalResource.Builder(@NonNull String, int, @NonNull String, @NonNull String);
+    ctor public MedicalResource.Builder(@NonNull android.health.connect.datatypes.MedicalResource.Builder);
+    ctor public MedicalResource.Builder(@NonNull android.health.connect.datatypes.MedicalResource);
+    method @NonNull public android.health.connect.datatypes.MedicalResource build();
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setData(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setDataSourceId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalResource.Builder setType(int);
   }
 
   public final class MenstruationFlowRecord extends android.health.connect.datatypes.InstantRecord {

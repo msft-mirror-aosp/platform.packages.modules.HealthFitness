@@ -29,7 +29,7 @@ import org.junit.Test;
 public class MedicalResourceInternalTest {
     private static final String MEDICAL_RESOURCE_ID = "medical_resource_id";
     private static final String DATA_SOURCE_ID = "data_source_id";
-    private static final String DISPLAY_NAME = "display name";
+    private static final String DATA = "{\"resourceType\" : \"Immunization\"}";
 
     @Test
     public void testMedicalResourceInternal_writeToParcelThenRestore_objectsAreIdentical() {
@@ -59,6 +59,6 @@ public class MedicalResourceInternalTest {
                 .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
                 .setId(MEDICAL_RESOURCE_ID)
                 .setDataSourceId(DATA_SOURCE_ID)
-                .setDisplayName(DISPLAY_NAME);
+                .setData(DATA);
     }
 }

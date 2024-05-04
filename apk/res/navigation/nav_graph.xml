@@ -76,6 +76,9 @@
         <action
             android:id="@+id/action_backupAndRestoreSettingsFragment_to_exportSetupActivity"
             app:destination="@id/exportSetupActivity" />
+        <action
+            android:id="@+id/action_backupAndRestoreSettingsFragment_to_scheduledExportFragment"
+            app:destination="@id/scheduledExportFragment" />
     </fragment>
 
     <fragment
@@ -191,6 +194,11 @@
             android:id="@+id/action_dataSourcesFragment_to_addAnAppFragment"
             app:destination="@id/addAnAppFragment"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/scheduledExportFragment"
+        android:name="com.android.healthconnect.controller.exportimport.ScheduledExportFragment"
+        android:label="@string/scheduled_export" />
 
     <fragment
         android:id="@+id/addAnAppFragment"

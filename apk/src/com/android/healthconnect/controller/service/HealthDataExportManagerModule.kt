@@ -26,9 +26,9 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class HealthExportManagerModule {
+class HealthDataExportManagerModule {
     @Provides
-    fun providesHealthExportManager(
+    fun providesHealthDataExportManager(
         healthConnectManager: HealthConnectManager
     ): HealthDataExportManager {
         return HealthDataExportManagerImpl(healthConnectManager)

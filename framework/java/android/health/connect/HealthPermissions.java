@@ -55,6 +55,8 @@ import static android.health.connect.HealthPermissionCategory.VO2_MAX;
 import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+
 import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -746,6 +748,26 @@ public final class HealthPermissions {
     @FlaggedApi("com.android.healthconnect.flags.training_plans")
     public static final String WRITE_PLANNED_EXERCISE =
             "android.permission.health.WRITE_PLANNED_EXERCISE";
+
+    /** Personal Health Record permissions */
+
+    /**
+     * Allows an application to read the user's immunization data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String READ_MEDICAL_RESOURCES_IMMUNIZATION =
+            "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION";
+
+    /**
+     * Allows an application to write the user's medical resources.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public static final String WRITE_MEDICAL_RESOURCES =
+            "android.permission.health.WRITE_MEDICAL_RESOURCES";
 
     private static final Set<String> sWritePermissionsSet =
             new ArraySet<>(

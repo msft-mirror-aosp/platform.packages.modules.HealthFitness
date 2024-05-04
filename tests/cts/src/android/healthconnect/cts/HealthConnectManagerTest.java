@@ -39,6 +39,8 @@ import static com.android.compatibility.common.util.SystemUtil.runWithShellPermi
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.junit.Assert.assertThrows;
+
 import static java.time.ZoneOffset.UTC;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
@@ -57,6 +59,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.MedicalIdFilter;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
@@ -124,6 +127,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HealthConnectManagerTest {
     private static final String TAG = "HealthConnectManagerTest";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts";
+
+    private static final int MAXIMUM_PAGE_SIZE = 5000;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -1895,6 +1900,26 @@ public class HealthConnectManagerTest {
         }
 
         verifyRecordTypeResponse(response, expectedResponseMap);
+    }
+
+    @Test
+    public void testReadMedicalResources_byIds_exceedsMaxPageSize_throws() {
+        List<MedicalIdFilter> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(MedicalIdFilter.fromId(Integer.toString(i)));
+        }
+
+        assertThrows(
+                IllegalArgumentException.class, () -> TestUtils.readMedicalResourcesByIds(ids));
+    }
+
+    @Test
+    public void testReadMedicalResources_byIds_throws() {
+        List<MedicalIdFilter> ids = Arrays.asList(MedicalIdFilter.fromId("medical_resource_id"));
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> TestUtils.readMedicalResourcesByIds(ids));
     }
 
     private boolean isEmptyContributingPackagesForAll(

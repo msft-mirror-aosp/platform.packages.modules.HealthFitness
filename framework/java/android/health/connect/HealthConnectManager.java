@@ -17,11 +17,15 @@
 package android.health.connect;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+
 import android.Manifest;
 import android.annotation.CallbackExecutor;
+import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
@@ -76,6 +80,7 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -1890,5 +1895,48 @@ public class HealthConnectManager {
                 executor.execute(() -> callback.onError(exception));
             }
         };
+    }
+
+    /**
+     * Reads {@link MedicalResource}s based on a list of {@link MedicalIdFilter}s.
+     *
+     * <p>Number of resources returned by this API will depend based on below factors:
+     *
+     * <ul>
+     *   <li>When an app with read permissions allowed for the requested IDs calls the API from
+     *       background then it will be able to read only its own inserted medical resources and
+     *       will not get medical resources inserted by other apps. This may be less than the
+     *       requested size.
+     *   <li>When an app with all read permissions allowed for the requested IDs calls the API from
+     *       foreground then it will be able to read all the corresponding medical resources.
+     *   <li>When an app with less read permissions allowed to cover all the requested IDs calls the
+     *       API from foreground then it will be able to read only the medical resources it has read
+     *       permissions for. This may be less than the requested size.
+     *   <li>App with only write permission but no read permission allowed will be able to read only
+     *       its own inserted medical resources both when in foreground or background. This may be
+     *       less than the requested size.
+     *   <li>An app without both read and write permissions will not be able to read any medical
+     *       resources and the API will throw Security Exception.
+     * </ul>
+     *
+     * @param ids Identifiers on which to perform read operation.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if {@code ids} is empty or its size is more than 5000.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void readMedicalResources(
+            @NonNull List<MedicalIdFilter> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+        Objects.requireNonNull(ids);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (ids.size() >= MAXIMUM_PAGE_SIZE) {
+            throw new IllegalArgumentException("Maximum allowed pageSize is " + MAXIMUM_PAGE_SIZE);
+        }
+
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

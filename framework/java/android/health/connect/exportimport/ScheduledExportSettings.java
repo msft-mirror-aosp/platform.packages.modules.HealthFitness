@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -51,6 +52,24 @@ public final class ScheduledExportSettings implements Parcelable {
     @Nullable private final byte[] mSalt;
     @Nullable private final Uri mUri;
     private final int mPeriodInDays;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ScheduledExportSettings that)) return false;
+        return mPeriodInDays == that.mPeriodInDays
+                && Arrays.equals(mSecretKey, that.mSecretKey)
+                && Arrays.equals(mSalt, that.mSalt)
+                && Objects.equals(mUri, that.mUri);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(mUri, mPeriodInDays);
+        result = 31 * result + Arrays.hashCode(mSecretKey);
+        result = 31 * result + Arrays.hashCode(mSalt);
+        return result;
+    }
 
     /**
      * Returns a {@link ScheduledExportSettings} to update the secret key and salt used for
