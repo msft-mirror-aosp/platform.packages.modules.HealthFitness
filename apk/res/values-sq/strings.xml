@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Nëse e harron fjalëkalimin dhe e humb telefonin, Health Connect nuk mund të të ndihmojë të rikuperosh të dhënat e ruajtura."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Pas"</string>
     <string name="export_next_button" msgid="657930567137105172">"Para"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Anulo"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Para"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Fillo me Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ruan të dhënat e tua të shëndetit dhe të fitnesit, duke të ofruar një mënyrë të thjeshtë për të sinkronizuar aplikacione të ndryshme në telefonin tënd"</string>
     <string name="share_data" msgid="3481932156368883946">"Ndaj të dhënat me aplikacionet e tua"</string>

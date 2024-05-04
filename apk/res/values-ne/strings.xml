@@ -812,7 +812,7 @@
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"सधैँ अनुमति दिनुहोस्"</string>
     <string name="route_permissions_label" msgid="6293377940884373190">"कसरत गर्ने मार्गको विवरण एक्सेस गर्नुहोस्"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> लाई मार्गको विवरण एक्सेस गर्न दिनुहोस्"</string>
-    <string name="route_permissions_ask" msgid="3927020960754781917">"हरेक पटक सोधियोस्"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"हरेक पटक सोध्नुहोस्"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"अनुमति नदिनुहोस्"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"दुवै प्रकारका डेटा प्रयोग गर्ने अनुमति दिने हो?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"दुवै प्रकारका डेटा प्रयोग गर्ने अनुमति नदिने हो?"</string>
