@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Калі вы забудзеце пароль і згубіце тэлефон, то не зможаце аднавіць захаваныя даныя праз Здароўе і спорт."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далей"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Скасаваць"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Далей"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на тэлефоне"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>

@@ -885,7 +885,7 @@
     <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"需要更新"</string>
     <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"必須先更新手機系統，才能繼續還原資料。"</string>
     <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"立即更新"</string>
-    <string name="data_totals_header" msgid="8316977153276216025">"資料總數"</string>
+    <string name="data_totals_header" msgid="8316977153276216025">"資料總覽"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"應用程式來源"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"在清單中新增應用程式來源，即可查看資料總數的變化情形。從這份清單中移除某個應用程式後，相關資料就不會計入總數，但應用程式仍具有寫入權限。"</string>
     <string name="data_sources_empty_state" msgid="1899652759274805556">"沒有應用程式來源"</string>
