@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite lozinku i izgubite telefon, Health Connect vam neće moći pomoći da vratite sačuvane podatke."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprijed"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Otkaži"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Naprijed"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Počnite koristiti Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke sa svojim aplikacijama"</string>

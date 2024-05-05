@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"اگر آپ اپنا پاس ورڈ بھول جاتے ہیں اور اپنا فون کھو دیتے ہیں تو Health Connect آپ کے محفوظ کردہ ڈیٹا کو بازیاب کرنے میں آپ کی مدد نہیں کر سکتا۔"</string>
     <string name="export_back_button" msgid="3550795479165524982">"واپس جائیں"</string>
     <string name="export_next_button" msgid="657930567137105172">"آگے جائیں"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"منسوخ کریں"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"آگے جائیں"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"‫Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے فون پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>
