@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite zaporku ili izgubite telefon, Health Connect ne može vam pomoći oporaviti spremljene podatke."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Natrag"</string>
     <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Odustani"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Dalje"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Počnite upotrebljavati Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect sprema podatke o vašem zdravlju i fitnessu te vam pruža jednostavan način za sinkronizaciju različitih aplikacija na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke s aplikacijama"</string>
@@ -528,7 +526,7 @@
     <string name="stretching" msgid="8667864173383423787">"Rastezanje"</string>
     <string name="surfing" msgid="7612503593241904984">"Surfanje"</string>
     <string name="swimming_open_water" msgid="1030388267758027037">"Plivanje u otvorenim vodama"</string>
-    <string name="swimming_pool" msgid="1584809250142187550">"Bazensko plivanje"</string>
+    <string name="swimming_pool" msgid="1584809250142187550">"Plivanje u bazenu"</string>
     <string name="swimming_freestyle" msgid="5969535751316106638">"Slobodni stil"</string>
     <string name="swimming_backstroke" msgid="7293002996518694035">"Leđno plivanje"</string>
     <string name="swimming_breaststroke" msgid="7168282910654289593">"Prsno plivanje"</string>

@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Эгер сырсөздү унутуп калсаңыз же телефонду жоготуп алсаңыз, Health Connect сакталган маалыматтарды калыбына келтире албайт."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Артка"</string>
     <string name="export_next_button" msgid="657930567137105172">"Кийинки"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Жокко чыгаруу"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Кийинки"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect\'ти колдонуп баштоо"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect кызматы ден-соолугуңузга жана кыймылдуулугуңузга байланыштуу нерселерди сактап, аларды телефондогу башка колдонмолор менен шайкештештирет."</string>
     <string name="share_data" msgid="3481932156368883946">"Колдонмолор менен ар кандай нерселерди бөлүшүү"</string>

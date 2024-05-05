@@ -107,8 +107,8 @@
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Mashqlar marshrutlarini oʻqish"</string>
     <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Mashgʻulot rejalari"</string>
     <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"mashgʻulot rejalari"</string>
-    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Shugʻullanish rejalarini koʻrish"</string>
-    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Shugʻullanish rejalarini yozish"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Mashgʻulot rejalarini koʻrish"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Mashgʻulot rejalarini yozish"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Masofa"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"masofa"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Masofani oʻqish"</string>
@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Parolni unutsangiz yoki telefonni yoʻqotsangiz, Health Connect saqlangan maʼlumotlarni tiklashda yordam bera olmaydi."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Orqaga"</string>
     <string name="export_next_button" msgid="657930567137105172">"Keyingisi"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Bekor qilish"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Keyingisi"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Health Connect bilan ishlashni boshlash"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect salomatlik va fitnes maʼlumotlaringizni xavfsiz saqlaydi va telefondagi boshqa ilovalarga oson sinxronlash imkonini beradi"</string>
     <string name="share_data" msgid="3481932156368883946">"Ilovalarga axborot ulashish"</string>

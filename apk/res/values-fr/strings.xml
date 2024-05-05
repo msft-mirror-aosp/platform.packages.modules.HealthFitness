@@ -106,7 +106,7 @@
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lire le parcours sportif"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lisez des itinéraires d\'exercice"</string>
     <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Programmes d\'entraînement"</string>
-    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"programmes de formation"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"Programmes d\'entraînement"</string>
     <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Lire les programmes de formation"</string>
     <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Écrire les programmes de formation"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Distance"</string>
@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Health Connect ne pourra pas vous aider à récupérer vos données enregistrées."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Retour"</string>
     <string name="export_next_button" msgid="657930567137105172">"Suivant"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Annuler"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Suivant"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Premiers pas avec Santé Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Santé Connect stocke vos données de santé et de remise en forme, et vous permet de synchroniser facilement les différentes applis de votre téléphone"</string>
     <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applis"</string>

@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"ຫາກທ່ານລືມລະຫັດຜ່ານ ແລະ ໂທລະສັບຂອງທ່ານເສຍ, Health Connect ບໍ່ສາມາດຊ່ວຍທ່ານກູ້ຄືນຂໍ້ມູນທີ່ບັນທຶກໄວ້ຂອງທ່ານໄດ້."</string>
     <string name="export_back_button" msgid="3550795479165524982">"ກັບຄືນ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ຕໍ່ໄປ"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"ຍົກເລີກ"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"ຕໍ່ໄປ"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"ເລີ່ມຕົ້ນການນຳໃຊ້ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ຈະບັນທຶກຂໍ້ມູນສຸຂະພາບ ແລະ ການອອກກຳລັງກາຍຂອງທ່ານ, ເພື່ອມອບວິທີງ່າຍໆໃນການຊິ້ງຂໍ້ມູນແອັບຕ່າງໆຢູ່ໂທລະສັບຂອງທ່ານ"</string>
     <string name="share_data" msgid="3481932156368883946">"ແບ່ງປັນຂໍ້ມູນກັບແອັບຂອງທ່ານ"</string>

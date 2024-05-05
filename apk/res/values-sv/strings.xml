@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Om du glömmer lösenordet eller tappar bort telefonen kan Health Connect inte hjälpa dig att återställa din sparade data."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tillbaka"</string>
     <string name="export_next_button" msgid="657930567137105172">"Nästa"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Avbryt"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Nästa"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Kom igång med Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lagrar din hälso- och träningsdata, så att du enkelt kan synkronisera olika appar på telefonen"</string>
     <string name="share_data" msgid="3481932156368883946">"Dela data med dina appar"</string>

@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Ja aizmirsīsiet paroli un pazaudēsiet tālruni, Health Connect komanda nevarēs jums palīdzēt atkopt saglabātos datus."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atpakaļ"</string>
     <string name="export_next_button" msgid="657930567137105172">"Tālāk"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Atcelt"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Tālāk"</string>
     <string name="onboarding_title" msgid="7930941018430608076">"Darba sākšana ar Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Platformā Health Connect tiek glabāti jūsu veselības un fizisko aktivitāšu dati, tādējādi varat vienkāršā veidā sinhronizēt dažādas lietotnes savā tālrunī."</string>
     <string name="share_data" msgid="3481932156368883946">"Datu kopīgošana ar lietotnēm"</string>
