@@ -35,24 +35,18 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     // TODO: b/330169060 - Add proper logging for the backup and restore settings fragment.
 
     companion object {
-        const val EXPORT_AUTOMATICALLY_PREFERENCE_KEY = "export_automatically"
+        const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
     }
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
 
-    private val exportAutomaticallyPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(EXPORT_AUTOMATICALLY_PREFERENCE_KEY)
+    private val scheduledExportPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.backup_and_restore_settings_screen, rootKey)
-
-        exportAutomaticallyPreference?.setOnPreferenceClickListener {
-            findNavController()
-                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
-            true
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,8 +54,27 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
         exportSettingsViewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
             when (exportSettings) {
-                is ExportSettings.WithData ->
-                    exportAutomaticallyPreference?.summary = buildSummary(exportSettings.frequency)
+                is ExportSettings.WithData -> {
+                    val frequency = exportSettings.frequency
+                    if (frequency == ExportFrequency.EXPORT_FREQUENCY_NEVER) {
+                        scheduledExportPreference?.setOnPreferenceClickListener {
+                            findNavController()
+                                .navigate(
+                                    R.id
+                                        .action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
+                            true
+                        }
+                    } else {
+                        scheduledExportPreference?.setOnPreferenceClickListener {
+                            findNavController()
+                                .navigate(
+                                    R.id
+                                        .action_backupAndRestoreSettingsFragment_to_scheduledExportFragment)
+                            true
+                        }
+                    }
+                    scheduledExportPreference?.summary = buildSummary(frequency)
+                }
                 is ExportSettings.LoadingFailed ->
                     Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
                 else -> {}

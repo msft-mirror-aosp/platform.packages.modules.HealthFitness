@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Şifrenizi unutursanız ve telefonunuzu kaybederseniz Health Connect, kayıtlı verilerinizi kurtarmanıza yardımcı olamaz."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"İptal"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Sonraki"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>
@@ -411,7 +409,7 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/sa.}other{# km/sa.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mil/saat}other{# mil/saat}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometre/saat}other{# kilometre/saat}}"</string>
-    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./km"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./mil"</string>
     <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./km"</string>
     <string name="velocity_minute_miles_long" msgid="6889048307278340076">"Mil başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
     <string name="velocity_minute_km_long" msgid="4037299863590066470">"Kilometre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>

@@ -16,7 +16,6 @@
 
 package android.health.connect.internal.datatypes;
 
-
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
@@ -24,7 +23,6 @@ import android.annotation.NonNull;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
-
 
 /**
  * Internal representation of {@link MedicalResource}.
@@ -35,7 +33,7 @@ public final class MedicalResourceInternal {
     @NonNull private String mId = "";
     @MedicalResourceType private int mType;
     @NonNull private String mDataSourceId = "";
-    @NonNull private String mDisplayName = "";
+    @NonNull private String mData = "";
 
     /** Returns the unique identifier of this data. */
     @NonNull
@@ -78,36 +76,38 @@ public final class MedicalResourceInternal {
         return this;
     }
 
-    /** Returns the display name. */
+    /** Returns the FHIR resource data in JSON representation. */
     @NonNull
-    public String getDisplayName() {
-        return mDisplayName;
+    public String getData() {
+        return mData;
     }
 
-    /** Returns this object with the display name. */
+    /** Returns this object with the FHIR resource data in JSON representation. */
     @NonNull
-    public MedicalResourceInternal setDisplayName(@NonNull String displayName) {
-        requireNonNull(displayName);
-        mDisplayName = displayName;
+    public MedicalResourceInternal setData(@NonNull String data) {
+        requireNonNull(data);
+        mData = data;
         return this;
     }
 
     /** Converts this object to an external representation. */
     @NonNull
+    @SuppressWarnings("FlaggedApi") // this class is internal only
     public MedicalResource toExternalResource() {
-        return new MedicalResource.Builder(getId(), getType(), getDataSourceId(), getDisplayName())
+        return new MedicalResource.Builder(getId(), getType(), getDataSourceId(), getData())
                 .build();
     }
 
     /** Converts to this object from an external representation. */
     @NonNull
+    @SuppressWarnings("FlaggedApi") // this class is internal only
     public static MedicalResourceInternal fromExternalResource(@NonNull MedicalResource external) {
         requireNonNull(external);
         return new MedicalResourceInternal()
                 .setId(external.getId())
                 .setType(external.getType())
                 .setDataSourceId(external.getDataSourceId())
-                .setDisplayName(external.getDisplayName());
+                .setData(external.getData());
     }
 
     /**
@@ -120,7 +120,7 @@ public final class MedicalResourceInternal {
         parcel.writeString(getId());
         parcel.writeInt(getType());
         parcel.writeString(getDataSourceId());
-        parcel.writeString(getDisplayName());
+        parcel.writeString(getData());
     }
 
     /**
@@ -134,7 +134,7 @@ public final class MedicalResourceInternal {
                 .setId(parcel.readString())
                 .setType(parcel.readInt())
                 .setDataSourceId(parcel.readString())
-                .setDisplayName(parcel.readString());
+                .setData(parcel.readString());
     }
 
     @Override
@@ -144,11 +144,11 @@ public final class MedicalResourceInternal {
         return getId().equals(that.getId())
                 && getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
-                && getDisplayName().equals(that.getDisplayName());
+                && getData().equals(that.getData());
     }
 
     @Override
     public int hashCode() {
-        return hash(getId(), getType(), getDataSourceId(), getDisplayName());
+        return hash(getId(), getType(), getDataSourceId(), getData());
     }
 }

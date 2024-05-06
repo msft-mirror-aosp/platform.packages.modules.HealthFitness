@@ -18,9 +18,12 @@ package android.health.connect.datatypes;
 
 import static android.health.connect.datatypes.validation.ValidationUtils.validateIntDefValue;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 
@@ -31,10 +34,8 @@ import java.util.Set;
 /**
  * Captures the user's medical data. This is the class used for all medical resource types, and the
  * type is specified via {@link MedicalResourceType}.
- *
- * @hide
  */
-// TODO (b/335382791) Use FlaggedApi with auto-generated PHR java flag.
+@FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalResource {
     /** Unknown medical resource type. */
     public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
@@ -47,7 +48,7 @@ public final class MedicalResource {
     @NonNull private final String mId;
     @MedicalResourceType private final int mType;
     @NonNull private final String mDataSourceId;
-    @NonNull private final String mDisplayName;
+    @NonNull private final String mData;
 
     /**
      * @param id The unique identifier of this data, assigned by the Android Health Platform at
@@ -55,20 +56,22 @@ public final class MedicalResource {
      * @param type The medical resource type assigned by the Android Health Platform at insertion
      *     time.
      * @param dataSourceId Where the data comes from.
-     * @param displayName The display name assigned by the Android Health Platform at insertion
-     *     time.
+     * @param data The FHIR resource data in JSON representation.
      */
     private MedicalResource(
             @NonNull String id,
             @MedicalResourceType int type,
             @NonNull String dataSourceId,
-            @NonNull String displayName) {
+            @NonNull String data) {
+        requireNonNull(id);
+        requireNonNull(dataSourceId);
+        requireNonNull(data);
         validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
 
         mId = id;
         mType = type;
         mDataSourceId = dataSourceId;
-        mDisplayName = displayName;
+        mData = data;
     }
 
     /** Returns the unique identifier of this data. */
@@ -89,10 +92,10 @@ public final class MedicalResource {
         return mDataSourceId;
     }
 
-    /** Returns the display name. */
+    /** Returns the FHIR resource data in JSON representation. */
     @NonNull
-    public String getDisplayName() {
-        return mDisplayName;
+    public String getData() {
+        return mData;
     }
 
     /**
@@ -111,13 +114,13 @@ public final class MedicalResource {
         return getId().equals(that.getId())
                 && getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
-                && getDisplayName().equals(that.getDisplayName());
+                && getData().equals(that.getData());
     }
 
     /** Returns a hash code value for the object. */
     @Override
     public int hashCode() {
-        return hash(getId(), getType(), getDataSourceId(), getDisplayName());
+        return hash(getId(), getType(), getDataSourceId(), getData());
     }
 
     /** Returns a string representation of this {@link MedicalResource}. */
@@ -128,7 +131,7 @@ public final class MedicalResource {
         sb.append("id=").append(getId());
         sb.append(",type=").append(getType());
         sb.append(",dataSourceId=").append(getDataSourceId());
-        sb.append(",displayName=").append(getDisplayName());
+        sb.append(",data=").append(getData());
         sb.append("}");
         return sb.toString();
     }
@@ -138,21 +141,22 @@ public final class MedicalResource {
         @NonNull private String mId;
         @MedicalResourceType private int mType;
         @NonNull private String mDataSourceId;
-        @NonNull private String mDisplayName;
+        @NonNull private String mData;
 
         public Builder(
                 @NonNull String id,
                 @MedicalResourceType int type,
                 @NonNull String dataSourceId,
-                @NonNull String displayName) {
+                @NonNull String data) {
             requireNonNull(id);
             requireNonNull(dataSourceId);
-            requireNonNull(displayName);
+            requireNonNull(data);
+            validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
 
             mId = id;
             mType = type;
             mDataSourceId = dataSourceId;
-            mDisplayName = displayName;
+            mData = data;
         }
 
         public Builder(@NonNull Builder original) {
@@ -160,7 +164,7 @@ public final class MedicalResource {
             mId = original.mId;
             mType = original.mType;
             mDataSourceId = original.mDataSourceId;
-            mDisplayName = original.mDisplayName;
+            mData = original.mData;
         }
 
         public Builder(@NonNull MedicalResource original) {
@@ -168,7 +172,7 @@ public final class MedicalResource {
             mId = original.getId();
             mType = original.getType();
             mDataSourceId = original.getDataSourceId();
-            mDisplayName = original.getDisplayName();
+            mData = original.getData();
         }
 
         /**
@@ -188,6 +192,7 @@ public final class MedicalResource {
          */
         @NonNull
         public Builder setType(@MedicalResourceType int type) {
+            validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
             mType = type;
             return this;
         }
@@ -200,18 +205,18 @@ public final class MedicalResource {
             return this;
         }
 
-        /** Sets the display name, assigned by the Android Health Platform at insertion time. */
+        /** Sets the FHIR resource data in JSON representation. */
         @NonNull
-        public Builder setDisplayName(@NonNull String displayName) {
-            requireNonNull(displayName);
-            mDisplayName = displayName;
+        public Builder setData(@NonNull String data) {
+            requireNonNull(data);
+            mData = data;
             return this;
         }
 
         /** Returns a new instance of {@link MedicalResource} with the specified parameters. */
         @NonNull
         public MedicalResource build() {
-            return new MedicalResource(mId, mType, mDataSourceId, mDisplayName);
+            return new MedicalResource(mId, mType, mDataSourceId, mData);
         }
     }
 }

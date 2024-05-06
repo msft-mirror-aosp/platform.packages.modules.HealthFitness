@@ -341,7 +341,7 @@
     <string name="export_back_button" msgid="3550795479165524982">"返回"</string>
     <string name="export_next_button" msgid="657930567137105172">"繼續"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"取消"</string>
-    <string name="import_next_button" msgid="5706322508691854289">"繼續"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"下一步"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"開始使用 Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect 能儲存健康和健身資料，方便你同步處理手機上各個應用程式的資料"</string>
     <string name="share_data" msgid="3481932156368883946">"與應用程式分享資料"</string>

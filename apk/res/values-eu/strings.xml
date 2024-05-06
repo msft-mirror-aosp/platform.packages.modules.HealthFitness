@@ -340,10 +340,8 @@
     <string name="export_encryption_warning" msgid="664340221905199521">"Pasahitza ahaztuz edo telefonoa galduz gero, Health Connect-ek ezin izango dizu lagundu gordetako datuak berreskuratzen."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atzera"</string>
     <string name="export_next_button" msgid="657930567137105172">"Hurrengoa"</string>
-    <!-- no translation found for import_cancel_button (2191598074422096715) -->
-    <skip />
-    <!-- no translation found for import_next_button (5706322508691854289) -->
-    <skip />
+    <string name="import_cancel_button" msgid="2191598074422096715">"Utzi"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Hurrengoa"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Hasi Health Connect erabiltzen"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect-ek osasunari eta fitnessari buruzko datuak gordetzen ditu, eta telefonoko aplikazioak erraz sinkronizatzeko aukera eskaintzen du"</string>
     <string name="share_data" msgid="3481932156368883946">"Partekatu datuak zure aplikazioekin"</string>

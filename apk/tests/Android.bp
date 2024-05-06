@@ -187,8 +187,8 @@ android_test {
 filegroup {
     name: "export-tests-srcs",
     srcs: [
-        "src/com/android/healthconnect/controller/tests/export/**/*.java",
-        "src/com/android/healthconnect/controller/tests/export/**/*.kt",
+        "src/com/android/healthconnect/controller/tests/exportimport/**/*.java",
+        "src/com/android/healthconnect/controller/tests/exportimport/**/*.kt",
     ],
     visibility: ["//visibility:private"],
 }
@@ -200,8 +200,8 @@ android_test {
         "HealthConnectExportApis",
     ],
     defaults: ["health-connect-controller-tests-default"],
-    package_name: "com.android.healthconnect.controller.tests.export",
-    instrumentation_target_package: "com.android.healthconnect.controller.tests.export",
+    package_name: "com.android.healthconnect.controller.tests.exportimport",
+    instrumentation_target_package: "com.android.healthconnect.controller.tests.exportimport",
 }
 
 filegroup {

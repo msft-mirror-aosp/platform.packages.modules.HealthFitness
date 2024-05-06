@@ -36,10 +36,15 @@ constructor(
     private val updateExportSettingsUseCase: IUpdateExportSettingsUseCase
 ) : ViewModel() {
     private val _storedExportSettings = MutableLiveData<ExportSettings>()
+    private val _previousExportFrequency = MutableLiveData<ExportFrequency?>()
 
     /** Holds the export settings that is stored in the Health Connect service. */
     val storedExportSettings: LiveData<ExportSettings>
         get() = _storedExportSettings
+
+    /** Holds the previous export frequency that is stored. */
+    val previousExportFrequency: LiveData<ExportFrequency?>
+        get() = _previousExportFrequency
 
     init {
         loadExportSettings()
@@ -67,6 +72,13 @@ constructor(
     fun updateExportSecretKey(secretKey: ByteArray, salt: ByteArray) {
         val settings = ScheduledExportSettings.withSecretKey(secretKey, salt)
         updateExportSettings(settings)
+    }
+
+    /** Updates the previous frequency of scheduled exports of Health Connect data. */
+    fun updatePreviousExportFrequency(frequency: ExportFrequency) {
+        if (frequency != ExportFrequency.EXPORT_FREQUENCY_NEVER) {
+            _previousExportFrequency.value = frequency
+        }
     }
 
     /** Updates the uri to write to in scheduled exports of Health Connect data. */

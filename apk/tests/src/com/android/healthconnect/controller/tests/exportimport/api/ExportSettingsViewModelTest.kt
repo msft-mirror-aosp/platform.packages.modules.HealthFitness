@@ -165,4 +165,11 @@ class ExportSettingsViewModelTest {
         assertThat(testObserver.getLastValue())
             .isEqualTo(ExportSettings.WithData(EXPORT_FREQUENCY_DAILY))
     }
+
+    @Test
+    fun updatePreviousExportFrequency_updatesStoredPreviousExportFrequency() {
+        viewModel.updatePreviousExportFrequency(EXPORT_FREQUENCY_DAILY)
+
+        assertThat(viewModel.previousExportFrequency.value).isEqualTo(EXPORT_FREQUENCY_DAILY)
+    }
 }

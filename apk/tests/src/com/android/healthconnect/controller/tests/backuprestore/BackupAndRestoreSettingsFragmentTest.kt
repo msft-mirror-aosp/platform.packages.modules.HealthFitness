@@ -70,16 +70,16 @@ class BackupAndRestoreSettingsFragmentTest {
 
         onView(withText("Export and import")).check(matches(isDisplayed()))
 
-        onView(withText("Export automatically")).check(matches(isDisplayed()))
+        onView(withText("Scheduled export")).check(matches(isDisplayed()))
 
         onView(withText("Restore data")).check(matches(isDisplayed()))
         onView(withText("Load previously exported data")).check(matches(isDisplayed()))
     }
 
     @Test
-    fun backupAndRestoreSettingsFragment_clicksExportAutomatically_navigatesToExportSetupActivity() {
+    fun backupAndRestoreSettingsFragment_clicksScheduledExportWhenItIsOff_navigatesToExportSetupActivity() {
         whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
@@ -87,9 +87,25 @@ class BackupAndRestoreSettingsFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withText("Export automatically")).perform(click())
+        onView(withText("Scheduled export")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_clicksScheduledExportWhenItIsOn_navigatesToScheduledExportFragment() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Scheduled export")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.scheduledExportFragment)
     }
 
     @Test

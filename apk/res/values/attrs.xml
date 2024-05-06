@@ -84,7 +84,7 @@
     <!-- Backup and restore -->
     <attr name="uploadIcon" format="reference"/>
     <attr name="repeatIcon" format="reference"/>
-    <attr name="settingsBackupRestoreIcon" format="reference"/>
+    <attr name="importIcon" format="reference"/>
 
     <attr name="lockIcon" format="reference"/>
     <attr name="warningIcon" format="reference"/>
