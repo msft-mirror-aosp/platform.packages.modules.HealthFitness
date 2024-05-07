@@ -265,7 +265,8 @@ class HomeFragment : Hilt_HomeFragment() {
         } else {
             mConnectedAppsPreference?.summary =
                 getString(
-                    R.string.connected_apps_button_subtitle,
+                    if (numAllowedApps == 1) R.string.only_one_connected_app_button_subtitle
+                    else R.string.connected_apps_button_subtitle,
                     numAllowedApps.toString(),
                     numTotalApps.toString())
         }

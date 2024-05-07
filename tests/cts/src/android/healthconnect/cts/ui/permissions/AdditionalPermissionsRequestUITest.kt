@@ -27,6 +27,7 @@ import android.healthconnect.cts.lib.UiTestUtils.TEST_APP_PACKAGE_NAME
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.grantPermissionViaPackageManager
 import android.healthconnect.cts.lib.UiTestUtils.revokePermissionViaPackageManager
+import android.healthconnect.cts.lib.UiTestUtils.skipOnboardingIfAppears
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
 import android.healthconnect.cts.ui.HealthConnectBaseTest
 import android.healthconnect.cts.utils.ProxyActivity
@@ -141,7 +142,7 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
 
         SystemUtil.runWithShellPermissionIdentity(
             {
-                val result = ProxyActivity.launchActivityForResult(intent)
+                val result = ProxyActivity.launchActivityForResult(intent) { skipOnboardingIfAppears() }
                 Truth.assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
             },
             Manifest.permission.GRANT_RUNTIME_PERMISSIONS)
