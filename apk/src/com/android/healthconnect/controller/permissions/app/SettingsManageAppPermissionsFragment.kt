@@ -178,6 +178,24 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             }
         }
 
+        childFragmentManager.setFragmentResultListener(
+            DisconnectDialogFragment.DISCONNECT_CANCELED_EVENT, this) { _, _ ->
+                allowAllPreference.isChecked = true
+            }
+
+        childFragmentManager.setFragmentResultListener(
+            DisconnectDialogFragment.DISCONNECT_ALL_EVENT, this) { _, bundle ->
+                if (!viewModel.revokeAllPermissions(packageName)) {
+                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                if (bundle.containsKey(DisconnectDialogFragment.KEY_DELETE_DATA) &&
+                    bundle.getBoolean(DisconnectDialogFragment.KEY_DELETE_DATA)) {
+                    viewModel.deleteAppData(packageName, appName)
+                }
+            }
+
         setupHeader()
         setupManageAppCategory()
     }
@@ -240,24 +258,6 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     }
 
     private fun showRevokeAllPermissions() {
-        childFragmentManager.setFragmentResultListener(
-            DisconnectDialogFragment.DISCONNECT_CANCELED_EVENT, this) { _, _ ->
-                allowAllPreference.isChecked = true
-            }
-
-        childFragmentManager.setFragmentResultListener(
-            DisconnectDialogFragment.DISCONNECT_ALL_EVENT, this) { _, bundle ->
-                if (!viewModel.revokeAllPermissions(packageName)) {
-                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                if (bundle.containsKey(DisconnectDialogFragment.KEY_DELETE_DATA) &&
-                    bundle.getBoolean(DisconnectDialogFragment.KEY_DELETE_DATA)) {
-                    viewModel.deleteAppData(packageName, appName)
-                }
-            }
-
         DisconnectDialogFragment(appName = appName, enableDeleteData = false)
             .show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
