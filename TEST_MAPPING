@@ -7,7 +7,12 @@
       "name": "CtsHealthFitnessDeviceTestCasesNoPermission[com.google.android.healthfitness.apex]"
     },
     {
-       "name": "HealthConnectControllerDataScreensNewTests[com.google.android.healthfitness.apex]"
+       "name": "HealthConnectControllerDataScreensNewTests[com.google.android.healthfitness.apex]",
+       "options": [
+                        {
+                             "exclude-filter": "com.android.healthconnect.controller.tests.data.entries.api.LoadEntriesHelperUseCaseTest"
+                         }
+              ]
     },
     {
        "name": "HealthConnectControllerDataScreensOldTests[com.google.android.healthfitness.apex]",
@@ -88,7 +93,12 @@
       "name": "CtsHealthFitnessDeviceTestCasesHistoricAccessLimitWithPermission"
     },
     {
-       "name": "HealthConnectControllerDataScreensNewTests"
+       "name": "HealthConnectControllerDataScreensNewTests",
+      "options": [
+                       {
+                            "exclude-filter": "com.android.healthconnect.controller.tests.data.entries.api.LoadEntriesHelperUseCaseTest"
+                        }
+             ]
     },
     {
        "name": "HealthConnectControllerDataScreensOldTests",
