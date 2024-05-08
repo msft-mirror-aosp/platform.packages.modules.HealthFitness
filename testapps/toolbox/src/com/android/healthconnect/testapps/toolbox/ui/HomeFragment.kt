@@ -21,7 +21,6 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -51,9 +50,9 @@ import kotlin.system.exitProcess
 class HomeFragment : Fragment() {
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -137,6 +136,7 @@ class HomeFragment : Fragment() {
         view.requireViewById<Button>(R.id.read_data_in_foreground_button).setOnClickListener {
             goToReadDataInForegroundPage()
         }
+        view.findViewById<Button>(R.id.phr_options_button).setOnClickListener { goToPhrOptions() }
         view.requireViewById<Button>(R.id.exit_process_button).setOnClickListener {
             exitProcess(status = 0)
         }
@@ -300,5 +300,9 @@ class HomeFragment : Fragment() {
 
     private fun goToReadDataInForegroundPage() {
         mNavigationController.navigate(R.id.action_homeFragment_to_readDataInForeground)
+    }
+
+    private fun goToPhrOptions() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_phrOptions)
     }
 }

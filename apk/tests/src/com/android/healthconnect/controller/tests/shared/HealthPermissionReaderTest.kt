@@ -170,6 +170,18 @@ class HealthPermissionReaderTest {
         assertThat(permissionReader.isAdditionalPermission(perm.toString())).isTrue()
     }
 
+    @Test
+    fun isMedicalPermission_withMedicalPermission_returnsTrue() = runTest {
+        val perm = HealthPermission.MedicalPermission(HealthPermissions.WRITE_MEDICAL_RESOURCES)
+        assertThat(permissionReader.isMedicalPermission(perm.toString())).isTrue()
+    }
+
+    @Test
+    fun isMedicalPermission_withoutMedicalPermission_returnsFalse() = runTest {
+        val perm = HealthPermission.AdditionalPermission(HealthPermissions.READ_EXERCISE_ROUTES)
+        assertThat(permissionReader.isMedicalPermission(perm.toString())).isFalse()
+    }
+
     private fun String.toHealthPermission(): DataTypePermission {
         return DataTypePermission.fromPermissionString(this)
     }

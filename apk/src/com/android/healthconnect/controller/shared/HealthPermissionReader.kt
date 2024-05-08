@@ -65,6 +65,11 @@ constructor(
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
                 HealthPermissions.READ_HEALTH_DATA_HISTORY)
+
+        private val medicalPermissions =
+            setOf(
+                HealthPermissions.WRITE_MEDICAL_RESOURCES,
+                HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION)
     }
 
     /**
@@ -195,6 +200,10 @@ constructor(
 
     fun isAdditionalPermission(permission: String): Boolean {
         return additionalPermissions.contains(permission)
+    }
+
+    fun isMedicalPermission(permission: String): Boolean {
+        return medicalPermissions.contains(permission)
     }
 
     fun shouldHidePermission(permission: String): Boolean {

@@ -36,6 +36,9 @@
     <action
         android:id="@+id/action_homeFragment_to_readDataInForeground"
         app:destination="@id/read_data_in_foreground_screen" />
+    <action
+        android:id="@+id/action_homeFragment_to_phrOptions"
+        app:destination="@id/phr_options_screen" />
   </fragment>
 
   <fragment
@@ -91,5 +94,13 @@
       android:label="fragment_read_data_in_foreground"
       tools:layout="@layout/fragment_read_data_in_foreground">
   </fragment>
+
+  <fragment
+      android:id="@+id/phr_options_screen"
+      android:name="com.android.healthconnect.testapps.toolbox.ui.PhrOptionsFragment"
+      android:label="phr_options_request"
+      tools:layout="@layout/fragment_phr_options">
+  </fragment>
+
 
 </navigation>

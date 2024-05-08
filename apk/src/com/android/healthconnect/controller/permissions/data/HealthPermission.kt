@@ -27,9 +27,17 @@ sealed class HealthPermission {
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
                 HealthPermissions.READ_HEALTH_DATA_HISTORY)
 
+        /** Permissions that are grouped separately to general health data types */
+        private val medicalPermissions = setOf(
+            HealthPermissions.WRITE_MEDICAL_RESOURCES,
+            HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION
+        )
+
         fun fromPermissionString(permission: String): HealthPermission {
             return if (permission in additionalPermissions) {
                 AdditionalPermission.fromPermissionString(permission)
+            } else if (permission in medicalPermissions) {
+                MedicalPermission.fromPermissionString(permission)
             } else {
                 DataTypePermission.fromPermissionString(permission)
             }
@@ -100,5 +108,19 @@ sealed class HealthPermission {
 
         fun isHistoryReadPermission(): Boolean =
             this.additionalPermission == HealthPermissions.READ_HEALTH_DATA_HISTORY
+    }
+
+    /**
+     * TODO(b/339227142): Develop MedicalPermission class
+     */
+    data class MedicalPermission(val medicalPermission: String): HealthPermission() {
+        companion object {
+            fun fromPermissionString(permission: String): MedicalPermission =
+                MedicalPermission(permission)
+        }
+
+        override fun toString(): String {
+            return medicalPermission
+        }
     }
 }
