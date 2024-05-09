@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"Нет данных"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Разрешения для приложений"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Настроить разрешения для приложений"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Приложений с доступом: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> из <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Приложений с доступом: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Приложений с доступом: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
@@ -320,7 +322,7 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Закрыть"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Резервное копирование и восстановление"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспорт и импорт"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Автоматический экспорт"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Экспорт по расписанию"</string>
     <string name="restore_data" msgid="3401173690437871417">"Восстановить данные"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Загрузить ранее экспортированные данные"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Включен"</string>

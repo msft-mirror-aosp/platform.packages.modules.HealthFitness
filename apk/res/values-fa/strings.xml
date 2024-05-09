@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"داده‌ای وجود ندارد"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"اجازه‌های برنامه"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"مدیریت برنامه‌ها و اجازه‌ها"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"‫<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> برنامه از <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> برنامه دسترسی دارد"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> برنامه دسترسی دارد"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> برنامه دسترسی دارد"</string>
@@ -320,7 +322,7 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"متوجه‌ام"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"پشتیبان‌گیری و بازیابی"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"صادر کردن و وارد کردن"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"صادر کردن خودکار"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"صادر کردن زمان‌بندی‌شده"</string>
     <string name="restore_data" msgid="3401173690437871417">"بازیابی داده‌ها"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"بار کردن داده‌هایی که قبلاً صادر شده است"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"روشن"</string>
