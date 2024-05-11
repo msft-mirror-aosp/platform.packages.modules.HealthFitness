@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"Fără date"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Permisiuni pentru aplicație"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Gestionează aplicațiile și permisiunile"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> din <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicații au acces"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicații au acces"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicație are acces"</string>
