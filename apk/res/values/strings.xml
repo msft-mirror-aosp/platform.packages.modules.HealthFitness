@@ -434,6 +434,8 @@
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
 
+    <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Choose frequency</string>
+
     <string name="choose_frequency" description="Title of the 'choose frequency' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Choose frequency</string>
     <string name="choose_frequency_description" description="Description of the data export frequency">Choose to save data once, or set it to save automatically at regular times.</string>
     <string name="frequency_daily" description="Label used to show that the automatic export frequency is set as daily. [CHAR_LIMIT=40]">Daily</string>

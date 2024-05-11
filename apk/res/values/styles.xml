@@ -201,7 +201,6 @@
         <item name="buttonBarNegativeButtonStyle">@style/Widget.HealthConnect.DialogButton.Outline
         </item>
         <item name="buttonBarStyle">@style/Widget.HealthConnect.Dialog.ButtonBar</item>
-        <item name="android:colorBackground">@android:color/system_surface_container_light</item>
     </style>
 
     <style name="Widget.HealthConnect.Dialog.ButtonBar" parent="@style/Widget.AppCompat.ButtonBar.AlertDialog">

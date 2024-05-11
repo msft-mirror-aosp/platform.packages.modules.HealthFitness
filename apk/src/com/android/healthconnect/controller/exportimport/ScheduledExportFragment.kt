@@ -20,7 +20,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.preference.Preference
+import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.exportimport.ExportFrequencyRadioGroupPreference.Companion.EXPORT_FREQUENCY_RADIO_GROUP_PREFERENCE
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
@@ -36,12 +39,17 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
     // TODO: b/325917283 - Add proper logging for the automatic export fragment.
     companion object {
         const val SCHEDULED_EXPORT_CONTROL_PREFERENCE_KEY = "scheduled_export_control_preference"
+        const val CHOOSE_FREQUENCY_PREFERENCE_KEY = "choose_frequency"
     }
 
     private val viewModel: ExportSettingsViewModel by viewModels()
 
     private val scheduledExportControlPreference: HealthMainSwitchPreference? by lazy {
         preferenceScreen.findPreference(SCHEDULED_EXPORT_CONTROL_PREFERENCE_KEY)
+    }
+
+    private val chooseFrequencyPreferenceGroup: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(CHOOSE_FREQUENCY_PREFERENCE_KEY)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -59,12 +67,23 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
                         scheduledExportControlPreference?.isChecked = true
                         scheduledExportControlPreference?.title =
                             getString(R.string.automatic_export_on)
+                        chooseFrequencyPreferenceGroup?.setVisible(true)
                     } else {
                         scheduledExportControlPreference?.isChecked = false
                         scheduledExportControlPreference?.title =
                             getString(R.string.automatic_export_off)
+                        chooseFrequencyPreferenceGroup?.setVisible(false)
                     }
                     viewModel.updatePreviousExportFrequency(exportSettings.frequency)
+                    if (chooseFrequencyPreferenceGroup?.findPreference<Preference>(
+                        EXPORT_FREQUENCY_RADIO_GROUP_PREFERENCE) == null) {
+                        val exportFrequencyPreference =
+                            ExportFrequencyRadioGroupPreference(
+                                requireContext(),
+                                exportSettings.frequency,
+                                viewModel::updateExportFrequency)
+                        chooseFrequencyPreferenceGroup?.addPreference(exportFrequencyPreference)
+                    }
                 }
                 is ExportSettings.LoadingFailed ->
                     Toast.makeText(requireActivity(), R.string.default_error, Toast.LENGTH_LONG)
