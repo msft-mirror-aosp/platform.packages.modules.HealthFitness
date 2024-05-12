@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"គ្មាន​ទិន្នន័យទេ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ការអនុញ្ញាតកម្មវិធី"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"គ្រប់គ្រងកម្មវិធី និងការអនុញ្ញាតរបស់អ្នក"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> នៃ <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> មានសិទ្ធិចូលប្រើប្រាស់"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> មានសិទ្ធិចូលប្រើប្រាស់"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> មានសិទ្ធិចូលប្រើប្រាស់"</string>
