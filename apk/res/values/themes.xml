@@ -116,6 +116,7 @@
         <item name="textAppearanceSubheader3">@style/TextAppearance.HealthConnect.Subheader3</item>
         <item name="textAppearanceRouteRequest">@style/TextAppearance.HealthConnect.RouteRequest</item>
         <item name="textAppearancePreferenceCategory">@style/TextAppearance.HealthConnect.CategoryTitle</item>
+        <item name="textAppearanceErrorMessage">@style/TextAppearance.HealthConnect.ErrorMessage</item>
 
         <!-- Buttons -->
         <item name="dialogButtonFull">@style/Widget.HealthConnect.DialogButton.Full</item>

@@ -106,6 +106,14 @@
         <item name="android:textSize">14sp</item>
         <item name="android:lineHeight">20sp</item>
     </style>
+
+
+    <style name="TextAppearance.HealthConnect.ErrorMessage" parent="@style/TextAppearance.CategoryTitle.SettingsLib">
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
     <!-- END REGION -->
 
     <!-- REGION BUTTONS -->

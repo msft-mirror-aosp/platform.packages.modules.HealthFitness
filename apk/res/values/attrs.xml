@@ -117,6 +117,7 @@
     <attr name="textAppearanceSubheader3" format="reference"/>
     <attr name="textAppearanceRouteRequest" format="reference"/>
     <attr name="textAppearancePreferenceCategory" format="reference"/>
+    <attr name="textAppearanceErrorMessage" format="reference"/>
 
     <!-- Buttons -->
     <attr name="dialogButtonFull" format="reference"/>
