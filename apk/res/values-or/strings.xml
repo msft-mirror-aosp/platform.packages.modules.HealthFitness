@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଡାଟାକୁ ଲୋଡ କରନ୍ତୁ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ଚାଲୁ ଅଛି"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ବନ୍ଦ ଅଛି"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"ବାରମ୍ବାରତା ବାଛନ୍ତୁ"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ଥରେ ଡାଟା ସେଭ କରିବାକୁ ବାଛନ୍ତୁ କିମ୍ବା ନିୟମିତ ସମୟରେ ସ୍ୱତଃ ସେଭ କରିବାକୁ ଏହାକୁ ସେଟ କରନ୍ତୁ।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ଦୈନିକ"</string>

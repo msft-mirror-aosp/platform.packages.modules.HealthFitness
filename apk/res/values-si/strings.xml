@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"කලින් නිර්යාත කළ දත්ත පූරණය කරන්න"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ක්‍රියාත්මකයි"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ක්‍රියාවිරහිතයි"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"සංඛ්‍යාතය තෝරන්න"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"එක් වරක් දත්ත සුරැකීමට තෝරන්න, නැතහොත් සාමාන්‍ය වේලාවන්හි දී ස්වයංක්‍රීයව සුරැකීමට එය සකසන්න."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"දිනපතා"</string>

@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Буга чейин экспорттолгон маалыматты жүктөө"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Күйүк"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Өчүк"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Жыштыкты тандаңыз"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Нерселерди бир жолу же аларды белгиленген убакта автоматтык түрдө сактоону тандаңыз."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Күн сайын"</string>

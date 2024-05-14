@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Загрузіць экспартаваныя раней даныя"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Уключана"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Выключана"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Выберыце перыядычнасць захавання"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Укажыце, як трэба захоўваць даныя: адзін раз або аўтаматычна праз пэўныя прамежкі часу."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Штодзень"</string>

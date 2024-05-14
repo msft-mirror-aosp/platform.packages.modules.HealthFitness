@@ -392,7 +392,7 @@ public final class ExerciseSessionRecordHelper
         WhereClauses sessionsWithAccessibleRouteClause =
                 new WhereClauses(AND)
                         .addWhereInClauseWithoutQuotes(
-                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids))
                         .addWhereLaterThanTimeClause(getStartTimeColumnName(), startDateAccess);
 
         if (routeAccessType == ROUTE_READ_ACCESS_TYPE_OWN) {

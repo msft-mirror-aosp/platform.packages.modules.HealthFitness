@@ -92,7 +92,7 @@
     <string name="historic_access_request_title" msgid="4645920231853414742">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k dřívějším datům?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Povolit této aplikaci přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povolit této aplikaci přístup ke všem dřívějším datům Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect přidaným přede dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Pokud toto povolíte, bude mít aplikace přístup ke všem dřívějším datům Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorie spálené aktivitou"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorie spálené aktivitou"</string>
@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Načíst dříve exportovaná data"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Zapnuto"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Vypnuto"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Vyberte, jak často"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vyberte jednorázové uložení dat nebo nastavte pravidelné automatické ukládání."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Každý den"</string>

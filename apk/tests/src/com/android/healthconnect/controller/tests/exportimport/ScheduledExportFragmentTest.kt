@@ -53,6 +53,7 @@ class ScheduledExportFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    // TODO: b/330484311 - Replace the mock with a fake.
     @BindValue
     val healthDataExportManager: HealthDataExportManager =
         Mockito.mock(HealthDataExportManager::class.java)

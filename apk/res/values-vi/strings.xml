@@ -322,12 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Tôi hiểu"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sao lưu và khôi phục"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Xuất và nhập"</string>
-    <!-- no translation found for scheduled_export (8737660963687364370) -->
-    <skip />
+    <string name="scheduled_export" msgid="8737660963687364370">"Lần xuất theo lịch"</string>
     <string name="restore_data" msgid="3401173690437871417">"Khôi phục dữ liệu"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Tải dữ liệu đã xuất trước đây"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Đang bật"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Đang tắt"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Chọn tần suất"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Chọn lưu dữ liệu một lần hoặc thiết lập để tự động lưu định kỳ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Hằng ngày"</string>

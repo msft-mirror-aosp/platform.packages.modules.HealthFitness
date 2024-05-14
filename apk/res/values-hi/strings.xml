@@ -90,7 +90,7 @@
     <string name="background_read_request_description" msgid="1664402237648709581">"अनुमति देने पर, यह ऐप्लिकेशन इस्तेमाल न किए जाने के दौरान भी Health Connect का डेटा ऐक्सेस कर पाएगा"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"पुराना डेटा ऐक्सेस करने की अनुमति दें"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को पुराना डेटा ऐक्सेस करने की अनुमति देनी है?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"ऐप्लिकेशन को <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> से पहले जोड़ा गया, Health Connect का डेटा ऐक्सेस करने की अनुमति दें"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"ऐप्लिकेशन को <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> से पहले जोड़ा गया Health Connect का डेटा ऐक्सेस करने की अनुमति दें"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"इस ऐप्लिकेशन को Health Connect का सारा पुराना डेटा ऐक्सेस करने की अनुमति दें"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"अनुमति मिलने पर, यह Health Connect का वह डेटा ऐक्सेस कर सकता है जिसे <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> से पहले जोड़ा गया है."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"इस ऐप्लिकेशन को अनुमति देने पर, यह Health Connect का सारा पुराना डेटा ऐक्सेस कर सकता है."</string>
@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"एक्सपोर्ट किए गए पिछले डेटा को लोड करें"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"चालू है"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"बंद है"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"फ़्रीक्वेंसी चुनें"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एक बार सेव करने का विकल्प चुनें या इसे समय-समय पर अपने-आप सेव होने वाली सुविधा पर सेट करें."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"हर दिन"</string>

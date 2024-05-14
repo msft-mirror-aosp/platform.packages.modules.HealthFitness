@@ -26,19 +26,25 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.util.Pair;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Helper class for MedicalResource.
@@ -92,6 +98,23 @@ public class MedicalResourceHelper {
     /** Creates the Medical Resource related tables. */
     public void onInitialUpgrade(@NonNull SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
+    }
+
+    /** Creates {@link ReadTableRequest} for the given {@code medicalIdFiltersParcel}. */
+    @NonNull
+    public ReadTableRequest getReadTableRequest(MedicalIdFiltersParcel medicalIdFiltersParcel) {
+        return new ReadTableRequest(getMainTableName())
+                .setWhereClause(getReadTableWhereClause(medicalIdFiltersParcel));
+    }
+
+    private WhereClauses getReadTableWhereClause(MedicalIdFiltersParcel medicalIdFiltersParcel) {
+        List<UUID> ids =
+                medicalIdFiltersParcel.getMedicalIdFilters().stream()
+                        .map(StorageUtils::getMedicalResourceUUIDFor)
+                        .toList();
+        return new WhereClauses(AND)
+                .addWhereInClauseWithoutQuotes(
+                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
     }
 
     /** Creates {@link UpsertTableRequest} for {@code medicalResourceInternal}. */

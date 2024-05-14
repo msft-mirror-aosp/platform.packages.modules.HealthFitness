@@ -19,6 +19,7 @@ package com.android.server.healthconnect.backuprestore;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_FETCHING_DATA;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_UNKNOWN;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_VERSION_DIFF;
+import static android.health.connect.HealthConnectDataState.RESTORE_STATE_IDLE;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
@@ -768,6 +769,20 @@ public class BackupRestoreTest {
     }
 
     @Test
+    public void testMerge_restoreStateIsIdle() {
+        mFakePreferenceHelper.insertOrReplacePreference(
+                DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_STAGING_DONE));
+        when(mTransactionManager.getDatabaseVersion()).thenReturn(1);
+
+        SQLiteDatabase mockDb = mock(SQLiteDatabase.class);
+        when(mockDb.getVersion()).thenReturn(1);
+        when(SQLiteDatabase.openDatabase(any(), any())).thenReturn(mockDb);
+
+        mBackupRestore.merge();
+        assertThat(mBackupRestore.getDataRestoreState()).isEqualTo(RESTORE_STATE_IDLE);
+    }
+
+    @Test
     public void testMerge_mergingOfGrantTimesIsInvoked() {
         mFakePreferenceHelper.insertOrReplacePreference(
                 DATA_RESTORE_STATE_KEY, String.valueOf(INTERNAL_RESTORE_STATE_STAGING_DONE));
@@ -816,8 +831,7 @@ public class BackupRestoreTest {
         createAndGetEmptyFile(databaseDir, STAGED_DATABASE_NAME);
 
         mBackupRestore.merge();
-        assertThat(mFakePreferenceHelper.getPreference(DATA_RESTORE_ERROR_KEY))
-                .isEqualTo(String.valueOf(RESTORE_ERROR_VERSION_DIFF));
+        assertThat(mBackupRestore.getDataRestoreError()).isEqualTo(RESTORE_ERROR_VERSION_DIFF);
         verify(mFirstGrantTimeManager, never())
                 .applyAndStageGrantTimeStateForUser(eq(mUserHandle), any());
     }

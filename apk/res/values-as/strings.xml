@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"পূৰ্বে ৰপ্তানি কৰা ডেটা ল’ড কৰক"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"অন আছে"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"অফ আছে"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"সঘনতা বাছনি কৰক"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ডেটা এবাৰ ছেভ কৰিবলৈ বাছনি কৰক বা নিয়মীয়াকৈ স্বয়ংক্ৰিয়ভাৱে ছেভ কৰিবলৈ ছেট কৰক।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"দৈনিক"</string>

@@ -322,12 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"我知道了"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"備份與還原"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"匯出與匯入"</string>
-    <!-- no translation found for scheduled_export (8737660963687364370) -->
-    <skip />
+    <string name="scheduled_export" msgid="8737660963687364370">"已排定匯出時間"</string>
     <string name="restore_data" msgid="3401173690437871417">"還原資料"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"載入先前匯出的資料"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"已開啟"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"已關閉"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"選擇頻率"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"選擇一次儲存資料，或設為定時自動儲存。"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>

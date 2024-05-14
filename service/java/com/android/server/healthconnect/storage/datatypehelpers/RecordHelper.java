@@ -388,7 +388,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setWhereClause(
                         new WhereClauses(AND)
                                 .addWhereInClauseWithoutQuotes(
-                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
+                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids))
                                 .addWhereLaterThanTimeClause(
                                         getStartTimeColumnName(), startDateAccess))
                 .setRecordHelper(this)
@@ -600,7 +600,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     public DeleteTableRequest getDeleteTableRequest(List<UUID> ids) {
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids))
+                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids))
                 .setRequiresUuId(UUID_COLUMN_NAME)
                 .setEnforcePackageCheck(APP_INFO_ID_COLUMN_NAME, UUID_COLUMN_NAME);
     }
@@ -762,7 +762,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         WhereClauses filterByIdsWhereClauses =
                 new WhereClauses(AND)
                         .addWhereInClauseWithoutQuotes(
-                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids));
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
 
         if (enforceSelfRead) {
             if (callingAppInfoId == DEFAULT_LONG) {

@@ -274,7 +274,7 @@
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"นำสิทธิ์ทั้งหมดออกใช่ไหม"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"นำออกทั้งหมด"</string>
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงกล้อง ไมโครโฟน หรือตำแหน่ง"</string>
-    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงอินเทอร์เน็ตที่ใช้งานอยู่เบื้องหลัง\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงข้อมูลในเบื้องหลัง\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
     <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> จะไม่สามารถอ่านหรือเขียนข้อมูลจาก Health Connect ได้อีกต่อไป รวมถึงข้อมูลในเบื้องหลังและข้อมูลในอดีต\n\nการดำเนินการนี้ไม่ส่งผลต่อสิทธิ์อื่นๆ ที่แอปนี้อาจมี เช่น สิทธิ์เข้าถึงตำแหน่ง กล้อง หรือไมโครโฟน"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"ลบข้อมูล <xliff:g id="APP_NAME">%1$s</xliff:g> ออกจาก Health Connect ด้วย"</string>
@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"โหลดข้อมูลที่ส่งออกก่อนหน้านี้"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"เปิด"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ปิด"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"เลือกความถี่"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"เลือกเพื่อบันทึกข้อมูลครั้งเดียว หรือตั้งค่าให้บันทึกโดยอัตโนมัติเป็นประจำเมื่อถึงเวลาที่ระบุ"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>

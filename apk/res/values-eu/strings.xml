@@ -322,12 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ados"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Egin babeskopiak eta leheneratu"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Esportatu eta inportatu"</string>
-    <!-- no translation found for scheduled_export (8737660963687364370) -->
-    <skip />
+    <string name="scheduled_export" msgid="8737660963687364370">"Esportazio programatua"</string>
     <string name="restore_data" msgid="3401173690437871417">"Leheneratu datuak"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Kargatu lehenago esportatutako datuak"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktibatuta"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Desaktibatuta"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Aukeratu maiztasuna"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Aukeratu ea datuak behin gorde nahi dituzun, edo maiztasun jakin batekin automatikoki gordetzeko konfiguratu."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Egunero"</string>

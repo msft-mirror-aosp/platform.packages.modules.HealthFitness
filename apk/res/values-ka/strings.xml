@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"ექსპორტირებული წინა მონაცემების ჩატვირთვა"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ჩართული"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"გამორთული"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"სიხშირის არჩევა"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"აირჩიეთ მონაცემების ერთჯერადად შენახვის ან რეგულარული ინტერვალით ავტომატურად შენახვის პარამეტრი."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ყოველდღიურად"</string>

@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"ಈ ಹಿಂದೆ ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಿ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ಆನ್ ಆಗಿದೆ"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ಆಫ್ ಆಗಿದೆ"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"ಫ್ರೀಕ್ವೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ಒಂದು ಬಾರಿ ಡೇಟಾ ಸೇವ್ ಮಾಡುವ ಆಯ್ಕೆಯನ್ನು ಮಾಡಿ ಅಥವಾ ಸಾಮಾನ್ಯ ಸಮಯಗಳಲ್ಲಿ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೇವ್ ಆಗುವಂತೆ ಸೆಟ್ ಮಾಡಿ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ಪ್ರತಿದಿನ"</string>

@@ -37,6 +37,7 @@ import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
+import android.health.connect.MedicalIdFilter;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
@@ -141,6 +142,13 @@ public final class StorageUtils {
                         clientRecordId,
                         recordInternal.getRecordType());
         recordInternal.setUuid(uuid);
+    }
+
+    /** Returns a UUID for the given {@link MedicalIdFilter}. */
+    public static UUID getMedicalResourceUUIDFor(@NonNull MedicalIdFilter medicalIdFilter) {
+        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
+        // resource_id.
+        return UUID.fromString(medicalIdFilter.getId());
     }
 
     /**
@@ -432,7 +440,8 @@ public final class StorageUtils {
         return getHexString(convertUUIDToBytes(uuid));
     }
 
-    public static List<String> getListOfHexString(List<UUID> uuids) {
+    /** Creates a list of Hex strings for a given list of {@code UUID}s. */
+    public static List<String> getListOfHexStrings(List<UUID> uuids) {
         List<String> hexStrings = new ArrayList<>();
         for (UUID uuid : uuids) {
             hexStrings.add(getHexString(convertUUIDToBytes(uuid)));

@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"이전에 내보낸 데이터 로드"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"사용"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"사용 안함"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"저장 빈도 선택"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"데이터를 한 번만 저장하도록 선택하거나 정기적으로 자동 저장하도록 설정합니다."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"매일"</string>

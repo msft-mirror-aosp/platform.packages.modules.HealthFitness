@@ -29,7 +29,7 @@
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"ניהול האפליקציות וההרשאות"</string>
     <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
     <skip />
-    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"ל-<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> אפליקציות מתוך <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> יש הרשאת גישה"</string>
+    <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"ל-<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> מתוך <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> אפליקציות יש הרשאת גישה"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"ל-<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> אפליקציות יש הרשאת גישה"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"לאפליקציה אחת (<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>) יש הרשאת גישה"</string>
     <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{לאפליקציה אחת יש הרשאת גישה}one{ל-# אפליקציות יש הרשאת גישה}two{ל-# אפליקציות יש הרשאת גישה}other{ל-# אפליקציות יש הרשאת גישה}}"</string>
@@ -327,6 +327,8 @@
     <string name="restore_data_description" msgid="6505730490741240861">"טעינה של נתונים שיוצאו בעבר"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"מצב פעיל"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"מצב מושבת"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"בחירת תדירות"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"אפשר לבחור לשמור נתונים פעם אחת או להגדיר שמירה אוטומטית בזמנים קבועים."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"כל יום"</string>
