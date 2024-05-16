@@ -21,6 +21,7 @@ import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 
+import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -82,6 +83,8 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ExportImportDocumentProvider;
+import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.InternalExternalRecordConverter;
@@ -1748,6 +1751,43 @@ public class HealthConnectManager {
             return mService.getScheduledExportPeriodInDays(mContext.getUser());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the document providers available to be used for export/import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void queryDocumentProviders(
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.queryDocumentProviders(
+                    mContext.getUser(),
+                    new IQueryDocumentProvidersCallback.Stub() {
+                        @Override
+                        public void onResult(List<ExportImportDocumentProvider> providers) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(providers));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
         }
     }
 

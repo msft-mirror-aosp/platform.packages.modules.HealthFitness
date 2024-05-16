@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_DATA_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.RESOURCE_TYPE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.DATA_SOURCE_ID_COLUMN_NAME;
@@ -38,6 +41,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class MedicalResourceHelperTest {
+    private static final String DATA_SOURCE_ID = "nhs/123";
+    private static final String FHIR_DATA = "{\"resourceType\" : \"Immunization\"}";
     private MedicalResourceHelper mMedicalResourceHelper;
 
     @Before
@@ -48,7 +53,10 @@ public class MedicalResourceHelperTest {
     @Test
     public void getUpsertTableRequest_correctResult() {
         MedicalResourceInternal medicalResourceInternal =
-                new MedicalResourceInternal().setDataSourceId("nhs/123").setType(1);
+                new MedicalResourceInternal()
+                        .setDataSourceId(DATA_SOURCE_ID)
+                        .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
+                        .setData(FHIR_DATA);
 
         UpsertTableRequest upsertRequest =
                 mMedicalResourceHelper.getUpsertTableRequest(medicalResourceInternal);
@@ -56,9 +64,11 @@ public class MedicalResourceHelperTest {
 
         assertThat(upsertRequest.getTable()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
-        assertThat(contentValues.size()).isEqualTo(2);
-        assertThat(contentValues.get(RESOURCE_TYPE_COLUMN_NAME)).isEqualTo(1);
-        assertThat(contentValues.get(DATA_SOURCE_ID_COLUMN_NAME)).isEqualTo("nhs/123");
+        assertThat(contentValues.size()).isEqualTo(3);
+        assertThat(contentValues.get(RESOURCE_TYPE_COLUMN_NAME))
+                .isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+        assertThat(contentValues.get(DATA_SOURCE_ID_COLUMN_NAME)).isEqualTo(DATA_SOURCE_ID);
+        assertThat(contentValues.get(FHIR_DATA_COLUMN_NAME)).isEqualTo(FHIR_DATA);
     }
 
     @Test

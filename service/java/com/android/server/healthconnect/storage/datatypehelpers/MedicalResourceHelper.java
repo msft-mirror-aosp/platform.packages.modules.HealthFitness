@@ -133,6 +133,7 @@ public class MedicalResourceHelper {
         resourceContentValues.put(RESOURCE_TYPE_COLUMN_NAME, medicalResourceInternal.getType());
         resourceContentValues.put(
                 DATA_SOURCE_ID_COLUMN_NAME, medicalResourceInternal.getDataSourceId());
+        resourceContentValues.put(FHIR_DATA_COLUMN_NAME, medicalResourceInternal.getData());
         return resourceContentValues;
     }
 }

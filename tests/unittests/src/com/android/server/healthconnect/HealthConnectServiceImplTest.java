@@ -147,7 +147,8 @@ public class HealthConnectServiceImplTest {
                     "getHealthConnectDataState",
                     "getHealthConnectMigrationUiState",
                     "insertMinDataMigrationSdkExtensionVersion",
-                    "asBinder");
+                    "asBinder",
+                    "queryDocumentProviders");
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
