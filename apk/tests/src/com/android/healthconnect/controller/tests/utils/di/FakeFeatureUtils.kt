@@ -17,7 +17,6 @@ class FakeFeatureUtils : FeatureUtils {
     private var isNewInformationArchitectureEnabled = false
     private var isBackgroundReadEnabled = false
     private var isHistoryReadEnabled = false
-    private var isImportExportEnabled = false
     private var isSkinTemperatureEnabled = false
     private var isPlannedExerciseEnabled = false
 
@@ -47,10 +46,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     fun setIsHistoryReadEnabled(isHistoryReadEnabled: Boolean) {
         this.isHistoryReadEnabled = isHistoryReadEnabled
-    }
-
-    fun setIsImportExportEnabled(isImportExportEnabled: Boolean) {
-        this.isImportExportEnabled = isImportExportEnabled
     }
 
     fun setIsSkinTemperatureEnabled(isSkinTemperatureEnabled: Boolean) {
@@ -87,10 +82,6 @@ class FakeFeatureUtils : FeatureUtils {
 
     override fun isHistoryReadEnabled(): Boolean {
         return isHistoryReadEnabled
-    }
-
-    override fun isImportExportEnabled(): Boolean {
-        return isImportExportEnabled
     }
 
     override fun isPlannedExerciseEnabled(): Boolean {

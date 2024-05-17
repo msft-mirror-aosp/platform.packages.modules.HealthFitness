@@ -95,7 +95,9 @@ import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ExportImportDocumentProvider;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
+import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
+import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.AggregationTypeIdMapper;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
@@ -2043,6 +2045,36 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         }
     }
 
+    /** Queries the document providers available to be used for export/import. */
+    @Override
+    public void getScheduledExportStatus(
+            @NonNull UserHandle user, @NonNull IScheduledExportStatusCallback callback) {
+        checkParamsNonNull(user, callback);
+
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        HealthConnectThreadScheduler.scheduleControllerTask(
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        ScheduledExportStatus status =
+                                ScheduledExportSettingsStorage.getScheduledExportStatus();
+                        callback.onResult(status);
+                    } catch (HealthConnectException healthConnectException) {
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                callback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception exception) {
+                        Slog.e(TAG, "Exception: ", exception);
+                        tryAndThrowException(callback, exception, ERROR_INTERNAL);
+                    }
+                });
+    }
+
     @Override
     public int getScheduledExportPeriodInDays(@NonNull UserHandle user) {
         checkParamsNonNull(user);
@@ -2565,6 +2597,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             @NonNull IQueryDocumentProvidersCallback callback,
             @NonNull Exception exception,
             @HealthConnectException.ErrorCode int errorCode) {
+        try {
+            callback.onError(
+                    new HealthConnectExceptionParcel(
+                            new HealthConnectException(errorCode, exception.toString())));
+        } catch (RemoteException e) {
+            Log.e(TAG, "Unable to send result to the callback", e);
+        }
+    }
+
+    private static void tryAndThrowException(
+            @NonNull IScheduledExportStatusCallback callback,
+            @NonNull Exception exception,
+            @MigrationException.ErrorCode int errorCode) {
         try {
             callback.onError(
                     new HealthConnectExceptionParcel(

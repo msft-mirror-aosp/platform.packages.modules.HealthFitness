@@ -60,13 +60,13 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     }
 
     private suspend inline fun readAllMedicalResources(): String =
-        readMedicalResources().joinToString(separator = "\n", transform = MedicalResource::getData)
+        readMedicalResources().joinToString(separator = "\n", transform = MedicalResource::toString)
 
     private suspend fun readMedicalResources(): List<MedicalResource> {
         val resources =
             suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
                 healthConnectManager.readMedicalResources(
-                    listOf(MedicalIdFilter.fromId("1")),
+                    listOf(MedicalIdFilter.fromId("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")),
                     Runnable::run,
                     continuation.asOutcomeReceiver())
             }

@@ -28,6 +28,7 @@ import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
+import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.restore.BackupFileNamesSet;
@@ -351,4 +352,11 @@ interface IHealthConnectService {
     * @hide
     */
     void queryDocumentProviders(in UserHandle userHandle, in IQueryDocumentProvidersCallback callback);
+
+    /**
+    * Gets the status of the currently scheduled export.
+    *
+    * @hide
+    */
+    void getScheduledExportStatus(in UserHandle userHandle, in IScheduledExportStatusCallback callback);
 }

@@ -154,6 +154,7 @@ android_library {
     ],
     static_libs: [
         "com.google.android.material_material",
+        "healthfitness-aconfig-flags-lib",
         "HealthConnectPermissionsApis",
         "HealthConnectMigrationApis",
         "HealthConnectExportApis",
