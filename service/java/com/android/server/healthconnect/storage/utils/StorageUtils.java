@@ -41,6 +41,7 @@ import android.health.connect.MedicalIdFilter;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
@@ -107,6 +108,17 @@ public final class StorageUtils {
     }
 
     /**
+     * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
+     * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
+     */
+    public static void addNameBasedUUIDTo(
+            @NonNull MedicalResourceInternal medicalResourceInternal) {
+        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
+        // resource_id.
+        medicalResourceInternal.setUuid(UUID.randomUUID());
+    }
+
+    /**
      * Sets UUID for the given record. If {@link RecordInternal#getClientRecordId()} is null or
      * empty, then the UUID is randomly generated. Otherwise, the UUID is generated as a combination
      * of {@link RecordInternal#getPackageName()}, {@link RecordInternal#getClientRecordId()} and
@@ -145,7 +157,7 @@ public final class StorageUtils {
     }
 
     /** Returns a UUID for the given {@link MedicalIdFilter}. */
-    public static UUID getMedicalResourceUUIDFor(@NonNull MedicalIdFilter medicalIdFilter) {
+    public static UUID getUUIDFor(@NonNull MedicalIdFilter medicalIdFilter) {
         // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
         // resource_id.
         return UUID.fromString(medicalIdFilter.getId());

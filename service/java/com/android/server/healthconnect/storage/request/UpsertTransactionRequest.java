@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.request;
 
 import static android.health.connect.Constants.UPSERT;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.addNameBasedUUIDTo;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
@@ -103,6 +104,8 @@ public class UpsertTransactionRequest {
                 Collections.emptyMap());
     }
 
+    // TODO(b/341044947): update this to take in InsertMedicalResourceRequest once that is
+    // checked in.
     public UpsertTransactionRequest(
             @NonNull String packageName,
             @NonNull List<MedicalResourceInternal> medicalResourceInternals) {
@@ -116,6 +119,7 @@ public class UpsertTransactionRequest {
         mPackageName = packageName;
         mSkipPackageNameAndLogs = skipPackageNameAndLogs;
         for (MedicalResourceInternal medicalResourceInternal : medicalResourceInternals) {
+            addNameBasedUUIDTo(medicalResourceInternal);
             addRequest(medicalResourceInternal);
         }
         // TODO(b/337018927): Add support for change logs and access logs.
@@ -153,7 +157,7 @@ public class UpsertTransactionRequest {
                     // restore to ensure references between records remain intact.
                 } else {
                     // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
-                    StorageUtils.addNameBasedUUIDTo(recordInternal);
+                    addNameBasedUUIDTo(recordInternal);
                 }
             } else {
                 // For update requests, generate uuid if the clientRecordID is present, else use the

@@ -20,9 +20,14 @@ import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
 import android.os.Parcel;
+import android.text.TextUtils;
+
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Internal representation of {@link MedicalResource}.
@@ -30,22 +35,22 @@ import android.os.Parcel;
  * @hide
  */
 public final class MedicalResourceInternal {
-    @NonNull private String mId = "";
+    @Nullable private UUID mUuid;
     @MedicalResourceType private int mType;
     @NonNull private String mDataSourceId = "";
     @NonNull private String mData = "";
 
     /** Returns the unique identifier of this data. */
-    @NonNull
-    public String getId() {
-        return mId;
+    @Nullable
+    public UUID getUuid() {
+        return mUuid;
     }
 
     /** Returns this object with the identifier. */
     @NonNull
-    public MedicalResourceInternal setId(@NonNull String id) {
-        requireNonNull(id);
-        mId = id;
+    public MedicalResourceInternal setUuid(@Nullable UUID uuid) {
+        requireNonNull(uuid);
+        mUuid = uuid;
         return this;
     }
 
@@ -94,7 +99,11 @@ public final class MedicalResourceInternal {
     @NonNull
     @SuppressWarnings("FlaggedApi") // this class is internal only
     public MedicalResource toExternalResource() {
-        return new MedicalResource.Builder(getId(), getType(), getDataSourceId(), getData())
+        return new MedicalResource.Builder(
+                        requireNonNull(getUuid()).toString(),
+                        getType(),
+                        getDataSourceId(),
+                        getData())
                 .build();
     }
 
@@ -104,20 +113,20 @@ public final class MedicalResourceInternal {
     public static MedicalResourceInternal fromExternalResource(@NonNull MedicalResource external) {
         requireNonNull(external);
         return new MedicalResourceInternal()
-                .setId(external.getId())
+                .setUuid(UUID.fromString(external.getId()))
                 .setType(external.getType())
                 .setDataSourceId(external.getDataSourceId())
                 .setData(external.getData());
     }
 
     /**
-     * Populates {@code parcel} with the self information, required to reconstructor this object
+     * Populates {@code parcel} with the self information, required to reconstruct this object
      * during IPC.
      */
     @NonNull
     public void writeToParcel(@NonNull Parcel parcel) {
         requireNonNull(parcel);
-        parcel.writeString(getId());
+        parcel.writeString(mUuid == null ? "" : mUuid.toString());
         parcel.writeInt(getType());
         parcel.writeString(getDataSourceId());
         parcel.writeString(getData());
@@ -130,8 +139,10 @@ public final class MedicalResourceInternal {
     @NonNull
     public static MedicalResourceInternal readFromParcel(@NonNull Parcel parcel) {
         requireNonNull(parcel);
+        String uuidString = parcel.readString();
+        UUID uuid = TextUtils.isEmpty(uuidString) ? null : UUID.fromString(uuidString);
         return new MedicalResourceInternal()
-                .setId(parcel.readString())
+                .setUuid(uuid)
                 .setType(parcel.readInt())
                 .setDataSourceId(parcel.readString())
                 .setData(parcel.readString());
@@ -141,7 +152,7 @@ public final class MedicalResourceInternal {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof MedicalResourceInternal that)) return false;
-        return getId().equals(that.getId())
+        return Objects.equals(getUuid(), that.getUuid())
                 && getType() == that.getType()
                 && getDataSourceId().equals(that.getDataSourceId())
                 && getData().equals(that.getData());
@@ -149,6 +160,6 @@ public final class MedicalResourceInternal {
 
     @Override
     public int hashCode() {
-        return hash(getId(), getType(), getDataSourceId(), getData());
+        return hash(getUuid(), getType(), getDataSourceId(), getData());
     }
 }

@@ -110,7 +110,7 @@ public class MedicalResourceHelper {
     private WhereClauses getReadTableWhereClause(MedicalIdFiltersParcel medicalIdFiltersParcel) {
         List<UUID> ids =
                 medicalIdFiltersParcel.getMedicalIdFilters().stream()
-                        .map(StorageUtils::getMedicalResourceUUIDFor)
+                        .map(StorageUtils::getUUIDFor)
                         .toList();
         return new WhereClauses(AND)
                 .addWhereInClauseWithoutQuotes(
@@ -130,6 +130,9 @@ public class MedicalResourceHelper {
     private ContentValues getContentValues(
             @NonNull MedicalResourceInternal medicalResourceInternal) {
         ContentValues resourceContentValues = new ContentValues();
+        resourceContentValues.put(
+                UUID_COLUMN_NAME,
+                StorageUtils.convertUUIDToBytes(medicalResourceInternal.getUuid()));
         resourceContentValues.put(RESOURCE_TYPE_COLUMN_NAME, medicalResourceInternal.getType());
         resourceContentValues.put(
                 DATA_SOURCE_ID_COLUMN_NAME, medicalResourceInternal.getDataSourceId());
