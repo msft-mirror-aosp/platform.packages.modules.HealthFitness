@@ -25,6 +25,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_TOTAL_CALORIES_BURNED;
 import static android.text.TextUtils.isEmpty;
 
+import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
@@ -47,6 +48,7 @@ import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.nio.ByteBuffer;
@@ -462,6 +464,10 @@ public final class StorageUtils {
         return hexStrings;
     }
 
+    /**
+     * Returns a byte array containing sublist of the given uuids list, from position {@code
+     * start}(inclusive) to {@code end}(exclusive).
+     */
     public static byte[] getSingleByteArray(List<UUID> uuids) {
         byte[] allByteArray = new byte[UUID_BYTE_SIZE * uuids.size()];
 
@@ -475,6 +481,12 @@ public final class StorageUtils {
 
     public static List<UUID> getCursorUUIDList(Cursor cursor, String columnName) {
         byte[] bytes = cursor.getBlob(cursor.getColumnIndex(columnName));
+        return bytesToUuids(bytes);
+    }
+
+    /** Turns a byte array to a UUID list. */
+    @VisibleForTesting(visibility = PRIVATE)
+    public static List<UUID> bytesToUuids(byte[] bytes) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
 
         List<UUID> uuidList = new ArrayList<>();
@@ -483,7 +495,6 @@ public final class StorageUtils {
             long low = byteBuffer.getLong();
             uuidList.add(new UUID(high, low));
         }
-
         return uuidList;
     }
 

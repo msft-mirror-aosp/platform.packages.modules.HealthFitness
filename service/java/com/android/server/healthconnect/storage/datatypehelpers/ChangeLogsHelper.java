@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.DELETE;
 import static android.health.connect.Constants.UPSERT;
 
@@ -29,6 +30,8 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
+import static java.lang.Integer.min;
+
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -39,6 +42,7 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.ArrayMap;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -66,7 +70,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
     private static final String APP_ID_COLUMN_NAME = "app_id";
-    private static final String UUIDS_COLUMN_NAME = "uuids";
+    @VisibleForTesting public static final String UUIDS_COLUMN_NAME = "uuids";
     private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
@@ -259,7 +263,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
             mPackageName = null;
         }
 
-        public Map<Integer, List<UUID>> getRecordTypeToUUIDMap() {
+        private Map<Integer, List<UUID>> getRecordTypeToUUIDMap() {
             Map<Integer, List<UUID>> recordTypeToUUIDMap = new ArrayMap<>();
             mRecordTypeAndAppIdToUUIDMap.forEach(
                     (recordTypeAndAppIdPair, uuids) -> {
@@ -308,15 +312,22 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                     new ArrayList<>(mRecordTypeAndAppIdToUUIDMap.size());
             mRecordTypeAndAppIdToUUIDMap.forEach(
                     (recordTypeAndAppIdPair, uuids) -> {
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(
-                                RECORD_TYPE_COLUMN_NAME, recordTypeAndAppIdPair.getRecordType());
-                        contentValues.put(APP_ID_COLUMN_NAME, recordTypeAndAppIdPair.getAppId());
-                        contentValues.put(OPERATION_TYPE_COLUMN_NAME, mOperationType);
-                        contentValues.put(TIME_COLUMN_NAME, mChangeLogTimeStamp);
-                        contentValues.put(
-                                UUIDS_COLUMN_NAME, StorageUtils.getSingleByteArray(uuids));
-                        requests.add(new UpsertTableRequest(TABLE_NAME, contentValues));
+                        for (int i = 0; i < uuids.size(); i += DEFAULT_PAGE_SIZE) {
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(
+                                    RECORD_TYPE_COLUMN_NAME,
+                                    recordTypeAndAppIdPair.getRecordType());
+                            contentValues.put(
+                                    APP_ID_COLUMN_NAME, recordTypeAndAppIdPair.getAppId());
+                            contentValues.put(OPERATION_TYPE_COLUMN_NAME, mOperationType);
+                            contentValues.put(TIME_COLUMN_NAME, mChangeLogTimeStamp);
+                            contentValues.put(
+                                    UUIDS_COLUMN_NAME,
+                                    StorageUtils.getSingleByteArray(
+                                            uuids.subList(
+                                                    i, min(i + DEFAULT_PAGE_SIZE, uuids.size()))));
+                            requests.add(new UpsertTableRequest(TABLE_NAME, contentValues));
+                        }
                     });
             return requests;
         }
