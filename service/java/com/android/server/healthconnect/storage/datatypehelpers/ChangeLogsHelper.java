@@ -227,26 +227,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         private final Map<RecordTypeAndAppIdPair, List<UUID>> mRecordTypeAndAppIdToUUIDMap =
                 new ArrayMap<>();
         @OperationType.OperationTypes private final int mOperationType;
-        private final String mPackageName;
         private final long mChangeLogTimeStamp;
-
-        /**
-         * Creates a change logs object used to add a new change log for {@code operationType} for
-         * {@code packageName} logged at time {@code timeStamp }
-         *
-         * @param operationType Type of the operation for which change log is added whether insert
-         *     or delete.
-         * @param packageName Package name of the records for which change log is added.
-         * @param timeStamp Time when the change log is added.
-         */
-        public ChangeLogs(
-                @OperationType.OperationTypes int operationType,
-                @NonNull String packageName,
-                long timeStamp) {
-            mOperationType = operationType;
-            mPackageName = packageName;
-            mChangeLogTimeStamp = timeStamp;
-        }
 
         /**
          * Creates a change logs object used to add a new change log for {@code operationType}
@@ -256,11 +237,9 @@ public final class ChangeLogsHelper extends DatabaseHelper {
          *     or delete.
          * @param timeStamp Time when the change log is added.
          */
-        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public ChangeLogs(@OperationType.OperationTypes int operationType, long timeStamp) {
             mOperationType = operationType;
             mChangeLogTimeStamp = timeStamp;
-            mPackageName = null;
         }
 
         private Map<Integer, List<UUID>> getRecordTypeToUUIDMap() {
@@ -306,8 +285,6 @@ public final class ChangeLogsHelper extends DatabaseHelper {
          *     mRecordTypeAndAppIdPairToUUIDMap}
          */
         public List<UpsertTableRequest> getUpsertTableRequests() {
-            Objects.requireNonNull(mPackageName);
-
             List<UpsertTableRequest> requests =
                     new ArrayList<>(mRecordTypeAndAppIdToUUIDMap.size());
             mRecordTypeAndAppIdToUUIDMap.forEach(

@@ -34,7 +34,6 @@ import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
@@ -64,7 +63,6 @@ import java.util.stream.Collectors;
 public class UpsertTransactionRequest {
     private static final String TAG = "HealthConnectUTR";
     @NonNull private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
-    @NonNull private final String mPackageName;
     private final List<UpsertTableRequest> mAccessLogs = new ArrayList<>();
     private final boolean mSkipPackageNameAndLogs;
     @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
@@ -116,7 +114,6 @@ public class UpsertTransactionRequest {
             @NonNull String packageName,
             @NonNull List<MedicalResourceInternal> medicalResourceInternals,
             boolean skipPackageNameAndLogs) {
-        mPackageName = packageName;
         mSkipPackageNameAndLogs = skipPackageNameAndLogs;
         for (MedicalResourceInternal medicalResourceInternal : medicalResourceInternals) {
             addNameBasedUUIDTo(medicalResourceInternal);
@@ -136,7 +133,6 @@ public class UpsertTransactionRequest {
             boolean useProvidedUuid,
             boolean skipPackageNameAndLogs,
             Map<String, Boolean> extraPermsStateMap) {
-        mPackageName = packageName;
         mSkipPackageNameAndLogs = skipPackageNameAndLogs;
         if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
             mExtraWritePermissionsToState = new ArrayMap<>();
@@ -190,24 +186,6 @@ public class UpsertTransactionRequest {
 
     public List<UpsertTableRequest> getAccessLogs() {
         return mAccessLogs;
-    }
-
-    @NonNull
-    public List<UpsertTableRequest> getInsertRequestsForChangeLogs() {
-        if (mSkipPackageNameAndLogs) {
-            return Collections.emptyList();
-        }
-        long currentTime = Instant.now().toEpochMilli();
-        ChangeLogsHelper.ChangeLogs insertChangeLogs =
-                new ChangeLogsHelper.ChangeLogs(UPSERT, mPackageName, currentTime);
-        for (UpsertTableRequest upsertRequest : mUpsertRequests) {
-            insertChangeLogs.addUUID(
-                    upsertRequest.getRecordInternal().getRecordType(),
-                    upsertRequest.getRecordInternal().getAppInfoId(),
-                    upsertRequest.getRecordInternal().getUuid());
-        }
-
-        return insertChangeLogs.getUpsertTableRequests();
     }
 
     @NonNull

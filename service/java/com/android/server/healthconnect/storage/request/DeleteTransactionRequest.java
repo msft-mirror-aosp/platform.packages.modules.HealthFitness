@@ -16,27 +16,20 @@
 
 package com.android.server.healthconnect.storage.request;
 
-import static android.health.connect.Constants.DELETE;
-
-import android.annotation.NonNull;
 import android.health.connect.Constants;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
-import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,7 +41,7 @@ public final class DeleteTransactionRequest {
     private static final String TAG = "HealthConnectDelete";
     private final List<DeleteTableRequest> mDeleteTableRequests;
     private final long mRequestingPackageNameId;
-    private ChangeLogsHelper.ChangeLogs mChangeLogs;
+    private final boolean mIsBulkDelete;
     private boolean mHasHealthDataManagementPermission;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -56,11 +49,8 @@ public final class DeleteTransactionRequest {
         Objects.requireNonNull(packageName);
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
         mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
+        mIsBulkDelete = !request.usesIdFilters();
         if (request.usesIdFilters()) {
-            // We don't keep change logs for bulk deletes
-            mChangeLogs =
-                    new ChangeLogsHelper.ChangeLogs(
-                            DELETE, packageName, Instant.now().toEpochMilli());
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();
             Set<UUID> uuidSet = new ArraySet<>();
@@ -122,25 +112,8 @@ public final class DeleteTransactionRequest {
         return mDeleteTableRequests;
     }
 
-    /**
-     * Function to add an uuid corresponding to given pair of @recordType and @appId to
-     * recordTypeAndAppIdToUUIDMap of changeLogs
-     */
-    public void onRecordFetched(
-            @RecordTypeIdentifier.RecordType int recordType, long appId, UUID uuid) {
-        if (mChangeLogs == null) {
-            return;
-        }
-        mChangeLogs.addUUID(recordType, appId, uuid);
-    }
-
-    @NonNull
-    public List<UpsertTableRequest> getChangeLogUpsertRequests() {
-        if (mChangeLogs == null) {
-            return Collections.emptyList();
-        }
-
-        return mChangeLogs.getUpsertTableRequests();
+    public boolean isBulkDelete() {
+        return mIsBulkDelete;
     }
 
     public void enforcePackageCheck(UUID uuid, long appInfoId) {

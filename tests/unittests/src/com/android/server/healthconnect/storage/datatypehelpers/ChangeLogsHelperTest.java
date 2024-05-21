@@ -37,8 +37,7 @@ public class ChangeLogsHelperTest {
     @Test
     public void changeLogs_getUpsertTableRequests_listLessThanDefaultPageSize() {
         ChangeLogsHelper.ChangeLogs changeLogs =
-                new ChangeLogsHelper.ChangeLogs(
-                        DELETE, "unused.package", Instant.now().toEpochMilli());
+                new ChangeLogsHelper.ChangeLogs(DELETE, Instant.now().toEpochMilli());
         UUID uuid = UUID.randomUUID();
         changeLogs.addUUID(RECORD_TYPE_STEPS, 0, uuid);
         List<UpsertTableRequest> requests = changeLogs.getUpsertTableRequests();
@@ -52,8 +51,7 @@ public class ChangeLogsHelperTest {
     @Test
     public void changeLogs_getUpsertTableRequests_listMoreThanDefaultPageSize() {
         ChangeLogsHelper.ChangeLogs changeLogs =
-                new ChangeLogsHelper.ChangeLogs(
-                        DELETE, "unused.package", Instant.now().toEpochMilli());
+                new ChangeLogsHelper.ChangeLogs(DELETE, Instant.now().toEpochMilli());
         for (int i = 0; i <= DEFAULT_PAGE_SIZE; i++) {
             UUID uuid = UUID.randomUUID();
             changeLogs.addUUID(RECORD_TYPE_STEPS, 0, uuid);

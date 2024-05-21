@@ -884,6 +884,35 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         return Collections.emptyList();
     }
 
+    /**
+     * When a record is deleted, this will be called. The read requests must return a cursor with
+     * {@link #UUID_COLUMN_NAME} and {@link #APP_INFO_ID_COLUMN_NAME} values. This information will
+     * be used to generate modification changelogs for each UUID.
+     *
+     * <p>A concrete example of when this is used is for training plans. The deletion of a training
+     * plan will nullify the 'plannedExerciseSessionId' field of any exercise sessions that
+     * referenced it. When a training plan is deleted, a read request is made on the exercise
+     * session table to find any exercise sessions that referenced it.
+     */
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByDeletion(
+            UUID deletedRecordUuid) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * When a record is upserted, this will be called. The read requests must return a cursor with a
+     * {@link #UUID_COLUMN_NAME} and {@link #APP_INFO_ID_COLUMN_NAME} values. This information will
+     * be used to generate modification changelogs for each UUID.
+     *
+     * <p>A concrete example of when this is used is for training plans. The upsertion of an
+     * exercise session may modify the 'completedSessionId' field of any planned sessions that
+     * referenced it.
+     */
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
+            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
+        return Collections.emptyList();
+    }
+
     /** Represents a table and a column within that table. */
     public static final class TableColumnPair {
         TableColumnPair(String tableName, String columnName) {
