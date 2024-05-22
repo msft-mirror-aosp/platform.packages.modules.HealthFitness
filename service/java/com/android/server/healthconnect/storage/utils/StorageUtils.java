@@ -25,6 +25,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_TOTAL_CALORIES_BURNED;
 import static android.text.TextUtils.isEmpty;
 
+import static com.android.internal.annotations.VisibleForTesting.Visibility.PRIVATE;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.CLIENT_RECORD_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
@@ -37,14 +38,17 @@ import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
+import android.health.connect.MedicalIdFilter;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryMapper;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.nio.ByteBuffer;
@@ -106,6 +110,17 @@ public final class StorageUtils {
     }
 
     /**
+     * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
+     * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
+     */
+    public static void addNameBasedUUIDTo(
+            @NonNull MedicalResourceInternal medicalResourceInternal) {
+        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
+        // resource_id.
+        medicalResourceInternal.setUuid(UUID.randomUUID());
+    }
+
+    /**
      * Sets UUID for the given record. If {@link RecordInternal#getClientRecordId()} is null or
      * empty, then the UUID is randomly generated. Otherwise, the UUID is generated as a combination
      * of {@link RecordInternal#getPackageName()}, {@link RecordInternal#getClientRecordId()} and
@@ -141,6 +156,13 @@ public final class StorageUtils {
                         clientRecordId,
                         recordInternal.getRecordType());
         recordInternal.setUuid(uuid);
+    }
+
+    /** Returns a UUID for the given {@link MedicalIdFilter}. */
+    public static UUID getUUIDFor(@NonNull MedicalIdFilter medicalIdFilter) {
+        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
+        // resource_id.
+        return UUID.fromString(medicalIdFilter.getId());
     }
 
     /**
@@ -432,7 +454,8 @@ public final class StorageUtils {
         return getHexString(convertUUIDToBytes(uuid));
     }
 
-    public static List<String> getListOfHexString(List<UUID> uuids) {
+    /** Creates a list of Hex strings for a given list of {@code UUID}s. */
+    public static List<String> getListOfHexStrings(List<UUID> uuids) {
         List<String> hexStrings = new ArrayList<>();
         for (UUID uuid : uuids) {
             hexStrings.add(getHexString(convertUUIDToBytes(uuid)));
@@ -441,6 +464,10 @@ public final class StorageUtils {
         return hexStrings;
     }
 
+    /**
+     * Returns a byte array containing sublist of the given uuids list, from position {@code
+     * start}(inclusive) to {@code end}(exclusive).
+     */
     public static byte[] getSingleByteArray(List<UUID> uuids) {
         byte[] allByteArray = new byte[UUID_BYTE_SIZE * uuids.size()];
 
@@ -454,6 +481,12 @@ public final class StorageUtils {
 
     public static List<UUID> getCursorUUIDList(Cursor cursor, String columnName) {
         byte[] bytes = cursor.getBlob(cursor.getColumnIndex(columnName));
+        return bytesToUuids(bytes);
+    }
+
+    /** Turns a byte array to a UUID list. */
+    @VisibleForTesting(visibility = PRIVATE)
+    public static List<UUID> bytesToUuids(byte[] bytes) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
 
         List<UUID> uuidList = new ArrayList<>();
@@ -462,7 +495,6 @@ public final class StorageUtils {
             long low = byteBuffer.getLong();
             uuidList.add(new UUID(high, low));
         }
-
         return uuidList;
     }
 

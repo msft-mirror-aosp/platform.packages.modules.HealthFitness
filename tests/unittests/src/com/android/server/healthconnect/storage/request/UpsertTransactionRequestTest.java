@@ -30,9 +30,9 @@ public class UpsertTransactionRequestTest {
     @Test
     public void testUpsertTransaction_correctUpsertRequests() {
         MedicalResourceInternal medicalResourceInternal1 =
-                new MedicalResourceInternal().setId("1234").setDataSourceId("nhs/123").setType(1);
+                new MedicalResourceInternal().setDataSourceId("nhs/123").setType(1);
         MedicalResourceInternal medicalResourceInternal2 =
-                new MedicalResourceInternal().setId("5678").setDataSourceId("nhs/567").setType(2);
+                new MedicalResourceInternal().setDataSourceId("nhs/567").setType(2);
 
         UpsertTransactionRequest request =
                 getUpsertTransactionRequest(

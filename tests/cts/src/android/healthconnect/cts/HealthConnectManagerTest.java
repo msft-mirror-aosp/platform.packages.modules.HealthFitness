@@ -1226,7 +1226,7 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testGetHealthConnectDataState_afterStaging_returnsRestorePendingState()
+    public void testGetHealthConnectDataState_afterStagingAndMerge_returnsStateIdle()
             throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         CountDownLatch stateLatch = new CountDownLatch(1);
@@ -1293,7 +1293,7 @@ public class HealthConnectManagerTest {
         }
         assertThat(stateLatch.await(10, TimeUnit.SECONDS)).isEqualTo(true);
         assertThat(returnedHealthConnectDataState.get().getDataRestoreState())
-                .isEqualTo(RESTORE_STATE_PENDING);
+                .isEqualTo(RESTORE_STATE_IDLE);
 
         deleteAllStagedRemoteData();
     }

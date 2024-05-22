@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"Ayikho idatha"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Izimvume ze-app"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Lawula ama-app akho kanye nezimvume"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Ama-app angu-<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> kwangu-<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> anokufinyelela"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Ama-app angu-<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> anokufinyelela"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"I-app engu-<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> inokufinyelela"</string>
@@ -320,11 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ngiyezwa"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yenza isipele futhi ubuyisele"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Thumela uphinde ungenise"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Thumela ngokuzenzakalela"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Ukuthunyelwa okushejuliwe"</string>
     <string name="restore_data" msgid="3401173690437871417">"Buyisela idatha"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Layisha idatha ethunyelwe ngaphambilini"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Kuvuliwe"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Kuvaliwe"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Khetha imvamisa"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Khetha ukulondoloza idatha kanye, noma uyisethe ukuthi ilondoloze ngokuzenzekelayo ngezikhathi ezivamile."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Nsuku zonke"</string>

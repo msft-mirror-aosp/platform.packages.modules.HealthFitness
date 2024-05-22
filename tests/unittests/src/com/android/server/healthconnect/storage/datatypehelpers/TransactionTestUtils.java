@@ -28,6 +28,7 @@ import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.StepsRecord;
@@ -100,6 +101,13 @@ public final class TransactionTestUtils {
                 /* startDateAccessMillis= */ 0,
                 NO_EXTRA_PERMS,
                 /* isInForeground= */ true);
+    }
+
+    /** Creates {@link ReadTransactionRequest} for the given {@code medicalIdFiltersParcel}. */
+    @NonNull
+    public static ReadTransactionRequest getReadTransactionRequest(
+            @NonNull MedicalIdFiltersParcel medicalIdFiltersParcel) {
+        return new ReadTransactionRequest(medicalIdFiltersParcel);
     }
 
     public static ReadTransactionRequest getReadTransactionRequest(

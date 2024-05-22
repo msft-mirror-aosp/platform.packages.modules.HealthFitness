@@ -16,7 +16,10 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper.EXERCISE_SESSION_RECORD_TABLE_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper.PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BOOLEAN_FALSE_VALUE;
@@ -71,9 +74,12 @@ import android.util.Pair;
 
 import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.SqlJoin;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -104,7 +110,7 @@ public final class PlannedExerciseSessionRecordHelper
     private static final String EXERCISE_TYPE_COLUMN_NAME = "exercise_type";
     private static final String TITLE_COLUMN_NAME = "title";
     private static final String HAS_EXPLICIT_TIME_COLUMN_NAME = "has_explicit_time";
-    static final String COMPLETED_SESSION_ID_COLUMN_NAME = "completed_session_id";
+    public static final String COMPLETED_SESSION_ID_COLUMN_NAME = "completed_session_id";
 
     // Exercise block columns.
     private static final String BLOCK_ROW_ID_COLUMN_NAME = "block_row_id";
@@ -381,6 +387,11 @@ public final class PlannedExerciseSessionRecordHelper
         contentValues.put(NOTES_COLUMN_NAME, exerciseSessionRecord.getNotes());
         contentValues.put(EXERCISE_TYPE_COLUMN_NAME, exerciseSessionRecord.getExerciseType());
         contentValues.put(TITLE_COLUMN_NAME, exerciseSessionRecord.getTitle());
+        if (exerciseSessionRecord.getCompletedExerciseSessionId() != null) {
+            contentValues.put(
+                    COMPLETED_SESSION_ID_COLUMN_NAME,
+                    exerciseSessionRecord.getCompletedExerciseSessionId().toString());
+        }
         contentValues.put(
                 HAS_EXPLICIT_TIME_COLUMN_NAME,
                 exerciseSessionRecord.getHasExplicitTime()
@@ -574,5 +585,25 @@ public final class PlannedExerciseSessionRecordHelper
         return Collections.singletonList(
                 new TableColumnPair(
                         PLANNED_EXERCISE_SESSION_BLOCKS_TABLE_NAME, BLOCK_PARENT_ID_COLUMN_NAME));
+    }
+
+    @Override
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByDeletion(
+            UUID deletedRecordUuid) {
+        ReadTableRequest affectedExerciseSessionsReadRequest =
+                new ReadTableRequest(EXERCISE_SESSION_RECORD_TABLE_NAME);
+        affectedExerciseSessionsReadRequest.setColumnNames(
+                Arrays.asList(
+                        UUID_COLUMN_NAME,
+                        APP_INFO_ID_COLUMN_NAME,
+                        PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME));
+        WhereClauses whereStatement = new WhereClauses(WhereClauses.LogicalOperator.AND);
+        whereStatement.addWhereEqualsClause(
+                PLANNED_EXERCISE_SESSION_ID_COLUMN_NAME,
+                StorageUtils.getHexString(deletedRecordUuid));
+        affectedExerciseSessionsReadRequest.setWhereClause(whereStatement);
+        affectedExerciseSessionsReadRequest.setRecordHelper(
+                RecordHelperProvider.getInstance().getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
+        return Collections.singletonList(affectedExerciseSessionsReadRequest);
     }
 }

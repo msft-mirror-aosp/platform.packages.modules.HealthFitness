@@ -31,6 +31,7 @@
   <string name="seed_random_data">Seed Random Data</string>
   <string name="read_data_in_background">Read Data in Background</string>
   <string name="read_data_in_foreground">Read Data in Foreground</string>
+  <string name="phr_options">PHR options</string>
   <string name="exit_process">Exit Process</string>
   <string name="all_permissions_already_granted_toast">Permissions already granted, please manage them via HC App</string>
   <string name="all_permissions_success">All permissions were successfully granted</string>
@@ -134,5 +135,10 @@
   <!-- region Foreground Reading screen -->
   <string name="foreground_read_title">Read Data In Foreground</string>
   <string name="foreground_read_all_steps">Read All Steps</string>
+  <!--endregion-->
+
+  <!-- region Phr Options screen -->
+  <string name="phr_options_title">PHR Options</string>
+  <string name="phr_options_read_immunizations">Read Immunizations</string>
   <!--endregion-->
 </resources>

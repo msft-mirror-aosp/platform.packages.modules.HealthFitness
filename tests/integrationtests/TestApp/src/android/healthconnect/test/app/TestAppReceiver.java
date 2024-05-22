@@ -40,7 +40,10 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.ExerciseSessionRecord;
+import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
@@ -57,6 +60,9 @@ import java.util.stream.Collectors;
 public class TestAppReceiver extends BroadcastReceiver {
     public static final String ACTION_INSERT_STEPS_RECORDS = "action.INSERT_STEPS_RECORDS";
     public static final String ACTION_INSERT_WEIGHT_RECORDS = "action.INSERT_WEIGHT_RECORDS";
+    public static final String ACTION_INSERT_EXERCISE_RECORD = "action.INSERT_EXERCISE_RECORD";
+    public static final String ACTION_INSERT_PLANNED_EXERCISE_RECORD =
+            "action.INSERT_PLANNED_EXERCISE_RECORD";
     public static final String ACTION_READ_STEPS_RECORDS_USING_FILTERS =
             "action.READ_STEPS_RECORDS_USING_FILTERS";
     public static final String ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS =
@@ -85,6 +91,10 @@ public class TestAppReceiver extends BroadcastReceiver {
     /** Represents a long value. */
     public static final String EXTRA_RECORD_VALUE = "extra.RECORD_VALUE";
 
+    /** This is used to represent the ID of a training plan completed by an exercise. */
+    public static final String EXTRA_PLANNED_EXERCISE_SESSION_ID =
+            "extra.PLANNED_EXERCISE_SESSION_ID";
+
     public static final String EXTRA_TOKEN = "extra.TOKEN";
 
     /** Extra for a list of package names. */
@@ -102,6 +112,12 @@ public class TestAppReceiver extends BroadcastReceiver {
                 break;
             case ACTION_INSERT_WEIGHT_RECORDS:
                 insertWeightRecords(context, intent);
+                break;
+            case ACTION_INSERT_EXERCISE_RECORD:
+                insertExerciseRecord(context, intent);
+                break;
+            case ACTION_INSERT_PLANNED_EXERCISE_RECORD:
+                insertPlannedExerciseRecord(context, intent);
                 break;
             case ACTION_READ_STEPS_RECORDS_USING_FILTERS:
                 readStepsRecordsUsingFilters(context, intent);
@@ -134,6 +150,24 @@ public class TestAppReceiver extends BroadcastReceiver {
         DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
         getHealthConnectManager(context)
                 .insertRecords(createWeightRecords(intent), newSingleThreadExecutor(), outcome);
+        sendInsertRecordsResult(context, intent, outcome);
+    }
+
+    private static void insertExerciseRecord(Context context, Intent intent) {
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
+        getHealthConnectManager(context)
+                .insertRecords(
+                        List.of(createExerciseRecord(intent)), newSingleThreadExecutor(), outcome);
+        sendInsertRecordsResult(context, intent, outcome);
+    }
+
+    private static void insertPlannedExerciseRecord(Context context, Intent intent) {
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
+        getHealthConnectManager(context)
+                .insertRecords(
+                        List.of(createPlannedExerciseRecord(intent)),
+                        newSingleThreadExecutor(),
+                        outcome);
         sendInsertRecordsResult(context, intent, outcome);
     }
 
@@ -342,6 +376,30 @@ public class TestAppReceiver extends BroadcastReceiver {
             result.add(createWeightRecord(times.get(i), clientIds[i], values[i]));
         }
         return result;
+    }
+
+    private static Record createExerciseRecord(Intent intent) {
+        String trainingPlanId = intent.getStringExtra(EXTRA_PLANNED_EXERCISE_SESSION_ID);
+        ExerciseSessionRecord record =
+                new ExerciseSessionRecord.Builder(
+                                new Metadata.Builder().build(),
+                                getTimes(intent, EXTRA_TIMES).get(0),
+                                getTimes(intent, EXTRA_END_TIMES).get(0),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(trainingPlanId)
+                        .build();
+        return record;
+    }
+
+    private static Record createPlannedExerciseRecord(Intent intent) {
+        PlannedExerciseSessionRecord record =
+                new PlannedExerciseSessionRecord.Builder(
+                                new Metadata.Builder().build(),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                                getTimes(intent, EXTRA_TIMES).get(0),
+                                getTimes(intent, EXTRA_END_TIMES).get(0))
+                        .build();
+        return record;
     }
 
     private static WeightRecord createWeightRecord(Instant time, String clientId, double weight) {

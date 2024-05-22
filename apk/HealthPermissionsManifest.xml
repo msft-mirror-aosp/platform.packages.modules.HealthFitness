@@ -272,6 +272,12 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
+    <!-- Read permissions for personal health records -->
+    <permission
+        android:name="android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
     <!-- Write permissions -->
     <!-- Write permissions for activities -->
     <permission
@@ -504,6 +510,12 @@
     <permission
         android:name="android.permission.health.WRITE_PLANNED_EXERCISE"
         android:label="@string/planned_exercise_write_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <!-- Write permissions for personal health records -->
+    <permission
+        android:name="android.permission.health.WRITE_MEDICAL_RESOURCES"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 </manifest>

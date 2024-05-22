@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"ဒေတာမရှိပါ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"အက်ပ်ခွင့်ပြုချက်များ"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"သင့်အက်ပ်နှင့် ခွင့်ပြုချက်များကို စီမံရန်"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"အက်ပ် <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ခုအနက် <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ခုတွင် သုံးခွင့်ရှိသည်"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"အက်ပ် <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ခုတွင် သုံးခွင့်ရှိသည်"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"အက်ပ် <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ခုတွင် သုံးခွင့်ရှိသည်"</string>
@@ -320,11 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ရပြီ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"အရန်သိမ်းခြင်း၊ ပြန်ယူခြင်း"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ထုတ်ယူခြင်း၊ ထည့်သွင်းခြင်း"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"အလိုအလျောက်ထုတ်ယူရန်"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"စီစဉ်ထားသည့် ထုတ်ယူခြင်း"</string>
     <string name="restore_data" msgid="3401173690437871417">"ဒေတာ ပြန်ယူရန်"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"ထုတ်ယူထားသော ဒေတာကို ယခင်က ဖွင့်ထားသည်"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ဖွင့်"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ပိတ်"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"အကြိမ်ရေ ရွေးခြင်း"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ဒေတာကို တစ်ကြိမ်သိမ်းရန် ရွေးနိုင်သည် (သို့) ပုံမှန်အချိန်များတွင် အလိုအလျောက်သိမ်းရန် သတ်မှတ်နိုင်သည်။"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"နေ့စဉ်"</string>

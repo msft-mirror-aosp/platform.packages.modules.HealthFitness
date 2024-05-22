@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"ਕੋਈ ਡਾਟਾ ਨਹੀਂ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ਐਪ ਇਜਾਜ਼ਤਾਂ"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"ਆਪਣੀਆਂ ਐਪਾਂ ਅਤੇ ਇਜਾਜ਼ਤਾਂ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ਵਿੱਚੋਂ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ਐਪਾਂ ਕੋਲ ਪਹੁੰਚ ਹੈ"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ਐਪਾਂ ਕੋਲ ਪਹੁੰਚ ਹੈ"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ਐਪ ਕੋਲ ਪਹੁੰਚ ਹੈ"</string>
@@ -320,11 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ਸਮਝ ਲਿਆ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ਬੈਕਅੱਪ ਲਓ ਅਤੇ ਮੁੜ-ਬਹਾਲ ਕਰੋ"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ਨਿਰਯਾਤ ਅਤੇ ਆਯਾਤ ਕਰੋ"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਨਿਰਯਾਤ ਕਰੋ"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"ਨਿਯਤ ਨਿਰਯਾਤ"</string>
     <string name="restore_data" msgid="3401173690437871417">"ਡਾਟਾ ਮੁੜ-ਬਹਾਲ ਕਰੋ"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"ਪਹਿਲਾ ਤੋਂ ਨਿਰਯਾਤ ਕੀਤਾ ਡਾਟਾ ਲੋਡ ਕਰੋ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ਚਾਲੂ"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ਬੰਦ"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"ਵਾਰਵਾਰਤਾ ਚੁਣੋ"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ਡਾਟੇ ਨੂੰ ਇੱਕ ਵਾਰ ਰੱਖਿਅਤ ਕਰਨਾ ਚੁਣੋ, ਜਾਂ ਨਿਯਮਿਤ ਸਮਿਆਂ \'ਤੇ ਆਪਣੇ ਆਪ ਰੱਖਿਅਤ ਕਰਨ ਲਈ ਸੈੱਟ ਕਰੋ।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ਰੋਜ਼ਾਨਾ"</string>

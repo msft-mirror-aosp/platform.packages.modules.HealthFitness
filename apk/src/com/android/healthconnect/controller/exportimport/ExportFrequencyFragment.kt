@@ -32,7 +32,6 @@ import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewM
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Export frequency fragment for Health Connect. */
-// TODO: b/325917283 - Save the selected frequency preference.
 @AndroidEntryPoint(Fragment::class)
 class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
 
@@ -48,14 +47,22 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
 
         val backButton = view.findViewById<Button>(R.id.export_back_button)
         val nextButton = view.findViewById<Button>(R.id.export_next_button)
+        val radioGroup = view.findViewById<RadioGroup>(R.id.radio_group_frequency)
 
         backButton.setOnClickListener { requireActivity().finish() }
         nextButton.setOnClickListener {
+            val checkedId = radioGroup.checkedRadioButtonId
+            when (checkedId) {
+                R.id.radio_button_daily ->
+                    viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_DAILY)
+                R.id.radio_button_weekly ->
+                    viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_WEEKLY)
+                R.id.radio_button_monthly ->
+                    viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_MONTHLY)
+            }
             findNavController()
                 .navigate(R.id.action_exportFrequencyFragment_to_exportDestinationFragment)
         }
-
-        val radioGroup = view.findViewById<RadioGroup>(R.id.radio_group_frequency)
 
         viewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
             when (exportSettings) {
@@ -71,17 +78,6 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
                             radioGroup?.check(R.id.radio_button_daily)
                     }
                 else -> {}
-            }
-        }
-
-        radioGroup?.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.radio_button_daily ->
-                    viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_DAILY)
-                R.id.radio_button_weekly ->
-                    viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_WEEKLY)
-                R.id.radio_button_monthly ->
-                    viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_MONTHLY)
             }
         }
         return view

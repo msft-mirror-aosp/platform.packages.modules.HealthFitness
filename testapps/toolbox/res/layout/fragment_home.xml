@@ -170,6 +170,15 @@
             android:text="@string/read_data_in_foreground" />
 
         <Button
+            android:id="@+id/phr_options_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options" />
+
+        <Button
             android:id="@+id/exit_process_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

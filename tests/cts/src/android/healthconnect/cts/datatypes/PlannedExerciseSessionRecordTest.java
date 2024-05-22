@@ -31,9 +31,13 @@ import static java.time.Month.APRIL;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.HOURS;
 
+import android.content.Context;
 import android.health.connect.HealthConnectException;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.changelog.ChangeLogTokenRequest;
+import android.health.connect.changelog.ChangeLogsRequest;
+import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.ExerciseCompletionGoal;
 import android.health.connect.datatypes.ExercisePerformanceGoal;
@@ -50,11 +54,13 @@ import android.health.connect.datatypes.units.Power;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.collect.Iterables;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,11 +79,18 @@ import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 public class PlannedExerciseSessionRecordTest {
+    private Context mContext;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
+    @Before
+    public void setUp() throws InterruptedException {
+        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        TestUtils.deleteAllStagedRemoteData();
+    }
 
     @After
     public void tearDown() throws InterruptedException {
@@ -148,6 +161,11 @@ public class PlannedExerciseSessionRecordTest {
 
         Record insertedRecord = verifyInsertSucceeds(builder.build());
 
+        System.err.println("DMCK: inserted record UUID: " + insertedRecord.getMetadata().getId());
+
+        PlannedExerciseSessionRecord insertedPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        System.err.println("DMCK: read back record UUID: " + insertedPlan.getMetadata().getId());
         verifyReadReturnsSameRecords(insertedRecord);
     }
 
@@ -453,7 +471,8 @@ public class PlannedExerciseSessionRecordTest {
     public void bidirectionalReference_keptWhenTrainingPlanUpdated() throws InterruptedException {
         PlannedExerciseSessionRecord.Builder plannedSession =
                 basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
-        Record insertedPlannedSession = verifyInsertSucceeds(plannedSession.build());
+        PlannedExerciseSessionRecord insertedPlannedSession =
+                (PlannedExerciseSessionRecord) verifyInsertSucceeds(plannedSession.build());
         ExerciseSessionRecord exerciseSession =
                 new ExerciseSessionRecord.Builder(
                                 buildMetadata(null),
@@ -465,7 +484,7 @@ public class PlannedExerciseSessionRecordTest {
 
         insertRecords(Collections.singletonList(exerciseSession));
 
-        plannedSession.setMetadata(insertedPlannedSession.getMetadata());
+        plannedSession = plannedExerciseSessionRecordToBuilder(insertedPlannedSession);
         plannedSession.setTitle("Updated training plan");
         TestUtils.updateRecords(Collections.singletonList(plannedSession.build()));
         ExerciseSessionRecord updatedExerciseSession =
@@ -488,13 +507,12 @@ public class PlannedExerciseSessionRecordTest {
                                 ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
                         .setPlannedExerciseSessionId(insertedPlannedSession.getMetadata().getId());
 
-        ExerciseSessionRecord record =
-                (ExerciseSessionRecord) insertRecord(exerciseSession.build());
-        ExerciseSessionRecord.Builder exerciseSessionRecordBuilder =
-                exerciseSessionRecordToBuilder(record);
-        exerciseSessionRecordBuilder.setTitle("Updated exercise session");
-        TestUtils.updateRecords(Collections.singletonList(exerciseSessionRecordBuilder.build()));
+        exerciseSession =
+                exerciseSessionRecordToBuilder(
+                        (ExerciseSessionRecord) insertRecord(exerciseSession.build()));
 
+        exerciseSession.setTitle("Updated exercise session");
+        TestUtils.updateRecords(Collections.singletonList(exerciseSession.build()));
         ExerciseSessionRecord updatedExerciseSession =
                 Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
         PlannedExerciseSessionRecord updatedTrainingPlan =
@@ -570,6 +588,452 @@ public class PlannedExerciseSessionRecordTest {
         assertThat(updatedPlannedExercise.getCompletedExerciseSessionId()).isNotNull();
         assertThat(updatedPlannedExercise.getCompletedExerciseSessionId())
                 .isEqualTo(latestExerciseId);
+    }
+
+    @Test
+    public void insertTrainingPlan_changelogCreated() throws InterruptedException {
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .build();
+        String token = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        PlannedExerciseSessionRecord inserted =
+                (PlannedExerciseSessionRecord) verifyInsertSucceeds(builder.build());
+
+        verifyChangelogCreatedForUpsert(inserted, token);
+    }
+
+    @Test
+    public void insertExerciseSession_completesTrainingPlan_changelogGeneratedForTrainingPlan()
+            throws InterruptedException {
+        // Create and insert training plan.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        verifyInsertSucceeds(builder.build());
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(originalTrainingPlan, changeToken);
+
+        // Create and insert exercise session that completes previous training plan.
+        ExerciseSessionRecord exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId())
+                        .build();
+
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        ExerciseSessionRecord inserted =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession)).get(0);
+        verifyChangelogCreatedForUpsert(inserted, changeToken);
+
+        // Verify the updated training plan (now with a link to the previous exercise session) is
+        // included in the changelogs.
+        PlannedExerciseSessionRecord updatedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(updatedTrainingPlan, changeToken);
+    }
+
+    @Test
+    public void updateExerciseSession_completesTrainingPlan_changelogGeneratedForTrainingPlan()
+            throws InterruptedException {
+        // Create and insert training plan.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        verifyInsertSucceeds(builder.build());
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(originalTrainingPlan, changeToken);
+
+        // Create and insert exercise session, but don't complete the training plan yet.
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                        buildMetadata(null),
+                        SESSION_START_TIME,
+                        SESSION_END_TIME,
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+
+        ExerciseSessionRecord inserted =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession.build())).get(0);
+
+        // Now update the exercise session to complete the training plan.
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        TestUtils.updateRecords(
+                Collections.singletonList(
+                        exerciseSessionRecordToBuilder(inserted)
+                                .setPlannedExerciseSessionId(
+                                        originalTrainingPlan.getMetadata().getId())
+                                .build()));
+
+        // Verify the updated training plan (now with a link to the previous exercise session) is
+        // included in the changelogs.
+        PlannedExerciseSessionRecord updatedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedTrainingPlan.getCompletedExerciseSessionId()).isNotNull();
+        verifyChangelogCreatedForUpsert(updatedTrainingPlan, changeToken);
+    }
+
+    @Test
+    public void
+            updateExerciseSession_removesReferenceToTrainingPlan_changelogGeneratedForTrainingPlan()
+                    throws InterruptedException {
+        // Create and insert training plan.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        verifyInsertSucceeds(builder.build());
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(originalTrainingPlan, changeToken);
+
+        // Create and insert exercise session completing the training plan.
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId());
+        exerciseSession =
+                exerciseSessionRecordToBuilder(
+                        (ExerciseSessionRecord)
+                                insertRecords(Collections.singletonList(exerciseSession.build()))
+                                        .get(0));
+
+        // Now update the exercise session to nullify the reference to the training plan.
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        exerciseSession.setPlannedExerciseSessionId(null);
+        TestUtils.updateRecords(Collections.singletonList(exerciseSession.build()));
+        // Verify the updated training plan (now without a link to the previous exercise session) is
+        // included in the changelogs.
+        PlannedExerciseSessionRecord updatedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedTrainingPlan.getCompletedExerciseSessionId()).isNull();
+        verifyChangelogCreatedForUpsert(updatedTrainingPlan, changeToken);
+    }
+
+    @Test
+    public void
+            updateExerciseSession_changesTrainingPlan_changelogGeneratedForPreviousAndCurrentPlan()
+                    throws InterruptedException {
+        // Create and insert two training plans.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+
+        verifyInsertSucceeds(builder.build());
+        builder.setTitle("Second training plan");
+        builder.setStartTime(SESSION_END_TIME.plus(Duration.ofHours(1)));
+        builder.setEndTime(SESSION_END_TIME.plus(Duration.ofHours(2)));
+        verifyInsertSucceeds(builder.build());
+        PlannedExerciseSessionRecord firstTrainingPlan =
+                readAllRecords(PlannedExerciseSessionRecord.class).get(0);
+        PlannedExerciseSessionRecord secondTrainingPlan =
+                readAllRecords(PlannedExerciseSessionRecord.class).get(1);
+        verifyChangelogCreatedForUpsert(firstTrainingPlan, changeToken);
+
+        // Create and insert exercise session completing the first training plan.
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(firstTrainingPlan.getMetadata().getId());
+        ExerciseSessionRecord inserted =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession.build())).get(0);
+
+        // Now update the exercise session to change the reference to the second training plan.
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+
+        TestUtils.updateRecords(
+                Collections.singletonList(
+                        exerciseSessionRecordToBuilder(inserted)
+                                .setPlannedExerciseSessionId(
+                                        secondTrainingPlan.getMetadata().getId())
+                                .build()));
+        // Verify that both the first and second training plans are included in the changelogs.
+        firstTrainingPlan = readAllRecords(PlannedExerciseSessionRecord.class).get(0);
+        secondTrainingPlan = readAllRecords(PlannedExerciseSessionRecord.class).get(1);
+        verifyChangelogCreatedForUpsert(firstTrainingPlan, changeToken);
+        verifyChangelogCreatedForUpsert(secondTrainingPlan, changeToken);
+    }
+
+    @Test
+    public void referenceToTrainingPlanNullified_changelogsBelongToOwnersOfRespectiveRecords()
+            throws InterruptedException {
+        // Create and insert training plan using a package (test app) that is different to the CTS
+        // tests.
+        TestUtils.insertPlannedExerciseSessionRecordViaTestApp(
+                mContext, SESSION_START_TIME, SESSION_END_TIME);
+        PlannedExerciseSessionRecord insertedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+
+        // Create and insert exercise session completing the training plan.
+        ExerciseSessionRecord.Builder exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(insertedTrainingPlan.getMetadata().getId());
+        ExerciseSessionRecord inserted =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession.build())).get(0);
+
+        // Filter for changelogs belonging to the testapp.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addDataOriginFilter(
+                                new DataOrigin.Builder()
+                                        .setPackageName(TestUtils.PKG_TEST_APP)
+                                        .build())
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        // Now update the exercise session to nullify the reference to the training plan.
+        TestUtils.updateRecords(
+                Collections.singletonList(
+                        exerciseSessionRecordToBuilder(inserted)
+                                .setPlannedExerciseSessionId(null)
+                                .build()));
+        // Verify that the changelog for the affected training plan belongs to the test app.
+        PlannedExerciseSessionRecord updatedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedTrainingPlan.getCompletedExerciseSessionId()).isNull();
+        verifyChangelogCreatedForUpsert(updatedTrainingPlan, changeToken);
+    }
+
+    @Test
+    public void trainingPlanDeleted_changelogGeneratedForLinkedExerciseSession()
+            throws InterruptedException {
+        // Create and insert training plan.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+        verifyInsertSucceeds(builder.build());
+
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(originalTrainingPlan, changeToken);
+
+        // Create and insert exercise that completes training plan.
+        ExerciseSessionRecord exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId())
+                        .build();
+        exerciseSession =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession)).get(0);
+        verifyChangelogCreatedForUpsert(exerciseSession, changeToken);
+
+        // Delete the training plan.
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        TestUtils.deleteRecords(Collections.singletonList(originalTrainingPlan));
+        ExerciseSessionRecord updatedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        assertThat(updatedExerciseSession.getPlannedExerciseSessionId()).isNull();
+        verifyChangelogCreatedForUpsert(updatedExerciseSession, changeToken);
+    }
+
+    @Test
+    public void trainingPlanDeleted_changelogsBelongToOwnersOfRespectiveRecords()
+            throws InterruptedException {
+        // Create and insert training plan.
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+        verifyInsertSucceeds(builder.build());
+
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+
+        // Create and insert exercise that completes training plan, but insert via the test app
+        // (different package).
+        TestUtils.insertExerciseRecordViaTestApp(
+                mContext,
+                SESSION_START_TIME,
+                SESSION_END_TIME,
+                originalTrainingPlan.getMetadata().getId());
+
+        // Filter for changelogs belonging to the test app only.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addDataOriginFilter(
+                                new DataOrigin.Builder()
+                                        .setPackageName(TestUtils.PKG_TEST_APP)
+                                        .build())
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        // Delete the training plan.
+        TestUtils.deleteRecords(Collections.singletonList(originalTrainingPlan));
+        ExerciseSessionRecord updatedExerciseSession =
+                Iterables.getOnlyElement(readAllRecords(ExerciseSessionRecord.class));
+        assertThat(updatedExerciseSession.getPlannedExerciseSessionId()).isNull();
+        verifyChangelogCreatedForUpsert(updatedExerciseSession, changeToken);
+    }
+
+    @Test
+    public void trainingPlanDeleted_multipleLinkedExerciseSessions_changelogsGeneratedForEach()
+            throws InterruptedException {
+        // Create and insert training plan.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+        verifyInsertSucceeds(builder.build());
+
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(originalTrainingPlan, changeToken);
+
+        // Create and insert exercise that completes the training plan.
+        ExerciseSessionRecord exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId())
+                        .build();
+        exerciseSession =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession)).get(0);
+        verifyChangelogCreatedForUpsert(exerciseSession, changeToken);
+
+        // Create and insert another exercise that completes the training plan.
+        ExerciseSessionRecord anotherExerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME.plus(3, HOURS),
+                                SESSION_END_TIME.plus(3, HOURS),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId())
+                        .build();
+        anotherExerciseSession =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(anotherExerciseSession)).get(0);
+        verifyChangelogCreatedForUpsert(anotherExerciseSession, changeToken);
+
+        // Delete the training plan.
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        TestUtils.deleteRecords(Collections.singletonList(originalTrainingPlan));
+        // Verify changelogs created for *both* exercise sessions.
+        List<ExerciseSessionRecord> exerciseSessionRecords =
+                readAllRecords(ExerciseSessionRecord.class);
+        assertThat(exerciseSessionRecords).hasSize(2);
+        for (ExerciseSessionRecord exerciseSessionRecord : exerciseSessionRecords) {
+            verifyChangelogCreatedForUpsert(exerciseSessionRecord, changeToken);
+        }
+    }
+
+    @Test
+    public void exerciseSessionDeleted_changelogGeneratedForLinkedTrainingPlan()
+            throws InterruptedException {
+        // Create and insert training plan.
+        ChangeLogTokenRequest tokenRequest =
+                new ChangeLogTokenRequest.Builder()
+                        .addRecordType(PlannedExerciseSessionRecord.class)
+                        .addRecordType(ExerciseSessionRecord.class)
+                        .build();
+        String changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        PlannedExerciseSessionRecord.Builder builder =
+                basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING);
+        PlannedExerciseBlock.Builder blockBuilder = new PlannedExerciseBlock.Builder(3);
+        blockBuilder.setDescription("Some description");
+        verifyInsertSucceeds(builder.build());
+
+        PlannedExerciseSessionRecord originalTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        verifyChangelogCreatedForUpsert(originalTrainingPlan, changeToken);
+
+        // Create and insert exercise that completes training plan.
+        ExerciseSessionRecord exerciseSession =
+                new ExerciseSessionRecord.Builder(
+                                buildMetadata(null),
+                                SESSION_START_TIME,
+                                SESSION_END_TIME,
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(originalTrainingPlan.getMetadata().getId())
+                        .build();
+
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        exerciseSession =
+                (ExerciseSessionRecord)
+                        insertRecords(Collections.singletonList(exerciseSession)).get(0);
+        verifyChangelogCreatedForUpsert(exerciseSession, changeToken);
+
+        // Delete the exercise session.
+        changeToken = TestUtils.getChangeLogToken(tokenRequest).getToken();
+        TestUtils.deleteRecords(Collections.singletonList(exerciseSession));
+        PlannedExerciseSessionRecord updatedTrainingPlan =
+                Iterables.getOnlyElement(readAllRecords(PlannedExerciseSessionRecord.class));
+        assertThat(updatedTrainingPlan.getCompletedExerciseSessionId()).isNull();
+        verifyChangelogCreatedForUpsert(updatedTrainingPlan, changeToken);
     }
 
     @Test
@@ -918,6 +1382,15 @@ public class PlannedExerciseSessionRecordTest {
         verifyReadReturnsSameRecords(Collections.singletonList(inserted));
     }
 
+    private void verifyChangelogCreatedForUpsert(Record record, String token)
+            throws InterruptedException {
+        ChangeLogsRequest request = new ChangeLogsRequest.Builder(token).build();
+
+        ChangeLogsResponse response = TestUtils.getChangeLogs(request);
+        List<Record> upsertedRecords = response.getUpsertedRecords();
+        assertThat(upsertedRecords).contains(record);
+    }
+
     private void verifyReadReturnsSameRecords(List<Record> inserted) throws InterruptedException {
         List<PlannedExerciseSessionRecord> readBack =
                 readAllRecords(PlannedExerciseSessionRecord.class);
@@ -925,8 +1398,7 @@ public class PlannedExerciseSessionRecordTest {
                 .that(readBack.size())
                 .isEqualTo(inserted.size());
         for (int i = 0; i < inserted.size(); i++) {
-            PlannedExerciseSessionRecord record = (PlannedExerciseSessionRecord) inserted.get(i);
-            assertRecordsEqual(readBack.get(i), record);
+            assertRecordsEqual(readBack.get(i), (PlannedExerciseSessionRecord) inserted.get(i));
         }
     }
 

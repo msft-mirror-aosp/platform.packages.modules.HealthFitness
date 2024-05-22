@@ -107,23 +107,17 @@ public final class BackupRestore {
     // Key for storing the current data download state
     @VisibleForTesting
     public static final String DATA_DOWNLOAD_STATE_KEY = "data_download_state_key";
-    // The below values for the IntDef are defined in chronological order of the restore process.
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_UNKNOWN = 0;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING = 1;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS = 2;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_STAGING_DONE = 3;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS = 4;
-    // See b/290172311 for details.
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE = 5;
 
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_MERGING_DONE = 6;
+    // The below values for the IntDef are defined in chronological order of the restore process.
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_UNKNOWN = 0;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING = 1;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS = 2;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_STAGING_DONE = 3;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS = 4;
+    // See b/290172311 for details.
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE = 5;
+
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_MERGING_DONE = 6;
 
     @VisibleForTesting
     static final long DATA_DOWNLOAD_TIMEOUT_INTERVAL_MILLIS = 14 * DateUtils.DAY_IN_MILLIS;
@@ -195,8 +189,7 @@ public final class BackupRestore {
 
     @VisibleForTesting static final String STAGED_DATABASE_DIR = "remote_staged";
 
-    @VisibleForTesting
-    static final String STAGED_DATABASE_NAME = "healthconnect_staged.db";
+    @VisibleForTesting static final String STAGED_DATABASE_NAME = "healthconnect_staged.db";
 
     private static final String TAG = "HealthConnectBackupRestore";
     private final ReentrantReadWriteLock mStatesLock = new ReentrantReadWriteLock(true);
@@ -395,8 +388,7 @@ public final class BackupRestore {
         if (downloadState == DATA_DOWNLOAD_COMPLETE) {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING, false /* force */);
         } else if (downloadState == DATA_DOWNLOAD_FAILED) {
-            setInternalRestoreState(
-                    INTERNAL_RESTORE_STATE_MERGING_DONE, false /* force */);
+            setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false /* force */);
             setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
         }
     }
@@ -419,26 +411,26 @@ public final class BackupRestore {
 
     /** Shares the {@link HealthConnectDataState} in the provided callback. */
     public @HealthConnectDataState.DataRestoreState int getDataRestoreState() {
-        @HealthConnectDataState.DataRestoreState int dataRestoreState = RESTORE_STATE_IDLE;
-
         @InternalRestoreState int currentRestoreState = getInternalRestoreState();
-
-        if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_DONE) {
-            // already with correct values.
-        } else if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
-            dataRestoreState = RESTORE_STATE_IN_PROGRESS;
-        } else if (currentRestoreState != INTERNAL_RESTORE_STATE_UNKNOWN) {
-            dataRestoreState = RESTORE_STATE_PENDING;
-        }
-
         @DataDownloadState int currentDownloadState = getDataDownloadState();
-        if (currentDownloadState == DATA_DOWNLOAD_FAILED) {
-            // already with correct values.
-        } else if (currentDownloadState != DATA_DOWNLOAD_STATE_UNKNOWN) {
-            dataRestoreState = RESTORE_STATE_PENDING;
+
+        // Return IDLE if neither the download or restore has started yet.
+        if (currentRestoreState == INTERNAL_RESTORE_STATE_UNKNOWN
+                && currentDownloadState == DATA_DOWNLOAD_STATE_UNKNOWN) {
+            return RESTORE_STATE_IDLE;
         }
 
-        return dataRestoreState;
+        // Return IDLE if restore is complete.
+        if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_DONE) {
+            return RESTORE_STATE_IDLE;
+        }
+        // Return IN_PROGRESS if merging is currently in progress.
+        if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
+            return RESTORE_STATE_IN_PROGRESS;
+        }
+
+        // In all other cases, return restore pending.
+        return RESTORE_STATE_PENDING;
     }
 
     /** Get the current data restore error. */
@@ -609,9 +601,8 @@ public final class BackupRestore {
         File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =
-                         SQLiteDatabase.openDatabase(
-                                 stagedDbFile,
-                                 new SQLiteDatabase.OpenParams.Builder().build())) {
+                    SQLiteDatabase.openDatabase(
+                            stagedDbFile, new SQLiteDatabase.OpenParams.Builder().build())) {
                 int stagedDbVersion = stagedDb.getVersion();
                 Slog.i(
                         TAG,
@@ -634,6 +625,12 @@ public final class BackupRestore {
         mergeGrantTimes(dbContext);
         mergeDatabase(dbContext);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
+
+        // Reset the error in case it was due to version diff.
+        // TODO(b/327170886): Should we always set it to NONE once merging is done?
+        if (getDataRestoreError() == RESTORE_ERROR_VERSION_DIFF) {
+            setDataRestoreError(RESTORE_ERROR_NONE);
+        }
     }
 
     private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
@@ -720,8 +717,7 @@ public final class BackupRestore {
                 && currentDownloadState != DATA_DOWNLOAD_RETRY) {
             Slog.i(
                     TAG,
-                    "Attempt to schedule download timeout job with state: "
-                            + currentDownloadState);
+                    "Attempt to schedule download timeout job with state: " + currentDownloadState);
             // We are not in the correct state. There's no need to set the timer.
             return;
         }
@@ -764,8 +760,7 @@ public final class BackupRestore {
             setDataDownloadState(DATA_DOWNLOAD_FAILED, false);
             setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_KEY, "");
+            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_KEY, "");
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY, "");
         } else {
@@ -821,8 +816,7 @@ public final class BackupRestore {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
             setDataRestoreError(RESTORE_ERROR_UNKNOWN);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_STAGING_TIMEOUT_KEY, "");
+            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_STAGING_TIMEOUT_KEY, "");
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY, "");
         } else {
@@ -876,8 +870,7 @@ public final class BackupRestore {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
             setDataRestoreError(RESTORE_ERROR_UNKNOWN);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_MERGING_TIMEOUT_KEY, "");
+            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_MERGING_TIMEOUT_KEY, "");
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(DATA_MERGING_TIMEOUT_CANCELLED_KEY, "");
         } else {
@@ -920,8 +913,7 @@ public final class BackupRestore {
         // Set the start time
         PreferenceHelper.getInstance()
                 .insertOrReplacePreference(
-                        DATA_MERGING_RETRY_KEY,
-                        Long.toString(Instant.now().toEpochMilli()));
+                        DATA_MERGING_RETRY_KEY, Long.toString(Instant.now().toEpochMilli()));
     }
 
     private void executeRetryMergingJob() {
@@ -1075,8 +1067,8 @@ public final class BackupRestore {
                 if (result != JobScheduler.RESULT_SUCCESS) {
                     Slog.e(
                             TAG,
-                            "Failed to schedule: " + jobInfo.getExtras().getString(
-                                    EXTRA_JOB_NAME_KEY));
+                            "Failed to schedule: "
+                                    + jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY));
                 }
             } finally {
                 Binder.restoreCallingIdentity(token);

@@ -31,6 +31,7 @@ import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /** Custom preference for displaying Recent access apps, including dash lines for timeline views. */
 class RecentAccessPreference
@@ -115,7 +116,11 @@ constructor(
         return if (timeSource.is24Hour(context)) {
             localTime.format(DateTimeFormatter.ofPattern("HH:mm"))
         } else {
-            localTime.format(DateTimeFormatter.ofPattern("h:mm a"))
+            if (Locale.getDefault() == Locale.KOREA || Locale.getDefault() == Locale.KOREAN) {
+                localTime.format(DateTimeFormatter.ofPattern("a h:mm"))
+            } else {
+                localTime.format(DateTimeFormatter.ofPattern("h:mm a"))
+            }
         }
     }
 }

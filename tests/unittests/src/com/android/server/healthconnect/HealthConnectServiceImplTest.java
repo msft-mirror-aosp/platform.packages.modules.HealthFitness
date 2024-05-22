@@ -131,6 +131,7 @@ public class HealthConnectServiceImplTest {
                     "queryAccessLogs",
                     "getActivityDates",
                     "configureScheduledExport",
+                    "getScheduledExportStatus",
                     "getScheduledExportPeriodInDays");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
@@ -147,7 +148,8 @@ public class HealthConnectServiceImplTest {
                     "getHealthConnectDataState",
                     "getHealthConnectMigrationUiState",
                     "insertMinDataMigrationSdkExtensionVersion",
-                    "asBinder");
+                    "asBinder",
+                    "queryDocumentProviders");
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =

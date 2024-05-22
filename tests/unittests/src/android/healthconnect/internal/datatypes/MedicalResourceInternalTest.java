@@ -26,8 +26,10 @@ import android.os.Parcel;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 public class MedicalResourceInternalTest {
-    private static final String MEDICAL_RESOURCE_ID = "medical_resource_id";
+    private static final UUID MEDICAL_RESOURCE_ID = UUID.randomUUID();
     private static final String DATA_SOURCE_ID = "data_source_id";
     private static final String DATA = "{\"resourceType\" : \"Immunization\"}";
 
@@ -54,10 +56,10 @@ public class MedicalResourceInternalTest {
         assertThat(restored).isEqualTo(original);
     }
 
-    private static MedicalResourceInternal buildMedicalResourceInternal() {
+    private MedicalResourceInternal buildMedicalResourceInternal() {
         return new MedicalResourceInternal()
                 .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
-                .setId(MEDICAL_RESOURCE_ID)
+                .setUuid(MEDICAL_RESOURCE_ID)
                 .setDataSourceId(DATA_SOURCE_ID)
                 .setData(DATA);
     }

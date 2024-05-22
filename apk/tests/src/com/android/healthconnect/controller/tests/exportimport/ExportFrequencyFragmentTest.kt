@@ -17,8 +17,8 @@
 package com.android.healthconnect.controller.tests.exportimport
 
 import android.content.Context
+import android.health.connect.exportimport.ScheduledExportSettings
 import android.os.Bundle
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
@@ -33,26 +33,32 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportFrequencyFragment
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
-import com.android.healthconnect.controller.exportimport.api.ExportSettings
-import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
+import com.android.healthconnect.controller.service.HealthDataExportManagerModule
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.times
+import org.mockito.kotlin.any
 
 @HiltAndroidTest
+@UninstallModules(HealthDataExportManagerModule::class)
+@kotlinx.coroutines.ExperimentalCoroutinesApi
 class ExportFrequencyFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
+    // TODO: b/330484311 - Replace the mock with a fake.
     @BindValue
-    val exportSettingsViewModel: ExportSettingsViewModel =
-        Mockito.mock(ExportSettingsViewModel::class.java)
+    val healthDataExportManager: HealthDataExportManager =
+        Mockito.mock(HealthDataExportManager::class.java)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -66,8 +72,8 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_isDisplayedCorrectly() {
-        whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
@@ -89,18 +95,19 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_backButton_isClickable() {
-        whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
+        // TODO: b/330484311 - Add check for activity state and use export activity if possible
         onView(withId(R.id.export_back_button)).check(matches(isClickable()))
     }
 
     @Test
     fun exportFrequencyFragment_clicksNextButton_navigatesToDestinationFragment() {
-        whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
         }
         launchFragment<ExportFrequencyFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.export_nav_graph)
@@ -116,9 +123,75 @@ class ExportFrequencyFragmentTest {
     }
 
     @Test
+    fun exportFrequencyFragment_clicksNextButtonWithDailyExport_updatesFrequencyCorrectly() {
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.export_nav_graph)
+            navHostController.setCurrentDestination(R.id.exportFrequencyFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_next_button)).perform(click())
+
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+    }
+
+    @Test
+    fun exportFrequencyFragment_clicksNextButtonWithWeeklyExport_updatesFrequencyCorrectly() {
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.export_nav_graph)
+            navHostController.setCurrentDestination(R.id.exportFrequencyFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_next_button)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.exportDestinationFragment)
+
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
+    }
+
+    @Test
+    fun exportFrequencyFragment_clicksNextButtonWithMonthlyExport_updatesFrequencyCorrectly() {
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.export_nav_graph)
+            navHostController.setCurrentDestination(R.id.exportFrequencyFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_next_button)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.exportDestinationFragment)
+
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+    }
+
+    @Test
     fun exportFrequencyFragment_storedFrequencyIsDaily_dailyButtonChecked() {
-        whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
@@ -127,8 +200,8 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_storedFrequencyIsWeekly_weeklyButtonChecked() {
-        whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
@@ -137,11 +210,23 @@ class ExportFrequencyFragmentTest {
 
     @Test
     fun exportFrequencyFragment_storedFrequencyIsMonthly_monthlyButtonChecked() {
-        whenever(exportSettingsViewModel.storedExportSettings).then {
-            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_MONTHLY))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays
         }
         launchFragment<ExportFrequencyFragment>(Bundle())
 
         onView(withId(R.id.radio_button_monthly)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun exportFrequencyFragment_clicksFrequencyRadioButtonWithoutNextButton_doesNotUpdateExportFrequency() {
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
+        }
+        launchFragment<ExportFrequencyFragment>(Bundle())
+
+        onView(withId(R.id.radio_button_weekly)).perform(click())
+
+        Mockito.verify(healthDataExportManager, times(0)).configureScheduledExport(any())
     }
 }

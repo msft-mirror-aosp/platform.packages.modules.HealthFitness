@@ -21,6 +21,7 @@ import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 
+import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.Manifest;
@@ -82,7 +83,11 @@ import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ExportImportDocumentProvider;
+import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
+import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
+import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.InternalExternalRecordConverter;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -303,6 +308,30 @@ public class HealthConnectManager {
      * @hide
      */
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
+
+    /**
+     * Unknown error during the last data export.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_ERROR_UNKNOWN = 0;
+
+    /**
+     * No error during the last data export.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_ERROR_NONE = 1;
+
+    /**
+     * Indicates that the last export failed because we lost access to the export file location.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
 
     /**
      * Activity action: Launch activity exported by client application that handles onboarding to
@@ -1711,6 +1740,11 @@ public class HealthConnectManager {
         }
     }
 
+    /** @hide */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
+    public @interface DataExportError {}
+
     /**
      * Configures the settings for the scheduled export of Health Connect data.
      *
@@ -1724,6 +1758,41 @@ public class HealthConnectManager {
     public void configureScheduledExport(@Nullable ScheduledExportSettings settings) {
         try {
             mService.configureScheduledExport(settings, mContext.getUser());
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the document providers available to be used for export/import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void getScheduledExportStatus(
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<ScheduledExportStatus, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.getScheduledExportStatus(
+                    mContext.getUser(),
+                    new IScheduledExportStatusCallback.Stub() {
+                        @Override
+                        public void onResult(ScheduledExportStatus status) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(status));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
@@ -1748,6 +1817,43 @@ public class HealthConnectManager {
             return mService.getScheduledExportPeriodInDays(mContext.getUser());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the document providers available to be used for export/import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void queryDocumentProviders(
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.queryDocumentProviders(
+                    mContext.getUser(),
+                    new IQueryDocumentProvidersCallback.Stub() {
+                        @Override
+                        public void onResult(List<ExportImportDocumentProvider> providers) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(providers));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
         }
     }
 

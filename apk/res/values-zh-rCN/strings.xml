@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"无数据"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"应用权限"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"管理应用和权限"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限（共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 个应用）"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 个应用拥有访问权限"</string>
@@ -320,11 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"知道了"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"备份和恢复"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"导出和导入"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"自动导出"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"已排定的导出任务"</string>
     <string name="restore_data" msgid="3401173690437871417">"恢复数据"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"加载导出过的数据"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"已启用"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"已停用"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"选择频率"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"选择一次保存数据，还是设为定期自动保存。"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"每天"</string>

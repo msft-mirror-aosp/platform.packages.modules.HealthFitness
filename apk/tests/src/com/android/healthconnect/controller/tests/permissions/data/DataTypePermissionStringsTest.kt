@@ -48,7 +48,7 @@ class DataTypePermissionStringsTest {
     fun allDataTypePermissionsHaveStrings() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) || healthPermissionReader.isMedicalPermission(perm)
             }
         for (permission in allPermissions) {
             val type = DataTypePermission.fromPermissionString(permission).healthPermissionType

@@ -26,6 +26,7 @@
     <string name="no_data" description="Label that is displayed when the given health data category does not have any data.">No data</string>
     <string name="connected_apps_title" description="Label for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=40]">App permissions</string>
     <string name="connected_apps_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]">Manage your apps and permissions</string>
+    <string name="only_one_connected_app_button_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> of <xliff:g example="3" id="num_possible_apps">%2$s</xliff:g> apps has access</string>
     <string name="connected_apps_button_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> of <xliff:g example="3" id="num_possible_apps">%2$s</xliff:g> apps have access</string>
     <string name="connected_apps_all_apps_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens when all possible apps are connected. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> apps have access</string>
     <string name="connected_apps_one_app_connected_subtitle" description="Description for a button that takes the user to the connected apps' permissions screens with one app connected. [CHAR_LIMIT=NONE]"><xliff:g example="1" id="num_apps_connected">%1$s</xliff:g> app has access</string>
@@ -432,6 +433,8 @@
     <string name="automatic_export_status" translatable="false" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is.">%s • %s</string>
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
+
+    <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Choose frequency</string>
 
     <string name="choose_frequency" description="Title of the 'choose frequency' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Choose frequency</string>
     <string name="choose_frequency_description" description="Description of the data export frequency">Choose to save data once, or set it to save automatically at regular times.</string>

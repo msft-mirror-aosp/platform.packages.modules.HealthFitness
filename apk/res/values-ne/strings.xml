@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"डेटा छैन"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"एपलाई दिइएका अनुमति"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"आफ्ना एप र ती एपलाई दिइएका अनुमति व्यवस्थापन गर्नुहोस्"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> मध्ये <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> वटा एपलाई अनुमति दिइएको छ"</string>
@@ -320,11 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"बुझेँ"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ब्याकअप र रिस्टोर"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"एक्स्पोर्ट र इम्पोर्ट"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"स्वतः एक्स्पोर्ट गर्नुहोस्"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"समय तोकिएको एक्स्पोर्ट"</string>
     <string name="restore_data" msgid="3401173690437871417">"डेटा रिस्टोर गर्नुहोस्"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"यसभन्दा अघि एक्स्पोर्ट गरिएका डेटा लोड गर्नुहोस्"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"अन छ"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"अफ छ"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"अन्तराल छनौट गर्नुहोस्"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"डेटा एक पटक सेभ गर्ने विकल्प छनौट गर्नुहोस् वा नियमित अन्तरालमा स्वतः सेभ गरिने बनाउनुहोस्।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"दैनिक"</string>

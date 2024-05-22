@@ -33,12 +33,15 @@ import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_EXERCISE_RECORD;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_PLANNED_EXERCISE_RECORD;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_FILTERS;
 import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PACKAGE_NAMES;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PLANNED_EXERCISE_SESSION_ID;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_CLIENT_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
@@ -1167,6 +1170,31 @@ public final class TestUtils {
         bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
         bundle.putDoubleArray(EXTRA_RECORD_VALUES, new double[] {value});
         sendCommandToTestAppReceiver(context, ACTION_INSERT_WEIGHT_RECORDS, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertExerciseRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime, String plannedExerciseSessionId) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
+        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        bundle.putString(EXTRA_PLANNED_EXERCISE_SESSION_ID, plannedExerciseSessionId);
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_EXERCISE_RECORD, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertPlannedExerciseSessionRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
+        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_PLANNED_EXERCISE_RECORD, bundle);
         return android.healthconnect.cts.utils.TestReceiver.getResult()
                 .getStringArrayList(EXTRA_RECORD_IDS)
                 .get(0);

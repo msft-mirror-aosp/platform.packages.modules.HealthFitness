@@ -27,6 +27,8 @@
     <string name="no_data" msgid="1906986019249068659">"Žádná data"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Oprávnění aplikací"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Spravovat aplikace a oprávnění"</string>
+    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
+    <skip />
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Přístup má <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> z <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikací"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Přístup má několik aplikací: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Přístup má <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikace"</string>
@@ -90,7 +92,7 @@
     <string name="historic_access_request_title" msgid="4645920231853414742">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k dřívějším datům?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Povolit této aplikaci přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
     <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povolit této aplikaci přístup ke všem dřívějším datům Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect přidaným přede dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Pokud toto povolíte, bude mít aplikace přístup ke všem dřívějším datům Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorie spálené aktivitou"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorie spálené aktivitou"</string>
@@ -320,11 +322,13 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Rozumím"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Zálohování a obnovení"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Export a import"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Exportovat automaticky"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Plánovaný export"</string>
     <string name="restore_data" msgid="3401173690437871417">"Obnovit data"</string>
     <string name="restore_data_description" msgid="6505730490741240861">"Načíst dříve exportovaná data"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Zapnuto"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Vypnuto"</string>
+    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
+    <skip />
     <string name="choose_frequency" msgid="1077467424225083246">"Vyberte, jak často"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vyberte jednorázové uložení dat nebo nastavte pravidelné automatické ukládání."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Každý den"</string>
@@ -439,7 +443,7 @@
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitivní"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativní"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Vysoká"</string>
-    <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neprůkazný výsledek"</string>
+    <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neprůkazné"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}many{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}few{# milisekundy}many{# milisekundy}other{# milisekund}}"</string>
     <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Poznámky"</string>

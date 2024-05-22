@@ -87,10 +87,17 @@
                 android:id="@+id/export_repeat_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_normal"
                 android:hint="@string/export_repeat_password_hint"
                 android:importantForAutofill="no"
                 android:inputType="textPassword|textNoSuggestions" />
 
+            <TextView
+                android:id="@+id/password_mismatch_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/export_passwords_mismatch_error"
+                android:textAppearance="?attr/textAppearanceErrorMessage"/>
         </LinearLayout>
 
         <RelativeLayout

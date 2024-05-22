@@ -106,6 +106,14 @@
         <item name="android:textSize">14sp</item>
         <item name="android:lineHeight">20sp</item>
     </style>
+
+
+    <style name="TextAppearance.HealthConnect.ErrorMessage" parent="@style/TextAppearance.CategoryTitle.SettingsLib">
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
     <!-- END REGION -->
 
     <!-- REGION BUTTONS -->
@@ -201,7 +209,6 @@
         <item name="buttonBarNegativeButtonStyle">@style/Widget.HealthConnect.DialogButton.Outline
         </item>
         <item name="buttonBarStyle">@style/Widget.HealthConnect.Dialog.ButtonBar</item>
-        <item name="android:colorBackground">@android:color/system_surface_container_light</item>
     </style>
 
     <style name="Widget.HealthConnect.Dialog.ButtonBar" parent="@style/Widget.AppCompat.ButtonBar.AlertDialog">

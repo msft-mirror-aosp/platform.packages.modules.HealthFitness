@@ -388,7 +388,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setWhereClause(
                         new WhereClauses(AND)
                                 .addWhereInClauseWithoutQuotes(
-                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
+                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids))
                                 .addWhereLaterThanTimeClause(
                                         getStartTimeColumnName(), startDateAccess))
                 .setRecordHelper(this)
@@ -600,7 +600,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     public DeleteTableRequest getDeleteTableRequest(List<UUID> ids) {
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids))
+                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids))
                 .setRequiresUuId(UUID_COLUMN_NAME)
                 .setEnforcePackageCheck(APP_INFO_ID_COLUMN_NAME, UUID_COLUMN_NAME);
     }
@@ -762,7 +762,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         WhereClauses filterByIdsWhereClauses =
                 new WhereClauses(AND)
                         .addWhereInClauseWithoutQuotes(
-                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids));
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
 
         if (enforceSelfRead) {
             if (callingAppInfoId == DEFAULT_LONG) {
@@ -881,6 +881,35 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Returns any SQL commands that should be executed after the provided record has been upserted.
      */
     List<String> getPostUpsertCommands(RecordInternal<?> record) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * When a record is deleted, this will be called. The read requests must return a cursor with
+     * {@link #UUID_COLUMN_NAME} and {@link #APP_INFO_ID_COLUMN_NAME} values. This information will
+     * be used to generate modification changelogs for each UUID.
+     *
+     * <p>A concrete example of when this is used is for training plans. The deletion of a training
+     * plan will nullify the 'plannedExerciseSessionId' field of any exercise sessions that
+     * referenced it. When a training plan is deleted, a read request is made on the exercise
+     * session table to find any exercise sessions that referenced it.
+     */
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByDeletion(
+            UUID deletedRecordUuid) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * When a record is upserted, this will be called. The read requests must return a cursor with a
+     * {@link #UUID_COLUMN_NAME} and {@link #APP_INFO_ID_COLUMN_NAME} values. This information will
+     * be used to generate modification changelogs for each UUID.
+     *
+     * <p>A concrete example of when this is used is for training plans. The upsertion of an
+     * exercise session may modify the 'completedSessionId' field of any planned sessions that
+     * referenced it.
+     */
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
+            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
         return Collections.emptyList();
     }
 
