@@ -96,6 +96,7 @@ class ExportEncryptionFragmentTest {
         onView(
                 withText(
                     "If you forget your password and lose your phone, Health\u00A0Connect cannot help you recover your saved data."))
+            .perform(scrollTo())
             .check(matches(isDisplayed()))
 
         onView(withText("Back")).perform(scrollTo()).check(matches(isDisplayed()))
@@ -106,7 +107,7 @@ class ExportEncryptionFragmentTest {
     fun exportEncryptionFragment_nextButton_disabledByDefault() {
         launchFragment<ExportEncryptionFragment>(Bundle())
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
     }
 
     @Test
@@ -120,12 +121,12 @@ class ExportEncryptionFragmentTest {
     fun exportEncryptionFragment_whenPasswordsMatch_nextButtonIsEnabledAndNoErrorIsNotShown() {
         launchFragment<ExportEncryptionFragment>(Bundle())
 
-        onView(withId(R.id.export_next_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).check(matches(not(isEnabled())))
         // Enabled when passwords match.
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("1password"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(isEnabled()))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(isEnabled()))
         onView(withId(R.id.password_mismatch_error)).check(matches(not(isDisplayed())))
     }
 
@@ -133,16 +134,16 @@ class ExportEncryptionFragmentTest {
     fun exportEncryptionFragment_addMoreTextToPassword_nextButtonIsDisabledAndErrorIsShown() {
         launchFragment<ExportEncryptionFragment>(Bundle())
 
-        onView(withId(R.id.export_next_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).check(matches(not(isEnabled())))
 
         // Enabled when passwords match.
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("1password"))
-        onView(withId(R.id.export_next_button)).check(matches(isEnabled()))
+        onView(withId(R.id.export_import_next_button)).check(matches(isEnabled()))
         // Add more text to the password field.
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("+123"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
         onView(withId(R.id.password_mismatch_error)).check(matches(isDisplayed()))
     }
 
@@ -150,16 +151,16 @@ class ExportEncryptionFragmentTest {
     fun exportEncryptionFragment_addMoreTextToRepeatedPassword_nextButtonIsDisabledAndErrorIsShown() {
         launchFragment<ExportEncryptionFragment>(Bundle())
 
-        onView(withId(R.id.export_next_button)).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).check(matches(not(isEnabled())))
 
         // Enabled when passwords match.
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("1password"))
-        onView(withId(R.id.export_next_button)).check(matches(isEnabled()))
+        onView(withId(R.id.export_import_next_button)).check(matches(isEnabled()))
         // Add more text to the repeated password field.
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("+123"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
         onView(withId(R.id.password_mismatch_error)).check(matches(isDisplayed()))
     }
 
@@ -171,7 +172,7 @@ class ExportEncryptionFragmentTest {
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("2password"))
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
         onView(withId(R.id.password_mismatch_error)).check(matches(isDisplayed()))
     }
 
@@ -183,7 +184,7 @@ class ExportEncryptionFragmentTest {
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("2password"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
         onView(withId(R.id.password_mismatch_error)).check(matches(isDisplayed()))
     }
 
@@ -193,7 +194,7 @@ class ExportEncryptionFragmentTest {
 
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
         onView(withId(R.id.password_mismatch_error)).check(matches(not(isDisplayed())))
     }
 
@@ -203,7 +204,7 @@ class ExportEncryptionFragmentTest {
 
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("1password"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(not(isEnabled())))
         onView(withId(R.id.password_mismatch_error)).check(matches(not(isDisplayed())))
     }
 
@@ -216,8 +217,8 @@ class ExportEncryptionFragmentTest {
         onView(withId(R.id.export_password)).perform(scrollTo(), typeText("1password"))
         onView(withId(R.id.export_repeat_password)).perform(scrollTo(), typeText("1password"))
 
-        onView(withId(R.id.export_next_button)).perform(scrollTo()).check(matches(isEnabled()))
-        onView(withId(R.id.export_next_button)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(scrollTo()).check(matches(isEnabled()))
+        onView(withId(R.id.export_import_next_button)).perform(click())
 
         advanceUntilIdle()
         Mockito.verify(healthDataExportManager).configureScheduledExport(any())
@@ -231,8 +232,8 @@ class ExportEncryptionFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_back_button)).perform(scrollTo()).check(matches(isClickable()))
-        onView(withId(R.id.export_back_button)).perform(click())
+        onView(withId(R.id.export_import_cancel_button)).perform(scrollTo()).check(matches(isClickable()))
+        onView(withId(R.id.export_import_cancel_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.exportDestinationFragment)

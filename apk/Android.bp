@@ -25,7 +25,7 @@ filegroup {
     exclude_srcs: [
         ":healthconnectController-permissions-apis",
         ":healthconnectController-migration-apis",
-        ":healthconnectController-export-apis",
+        ":healthconnectController-exportimport-apis",
         "src/**/HealthConnectApplication.kt",
     ],
 }
@@ -45,7 +45,7 @@ filegroup {
 }
 
 filegroup {
-    name: "healthconnectController-export-apis",
+    name: "healthconnectController-exportimport-apis",
     srcs: [
         "src/com/android/healthconnect/controller/exportimport/api/**/*.kt",
     ],
@@ -90,7 +90,7 @@ java_library {
 
 java_library {
     name: "HealthConnectExportApis",
-    srcs: [":healthconnectController-export-apis"],
+    srcs: [":healthconnectController-exportimport-apis"],
     sdk_version: "module_current",
     min_sdk_version: "34",
     libs: [

@@ -41,7 +41,6 @@ public final class DeleteTransactionRequest {
     private static final String TAG = "HealthConnectDelete";
     private final List<DeleteTableRequest> mDeleteTableRequests;
     private final long mRequestingPackageNameId;
-    private final boolean mIsBulkDelete;
     private boolean mHasHealthDataManagementPermission;
 
     @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
@@ -49,7 +48,6 @@ public final class DeleteTransactionRequest {
         Objects.requireNonNull(packageName);
         mDeleteTableRequests = new ArrayList<>(request.getRecordTypeFilters().size());
         mRequestingPackageNameId = AppInfoHelper.getInstance().getAppInfoId(packageName);
-        mIsBulkDelete = !request.usesIdFilters();
         if (request.usesIdFilters()) {
             List<RecordIdFilter> recordIds =
                     request.getRecordIdFiltersParcel().getRecordIdFilters();
@@ -57,10 +55,8 @@ public final class DeleteTransactionRequest {
             Map<RecordHelper<?>, List<UUID>> recordTypeToUuids = new ArrayMap<>();
             for (RecordIdFilter recordId : recordIds) {
                 RecordHelper<?> recordHelper =
-                        RecordHelperProvider.getInstance()
-                                .getRecordHelper(
-                                        RecordMapper.getInstance()
-                                                .getRecordType(recordId.getRecordType()));
+                        RecordHelperProvider.getRecordHelper(
+                                RecordMapper.getInstance().getRecordType(recordId.getRecordType()));
                 UUID uuid = StorageUtils.getUUIDFor(recordId, packageName);
                 if (uuidSet.contains(uuid)) {
                     // id has been already been processed;
@@ -92,8 +88,7 @@ public final class DeleteTransactionRequest {
 
         recordTypeFilters.forEach(
                 (recordType) -> {
-                    RecordHelper<?> recordHelper =
-                            RecordHelperProvider.getInstance().getRecordHelper(recordType);
+                    RecordHelper<?> recordHelper = RecordHelperProvider.getRecordHelper(recordType);
                     Objects.requireNonNull(recordHelper);
 
                     mDeleteTableRequests.add(
@@ -110,10 +105,6 @@ public final class DeleteTransactionRequest {
             Slog.d(TAG, "num of delete requests: " + mDeleteTableRequests.size());
         }
         return mDeleteTableRequests;
-    }
-
-    public boolean isBulkDelete() {
-        return mIsBulkDelete;
     }
 
     public void enforcePackageCheck(UUID uuid, long appInfoId) {

@@ -122,8 +122,7 @@ final class DatabaseUpgradeHelper {
         List<CreateTableRequest> requests = new ArrayList<>();
 
         // Add all records that were part of the initial schema.
-        Map<Integer, RecordHelper<?>> recordHelperMap =
-                RecordHelperProvider.getInstance().getRecordHelpers();
+        Map<Integer, RecordHelper<?>> recordHelperMap = RecordHelperProvider.getRecordHelpers();
         recordHelperMap.entrySet().stream()
                 .filter(
                         entry ->
@@ -146,12 +145,12 @@ final class DatabaseUpgradeHelper {
     }
 
     private static void forEachRecordHelper(Consumer<RecordHelper<?>> action) {
-        RecordHelperProvider.getInstance().getRecordHelpers().values().forEach(action);
+        RecordHelperProvider.getRecordHelpers().values().forEach(action);
     }
 
     @SuppressWarnings("unchecked")
     private static <T> T getRecordHelper(int recordTypeIdentifier) {
-        return (T) RecordHelperProvider.getInstance().getRecordHelper(recordTypeIdentifier);
+        return (T) RecordHelperProvider.getRecordHelper(recordTypeIdentifier);
     }
 
     private static void applyPlannedExerciseDatabaseUpgrade(SQLiteDatabase db) {

@@ -72,8 +72,8 @@ class BackupAndRestoreSettingsFragmentTest {
 
         onView(withText("Scheduled export")).check(matches(isDisplayed()))
 
-        onView(withText("Restore data")).check(matches(isDisplayed()))
-        onView(withText("Load previously exported data")).check(matches(isDisplayed()))
+        onView(withText("Import data")).check(matches(isDisplayed()))
+        onView(withText("Restore data from a previously exported file")).check(matches(isDisplayed()))
     }
 
     @Test

@@ -33,13 +33,13 @@ import java.time.Instant;
 public class ScheduledExportStatusTest {
     @Test
     public void testDeserialize() {
-        ScheduledExportStatus documentProvider =
+        ScheduledExportStatus scheduledExportStatus =
                 new ScheduledExportStatus(
                         Instant.ofEpochMilli(100),
                         HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS,
                         7);
 
-        Parcel statusParcel = writeToParcel(documentProvider);
+        Parcel statusParcel = writeToParcel(scheduledExportStatus);
         statusParcel.setDataPosition(0);
         ScheduledExportStatus deserializedStatus =
                 statusParcel.readTypedObject(ScheduledExportStatus.CREATOR);
@@ -53,11 +53,11 @@ public class ScheduledExportStatusTest {
 
     @Test
     public void testDeserialize_noSuccessfulExport() {
-        ScheduledExportStatus documentProvider =
+        ScheduledExportStatus scheduledExportStatus =
                 new ScheduledExportStatus(
                         null, HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, 7);
 
-        Parcel statusParcel = writeToParcel(documentProvider);
+        Parcel statusParcel = writeToParcel(scheduledExportStatus);
         statusParcel.setDataPosition(0);
         ScheduledExportStatus deserializedStatus =
                 statusParcel.readTypedObject(ScheduledExportStatus.CREATOR);

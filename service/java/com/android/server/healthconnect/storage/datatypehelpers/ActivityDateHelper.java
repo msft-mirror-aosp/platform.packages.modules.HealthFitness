@@ -162,7 +162,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
         RecordHelper<?> recordHelper;
         HashMap<Integer, List<Long>> recordTypeIdToEpochDays = new HashMap<>();
         for (int recordTypeId : recordTypeIds) {
-            recordHelper = RecordHelperProvider.getInstance().getRecordHelper(recordTypeId);
+            recordHelper = RecordHelperProvider.getRecordHelper(recordTypeId);
             request =
                     new ReadTableRequest(recordHelper.getMainTableName())
                             .setColumnNames(List.of(recordHelper.getPeriodGroupByColumnName()))

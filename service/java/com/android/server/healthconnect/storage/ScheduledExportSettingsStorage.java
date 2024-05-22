@@ -23,6 +23,7 @@ import android.annotation.Nullable;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
+import android.net.Uri;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.KeyProtection;
 
@@ -119,6 +120,13 @@ public final class ScheduledExportSettingsStorage {
         PreferenceHelper.getInstance().removeKey(EXPORT_SALT_PREFERENCE_KEY);
         PreferenceHelper.getInstance().removeKey(EXPORT_URI_PREFERENCE_KEY);
         PreferenceHelper.getInstance().removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
+    }
+
+    /** Gets scheduled export URI for exporting Health Connect data. */
+    public static Uri getUri() {
+        String result = PreferenceHelper.getInstance().getPreference(EXPORT_URI_PREFERENCE_KEY);
+        if (result == null) throw new IllegalArgumentException("Export URI cannot be null.");
+        return Uri.parse(result);
     }
 
     /** Gets scheduled export period for exporting Health Connect data. */

@@ -45,10 +45,10 @@ java_sdk_library {
         "framework-configinfrastructure",
         "keepanno-annotations",
         "modules-utils-preconditions",
+        "healthfitness-aconfig-flags-lib",
     ],
     static_libs: [
         "modules-utils-backgroundthread",
-        "healthfitness-aconfig-flags-lib",
     ],
     jarjar_rules: "jarjar-rules.txt",
     installable: true,

@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package android.healthconnect.datatypes;
+package android.healthconnect.cts.datatypes;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalDataSource;
 import android.os.Parcel;
 
-import org.junit.Test;
+import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
 public class MedicalDataSourceTest {
     private static final String MEDICAL_DATA_SOURCE_ID = "medical_data_source_id";
     private static final String PACKAGE_NAME = "package_name";

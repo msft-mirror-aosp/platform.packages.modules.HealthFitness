@@ -49,6 +49,7 @@ java_defaults {
         // test dependencies
         "androidx.test.espresso.contrib",
         "androidx.test.espresso.intents",
+        "androidx.test.espresso.core",
         "androidx.test.ext.junit",
         "androidx.test.ext.truth",
         "androidx.test.rules",

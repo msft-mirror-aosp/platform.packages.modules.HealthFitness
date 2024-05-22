@@ -72,8 +72,8 @@ class ExportDestinationFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_back_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_back_button)).perform(click())
+        onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_cancel_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportFrequencyFragment)
     }
@@ -82,6 +82,6 @@ class ExportDestinationFragmentTest {
     fun exportDestinationFragment_nextButton_clickable() {
         launchFragment<ExportDestinationFragment>(Bundle())
 
-        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_next_button)).check(matches(isClickable()))
     }
 }

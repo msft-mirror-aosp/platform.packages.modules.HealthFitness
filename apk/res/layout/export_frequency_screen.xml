@@ -93,6 +93,7 @@
             </RadioGroup>
         </LinearLayout>
 
-        <include layout="@layout/widget_export_navigation_buttons" />
+        <include layout="@layout/widget_export_import_navigation_buttons" />
+
     </LinearLayout>
 </ScrollView>

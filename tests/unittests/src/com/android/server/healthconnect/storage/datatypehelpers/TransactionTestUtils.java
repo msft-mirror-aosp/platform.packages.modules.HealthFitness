@@ -17,10 +17,15 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.DELETE;
 import static android.health.connect.datatypes.ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING;
 
 import static com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper.PACKAGE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper.UNIQUE_COLUMN_INFO;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.OPERATION_TYPE_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper.UUIDS_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUIDList;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -28,6 +33,7 @@ import static java.time.Duration.ofMinutes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
@@ -42,9 +48,13 @@ import android.health.connect.internal.datatypes.StepsRecordInternal;
 import androidx.annotation.NonNull;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
+
+import com.google.common.collect.ImmutableList;
 
 import java.time.Instant;
 import java.util.List;
@@ -181,6 +191,21 @@ public final class TransactionTestUtils {
         contentValues.put("operation_type", "fake_operation_type");
         mTransactionManager.insert(
                 new UpsertTableRequest(ChangeLogsHelper.TABLE_NAME, contentValues));
+    }
+
+    /** Retrieves all delete change logs from change log table. */
+    public List<UUID> getAllDeletedUuids() {
+        WhereClauses whereClauses =
+                new WhereClauses(AND).addWhereEqualsClause(OPERATION_TYPE_COLUMN_NAME, DELETE + "");
+        ReadTableRequest readChangeLogsRequest =
+                new ReadTableRequest(ChangeLogsHelper.TABLE_NAME).setWhereClause(whereClauses);
+        ImmutableList.Builder<UUID> uuids = ImmutableList.builder();
+        try (Cursor cursor = mTransactionManager.read(readChangeLogsRequest)) {
+            while (cursor.moveToNext()) {
+                uuids.addAll(getCursorUUIDList(cursor, UUIDS_COLUMN_NAME));
+            }
+            return uuids.build();
+        }
     }
 
     private static ExerciseRouteInternal createExerciseRoute(Instant startTime) {

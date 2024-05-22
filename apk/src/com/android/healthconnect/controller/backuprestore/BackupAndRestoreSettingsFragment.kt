@@ -28,6 +28,10 @@ import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewM
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import dagger.hilt.android.AndroidEntryPoint
+import com.android.settingslib.widget.FooterPreference
+import com.android.healthconnect.controller.utils.pref
+import android.content.Intent
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 
 /** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
@@ -36,6 +40,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     companion object {
         const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
+        const val IMPORT_DATA_PREFERENCE_KEY = "import_data"
     }
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
@@ -44,9 +49,32 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
     }
 
+    private val importDataPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(IMPORT_DATA_PREFERENCE_KEY)
+    }
+
+    private val footerPreference: FooterPreference by pref("backup_restore_footer")
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.backup_and_restore_settings_screen, rootKey)
+
+        footerPreference.setLearnMoreText(getString(R.string.backup_and_restore_footer_link_text))
+        footerPreference.setLearnMoreAction {
+            DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
+        }
+
+        scheduledExportPreference?.setOnPreferenceClickListener {
+            findNavController()
+                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
+            true
+        }
+
+        importDataPreference?.setOnPreferenceClickListener {
+            findNavController()
+                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+            true
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

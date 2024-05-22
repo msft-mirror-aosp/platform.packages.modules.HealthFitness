@@ -212,7 +212,7 @@ public class UpsertTransactionRequest {
 
     private void addRequest(@NonNull RecordInternal<?> recordInternal, boolean isInsertRequest) {
         RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordInternal.getRecordType());
+                RecordHelperProvider.getRecordHelper(recordInternal.getRecordType());
         Objects.requireNonNull(recordHelper);
 
         UpsertTableRequest request =
@@ -233,4 +233,3 @@ public class UpsertTransactionRequest {
         mUpsertRequests.add(request);
     }
 }
-

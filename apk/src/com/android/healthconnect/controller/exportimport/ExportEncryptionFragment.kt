@@ -65,7 +65,13 @@ class ExportEncryptionFragment : Hilt_ExportEncryptionFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.export_encryption_screen, container, false)
-        val backButton = view.findViewById<Button>(R.id.export_back_button)
+
+        // TODO: b/325917283 - Add proper navigation to the next screen.
+        val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
+        val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
+
+        nextButton.text = getString(R.string.export_next_button)
+        backButton.text = getString(R.string.export_back_button)
 
         backButton?.setOnClickListener {
             findNavController()
@@ -75,8 +81,6 @@ class ExportEncryptionFragment : Hilt_ExportEncryptionFragment() {
         val password = view.findViewById<EditText>(R.id.export_password)
         val repeatedPassword = view.findViewById<EditText>(R.id.export_repeat_password)
         val mismatchError = view.findViewById<TextView>(R.id.password_mismatch_error)
-
-        val nextButton = view.findViewById<Button>(R.id.export_next_button)
 
         nextButton?.setOnClickListener(createOnClickListener(password))
         // Only shows the error and enable the next button when passwords match.

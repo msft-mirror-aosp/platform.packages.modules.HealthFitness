@@ -40,5 +40,13 @@ android:orientation="vertical">
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
             android:text="@string/phr_options_read_immunizations" />
+
+        <Button
+            android:id="@+id/phr_seed_fhir_jsons_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_seed_fhir_jsons" />
     </LinearLayout>
 </ScrollView>

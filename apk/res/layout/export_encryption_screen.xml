@@ -81,7 +81,8 @@
                 android:layout_marginBottom="@dimen/spacing_normal"
                 android:hint="@string/export_password_hint"
                 android:importantForAutofill="no"
-                android:inputType="textPassword|textNoSuggestions" />
+                android:inputType="textPassword|textNoSuggestions"
+                style="@style/Widget.HealthConnect.EditText.Password"/>
 
             <EditText
                 android:id="@+id/export_repeat_password"
@@ -90,7 +91,8 @@
                 android:layout_marginBottom="@dimen/spacing_normal"
                 android:hint="@string/export_repeat_password_hint"
                 android:importantForAutofill="no"
-                android:inputType="textPassword|textNoSuggestions" />
+                android:inputType="textPassword|textNoSuggestions"
+                style="@style/Widget.HealthConnect.EditText.Password"/>
 
             <TextView
                 android:id="@+id/password_mismatch_error"
@@ -126,6 +128,7 @@
                 android:textAppearance="?attr/textAppearanceSummaryLarge" />
         </RelativeLayout>
 
-        <include layout="@layout/widget_export_navigation_buttons" />
+        <include layout="@layout/widget_export_import_navigation_buttons" />
+
     </LinearLayout>
 </ScrollView>

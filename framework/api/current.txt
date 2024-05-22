@@ -1006,6 +1006,27 @@ package android.health.connect.datatypes {
     field public static final int MEAL_TYPE_UNKNOWN = 0; // 0x0
   }
 
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalDataSource implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getDisplayName();
+    method @NonNull public String getFhirBaseUri();
+    method @NonNull public String getId();
+    method @NonNull public String getPackageName();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalDataSource> CREATOR;
+  }
+
+  public static final class MedicalDataSource.Builder {
+    ctor public MedicalDataSource.Builder(@NonNull String, @NonNull String, @NonNull String, @NonNull String);
+    ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource.Builder);
+    ctor public MedicalDataSource.Builder(@NonNull android.health.connect.datatypes.MedicalDataSource);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource build();
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setDisplayName(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setFhirBaseUri(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setId(@NonNull String);
+    method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);
+  }
+
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResource {
     method @NonNull public String getData();
     method @NonNull public String getDataSourceId();

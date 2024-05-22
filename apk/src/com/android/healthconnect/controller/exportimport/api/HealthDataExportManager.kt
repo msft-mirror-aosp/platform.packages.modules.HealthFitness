@@ -16,11 +16,20 @@
 
 package com.android.healthconnect.controller.exportimport.api
 
+import android.health.connect.HealthConnectException
 import android.health.connect.exportimport.ScheduledExportSettings
+import android.health.connect.exportimport.ScheduledExportStatus
+import android.os.OutcomeReceiver
+import java.util.concurrent.Executor
 
 /** Wrapper for HealthConnectManager export apis. */
 interface HealthDataExportManager {
     fun getScheduledExportPeriodInDays(): Int
 
     fun configureScheduledExport(settings: ScheduledExportSettings)
+
+    fun getScheduledExportStatus(
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<ScheduledExportStatus, HealthConnectException>
+    )
 }

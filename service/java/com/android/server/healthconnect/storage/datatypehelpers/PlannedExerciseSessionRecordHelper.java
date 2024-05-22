@@ -138,7 +138,7 @@ public final class PlannedExerciseSessionRecordHelper
 
     /** Returns the table name to be created corresponding to this helper */
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return PLANNED_EXERCISE_SESSION_RECORD_TABLE_NAME;
     }
 
@@ -603,7 +603,7 @@ public final class PlannedExerciseSessionRecordHelper
                 StorageUtils.getHexString(deletedRecordUuid));
         affectedExerciseSessionsReadRequest.setWhereClause(whereStatement);
         affectedExerciseSessionsReadRequest.setRecordHelper(
-                RecordHelperProvider.getInstance().getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
+                RecordHelperProvider.getRecordHelper(RECORD_TYPE_EXERCISE_SESSION));
         return Collections.singletonList(affectedExerciseSessionsReadRequest);
     }
 }

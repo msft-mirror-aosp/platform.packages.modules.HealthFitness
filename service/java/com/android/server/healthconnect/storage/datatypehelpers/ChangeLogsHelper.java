@@ -69,9 +69,9 @@ import java.util.stream.Collectors;
 public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
-    private static final String APP_ID_COLUMN_NAME = "app_id";
+    @VisibleForTesting public static final String APP_ID_COLUMN_NAME = "app_id";
     @VisibleForTesting public static final String UUIDS_COLUMN_NAME = "uuids";
-    private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+    @VisibleForTesting public static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
 

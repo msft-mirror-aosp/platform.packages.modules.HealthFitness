@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static com.android.healthfitness.flags.Flags.exportImport;
+
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -65,7 +67,13 @@ public class ExportImportJobs {
 
     /** Execute the periodic export job. */
     public static void executePeriodicExportJob(@NonNull Context context) {
-        // TODO(b/325599089): Check if export is enabled, and call ExportManager.export().
+        // TODO(b/325599879): Add checking for frequency greater than 0.
+        if (exportImport()) {
+            ExportManager exportManager = new ExportManager(context);
+            exportManager.runExport();
+        }
+
+        // TODO(b/325599879): Cancel job if flag is off.
 
         // TODO(b/325599089): Do we need an additional periodic / one-off task to make sure a single
         //  export completes? We need to test if JobScheduler will call the job again if jobFinished

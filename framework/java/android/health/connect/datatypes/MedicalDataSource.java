@@ -16,9 +16,12 @@
 
 package android.health.connect.datatypes;
 
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
+import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.os.Parcel;
@@ -27,9 +30,8 @@ import android.os.Parcelable;
 /**
  * Captures the data source information of medical data. All {@link MedicalResource}s are associated
  * with a {@code MedicalDataSource}.
- *
- * @hide
  */
+@FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
 public final class MedicalDataSource implements Parcelable {
     @NonNull private final String mId;
     @NonNull private final String mPackageName;

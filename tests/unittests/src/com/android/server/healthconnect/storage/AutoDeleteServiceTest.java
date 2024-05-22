@@ -26,6 +26,7 @@ import android.util.ArrayMap;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -140,7 +141,7 @@ public class AutoDeleteServiceTest {
 
         AutoDeleteService.startAutoDelete(mContext);
 
-        verify(mRecordHelperProvider, never()).getRecordHelpers();
+        ExtendedMockito.verify(RecordHelperProvider::getRecordHelpers, never());
         verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(
@@ -156,7 +157,6 @@ public class AutoDeleteServiceTest {
     public void testStartAutoDelete_getPreferenceReturnNonNull() {
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(RecordHelperProvider.getInstance()).thenReturn(mRecordHelperProvider);
         when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(ActivityDateHelper.getInstance()).thenReturn(mActivityDateHelper);
         when(HealthDataCategoryPriorityHelper.getInstance())
@@ -164,7 +164,7 @@ public class AutoDeleteServiceTest {
 
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
-        when(mRecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
+        when(RecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
 
         AutoDeleteService.startAutoDelete(mContext);
 
