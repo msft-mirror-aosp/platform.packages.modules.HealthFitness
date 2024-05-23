@@ -67,7 +67,6 @@ public class ExportManager {
 
     private final DatabaseContext mDatabaseContext;
 
-    // TODO(b/325599879): Discuss if this is going to be a singleton or new instance every export.
     public ExportManager(@NonNull Context context) {
         requireNonNull(context);
         mDatabaseContext =

@@ -27,6 +27,7 @@ import android.annotation.NonNull;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ActivityDateHelper;
@@ -59,11 +60,21 @@ final class DatabaseUpgradeHelper {
     // No schema changes between version 12 and 13. See ag/26747988 for more details.
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
 
+    /**
+     * A shared DB version to guard all schema changes of under development features in HC.
+     *
+     * <p>See more at go/hc-aconfig-and-db
+     */
+    private static final int DB_VERSION_UNDER_DEVELOPMENT = 1_000_000;
+
     // Whenever we are bumping the database version, take a look at potential problems described in:
     // go/hc-handling-database-upgrades.
     // This value is used to update the database to the latest version. Update this to the latest
     // version that we want to upgrade the database to.
-    static final int DATABASE_VERSION = DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE;
+    static final int DATABASE_VERSION =
+            Flags.personalHealthRecordDatabase()
+                    ? DB_VERSION_UNDER_DEVELOPMENT
+                    : DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE;
     private static final String SQLITE_MASTER_TABLE_NAME = "sqlite_master";
 
     /**
@@ -75,10 +86,7 @@ final class DatabaseUpgradeHelper {
      *
      * <p>See go/hc-handling-database-upgrades for things to be taken care of when upgrading.
      */
-    static void onUpgrade(
-            @NonNull SQLiteDatabase db,
-            HealthConnectDatabase healthConnectDatabase,
-            int oldVersion) {
+    static void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         // Note: This first upgrade is not idempotent since it only drops the set of initial tables.
         // Some tables are left around, which can break foreign key constraints.
         if (oldVersion < DB_VERSION_UUID_BLOB) {
@@ -99,6 +107,12 @@ final class DatabaseUpgradeHelper {
         }
         if (oldVersion < DB_VERSION_PLANNED_EXERCISE_SESSIONS) {
             applyPlannedExerciseDatabaseUpgrade(db);
+        }
+        if (oldVersion < DB_VERSION_UNDER_DEVELOPMENT
+                && DB_VERSION_UNDER_DEVELOPMENT <= newVersion) {
+            if (Flags.personalHealthRecordDatabase()) {
+                // TODO: call PHR DB upgrades here
+            }
         }
     }
 

@@ -10,6 +10,14 @@ flag {
 }
 
 flag {
+    name: "personal_health_record_database"
+    is_exported: true
+    namespace: "healthfitness"
+    description: "Flag for guarding DB schema changes for PHR features."
+    bug: "340809376"
+}
+
+flag {
     name: "export_import"
     namespace: "healthfitness"
     description: "Flag for adding new export/import feature."

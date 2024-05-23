@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.request;
 
+import static android.health.connect.Constants.DEFAULT_LONG;
+
 import android.health.connect.Constants;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
@@ -98,6 +100,13 @@ public final class DeleteTransactionRequest {
                                     request.getEndTime(),
                                     request.isLocalTimeFilter()));
                 });
+    }
+
+    // Used for auto delete only
+    public DeleteTransactionRequest(List<DeleteTableRequest> deleteTableRequests) {
+        mDeleteTableRequests = List.copyOf(deleteTableRequests);
+        mHasHealthDataManagementPermission = true;
+        mRequestingPackageNameId = DEFAULT_LONG;
     }
 
     public List<DeleteTableRequest> getDeleteTableRequests() {

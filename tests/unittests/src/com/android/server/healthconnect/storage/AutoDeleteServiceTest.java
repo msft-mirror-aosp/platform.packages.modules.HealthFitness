@@ -78,6 +78,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.Vo2MaxRecordHelp
 import com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.WheelchairPushesRecordHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import org.junit.Rule;
@@ -168,12 +169,18 @@ public class AutoDeleteServiceTest {
 
         AutoDeleteService.startAutoDelete(mContext);
 
-        verify(mTransactionManager, Mockito.times(3))
+        verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(
                                 (List<DeleteTableRequest> deleteTableRequestsList) ->
                                         checkTableNames_getPreferenceReturnNonNull(
                                                 deleteTableRequestsList)));
+        verify(mTransactionManager)
+                .deleteAll(
+                        Mockito.argThat(
+                                (DeleteTransactionRequest request) ->
+                                        checkTableNames_getPreferenceReturnNonNull(
+                                                request.getDeleteTableRequests())));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
         verify(mActivityDateHelper).reSyncForAllRecords();
         verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);

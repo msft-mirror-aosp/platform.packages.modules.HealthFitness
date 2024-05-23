@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Geen data nie"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Apptoestemmings"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Bestuur jou apps en toestemmings"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> van <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps het toegang"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> van <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> apps het toegang"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> apps het toegang"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app het toegang"</string>
@@ -327,8 +326,7 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Laai data wat voorheen uitgevoer is"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Af"</string>
-    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Kies frekwensie"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Kies frekwensie"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Kies om data een keer te stoor, of stel dit om outomaties op gereelde tye te stoor."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Daagliks"</string>

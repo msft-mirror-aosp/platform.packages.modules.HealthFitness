@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"គ្មាន​ទិន្នន័យទេ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ការអនុញ្ញាតកម្មវិធី"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"គ្រប់គ្រងកម្មវិធី និងការអនុញ្ញាតរបស់អ្នក"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> នៃ <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> មានសិទ្ធិចូលប្រើ"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> នៃ <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> មានសិទ្ធិចូលប្រើប្រាស់"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> មានសិទ្ធិចូលប្រើប្រាស់"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"កម្មវិធី <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> មានសិទ្ធិចូលប្រើប្រាស់"</string>
@@ -327,8 +326,7 @@
     <string name="restore_data_description" msgid="6505730490741240861">"ផ្ទុកទិន្នន័យដែលបាននាំចេញពីមុន"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"បើក"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"បិទ"</string>
-    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="2230821549715237663">"ជ្រើសរើសកម្រិតញឹកញាប់"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ជ្រើសរើសកម្រិតញឹកញាប់"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ជ្រើសរើសរក្សាទុកទិន្នន័យម្ដង ឬកំណត់ឱ្យរក្សាទុកដោយស្វ័យប្រវត្តិតាមពេលវេលាទៀងទាត់។"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ប្រចាំថ្ងៃ"</string>

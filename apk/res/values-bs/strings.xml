@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Nema podataka"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Odobrenja za aplikaciju"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljajte aplikacijama i odobrenjima"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ima pristup"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Broj aplikacija koje imaju pristup: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Pristup ima sljedeći broj aplikacija: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija ima pristup"</string>
@@ -273,10 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilima privatnosti"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Ukloniti sva odobrenja?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Ukloni sve"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta.\n\nOvo ne utiče na druga odobrenja koja ova aplikacija može imati, kao što je odobrenje za lokaciju, mikrofon ili kameru."</string>
-    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta, uključujući pozadinske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
-    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta, uključujući historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti pisati podatke iz Health Connecta, uključujući pozadinske i historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta.\n\nOvo ne utiče na druga odobrenja koja ova aplikacija može imati, kao što je odobrenje za lokaciju, mikrofon ili kameru."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta, uključujući pozadinske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta, uključujući historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> više neće moći čitati niti zapisivati podatke iz Health Connecta, uključujući pozadinske i historijske podatke.\n\nOvo ne utiče na druga odobrenja koja aplikacija može imati, kao što je odobrenje za lokaciju, kameru ili mikrofon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Izbriši i podatke aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g> iz Health Connecta"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Sljedeći dan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Odabrani dan"</string>
@@ -327,8 +326,7 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Učitavanje prethodno izvezenih podataka"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Uključeno"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Isključeno"</string>
-    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Odaberite učestalost"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Odaberite učestalost"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Odaberite da sačuvate podatke jedanput ili postavite da se automatski pohranjuju u redovnim intervalima."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>

@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"沒有資料"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"應用程式權限"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"管理你的應用程式和權限"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個應用程式有存取權 (共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 個)"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"有 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個應用程式可存取 (共 <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 個應用程式)"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"有 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個應用程式可存取"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"有 <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個應用程式可存取"</string>
@@ -327,8 +326,7 @@
     <string name="restore_data_description" msgid="6505730490741240861">"載入先前匯出的資料"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"開啟"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"關閉"</string>
-    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="2230821549715237663">"選擇頻率"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"選擇儲存頻率"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"你可以選擇儲存資料一次，也可以設定為定期自動儲存。"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"每日"</string>

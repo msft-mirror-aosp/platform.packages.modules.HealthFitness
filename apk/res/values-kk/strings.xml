@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Ешқандай дерек жоқ."</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Қолданба рұқсаттары"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Қолданбаларды және пайдалану рұқсаттарын басқарыңыз."</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> қолданбаға рұқсат берілген."</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> қолданбаға рұқсат берілген."</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> қолданбаға рұқсат берілген."</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> қолданбаға рұқсат берілген."</string>
@@ -327,8 +326,7 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Бұрын экспортталған деректерді жүктеу"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Қосулы"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Өшірулі"</string>
-    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Жиілікті таңдау"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Жиілікті таңдау"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Деректерді сақтау мүмкіндігін бір рет таңдаңыз немесе белгілі бір уақытта автоматты түрде сақталатын етіп реттеңіз."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Күн сайын"</string>
@@ -815,7 +813,7 @@
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Рұқсат етпеу"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Әрқашан рұқсат беру"</string>
     <string name="route_permissions_label" msgid="6293377940884373190">"Жаттығу маршруттарын пайдалану"</string>
-    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына бағыттарды пайдалануға рұқсат беру"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> қолданбасына маршруттарды пайдалануға рұқсат беру"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Әрдайым сұрау"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Рұқсат бермеу"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Екі дерек түрін де қосу керек пе?"</string>

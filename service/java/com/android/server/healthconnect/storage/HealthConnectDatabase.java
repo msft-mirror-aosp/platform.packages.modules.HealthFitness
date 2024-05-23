@@ -55,7 +55,7 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        DatabaseUpgradeHelper.onUpgrade(db, this, oldVersion);
+        DatabaseUpgradeHelper.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
