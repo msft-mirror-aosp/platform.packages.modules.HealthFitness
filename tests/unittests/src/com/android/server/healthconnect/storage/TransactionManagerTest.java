@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage;
 
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
@@ -24,21 +26,24 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
 
+import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.RecordIdFilter;
 import android.health.connect.TimeInstantRangeFilter;
+import android.health.connect.aidl.DeleteUsingFiltersRequestParcel;
+import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.datatypes.BloodPressureRecord;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.Pair;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
 
 import com.google.common.collect.ImmutableList;
@@ -47,13 +52,11 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-@RunWith(AndroidJUnit4.class)
 public class TransactionManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
 
@@ -184,5 +187,67 @@ public class TransactionManagerTest {
                         IllegalArgumentException.class,
                         () -> mTransactionManager.readRecordsAndPageToken(readTransactionRequest));
         assertThat(thrown).hasMessageThat().contains("Expect read by filter request");
+    }
+
+    @Test
+    public void deleteAll_byId_generateChangeLogs() {
+        List<String> uuids =
+                mTransactionTestUtils.insertRecords(
+                        TEST_PACKAGE_NAME, createStepsRecord(123, 456, 100));
+        List<RecordIdFilter> ids = List.of(RecordIdFilter.fromId(StepsRecord.class, uuids.get(0)));
+
+        DeleteUsingFiltersRequestParcel parcel =
+                new DeleteUsingFiltersRequestParcel(
+                        new RecordIdFiltersParcel(ids), TEST_PACKAGE_NAME);
+        assertThat(parcel.usesIdFilters()).isTrue();
+        mTransactionManager.deleteAll(new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel));
+
+        List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
+        assertThat(uuidList).hasSize(1);
+        assertThat(uuidList.get(0).toString()).isEqualTo(uuids.get(0));
+    }
+
+    @Test
+    public void deleteAll_byTimeFilter_generateChangeLogs() {
+        List<String> uuids =
+                mTransactionTestUtils.insertRecords(
+                        TEST_PACKAGE_NAME, createStepsRecord(123, 456, 100));
+
+        DeleteUsingFiltersRequest deleteRequest =
+                new DeleteUsingFiltersRequest.Builder()
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .build())
+                        .build();
+        DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
+        assertThat(parcel.usesIdFilters()).isFalse();
+        mTransactionManager.deleteAll(new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel));
+
+        List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
+        assertThat(uuidList).hasSize(1);
+        assertThat(uuidList.get(0).toString()).isEqualTo(uuids.get(0));
+    }
+
+    @Test
+    public void deleteAll_bulkDeleteByTimeFilter_generateChangeLogs() {
+        ImmutableList.Builder<RecordInternal<?>> records = new ImmutableList.Builder<>();
+        for (int i = 0; i <= DEFAULT_PAGE_SIZE; i++) {
+            records.add(createStepsRecord(i * 1000, (i + 1) * 1000, 9527));
+        }
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, records.build());
+
+        DeleteUsingFiltersRequest deleteRequest =
+                new DeleteUsingFiltersRequest.Builder()
+                        .setTimeRangeFilter(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .build())
+                        .build();
+        DeleteUsingFiltersRequestParcel parcel = new DeleteUsingFiltersRequestParcel(deleteRequest);
+        mTransactionManager.deleteAll(new DeleteTransactionRequest(TEST_PACKAGE_NAME, parcel));
+
+        List<UUID> uuidList = mTransactionTestUtils.getAllDeletedUuids();
+        assertThat(uuidList).hasSize(DEFAULT_PAGE_SIZE + 1);
     }
 }

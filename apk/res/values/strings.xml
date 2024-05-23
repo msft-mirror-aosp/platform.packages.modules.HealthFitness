@@ -427,17 +427,19 @@
     <string name="backup_and_restore_settings_screen_title" description="Title of the 'backup and restore' screen where users can set up configurations to export and import Health Connect data. [CHAR_LIMIT=40]">Backup and restore</string>
     <string name="export_and_import_title" descrption="Title of the settings section where users can change their data export and import settings. [CHAR_LIMIT=50]">Export and import</string>
     <string name="scheduled_export" description="Menu item where users can click to configure scheduled data export. [CHAR_LIMIT=40]">Scheduled export</string>
-    <string name="restore_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Restore data</string>
-    <string name="restore_data_description" description="Description about the function of the 'restore data' preference.">Load previously exported data</string>
+    <string name="import_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Import data</string>
+    <string name="import_data_description" description="Description about the function of the 'restore data' preference. [CHAR_LIMIT=NONE]">Restore data from a previously exported file</string>
+    <string name="backup_and_restore_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">Export lets you save your data so you can transfer it to a new phone</string>
+    <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">Learn more</string>
 
-    <string name="automatic_export_status" translatable="false" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is.">%s • %s</string>
+    <string name="automatic_export_status" translatable="false" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is. [CHAR_LIMIT=NONE]">%s • %s</string>
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
 
     <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Choose frequency</string>
 
     <string name="choose_frequency" description="Title of the 'choose frequency' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Choose frequency</string>
-    <string name="choose_frequency_description" description="Description of the data export frequency">Choose to save data once, or set it to save automatically at regular times.</string>
+    <string name="choose_frequency_description" description="Description of the data export frequency. [CHAR_LIMIT=NONE]">Choose to save data once, or set it to save automatically at regular times.</string>
     <string name="frequency_daily" description="Label used to show that the automatic export frequency is set as daily. [CHAR_LIMIT=40]">Daily</string>
     <string name="frequency_weekly" description="Label used to show that the automatic export frequency is set as weekly. [CHAR_LIMIT=40]">Weekly</string>
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
@@ -450,12 +452,19 @@
     <string name="export_password_hint" description="Placeholder text on the input field which reminds users to enter their password here. [CHAR_LIMIT=50]">Password</string>
     <string name="export_repeat_password_hint" description="Placeholder text on the input field which reminds users to repeat their password here. [CHAR_LIMIT=50]">Repeat password</string>
     <string name="export_passwords_mismatch_error" description="Text shown to the users that indicates the entered password and the repeated password do not match. [CHAR_LIMIT=NONE]">Passwords don\'t match</string>
-    <string name="export_encryption_warning" description="Description to warn users the importance to remember their passwords.">If you forget your password and lose your phone, Health&#160;Connect cannot help you recover your saved data.</string>
+    <string name="export_encryption_warning" description="Description to warn users the importance to remember their passwords. [CHAR_LIMIT=NONE]">If you forget your password and lose your phone, Health&#160;Connect cannot help you recover your saved data.</string>
 
-    <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow.">Back</string>
-    <string name="export_next_button" descrption="Text on a button that navigates to the next screen of the data saving setup flow.">Next</string>
-    <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page.">Cancel</string>
-    <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow.">Next</string>
+    <string name="import_decryption_title" description="Title of the 'Type password' screen where the user enters their password to decrypt the imported backup. [CHAR_LIMIT=40]">Type password</string>
+    <string name="import_decryption_description" description="Description about the password required for backup decryption. [CHAR_LIMIT=NONE]">Your encryption password is needed to import your Health&#160;Connect data</string>
+    <string name="import_decryption_forgotten_password_link_text" description="Link text displayed below password entry field to help a user with their forgotten password. [CHAR_LIMIT=40]">Forgotten password?</string>
+    <string name="import_password_hint" description="Placeholder text on the input field which reminds users to enter their password here. [CHAR_LIMIT=50]">Password</string>
+    <string name="import_decrypt_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">If you still have your old phone, you can re-export your data with a new password</string>
+
+    <string name="export_back_button" descrption="Text on a button that navigates back to the previous screen of the data saving setup flow. [CHAR_LIMIT=40]">Back</string>
+    <string name="export_next_button" descrption="Text on a button that navigates to the next screen of the data saving setup flow. [CHAR_LIMIT=40]">Next</string>
+    <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page. [CHAR_LIMIT=40]">Cancel</string>
+    <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow. [CHAR_LIMIT=40]">Next</string>
+    <string name="import_source_location_title" description="Title of the 'Import from' screen where the use chooses the location where their backup is saved. [CHAR_LIMIT=40]">Import from</string>
     <!--endregion-->
 
     <!--region Onboarding -->

@@ -45,9 +45,12 @@ class ExportFrequencyFragment : Hilt_ExportFrequencyFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.export_frequency_screen, container, false)
 
-        val backButton = view.findViewById<Button>(R.id.export_back_button)
-        val nextButton = view.findViewById<Button>(R.id.export_next_button)
         val radioGroup = view.findViewById<RadioGroup>(R.id.radio_group_frequency)
+        val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
+        val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
+
+        backButton.text = getString(R.string.export_back_button)
+        nextButton.text = getString(R.string.export_next_button)
 
         backButton.setOnClickListener { requireActivity().finish() }
         nextButton.setOnClickListener {

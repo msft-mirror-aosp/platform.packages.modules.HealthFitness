@@ -17,19 +17,24 @@
 package com.android.healthconnect.controller.tests.exportimport.api
 
 import android.health.connect.Constants.DEFAULT_INT
+import android.health.connect.HealthConnectManager
+import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_DAILY
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_MONTHLY
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_WEEKLY
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExportSettingsUseCase
+import com.android.healthconnect.controller.tests.utils.di.FakeLoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeUpdateExportSettingsUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -48,6 +53,7 @@ class ExportSettingsViewModelTest {
     companion object {
         private val TEST_SECRET_KEY = byteArrayOf(1, 2, 3, 4)
         private val TEST_SALT = byteArrayOf(5, 6, 7, 8)
+        private val TEST_EXPORT_FREQUENCY_IN_DAYS = 7
         private val TEST_URI: Uri = Uri.parse("content://com.android.server.healthconnect/testuri")
     }
 
@@ -59,12 +65,17 @@ class ExportSettingsViewModelTest {
     private lateinit var viewModel: ExportSettingsViewModel
     private val loadExportSettingsUseCase = FakeLoadExportSettingsUseCase()
     private val updateExportSettingsUseCase = FakeUpdateExportSettingsUseCase()
+    private val loadScheduledExportStatusUseCase = FakeLoadScheduledExportStatusUseCase()
 
     @Before
     fun setup() {
         hiltRule.inject()
         Dispatchers.setMain(testDispatcher)
-        viewModel = ExportSettingsViewModel(loadExportSettingsUseCase, updateExportSettingsUseCase)
+        viewModel =
+            ExportSettingsViewModel(
+                loadExportSettingsUseCase,
+                updateExportSettingsUseCase,
+                loadScheduledExportStatusUseCase)
     }
 
     @After
@@ -85,6 +96,22 @@ class ExportSettingsViewModelTest {
 
         assertThat(testObserver.getLastValue())
             .isEqualTo(ExportSettings.WithData(EXPORT_FREQUENCY_WEEKLY))
+    }
+
+    @Test
+    fun loadScheduledExportStatus() = runTest {
+        val testObserver = TestObserver<ScheduledExportUiStatus>()
+        viewModel.storedScheduledExportStatus.observeForever(testObserver)
+        val scheduledExportStatus =
+            ScheduledExportStatus(
+                Instant.ofEpochMilli(100), HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, TEST_EXPORT_FREQUENCY_IN_DAYS)
+        loadScheduledExportStatusUseCase.updateExportStatus(scheduledExportStatus)
+
+        viewModel.loadScheduledExportStatus()
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(ScheduledExportUiStatus.WithData(scheduledExportStatus))
     }
 
     @Test

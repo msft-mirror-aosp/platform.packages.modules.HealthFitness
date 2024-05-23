@@ -2009,10 +2009,15 @@ public class HealthConnectManager {
      * <p>Number of resources returned by this API will depend based on below factors:
      *
      * <ul>
-     *   <li>When an app with read permissions allowed for the requested IDs calls the API from
-     *       background then it will be able to read only its own inserted medical resources and
-     *       will not get medical resources inserted by other apps. This may be less than the
+     *   <li>When an app with read permissions allowed for the requested IDs but without the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from background then it will be able to read only its own inserted medical resources
+     *       and will not get medical resources inserted by other apps. This may be less than the
      *       requested size.
+     *   <li>When an app with read permissions allowed for the requested IDs and with the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from background then it will be able to read the medical resources it has read
+     *       permissions for. This has the same size the app can read from oreground.
      *   <li>When an app with all read permissions allowed for the requested IDs calls the API from
      *       foreground then it will be able to read all the corresponding medical resources.
      *   <li>When an app with less read permissions allowed to cover all the requested IDs calls the
@@ -2042,6 +2047,48 @@ public class HealthConnectManager {
         if (ids.size() >= MAXIMUM_PAGE_SIZE) {
             throw new IllegalArgumentException("Maximum allowed pageSize is " + MAXIMUM_PAGE_SIZE);
         }
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Reads {@link MedicalResource}s based on given filters in {@link ReadMedicalResourcesRequest}.
+     *
+     * <p>Number of resources returned by this API will depend based on below factors:
+     *
+     * <ul>
+     *   <li>When an app with read permissions allowed for the requested filters but without the
+     *       {@link android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls
+     *       the API from background then it will be able to read only its own inserted medical
+     *       resources and will not get medical resources inserted by other apps. This may be less
+     *       than the size the app can read from foreground.
+     *   <li>When an app with read permissions allowed for the requested filters and with the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from background then it will be able to read all the corresponding medical resources.
+     *       This has the same size the app can read from foreground.
+     *   <li>When an app with the read permissions allowed for the requested filters calls the API
+     *       from foreground then it will be able to read all the corresponding medical resources.
+     *   <li>App with only write permission but no read permission allowed will be able to read only
+     *       its own inserted medical resources both when in foreground or background.
+     *   <li>An app without both read and write permissions will not be able to read any medical
+     *       resources and the API will throw Security Exception.
+     * </ul>
+     *
+     * @param request The read request.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if request page size set is less than 1 or more than 5000 in
+     *     {@link ReadMedicalResourcesRequest}.
+     * @hide
+     */
+    // TODO(b/340569771): Make this flagged Api and add CTS tests.
+    public void readMedicalResources(
+            @NonNull ReadMedicalResourcesRequest request,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
 
         throw new UnsupportedOperationException("Not implemented");
     }

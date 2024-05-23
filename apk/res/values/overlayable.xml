@@ -36,7 +36,6 @@
             <item type="drawable" name="ic_auto_delete"/>
             <item type="drawable" name="ic_auto_delete_off"/>
             <item type="drawable" name="ic_delete"/>
-            <item type="drawable" name="ic_export_data"/>
             <item type="drawable" name="ic_category_activity"/>
             <item type="drawable" name="ic_category_body_measurements"/>
             <item type="drawable" name="ic_category_cycle_tracking"/>
@@ -75,10 +74,13 @@
             <!-- Backup and restore -->
             <item type="drawable" name="ic_repeat"/>
             <item type="drawable" name="ic_upload"/>
+            <item type="drawable" name="ic_import_data"/>
             <item type="drawable" name="ic_import"/>
 
             <item type="drawable" name="ic_lock"/>
             <item type="drawable" name="ic_warning"/>
+            <item type="drawable" name="ic_password"/>
+            <item type="drawable" name="ic_info"/>
             <!-- END REGION -->
 
             <!-- REGION DIALOG GRAVITY -->

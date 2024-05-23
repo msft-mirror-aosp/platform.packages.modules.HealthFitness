@@ -88,8 +88,7 @@ public class AutoDeleteService {
         if (recordAutoDeletePeriod != 0) {
             // 0 represents that no period is set,to delete only if not 0 else don't do anything
             List<DeleteTableRequest> deleteTableRequests = new ArrayList<>();
-            RecordHelperProvider.getInstance()
-                    .getRecordHelpers()
+            RecordHelperProvider.getRecordHelpers()
                     .values()
                     .forEach(
                             (recordHelper) -> {

@@ -77,7 +77,7 @@ public final class SkinTemperatureRecordHelper
 
     @NonNull
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return TABLE_NAME;
     }
 

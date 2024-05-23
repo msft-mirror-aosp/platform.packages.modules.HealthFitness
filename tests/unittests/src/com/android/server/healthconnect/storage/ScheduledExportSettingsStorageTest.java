@@ -69,8 +69,12 @@ public final class ScheduledExportSettingsStorageTest {
 
     @Test
     public void testConfigure_secretKey()
-            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException,
-                    UnrecoverableEntryException, InvalidKeySpecException {
+            throws CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    UnrecoverableEntryException,
+                    InvalidKeySpecException {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
 
@@ -86,7 +90,10 @@ public final class ScheduledExportSettingsStorageTest {
 
     @Test
     public void testConfigure_secretKey_keepsOtherSettings()
-            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException,
+            throws CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
                     InvalidKeySpecException {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
@@ -115,8 +122,12 @@ public final class ScheduledExportSettingsStorageTest {
 
     @Test
     public void testConfigure_uri_keepsOtherSettings()
-            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException,
-                    InvalidKeySpecException, UnrecoverableEntryException {
+            throws CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    InvalidKeySpecException,
+                    UnrecoverableEntryException {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
         ScheduledExportSettingsStorage.configure(
@@ -146,8 +157,12 @@ public final class ScheduledExportSettingsStorageTest {
 
     @Test
     public void testConfigure_periodInDays_keepsOtherSettings()
-            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException,
-                    InvalidKeySpecException, UnrecoverableEntryException {
+            throws CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    InvalidKeySpecException,
+                    UnrecoverableEntryException {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
         ScheduledExportSettingsStorage.configure(
@@ -168,8 +183,12 @@ public final class ScheduledExportSettingsStorageTest {
 
     @Test
     public void testConfigure_clear()
-            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException,
-                    InvalidKeySpecException, UnrecoverableEntryException {
+            throws CertificateException,
+                    KeyStoreException,
+                    IOException,
+                    NoSuchAlgorithmException,
+                    InvalidKeySpecException,
+                    UnrecoverableEntryException {
         KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
         keyStore.load(null);
         ScheduledExportSettingsStorage.configure(
@@ -195,6 +214,15 @@ public final class ScheduledExportSettingsStorageTest {
         ScheduledExportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
 
         assertThat(ScheduledExportSettingsStorage.getScheduledExportPeriodInDays()).isEqualTo(1);
+    }
+
+    @Test
+    public void getUri_returnsUri()
+            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException {
+        ScheduledExportSettingsStorage.configure(
+                ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(ScheduledExportSettingsStorage.getUri()).isEqualTo(Uri.parse(TEST_URI));
     }
 
     private static byte[] generateSecretKey()

@@ -637,7 +637,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     /** Returns the table name to be created corresponding to this helper */
     @NonNull
-    abstract String getMainTableName();
+    public abstract String getMainTableName();
 
     /** Returns the information required to perform aggregate operation. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression

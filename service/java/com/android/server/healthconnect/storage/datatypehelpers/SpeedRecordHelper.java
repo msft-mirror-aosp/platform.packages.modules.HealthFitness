@@ -64,7 +64,7 @@ public class SpeedRecordHelper
     }
 
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return TABLE_NAME;
     }
 

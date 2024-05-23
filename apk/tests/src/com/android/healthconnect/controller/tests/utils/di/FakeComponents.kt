@@ -15,10 +15,12 @@
  */
 package com.android.healthconnect.controller.tests.utils.di
 
+import android.health.connect.HealthConnectManager
 import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
 import android.health.connect.exportimport.ScheduledExportSettings
+import android.health.connect.exportimport.ScheduledExportStatus
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -36,14 +38,15 @@ import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriori
 import com.android.healthconnect.controller.datasources.api.ILoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.ISleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
-import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
-import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
-import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
 import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
 import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -463,6 +466,23 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
     fun reset() {
         mostRecentSettings =
             ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+    }
+}
+
+class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
+    private var exportStatus: ScheduledExportStatus =
+            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+
+    fun reset() {
+        exportStatus = ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+    }
+
+    fun updateExportStatus(exportStatus: ScheduledExportStatus) {
+        this.exportStatus = exportStatus
+    }
+
+    override suspend fun invoke(): ExportUseCaseResult<ScheduledExportStatus> {
+        return ExportUseCaseResult.Success(exportStatus)
     }
 }
 

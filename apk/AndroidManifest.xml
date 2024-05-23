@@ -151,6 +151,12 @@
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.HealthConnect" />
 
+        <activity
+            android:name=".exportimport.ImportFlowActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.HealthConnect" />
+
         <provider
             android:name=".searchindexables.HealthConnectSearchIndexablesProvider"
             android:authorities="${packageName}"

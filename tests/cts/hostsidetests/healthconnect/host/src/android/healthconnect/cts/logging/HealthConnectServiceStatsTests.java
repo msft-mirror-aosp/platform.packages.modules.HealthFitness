@@ -275,7 +275,7 @@ public class HealthConnectServiceStatsTests extends DeviceTestCase implements IB
         assertThat(atom.getApiStatus()).isEqualTo(ApiStatus.SUCCESS);
         assertThat(atom.getErrorCode()).isEqualTo(0);
         assertThat(atom.getDurationMillis()).isAtLeast(0);
-        assertThat(atom.getNumberOfRecords()).isEqualTo(1);
+        assertThat(atom.getNumberOfRecords()).isEqualTo(2);
         assertThat(atom.getRateLimit()).isEqualTo(RateLimit.NOT_USED);
         assertThat(atom.getCallerForegroundState()).isEqualTo(ForegroundState.FOREGROUND);
     }

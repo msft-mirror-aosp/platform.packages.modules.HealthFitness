@@ -101,7 +101,7 @@ class ExportFrequencyFragmentTest {
         launchFragment<ExportFrequencyFragment>(Bundle())
 
         // TODO: b/330484311 - Add check for activity state and use export activity if possible
-        onView(withId(R.id.export_back_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
     }
 
     @Test
@@ -115,8 +115,8 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_next_button)).perform(click())
+        onView(withId(R.id.export_import_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_next_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.exportDestinationFragment)
@@ -133,8 +133,8 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_next_button)).perform(click())
+        onView(withId(R.id.export_import_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_next_button)).perform(click())
 
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
@@ -153,8 +153,8 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_next_button)).perform(click())
+        onView(withId(R.id.export_import_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_next_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.exportDestinationFragment)
@@ -176,8 +176,8 @@ class ExportFrequencyFragmentTest {
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
 
-        onView(withId(R.id.export_next_button)).check(matches(isClickable()))
-        onView(withId(R.id.export_next_button)).perform(click())
+        onView(withId(R.id.export_import_next_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_next_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.exportDestinationFragment)

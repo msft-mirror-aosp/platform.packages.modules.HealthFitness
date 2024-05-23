@@ -49,6 +49,7 @@ import android.health.connect.internal.datatypes.utils.RecordTypeRecordCategoryM
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 
 import java.nio.ByteBuffer;
@@ -514,6 +515,19 @@ public final class StorageUtils {
         }
 
         return id;
+    }
+
+    public static boolean checkTableExists(HealthConnectDatabase database, String tableName) {
+        try (Cursor cursor =
+                database.getReadableDatabase()
+                        .rawQuery(
+                                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                                new String[] {tableName})) {
+            if (cursor.getCount() == 0) {
+                Slog.d(TAG, "Table does not exist: " + tableName);
+            }
+            return cursor.getCount() > 0;
+        }
     }
 
     /** Extracts and holds data from {@link ContentValues}. */

@@ -16,8 +16,12 @@
 
 package com.android.healthconnect.controller.exportimport.api
 
+import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportSettings
+import android.health.connect.exportimport.ScheduledExportStatus
+import android.os.OutcomeReceiver
+import java.util.concurrent.Executor
 import javax.inject.Inject
 
 /** Implementation of the HealthExportManager interface. */
@@ -30,5 +34,12 @@ class HealthDataExportManagerImpl @Inject constructor(private val manager: Healt
 
     override fun configureScheduledExport(settings: ScheduledExportSettings) {
         return manager.configureScheduledExport(settings)
+    }
+
+    override fun getScheduledExportStatus(
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<ScheduledExportStatus, HealthConnectException>
+    ) {
+        return manager.getScheduledExportStatus(executor, outcomeReceiver)
     }
 }

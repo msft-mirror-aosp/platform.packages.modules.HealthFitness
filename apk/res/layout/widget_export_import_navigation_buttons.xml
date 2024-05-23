@@ -26,14 +26,13 @@
         android:layout_weight="1">
 
         <Button
-            android:id="@+id/export_back_button"
+            android:id="@+id/export_import_cancel_button"
             android:minHeight="@dimen/button_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:gravity="center"
             android:maxLines="2"
-            android:text="@string/export_back_button"
             style="@style/Widget.HealthConnect.Button.Borderless" />
     </FrameLayout>
 
@@ -43,12 +42,11 @@
         android:layout_weight="1">
 
         <Button
-            android:id="@+id/export_next_button"
+            android:id="@+id/export_import_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/button_size"
             android:layout_gravity="end|center_vertical"
-            android:text="@string/export_next_button"
             style="@style/Widget.HealthConnect.DialogButton.Full" />
 
     </FrameLayout>

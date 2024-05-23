@@ -2201,7 +2201,6 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 DeviceInfoHelper.getInstance(),
                 AppInfoHelper.getInstance(),
                 MigrationEntityHelper.getInstance(),
-                RecordHelperProvider.getInstance(),
                 HealthDataCategoryPriorityHelper.getInstance(),
                 PriorityMigrationHelper.getInstance(),
                 ActivityDateHelper.getInstance());
@@ -2353,8 +2352,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         for (Entry<Integer, List<RecordInternal<?>>> recordTypeToRecordInternalsEntry :
                 recordTypeToRecordInternals.entrySet()) {
             RecordHelper<?> recordHelper =
-                    RecordHelperProvider.getInstance()
-                            .getRecordHelper(recordTypeToRecordInternalsEntry.getKey());
+                    RecordHelperProvider.getRecordHelper(recordTypeToRecordInternalsEntry.getKey());
             recordHelper.logUpsertMetrics(recordTypeToRecordInternalsEntry.getValue(), packageName);
         }
     }
@@ -2368,8 +2366,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         for (Entry<Integer, List<RecordInternal<?>>> recordTypeToRecordInternalsEntry :
                 recordTypeToRecordInternals.entrySet()) {
             RecordHelper<?> recordHelper =
-                    RecordHelperProvider.getInstance()
-                            .getRecordHelper(recordTypeToRecordInternalsEntry.getKey());
+                    RecordHelperProvider.getRecordHelper(recordTypeToRecordInternalsEntry.getKey());
             recordHelper.logReadMetrics(recordTypeToRecordInternalsEntry.getValue(), packageName);
         }
     }

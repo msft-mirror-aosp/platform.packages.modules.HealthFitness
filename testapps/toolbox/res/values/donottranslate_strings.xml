@@ -140,5 +140,6 @@
   <!-- region Phr Options screen -->
   <string name="phr_options_title">PHR Options</string>
   <string name="phr_options_read_immunizations">Read Immunizations</string>
+  <string name="phr_options_seed_fhir_jsons">Seed FHIR JSONs</string>
   <!--endregion-->
 </resources>

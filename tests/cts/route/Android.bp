@@ -18,6 +18,7 @@ package {
 
 android_test {
     name: "CtsExerciseRouteTestCases",
+    team: "trendy_team_android_health",
     manifest: "AndroidManifest.xml",
     test_config: "AndroidTest.xml",
     defaults: ["cts_defaults"],
