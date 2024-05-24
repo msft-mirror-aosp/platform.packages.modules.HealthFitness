@@ -105,13 +105,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     public DeleteTableRequest getDeleteRequestForAutoDelete(int recordAutoDeletePeriodInDays) {
-        return new DeleteTableRequest(getMainTableName())
+        return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
                 .setTimeFilter(
                         getStartTimeColumnName(),
                         Instant.EPOCH.toEpochMilli(),
                         Instant.now()
                                 .minus(recordAutoDeletePeriodInDays, ChronoUnit.DAYS)
-                                .toEpochMilli());
+                                .toEpochMilli())
+                .setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of())
+                .setRequiresUuId(UUID_COLUMN_NAME);
     }
 
     /** Database migration. Introduces automatic local time generation. */

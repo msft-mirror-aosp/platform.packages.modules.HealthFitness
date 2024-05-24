@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.storage;
 
+import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DATABASE_VERSION;
+import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +34,6 @@ import org.mockito.MockitoAnnotations;
 
 public class DatabaseUpgradeHelperTest {
     @Mock Context mContext;
-    private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;
 
     @Before
@@ -42,8 +44,7 @@ public class DatabaseUpgradeHelperTest {
                         InstrumentationRegistry.getInstrumentation()
                                 .getContext()
                                 .getDatabasePath("mock"));
-        mHealthConnectDatabase = new HealthConnectDatabase(mContext);
-        mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
+        mSQLiteDatabase = new HealthConnectDatabase(mContext).getWritableDatabase();
     }
 
     /*
@@ -56,13 +57,7 @@ public class DatabaseUpgradeHelperTest {
     public void onUpgradeCalledMultipleTimes_eachOneIsIdempotent() {
         // The DB_VERSION_UUID_BLOB upgrade is a special case, and is not idempotent.
         // We are testing from the version above that.
-        DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase,
-                mHealthConnectDatabase,
-                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
-        DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase,
-                mHealthConnectDatabase,
-                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
+        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, DB_VERSION_UUID_BLOB, DATABASE_VERSION);
+        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, DB_VERSION_UUID_BLOB, DATABASE_VERSION);
     }
 }

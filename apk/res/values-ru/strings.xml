@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Нет данных"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Разрешения для приложений"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Настроить разрешения для приложений"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Доступ имеют некоторые приложения: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> из <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Приложений с доступом: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> из <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Приложений с доступом: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Приложений с доступом: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
@@ -276,7 +275,7 @@
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> больше не сможет читать и записывать данные на платформе \"Здоровье и спорт\".\n\nЭто не повлияет на другие разрешения, такие как доступ к камере, микрофону или данным о местоположении."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> больше не сможет читать и записывать данные на платформе \"Здоровье и спорт\", включая данные в фоновом режиме.\n\nЭто не повлияет на другие разрешения, такие как доступ к данным о местоположении, камере или микрофону."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> больше не сможет читать и записывать данные на платформе \"Здоровье и спорт\", включая сохраненные данные.\n\nЭто не повлияет на другие разрешения, такие как доступ к данным о местоположении, камере или микрофону."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больше не сможет читать и записывать данные в Здоровье и спорте, включая информацию, сохраненную ранее или сохраняемую в фоновом режиме.\n\nЭто не повлияет на другие разрешения, которые есть у приложения, например на доступ к сведениям о местоположении, камере или микрофону."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Приложение \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" больше не сможет читать и записывать данные на платформе \"Здоровье и спорт\", в том числе сохраненные ранее или в фоновом режиме.\n\nЭто не повлияет на другие разрешения, которые есть у приложения, например на доступ к сведениям о местоположении, камере или микрофону."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Также удалить данные приложения \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" из Здоровья и спорта"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Следующий день"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Выбранный день"</string>
@@ -327,8 +326,7 @@
     <string name="restore_data_description" msgid="6505730490741240861">"Загрузить ранее экспортированные данные"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Включен"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Отключен"</string>
-    <!-- no translation found for choose_frequency_category (2230821549715237663) -->
-    <skip />
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Выбор периодичности сохранения"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Выбор периодичности сохранения"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Укажите, как нужно сохранять данные: один раз или автоматически через определенные промежутки времени."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ежедневно"</string>
