@@ -21,6 +21,8 @@
     android:id="@+id/permissions_nav_graph"
     app:startDestination="@id/allDataFragment">
 
+    <include app:graph="@navigation/connected_app_nav_graph"/>
+
     <fragment
         android:id="@+id/appDataFragment"
         android:label="@string/app_data_title"
@@ -70,7 +72,7 @@
             app:destination="@id/dataEntryDetailsFragment" />
         <action
             android:id="@+id/action_entriesAndAccessFragment_to_appAccess"
-            app:destination="@id/connectedAppFragment" />
+            app:destination="@id/connected_app_nav_graph" />
         <action
             android:id="@+id/action_entriesAndAccessFragment_to_unitFragment"
             app:destination="@id/unitFragment" />

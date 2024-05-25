@@ -18,13 +18,15 @@
     android:id="@+id/home_nav_graph"
     app:startDestination="@id/homeFragment">
 
+    <include app:graph="@navigation/connected_app_nav_graph"/>
+
     <fragment
         android:id="@+id/recentAccessFragment"
         android:name="com.android.healthconnect.controller.recentaccess.RecentAccessFragment"
         android:label="@string/recent_access_header">
         <action
             android:id="@+id/action_recentAccessFragment_to_connectedAppFragment"
-            app:destination="@id/connectedAppFragment" />
+            app:destination="@id/connected_app_nav_graph" />
         <action
             android:id="@+id/action_recentAccessFragment_to_connectedAppsFragment"
             app:destination="@+id/connectedAppsFragment" />
@@ -36,7 +38,7 @@
         android:label="@string/app_label">
         <action
             android:id="@+id/action_homeFragment_to_connectedAppFragment"
-            app:destination="@id/connectedAppFragment" />
+            app:destination="@id/connected_app_nav_graph" />
         <action
             android:id="@+id/action_homeFragment_to_healthDataCategoriesFragment"
             app:destination="@id/data_activity" />
@@ -97,7 +99,7 @@
             app:destination="@id/helpAndFeedbackFragment" />
         <action
             android:id="@+id/action_connectedApps_to_connectedApp"
-            app:destination="@id/connectedAppFragment" />
+            app:destination="@id/connected_app_nav_graph" />
         <action
             android:id="@+id/action_connectedApps_to_searchApps"
             app:destination="@id/searchConnectedApps" />
@@ -112,55 +114,11 @@
     </fragment>
 
     <fragment
-        android:id="@+id/connectedAppFragment"
-        android:label="@string/app_access_title"
-        android:name="com.android.healthconnect.controller.permissions.app.ConnectedAppFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_connectedApp_to_appData"
-            app:destination="@id/appDataFragment" />
-        <action
-            android:id="@+id/action_connectedAppFragment_to_additionalAccessFragment"
-            app:destination="@id/additionalAccessFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/appDataFragment"
-        android:label="@string/app_data_title"
-        android:name="com.android.healthconnect.controller.data.appdata.AppDataFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_appData_to_appEntries"
-            app:destination="@id/appEntriesFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/appEntriesFragment"
-        android:label="App entries"
-        android:name="com.android.healthconnect.controller.data.entries.AppEntriesFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_appEntriesFragment_to_dataEntryDetailsFragment"
-            app:destination="@id/dataEntryDetailsFragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/dataEntryDetailsFragment" android:name="com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment"
-        android:label="@string/entry_details_title" >
-    </fragment>
-
-    <fragment
         android:id="@+id/searchConnectedApps"
         android:name="com.android.healthconnect.controller.permissions.connectedapps.searchapps.SearchAppsFragment">
         <action
             android:id="@+id/action_searchApps_to_connectedApp"
-            app:destination="@id/connectedAppFragment" />
+            app:destination="@id/connected_app_nav_graph" />
     </fragment>
 
     <fragment
@@ -227,15 +185,6 @@
         android:id="@+id/setUnitsFragment"
         android:name="com.android.healthconnect.controller.dataentries.units.UnitsFragment"
         android:label="@string/units_title"/>
-
-    <fragment
-        android:id="@+id/additionalAccessFragment"
-        android:name="com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessFragment"
-        android:label="@string/additional_access_label" >
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-    </fragment>
 
     <activity
         android:id="@+id/playstore_activity"
