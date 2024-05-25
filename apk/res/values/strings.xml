@@ -481,6 +481,9 @@
 
     <!-- region Deletion -->
     <string name="delete_button_content_description" description="Content description of a button that starts the deletion flow. [CHAR_LIMIT=50]">Delete data</string>
+    <string name="enter_deletion_button_content_description" description="Content description of a button that enters the deletion state">Enter deletion</string>
+    <string name="exit_deletion_button_content_description" description="Content description of a button that exits the deletion state">Exit deletion</string>
+    <!-- endregion -->
 
     <!-- region Dialog fragment time range -->
     <string name="time_range_title" description="Window title where user can choose the time range for data deletion. [CHAR_LIMIT=50]">Choose data to delete</string>
@@ -1266,4 +1269,16 @@
     <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
     <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
     <!--  endregion -->
+
+    <!-- region Delete dialogs -->
+    <string name="all_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete all data">Permanently delete all data from Health&#160;Connect?</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" description="Title for dialog asking the user to confirm they want to delete some data">Permanently delete selected data from Health&#160;Connect?</string>
+    <!-- endregion -->
+
+    <!-- region Delete toast confirmation -->
+    <string name="all_data_selected_deletion_confirmation_toast" description="Message letting the user know that all data has been deleted">All data deleted</string>
+    <string name="one_data_type_deletion_confirmation_toast" description="Message letting the user know that a permission type has been deleted"><xliff:g example="heart rate" id="permission_type">%s</xliff:g> data deleted</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" description="Message letting the user know the number of permission types deleted"><xliff:g example="2" id="number_permission_types">%s</xliff:g> items deleted</string>
+    <!-- endregion -->
+
 </resources>

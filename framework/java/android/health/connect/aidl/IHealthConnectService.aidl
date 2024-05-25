@@ -359,4 +359,11 @@ interface IHealthConnectService {
     * @hide
     */
     void getScheduledExportStatus(in UserHandle userHandle, in IScheduledExportStatusCallback callback);
+
+    /**
+     * Allows setting lower rate limits in tests.
+     *
+     * @hide
+     */
+    void setLowerRateLimitsForTesting(in boolean enabled);
 }

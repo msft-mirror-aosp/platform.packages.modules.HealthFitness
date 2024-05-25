@@ -81,6 +81,7 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ExportImportDocumentProvider;
@@ -1465,6 +1466,20 @@ public class HealthConnectManager {
     }
 
     /**
+     * Allows setting lower rate limits in tests.
+     *
+     * @hide
+     */
+    @TestApi
+    public void setLowerRateLimitsForTesting(boolean enabled) throws NullPointerException {
+        try {
+            mService.setLowerRateLimitsForTesting(enabled);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Updates the download state of the Health Connect data.
      *
      * <p>The data should've been downloaded and the corresponding download states updated before
@@ -2017,7 +2032,7 @@ public class HealthConnectManager {
      *   <li>When an app with read permissions allowed for the requested IDs and with the {@link
      *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
      *       from background then it will be able to read the medical resources it has read
-     *       permissions for. This has the same size the app can read from oreground.
+     *       permissions for. This has the same size the app can read from foreground.
      *   <li>When an app with all read permissions allowed for the requested IDs calls the API from
      *       foreground then it will be able to read all the corresponding medical resources.
      *   <li>When an app with less read permissions allowed to cover all the requested IDs calls the
@@ -2089,6 +2104,53 @@ public class HealthConnectManager {
         Objects.requireNonNull(request);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Returns {@link MedicalDataSource}s for the provided list of {@link MedicalDataSource} ids.
+     *
+     * <p>The returned list of data sources will be in the same order as the {@code ids}.
+     *
+     * <p>Number of data sources returned by this API will depend based on below factors:
+     *
+     * <ul>
+     *   <li>If an empty list of {@code ids} is provided, no data sources will be returned.
+     *   <li>When an app with any read permission for medical data but without the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from the background then it will be able to read only its own inserted medical data
+     *       sources and will not get medical data sources inserted by other apps. This may be less
+     *       than the requested size.
+     *   <li>When an app with any read permission for medical data and with the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from the background then it will be able to read all medical data sources.
+     *   <li>When an app with any read permission for medical data calls the API from the foreground
+     *       then it will be able to read all medical data sources.
+     *   <li>App with only write permission but no read permission allowed will be able to read only
+     *       its own inserted medical data sources both when in foreground or background. This may
+     *       be less than the requested size.
+     *   <li>An app without read or write permissions will not be able to read any medical data
+     *       sources and the API will throw Security Exception.
+     * </ul>
+     *
+     * @param ids Identifiers on which to perform read operation.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void getMedicalDataSources(
+            @NonNull List<String> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalDataSource>, HealthConnectException> callback) {
+        Objects.requireNonNull(ids);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (ids.isEmpty()) {
+            callback.onResult(List.of());
+            return;
+        }
 
         throw new UnsupportedOperationException("Not implemented");
     }

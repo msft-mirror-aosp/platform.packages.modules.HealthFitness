@@ -49,6 +49,9 @@
 
     <!-- Data access page -->
     <attr name="seeAllEntriesIcon" format="reference"/>
+    <attr name="deleteForeverIcon" format="reference"/>
+    <attr name="checkboxUncheckedIcon" format="reference"/>
+    <attr name="checkboxCheckedIcon" format="reference"/>
 
     <!-- Data entries page -->
     <attr name="nextDayIcon" format="reference"/>

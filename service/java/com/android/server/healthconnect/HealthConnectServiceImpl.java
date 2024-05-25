@@ -1881,6 +1881,18 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     /**
+     * @see HealthConnectManager#setLowerRateLimitsForTesting
+     */
+    @Override
+    public void setLowerRateLimitsForTesting(boolean enabled) {
+        // Continue using the existing test permission because we can't grant new permissions
+        // to shell in a mainline update.
+        mContext.enforceCallingPermission(
+                DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA_PERMISSION, null);
+        RateLimiter.setLowerRateLimitsForTesting(enabled);
+    }
+
+    /**
      * @see HealthConnectManager#updateDataDownloadState
      */
     @Override

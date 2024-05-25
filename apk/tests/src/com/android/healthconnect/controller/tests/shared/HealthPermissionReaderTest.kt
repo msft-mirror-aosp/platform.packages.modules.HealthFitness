@@ -133,13 +133,25 @@ class HealthPermissionReaderTest {
     @Test
     fun getAppsWithOldHealthPermissions_returnsOldSupportedApps() = runTest {
         assertThat(permissionReader.getAppsWithOldHealthPermissions())
-            .containsExactly(OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME)
+            .contains(OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME)
     }
 
     @Test
     fun getAppsWithOldHealthPermissions_returnsDistinctApps() = runTest {
         val apps = permissionReader.getAppsWithOldHealthPermissions()
         assertThat(apps).isEqualTo(apps.distinct())
+    }
+
+    @Test
+    fun getAppsWithOldHealthPermissions_doesNotReturnAppsWithNewPermissions() = runTest {
+        assertThat(permissionReader.getAppsWithOldHealthPermissions())
+            .containsNoneOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2)
+    }
+
+    @Test
+    fun getAppsWithOldHealthPermissions_doesNotReturnUnsupportedApps() = runTest {
+        assertThat(permissionReader.getAppsWithOldHealthPermissions())
+            .doesNotContain(UNSUPPORTED_TEST_APP_PACKAGE_NAME)
     }
 
     @Test

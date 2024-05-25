@@ -110,6 +110,8 @@ filegroup {
     srcs: [
         "src/com/android/healthconnect/controller/tests/data/**/*.java",
         "src/com/android/healthconnect/controller/tests/data/**/*.kt",
+        "src/com/android/healthconnect/controller/selectabledeletion/**/*.kt",
+        "src/com/android/healthconnect/controller/selectabledeletion/**/*.java",
     ],
     visibility: ["//visibility:private"],
 }

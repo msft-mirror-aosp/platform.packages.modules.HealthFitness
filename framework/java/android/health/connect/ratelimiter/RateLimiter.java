@@ -53,7 +53,7 @@ public final class RateLimiter {
 
     private static final ConcurrentMap<Integer, Integer> sLocks = new ConcurrentHashMap<>();
 
-    private static final Map<Integer, Float> QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP =
+    private static final Map<Integer, Integer> QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP =
             new HashMap<>();
     private static final Map<String, Integer> QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP =
             new HashMap<>();
@@ -72,42 +72,56 @@ public final class RateLimiter {
     public static final int DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE = 100000000;
 
     static {
+        initQuotaBuckets();
+    }
+
+    private static void initQuotaBuckets() {
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_24H_FOREGROUND,
-                (float) QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_24H_BACKGROUND,
-                (float) QUOTA_BUCKET_READS_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_15M_FOREGROUND,
-                (float) QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_15M_BACKGROUND,
-                (float) QUOTA_BUCKET_READS_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_DATA_PUSH_LIMIT_PER_APP_15M,
-                (float) DATA_PUSH_LIMIT_PER_APP_15M_DEFAULT_FLAG_VALUE);
+                DATA_PUSH_LIMIT_PER_APP_15M_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_DATA_PUSH_LIMIT_ACROSS_APPS_15M,
-                (float) DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE);
+                DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP.put(
                 RateLimiter.CHUNK_SIZE_LIMIT_IN_BYTES,
                 CHUNK_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP.put(
                 RateLimiter.RECORD_SIZE_LIMIT_IN_BYTES,
                 RECORD_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE);
+    }
+
+    /** Allows setting lower rate limits in tests. */
+    public static void setLowerRateLimitsForTesting(boolean enabled) {
+        initQuotaBuckets();
+
+        if (enabled) {
+            QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.replaceAll((k, v) -> v / 10);
+            QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP.replaceAll((k, v) -> v / 10);
+        }
     }
 
     public static void tryAcquireApiCallQuota(

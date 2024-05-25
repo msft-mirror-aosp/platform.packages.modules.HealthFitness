@@ -45,6 +45,11 @@
        "name": "HealthConnectControllerExtraTests"
     }
   ],
+  "healthfitness-mainline-postsubmit": [
+    {
+      "name": "CtsHealthFitnessDeviceTestCasesRateLimiter"
+    }
+  ],
   "mainline-presubmit": [
     {
       "name": "CtsHealthFitnessDeviceTestCases[com.google.android.healthfitness.apex]"
