@@ -28,8 +28,6 @@
     <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
         android:label="CTS HealthConnect UI tests"
         android:targetPackage="android.healthconnect.cts.ui">
-        <meta-data android:name="listener"
-            android:value="com.android.cts.runner.CtsTestRunListener"/>
     </instrumentation>
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
