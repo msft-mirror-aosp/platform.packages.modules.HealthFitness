@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Няма даных"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Дазволы праграм"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Кіраваць праграмамі і дазволамі"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Праграмы з доступам: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> з <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"У <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> праграм з <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ёсць доступ"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Колькасць праграм з доступам: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Доступ мае <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> праграма"</string>

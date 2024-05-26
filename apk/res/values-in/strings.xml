@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Tidak ada data"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Izin aplikasi"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Kelola aplikasi dan izin Anda"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> dari <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikasi memiliki akses"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> dari <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikasi memiliki akses"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikasi memiliki akses"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikasi memiliki akses"</string>
@@ -805,7 +804,7 @@
     <string name="date_owner_format" msgid="4431196384037157320">"<xliff:g id="DATE">%1$s</xliff:g> • <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="request_route_info_header_title" msgid="4149969049719763190">"Rute latihan termasuk informasi lokasi"</string>
     <string name="request_route_info_who_can_see_data_title" msgid="858355329937113994">"Siapa yang dapat melihat data ini?"</string>
-    <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Hanya aplikasi yang Anda izinkan mengakses rute latihan"</string>
+    <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Hanya aplikasi yang Anda izinkan mengakses rute olahraga"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Bagaimana cara mengelola akses?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Anda dapat mengelola akses aplikasi ke rute latihan di setelan Health Connect"</string>
     <string name="request_route_allow" msgid="4427372851821847274">"Izinkan rute ini"</string>
@@ -813,7 +812,7 @@
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Jangan izinkan"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Selalu izinkan"</string>
     <string name="route_permissions_label" msgid="6293377940884373190">"Akses rute olahraga"</string>
-    <string name="route_permissions_summary" msgid="704859311037374130">"Izinkan <xliff:g id="APP_NAME">%1$s</xliff:g> untuk mengakses rute"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Izinkan <xliff:g id="APP_NAME">%1$s</xliff:g> mengakses rute"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Selalu tanya"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"Jangan izinkan"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Aktifkan kedua jenis data?"</string>
