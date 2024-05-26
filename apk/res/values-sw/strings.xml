@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"Hakuna data"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Ruhusa za programu"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Dhibiti programu na ruhusa zako"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Programu <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> kati ya <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> inaweza kufikia"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Programu <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> kati ya <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> zinaweza kufikia"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Programu <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> zinaweza kufikia"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Programu <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> inaweza kufikia"</string>
@@ -276,7 +275,7 @@
     <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> haitaweza tena kusoma au kuandika data yoyote kutoka Health Connect.\n\nHali hii haitaathiri ruhusa zingine ambazo huenda programu hii inazo, kama vile kamera, maikrofoni, au mahali."</string>
     <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> haitaweza tena kusoma au kuandika data yoyote kutoka Health Connect, ikiwemo data ya chinichini.\n\nHali hii haiathiri ruhusa nyingine ambazo huenda zinatumika kwenye programu huu, kama vile ruhusa za mahali, kamera na maikrofoni."</string>
     <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> haitaweza tena kusoma au kuandika data yoyote kutoka Health Connect, ikiwemo data ya awali.\n\nHali hii haiathiri ruhusa nyingine ambazo huenda zinatumika kwenye programu hii, kama vile ruhusa za mahali, kamera na maikrofoni."</string>
-    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> haitaweza tena kusoma au kuandika data yoyote kutoka Health Connect, ikiwemo data ya chinichini na ya awali.\n\nHali hii haiathiri ruhusa nyingine ambazo huenda zinatumika kwenye programu hii, kama vile ruhusa za mahali, kamera na maikrofoni."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> haitaweza tena kusoma au kuandika data yoyote kutoka kwenye Health Connect, ikiwemo data ya chinichini na ya awali.\n\nHali hii haiathiri ruhusa nyingine ambazo huenda zinatumika kwenye programu hii, kama vile ruhusa za mahali, kamera na maikrofoni."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Futa pia data za <xliff:g id="APP_NAME">%1$s</xliff:g> kwenye Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Siku inayofuata"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Siku iliyochaguliwa"</string>

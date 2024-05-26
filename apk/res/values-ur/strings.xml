@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"کوئی ڈیٹا نہیں ہے"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ایپ کی اجازتیں"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"اپنی ایپس اور اجازتوں کا نظم کریں"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> میں سے <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپس کو رسائی حاصل ہے"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> میں سے <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپس کو رسائی حاصل ہے"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپس کو رسائی حاصل ہے"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ایپ کو رسائی حاصل ہے"</string>
@@ -813,7 +812,7 @@
     <string name="request_route_dont_allow" msgid="1186236234664957228">"اجازت نہ دیں"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"ہمیشہ اجازت دیں"</string>
     <string name="route_permissions_label" msgid="6293377940884373190">"ورزش کے راستوں تک رسائی حاصل کریں"</string>
-    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> کو راستوں تک رسائی کی اجازت دیں"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> کو راستوں تک رسائی کی اجازت دیں"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ہر بار پوچھیں"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"اجازت نہ دیں"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ڈیٹا کی دونوں اقسام کو فعال کریں؟"</string>

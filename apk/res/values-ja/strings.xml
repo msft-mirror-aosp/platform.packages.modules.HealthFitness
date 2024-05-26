@@ -27,8 +27,7 @@
     <string name="no_data" msgid="1906986019249068659">"データがありません"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"アプリの権限"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"アプリと権限を管理します"</string>
-    <!-- no translation found for only_one_connected_app_button_subtitle (1429452274331178121) -->
-    <skip />
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 個のアプリに権限が付与されています"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 個のアプリに権限が付与されています"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個のアプリに権限が付与されています"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個のアプリに権限が付与されています"</string>
