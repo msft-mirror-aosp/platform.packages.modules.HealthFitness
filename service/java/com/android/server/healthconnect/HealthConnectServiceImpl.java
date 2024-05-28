@@ -2120,9 +2120,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     try {
                         enforceIsForegroundUser(userHandle);
                         mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
-                        List<ExportImportDocumentProvider> providers =
-                                DocumentProvidersManager.queryDocumentProviders();
+                        final Context userContext = mContext.createContextAsUser(userHandle, 0);
+                        final List<ExportImportDocumentProvider> providers =
+                                DocumentProvidersManager.queryDocumentProviders(userContext);
                         callback.onResult(providers);
+                    } catch (SecurityException securityException) {
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        throw new HealthConnectException(
+                                HealthConnectException.ERROR_SECURITY,
+                                securityException.toString());
                     } catch (HealthConnectException healthConnectException) {
                         Slog.e(TAG, "HealthConnectException: ", healthConnectException);
                         tryAndThrowException(

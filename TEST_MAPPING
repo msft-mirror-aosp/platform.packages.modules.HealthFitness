@@ -176,5 +176,10 @@
     {
        "name": "HealthConnectControllerExtraTests"
     }
+  ],
+  "postsubmit": [
+      {
+        "name": "HealthFitnessIntegrationExportImportTests"
+      }
   ]
 }
