@@ -20,6 +20,10 @@ import android.health.connect.Constants.DEFAULT_INT
 import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
+import com.android.healthconnect.controller.exportimport.api.DocumentProvider
+import com.android.healthconnect.controller.exportimport.api.DocumentProviderInfo
+import com.android.healthconnect.controller.exportimport.api.DocumentProviderRoot
+import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_DAILY
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_MONTHLY
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_WEEKLY
@@ -30,6 +34,7 @@ import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExportSettingsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.tests.utils.di.FakeQueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeUpdateExportSettingsUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -55,6 +60,14 @@ class ExportSettingsViewModelTest {
         private val TEST_SALT = byteArrayOf(5, 6, 7, 8)
         private val TEST_EXPORT_FREQUENCY_IN_DAYS = 7
         private val TEST_URI: Uri = Uri.parse("content://com.android.server.healthconnect/testuri")
+
+        private val TEST_DOCUMENT_PROVIDER_TITLE = "Document provider"
+        private val TEST_DOCUMENT_PROVIDER_AUTHORITY = "documentprovider.com"
+        private val TEST_DOCUMENT_PROVIDER_ICON_RESOURCE = 1
+        private val TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY = "Account"
+        private val TEST_DOCUMENT_PROVIDER_ROOT_URI =
+            Uri.parse(
+                "content://android.healthconnect.tests.documentprovider.documents/root/account")
     }
 
     private val testDispatcher = StandardTestDispatcher()
@@ -66,6 +79,7 @@ class ExportSettingsViewModelTest {
     private val loadExportSettingsUseCase = FakeLoadExportSettingsUseCase()
     private val updateExportSettingsUseCase = FakeUpdateExportSettingsUseCase()
     private val loadScheduledExportStatusUseCase = FakeLoadScheduledExportStatusUseCase()
+    private val queryDocumentProvidersUseCase = FakeQueryDocumentProvidersUseCase()
 
     @Before
     fun setup() {
@@ -75,7 +89,8 @@ class ExportSettingsViewModelTest {
             ExportSettingsViewModel(
                 loadExportSettingsUseCase,
                 updateExportSettingsUseCase,
-                loadScheduledExportStatusUseCase)
+                loadScheduledExportStatusUseCase,
+                queryDocumentProvidersUseCase)
     }
 
     @After
@@ -104,7 +119,9 @@ class ExportSettingsViewModelTest {
         viewModel.storedScheduledExportStatus.observeForever(testObserver)
         val scheduledExportStatus =
             ScheduledExportStatus(
-                Instant.ofEpochMilli(100), HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, TEST_EXPORT_FREQUENCY_IN_DAYS)
+                Instant.ofEpochMilli(100),
+                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS,
+                TEST_EXPORT_FREQUENCY_IN_DAYS)
         loadScheduledExportStatusUseCase.updateExportStatus(scheduledExportStatus)
 
         viewModel.loadScheduledExportStatus()
@@ -112,6 +129,29 @@ class ExportSettingsViewModelTest {
 
         assertThat(testObserver.getLastValue())
             .isEqualTo(ScheduledExportUiStatus.WithData(scheduledExportStatus))
+    }
+
+    @Test
+    fun loadDocumentProviders() = runTest {
+        val testObserver = TestObserver<DocumentProviders>()
+        viewModel.documentProviders.observeForever(testObserver)
+        val documentProviders =
+            listOf(
+                DocumentProvider(
+                    DocumentProviderInfo(
+                        TEST_DOCUMENT_PROVIDER_TITLE,
+                        TEST_DOCUMENT_PROVIDER_AUTHORITY,
+                        TEST_DOCUMENT_PROVIDER_ICON_RESOURCE),
+                    listOf(
+                        DocumentProviderRoot(
+                            TEST_DOCUMENT_PROVIDER_ROOT_SUMMARY, TEST_DOCUMENT_PROVIDER_ROOT_URI))))
+        queryDocumentProvidersUseCase.updateDocumentProviders(documentProviders)
+
+        viewModel.loadDocumentProviders()
+        advanceUntilIdle()
+
+        assertThat(testObserver.getLastValue())
+            .isEqualTo(DocumentProviders.WithData(documentProviders))
     }
 
     @Test

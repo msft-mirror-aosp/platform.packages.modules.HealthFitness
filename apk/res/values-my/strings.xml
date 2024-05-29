@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"အရန်သိမ်းခြင်း၊ ပြန်ယူခြင်း"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ထုတ်ယူခြင်း၊ ထည့်သွင်းခြင်း"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"စီစဉ်ထားသည့် ထုတ်ယူခြင်း"</string>
-    <string name="restore_data" msgid="3401173690437871417">"ဒေတာ ပြန်ယူရန်"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"ထုတ်ယူထားသော ဒေတာကို ယခင်က ဖွင့်ထားသည်"</string>
+    <string name="import_data" msgid="404502315533233094">"ဒေတာထည့်သွင်းရန်"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"ယခင်က ထုတ်ယူထားသော ဖိုင်မှ ဒေတာ ပြန်ယူရန်"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"‘ထုတ်ယူခြင်း’ ဖြင့် ဒေတာသိမ်းနိုင်သဖြင့် ယင်းဒေတာကို ဖုန်းအသစ်သို့ လွှဲပြောင်းနိုင်သည်"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ပိုမိုလေ့လာရန်"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ဖွင့်"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ပိတ်"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"အကြိမ်ရေ ရွေးရန်"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"စကားဝှက် ပြန်ရိုက်ပါ"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"စကားဝှက်များ မတူညီပါ"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"စကားဝှက်မေ့သွားပြီး သင့်ဖုန်းပျောက်သွားပါက ‘ကျန်းမာရေး အချိတ်အဆက်’ သည် သိမ်းထားသော သင့်ဒေတာကို ပြန်လည်ရယူရာတွင် မကူညီနိုင်ပါ။"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"စကားဝှက်ရိုက်ရန်"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect ဒေတာကို ထည့်သွင်းရန် သင်၏ အသွင်ဝှက်ခြင်းစကားဝှက် လိုအပ်သည်"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"စကားဝှက်မေ့နေသလား။"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"စကားဝှက်"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"သင့်တွင် ဖုန်းအဟောင်းရှိသေးပါက ဒေတာကို စကားဝှက်အသစ်ဖြင့် ပြန်ထုတ်ယူနိုင်သည်"</string>
     <string name="export_back_button" msgid="3550795479165524982">"နောက်သို့"</string>
     <string name="export_next_button" msgid="657930567137105172">"ရှေ့သို့"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"မလုပ်တော့"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ရှေ့သို့"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"၎င်းမှ ထည့်သွင်းခြင်း-"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect စတင်အသုံးပြုခြင်း"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect သည် သင်၏ကျန်းမာရေးနှင့် ကြံ့ခိုင်ရေးဒေတာကို သိမ်းပြီး ၎င်းဖြင့် သင့်ဖုန်းပေါ်ရှိ အက်ပ်အမျိုးမျိုးကို ရိုးရှင်းစွာစင့်ခ်လုပ်နိုင်သည်"</string>
     <string name="share_data" msgid="3481932156368883946">"သင့်အက်ပ်များနှင့် ဒေတာမျှဝေရန်"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"နောက်သို့"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"စတင်ရန်"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ဒေတာဖျက်ရန်"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"ဖျက်မည့်ဒေတာ ရွေးခြင်း"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ရှေ့သို့"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"၎င်းက ရွေးချယ်ထားသည့်အချိန်ကာလအတွင်း Health Connect တွင် ထည့်ထားသည့် ဒေတာအားလုံးကို အပြီးဖျက်သည်"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ဤအက်ပ်အတွက် နောက်ခံတွင်အသုံးပြုသောဒေတာ (သို့) ယခင်ဒေတာသုံးခွင့် ဖွင့်ရန် အနည်းဆုံး ဖတ်ခွင့်တစ်ခုပေးပါ"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ဤအက်ပ်အတွက် နောက်ကွယ်၌ အသုံးပြုခွင့် ဖွင့်ရန် အနည်းဆုံး ဖတ်ခွင့်တစ်ခုပေးပါ"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ဤအက်ပ်အတွက် ယခင်ဒေတာသုံးခွင့် ဖွင့်ရန် အနည်းဆုံး ဖတ်ခွင့်တစ်ခု ပေးပါ"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

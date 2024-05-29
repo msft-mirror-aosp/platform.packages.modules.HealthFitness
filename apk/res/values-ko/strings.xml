@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"백업 및 복원"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"내보내기 및 가져오기"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"예약된 내보내기"</string>
-    <string name="restore_data" msgid="3401173690437871417">"데이터 복원"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"이전에 내보낸 데이터 로드"</string>
+    <string name="import_data" msgid="404502315533233094">"데이터 가져오기"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"이전에 내보낸 파일에서 데이터를 복원합니다."</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"내보내기를 사용하면 데이터를 저장하여 새 휴대전화로 데이터를 전송할 수 있습니다."</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"자세히 알아보기"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"사용"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"사용 안함"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"내보내기 빈도 선택"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"비밀번호 확인"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"비밀번호가 일치하지 않음"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"비밀번호를 잊어버리고 휴대전화를 분실한 경우 헬스 커넥트는 저장된 데이터를 복구하는 데 도움을 줄 수 없습니다."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"비밀번호 입력"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"헬스 커넥트 데이터를 가져오려면 암호화 비밀번호가 필요합니다."</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"비밀번호를 잊어버리셨나요?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"비밀번호"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"이전에 사용한 휴대전화를 아직 가지고 있는 경우, 새 비밀번호를 사용해 데이터를 다시 내보낼 수 있습니다."</string>
     <string name="export_back_button" msgid="3550795479165524982">"뒤로"</string>
     <string name="export_next_button" msgid="657930567137105172">"다음"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"취소"</string>
     <string name="import_next_button" msgid="5706322508691854289">"다음"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"다음 위치에서 가져오기"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"헬스 커넥트 시작하기"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"헬스 커넥트는 건강 및 피트니스 데이터를 저장하므로 휴대전화에 설치된 여러 앱을 간편하게 동기화할 수 있습니다."</string>
     <string name="share_data" msgid="3481932156368883946">"앱과 데이터 공유"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"뒤로"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"시작하기"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"데이터 삭제"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"삭제할 데이터 선택"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"다음"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"선택한 기간 동안 헬스 커넥트에 추가된 모든 데이터를 완전히 삭제합니다."</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"이 앱의 백그라운드 또는 과거 데이터 액세스를 사용 설정하려면 읽기 권한을 1개 이상 사용 설정하세요."</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"이 앱의 백그라운드 액세스를 사용 설정하려면 읽기 권한을 1개 이상 사용 설정하세요."</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"이 앱의 과거 데이터 액세스를 사용 설정하려면 읽기 권한을 1개 이상 사용 설정하세요."</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

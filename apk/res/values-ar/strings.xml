@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"الاحتفاظ بنسخة احتياطية والاستعادة"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"التصدير والاستيراد"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"عملية التصدير المُجدوَلة"</string>
-    <string name="restore_data" msgid="3401173690437871417">"استعادة البيانات"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"تحميل البيانات التي تم تصديرها سابقًا"</string>
+    <string name="import_data" msgid="404502315533233094">"استيراد البيانات"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"يمكنك استعادة البيانات من ملف تم تصديره سابقًا"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"تتيح لك ميزة \"التصدير\" إمكانية حفظ البيانات لنقلها إلى هاتف جديد"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"مزيد من المعلومات"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"مفعَّل"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"غير مفعَّل"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"اختيار معدّل التكرار"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"أدخِل كلمة المرور مرة أخرى"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"كلمات المرور غير متطابقة"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"في حال نسيان كلمة المرور وفقدان الهاتف، لا يمكن لتطبيق Health Connect المساعدة في استرداد بياناتك المحفوظة."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"كتابة كلمة المرور"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"يجب استخدام كلمة المرور الخاصة بالتشفير لاستيراد بيانات Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"هل نسيت كلمة المرور؟"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"كلمة المرور"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"إذا كنت لا تزال تستخدم هاتفك القديم، يمكنك إعادة تصدير بياناتك باستخدام كلمة مرور جديدة"</string>
     <string name="export_back_button" msgid="3550795479165524982">"رجوع"</string>
     <string name="export_next_button" msgid="657930567137105172">"التالي"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"إلغاء"</string>
     <string name="import_next_button" msgid="5706322508691854289">"التالي"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"الاستيراد من"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على هاتفك."</string>
     <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"الرجوع"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"بدء"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"حذف البيانات"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"اختيار البيانات المُراد حذفها"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"التالي"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"يؤدي اختيار فترة زمنية من الفترات أدناه إلى حذف جميع البيانات المُضافة إلى Health Connect نهائيًا خلال تلك الفترة."</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات في الخلفية أو البيانات السابقة"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات في الخلفية"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات السابقة"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

@@ -322,8 +322,14 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"காப்புப் பிரதி மற்றும் மீட்டெடுத்தல்"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ஏற்றுதல் மற்றும் இறக்குதல்"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"திட்டமிடப்பட்ட பதிவேற்றம்"</string>
-    <string name="restore_data" msgid="3401173690437871417">"தரவை மீட்டெடுத்தல்"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"முன்பு ஏற்றிய தரவைக் காட்டும்"</string>
+    <!-- no translation found for import_data (404502315533233094) -->
+    <skip />
+    <!-- no translation found for import_data_description (4040178599441724296) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_footer_body_text (4854718727539851909) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_footer_link_text (5862384033902147721) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"இயக்கப்பட்டுள்ளது"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"முடக்கப்பட்டுள்ளது"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"கால இடைவெளியைத் தேர்வுசெய்யுங்கள்"</string>
@@ -340,10 +346,22 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"கடவுச்சொல்லை மீண்டும் டைப் செய்யவும்"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"கடவுச்சொற்கள் பொருந்தவில்லை"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"உங்கள் கடவுச்சொல்லை மறந்துவிட்டாலோ மொபைலைத் தொலைத்துவிட்டாலோ, சேமிக்கப்பட்ட உங்கள் தரவை மீட்டெடுக்க Health Connect உதவாது."</string>
+    <!-- no translation found for import_decryption_title (396608799208392844) -->
+    <skip />
+    <!-- no translation found for import_decryption_description (202259030890690376) -->
+    <skip />
+    <!-- no translation found for import_decryption_forgotten_password_link_text (2320323034848292225) -->
+    <skip />
+    <!-- no translation found for import_password_hint (5158553589723883063) -->
+    <skip />
+    <!-- no translation found for import_decrypt_footer_body_text (1891722629872724009) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"பின்செல்"</string>
     <string name="export_next_button" msgid="657930567137105172">"அடுத்து"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ரத்துசெய்"</string>
     <string name="import_next_button" msgid="5706322508691854289">"அடுத்து"</string>
+    <!-- no translation found for import_source_location_title (4444467438013749461) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>
@@ -353,6 +371,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"பின்செல்"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"தொடங்குக"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"தரவை நீக்கும்"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"நீக்குவதற்குத் தரவைத் தேர்வுசெய்யுங்கள்"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"அடுத்து"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"தேர்வுசெய்யப்பட்ட காலகட்டத்தில் Health Connectடில் சேர்க்கப்பட்ட அனைத்துத் தரவையும் இது நிரந்தரமாக நீக்கும்"</string>
@@ -912,4 +934,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"இந்த ஆப்ஸுக்கான பின்புல அல்லது கடந்தகாலத் தரவு அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"இந்த ஆப்ஸுக்கான பின்புல அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"இந்த ஆப்ஸுக்கான கடந்தகாலத் தரவு அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

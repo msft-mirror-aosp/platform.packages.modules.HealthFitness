@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sao lưu và khôi phục"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Xuất và nhập"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Lần xuất theo lịch"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Khôi phục dữ liệu"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Tải dữ liệu đã xuất trước đây"</string>
+    <string name="import_data" msgid="404502315533233094">"Nhập dữ liệu"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Khôi phục dữ liệu từ tệp đã xuất trước đó"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Tính năng xuất giúp bạn lưu dữ liệu của mình để có thể chuyển dữ liệu đó sang chiếc điện thoại mới"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Tìm hiểu thêm"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Đang bật"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Đang tắt"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Chọn tần suất"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Nhập lại mật khẩu"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Mật khẩu không khớp"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Nếu bạn quên mật khẩu và mất điện thoại, Health Connect không thể giúp bạn khôi phục dữ liệu đã lưu."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Nhập mật khẩu"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Cần có mật khẩu mã hoá để nhập dữ liệu của bạn trên Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Bạn quên mật khẩu?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Mật khẩu"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Nếu vẫn còn chiếc điện thoại cũ, bạn có thể dùng mật khẩu mới để xuất lại dữ liệu"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Quay lại"</string>
     <string name="export_next_button" msgid="657930567137105172">"Tiếp theo"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Huỷ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Tiếp theo"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Nhập từ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Làm quen với Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Quay lại"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Bắt đầu"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Xoá dữ liệu"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Chọn dữ liệu cần xoá"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Tiếp theo"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Thao tác này sẽ xoá vĩnh viễn tất cả dữ liệu được thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Cần cấp ít nhất một quyền đọc để bật quyền truy cập khi ở nền sau hoặc quyền truy cập vào dữ liệu trước đây của ứng dụng"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Cần cấp ít nhất một quyền đọc để bật quyền truy cập khi ở nền sau của ứng dụng"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Cần cấp ít nhất một quyền đọc để bật quyền truy cập vào dữ liệu trước đây của ứng dụng"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

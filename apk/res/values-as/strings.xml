@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"বেকআপ লওক আৰু পুনঃস্থাপন কৰক"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ৰপ্তানি আৰু আমদানি কৰক"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"সময়সূচী নিৰ্ধাৰিত ৰপ্তানি"</string>
-    <string name="restore_data" msgid="3401173690437871417">"ডেটা পুনঃস্থাপন কৰক"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"পূৰ্বে ৰপ্তানি কৰা ডেটা ল’ড কৰক"</string>
+    <string name="import_data" msgid="404502315533233094">"ডেটা আমদানি কৰক"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"পূৰ্বতে ৰপ্তানি কৰা ফাইলৰ পৰা ডেটা পুনঃস্থাপন কৰক"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ৰপ্তানিয়ে আপোনাক আপোনাৰ ডেটা ছেভ কৰিবলৈ দিয়ে যাতে আপুনি সেয়া কোনো নতুন ফ’নলৈ স্থানান্তৰ কৰিব পাৰে"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"অধিক জানক"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"অন আছে"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"অফ আছে"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"সঘনতা বাছনি কৰক"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"পাছৱৰ্ডটো পুনৰ দিয়ক"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"পাছৱৰ্ড মিলা নাই"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"যদি আপুনি নিজৰ পাছৱৰ্ড পাহৰিছে আৰু ফ’নটো হেৰুৱায়, আপোনাৰ ছেভ কৰি থোৱা ডেটা উদ্ধাৰ কৰাত আপোনাক Health Connectএ সহায় কৰিব নোৱাৰে।"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"পাছৱৰ্ড টাইপ কৰক"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"আপোনাৰ Health Connectৰ ডেটা আমদানি কৰিবলৈ আপোনাৰ এনক্ৰিপশ্বনৰ পাছৱৰ্ডৰ প্ৰয়োজন"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"পাছৱৰ্ড পাহৰিলে নেকি?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"পাছৱৰ্ড"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"যদি আপোনাৰ ওচৰত এতিয়াও আপোনাৰ পুৰণি ফ’নটো আছে, তেন্তে আপুনি এটা নতুন পাছৱৰ্ডৰ জৰিয়তে আপোনাৰ ডেটা পুনৰ ৰপ্তানি কৰিব পাৰে"</string>
     <string name="export_back_button" msgid="3550795479165524982">"উভতি যাওক"</string>
     <string name="export_next_button" msgid="657930567137105172">"পৰৱৰ্তী"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"বাতিল কৰক"</string>
     <string name="import_next_button" msgid="5706322508691854289">"পৰৱৰ্তী"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ইয়াৰ পৰা আমদানি কৰক"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ব্যৱহাৰ কৰা আৰম্ভ কৰক"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connectএ আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চা সম্পৰ্কীয় ডেটা ষ্ট’ৰ কৰি আপোনাক আপোনাৰ ফ’নত থকা বিভিন্ন এপ্‌সমূহ ছিংক কৰাৰ সহজ উপায় প্ৰদান কৰে"</string>
     <string name="share_data" msgid="3481932156368883946">"আপোনাৰ এপ্‌সমূহৰ সৈতে ডেটা শ্বেয়াৰ কৰক"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"উভতি যাওক"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"আৰম্ভ কৰক"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ডেটা মচক"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"মচিবলৈ তাৰিখ বাছনি কৰক"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"পৰৱৰ্তী"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"এইটোৱে বাছনি কৰা সময় অৱধিৰ ভিতৰত Health Connectত যোগ দিয়া আটাইবোৰ ডেটা স্থায়ীভাৱে মচে"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"এই এপ্‌টোৰ বাবে নেপথ্য অথবা পূৰ্বৰ ডেটা এক্সেছ কৰাৰ সুবিধা অন কৰিবলৈ অতি কমেও এটা পঢ়াৰ অনুমতি সক্ষম কৰক"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"এই এপ্‌টোৰ বাবে নেপথ্য এক্সেছ কৰাৰ সুবিধা অন কৰিবলৈ অতি কমেও এটা পঢ়াৰ অনুমতি সক্ষম কৰক"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"এই এপ্‌টোৰ বাবে পূৰ্বৰ ডেটা এক্সেছ কৰাৰ সুবিধা অন কৰিবলৈ অতি কমেও এটা পঢ়াৰ অনুমতি সক্ষম কৰক"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

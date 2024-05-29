@@ -38,11 +38,13 @@ import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriori
 import com.android.healthconnect.controller.datasources.api.ILoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.ISleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
+import com.android.healthconnect.controller.exportimport.api.DocumentProvider
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
 import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
 import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
@@ -471,7 +473,7 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 
 class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
     private var exportStatus: ScheduledExportStatus =
-            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+        ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
 
     fun reset() {
         exportStatus = ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
@@ -483,6 +485,22 @@ class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
 
     override suspend fun invoke(): ExportUseCaseResult<ScheduledExportStatus> {
         return ExportUseCaseResult.Success(exportStatus)
+    }
+}
+
+class FakeQueryDocumentProvidersUseCase : IQueryDocumentProvidersUseCase {
+    private var documentProviders: List<DocumentProvider> = listOf()
+
+    fun reset() {
+        documentProviders = listOf()
+    }
+
+    fun updateDocumentProviders(documentProviders: List<DocumentProvider>) {
+        this.documentProviders = documentProviders
+    }
+
+    override suspend fun invoke(): ExportUseCaseResult<List<DocumentProvider>> {
+        return ExportUseCaseResult.Success(documentProviders)
     }
 }
 
