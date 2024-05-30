@@ -323,8 +323,8 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"නිර්යාත සහ ආයාත කිරීම"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"කාලසටහන්ගත නිර්යාත කිරීම"</string>
     <string name="import_data" msgid="404502315533233094">"දත්ත ආයාත කරන්න"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"කලින් නිර්යාත කළ ගොනුවකින් දත්ත ප්‍රතිසාධනය කරන්න"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"නිර්යාත කිරීම ඔබට ඔබේ දත්ත සුරැකීමට ඉඩ දෙන අතර, එවිට ඔබට එය නව දුරකථනයකට මාරු කළ හැක"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"කලින් නිර්යාත කළ ගොනුවකින් දත්ත ප්‍රතිසාධන කරන්න"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ඔබට එය නව දුරකථනයකට මාරු කළ හැකි වීමට, නිර්යාතය ඔබට ඔබේ දත්ත සුරැකීමට ඉඩ දෙයි"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"තව දැන ගන්න"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ක්‍රියාත්මකයි"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ක්‍රියාවිරහිතයි"</string>
@@ -343,15 +343,15 @@
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"මුරපද නොගැළපේ"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"ඔබට ඔබේ මුරපදය අමතක වී ඔබේ දුරකථනය නැති වුවහොත්, Health Connect හට ඔබේ සුරැකි දත්ත ප්‍රතිසාධනය කිරීමට උදවු කළ නොහැක."</string>
     <string name="import_decryption_title" msgid="396608799208392844">"මුරපදය ටයිප් කරන්න"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"ඔබේ Health Connect දත්ත ආයාත කිරීමට ඔබේ සංකේතන මුරපදය අවශ්‍ය වේ"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"මුරපදය අමතක ද?"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"ඔබේ Health Connect දත්ත ආයාත කිරීමට ඔබේ සංකේතන මුරපදය අවශ්‍ය ය"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"මුරපදය අමතකද?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"මුරපදය"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"ඔබ සතුව තවමත් ඔබේ පැරණි දුරකථනය තිබේ නම්, ඔබට නව මුරපදයකින් ඔබේ දත්ත නැවත නිර්යාත කළ හැක"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"ඔබ සතුව තවම ඔබේ පරණ දුරකථනය තිබේ නම්, ඔබට නව මුරපදයකින් ඔබේ දත්ත නැවත නිර්යාත කළ හැක"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ආපසු"</string>
     <string name="export_next_button" msgid="657930567137105172">"මීළඟ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"අවලංගු කරන්න"</string>
     <string name="import_next_button" msgid="5706322508691854289">"මීළඟ"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"වෙතින් ආයාත කරන්න"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"මෙයින් ආයාත කරන්න"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect සමග පටන් ගන්න"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ඔබට ඔබේ දුරකථනයේ විවිධ යෙදුම් සමමුහූර්ත කිරීමට සරල ක්‍රමයක් ලබා දෙමින්, ඔබේ සෞඛ්‍ය සහ යෝග්‍යතා දත්ත ගබඩා කරයි"</string>
     <string name="share_data" msgid="3481932156368883946">"ඔබේ යෙදුම් සමග දත්ත බෙදා ගන්න"</string>

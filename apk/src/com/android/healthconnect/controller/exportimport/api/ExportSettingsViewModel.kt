@@ -34,11 +34,13 @@ class ExportSettingsViewModel
 constructor(
     private val loadExportSettingsUseCase: ILoadExportSettingsUseCase,
     private val updateExportSettingsUseCase: IUpdateExportSettingsUseCase,
-    private val loadScheduledExportStatusUseCase: ILoadScheduledExportStatusUseCase
+    private val loadScheduledExportStatusUseCase: ILoadScheduledExportStatusUseCase,
+    private val queryDocumentProvidersUseCase: IQueryDocumentProvidersUseCase
 ) : ViewModel() {
     private val _storedExportSettings = MutableLiveData<ExportSettings>()
     private val _previousExportFrequency = MutableLiveData<ExportFrequency?>()
     private val _storedScheduledExportStatus = MutableLiveData<ScheduledExportUiStatus>()
+    private val _documentProviders = MutableLiveData<DocumentProviders>()
 
     /** Holds the export settings that is stored in the Health Connect service. */
     val storedExportSettings: LiveData<ExportSettings>
@@ -52,9 +54,14 @@ constructor(
     val storedScheduledExportStatus: LiveData<ScheduledExportUiStatus>
         get() = _storedScheduledExportStatus
 
+    /** Holds the supported document providers. */
+    val documentProviders: LiveData<DocumentProviders>
+        get() = _documentProviders
+
     init {
         loadExportSettings()
         loadScheduledExportStatus()
+        loadDocumentProviders()
     }
 
     /** Triggers a load of export settings. */
@@ -88,13 +95,19 @@ constructor(
         }
     }
 
-    /**
-     * Updates the secret key and salt used for encrypting data in scheduled exports of Health
-     * Connect data.
-     */
-    fun updateExportSecretKey(secretKey: ByteArray, salt: ByteArray) {
-        val settings = ScheduledExportSettings.withSecretKey(secretKey, salt)
-        updateExportSettings(settings)
+    /** Triggers a query of the document providers. */
+    fun loadDocumentProviders() {
+        _documentProviders.postValue(DocumentProviders.Loading)
+        viewModelScope.launch {
+            when (val result = queryDocumentProvidersUseCase.invoke()) {
+                is ExportUseCaseResult.Success -> {
+                    _documentProviders.postValue(DocumentProviders.WithData(result.data))
+                }
+                is ExportUseCaseResult.Failed -> {
+                    _documentProviders.postValue(DocumentProviders.LoadingFailed)
+                }
+            }
+        }
     }
 
     /** Updates the previous frequency of scheduled exports of Health Connect data. */

@@ -351,7 +351,7 @@
     <string name="export_next_button" msgid="657930567137105172">"Dalje"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Odustani"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Dalje"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Uvoz iz"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Uvoz iz:"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Početak upotrebe Health Connecta"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect sprema podatke o vašem zdravlju i fitnessu te vam pruža jednostavan način za sinkronizaciju različitih aplikacija na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke s aplikacijama"</string>

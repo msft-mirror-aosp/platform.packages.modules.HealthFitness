@@ -323,7 +323,7 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспорттау және импорттау"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Жоспарланған экспорттау"</string>
     <string name="import_data" msgid="404502315533233094">"Деректерді импорттау"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Бұрын экспортталған файлдағы деректерді қалпына келтіру"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Алдыңғы экспортталған файлдағы деректерді қалпына келтіру"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Экспорттау функциясы деректерді сақтап, жаңа телефонға тасымалдауға мүмкіндік береді."</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Толық ақпарат"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Қосулы"</string>
@@ -351,7 +351,7 @@
     <string name="export_next_button" msgid="657930567137105172">"Келесі"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Бас тарту"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Келесі"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Импорттау орны"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Келесі орыннан импорттау"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect қолданбасымен жұмысты бастау"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect денсаулық және фитнес деректерін сақтап, телефонда әртүрлі қолданбаны синхрондаудың қарапайым жолын ұсынады."</string>
     <string name="share_data" msgid="3481932156368883946">"Деректерді қолданбалармен бөлісу"</string>

@@ -324,7 +324,7 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Schemalagd export"</string>
     <string name="import_data" msgid="404502315533233094">"Importera data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Återställ data från en tidigare exporterad fil"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Med export kan du spara din data så att du kan överföra den till en ny telefon"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Genom att exportera kan du spara data så att du kan överföra den till en ny telefon"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Läs mer"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"På"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Av"</string>
@@ -342,7 +342,7 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Upprepa lösenordet"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Lösenorden matchar inte"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Om du glömmer lösenordet eller tappar bort telefonen kan Health Connect inte hjälpa dig att återställa din sparade data."</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Ange lösenordet"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Ange lösenord"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Ditt krypterade lösenord krävs för att importera din Health Connect-data"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Har du glömt lösenordet?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Lösenord"</string>

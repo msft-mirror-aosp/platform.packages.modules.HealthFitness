@@ -90,7 +90,6 @@
         <item name="importIcon">@drawable/ic_import</item>
         <item name="importDataIcon">@drawable/ic_import_data</item>
 
-        <item name="lockIcon">@drawable/ic_lock</item>
         <item name="warningIcon">@drawable/ic_warning</item>
         <item name="passwordIcon">@drawable/ic_password</item>
         <item name="infoIcon">@drawable/ic_info</item>

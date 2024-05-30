@@ -322,7 +322,7 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Varmuuskopioiminen ja palauttaminen"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Vienti ja tuonti"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ajoitettu vienti"</string>
-    <string name="import_data" msgid="404502315533233094">"Tuo tiedot"</string>
+    <string name="import_data" msgid="404502315533233094">"Tuo dataa"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Palauta dataa aiemmin viedystä tiedostosta"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Viennin avulla voit tallentaa dataa ja siirtää sen uuteen puhelimeen"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Lue lisää"</string>
@@ -351,7 +351,7 @@
     <string name="export_next_button" msgid="657930567137105172">"Seuraava"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Peru"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Seuraava"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Valitse, mistä tuodaan:"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Tuo täältä:"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Aloita Health Connectin käyttö"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect tallentaa terveys‑ ja kuntoiludatasi ja tarjoaa helpon tavan synkronoida eri sovelluksia puhelimellasi"</string>
     <string name="share_data" msgid="3481932156368883946">"Jaa dataa sovelluksille"</string>

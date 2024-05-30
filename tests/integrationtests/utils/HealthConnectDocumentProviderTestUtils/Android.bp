@@ -27,4 +27,5 @@ java_library {
         "platform-test-annotations",
     ],
     sdk_version: "test_current",
+    min_sdk_version: "34",
 }

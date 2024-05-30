@@ -346,7 +346,7 @@
     <string name="import_decryption_description" msgid="202259030890690376">"Health Connect-ի ձեր տվյալները ներմուծելու համար անհրաժեշտ է օգտագործել գաղտնագրման ձեր գաղտնաբառը"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Մոռացե՞լ եք գաղտնաբառը"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Գաղտնաբառ"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Եթե դեռ ունեք հին հեռախոսը, կարող եք նոր գաղտնաբառի միջոցով նորից արտահանել տվյալները"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Եթե ձեր հին հեռախոսը դեռ ձեզ մոտ է, կարող եք նոր գաղտնաբառի միջոցով նորից արտահանել տվյալները"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Հետ"</string>
     <string name="export_next_button" msgid="657930567137105172">"Առաջ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Չեղարկել"</string>

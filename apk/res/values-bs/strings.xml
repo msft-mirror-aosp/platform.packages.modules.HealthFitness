@@ -346,12 +346,12 @@
     <string name="import_decryption_description" msgid="202259030890690376">"Da uvezete podatke Health Connecta, potrebna je lozinka za šifriranje"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Zaboravili ste lozinku?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Lozinka"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ako još uvijek imate stari telefon, možete ponovo uvesti podatke s novom lozinkom"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ako još uvijek imate stari telefon, možete ponovo izvesti podatke s novom lozinkom"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprijed"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Otkaži"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Naprijed"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Uvezite sa"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Uvezite s lokacije"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Počnite koristiti Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke sa svojim aplikacijama"</string>

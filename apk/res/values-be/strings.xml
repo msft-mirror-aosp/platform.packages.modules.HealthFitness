@@ -323,8 +323,8 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспарт і імпарт"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Запланаваны экспарт"</string>
     <string name="import_data" msgid="404502315533233094">"Імпартаваць даныя"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Аднавіць даныя з файла, які быў экспартаваны раней"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Экспарт дазваляе захоўваць даныя, дзякуючы чаму вы можаце перанесці іх на новы тэлефон"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Аднавіць даныя з экспартаванага раней файла"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Функцыя \"Экспарт\" дазваляе захаваць даныя і затым перанесці іх на новы тэлефон"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Даведацца больш"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Уключана"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Выключана"</string>
@@ -343,15 +343,15 @@
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Паролі не супадаюць"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Калі вы забудзеце пароль і згубіце тэлефон, то не зможаце аднавіць захаваныя даныя праз Здароўе і спорт."</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Увядзіце пароль"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Для імпарту даных праграмы \"Здароўе і спорт\" патрабуецца пароль шыфравання"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Не памятаеце пароль?"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Каб імпартаваць даныя праграмы \"Здароўе і спорт\", неабходна ўвесці пароль, зададзены для шыфравання"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Забылі пароль?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Пароль"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Калі ў вас яшчэ застаўся стары тэлефон, вы можаце паўторна экспартаваць даныя, увёўшы новы пароль"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Калі стары тэлефон яшчэ ў вас, вы можаце паўторна экспартаваць даныя, увёўшы новы пароль"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далей"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Скасаваць"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Далей"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Адкуль імпартаваць"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Шлях для імпарту"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на тэлефоне"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>
@@ -361,10 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Пачаць"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Выдаліць даныя"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Увайсці ў стан выдалення"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Выйсці са стану выдалення"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Выберыце даныя для выдалення"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Далей"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Будуць выдалены ўсе даныя, дададзеныя ў праграму \"Здароўе і спорт\" у выбраны перыяд часу"</string>
@@ -924,14 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Каб уключыць доступ у фонавым рэжыме або доступ да мінулых даных для гэтай праграмы, дайце хаця б адзін дазвол на чытанне"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Каб уключыць доступ у фонавым рэжыме для гэтай праграмы, дайце хаця б адзін дазвол на чытанне"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Каб уключыць доступ да мінулых даных для гэтай праграмы, дайце хаця б адзін дазвол на чытанне"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Выдаліць назаўсёды ўсе даныя з праграмы \"Здароўе і спорт\"?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Выдаліць назаўсёды выбраныя даныя з праграмы \"Здароўе і спорт\"?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Усе даныя выдалены"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>: даныя выдалены"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Выдалена элементаў: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
 </resources>

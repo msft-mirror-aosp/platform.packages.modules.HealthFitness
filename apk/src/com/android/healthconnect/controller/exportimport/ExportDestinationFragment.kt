@@ -52,37 +52,35 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
         val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
 
-        backButton.text = getString(R.string.export_back_button)
-        backButton.setOnClickListener {
+        backButton?.text = getString(R.string.export_back_button)
+        backButton?.setOnClickListener {
             findNavController()
                 .navigate(R.id.action_exportDestinationFragment_to_exportFrequencyFragment)
         }
 
-        nextButton.text = getString(R.string.export_next_button)
-        nextButton.setOnClickListener {
-            // TODO: b/325917283 - Add proper navigation to the next screen (document UI)
-            // and to the encryption fragment.
-            findNavController()
-                .navigate(R.id.action_exportDestinationFragment_to_exportEncryptionFragment)
+        nextButton?.text = getString(R.string.export_next_button)
+        nextButton?.setOnClickListener {
+            // TODO: b/342092768 - add proper navigation once the new flow UI is available
+            requireActivity().finish()
         }
 
-        // TODO: b/325917283 - the temporary UI to open the document API for e2e prototype.
+        // TODO: b/342092768 - the temporary UI to open the document API for e2e prototype.
         // Replace it once we use proper storage UI APIs.
         val openExportDestinationButton = view.findViewById<Button>(R.id.open_export_destination)
         openExportDestinationButton?.setOnClickListener {
             saveResultLauncher.launch(
-                    Intent(Intent.ACTION_CREATE_DOCUMENT)
-                            .addFlags(
-                                    Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
-                                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                            .setType("application/zip")
-                            .addCategory(Intent.CATEGORY_OPENABLE))
+                Intent(Intent.ACTION_CREATE_DOCUMENT)
+                    .addFlags(
+                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION or
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    .setType("application/zip")
+                    .addCategory(Intent.CATEGORY_OPENABLE))
         }
         return view
     }
 
     private fun onSave(result: ActivityResult) {
-        // TODO: b/325917283 - the temporary UI solution to open the document API for e2e prototype.
+        // TODO: b/342092768 - the temporary UI solution to open the document API for e2e prototype.
         // Replace it once we use proper storage UI APIs.
         if (result.resultCode == Activity.RESULT_OK) {
             val fileUri = result.data?.data ?: return
@@ -90,8 +88,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 .contentResolver
                 .takePersistableUriPermission(fileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
             viewModel.updateExportUri(fileUri)
-            findNavController()
-                .navigate(R.id.action_exportDestinationFragment_to_exportEncryptionFragment)
+            requireActivity().finish()
         }
     }
 }

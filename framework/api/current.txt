@@ -1028,11 +1028,14 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.MedicalDataSource.Builder setPackageName(@NonNull String);
   }
 
-  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResource {
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResource implements android.os.Parcelable {
+    method public int describeContents();
     method @NonNull public String getData();
     method @NonNull public String getDataSourceId();
     method @NonNull public String getId();
     method public int getType();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.datatypes.MedicalResource> CREATOR;
     field public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0; // 0x0
   }
 

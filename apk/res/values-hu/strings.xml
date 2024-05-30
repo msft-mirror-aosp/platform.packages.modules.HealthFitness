@@ -323,8 +323,8 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Exportálás és importálás"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ütemezett exportálás"</string>
     <string name="import_data" msgid="404502315533233094">"Adatok importálása"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Visszaállíthat adatokat korábban exportált fájlokból."</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Az exportálással elmentheti adatait, hogy át tudja vinni őket egy új telefonra."</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Visszaállíthat adatokat korábban exportált fájlból"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Az exportálással elmentheti adatait, hogy át tudja vinni őket egy új telefonra"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"További információ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Be"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Ki"</string>
@@ -343,10 +343,10 @@
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"A jelszavak nem egyeznek"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Ha elfelejti a jelszavát, és elveszti a telefonját, a Health Connect nem tud segíteni az elveszett adatok visszaállításában."</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Jelszó beírása"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Szükség van a titkosítási jelszavára a Health Connect-adatainak importálásához."</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Szükség van a titkosítási jelszavára a Health Connect-adatai importálásához"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Elfelejtette jelszavát?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Jelszó"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ha még megvan a régi telefonja, újraexportálhatja adatait egy új jelszóval."</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ha még megvan a régi telefonja, újraexportálhatja adatait egy új jelszóval"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Vissza"</string>
     <string name="export_next_button" msgid="657930567137105172">"Következő"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Mégse"</string>
