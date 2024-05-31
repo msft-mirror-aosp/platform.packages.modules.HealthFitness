@@ -23,6 +23,7 @@ import android.os.OutcomeReceiver
 import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.exportimport.api.LoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
@@ -59,7 +60,7 @@ class LoadScheduledExportStatusUseCaseTest {
         val exportStatus = (result as ExportUseCaseResult.Success).data
         assertThat(exportStatus.lastSuccessfulExportTime).isEqualTo(Instant.ofEpochMilli(100))
         assertThat(exportStatus.dataExportError)
-            .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS)
+            .isEqualTo(ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS)
         assertThat(exportStatus.periodInDays).isEqualTo(7)
     }
 

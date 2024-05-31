@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.server.healthconnect.exportimport;
+package android.healthconnect.tests.documentproviderapp;
 
-import static org.junit.Assert.assertThrows;
+import android.app.Activity;
+import android.healthconnect.tests.documentprovider.utils.DocumentProviderActivityRequestHandler;
+import android.os.Bundle;
 
-import androidx.test.runner.AndroidJUnit4;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-@RunWith(AndroidJUnit4.class)
-public final class DocumentProvidersManagerTest {
-    @Test
-    public void testQueryDocumentProvidersThrows() {
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> DocumentProvidersManager.queryDocumentProviders());
+/** Receives requests from test cases to configure the {@link TestDocumentProvider}. */
+public final class MainActivity extends Activity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DocumentProviderActivityRequestHandler.handleRequest(this);
     }
 }

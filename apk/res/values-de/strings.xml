@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Back-up und Wiederherstellung"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Export und Import"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Geplanter Export"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Datenwiederherstellung"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Zuvor exportierte Daten laden"</string>
+    <string name="import_data" msgid="404502315533233094">"Daten importieren"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Daten aus einer zuvor exportierten Datei wiederherstellen"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Über den Export können Daten gespeichert und dann auf ein neues Smartphone übertragen werden"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Weitere Informationen"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"An"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Aus"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Häufigkeit auswählen"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Passwort wiederholen"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Passwörter stimmen nicht überein"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Wenn du dein Passwort vergisst und dein Smartphone verlierst, kann dir Health Connect nicht dabei helfen, deine gespeicherten Daten wiederherzustellen."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Passwort eingeben"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Um deine Health Connect-Daten zu importieren, benötigst du dein Verschlüsselungspasswort"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Passwort vergessen?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Passwort"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Wenn du dein altes Smartphone noch hast, kannst du deine Daten mit einem neuen Passwort noch einmal exportieren"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Zurück"</string>
     <string name="export_next_button" msgid="657930567137105172">"Weiter"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Abbrechen"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Weiter"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importieren aus"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Erste Schritte mit Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Dank Health Connect werden deine Gesundheits- und Fitnessdaten gespeichert und lassen sich einfach mit verschiedenen Apps auf deinem Smartphone synchronisieren"</string>
     <string name="share_data" msgid="3481932156368883946">"Daten für deine Apps freigeben"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Zurück"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Jetzt starten"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Daten löschen"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Zu löschende Daten auswählen"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Weiter"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Hierdurch werden alle in Health Connect hinzugefügten Daten für den ausgewählten Zeitraum endgültig gelöscht"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Du musst mindestens 1 Leseberechtigung aktivieren, um den Hintergrundzugriff oder den Zugriff auf frühere Daten für diese App zu aktivieren"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Du musst mindestens 1 Leseberechtigung aktivieren, um den Hintergrundzugriff für diese App zu aktivieren"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Du musst mindestens 1 Leseberechtigung aktivieren, um den Zugriff auf frühere Daten für diese App zu aktivieren"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Αντίγραφα ασφαλείας και επαναφορά"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Εξαγωγή και εισαγωγή"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Προγραμματισμένη εξαγωγή"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Επαναφορά δεδομένων"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Φόρτωση δεδομένων που είχαν εξαχθεί στο παρελθόν"</string>
+    <string name="import_data" msgid="404502315533233094">"Εισαγωγή δεδομένων"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Επαναφορά δεδομένων από αρχείο που εξάχθηκε προηγουμένως"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Η εξαγωγή σάς επιτρέπει να αποθηκεύσετε τα δεδομένα σας για να τα μεταφέρετε σε ένα νέο τηλέφωνο"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Μάθετε περισσότερα"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Ενεργή"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Ανενεργή"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Επιλογή συχνότητας"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Επανάληψη κωδικού πρόσβασης"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Οι κωδικοί πρόσβασης δεν ταυτίζονται"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Εάν ξεχάσετε τον κωδικό πρόσβασης και χάσετε το τηλέφωνό σας, το Health Connect δεν μπορεί να σας βοηθήσει να επαναφέρετε τα αποθηκευμένα δεδομένα σας."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Πληκτρολογήστε τον κωδικό πρόσβασης"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Ο κωδικός πρόσβασης κρυπτογράφησης απαιτείται για την εισαγωγή των δεδομένων Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Ξεχάσατε τον κωδικό πρόσβασης;"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Κωδικός πρόσβασης"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Αν έχετε ακόμα το παλιό σας τηλέφωνο, μπορείτε να εξαγάγετε ξανά τα δεδομένα σας με έναν νέο κωδικό πρόσβασης"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Πίσω"</string>
     <string name="export_next_button" msgid="657930567137105172">"Επόμενο"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Ακύρωση"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Επόμενο"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Εισαγωγή από"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Ξεκινήστε με το Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Το Health Connect αποθηκεύει τα δεδομένα υγείας και φυσικής κατάστασής σας, προσφέροντας έναν απλό τρόπο συγχρονισμού των διαφορετικών εφαρμογών στο τηλέφωνό σας"</string>
     <string name="share_data" msgid="3481932156368883946">"Μοιραστείτε δεδομένα με τις εφαρμογές σας"</string>
@@ -353,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Επιστροφή"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Έναρξη"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Διαγραφή δεδομένων"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Έναρξη διαγραφής"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Έξοδος από τη διαγραφή"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Επιλογή δεδομένων για διαγραφή"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Επόμενο"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Αυτή η ενέργεια διαγράφει όλα τα δεδομένα που έχουν προστεθεί στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
@@ -912,4 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Ενεργοποιήστε τουλάχιστον μία άδεια ανάγνωσης ώστε να ενεργοποιηθεί η πρόσβαση σε δεδομένα παρασκηνίου ή σε παλαιότερα δεδομένα για αυτή την εφαρμογή"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Ενεργοποιήστε τουλάχιστον μία άδεια ανάγνωσης ώστε να ενεργοποιηθεί η πρόσβαση στο παρασκήνιο για αυτή την εφαρμογή"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Ενεργοποιήστε τουλάχιστον μία άδεια ανάγνωσης ώστε να ενεργοποιηθεί η πρόσβαση σε παλαιότερα δεδομένα για αυτή την εφαρμογή"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Οριστική διαγραφή όλων των δεδομένων από το Health Connect;"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Οριστική διαγραφή των επιλεγμένων δεδομένων από το Health Connect;"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Διαγράφηκαν όλα τα δεδομένα"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> δεδομένα διαγράφηκαν"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> στοιχεία διαγράφηκαν"</string>
 </resources>

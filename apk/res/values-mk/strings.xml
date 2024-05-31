@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Бекап и враќање"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Извезување и увезување"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Закажано извезување"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Враќање податоци"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Вчитување на претходно извезените податоци"</string>
+    <string name="import_data" msgid="404502315533233094">"Увезете ги податоците"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Вратете ги податоците од претходно извезената датотека"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Функцијата за извоз ви овозможува да ги зачувате вашите податоци за да може да ги префрлите на нов телефон"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Дознајте повеќе"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Вклучено"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Исклучено"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Изберете фреквенција"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Повторете ја лозинката"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Лозинките не се совпаѓаат"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Ако ја заборавите лозинката и го изгубите телефонот, Health Connect не може да ви помогне да ги вратите зачуваните податоци."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Напишете ја лозинката"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Потребна е вашата лозинка за шифрирање за да се увезат податоците од Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Ја заборавивте лозинката?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Лозинка"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ако сè уште го имате стариот телефон, може да ги извезете вашите податоци повторно со нова лозинка"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Следно"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Откажи"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Следно"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Увезете од"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Започнете со Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ги складира податоците за вашето здравје и фитнес, давајќи ви едноставен начин да ги синхронизирате различните апликации на вашиот телефон"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделувајте податоци со вашите апликации"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Назад"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Започнете"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Избришете ги податоците"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Изберете податоци за бришење"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Следно"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Ова трајно ќе ги избрише сите податоци додадени во Health Connect во избраниот временски период"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Овозможете најмалку една дозвола за читање за да вклучите пристап во заднина или пристап до минати податоци за апликацијава"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Овозможете најмалку една дозвола за читање за да вклучите пристап во заднина за апликацијава"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Овозможете најмалку една дозвола за читање за да вклучите пристап до минати податоци за апликацијава"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

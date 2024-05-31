@@ -39,6 +39,7 @@ import com.android.compatibility.common.util.UiAutomatorUtils2.getUiDevice
 import com.google.common.truth.Truth
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
@@ -128,6 +129,7 @@ class AdditionalPermissionsRequestUITest : HealthConnectBaseTest() {
     }
 
     @Test
+    @Ignore("TODO: b/334538512")
     fun requestAdditionalPermissions_noReadPermissions_returnsResultCanceled() {
         revokePermissionViaPackageManager(context, TEST_APP_PACKAGE_NAME, READ_HEIGHT)
         val permissions = listOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)

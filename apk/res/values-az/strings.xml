@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yedəkləmə və bərpa"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Eksport və import edin"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Planlaşdırılmış eksport"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Datanı bərpa edin"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Əvvəlcədən eksport edilmiş datanı yükləyin"</string>
+    <string name="import_data" msgid="404502315533233094">"Datanı import edin"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Daha əvvəl eksport edilmiş fayldan datanı bərpa edin"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Eksport datanı yadda saxlamaq imkanı verir ki, onu yeni telefona yönləndirə biləsiniz"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Ətraflı məlumat"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktiv"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Deaktiv"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Tezlik seçin"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Parolu təkrar edin"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Parollar uyğun gəlmir"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Parolu unutsanız və telefonu itirsəniz, Health Connect yadda saxlanılmış datanı bərpa etməyə kömək edə bilməz."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Parolu yazın"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect datasını import etmək üçün şifrələmə parolu tələb edilir"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Parolu unutmusunuz?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Parol"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Köhnə telefonunuz özünüzdədirsə, datanı yeni parol ilə təkrar eksport edə bilərsiniz"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"Növbəti"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Ləğv edin"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Növbəti"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"İmport edin"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ilə başlayın"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect sağlamlıq və fitnes datanızı saxlayaraq, telefonunuzdakı müxtəlif tətbiqləri sinxronlaşdırmaq üçün sadə yol təqdim edir"</string>
     <string name="share_data" msgid="3481932156368883946">"Tətbiqlərinizlə data paylaşın"</string>
@@ -353,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Geri qayıdın"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Başlayın"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Datanı silin"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Silinməyə daxil olun"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Silinmədən çıxın"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Silinəcək datanı seçin"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Növbəti"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Bununla seçilmiş müddət ərzində Health Connect\'ə əlavə edilmiş bütün data həmişəlik silnəcək"</string>
@@ -912,4 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu tətbiq üçün arxa fon və ya keçmiş dataya girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu tətbiq üçün arxa fonda girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu tətbiq üçün keçmiş dataya girişi yandırmaq məqsədilə ən az bir oxumaq icazəsini aktivləşdirin"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect-dən bütün datalar həmişəlik silinsin?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Seçilmiş data Health Connect-dən həmişəlik silinsin?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Bütün datalar silindi"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> data silindi"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> element silindi"</string>
 </resources>

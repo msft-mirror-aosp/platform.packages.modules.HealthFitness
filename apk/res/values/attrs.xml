@@ -49,6 +49,9 @@
 
     <!-- Data access page -->
     <attr name="seeAllEntriesIcon" format="reference"/>
+    <attr name="deleteForeverIcon" format="reference"/>
+    <attr name="checkboxUncheckedIcon" format="reference"/>
+    <attr name="checkboxCheckedIcon" format="reference"/>
 
     <!-- Data entries page -->
     <attr name="nextDayIcon" format="reference"/>
@@ -86,7 +89,6 @@
     <attr name="importIcon" format="reference" />
     <attr name="importDataIcon" format="reference" />
 
-    <attr name="lockIcon" format="reference"/>
     <attr name="warningIcon" format="reference"/>
     <attr name="passwordIcon" format="reference"/>
     <attr name="infoIcon" format="reference"/>

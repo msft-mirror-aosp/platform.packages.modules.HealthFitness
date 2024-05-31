@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
+import android.health.connect.exportimport.ExportImportDocumentProvider
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.os.OutcomeReceiver
@@ -41,5 +42,12 @@ class HealthDataExportManagerImpl @Inject constructor(private val manager: Healt
         outcomeReceiver: OutcomeReceiver<ScheduledExportStatus, HealthConnectException>
     ) {
         return manager.getScheduledExportStatus(executor, outcomeReceiver)
+    }
+
+    override fun queryDocumentProviders(
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>
+    ) {
+        return manager.queryDocumentProviders(executor, outcomeReceiver)
     }
 }

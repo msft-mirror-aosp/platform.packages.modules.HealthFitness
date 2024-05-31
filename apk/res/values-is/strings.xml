@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Öryggisafritun og endurheimt"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Út- og innflutningur"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Tímasettur útflutningur"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Endurheimta gögn"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Hlaða áður útfluttum gögnum"</string>
+    <string name="import_data" msgid="404502315533233094">"Flytja inn gögn"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Endurheimtu gögn úr skrá sem hefur áður verið flutt út"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Útflutningur gerir þér kleift að vista gögnin þín til að geta flutt þau yfir í nýjan síma"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Nánar"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Kveikt"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Slökkt"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Velja tíðni"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Endurtaktu aðgangsorðið"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Aðgangsorðin stemma ekki"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Ef þú gleymir aðgangsorðinu þínu og týnir símanum þínum getur Heilsutenging ekki hjálpað þér að endurheimta vistuðu gögnin þín."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Sláðu inn aðgangsorð"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Dulkóðaða aðgangsorðsins þíns er krafist fyrir innflutning gagna úr Heilsutengingu"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Manstu ekki aðgangsorðið þitt?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Aðgangsorð"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ef þú ert enn með gamla símann geturðu notað nýtt aðgangsorð til að flytja gögnin þín aftur út"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Til baka"</string>
     <string name="export_next_button" msgid="657930567137105172">"Áfram"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Hætta við"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Áfram"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Flytja inn úr"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Byrjaðu að nota Heilsutengingu"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í símanum á einfaldan hátt"</string>
     <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
@@ -353,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Til baka"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Byrja"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Eyða gögnum"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Eyða"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Hætta að eyða"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Veldu gögn til að eyða"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Áfram"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Nú verður öllum gögnum sem bætt var við Heilsutengingu á völdu tímabili eytt varanlega"</string>
@@ -912,4 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Leyfðu að minnsta kosti eina lestrarheimild til þess að kveikja á bakgrunnsaðgangi eða aðgangi að eldri gögnum fyrir þetta forrit"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Leyfðu að minnsta kosti eina lestrarheimild til þess að kveikja á bakgrunnsaðgangi fyrir þetta forrit"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Leyfðu að minnsta kosti eina lestrarheimild til þess að kveikja á aðgangi að eldri gögnum fyrir þetta forrit"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Eyða öllum gögnum Heilsutengingar varanlega?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Eyða völdum gögnum Heilsutengingar varanlega?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Öllum gögnum var eytt"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Gögnum um <xliff:g id="PERMISSION_TYPE">%s</xliff:g> var eytt"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> atriðum var eytt"</string>
 </resources>

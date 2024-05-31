@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Atsarginė kopija ir atkūrimas"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Importavimas ir eksportavimas"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Suplanuotas eksportavimas"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Atkurti duomenis"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Įkelti anksčiau eksportuotus duomenis"</string>
+    <string name="import_data" msgid="404502315533233094">"Importuoti duomenis"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Atkurti duomenis iš anksčiau eksportuoto failo"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Eksportuodami galite išsaugoti duomenis, kad galėtumėte perkelti juos į naują telefoną"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Sužinokite daugiau"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Įjungta"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Išjungta"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Dažnio pasirinkimas"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Pakartokite slaptažodį"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Slaptažodžiai nesutampa"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Jei pamiršite slaptažodį ar prarasite telefoną, „Health Connect“ išsaugotų duomenų atkurti nepadės."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Įveskite slaptažodį"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Norint importuoti „Health Connect“ duomenis reikalingas šifruotės slaptažodis"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Pamiršote slaptažodį?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Slaptažodis"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Jei vis dar turite seną telefoną, galite iš naujo eksportuoti duomenis naudodami naują slaptažodį"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Atgal"</string>
     <string name="export_next_button" msgid="657930567137105172">"Kitas"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Atšaukti"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Kitas"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importuoti iš"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Darbo su „Health Connect“ pradžia"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sistemoje „Health Connect“ saugomi jūsų sveikatos ir kūno rengybos duomenys ir galite lengvai sinchronizuoti skirtingas programas telefone"</string>
     <string name="share_data" msgid="3481932156368883946">"Duomenų bendrinimas su programomis"</string>
@@ -353,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Grįžti"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Pradėti"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Ištrinti duomenis"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Pradėti ištrynimą"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Baigti ištrynimą"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Duomenų, kuriuos norite ištrinti, pasirinkimas"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Kitas"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Bus visam laikui ištrinti visi duomenys, pridėti prie „Health Connect“ per pasirinktą laikotarpį"</string>
@@ -912,4 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Įgalinkite bent vieną skaitymo leidimą, kad įjungtumėte šios programos prieigą fone ar prie ankstesnių duomenų"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Įgalinkite bent vieną skaitymo leidimą, kad įjungtumėte šios programos prieigą fone"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Įgalinkite bent vieną skaitymo leidimą, kad įjungtumėte šios programos prieigą prie ankstesnių duomenų"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Visam laikui ištrinti visus duomenis iš „Health Connect“?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Visam laikui ištrinti pasirinktus duomenis iš „Health Connect“?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Visi duomenys ištrinti"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Ištrinti duomenys: <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Ištrinta elementų: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>."</string>
 </resources>

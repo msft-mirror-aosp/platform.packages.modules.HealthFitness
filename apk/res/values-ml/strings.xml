@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ബാക്കപ്പ് ചെയ്ത് പുനഃസ്ഥാപിക്കൂ"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"എക്‌സ്‌പോർട്ട് ചെയ്യൂ, ഇമ്പോർട്ട് ചെയ്യൂ"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ഷെഡ്യൂൾ ചെയ്ത എക്‌സ്‌പോർട്ട്"</string>
-    <string name="restore_data" msgid="3401173690437871417">"ഡാറ്റ പുനഃസ്ഥാപിക്കുക"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"മുമ്പ് എക്‌സ്പോർട്ട് ചെയ്ത ഡാറ്റ ലോഡ് ചെയ്യുക"</string>
+    <string name="import_data" msgid="404502315533233094">"ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യുക"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"മുമ്പ് എക്‌സ്‌പോർട്ട് ചെയ്ത ഫയലിൽ നിന്ന് ഡാറ്റ പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ഡാറ്റ സംരക്ഷിക്കാൻ \'എക്‌സ്‌പോർട്ട് ചെയ്യുക\' നിങ്ങളെ അനുവദിക്കുന്നതിനാൽ നിങ്ങൾക്കത് ഒരു പുതിയ ഫോണിലേക്ക് കൈമാറാനാകും"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"കൂടുതലറിയുക"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ഓണാണ്"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ഓഫാണ്"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"ആവൃത്തി തിരഞ്ഞെടുക്കുക"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"പാസ്‌വേഡ് ആവർത്തിക്കുക"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"പാസ്‌വേഡുകൾ പൊരുത്തപ്പെടുന്നില്ല"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"നിങ്ങൾ പാസ്‌വേഡ് മറക്കുകയും ഫോൺ നഷ്ടപ്പെടുകയും ചെയ്യുകയാണെങ്കിൽ, Health Connect-ന് നിങ്ങളുടെ സംരക്ഷിച്ച ഡാറ്റ വീണ്ടെടുക്കാൻ നിങ്ങളെ സഹായിക്കാനാകില്ല."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"പാസ്‌വേഡ് നൽകുക"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"നിങ്ങളുടെ Health Connect ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യാൻ നിങ്ങളുടെ എൻക്രിപ്ഷൻ പാസ്‌വേഡ് ആവശ്യമാണ്"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"പാസ്‍വേഡ് മറന്നോ?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"പാസ്‌വേഡ്"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"നിങ്ങളുടെ പഴയ ഫോൺ ഇപ്പോഴും കൈവശമുണ്ടെങ്കിൽ, ഒരു പുതിയ പാസ്‌വേഡ് ഉപയോഗിച്ച് നിങ്ങളുടെ ഡാറ്റ വീണ്ടും എക്‌സ്‌പോർട്ട് ചെയ്യാൻ കഴിയും"</string>
     <string name="export_back_button" msgid="3550795479165524982">"മടങ്ങുക"</string>
     <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"റദ്ദാക്കുക"</string>
     <string name="import_next_button" msgid="5706322508691854289">"അടുത്തത്"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ഇനിപ്പറയുന്നതിൽ നിന്ന് ഇമ്പോർട്ട് ചെയ്യൂ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‌നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഫോണിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"മടങ്ങുക"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ആരംഭിക്കുക"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ഡാറ്റ ഇല്ലാതാക്കുക"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"ഇല്ലാതാക്കേണ്ട ഡാറ്റ തിരഞ്ഞെടുക്കുക"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"അടുത്തത്"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"തിരഞ്ഞെടുത്ത കാലയളവിൽ Health Connect-ലേക്ക് ചേർത്തിട്ടുള്ള എല്ലാ ഡാറ്റയും ഇത് ശാശ്വതമായി ഇല്ലാതാക്കും"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ഈ ആപ്പിന്റെ പശ്ചാത്തല അല്ലെങ്കിൽ മുമ്പത്തെ ഡാറ്റാ ആക്‌സസ് ഓണാക്കാൻ വായിക്കാനുള്ള അനുമതിയിൽ കുറഞ്ഞത് ഒരെണ്ണമെങ്കിലും പ്രവർത്തനക്ഷമമാക്കുക"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ഈ ആപ്പിന്റെ പശ്ചാത്തല ആക്‌സസ് ഓണാക്കാൻ വായിക്കാനുള്ള അനുമതിയിൽ കുറഞ്ഞത് ഒരെണ്ണമെങ്കിലും പ്രവർത്തനക്ഷമമാക്കുക"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ഈ ആപ്പിന്റെ മുമ്പത്തെ ഡാറ്റാ ആക്‌സസ് ഓണാക്കാൻ വായിക്കാനുള്ള അനുമതിയിൽ കുറഞ്ഞത് ഒരെണ്ണമെങ്കിലും പ്രവർത്തനക്ഷമമാക്കുക"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

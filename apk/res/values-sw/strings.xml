@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Kuhifadhi nakala na kurejesha data"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Kuhamisha na kupakia data"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Uhamishaji wa data ulioratibiwa"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Rejesha data"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Pakia data iliyohamishwa awali"</string>
+    <string name="import_data" msgid="404502315533233094">"Pakia data"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Rejesha data kutoka kwenye faili iliyohamishwa hapo awali"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Kipengele cha Uhamishaji kinakuwezesha kuhifadhi data yako ili uweze kuihamisha kwenye simu mpya"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Pata maelezo zaidi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Imewashwa"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Imezimwa"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Chagua mara za kurudia"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Rudia nenosiri"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Manenosiri hayalingani"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Ukisahau nenosiri na upoteze simu yako, programu ya Health Connect haiwezi kukusaidia kurejesha data uliyohifadhi."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Weka nenosiri"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Nenosiri lako la usimbaji fiche linahitajika ili kupakia data yako ya Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Umesahau nenosiri?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Nenosiri"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Iwapo bado una simu yako ya zamani, unaweza kuhamisha tena data yako na uweke nenosiri jipya"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Rudi nyuma"</string>
     <string name="export_next_button" msgid="657930567137105172">"Endelea"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Acha"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Endelea"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Pakia kutoka"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Anza kutumia Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect huhifadhi data yako ya afya na siha, hivyo kukupatia njia rahisi ya kusawazisha programu tofauti kwenye simu yako"</string>
     <string name="share_data" msgid="3481932156368883946">"Shiriki data na programu zako"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Rudi nyuma"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Anza"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Futa data"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Chagua data ya kufuta"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Inayofuata"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Hatua hii hufuta kabisa data yote iliyowekwa kwenye Health Connect katika kipindi cha muda ulichochagua"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Kubali angalau ruhusa moja ya kusoma ili uwashe kipengele cha ufikiaji wa chinichini au wa data ya awali katika programu hii"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Kubali angalau ruhusa moja ya kusoma ili uwashe kipengele cha ufikiaji wa chinichini katika programu hii"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Kubali angalau ruhusa moja ya kusoma ili uwashe kipengele cha ufikiaji wa data ya awali katika programu hii"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

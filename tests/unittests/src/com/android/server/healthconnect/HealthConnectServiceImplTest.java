@@ -144,6 +144,7 @@ public class HealthConnectServiceImplTest {
                     "getAllDataForBackup",
                     "getAllBackupFileNames",
                     "deleteAllStagedRemoteData",
+                    "setLowerRateLimitsForTesting",
                     "updateDataDownloadState",
                     "getHealthConnectDataState",
                     "getHealthConnectMigrationUiState",

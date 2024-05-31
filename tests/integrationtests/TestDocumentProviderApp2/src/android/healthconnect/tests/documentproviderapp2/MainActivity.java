@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.healthconnect.controller.utils
 
-import androidx.annotation.Keep
-import java.security.spec.KeySpec
+package android.healthconnect.tests.documentproviderapp2;
 
-class ScryptKeySpec(
-    @get:Keep val password: CharArray,
-    @get:Keep val salt: ByteArray,
-    @get:Keep val costParameter: Int,
-    @get:Keep val blockSize: Int,
-    @get:Keep val parallelizationParameter: Int,
-    @get:Keep val keyLength: Int
-) : KeySpec
+import android.app.Activity;
+import android.healthconnect.tests.documentprovider.utils.DocumentProviderActivityRequestHandler;
+import android.os.Bundle;
+
+/** Receives requests from test cases to configure the {@link TestDocumentProvider}. */
+public final class MainActivity extends Activity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DocumentProviderActivityRequestHandler.handleRequest(this);
+    }
+}

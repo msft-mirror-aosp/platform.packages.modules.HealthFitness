@@ -42,6 +42,8 @@ android_test {
         "services.core",
         "androidx.test.ext.truth",
         "cts-healthconnect-utils",
+        "flag-junit",
+        "healthfitness-aconfig-flags-lib",
     ],
     jni_libs: [
         // Required for ExtendedMockito

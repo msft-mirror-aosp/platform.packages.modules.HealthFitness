@@ -125,6 +125,7 @@ public class HealthConnectManagerService extends SystemService {
         new MigratorPackageChangesReceiver(MigrationStateManager.getInitialisedInstance())
                 .registerBroadcastReceiver(mContext);
         publishBinderService(Context.HEALTHCONNECT_SERVICE, mHealthConnectService);
+        HealthConnectDeviceConfigManager.getInitialisedInstance().updateRateLimiterValues();
     }
 
     /**

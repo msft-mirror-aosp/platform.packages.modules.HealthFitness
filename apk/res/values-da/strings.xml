@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sikkerhedskopiering og gendannelse"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Eksport og import"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Planlagt eksport"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Gendan data"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Indlæs tidligere eksporterede data"</string>
+    <string name="import_data" msgid="404502315533233094">"Importér data"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Gendan data fra en tidligere eksporteret fil"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Med eksporter kan du gemme dine data, så du kan overføre dem til en ny telefon"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Få flere oplysninger"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Til"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Fra"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Vælg hyppighed"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Gentag adgangskode"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Adgangskoderne er ikke ens"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Hvis du glemmer din adgangskode og mister din telefon, kan Health Connect ikke hjælpe dig med at gendanne dine gemte data."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Skriv adgangskoden"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Din adgangskode til kryptering skal importeres til dine data for Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Har du glemt adgangskoden?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Adgangskode"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Hvis du stadig har din gamle telefon, kan du eksportere dine data igen ved hjælp af en ny adgangskode"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Tilbage"</string>
     <string name="export_next_button" msgid="657930567137105172">"Næste"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Annuller"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Næste"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importér fra"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kom godt i gang med Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect opbevarer dine sundheds- og motionsdata, så du nemt kan synkronisere de forskellige apps på din telefon"</string>
     <string name="share_data" msgid="3481932156368883946">"Del data med dine apps"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Gå tilbage"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kom godt i gang"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Slet data"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Vælg data, der skal slettes"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Næste"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Denne handling sletter permanent alle data, der er føjet til Health Connect i det valgte tidsrum"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Giv mindst én tilladelse til at læse for at aktivere adgang i baggrunden eller tidligere dataadgang for denne app"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Giv mindst én tilladelse til at læse for at aktivere adgang i baggrunden for denne app"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Giv mindst én tilladelse til at læse for at aktivere tidligere dataadgang for denne app"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

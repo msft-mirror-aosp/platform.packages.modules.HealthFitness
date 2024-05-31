@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"پشتیبان‌گیری و بازیابی"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"صادر کردن و وارد کردن"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"صادر کردن زمان‌بندی‌شده"</string>
-    <string name="restore_data" msgid="3401173690437871417">"بازیابی داده‌ها"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"بار کردن داده‌هایی که قبلاً صادر شده است"</string>
+    <string name="import_data" msgid="404502315533233094">"وارد کردن داده"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"بازیابی داده از فایل قبلاً صادرشده"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"صادر کردن به شما امکان می‌دهد داده‌هایتان را ذخیره کنید تا بتوانید آن‌ها را به تلفن جدیدی منتقل کنید"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"بیشتر بدانید"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"روشن"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"خاموش"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"انتخاب دوره زمانی"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"گذرواژه را تکرار کنید"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"گذرواژه‌ها مطابقت ندارند"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"اگرگذرواژه‌تان را فراموش کردید و تلفنتان را گم کردید، Health Connect نمی‌تواند در بازیابی داده‌های ذخیره‌شده به شما کمک کند."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"گذرواژه را تایپ کنید"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"برای وارد کردن داده‌های Health Connect، به گذرواژه رمزگذاری‌شده‌تان نیاز دارید"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"گذرواژه را فراموش کرده‌اید؟"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"گذرواژه"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"اگر هنوز تلفن قبلی‌تان را دارید، می‌توانید داده‌هایتان را با گذرواژه جدید دوباره صادر کنید"</string>
     <string name="export_back_button" msgid="3550795479165524982">"برگشتن"</string>
     <string name="export_next_button" msgid="657930567137105172">"بعدی"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"لغو کردن"</string>
     <string name="import_next_button" msgid="5706322508691854289">"بعدی"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"وارد کردن از"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"شروع کار با Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect داده‌های سلامتی و تناسب اندام شما را ذخیره می‌کند و روشی ساده برای همگام‌سازی برنامه‌های مختلف تلفن دراختیارتان می‌گذارد"</string>
     <string name="share_data" msgid="3481932156368883946">"هم‌رسانی داده‌ها با برنامه‌ها"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"برگشتن"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"شروع"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"حذف داده"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"داده‌های موردنظر را برای حذف انتخاب کنید"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"بعدی"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"با این کار همه داده‌های اضافه‌شده به Health Connect درطول دوره زمانی انتخابی برای همیشه حذف می‌شود"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"برای روشن کردن دسترسی پس‌زمینه‌ای یا دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"برای روشن کردن دسترسی پس‌زمینه‌ای برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"برای روشن کردن دسترسی به داده‌های قبلی برای این برنامه، حداقل یک اجازه خواندن را فعال کنید"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

@@ -19,6 +19,7 @@ package android.health.connect.ratelimiter;
 import android.annotation.IntDef;
 import android.health.connect.HealthConnectException;
 
+import com.android.internal.annotations.GuardedBy;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -53,10 +54,14 @@ public final class RateLimiter {
 
     private static final ConcurrentMap<Integer, Integer> sLocks = new ConcurrentHashMap<>();
 
-    private static final Map<Integer, Float> QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP =
+    private static final Map<Integer, Integer> QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP =
             new HashMap<>();
     private static final Map<String, Integer> QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP =
             new HashMap<>();
+    private static final ReentrantReadWriteLock sLock = new ReentrantReadWriteLock();
+
+    @GuardedBy("sLock")
+    private static boolean sRateLimiterEnabled;
 
     public static final int QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 2000;
     public static final int QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 16000;
@@ -72,36 +77,40 @@ public final class RateLimiter {
     public static final int DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE = 100000000;
 
     static {
+        initQuotaBuckets();
+    }
+
+    private static void initQuotaBuckets() {
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_24H_FOREGROUND,
-                (float) QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_24H_BACKGROUND,
-                (float) QUOTA_BUCKET_READS_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_15M_FOREGROUND,
-                (float) QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_READS_PER_15M_BACKGROUND,
-                (float) QUOTA_BUCKET_READS_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_READS_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_24H_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND,
-                (float) QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
+                QUOTA_BUCKET_WRITES_PER_15M_BACKGROUND_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_DATA_PUSH_LIMIT_PER_APP_15M,
-                (float) DATA_PUSH_LIMIT_PER_APP_15M_DEFAULT_FLAG_VALUE);
+                DATA_PUSH_LIMIT_PER_APP_15M_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.put(
                 QuotaBucket.QUOTA_BUCKET_DATA_PUSH_LIMIT_ACROSS_APPS_15M,
-                (float) DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE);
+                DATA_PUSH_LIMIT_ACROSS_APPS_15M_DEFAULT_FLAG_VALUE);
         QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP.put(
                 RateLimiter.CHUNK_SIZE_LIMIT_IN_BYTES,
                 CHUNK_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE);
@@ -110,8 +119,26 @@ public final class RateLimiter {
                 RECORD_SIZE_LIMIT_IN_BYTES_DEFAULT_FLAG_VALUE);
     }
 
+    /** Allows setting lower rate limits in tests. */
+    public static void setLowerRateLimitsForTesting(boolean enabled) {
+        initQuotaBuckets();
+
+        if (enabled) {
+            QUOTA_BUCKET_TO_MAX_ROLLING_QUOTA_MAP.replaceAll((k, v) -> v / 10);
+            QUOTA_BUCKET_TO_MAX_MEMORY_QUOTA_MAP.replaceAll((k, v) -> v / 10);
+        }
+    }
+
     public static void tryAcquireApiCallQuota(
             int uid, @QuotaCategory.Type int quotaCategory, boolean isInForeground) {
+        sLock.readLock().lock();
+        try {
+            if (!sRateLimiterEnabled) {
+                return;
+            }
+        } finally {
+            sLock.readLock().unlock();
+        }
         if (quotaCategory == QuotaCategory.QUOTA_CATEGORY_UNDEFINED) {
             throw new IllegalArgumentException("Quota category not defined.");
         }
@@ -134,6 +161,14 @@ public final class RateLimiter {
             @QuotaCategory.Type int quotaCategory,
             boolean isInForeground,
             long memoryCost) {
+        sLock.readLock().lock();
+        try {
+            if (!sRateLimiterEnabled) {
+                return;
+            }
+        } finally {
+            sLock.readLock().unlock();
+        }
         if (quotaCategory == QuotaCategory.QUOTA_CATEGORY_UNDEFINED) {
             throw new IllegalArgumentException("Quota category not defined.");
         }
@@ -162,6 +197,14 @@ public final class RateLimiter {
     }
 
     public static void checkMaxChunkMemoryUsage(long memoryCost) {
+        sLock.readLock().lock();
+        try {
+            if (!sRateLimiterEnabled) {
+                return;
+            }
+        } finally {
+            sLock.readLock().unlock();
+        }
         long memoryLimit = getConfiguredMaxApiMemoryQuota(CHUNK_SIZE_LIMIT_IN_BYTES);
         if (memoryCost > memoryLimit) {
             throw new HealthConnectException(
@@ -174,6 +217,14 @@ public final class RateLimiter {
     }
 
     public static void checkMaxRecordMemoryUsage(long memoryCost) {
+        sLock.readLock().lock();
+        try {
+            if (!sRateLimiterEnabled) {
+                return;
+            }
+        } finally {
+            sLock.readLock().unlock();
+        }
         long memoryLimit = getConfiguredMaxApiMemoryQuota(RECORD_SIZE_LIMIT_IN_BYTES);
         if (memoryCost > memoryLimit) {
             throw new HealthConnectException(
@@ -188,6 +239,15 @@ public final class RateLimiter {
     public static void clearCache() {
         sUserIdToQuotasMap.clear();
         sQuotaBucketToAcrossAppsRemainingMemoryQuota.clear();
+    }
+
+    public static void updateEnableRateLimiterFlag(boolean enableRateLimiter) {
+        sLock.writeLock().lock();
+        try {
+            sRateLimiterEnabled = enableRateLimiter;
+        } finally {
+            sLock.writeLock().unlock();
+        }
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression

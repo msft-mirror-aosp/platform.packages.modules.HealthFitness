@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ବେକଅପ ନେଇ ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ଏକ୍ସପୋର୍ଟ ଏବଂ ଇମ୍ପୋର୍ଟ"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ"</string>
-    <string name="restore_data" msgid="3401173690437871417">"ଡାଟା ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଡାଟାକୁ ଲୋଡ କରନ୍ତୁ"</string>
+    <string name="import_data" msgid="404502315533233094">"ଡାଟା ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଏକ ଫାଇଲରୁ ଡାଟା ରିଷ୍ଟୋର କରେ"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ଏକ୍ସପୋର୍ଟ ଆପଣଙ୍କୁ ଆପଣଙ୍କ ଡାଟା ସେଭ କରିବାକୁ ଦିଏ ଯାହା ଫଳରେ ଆପଣ ଏହାକୁ ଏକ ନୂଆ ଫୋନକୁ ଟ୍ରାନ୍ସଫର କରିପାରିବେ"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ଅଧିକ ଜାଣନ୍ତୁ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ଚାଲୁ ଅଛି"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ବନ୍ଦ ଅଛି"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"ବାରମ୍ବାରତା ବାଛନ୍ତୁ"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"ପାସୱାର୍ଡ ରିପିଟ କରନ୍ତୁ"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"ପାସୱାର୍ଡଗୁଡ଼ିକ ମେଳ ହେଉନାହିଁ"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"ଯଦି ଆପଣ ଆପଣଙ୍କ ପାସୱାର୍ଡକୁ ଭୁଲି ଯାଆନ୍ତି ଏବଂ ଆପଣଙ୍କ ଫୋନକୁ ହରାନ୍ତି, Health Connect ଆପଣଙ୍କୁ ଆପଣଙ୍କର ସେଭ ହୋଇଥିବା ଡାଟାକୁ ରିକଭର କରିବାରେ ସାହାଯ୍ୟ କରିପାରିବ ନାହିଁ।"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"ପାସୱାର୍ଡ ଟାଇପ କରନ୍ତୁ"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"ଆପଣଙ୍କ Health Connect ଡାଟାକୁ ଇମ୍ପୋର୍ଟ କରିବା ପାଇଁ ଆପଣଙ୍କର ଏନକ୍ରିପସନ ପାସୱାର୍ଡ ଆବଶ୍ୟକ"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"ପାସୱାର୍ଡ"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"ଯଦି ଆପଣଙ୍କ ପାଖରେ ଏବେ ବି ଆପଣଙ୍କର ପୁରୁଣା ଫୋନ ଅଛି, ତେବେ ଆପଣ ଏକ ନୂଆ ପାସୱାର୍ଡ ସହିତ ଆପଣଙ୍କ ଡାଟାକୁ ପୁଣି-ଏକ୍ସପୋର୍ଟ କରିପାରିବେ"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ପରବର୍ତ୍ତୀ"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ବାତିଲ କରନ୍ତୁ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ପରବର୍ତ୍ତୀ"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ଏଠାରୁ ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଆପଣଙ୍କ ଫୋନରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
     <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>
@@ -353,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"ଡିଲିଟ କରିବାକୁ ଡାଟା ବାଛନ୍ତୁ"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ପରବର୍ତ୍ତୀ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ବଛାଯାଇଥିବା ସମୟ ଅବଧିରେ Health Connectରେ ଯୋଗ କରାଯାଇଥିବା ସମସ୍ତ ଡାଟାକୁ ଏହା ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରେ"</string>
@@ -912,4 +924,14 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ଏହି ଆପ ପାଇଁ ପୃଷ୍ଠପଟ କିମ୍ବା ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ଏହି ଆପ ପାଇଁ ପୃଷ୍ଠପଟ ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ଏହି ଆପ ପାଇଁ ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

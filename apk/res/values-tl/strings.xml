@@ -322,8 +322,10 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pag-back up at pag-restore"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"I-export at i-import"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Nakaiskedyul na pag-export"</string>
-    <string name="restore_data" msgid="3401173690437871417">"I-restore ang data"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"I-load ang dating na-export na data"</string>
+    <string name="import_data" msgid="404502315533233094">"I-import ang data"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"I-restore ang data mula sa dati nang na-export na file"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Binibigyang-daan ka ng pag-export na ma-save ang iyong data para mailipat mo ito sa bagong telepono"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Matuto pa"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Naka-on"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Naka-off"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"Pumili ng dalas"</string>
@@ -340,10 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ulitin ang password"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Hindi tugma ang mga password"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Kung makalimutan mo ang iyong password at mawala ang telepono mo, hindi ka matutulungan ng Health Connect na ma-recover ang iyong na-save na data."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"I-type ang password"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Kailangan ang iyong password sa pag-encrypt para ma-import ang data ng Health Connect mo"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Nakalimutan ang password?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Password"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Kung nasa iyo pa ang lumang telepono mo, puwede mong i-export ulit ang iyong data gamit ang bagong password"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Bumalik"</string>
     <string name="export_next_button" msgid="657930567137105172">"Susunod"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Kanselahin"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Susunod"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Mag-import mula sa"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Magsimula sa Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa telepono mo"</string>
     <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>
@@ -353,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Bumalik"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Magsimula"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Mag-delete ng data"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Pumunta sa pag-delete"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Umalis sa pag-delete"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Pumili ng data na ide-delete"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Susunod"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Permanente nitong ide-delete ang lahat ng data na idaragdag sa Health Connect sa napiling yugto ng panahon"</string>
@@ -912,4 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background o access sa dating data para sa app na ito"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Mag-enable ng kahit man lang isang read permission para ma-on ang access habang nasa background para sa app na ito"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Mag-enable ng kahit man lang isang read permission para ma-on ang access sa dating data para sa app na ito"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Permanenteng i-delete ang lahat ng data mula sa Health Connect?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Permanenteng i-delete ang napiling data mula sa Health Connect?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Na-delete ang lahat ng data"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Na-delete ang data ng <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> (na) item ang na-delete"</string>
 </resources>

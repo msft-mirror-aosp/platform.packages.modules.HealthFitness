@@ -32,6 +32,7 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 
@@ -71,6 +72,7 @@ import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HydrationRecord;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
@@ -1900,6 +1902,20 @@ public class HealthConnectManagerTest {
         }
 
         verifyRecordTypeResponse(response, expectedResponseMap);
+    }
+
+    @Test
+    public void testGetMedicalDataSources_emptyIds_returnsEmptyList() throws InterruptedException {
+        List<MedicalDataSource> medicalDataSources = getMedicalDataSourcesByIds(List.of());
+
+        assertThat(medicalDataSources).isEmpty();
+    }
+
+    @Test
+    public void testGetMedicalDataSources_byIdthrows() {
+        List<String> ids = List.of("1");
+
+        assertThrows(UnsupportedOperationException.class, () -> getMedicalDataSourcesByIds(ids));
     }
 
     @Test

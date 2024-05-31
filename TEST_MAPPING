@@ -10,12 +10,7 @@
        "name": "HealthConnectControllerDataScreensNewTests"
     },
     {
-       "name": "HealthConnectControllerDataScreensOldTests",
-       "options": [
-                 {
-                      "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
-                  }
-       ]
+       "name": "HealthConnectControllerDataScreensOldTests"
     },
     {
        "name": "HealthConnectControllerDeletionTests"
@@ -56,12 +51,7 @@
        "name": "HealthConnectControllerDataScreensNewTests[com.google.android.healthfitness.apex]"
     },
     {
-       "name": "HealthConnectControllerDataScreensOldTests[com.google.android.healthfitness.apex]",
-       "options": [
-                 {
-                      "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
-                  }
-       ]
+       "name": "HealthConnectControllerDataScreensOldTests[com.google.android.healthfitness.apex]"
     },
     {
        "name": "HealthConnectControllerDeletionTests[com.google.android.healthfitness.apex]"
@@ -108,12 +98,7 @@
       "name": "HealthFitnessIntegrationTests"
     },
     {
-      "name": "HealthFitnessUnitTests",
-       "options": [
-                {
-                    "exclude-filter": "org.junit.Ignore"
-                }
-        ]
+      "name": "HealthFitnessUnitTests"
     },
     {
       "name": "HealthConnectBackupRestoreUnitTests"
@@ -137,12 +122,7 @@
        "name": "HealthConnectControllerDataScreensNewTests"
     },
     {
-       "name": "HealthConnectControllerDataScreensOldTests",
-       "options": [
-               {
-                   "exclude-filter": "com.android.healthconnect.controller.tests.dataentries.LoadDataEntriesUseCaseTest"
-               }
-       ]
+       "name": "HealthConnectControllerDataScreensOldTests"
     },
     {
        "name": "HealthConnectControllerDeletionTests"
@@ -171,5 +151,13 @@
     {
        "name": "HealthConnectControllerExtraTests"
     }
+  ],
+  "postsubmit": [
+      {
+        "name": "HealthFitnessIntegrationExportImportTests"
+      },
+      {
+        "name": "CtsHealthFitnessDeviceTestCasesRateLimiter"
+      }
   ]
 }
