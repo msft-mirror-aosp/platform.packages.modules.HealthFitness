@@ -29,6 +29,7 @@ import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceB
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalResource;
+import android.os.Parcel;
 
 import androidx.test.runner.AndroidJUnit4;
 
@@ -133,5 +134,18 @@ public class MedicalResourceTest {
         assertThat(resourceDifferentId.hashCode()).isNotEqualTo(resource.hashCode());
         assertThat(resourceDifferentDataSourceId.hashCode()).isNotEqualTo(resource.hashCode());
         assertThat(resourceDifferentData.hashCode()).isNotEqualTo(resource.hashCode());
+    }
+
+    @Test
+    public void testWriteToParcelThenRestore_objectsAreIdentical() {
+        MedicalResource original = getMedicalResource();
+
+        Parcel parcel = Parcel.obtain();
+        original.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+        MedicalResource restored = MedicalResource.CREATOR.createFromParcel(parcel);
+
+        assertThat(restored).isEqualTo(original);
+        parcel.recycle();
     }
 }

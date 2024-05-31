@@ -322,9 +322,9 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"बैकअप लेने और डेटा वापस पाने की सुविधा"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"डेटा एक्सपोर्ट और इंपोर्ट करें"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"एक्सपोर्ट के लिए तय किया गया शेड्यूल"</string>
-    <string name="import_data" msgid="404502315533233094">"डेटा इंपोर्ट करें"</string>
+    <string name="import_data" msgid="404502315533233094">"डेटा को इंपोर्ट करें"</string>
     <string name="import_data_description" msgid="4040178599441724296">"एक्सपोर्ट की गई पिछली फ़ाइल का डेटा वापस पाएं"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"एक्सपोर्ट करने की सुविधा, डेटा सेव करने में आपकी मदद करती है, ताकि आप उसे किसी नए फ़ोन में ट्रांसफ़र कर सकें"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"एक्सपोर्ट करने की सुविधा से डेटा को सेव किया जा सकता है, ताकि आप उसे नए फ़ोन में ट्रांसफ़र कर सकें"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ज़्यादा जानें"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"चालू है"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"बंद है"</string>
@@ -343,10 +343,10 @@
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"पासवर्ड मेल नहीं खाते"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"अगर आपका फ़ोन खो जाता है और आपको पासवर्ड याद नहीं है, तो Health Connect सेव किया गया आपका डेटा वापस लाने में आपकी मदद नहीं कर सकेगा."</string>
     <string name="import_decryption_title" msgid="396608799208392844">"पासवर्ड टाइप करें"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect का अपना डेटा इंपोर्ट करने के लिए, एन्क्रिप्ट यानी सुरक्षित किए गए पासवर्ड की ज़रूरत होती है"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"आपके Health Connect का डेटा इंपोर्ट करने के लिए, एन्क्रिप्ट यानी सुरक्षित किए गए पासवर्ड की ज़रूरत होती है"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"क्या आपको पासवर्ड याद नहीं है?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"पासवर्ड"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"अगर आपके पास अब भी आपका पुराना फ़ोन मौजूद है, तो एक नए पासवर्ड के साथ डेटा को दोबारा एक्सपोर्ट किया जा सकता है"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"अगर आपके पास अब भी आपका पुराना फ़ोन मौजूद है, तो नया पासवर्ड सेट करके डेटा को दोबारा एक्सपोर्ट किया जा सकता है"</string>
     <string name="export_back_button" msgid="3550795479165524982">"वापस जाएं"</string>
     <string name="export_next_button" msgid="657930567137105172">"आगे बढ़ें"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"रद्द करें"</string>

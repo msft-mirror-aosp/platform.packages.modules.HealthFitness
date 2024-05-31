@@ -322,9 +322,9 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ব্যাক-আপ নিন ও ফিরিয়ে আনুন"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"এক্সপোর্ট ও ইমপোর্ট করুন"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"শিডিউল করা এক্সপোর্ট"</string>
-    <string name="import_data" msgid="404502315533233094">"ডেটা ইমপোর্ট করুন"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"আগে এক্সপোর্ট করা হয়েছে এমন ফাইল থেকে ডেটা আবার ফিরিয়ে আনুন"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"\'এক্সপোর্ট\' ফিচার আপনাকে নিজের ডেটা সেভ করতে দেয়, যাতে আপনি তা নতুন ফোনে ট্রান্সফার করতে পারেন"</string>
+    <string name="import_data" msgid="404502315533233094">"ডেটা ইম্পোর্ট করুন"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"আগে এক্সপোর্ট করা হয়েছে এমন ফাইল থেকে ডেটা ফিরিয়ে আনুন"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"এক্সপোর্ট ফিচার আপনাকে নিজের ডেটা সেভ করতে দেয়, যাতে আপনি তা নতুন ফোনে ট্রান্সফার করতে পারেন"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"আরও জানুন"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"চালু আছে"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"বন্ধ আছে"</string>
@@ -342,8 +342,8 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"পাসওয়ার্ড আবার লিখুন"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"পাসওয়ার্ড মিলছে না"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"আপনি নিজের পাসওয়ার্ড ভুলে গেলে এবং হারিয়ে ফেললে, Health Connect আপনার সেভ করা ডেটা ফিরিয়ে আনার জন্য সাহায্য করতে পারবে না।"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"পাসওয়ার্ড টাইপ করুন"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"আপনার Health Connect ডেটা ইমপোর্ট করতে আপনার এনক্রিপশন ডেটা প্রয়োজন"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"পাসওয়ার্ড লিখুন"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect ডেটা ইম্পোর্ট করতে আপনার এনক্রিপশন পাসওয়ার্ড প্রয়োজন"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"পাসওয়ার্ড ভুলে গেছেন?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"পাসওয়ার্ড"</string>
     <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"আপনার কাছে এখনও পুরনো ফোন থাকলে, নতুন পাসওয়ার্ডের মাধ্যমে আপনি নিজের ডেটা আবার এক্সপোর্ট করতে পারবেন"</string>
@@ -351,7 +351,7 @@
     <string name="export_next_button" msgid="657930567137105172">"পরবর্তী"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"বাতিল করুন"</string>
     <string name="import_next_button" msgid="5706322508691854289">"পরবর্তী"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"এখান থেকে ইমপোর্ট করুন"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"এখান থেকে ইম্পোর্ট করুন"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ব্যবহার শুরু করুন"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, আপনার স্বাস্থ্য ও ফিটনেস সংক্রান্ত ডেটা সেভ করে, যার ফলে সহজেই বিভিন্ন অ্যাপ আপনার ফোনে সিঙ্ক করে নিতে পারেন"</string>
     <string name="share_data" msgid="3481932156368883946">"অ্যাপের সাথে ডেটা শেয়ার করুন"</string>

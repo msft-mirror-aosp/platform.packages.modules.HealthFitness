@@ -24,21 +24,10 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
-import android.security.keystore.KeyProperties;
-import android.security.keystore.KeyProtection;
 
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.util.Arrays;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Stores the settings for the scheduled export service.
@@ -47,10 +36,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class ScheduledExportSettingsStorage {
     // Scheduled Export Settings
-    private static final String EXPORT_SALT_PREFERENCE_KEY = "export_salt_key";
     private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
-    private static final String EXPORT_KEYSTORE_ENTRY = "health_connect_export_key";
 
     // Scheduled Export State
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
@@ -62,8 +49,7 @@ public final class ScheduledExportSettingsStorage {
      *
      * @param settings Settings to use for the scheduled export. Use null to clear the settings.
      */
-    public static void configure(@Nullable ScheduledExportSettings settings)
-            throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
+    public static void configure(@Nullable ScheduledExportSettings settings) {
         if (settings != null) {
             configureNonNull(settings);
         } else {
@@ -72,29 +58,7 @@ public final class ScheduledExportSettingsStorage {
     }
 
     /** Configures the settings for the scheduled export of Health Connect data. */
-    private static void configureNonNull(@NonNull ScheduledExportSettings settings)
-            throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
-        // Android key store type is from
-        // https://developer.android.com/privacy-and-security/keystore#UsingAndroidKeyStore.
-        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-        keyStore.load(null);
-
-        if (settings.getSecretKey() != null && settings.getSalt() != null) {
-            SecretKey secretKey =
-                    new SecretKeySpec(settings.getSecretKey(), KeyProperties.KEY_ALGORITHM_AES);
-            keyStore.setEntry(
-                    EXPORT_KEYSTORE_ENTRY,
-                    new KeyStore.SecretKeyEntry(secretKey),
-                    new KeyProtection.Builder(KeyProperties.PURPOSE_ENCRYPT)
-                            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                            .build());
-
-            String salt = Arrays.toString(settings.getSalt());
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(EXPORT_SALT_PREFERENCE_KEY, salt);
-        }
-
+    private static void configureNonNull(@NonNull ScheduledExportSettings settings) {
         if (settings.getUri() != null) {
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(
@@ -109,15 +73,7 @@ public final class ScheduledExportSettingsStorage {
     }
 
     /** Clears the settings for the scheduled export of Health Connect data. */
-    private static void clear()
-            throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
-        // Android key store type is from
-        // https://developer.android.com/privacy-and-security/keystore#UsingAndroidKeyStore.
-        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-        keyStore.load(null);
-        keyStore.deleteEntry(EXPORT_KEYSTORE_ENTRY);
-
-        PreferenceHelper.getInstance().removeKey(EXPORT_SALT_PREFERENCE_KEY);
+    private static void clear() {
         PreferenceHelper.getInstance().removeKey(EXPORT_URI_PREFERENCE_KEY);
         PreferenceHelper.getInstance().removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
     }

@@ -324,7 +324,7 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Экспорт по расписанию"</string>
     <string name="import_data" msgid="404502315533233094">"Импорт данных"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Восстановить данные из ранее экспортированного файла"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"С помощью функции экспорта вы можете сохранить свои данные, чтобы перенести их на другой телефон."</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Используя функцию экспорта, вы можете сохранить данные, чтобы перенести их на другой телефон."</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Подробнее…"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Включен"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Отключен"</string>
@@ -346,7 +346,7 @@
     <string name="import_decryption_description" msgid="202259030890690376">"Чтобы импортировать данные платформы \"Здоровье и спорт\", нужно ввести пароль для шифрования."</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Забыли пароль?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Пароль"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Если старый телефон ещё у вас, вы можете повторно экспортировать данные с новым паролем."</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Если старый телефон ещё у вас, вы можете использовать новый пароль, чтобы повторно экспортировать данные."</string>
     <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
     <string name="export_next_button" msgid="657930567137105172">"Далее"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Отмена"</string>

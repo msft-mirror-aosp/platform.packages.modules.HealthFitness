@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_homeFragment_to_systemUpdateActivity"
             app:destination="@id/systemUpdateActivity"/>
+        <action
+            android:id="@+id/action_homeFragment_to_exportSetupActivity"
+            app:destination="@id/exportSetupActivity"/>
     </fragment>
 
     <activity

@@ -17,8 +17,6 @@
 package com.android.healthconnect.controller.tests.exportimport.api
 
 import android.health.connect.Constants.DEFAULT_INT
-import android.health.connect.HealthConnectManager
-import android.health.connect.exportimport.ScheduledExportStatus
 import android.net.Uri
 import com.android.healthconnect.controller.exportimport.api.DocumentProvider
 import com.android.healthconnect.controller.exportimport.api.DocumentProviderInfo
@@ -29,17 +27,14 @@ import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXP
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_WEEKLY
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
-import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadExportSettingsUseCase
-import com.android.healthconnect.controller.tests.utils.di.FakeLoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeQueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeUpdateExportSettingsUseCase
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.time.Instant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -56,9 +51,6 @@ import org.junit.Test
 @HiltAndroidTest
 class ExportSettingsViewModelTest {
     companion object {
-        private val TEST_SECRET_KEY = byteArrayOf(1, 2, 3, 4)
-        private val TEST_SALT = byteArrayOf(5, 6, 7, 8)
-        private val TEST_EXPORT_FREQUENCY_IN_DAYS = 7
         private val TEST_URI: Uri = Uri.parse("content://com.android.server.healthconnect/testuri")
 
         private val TEST_DOCUMENT_PROVIDER_TITLE = "Document provider"
@@ -78,7 +70,6 @@ class ExportSettingsViewModelTest {
     private lateinit var viewModel: ExportSettingsViewModel
     private val loadExportSettingsUseCase = FakeLoadExportSettingsUseCase()
     private val updateExportSettingsUseCase = FakeUpdateExportSettingsUseCase()
-    private val loadScheduledExportStatusUseCase = FakeLoadScheduledExportStatusUseCase()
     private val queryDocumentProvidersUseCase = FakeQueryDocumentProvidersUseCase()
 
     @Before
@@ -89,7 +80,6 @@ class ExportSettingsViewModelTest {
             ExportSettingsViewModel(
                 loadExportSettingsUseCase,
                 updateExportSettingsUseCase,
-                loadScheduledExportStatusUseCase,
                 queryDocumentProvidersUseCase)
     }
 
@@ -111,24 +101,6 @@ class ExportSettingsViewModelTest {
 
         assertThat(testObserver.getLastValue())
             .isEqualTo(ExportSettings.WithData(EXPORT_FREQUENCY_WEEKLY))
-    }
-
-    @Test
-    fun loadScheduledExportStatus() = runTest {
-        val testObserver = TestObserver<ScheduledExportUiStatus>()
-        viewModel.storedScheduledExportStatus.observeForever(testObserver)
-        val scheduledExportStatus =
-            ScheduledExportStatus(
-                Instant.ofEpochMilli(100),
-                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS,
-                TEST_EXPORT_FREQUENCY_IN_DAYS)
-        loadScheduledExportStatusUseCase.updateExportStatus(scheduledExportStatus)
-
-        viewModel.loadScheduledExportStatus()
-        advanceUntilIdle()
-
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(ScheduledExportUiStatus.WithData(scheduledExportStatus))
     }
 
     @Test
@@ -155,39 +127,10 @@ class ExportSettingsViewModelTest {
     }
 
     @Test
-    fun updateExportSecretKey() = runTest {
-        viewModel.updateExportSecretKey(TEST_SECRET_KEY, TEST_SALT)
-        advanceUntilIdle()
-
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.secretKey)
-            .isEqualTo(TEST_SECRET_KEY)
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.salt).isEqualTo(TEST_SALT)
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.uri).isNull()
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.periodInDays)
-            .isEqualTo(DEFAULT_INT)
-    }
-
-    @Test
-    fun updateExportSecretKey_keepsExistingFrequencySetting() = runTest {
-        val testObserver = TestObserver<ExportSettings>()
-        viewModel.storedExportSettings.observeForever(testObserver)
-        loadExportSettingsUseCase.updateExportFrequency(EXPORT_FREQUENCY_MONTHLY)
-        viewModel.loadExportSettings()
-
-        viewModel.updateExportSecretKey(TEST_SECRET_KEY, TEST_SALT)
-        advanceUntilIdle()
-
-        assertThat(testObserver.getLastValue())
-            .isEqualTo(ExportSettings.WithData(EXPORT_FREQUENCY_MONTHLY))
-    }
-
-    @Test
     fun updateExportUri() = runTest {
         viewModel.updateExportUri(TEST_URI)
         advanceUntilIdle()
 
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.secretKey).isNull()
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.salt).isNull()
         assertThat(updateExportSettingsUseCase.mostRecentSettings.uri).isEqualTo(TEST_URI)
         assertThat(updateExportSettingsUseCase.mostRecentSettings.periodInDays)
             .isEqualTo(DEFAULT_INT)
@@ -212,8 +155,6 @@ class ExportSettingsViewModelTest {
         viewModel.updateExportFrequency(EXPORT_FREQUENCY_DAILY)
         advanceUntilIdle()
 
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.secretKey).isNull()
-        assertThat(updateExportSettingsUseCase.mostRecentSettings.salt).isNull()
         assertThat(updateExportSettingsUseCase.mostRecentSettings.uri).isNull()
         assertThat(updateExportSettingsUseCase.mostRecentSettings.periodInDays)
             .isEqualTo(EXPORT_FREQUENCY_DAILY.periodInDays)

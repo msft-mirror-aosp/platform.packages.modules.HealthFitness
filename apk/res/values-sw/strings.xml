@@ -323,8 +323,8 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Kuhamisha na kupakia data"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Uhamishaji wa data ulioratibiwa"</string>
     <string name="import_data" msgid="404502315533233094">"Pakia data"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Kurejesha data kutoka kwa faili iliyohamishwa hapo awali"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Kipengele cha Uhamishaji kinawezesha kuhifadhi data yako ili uweze kuihamishia kwenye simu mpya"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Rejesha data kutoka kwenye faili iliyohamishwa hapo awali"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Kipengele cha Uhamishaji kinakuwezesha kuhifadhi data yako ili uweze kuihamisha kwenye simu mpya"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Pata maelezo zaidi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Imewashwa"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Imezimwa"</string>
@@ -351,7 +351,7 @@
     <string name="export_next_button" msgid="657930567137105172">"Endelea"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Acha"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Endelea"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Pakia kutoka kwenye"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Pakia kutoka"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Anza kutumia Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect huhifadhi data yako ya afya na siha, hivyo kukupatia njia rahisi ya kusawazisha programu tofauti kwenye simu yako"</string>
     <string name="share_data" msgid="3481932156368883946">"Shiriki data na programu zako"</string>

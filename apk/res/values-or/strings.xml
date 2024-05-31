@@ -323,7 +323,7 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"ଏକ୍ସପୋର୍ଟ ଏବଂ ଇମ୍ପୋର୍ଟ"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ"</string>
     <string name="import_data" msgid="404502315533233094">"ଡାଟା ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଏକ ଫାଇଲରୁ ଡାଟା ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଏକ ଫାଇଲରୁ ଡାଟା ରିଷ୍ଟୋର କରେ"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ଏକ୍ସପୋର୍ଟ ଆପଣଙ୍କୁ ଆପଣଙ୍କ ଡାଟା ସେଭ କରିବାକୁ ଦିଏ ଯାହା ଫଳରେ ଆପଣ ଏହାକୁ ଏକ ନୂଆ ଫୋନକୁ ଟ୍ରାନ୍ସଫର କରିପାରିବେ"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ଅଧିକ ଜାଣନ୍ତୁ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ଚାଲୁ ଅଛି"</string>

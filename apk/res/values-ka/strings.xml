@@ -324,7 +324,7 @@
     <string name="scheduled_export" msgid="8737660963687364370">"დაგეგმილი ექსპორტი"</string>
     <string name="import_data" msgid="404502315533233094">"მონაცემების იმპორტი"</string>
     <string name="import_data_description" msgid="4040178599441724296">"მონაცემთა აღდგენა წინა ექსპორტირებული ფაილიდან"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ექსპორტის ფუნქცია საშუალებას გაძლევთ შეინახოთ თქვენი მონაცემები, რათა შემდეგ გადაიტანოთ ახალ ტელეფონში"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ექსპორტის ფუნქცია საშუალებას გაძლევთ, შეინახოთ თქვენი მონაცემები ახალ ტელეფონში გადასატანად"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"შეიტყვეთ მეტი"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ჩართული"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"გამორთული"</string>
@@ -342,16 +342,16 @@
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"ხელმეორედ შეიყვანეთ პაროლი"</string>
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"პაროლები არ ემთხვევა"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"თუ დაგავიწყდათ პაროლი ან დაკარგეთ ტელეფონი, Health Connect ვერ დაგეხმარებათ შენახული მონაცემების აღდგენაში."</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"აკრიფეთ პაროლი"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"პაროლის აკრეფა"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"თქვენი Health Connect-ის მონაცემების იმპორტისთვის საჭიროა თქვენი დაშიფვრის პაროლი"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"პაროლი დაგავიწყდათ?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"პაროლი"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"თუ კვლავ ფლობთ ძველ ტელეფონს, ახალი პაროლის საშუალებით შეგიძლიათ თქვენი მონაცემების ხელახლა ექსპორტი"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"თუ ისევ გაქვთ ძველი ტელეფონი, ახალი პაროლის მეშვეობით მონაცემთა ხელახალ ექსპორტს შეძლებთ"</string>
     <string name="export_back_button" msgid="3550795479165524982">"უკან"</string>
     <string name="export_next_button" msgid="657930567137105172">"შემდეგი"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"გაუქმება"</string>
     <string name="import_next_button" msgid="5706322508691854289">"შემდეგ"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"შეარჩიეთ იმპორტის ლოკაცია"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"იმპორტირება:"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"დაიწყეთ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ინახავს თქვენს ჯანმრთელობასა და ფიტნესთან დაკავშირებულ მონაცემებს და გაძლევთ საშუალებას, მარტივად დაასინქრონოთ სხვადასხვა აპი თქვენს ტელფონში"</string>
     <string name="share_data" msgid="3481932156368883946">"გააზიარეთ ინფორმაცია თქვენს აპებთან"</string>

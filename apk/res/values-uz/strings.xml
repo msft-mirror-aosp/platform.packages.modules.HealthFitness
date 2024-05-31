@@ -361,10 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Orqaga"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Boshlash"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Maʼlumotlarni oʻchirib tashlash"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Oʻchirishga kirish"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Oʻchirishdan chiqish"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Oʻchiriladigan axborotni tanlang"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Keyingisi"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Bunda tanlangan vaqt orasida Health Connect xizmatiga kiritilgan barcha maʼlumotlar butunlay oʻchib ketadi"</string>
@@ -924,14 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu ilovaga orqa fonda yoki avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu ilovaga fon rejimida ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu ilovaga avvalgi maʼlumotlarga kirishga ruxsat berish uchun kamida bitta oʻqish ruxsatini faollashtiring"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connectdan barcha maʼlumotlar butunlay oʻchirilsinmi?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connectdan tanlangan maʼlumotlar butunlay oʻchirilsinmi?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Barcha maʼlumotlar oʻchirildi"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> axboroti oʻchirildi"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ruxsatlari oʻchirildi"</string>
 </resources>
