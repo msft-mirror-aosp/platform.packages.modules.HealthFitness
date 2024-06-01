@@ -42,8 +42,11 @@ public final class MedicalResource implements Parcelable {
     /** Unknown medical resource type. */
     public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
 
+    /** Medical resource type to capture the immunizations data. */
+    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1;
+
     /** @hide */
-    @IntDef({MEDICAL_RESOURCE_TYPE_UNKNOWN})
+    @IntDef({MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MedicalResourceType {}
 
@@ -151,7 +154,8 @@ public final class MedicalResource implements Parcelable {
      *
      * @hide
      */
-    public static final Set<Integer> VALID_TYPES = Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+    public static final Set<Integer> VALID_TYPES =
+            Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
 
     /** Indicates whether some other object is "equal to" this one. */
     @Override
