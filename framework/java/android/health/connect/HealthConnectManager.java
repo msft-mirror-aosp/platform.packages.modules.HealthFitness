@@ -2109,6 +2109,40 @@ public class HealthConnectManager {
     }
 
     /**
+     * Creates a {@link MedicalDataSource} in HealthConnect based on the {@link
+     * CreateMedicalDataSourceRequest} request values.
+     *
+     * <p>A {@link MedicalDataSource} needs to be created before any {@link MedicalResource}s for
+     * that source can be inserted.
+     *
+     * <p>The following rules apply to {@link MedicalDataSource} creation.
+     *
+     * <ul>
+     *   <li>Only apps that have the
+     *       android.health.connect.HealthPermissions#WRITE_MEDICAL_RESOURCES are allowed to create
+     *       data sources.
+     *   <li>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
+     *       all medical data sources created by an app. The FHIR base uri cannot be updated after
+     *       creating the data source.
+     * </ul>
+     *
+     * @param request Creation request.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void createMedicalDataSource(
+            @NonNull CreateMedicalDataSourceRequest request,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<MedicalDataSource, HealthConnectException> callback) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
      * Returns {@link MedicalDataSource}s for the provided list of {@link MedicalDataSource} ids.
      *
      * <p>The returned list of data sources will be in the same order as the {@code ids}.

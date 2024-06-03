@@ -32,15 +32,12 @@ import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
 import com.google.common.truth.Truth;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,16 +74,10 @@ public class ExportManagerTest {
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         mExportManager = new ExportManager(mContext);
-        setupRemoteFile();
-    }
-
-    @After
-    public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
+        configureExportUri();
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_deletesAccessLogsTableContent() {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
@@ -94,7 +85,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "access_logs_table", 2);
 
-        mExportManager.runExport();
+        Truth.assertThat(mExportManager.runExport()).isTrue();
 
         HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(
@@ -105,7 +96,6 @@ public class ExportManagerTest {
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_deletesChangeLogsTableContent() {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
@@ -113,7 +103,7 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "change_logs_table", 2);
 
-        mExportManager.runExport();
+        Truth.assertThat(mExportManager.runExport()).isTrue();
 
         HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(
@@ -124,14 +114,13 @@ public class ExportManagerTest {
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_makesLocalCopyOfDatabase() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        mExportManager.runExport();
+        Truth.assertThat(mExportManager.runExport()).isTrue();
 
         HealthConnectDatabase localExportHealthConnectDatabase =
                 new HealthConnectDatabase(
@@ -142,14 +131,13 @@ public class ExportManagerTest {
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_makesRemoteCopyOfDatabase() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        mExportManager.runExport();
+        Truth.assertThat(mExportManager.runExport()).isTrue();
 
         HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(
@@ -159,14 +147,12 @@ public class ExportManagerTest {
         assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);
     }
 
-    private void setupRemoteFile() throws Exception {
+    private void configureExportUri() {
         DatabaseContext dbContext =
                 DatabaseContext.create(
                         mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
         File remoteDir = dbContext.getDatabaseDir();
-        remoteDir.mkdirs();
         File remoteFile = new File(remoteDir, REMOTE_EXPORT_DATABASE_FILE_NAME);
-        remoteFile.createNewFile();
         ScheduledExportSettingsStorage.configure(
                 ScheduledExportSettings.withUri(Uri.parse(remoteFile.toURI().toString())));
     }

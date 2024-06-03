@@ -53,9 +53,16 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         mContext =
                 new HealthConnectUserContext(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
+        TransactionManager.clearInstance();
         mTransactionManager = TransactionManager.getInstance(mContext);
         File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+
+        // Init any needed helpers here.
+        // Helpers are initialised during database onCreate(). When running a test in case the
+        // database is already initialised, not all helpers might be initialised.
+        // In this case, DatabaseHelper.clearAllData() may not clear all data as expected.
+        ChangeLogsHelper.getInstance();
     }
 
     @Override

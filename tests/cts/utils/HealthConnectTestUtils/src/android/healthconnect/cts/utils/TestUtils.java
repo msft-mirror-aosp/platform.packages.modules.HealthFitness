@@ -66,6 +66,7 @@ import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
 import android.health.connect.ApplicationInfoResponse;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
@@ -1216,6 +1217,18 @@ public final class TestUtils {
     /** Extracts and returns ids of the provided records. */
     public static List<String> getRecordIds(List<? extends Record> records) {
         return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
+    }
+
+    /**
+     * Helper function to execute a request to create a medical data source and return the inserted
+     * {@link MedicalDataSource} using {@link HealthConnectManager}.
+     */
+    public static MedicalDataSource createMedicalDataSource(CreateMedicalDataSourceRequest request)
+            throws InterruptedException {
+        HealthConnectReceiver<MedicalDataSource> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .createMedicalDataSource(request, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
     }
 
     /** Helper function to read medical data sources from the DB, using HealthConnectManager. */
