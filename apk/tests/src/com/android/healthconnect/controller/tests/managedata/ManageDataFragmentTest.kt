@@ -1,7 +1,11 @@
 package com.android.healthconnect.controller.tests.managedata
 
+import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.platform.test.annotations.DisableFlags
+import android.platform.test.annotations.EnableFlags
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
@@ -23,6 +27,7 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -42,6 +47,7 @@ import org.mockito.kotlin.verify
 class ManageDataFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
     @BindValue
     val autoDeleteViewModel: AutoDeleteViewModel = Mockito.mock(AutoDeleteViewModel::class.java)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
@@ -52,6 +58,12 @@ class ManageDataFragmentTest {
     @Before
     fun setup() {
         hiltRule.inject()
+
+        // Required for aconfig flag reading for tests run on pre V devices
+        InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation()
+            .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG)
+
         whenever(autoDeleteViewModel.storedAutoDeleteRange).then {
             MutableLiveData(
                 AutoDeleteViewModel.AutoDeleteState.WithData(
@@ -100,8 +112,8 @@ class ManageDataFragmentTest {
     }
 
     @Test
+    @DisableFlags(Flags.FLAG_EXPORT_IMPORT)
     fun manageDataFragment_importExportFlagOff_backupButtonNotDisplayed() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsImportExportEnabled(false)
         launchFragment<ManageDataFragment>(Bundle())
 
         onView(withText("Auto-delete")).check(matches(isDisplayed()))
@@ -156,8 +168,8 @@ class ManageDataFragmentTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
     fun manageDataFragment_importExportFlagOn_navigatesToBackupAndRestoreSettingsFragment() {
-        (fakeFeatureUtils as FakeFeatureUtils).setIsImportExportEnabled(true)
         launchFragment<ManageDataFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.manageDataFragment)

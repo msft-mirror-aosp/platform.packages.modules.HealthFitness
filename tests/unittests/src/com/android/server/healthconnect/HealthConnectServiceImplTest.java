@@ -131,6 +131,7 @@ public class HealthConnectServiceImplTest {
                     "queryAccessLogs",
                     "getActivityDates",
                     "configureScheduledExport",
+                    "getScheduledExportStatus",
                     "getScheduledExportPeriodInDays");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
@@ -143,11 +144,13 @@ public class HealthConnectServiceImplTest {
                     "getAllDataForBackup",
                     "getAllBackupFileNames",
                     "deleteAllStagedRemoteData",
+                    "setLowerRateLimitsForTesting",
                     "updateDataDownloadState",
                     "getHealthConnectDataState",
                     "getHealthConnectMigrationUiState",
                     "insertMinDataMigrationSdkExtensionVersion",
-                    "asBinder");
+                    "asBinder",
+                    "queryDocumentProviders");
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -244,8 +247,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000).times(1)).onResult();
-        var stagedFileNames =
-                mHealthConnectService.getStagedRemoteFileNames(mUserHandle.getIdentifier());
+        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(2);
         assertThat(stagedFileNames.contains(testRestoreFile1.getName())).isTrue();
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
@@ -273,8 +275,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000).times(1)).onError(any());
-        var stagedFileNames =
-                mHealthConnectService.getStagedRemoteFileNames(mUserHandle.getIdentifier());
+        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(1);
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
     }
@@ -306,8 +307,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000)).onResult();
-        var stagedFileNames =
-                mHealthConnectService.getStagedRemoteFileNames(mUserHandle.getIdentifier());
+        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(2);
         assertThat(stagedFileNames.contains(testRestoreFile1.getName())).isTrue();
         assertThat(stagedFileNames.contains(testRestoreFile2.getName())).isTrue();
@@ -338,8 +338,7 @@ public class HealthConnectServiceImplTest {
                 new StageRemoteDataRequest(pfdsByFileName), mUserHandle, callback);
 
         verify(callback, timeout(5000)).onResult();
-        var stagedFileNames =
-                mHealthConnectService.getStagedRemoteFileNames(mUserHandle.getIdentifier());
+        var stagedFileNames = mHealthConnectService.getStagedRemoteFileNames(mUserHandle);
         assertThat(stagedFileNames.size()).isEqualTo(0);
     }
 

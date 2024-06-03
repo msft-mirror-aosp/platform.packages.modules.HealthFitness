@@ -24,8 +24,6 @@ interface FeatureUtils {
 
     fun isHistoryReadEnabled(): Boolean
 
-    fun isImportExportEnabled(): Boolean
-
     fun isSkinTemperatureEnabled(): Boolean
 
     fun isPlannedExerciseEnabled(): Boolean
@@ -44,7 +42,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
             "aggregation_source_controls_enable"
         private const val PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED =
             "new_information_architecture_enable"
-        private const val PROPERTY_IMPORT_EXPORT_ENABLED = "import_export_enable"
     }
 
     private val lock = Any()
@@ -68,10 +65,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     private var isNewInformationArchitectureEnabled =
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
-
-    private var isImportExportEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_IMPORT_EXPORT_ENABLED, false)
 
     override fun isNewAppPriorityEnabled(): Boolean {
         synchronized(lock) {
@@ -105,31 +98,25 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     override fun isBackgroundReadEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
     override fun isHistoryReadEnabled(): Boolean {
         synchronized(lock) {
-            return false
-        }
-    }
-
-    override fun isImportExportEnabled(): Boolean {
-        synchronized(lock) {
-            return isImportExportEnabled
+            return true
         }
     }
 
     override fun isPlannedExerciseEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
     override fun isSkinTemperatureEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
@@ -156,9 +143,6 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                         isNewInformationArchitectureEnabled =
                             properties.getBoolean(
                                 PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
-                    PROPERTY_IMPORT_EXPORT_ENABLED ->
-                        isImportExportEnabled =
-                            properties.getBoolean(PROPERTY_IMPORT_EXPORT_ENABLED, false)
                 }
             }
         }

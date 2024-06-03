@@ -45,11 +45,20 @@ import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorit
 import com.android.healthconnect.controller.datasources.api.LoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.SleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.UpdatePriorityListUseCase
-import com.android.healthconnect.controller.export.api.ILoadExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.IUpdateExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.LoadExportSettingsUseCase
-import com.android.healthconnect.controller.export.api.UpdateExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
+import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.LoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.QueryDocumentProvidersUseCase
+import com.android.healthconnect.controller.exportimport.api.UpdateExportSettingsUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.api.GetHealthPermissionsFlagsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
@@ -108,6 +117,20 @@ class UseCaseModule {
         loadEntriesHelper: LoadEntriesHelper
     ): ILoadDataEntriesUseCase {
         return LoadDataEntriesUseCase(dispatcher, loadEntriesHelper)
+    }
+
+    @Provides
+    fun providesExerciseRoutePermissionUseCase(
+        loadDeclaredHealthPermissionUseCase: LoadDeclaredHealthPermissionUseCase,
+        getHealthPermissionsFlagsUseCase: GetHealthPermissionsFlagsUseCase,
+        getGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): ILoadExerciseRoutePermissionUseCase {
+        return LoadExerciseRoutePermissionUseCase(
+            loadDeclaredHealthPermissionUseCase,
+            getHealthPermissionsFlagsUseCase,
+            getGrantedHealthPermissionsUseCase,
+            dispatcher)
     }
 
     @Provides
@@ -276,15 +299,29 @@ class UseCaseModule {
 
     @Provides
     fun providesLoadExportSettingsUseCase(
-        healthConnectManager: HealthConnectManager
+        healthDataExportManager: HealthDataExportManager
     ): ILoadExportSettingsUseCase {
-        return LoadExportSettingsUseCase(healthConnectManager)
+        return LoadExportSettingsUseCase(healthDataExportManager)
     }
 
     @Provides
     fun providesUpdateExportSettingsUseCase(
-        healthConnectManager: HealthConnectManager
+        healthDataExportManager: HealthDataExportManager
     ): IUpdateExportSettingsUseCase {
-        return UpdateExportSettingsUseCase(healthConnectManager)
+        return UpdateExportSettingsUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesLoadScheduledExportStatusUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): ILoadScheduledExportStatusUseCase {
+        return LoadScheduledExportStatusUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesQueryDocumentProvidersUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): IQueryDocumentProvidersUseCase {
+        return QueryDocumentProvidersUseCase(healthDataExportManager)
     }
 }

@@ -38,7 +38,7 @@
         <item name="autoDeleteIcon">@drawable/ic_auto_delete</item>
         <item name="autoDeleteOffIcon">@drawable/ic_auto_delete_off</item>
         <item name="deleteIcon">@drawable/ic_delete</item>
-        <item name="exportDataIcon">@drawable/ic_export_data</item>
+        <item name="importDataIcon">@drawable/ic_import_data</item>
         <item name="activityCategoryIcon">@drawable/ic_category_activity</item>
         <item name="bodyMeasurementsCategoryIcon">@drawable/ic_category_body_measurements</item>
         <item name="cycleTrackingCategoryIcon">@drawable/ic_category_cycle_tracking</item>
@@ -51,6 +51,9 @@
 
         <!-- Data access page -->
         <item name="seeAllEntriesIcon">@drawable/ic_view_list</item>
+        <item name="deleteForeverIcon">@drawable/ic_delete_forever</item>
+        <item name="checkboxUncheckedIcon">@drawable/ic_checkbox_unchecked</item>
+        <item name="checkboxCheckedIcon">@drawable/ic_checkbox_checked</item>
 
         <!-- Dialogs -->
         <item name="deletionSettingsIcon">@drawable/ic_deletion_settings</item>
@@ -84,10 +87,12 @@
 
         <item name="repeatIcon">@drawable/ic_repeat</item>
         <item name="uploadIcon">@drawable/ic_upload</item>
-        <item name="settingsBackupRestoreIcon">@drawable/ic_settings_backup_restore</item>
+        <item name="importIcon">@drawable/ic_import</item>
+        <item name="importDataIcon">@drawable/ic_import_data</item>
 
-        <item name="lockIcon">@drawable/ic_lock</item>
         <item name="warningIcon">@drawable/ic_warning</item>
+        <item name="passwordIcon">@drawable/ic_password</item>
+        <item name="infoIcon">@drawable/ic_info</item>
 
         <!-- END REGION -->
 
@@ -116,6 +121,7 @@
         <item name="textAppearanceSubheader3">@style/TextAppearance.HealthConnect.Subheader3</item>
         <item name="textAppearanceRouteRequest">@style/TextAppearance.HealthConnect.RouteRequest</item>
         <item name="textAppearancePreferenceCategory">@style/TextAppearance.HealthConnect.CategoryTitle</item>
+        <item name="textAppearanceErrorMessage">@style/TextAppearance.HealthConnect.ErrorMessage</item>
 
         <!-- Buttons -->
         <item name="dialogButtonFull">@style/Widget.HealthConnect.DialogButton.Full</item>
@@ -124,7 +130,10 @@
         <item name="buttonBorderLess">@style/Widget.HealthConnect.Button.Borderless</item>
         <item name="permissionGrantButtonList">@style/PermissionGrantButtonListMaterial3</item>
         <item name="permissionGrantButtonTop">@style/PermissionGrantButtonTop</item>
-        <item name="permissionGrantButtonButton">@style/PermissionGrantButtonBottom</item>
+        <item name="permissionGrantButtonBottom">@style/PermissionGrantButtonBottom</item>
+
+        <!-- EditText -->
+        <item name="editTextPasswordTheme">@style/Widget.HealthConnect.EditText.Password</item>
 
         <!-- Dialogs -->
         <item name="alertDialogTheme">@style/Theme.HealthConnect.Dialog.Alert</item>
@@ -148,7 +157,7 @@
         <!-- END REGION -->
 
         <!-- Popup Menu -->
-        <item name="android:itemBackground">@color/settingslib_dialog_background</item>
+        <item name="android:itemBackground">@color/settingslib_materialColorSurfaceContainer</item>
         <!-- END REGION -->
     </style>
 

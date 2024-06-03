@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"データがありません"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"アプリの権限"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"アプリと権限を管理します"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 個のアプリに権限が付与されています"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> 個のアプリに権限が付与されています"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個のアプリに権限が付与されています"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> 個のアプリに権限が付与されています"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 個のアプリに権限が付与されています}other{# 個のアプリに権限が付与されています}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"なし"</string>
     <string name="entry_details_title" msgid="590184849040247850">"エントリの詳細"</string>
     <string name="backup_title" msgid="211503191266235085">"バックアップ"</string>
@@ -41,11 +43,11 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"過去 24 時間にあなたのデータにアクセスしたアプリが表示されます"</string>
     <string name="today_header" msgid="1006837293203834373">"今日"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"昨日"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"読み取り: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"書き込み: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"読み取り: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"書き込み: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"、 "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"権限を管理"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"時間: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"時間: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"アクティビティ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"アクティビティ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"身体測定"</string>
@@ -81,10 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"健康に関するデータにアクセスします"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"消費カロリーの読み取り"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"消費カロリーの読み取りをアプリに許可します"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"バックグラウンドでの読み取り"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"バックグラウンドでの読み取り"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"健康に関するデータをバックグラウンドで読み取ります"</string>
-    <string name="history_read_description" msgid="7347109472601749963">"健康に関するデータの履歴を読み取ります"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"バックグラウンドでのデータアクセス"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g>にバックグラウンドでのデータへのアクセスを許可しますか？"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"このアプリが使用されていないときにヘルスコネクト データへのアクセスを許可します"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"許可すると、このアプリは使用されていないときにヘルスコネクト データにアクセスできます。"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"過去のデータへのアクセス"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g>に過去のデータへのアクセスを許可しますか？"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"このアプリに、<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>以前に追加されたヘルスコネクト データへのアクセスを許可します"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"このアプリに過去のすべてのヘルスコネクト データへのアクセスを許可します"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"許可すると、このアプリは、<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>以前に追加されたヘルスコネクト データにアクセスできます。"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"許可すると、このアプリは過去のすべてのヘルスコネクト データにアクセスできます。"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"活動中の消費カロリー"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"活動中の消費カロリー"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"活動中の消費カロリーの読み取り"</string>
@@ -106,10 +114,10 @@
     <string name="distance_lowercase_label" msgid="2287154001209381379">"距離"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"距離の読み取り"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"距離の書き込み"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"獲得した標高"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"獲得した標高"</string>
-    <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"獲得した標高の読み取り"</string>
-    <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"獲得した標高の書き込み"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"獲得標高"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"獲得標高"</string>
+    <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"獲得標高の読み取り"</string>
+    <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"獲得標高の書き込み"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"登った階数"</string>
     <string name="floors_climbed_lowercase_label" msgid="5326072443481377299">"登った階数"</string>
     <string name="floors_climbed_read_content_description" msgid="4730764877684911752">"登った階数の読み取り"</string>
@@ -257,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"すべて許可"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"許可しない"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"このアプリにヘルスコネクトでの読み取りまたは書き込みを許可するデータを選択します"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"読み取りアクセス権を付与すると、このアプリは新規データと過去 30 日間のデータを読み取ることができます"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"読み取りアクセス権を付与すると、このアプリは新規データと過去 30 日間のデータを読み取れるようになります"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"読み取りアクセス権を付与すると、このアプリは新規データと過去のデータを読み取れるようになります"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> にヘルスコネクトへのアクセスを許可しますか？"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> でのデータの取り扱いについて、デベロッパーの<xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>でご確認ください"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"プライバシー ポリシー"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"すべての権限を削除しますか？"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"すべて削除"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> はヘルスコネクトのデータの読み取り、書き込みを行えなくなります。\n\nこの設定は、位置情報、カメラ、マイクなど、このアプリのその他の権限には影響しません。"</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> はヘルスコネクトのデータの読み取り、書き込みを行えなくなります。\n\nこの設定は、カメラ、マイク、位置情報など、このアプリのその他の権限には影響しません。"</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> は、バックグラウンド データを含め、ヘルスコネクトのデータの読み取り、書き込みを行えなくなります。\n\nこの設定は、位置情報、カメラ、マイクなど、このアプリのその他の権限には影響しません。"</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> は、過去のデータを含め、ヘルスコネクトのデータの読み取り、書き込みを行えなくなります。\n\nこの設定は、位置情報、カメラ、マイクなど、このアプリのその他の権限には影響しません。"</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> は、バックグラウンド データや過去のデータを含め、ヘルスコネクトのデータの読み取り、書き込みを行えなくなります。\n\nこの設定は、位置情報、カメラ、マイクなど、このアプリのその他の権限には影響しません。"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"ヘルスコネクトから <xliff:g id="APP_NAME">%1$s</xliff:g> のデータも削除する"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"翌日"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"選択した日"</string>
@@ -297,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"アプリのアクセス権"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"現在、対応アプリがインストールされていません"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"アクセス権の追加"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"このアプリの追加権限を削除しました"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"アプリの権限を削除しました"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"ヘルスコネクトにより、<xliff:g id="APP_DATA">%s</xliff:g> に対する権限が削除されました"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"ヘルスコネクトにより、<xliff:g id="APP_DATA_0">%1$s</xliff:g> と <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> の権限が削除されました"</string>
@@ -308,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"バックアップと復元"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"エクスポートとインポート"</string>
-    <string name="recurring_export" msgid="111638340692746218">"定期的なエクスポート"</string>
-    <string name="restore_data" msgid="3401173690437871417">"データを復元"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"以前にエクスポートしたデータを読み込む"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"スケジュール設定されたエクスポート"</string>
+    <string name="import_data" msgid="404502315533233094">"データをインポート"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"以前エクスポートしたファイルからデータを復元できます"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"エクスポート機能を使ってデータを保存し、保存したデータを新しいスマートフォンに移行できます"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"詳細"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"ON"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"OFF"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"頻度の選択"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"頻度の選択"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"データを 1 回保存することを指定するか、定期的な自動保存を設定します。"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"毎日"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"毎週"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"毎月"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"エクスポート先の選択"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"暗号化を有効にする"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"データを保存するには先に暗号化する必要があります。これにより、Google やヘルスコネクトを含め、他のユーザーはデータにアクセスできなくなります。"</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"暗号化されたデータを保護するためにパスワードを作成してください。データのインポートや復元には、このパスワードが必要になります。"</string>
     <string name="export_password_hint" msgid="7095895042846772342">"パスワード"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"もう一度パスワードを入力"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"パスワードが一致しません"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"パスワードを忘れたり、スマートフォンを紛失したりした場合、ヘルスコネクトでは保存されたデータを復元できなくなります。"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"パスワードの入力"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"ヘルスコネクトのデータをインポートするには、暗号化パスワードが必要です"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"パスワードを忘れた場合"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"パスワード"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"以前のスマートフォンがお手元にある場合は、新しいパスワードでデータを再度エクスポートできます"</string>
     <string name="export_back_button" msgid="3550795479165524982">"戻る"</string>
     <string name="export_next_button" msgid="657930567137105172">"次へ"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"キャンセル"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"次へ"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"インポート元の選択"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ヘルスコネクトを使ってみる"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"ヘルスコネクトを利用すると、健康状態やフィットネスのデータを保存し、スマートフォン上のさまざまなアプリを簡単に同期することができます"</string>
     <string name="share_data" msgid="3481932156368883946">"アプリとデータを共有する"</string>
@@ -335,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"戻る"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"使ってみる"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"データを削除します"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"削除を開始"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"削除を終了"</string>
     <string name="time_range_title" msgid="6831605283322600165">"削除するデータの選択"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"次へ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"指定した期間にヘルスコネクトに追加されたすべてのデータを完全に削除します"</string>
@@ -393,6 +421,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 マイル/時}other{# マイル/時}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 km/時}other{# km/時}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/マイル"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/マイル"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/キロメートル"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/100 ヤード"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/100 メートル"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/100 ヤード"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> 分/100 メートル"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>～<xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>～<xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{車椅子を押した回数: 1 回}other{車椅子を押した回数: # 回}}"</string>
@@ -418,6 +454,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"判定不能"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ミリ秒}other{# ミリ秒}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"メモ"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 回}other{# 回}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"アクティブ: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"合計: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"できる限り繰り返し"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"運動レベル: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 回}other{# 回}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 回}other{# 回}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"エクササイズの種類"</string>
@@ -655,23 +698,23 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 ポンド}other{# ポンド}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 ストーン}other{# ストーン}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 度（摂氏）}other{# 度（摂氏）}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 ケルビン}other{# ケルビン}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 度（華氏）}other{# 度（華氏）}}"</string>
-    <string name="temperatureDelta_celsius" msgid="4027139004654243248">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
     <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} 度（摂氏）}other{{formattedValue} 度（摂氏）}}"</string>
-    <string name="temperatureDelta_fahrenheit" msgid="3958333818549407912">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
     <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} 度（華氏）}other{{formattedValue} 度（華氏）}}"</string>
-    <string name="temperatureDelta_kelvin" msgid="8956765298317364018">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
     <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} ケルビン}other{{formattedValue} ケルビン}}"</string>
-    <string name="temperatureDelta_average_celsius" msgid="4396290848174994509">"{value,plural, =1{{formattedValue} ℃（変動の平均）}other{{formattedValue} ℃（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃（変動の平均）}other{{formattedValue}℃（変動の平均）}}"</string>
     <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} 度（摂氏）（変動の平均）}other{{formattedValue} 度（摂氏）（変動の平均）}}"</string>
-    <string name="temperatureDelta_average_fahrenheit" msgid="2033143518773987747">"{value,plural, =1{{formattedValue} ℉（変動の平均）}other{{formattedValue} ℉（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉（変動の平均）}other{{formattedValue}℉（変動の平均）}}"</string>
     <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} 度（華氏）（変動の平均）}other{{formattedValue} 度（華氏）（変動の平均）}}"</string>
-    <string name="temperatureDelta_average_kelvin" msgid="6068752736609778866">"{value,plural, =1{{formattedValue} K（変動の平均）}other{{formattedValue} K（変動の平均）}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K（変動の平均）}other{{formattedValue}K（変動の平均）}}"</string>
     <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} ケルビン（変動の平均）}other{{formattedValue} ケルビン（変動の平均）}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"脇の下"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"指"</string>
@@ -744,7 +787,7 @@
     <string name="auto_delete_rationale" msgid="5255442126521464878">"これらの設定を変更すると、ヘルスコネクトから既存のデータが削除され、新しい設定が反映されます"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# か月後にデータを自動削除しますか？}other{# か月後にデータを自動削除しますか？}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{今後のデータは # か月後にヘルスコネクトから自動削除されます。保存期間が # か月を超える既存のデータも削除されます。}other{今後のデータは # か月後にヘルスコネクトから自動削除されます。保存期間が # か月を超える既存のデータも削除されます。}}"</string>
-    <string name="set_auto_delete_button" msgid="268450418318199197">"自動削除を設定"</string>
+    <string name="set_auto_delete_button" msgid="268450418318199197">"自動削除を ON にする"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"既存のデータが削除されます"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{保存期間が # か月を超えるすべてのデータがヘルスコネクトから削除されます。接続されているアプリにこれらの変更が反映されるまで 1 日ほどかかることがあります。}other{保存期間が # か月を超えるすべてのデータがヘルスコネクトから削除されます。接続されているアプリにこれらの変更が反映されるまで 1 日ほどかかることがあります。}}"</string>
     <string name="deletion_started_category_list_section" msgid="3052940611815658991">"アプリから削除されるデータ"</string>
@@ -779,10 +822,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"すべてのルートを許可する"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"許可しない"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"常に許可"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"エクササイズのルートの共有"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"接続されているアプリによるエクササイズのルートに、このアプリがどのようにアクセスするかを管理します"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"エクササイズ ルートへのアクセス"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"ルートへのアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に許可します"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"毎回確認"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"許可しない"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"許可しない"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"両方のデータの種類を有効にしますか？"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"両方のデータの種類を無効にしますか？"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"エクササイズのルートを有効にするには、エクササイズの読み取りアクセスを <xliff:g id="APP_NAME">%1$s</xliff:g> に許可する必要があります"</string>
@@ -874,4 +917,14 @@
     <string name="last_month_header" msgid="1359164797239191253">"先月"</string>
     <string name="tab_entries" msgid="3402700951602029493">"エントリ"</string>
     <string name="tab_access" msgid="7818197975407243701">"アクセス"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g>に次のアクセスも許可しますか？"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g>は、これらのヘルスコネクトの設定へのアクセスも求めています"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"このアプリによるバックグラウンドでのアクセスまたは過去のデータのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"このアプリによるバックグラウンドでのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"このアプリによる過去のデータのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"ヘルスコネクトからデータを完全に削除しますか？"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"選択したデータをヘルスコネクトから完全に削除しますか？"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"すべてのデータを削除しました"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> のデータを削除しました"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> 件のアイテムを削除しました。"</string>
 </resources>

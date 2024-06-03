@@ -20,16 +20,18 @@
     <string name="app_label" msgid="4768580772453324183">"Connessione Salute"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Gestisci l\'accesso delle app ai dati sulla salute"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Autorizzazioni e dati"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Gestisci i dati relativi alla salute e all\'attività fisica sul telefono e stabilisci a quali app concedere l\'accesso"</string>
+    <string name="home_subtitle" msgid="1750033322147357163">"Gestisci i dati relativi alla salute e all\'attività fisica sullo smartphone e stabilisci a quali app concedere l\'accesso"</string>
     <string name="data_title" msgid="4456619761533380816">"Dati e accesso"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Tutte le categorie"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Vedi tutte le categorie"</string>
     <string name="no_data" msgid="1906986019249068659">"Nessun dato"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Autorizzazioni app"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Gestisci app e autorizzazioni"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Ha accesso <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app su <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"App con accesso: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> su <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Hanno accesso <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Ha accesso <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> app"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 app ha accesso}other{# app hanno accesso}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Nessuna"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Dettagli voce"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
@@ -41,11 +43,11 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Guarda quali app hanno avuto accesso ai tuoi dati nelle ultime 24 ore"</string>
     <string name="today_header" msgid="1006837293203834373">"Oggi"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Ieri"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Lettura: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Scrittura: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Accesso in lettura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Accesso in scrittura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestisci autorizzazioni"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tempo: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Ora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Attività"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"attività"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Misurazioni corporee"</string>
@@ -59,7 +61,7 @@
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"Alimentazione"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"alimentazione"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"Sfoglia i dati"</string>
-    <string name="manage_data_section" msgid="5859629270946511903">"Gestisci i dati"</string>
+    <string name="manage_data_section" msgid="5859629270946511903">"Gestisci dati"</string>
     <string name="export_data_button" msgid="7783329820434117744">"Esporta i dati"</string>
     <string name="delete_all_data_button" msgid="7238755635416521487">"Elimina tutti i dati"</string>
     <string name="no_categories" msgid="2636778482437506241">"Non hai dati in Connessione Salute"</string>
@@ -81,11 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"accesso ai dati relativi alla salute"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Lettura delle calorie bruciate"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Consente all\'app di leggere le calorie bruciate"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Lettura in background"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"lettura in background"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Lettura di dati sanitari in background"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Accedi ai dati in background"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Consentire all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere ai dati in background?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Consenti a questa app di accedere ai dati di Connessione Salute quando non la utilizzi"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Se lo consenti, questa app può accedere ai dati di Connessione Salute quando non la utilizzi."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Accedi ai dati precedenti"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Consentire all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere ai dati precedenti?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Consenti a questa app di accedere ai dati di Connessione Salute aggiunti prima del giorno <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Consenti a questa app di accedere a tutti i dati precedenti di Connessione Salute"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Se lo consenti, questa app può accedere ai dati di Connessione Salute aggiunti prima del giorno <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Se lo consenti, questa app può accedere a tutti i dati precedenti di Connessione Salute."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorie bruciate durante l\'attività fisica"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calorie bruciate durante l\'attività fisica"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Lettura delle calorie bruciate durante l\'attività fisica"</string>
@@ -107,8 +114,8 @@
     <string name="distance_lowercase_label" msgid="2287154001209381379">"distanza"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Lettura della distanza"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"Scrittura della distanza"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Altitudine raggiunta"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"altitudine raggiunta"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Dislivello"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"dislivello"</string>
     <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"Lettura dell\'altitudine raggiunta"</string>
     <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"Scrittura dell\'altitudine raggiunta"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"Piani saliti"</string>
@@ -258,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Consenti tutte"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Non consentire"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Scegli i dati da far leggere o scrivere a questa app in Connessione Salute"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Se concedi l\'accesso in lettura, questa app potrà leggere i nuovi dati e quelli degli ultimi 30 giorni"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Se concedi l\'accesso in lettura, l\'app può leggere i nuovi dati e quelli degli ultimi 30 giorni"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Se concedi l\'accesso in lettura, l\'app può leggere i dati nuovi e precedenti"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vuoi consentire all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere a Connessione Salute?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Per sapere come vengono trattati i tuoi dati nell\'app <xliff:g id="APP_NAME">%1$s</xliff:g>, consulta le <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> dello sviluppatore"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"norme sulla privacy"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Rimuovere tutte le autorizzazioni?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Rimuovi tutto"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come fotocamera, microfono o posizione."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute, inclusi i dati in background.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute, inclusi i dati precedenti.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> non potrà più leggere o scrivere dati da Connessione Salute, inclusi i dati in background e i dati precedenti.\n\nL\'operazione non inciderà su eventuali altre autorizzazioni dell\'app, come posizione, fotocamera o microfono."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Elimina anche i dati di <xliff:g id="APP_NAME">%1$s</xliff:g> da Connessione Salute"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Giorno successivo"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Giorno selezionato"</string>
@@ -298,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accesso dell\'app"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Al momento non hai app compatibili installate"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accesso aggiuntivo"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Autorizzazioni aggiuntive rimosse per questa app"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Autorizzazioni app rimosse"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Connessione Salute ha rimosso le autorizzazioni per <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Connessione Salute ha rimosso le autorizzazioni per <xliff:g id="APP_DATA_0">%1$s</xliff:g> e <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -309,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup e ripristino"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Esporta e importa"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Esportazione ricorrente"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Ripristina dati"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Carica dati esportati in precedenza"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Esportazione programmata"</string>
+    <string name="import_data" msgid="404502315533233094">"Importa dati"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Ripristina i dati da un file esportato in precedenza"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"La funzionalità Esporta ti consente di salvare i dati e trasferirli a un nuovo smartphone"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Scopri di più"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"On"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Off"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Scegli la frequenza"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Scegli la frequenza"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Scegli se salvare i dati una volta o salvarli automaticamente a intervalli regolari."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Ogni giorno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ogni settimana"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Ogni mese"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Scegli dove esportare"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Attiva la crittografia"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Devi criptare i dati prima di salvarli. Nessuno, nemmeno Google o Connessione Salute, potrà accedervi."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea una password per proteggere i tuoi dati criptati. La password ti servirà per importare e ripristinare i tuoi dati."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Password"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ripeti la password"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Le password non corrispondono"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Se dimentichi la password e smarrisci lo smartphone, Connessione Salute non può aiutarti a recuperare i dati salvati."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Digita la password"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Per importare i dati di Connessione Salute, è necessaria la password per la crittografia"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Hai dimenticato la password?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Password"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Se hai ancora il tuo vecchio smartphone, puoi esportare di nuovi i dati con una nuova password"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Indietro"</string>
     <string name="export_next_button" msgid="657930567137105172">"Avanti"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Annulla"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Avanti"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importa da"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Inizia a usare Connessione Salute"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Connessione Salute archivia i dati relativi alla salute e all\'attività fisica e ti consente di sincronizzare facilmente le varie app installate sul telefono"</string>
     <string name="share_data" msgid="3481932156368883946">"Condividi i dati con le tue app"</string>
@@ -335,7 +360,11 @@
     <string name="manage_your_settings_description" msgid="557943168930365334">"Modifica le autorizzazioni dell\'app e gestisci i tuoi dati in qualsiasi momento"</string>
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Indietro"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Inizia"</string>
-    <string name="delete_button_content_description" msgid="9125115327455379618">"Elimina i dati"</string>
+    <string name="delete_button_content_description" msgid="9125115327455379618">"Elimina dati"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Scegli i dati da eliminare"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Avanti"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Questa azione eliminerà definitivamente tutti i dati aggiunti a Connessione Salute nel periodo di tempo selezionato"</string>
@@ -394,6 +423,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 miglio orario}other{# miglia orarie}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 chilometro orario}other{# chilometri orari}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/miglio"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per miglio"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per chilometro"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 iarde"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metri"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per 100 iarde"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minuti per 100 metri"</string>
     <string name="time_range_long" msgid="5067423945245490288">"dalle ore <xliff:g id="START_TIME">%1$s</xliff:g> alle ore <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"dal giorno <xliff:g id="START_TIME">%1$s</xliff:g> al giorno <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 spinta in sedia a rotelle}other{# spinte in sedia a rotelle}}"</string>
@@ -419,6 +456,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Inconcludente"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 millisecondo}other{# millisecondi}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Note"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 volta}other{# volte}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Attive: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Totali: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Maggior numero di ripetizioni"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Livello sforzo: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rip}other{# rip}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ripetizione}other{# ripetizioni}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenti esercizio fisico"</string>
@@ -656,36 +700,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 libbra}other{# libbre}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} e {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 grado Celsius}other{# gradi Celsius}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 grado Fahrenheit}other{# gradi Fahrenheit}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} grado Celsius}other{{formattedValue} gradi Celsius}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} grado Fahrenheit}other{{formattedValue} gradi Fahrenheit}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (variazione media)}other{{formattedValue}℃ (variazione media)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} grado Celsius (variazione media)}other{{formattedValue} gradi Celsius (variazione media)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (variazione media)}other{{formattedValue}℉ (variazione media)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} grado Fahrenheit (variazione media)}other{{formattedValue} gradi Fahrenheit (variazione media)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (variazione media)}other{{formattedValue}K (variazione media)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (variazione media)}other{{formattedValue} kelvin (variazione media)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Ascella"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Dito"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Fronte"</string>
@@ -696,12 +728,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Orecchio"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Polso"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vagina"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Punto di misurazione"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Temperatura di riferimento"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Variazione da temperatura di riferimento"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 miglio}other{# miglia}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 miglio}other{# miglia}}"</string>
@@ -751,7 +780,7 @@
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Elimina automaticamente"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Elimina automaticamente"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Gestisci per quanto tempo i dati sono memorizzati in Connessione Salute impostando l\'eliminazione automatica dopo un determinato periodo di tempo"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Gestisci la durata di conservazione dei tuoi dati in Connessione Salute programmando la loro eliminazione dopo un periodo prestabilito"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Scopri di più sull\'eliminazione automatica"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Elimina i dati automaticamente"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Dopo # mese}other{Dopo # mesi}}"</string>
@@ -795,10 +824,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Consenti tutti i percorsi"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Non consentire"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Consenti sempre"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Condivisione del percorso per l\'esercizio fisico"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Controlla il modo in cui questa app accede ai percorsi per l\'esercizio fisico dalle app collegate"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accedi ai percorsi degli allenamenti"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Consenti all\'app <xliff:g id="APP_NAME">%1$s</xliff:g> di accedere ai percorsi degli allenamenti"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Chiedi ogni volta"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Non consentire"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Non consentire"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Abilitare entrambi i tipi di dati?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Disattivare entrambi i tipi di dati?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ha bisogno dell\'accesso di lettura agli allenamenti per abilitarne i percorsi"</string>
@@ -890,4 +919,19 @@
     <string name="last_month_header" msgid="1359164797239191253">"Mese scorso"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Voci"</string>
     <string name="tab_access" msgid="7818197975407243701">"Accesso"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Consentire l\'accesso aggiuntivo per l\'app <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"L\'app <xliff:g id="APP_NAME">%1$s</xliff:g> vuole accedere anche a queste impostazioni di Connessione Salute"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Abilita almeno un permesso di lettura per attivare l\'accesso in background o ai dati precedenti per questa app"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Abilita almeno un permesso di lettura per attivare l\'accesso in background per questa app"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Abilita almeno un permesso di lettura per attivare l\'accesso ai dati precedenti per questa app"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

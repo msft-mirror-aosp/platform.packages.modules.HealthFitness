@@ -38,8 +38,6 @@
     <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
                      android:label="CTS HealthConnect tests"
                      android:targetPackage="android.healthconnect.cts.historyaccesslimit.withpermission">
-        <meta-data android:name="listener"
-                   android:value="com.android.cts.runner.CtsTestRunListener"/>
     </instrumentation>
 
     <!-- To get visibility of the app with health permissions definitions,

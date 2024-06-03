@@ -21,6 +21,8 @@
     android:id="@+id/permissions_nav_graph"
     app:startDestination="@id/healthDataCategoriesFragment">
 
+    <include app:graph="@navigation/connected_app_nav_graph"/>
+
     <fragment
         android:id="@+id/healthDataCategoriesFragment"
         android:name="com.android.healthconnect.controller.categories.HealthDataCategoriesFragment"
@@ -45,7 +47,7 @@
     <fragment
         android:id="@+id/healthDataAllCategoriesFragment"
         android:name="com.android.healthconnect.controller.categories.HealthDataAllCategoriesFragment"
-        android:label="@string/see_all_categories">
+        android:label="@string/data_title">
         <action
             android:id="@+id/action_healthDataAllCategories_to_healthPermissionTypes"
             app:destination="@id/healthPermissionTypesFragment" />
@@ -84,7 +86,7 @@
             app:destination="@id/dataEntriesFragment" />
         <action
             android:id="@+id/action_healthDataAccessFragment_to_appAccess"
-            app:destination="@id/connectedAppFragment" />
+            app:destination="@id/connected_app_nav_graph" />
         <action
             android:id="@+id/action_healthDataAccessFragment_to_unitsFragment"
             app:destination="@+id/unitFragment" />

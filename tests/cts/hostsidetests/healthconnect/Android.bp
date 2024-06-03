@@ -82,6 +82,7 @@ android_test_helper_app {
 
 android_test {
     name: "CtsHealthConnectHostSideDeviceTestCases",
+    team: "trendy_team_android_health",
     manifest: "device/AndroidManifest.xml",
     test_config: "device/AndroidTest.xml",
     defaults: ["cts_defaults"],
@@ -126,6 +127,7 @@ android_test {
 
 java_test_host {
     name: "CtsHealthConnectHostTestCases",
+    team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     srcs: [
         "host/**/*.java",

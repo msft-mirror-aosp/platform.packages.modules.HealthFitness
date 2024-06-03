@@ -22,7 +22,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.core.os.asOutcomeReceiver
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
@@ -124,15 +124,15 @@ constructor(
         withContext(dispatcher) {
             try {
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
-                val appsWithHealthPermissions: List<String> =
-                    healthPermissionReader.getAppsWithHealthPermissions()
+                val appsWithDataTypePermissions: List<String> =
+                    healthPermissionReader.getAppsWithDataTypePermissions()
                 val dataTypePermissionsInCategory: List<String> =
                     category.healthPermissionTypes().map { healthPermissionType ->
                         DataTypePermission(healthPermissionType, PermissionsAccessType.WRITE)
                             .toString()
                     }
 
-                appsWithHealthPermissions.forEach { packageName ->
+                appsWithDataTypePermissions.forEach { packageName ->
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(packageName)
 

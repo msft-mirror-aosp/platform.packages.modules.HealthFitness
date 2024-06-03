@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"Veri yok"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Uygulama izinleri"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Uygulamalarınızı ve izinlerinizi yönetin"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> / <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> uygulamanın erişimi var"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> uygulamanın erişimi var"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> uygulamanın erişimi var"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> uygulamanın erişimi var"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 uygulamanın erişimi var}other{# uygulamanın erişimi var}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Yok"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Giriş ayrıntıları"</string>
     <string name="backup_title" msgid="211503191266235085">"Yedekle"</string>
@@ -37,15 +39,15 @@
     <string name="set_units_title" msgid="2657822539603758029">"Birimleri ayarla"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"En son erişim"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Yakın zamanda hiçbir uygulama Health Connect\'e erişmedi"</string>
-    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Son erişimin tamamını gör"</string>
+    <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Son erişimlerin hepsini göster"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Son 24 saat içinde hangi uygulamaların verilerinize eriştiğini görün"</string>
     <string name="today_header" msgid="1006837293203834373">"Bugün"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Dün"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Okuma erişimi verilenler: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Yazma erişimi verilenler: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Okuma: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Yazma: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"İzinleri yönetin"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Zaman: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Zaman: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Etkinlik"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"etkinlik"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Vücut ölçümleri"</string>
@@ -65,7 +67,7 @@
     <string name="no_categories" msgid="2636778482437506241">"Health Connect\'te hiç veriniz yok"</string>
     <string name="permission_types_title" msgid="7698058200557389436">"Verileriniz"</string>
     <string name="app_priority_button" msgid="3126133977893705098">"Uygulama önceliği"</string>
-    <string name="delete_category_data_button" msgid="2324773398768267043">"<xliff:g id="CATEGORY">%s</xliff:g> verilerini sil"</string>
+    <string name="delete_category_data_button" msgid="2324773398768267043">"Verileri sil: <xliff:g id="CATEGORY">%s</xliff:g>"</string>
     <string name="select_all_apps_title" msgid="884487568464305913">"Tüm uygulamalar"</string>
     <string name="can_read" msgid="4568261079308309564">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> verilerini okuyabilir"</string>
     <string name="can_write" msgid="5082414937218423823">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> verilerini yazabilir"</string>
@@ -81,11 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"sağlık verinize erişme"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Yakılan kaloriyi okuma"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Uygulamanın yakılan kaloriyi okumasına izin verir"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Arka planda okuma"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"arka planda okuma"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Arka planda sağlık verileri okunur"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Verilere arka planda erişim"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının verilere arka planda erişmesine izin verilsin mi?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Bu uygulamanın, uygulamayı kullanmadığınız zamanlarda Health Connect verilerine erişmesine izin verir"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"İzin verdiğiniz takdirde bu uygulama, uygulamayı kullanmadığınız zamanlarda Health Connect verilerine erişebilir."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Geçmiş verilere erişim"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının geçmiş verilere erişmesine izin verilsin mi?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Bu uygulamanın, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarihinden önce eklenen Health Connect verilerine erişmesine izin verir"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Bu uygulamanın geçmiş tüm Health Connect verilerine erişmesine izin verir"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"İzin verdiğiniz takdirde bu uygulama, <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> tarihinden önce eklenen Health Connect verilerine erişebilir."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"İzin verdiğiniz takdirde bu uygulama, geçmiş tüm Health Connect verilerine erişebilir."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Yakılan aktif kalori"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"yakılan aktif kalori"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Yakılan aktif kaloriyi oku"</string>
@@ -258,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Tümüne izin ver"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"İzin verme"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Bu uygulamanın okumasını veya Health Connect\'e yazmasını istediğiniz verileri seçin"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Veri okuma izni verirseniz bu uygulama yeni verileri ve son 30 gün içindeki verileri okuyabilir"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Veri okuma izni verirseniz uygulama yeni verileri ve son 30 gün içindeki verileri okuyabilir"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Veri okuma izni verirseniz uygulama yeni ve geçmiş verileri okuyabilir"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının Health Connect\'e erişmesine izin verilsin mi?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının verilerinizi nasıl işlediğini geliştiricinin <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> bölümünden öğrenebilirsiniz"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"gizlilik politikası"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Tüm izinler kaldırılsın mı?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Tümünü kaldır"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> artık Health Connect\'teki verileri okuyamayacak veya yazamayacak.\n\nBu durum, uygulamanın sahip olabileceği konum, kamera veya mikrofon gibi diğer izinleri etkilemez."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> artık Health Connect\'teki verileri okuyamayacak veya yazamayacak.\n\nBu durum, uygulamanın sahip olabileceği kamera, mikrofon veya konum gibi diğer izinler etkilenmez."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g>, artık arka plan verileri de dahil olmak üzere Health Connect\'teki verileri okuyamayacak veya yazamayacak.\n\nBu durum, uygulamanın sahip olabileceği konum, kamera veya mikrofon gibi diğer izinleri etkilemez."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> artık geçmiş veriler de dahil olmak üzere Health Connect\'teki verileri okuyamayacak veya yazamayacak.\n\nBu durum, uygulamanın sahip olabileceği konum, kamera veya mikrofon gibi diğer izinleri etkilemez."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> artık arka plan verileri ve geçmiş veriler de dahil olmak üzere Health Connect\'teki verileri okuyamayacak veya yazamayacak.\n\nBu durum, uygulamanın sahip olabileceği konum, kamera veya mikrofon gibi diğer izinleri etkilemez."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"<xliff:g id="APP_NAME">%1$s</xliff:g> verilerini de Health Connect\'ten sil"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Sonraki gün"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Seçili gün"</string>
@@ -298,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Uygulama erişimi"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Şu anda yüklü olan uyumlu uygulamanız yok"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Ek erişim"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Bu uygulamanın ek izinleri kaldırıldı"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Uygulama izinleri kaldırıldı"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect, <xliff:g id="APP_DATA">%s</xliff:g> için izinleri kaldırdı"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect, <xliff:g id="APP_DATA_0">%1$s</xliff:g> ve <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> için izinleri kaldırdı"</string>
@@ -309,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Anladım"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yedekleme ve geri yükleme"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Dışa aktarma ve içe aktarma"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Yinelenen dışa aktarma işlemi"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Verileri geri yükle"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Daha önce dışa aktarılan verileri yükleyin"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Programlanmış dışa aktarma işlemi"</string>
+    <string name="import_data" msgid="404502315533233094">"Verileri içe aktar"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Daha önce dışa aktarılan bir dosyadaki verileri geri yükleyin"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Daha fazla bilgi"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Açık"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Kapalı"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Sıklık seçin"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Sıklık seçin"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Verileri bir kez kaydetmeyi seçin veya düzenli aralıklarla otomatik olarak kaydedilecek şekilde ayarlayın."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Günlük"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Haftalık"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Aylık"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Dışa aktarılacağı hedefi seçin"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Şifrelemeyi etkinleştir"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Verilerin kaydedilmeden önce şifrelenmesi gerekir. Google veya Health Connect de dahil hiç kimse bu verilere erişemez."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Şifrelenmiş verilerinizi korumak için şifre oluşturun. Verilerinizi içe aktarıp geri yüklemek için bu şifreye ihtiyacınız olacak."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Şifre"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Şifreyi tekrar girin"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Şifreler eşleşmiyor"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Şifrenizi unutursanız ve telefonunuzu kaybederseniz Health Connect, kayıtlı verilerinizi kurtarmanıza yardımcı olamaz."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Şifreyi yazın"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect verilerinizi içe aktarmak için şifreleme sürecinde kullandığınız şifre gerekir"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Şifreyi mi unuttunuz?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Şifre"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Eski telefonunuzu kullanmaya devam ediyorsanız verilerinizi yeni bir şifreyle tekrar dışa aktarabilirsiniz"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"İptal"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Sonraki"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Şuradan içe aktar:"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>
@@ -336,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Geri dön"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Başla"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Verileri sil"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Silinecek verileri seçin"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Sonraki"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Bu işlem, seçilen dönemde Health Connect\'e eklenmiş tüm verileri kalıcı olarak siler"</string>
@@ -394,6 +423,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/sa.}other{# km/sa.}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 mil/saat}other{# mil/saat}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometre/saat}other{# kilometre/saat}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./mil"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"Mil başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"Kilometre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./100 yarda"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> dk./100 metre"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"100 yarda başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"100 metre başına <xliff:g id="MINUTE">%1$s</xliff:g> dakika"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> - <xliff:g id="END_TIME">%2$s</xliff:g> arası"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Tekerlekli sandalyede 1 şınav}other{Tekerlekli sandalyede # şınav}}"</string>
@@ -419,6 +456,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Geçersiz"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms.}other{# ms.}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisaniye}other{# milisaniye}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Notlar"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 kez}other{# kez}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Etkin: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Toplam: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Mümkün olduğunca fazla tekrar"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Efor düzeyi: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 tekrar}other{# tekrar}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 tekrar}other{# tekrar}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Egzersiz segmentleri"</string>
@@ -656,36 +700,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 libre}other{# libre}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 stone}other{# stone}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 santigrat derece}other{# santigrat derece}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1 K}other{# K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 Fahrenhayt derece}other{# Fahrenhayt derece}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue} ℃}other{{formattedValue} ℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} santigrat derece}other{{formattedValue} santigrat derece}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue} ℉}other{{formattedValue} ℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} fahrenhayt derece}other{{formattedValue} fahrenhayt derece}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue} K}other{{formattedValue} K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}other{{formattedValue} kelvin}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue} ℃ (ortalama fark)}other{{formattedValue} ℃ (ortalama fark)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} santigrat derece (ortalama fark)}other{{formattedValue} santigrat derece (ortalama fark)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue} ℉ (ortalama fark)}other{{formattedValue} ℉ (ortalama fark)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} Fahrenhayt derece (ortalama fark)}other{{formattedValue} Fahrenhayt derece (ortalama fark)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue} K (ortalama fark)}other{{formattedValue} K (ortalama fark)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (ortalama fark)}other{{formattedValue} kelvin (ortalama fark)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Koltuk altı"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Parmak"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Alın"</string>
@@ -696,12 +728,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Kulak"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Bilek"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Vajina"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Ölçüm yeri"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Temel"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Referans değerden farklılık"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 mil}other{# mil}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 mil}other{# mil}}"</string>
@@ -795,10 +824,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Tüm rotalara izin ver"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"İzin verme"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Her zaman izin ver"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Egzersiz rotası paylaşımı"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Bu uygulamanın, bağlı uygulamalardan egzersiz rotalarına erişme şeklini kontrol edin"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Antrenman rotalarına erişim"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasının rotalara erişmesine izin verin"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Her zaman sor"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"İzin verme"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"İzin verme"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Her iki veri türü de etkinleştirilsin mi?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Her iki veri türü de devre dışı bırakılsın mı?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Egzersiz rotalarının etkinleştirilmesi için <xliff:g id="APP_NAME">%1$s</xliff:g> adlı uygulamanın, egzersiz verilerine okuma erişimi olması gerekir"</string>
@@ -890,4 +919,19 @@
     <string name="last_month_header" msgid="1359164797239191253">"Geçen ay"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Girişler"</string>
     <string name="tab_access" msgid="7818197975407243701">"Erişim"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> uygulamasına ek erişim verilsin mi?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g>, şu Health Connect ayarlarına da erişmek istiyor"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu uygulamanın arka planda veya geçmiş verilere erişimini açmak için en az bir okuma iznini etkinleştirin"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu uygulamanın arka planda erişimini açmak için en az bir okuma iznini etkinleştirin"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu uygulamanın geçmiş verilere erişimini açmak için en az bir okuma iznini etkinleştirin"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

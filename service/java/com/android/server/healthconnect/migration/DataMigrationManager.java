@@ -66,7 +66,6 @@ public final class DataMigrationManager {
     private final DeviceInfoHelper mDeviceInfoHelper;
     private final AppInfoHelper mAppInfoHelper;
     private final MigrationEntityHelper mMigrationEntityHelper;
-    private final RecordHelperProvider mRecordHelperProvider;
     private final PriorityMigrationHelper mPriorityMigrationHelper;
     private final HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     private final ActivityDateHelper mActivityDateHelper;
@@ -79,7 +78,6 @@ public final class DataMigrationManager {
             @NonNull DeviceInfoHelper deviceInfoHelper,
             @NonNull AppInfoHelper appInfoHelper,
             @NonNull MigrationEntityHelper migrationEntityHelper,
-            @NonNull RecordHelperProvider recordHelperProvider,
             @NonNull HealthDataCategoryPriorityHelper healthDataCategoryPriorityHelper,
             @NonNull PriorityMigrationHelper priorityMigrationHelper,
             @NonNull ActivityDateHelper activityDateHelper) {
@@ -90,7 +88,6 @@ public final class DataMigrationManager {
         mDeviceInfoHelper = deviceInfoHelper;
         mAppInfoHelper = appInfoHelper;
         mMigrationEntityHelper = migrationEntityHelper;
-        mRecordHelperProvider = recordHelperProvider;
         mHealthDataCategoryPriorityHelper = healthDataCategoryPriorityHelper;
         mPriorityMigrationHelper = priorityMigrationHelper;
         mActivityDateHelper = activityDateHelper;
@@ -164,8 +161,7 @@ public final class DataMigrationManager {
             StorageUtils.addNameBasedUUIDTo(record);
         }
 
-        return mRecordHelperProvider
-                .getRecordHelper(record.getRecordType())
+        return RecordHelperProvider.getRecordHelper(record.getRecordType())
                 .getUpsertTableRequest(record);
     }
 

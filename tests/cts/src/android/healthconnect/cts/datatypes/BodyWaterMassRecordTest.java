@@ -90,7 +90,10 @@ public class BodyWaterMassRecordTest {
     @Test
     public void testReadBodyWaterMassRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(getCompleteBodyWaterMassRecord(), getCompleteBodyWaterMassRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteBodyWaterMassRecord(),
+                                getCompleteBodyWaterMassRecord()));
         readBodyWaterMassRecordUsingIds(recordList);
     }
 
@@ -494,7 +497,13 @@ public class BodyWaterMassRecordTest {
                         .addRecordType(BodyWaterMassRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     private void readBodyWaterMassRecordUsingClientId(List<Record> insertedRecord)
@@ -509,9 +518,8 @@ public class BodyWaterMassRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readBodyWaterMassRecordUsingIds(List<Record> recordList)
+    private void readBodyWaterMassRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<BodyWaterMassRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(BodyWaterMassRecord.class);
         for (Record record : insertedRecords) {

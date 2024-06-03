@@ -36,3 +36,23 @@ java_aconfig_library {
         "//packages/modules/HealthFitness:__subpackages__",
     ],
 }
+
+aconfig_declarations {
+    name: "healthfitness-aconfig-flags",
+    package: "com.android.healthfitness.flags",
+    container: "com.android.healthfitness",
+    srcs: ["healthfitness-flags.aconfig"],
+}
+
+java_aconfig_library {
+    name: "healthfitness-aconfig-flags-lib",
+    aconfig_declarations: "healthfitness-aconfig-flags",
+    min_sdk_version: "34",
+    apex_available: [
+        "com.android.healthfitness",
+    ],
+    defaults: ["framework-minus-apex-aconfig-java-defaults"],
+    visibility: [
+        "//packages/modules/HealthFitness:__subpackages__",
+    ],
+}

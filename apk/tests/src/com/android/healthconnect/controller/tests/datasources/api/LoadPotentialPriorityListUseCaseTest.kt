@@ -28,7 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorityListUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
@@ -118,7 +118,7 @@ class LoadPotentialPriorityListUseCaseTest {
     @Test
     @Ignore
     fun getAppsWithWritePermission_forActivity_returnsAppsForActivity() = runTest {
-        whenever(healthPermissionReader.getAppsWithHealthPermissions())
+        whenever(healthPermissionReader.getAppsWithDataTypePermissions())
             .thenReturn(
                 listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
 
@@ -150,7 +150,7 @@ class LoadPotentialPriorityListUseCaseTest {
     @Test
     @Ignore
     fun getAppsWithWritePermission_forSleep_returnsAppsForSleep() = runTest {
-        whenever(healthPermissionReader.getAppsWithHealthPermissions())
+        whenever(healthPermissionReader.getAppsWithDataTypePermissions())
             .thenReturn(
                 listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))

@@ -16,6 +16,9 @@
 
 package com.android.server.healthconnect.storage;
 
+import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB;
+import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.getDatabaseVersion;
+
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -24,8 +27,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.google.common.truth.Truth;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -33,7 +34,6 @@ import org.mockito.MockitoAnnotations;
 
 public class DatabaseUpgradeHelperTest {
     @Mock Context mContext;
-    private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;
 
     @Before
@@ -44,8 +44,7 @@ public class DatabaseUpgradeHelperTest {
                         InstrumentationRegistry.getInstrumentation()
                                 .getContext()
                                 .getDatabasePath("mock"));
-        mHealthConnectDatabase = new HealthConnectDatabase(mContext);
-        mSQLiteDatabase = mHealthConnectDatabase.getWritableDatabase();
+        mSQLiteDatabase = new HealthConnectDatabase(mContext).getWritableDatabase();
     }
 
     /*
@@ -53,24 +52,14 @@ public class DatabaseUpgradeHelperTest {
      * multiple times. Making a database upgrade idempotent can often be easily achieved by
      * specifying e.g. 'IF NOT EXISTS'.
      */
+    // TODO(b/338031465): Improve testing, check that schema indeed match.
     @Test
-    public void migrationsAppliedMultipleTimes_eachOneIsIdempotent() {
-        Truth.assertThat(mHealthConnectDatabase).isNotNull();
-        Truth.assertThat(mSQLiteDatabase).isNotNull();
-
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, mHealthConnectDatabase, 0);
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, mHealthConnectDatabase, 0);
-
-        // The DB_VERSION_UUID_BLOB upgrade is a special case, as it triggers full schema
-        // recreation, and the remaining upgrades are not needed. It then returns immediately from
-        // the upgrade code. Due to this, we separately test upgrading from *after* this upgrade.
+    public void onUpgradeCalledMultipleTimes_eachOneIsIdempotent() {
+        // The DB_VERSION_UUID_BLOB upgrade is a special case, and is not idempotent.
+        // We are testing from the version above that.
         DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase,
-                mHealthConnectDatabase,
-                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
+                mSQLiteDatabase, DB_VERSION_UUID_BLOB, getDatabaseVersion());
         DatabaseUpgradeHelper.onUpgrade(
-                mSQLiteDatabase,
-                mHealthConnectDatabase,
-                DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB);
+                mSQLiteDatabase, DB_VERSION_UUID_BLOB, getDatabaseVersion());
     }
 }

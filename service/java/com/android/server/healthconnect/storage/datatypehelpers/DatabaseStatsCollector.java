@@ -38,8 +38,7 @@ public class DatabaseStatsCollector {
     public static long getNumberOfIntervalRecordRows() {
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         long count = 0L;
-        for (RecordHelper<?> recordHelper :
-                RecordHelperProvider.getInstance().getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
             if (recordHelper instanceof IntervalRecordHelper
                     && !(recordHelper instanceof SeriesRecordHelper)) {
                 count +=
@@ -54,8 +53,7 @@ public class DatabaseStatsCollector {
     public static long getNumberOfSeriesRecordRows() {
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         long count = 0L;
-        for (RecordHelper<?> recordHelper :
-                RecordHelperProvider.getInstance().getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
             if (recordHelper instanceof SeriesRecordHelper) {
                 count +=
                         transactionManager.getNumberOfEntriesInTheTable(
@@ -69,8 +67,7 @@ public class DatabaseStatsCollector {
     public static long getNumberOfInstantRecordRows() {
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         long count = 0L;
-        for (RecordHelper<?> recordHelper :
-                RecordHelperProvider.getInstance().getRecordHelpers().values()) {
+        for (RecordHelper<?> recordHelper : RecordHelperProvider.getRecordHelpers().values()) {
             if (recordHelper instanceof InstantRecordHelper) {
                 count +=
                         transactionManager.getNumberOfEntriesInTheTable(

@@ -43,6 +43,7 @@ import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.RespiratoryRateRecord
@@ -83,6 +84,7 @@ import com.android.healthconnect.controller.dataentries.formatters.MenstruationF
 import com.android.healthconnect.controller.dataentries.formatters.NutritionFormatter
 import com.android.healthconnect.controller.dataentries.formatters.OvulationTestFormatter
 import com.android.healthconnect.controller.dataentries.formatters.OxygenSaturationFormatter
+import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseSessionRecordFormatter
 import com.android.healthconnect.controller.dataentries.formatters.PowerFormatter
 import com.android.healthconnect.controller.dataentries.formatters.RespiratoryRateFormatter
 import com.android.healthconnect.controller.dataentries.formatters.RestingHeartRateFormatter
@@ -143,6 +145,7 @@ constructor(
     private val intermenstrualBleedingFormatter: IntermenstrualBleedingFormatter,
     private val heartRateVariabilityRmssdFormatter: HeartRateVariabilityRmssdFormatter,
     private val skinTemperatureFormatter: SkinTemperatureFormatter,
+    private val plannedExerciseSessionRecordFormatter: PlannedExerciseSessionRecordFormatter
 ) {
 
     suspend fun format(record: Record, showDataOrigin: Boolean = true): FormattedEntry {
@@ -189,6 +192,8 @@ constructor(
             is HeartRateVariabilityRmssdRecord ->
                 heartRateVariabilityRmssdFormatter.format(record, appName)
             is SkinTemperatureRecord -> skinTemperatureFormatter.format(record, appName)
+            is PlannedExerciseSessionRecord ->
+                plannedExerciseSessionRecordFormatter.format(record, appName)
             else -> throw IllegalArgumentException("${record::class.java} Not supported!")
         }
     }

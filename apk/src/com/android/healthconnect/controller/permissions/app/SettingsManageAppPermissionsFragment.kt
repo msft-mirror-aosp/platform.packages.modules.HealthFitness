@@ -50,8 +50,8 @@ import com.android.healthconnect.controller.migration.MigrationViewModel.Migrati
 import com.android.healthconnect.controller.permissions.additionalaccess.AdditionalAccessViewModel
 import com.android.healthconnect.controller.permissions.additionalaccess.DisableExerciseRoutePermissionDialog
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -64,7 +64,7 @@ import com.android.healthconnect.controller.shared.preference.HealthSwitchPrefer
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
+import com.android.healthconnect.controller.utils.logging.AppAccessElement.ADDITIONAL_ACCESS_BUTTON
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
 import com.android.healthconnect.controller.utils.pref
@@ -145,6 +145,15 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                 switchPreference.isChecked = healthPermission in granted
             }
         }
+        viewModel.lastReadPermissionDisconnected.observe(viewLifecycleOwner) { lastRead ->
+            if (lastRead) {
+                Toast.makeText(
+                        requireContext(),
+                        R.string.removed_additional_permissions_toast,
+                        Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
 
         viewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -177,6 +186,24 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                     .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
             }
         }
+
+        childFragmentManager.setFragmentResultListener(
+            DisconnectDialogFragment.DISCONNECT_CANCELED_EVENT, this) { _, _ ->
+                allowAllPreference.isChecked = true
+            }
+
+        childFragmentManager.setFragmentResultListener(
+            DisconnectDialogFragment.DISCONNECT_ALL_EVENT, this) { _, bundle ->
+                if (!viewModel.revokeAllPermissions(packageName)) {
+                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                if (bundle.containsKey(DisconnectDialogFragment.KEY_DELETE_DATA) &&
+                    bundle.getBoolean(DisconnectDialogFragment.KEY_DELETE_DATA)) {
+                    viewModel.deleteAppData(packageName, appName)
+                }
+            }
 
         setupHeader()
         setupManageAppCategory()
@@ -240,24 +267,6 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     }
 
     private fun showRevokeAllPermissions() {
-        childFragmentManager.setFragmentResultListener(
-            DisconnectDialogFragment.DISCONNECT_CANCELED_EVENT, this) { _, _ ->
-                allowAllPreference.isChecked = true
-            }
-
-        childFragmentManager.setFragmentResultListener(
-            DisconnectDialogFragment.DISCONNECT_ALL_EVENT, this) { _, bundle ->
-                if (!viewModel.revokeAllPermissions(packageName)) {
-                    Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                if (bundle.containsKey(DisconnectDialogFragment.KEY_DELETE_DATA) &&
-                    bundle.getBoolean(DisconnectDialogFragment.KEY_DELETE_DATA)) {
-                    viewModel.deleteAppData(packageName, appName)
-                }
-            }
-
         DisconnectDialogFragment(appName = appName, enableDeleteData = false)
             .show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
@@ -315,7 +324,11 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     private fun updateFooter(isAtLeastOneGranted: Boolean, appName: String) {
         var title = getString(R.string.manage_permissions_rationale, appName)
 
-        if (isAtLeastOneGranted) {
+        val isHistoryReadAvailable =
+            additionalAccessViewModel
+                .additionalAccessState.value?.historyReadUIState?.isDeclared ?: false
+        // Do not show the access date here if history read is available
+        if (isAtLeastOneGranted && !isHistoryReadAvailable) {
             val dataAccessDate = viewModel.loadAccessDate(packageName)
             dataAccessDate?.let {
                 val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
@@ -327,7 +340,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         }
 
         footer.title = title
-        if (healthPermissionReader.isRationalIntentDeclared(packageName)) {
+        if (healthPermissionReader.isRationaleIntentDeclared(packageName)) {
             footer.setLearnMoreText(getString(R.string.manage_permissions_learn_more))
             footer.setLearnMoreAction {
                 val startRationaleIntent =

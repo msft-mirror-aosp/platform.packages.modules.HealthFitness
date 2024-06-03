@@ -16,14 +16,19 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_AVG;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
 import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENTS_COUNT;
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
@@ -347,13 +352,14 @@ public class HeartRateRecordTest {
                 .build();
     }
 
+    // TODO(b/331350683): Update times once LocalTimeRangeFilter#endTime is exclusive
     @Test
-    public void testDeleteStepsRecord_time_filters_local() throws InterruptedException {
+    public void testDeleteHeartRateRecord_time_filters_local() throws InterruptedException {
         LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
-                        .setEndTime(recordTime.plus(2, ChronoUnit.SECONDS))
+                        .setStartTime(recordTime)
+                        .setEndTime(recordTime.plusSeconds(2))
                         .build();
         String id1 =
                 TestUtils.insertRecordAndGetId(
@@ -362,9 +368,16 @@ public class HeartRateRecordTest {
         String id2 =
                 TestUtils.insertRecordAndGetId(
                         getBaseHeartRateRecord(
-                                recordTime.toInstant(ZoneOffset.MAX), ZoneOffset.MAX));
+                                recordTime.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                ZoneOffset.MAX));
+        String id3 =
+                TestUtils.insertRecordAndGetId(
+                        getBaseHeartRateRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                ZoneOffset.MAX));
         TestUtils.assertRecordFound(id1, HeartRateRecord.class);
         TestUtils.assertRecordFound(id2, HeartRateRecord.class);
+        TestUtils.assertRecordFound(id3, HeartRateRecord.class);
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addRecordType(HeartRateRecord.class)
@@ -372,6 +385,8 @@ public class HeartRateRecordTest {
                         .build());
         TestUtils.assertRecordNotFound(id1, HeartRateRecord.class);
         TestUtils.assertRecordNotFound(id2, HeartRateRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, HeartRateRecord.class);
     }
 
     @Test
@@ -468,6 +483,44 @@ public class HeartRateRecordTest {
         String id = TestUtils.insertRecordAndGetId(getCompleteHeartRateRecord());
         TestUtils.verifyDeleteRecords(HeartRateRecord.class, timeRangeFilter);
         TestUtils.assertRecordNotFound(id, HeartRateRecord.class);
+    }
+
+    @Test
+    public void testDeleteStepsRecord_usingIds_forAnotherApp_fails() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteHeartRateRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseHeartRateRecord(100));
+
+        HealthConnectException error =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.verifyDeleteRecords(
+                                        List.of(RecordIdFilter.fromId(HeartRateRecord.class, id))));
+
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void testDeleteHeartRateRecord_usingTime_forAnotherApp_notDeleted() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteStepsRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseHeartRateRecord(100));
+
+        TestUtils.verifyDeleteRecords(
+                HeartRateRecord.class,
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.EPOCH)
+                        .setEndTime(Instant.now())
+                        .build());
+
+        List<HeartRateRecord> records =
+                TestUtils.readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(HeartRateRecord.class)
+                                .addId(id)
+                                .build());
+        assertThat(records).isNotEmpty();
+        assertThat(records.get(0).getMetadata().getId()).isEqualTo(id);
     }
 
     @Test
@@ -833,7 +886,13 @@ public class HeartRateRecordTest {
                         .addRecordType(HeartRateRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     @Test

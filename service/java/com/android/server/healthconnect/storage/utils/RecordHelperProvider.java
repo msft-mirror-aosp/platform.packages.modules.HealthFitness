@@ -73,12 +73,10 @@ import java.util.Map;
  * @hide
  */
 public final class RecordHelperProvider {
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile RecordHelperProvider sRecordHelperProvider;
 
-    private final Map<Integer, RecordHelper<?>> mRecordIDToHelperMap;
+    private static final Map<Integer, RecordHelper<?>> RECORD_ID_TO_HELPER_MAP;
 
-    private RecordHelperProvider() {
+    static {
         Map<Integer, RecordHelper<?>> recordIDToHelperMap = new ArrayMap<>();
         recordIDToHelperMap.put(RecordTypeIdentifier.RECORD_TYPE_STEPS, new StepsRecordHelper());
         recordIDToHelperMap.put(
@@ -174,25 +172,19 @@ public final class RecordHelperProvider {
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, new SleepSessionRecordHelper());
 
-        mRecordIDToHelperMap = Collections.unmodifiableMap(recordIDToHelperMap);
+        RECORD_ID_TO_HELPER_MAP = Collections.unmodifiableMap(recordIDToHelperMap);
+    }
+
+    // Private constructor to prevent initialisation.
+    private RecordHelperProvider() {}
+
+    @NonNull
+    public static Map<Integer, RecordHelper<?>> getRecordHelpers() {
+        return RECORD_ID_TO_HELPER_MAP;
     }
 
     @NonNull
-    public static synchronized RecordHelperProvider getInstance() {
-        if (sRecordHelperProvider == null) {
-            sRecordHelperProvider = new RecordHelperProvider();
-        }
-
-        return sRecordHelperProvider;
-    }
-
-    @NonNull
-    public Map<Integer, RecordHelper<?>> getRecordHelpers() {
-        return mRecordIDToHelperMap;
-    }
-
-    @NonNull
-    public RecordHelper<?> getRecordHelper(int recordType) {
-        return requireNonNull(mRecordIDToHelperMap.get(recordType));
+    public static RecordHelper<?> getRecordHelper(int recordType) {
+        return requireNonNull(RECORD_ID_TO_HELPER_MAP.get(recordType));
     }
 }

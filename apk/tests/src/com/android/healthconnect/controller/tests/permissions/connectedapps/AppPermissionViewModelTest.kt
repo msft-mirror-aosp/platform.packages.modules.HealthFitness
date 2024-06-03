@@ -18,14 +18,16 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 import android.health.connect.TimeInstantRangeFilter
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
-import com.android.healthconnect.controller.permissions.additionalaccess.LoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -36,6 +38,7 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.tests.utils.di.FakeLoadExerciseRoute
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -58,6 +61,7 @@ import org.mockito.Captor
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -76,7 +80,7 @@ class AppPermissionViewModelTest {
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase = mock()
     private val revokePermissionStatusUseCase: RevokeHealthPermissionUseCase = mock()
     private val grantPermissionsUseCase: GrantHealthPermissionUseCase = mock()
-    private val loadExerciseRoutePermissionUseCase: LoadExerciseRoutePermissionUseCase = mock()
+    private val loadExerciseRoutePermissionUseCase = FakeLoadExerciseRoute()
 
     private lateinit var loadAppPermissionsStatusUseCase: LoadAppPermissionsStatusUseCase
     private lateinit var appPermissionViewModel: AppPermissionViewModel
@@ -87,6 +91,12 @@ class AppPermissionViewModelTest {
         DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.READ)
     private val readNutritionPermission =
         DataTypePermission(HealthPermissionType.NUTRITION, PermissionsAccessType.READ)
+    private val readExerciseRoutesPermission =
+        HealthPermission.AdditionalPermission.READ_EXERCISE_ROUTES
+    private val readHistoryDataPermission =
+        HealthPermission.AdditionalPermission.READ_HEALTH_DATA_HISTORY
+    private val readDataInBackgroundPermission =
+        HealthPermission.AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
     private val writeSleepPermission =
         DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
     private val writeDistancePermission =
@@ -135,8 +145,8 @@ class AppPermissionViewModelTest {
 
     @Test
     fun whenPackageSupported_loadAllPermissions() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -170,8 +180,8 @@ class AppPermissionViewModelTest {
 
     @Test
     fun whenPackageNotSupported_loadOnlyGrantedPermissions() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -263,6 +273,136 @@ class AppPermissionViewModelTest {
         assertThat(grantedPermissionsObserver.getLastValue())
             .containsExactlyElementsIn(setOf(readExercisePermission))
         assertThat(result).isTrue()
+    }
+
+    @Test
+    fun updatePermissions_denyLastReadPermission_updatesAdditionalPermissions() = runTest {
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    readExercisePermission,
+                    readNutritionPermission,
+                    readExerciseRoutesPermission,
+                    readDataInBackgroundPermission,
+                    readHistoryDataPermission,
+                    writeSleepPermission,
+                    writeDistancePermission,
+                ))
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME,
+            listOf(
+                readExercisePermission.toString(),
+                writeDistancePermission.toString(),
+                readExerciseRoutesPermission.additionalPermission,
+                readHistoryDataPermission.additionalPermission,
+                readDataInBackgroundPermission.additionalPermission))
+
+        loadExerciseRoutePermissionUseCase.setExerciseRouteState(
+            ExerciseRouteState(
+                exerciseRoutePermissionState = PermissionUiState.ALWAYS_ALLOW,
+                exercisePermissionState = PermissionUiState.ALWAYS_ALLOW))
+
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
+        appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
+        appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
+
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val appPermissionsResult = appPermissionsObserver.getLastValue()
+        val grantedPermissionsResult = grantedPermissionsObserver.getLastValue()
+
+        assertThat(appPermissionsResult)
+            .containsExactlyElementsIn(
+                listOf(
+                    readExercisePermission,
+                    readNutritionPermission,
+                    writeSleepPermission,
+                    writeDistancePermission))
+        assertThat(grantedPermissionsResult)
+            .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
+
+        val result =
+            appPermissionViewModel.updatePermission(
+                TEST_APP_PACKAGE_NAME, readExercisePermission, false)
+        advanceUntilIdle()
+
+        assertThat(grantedPermissionsObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(writeDistancePermission))
+        assertThat(result).isTrue()
+        verify(revokePermissionStatusUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, readExerciseRoutesPermission.additionalPermission)
+        verify(revokePermissionStatusUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, readDataInBackgroundPermission.additionalPermission)
+        verify(revokePermissionStatusUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, readHistoryDataPermission.additionalPermission)
+    }
+
+    @Test
+    fun updatePermissions_denyLastReadPermission_skipsERIfAlreadyAskEveryTime() = runTest {
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
+            .thenReturn(
+                listOf(
+                    readExercisePermission,
+                    readNutritionPermission,
+                    readExerciseRoutesPermission,
+                    readDataInBackgroundPermission,
+                    readHistoryDataPermission,
+                    writeSleepPermission,
+                    writeDistancePermission,
+                ))
+        getGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME,
+            listOf(
+                readExercisePermission.toString(),
+                writeDistancePermission.toString(),
+                readExerciseRoutesPermission.additionalPermission,
+                readHistoryDataPermission.additionalPermission,
+                readDataInBackgroundPermission.additionalPermission))
+
+        loadExerciseRoutePermissionUseCase.setExerciseRouteState(
+            ExerciseRouteState(
+                exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME,
+                exercisePermissionState = PermissionUiState.ALWAYS_ALLOW))
+
+        val appPermissionsObserver = TestObserver<List<DataTypePermission>>()
+        val grantedPermissionsObserver = TestObserver<Set<DataTypePermission>>()
+        appPermissionViewModel.appPermissions.observeForever(appPermissionsObserver)
+        appPermissionViewModel.grantedPermissions.observeForever(grantedPermissionsObserver)
+
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        val appPermissionsResult = appPermissionsObserver.getLastValue()
+        val grantedPermissionsResult = grantedPermissionsObserver.getLastValue()
+
+        assertThat(appPermissionsResult)
+            .containsExactlyElementsIn(
+                listOf(
+                    readExercisePermission,
+                    readNutritionPermission,
+                    writeSleepPermission,
+                    writeDistancePermission))
+        assertThat(grantedPermissionsResult)
+            .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
+
+        val result =
+            appPermissionViewModel.updatePermission(
+                TEST_APP_PACKAGE_NAME, readExercisePermission, false)
+        advanceUntilIdle()
+
+        assertThat(grantedPermissionsObserver.getLastValue())
+            .containsExactlyElementsIn(setOf(writeDistancePermission))
+        assertThat(result).isTrue()
+        verify(revokePermissionStatusUseCase, times(0))
+            .invoke(TEST_APP_PACKAGE_NAME, readExerciseRoutesPermission.additionalPermission)
+        verify(revokePermissionStatusUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, readDataInBackgroundPermission.additionalPermission)
+        verify(revokePermissionStatusUseCase)
+            .invoke(TEST_APP_PACKAGE_NAME, readHistoryDataPermission.additionalPermission)
     }
 
     @Test
@@ -416,8 +556,8 @@ class AppPermissionViewModelTest {
 
     @Test
     fun shouldNavigateToFragment_whenPackageNameSupported_returnsTrue() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -436,8 +576,8 @@ class AppPermissionViewModelTest {
 
     @Test
     fun shouldNavigateToFragment_whenAnyPermissionGranted_returnsTrue() = runTest {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(false)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,
@@ -458,8 +598,8 @@ class AppPermissionViewModelTest {
     @Test
     fun shouldNavigateToFragment_whenPackageNotSupported_andNoPermissionsGranted_returnsFalse() =
         runTest {
-            whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(false)
-            whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+            whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(false)
+            whenever(healthPermissionReader.getValidHealthPermissions(any()))
                 .thenReturn(
                     listOf(
                         readExercisePermission,
@@ -479,12 +619,12 @@ class AppPermissionViewModelTest {
     @Test
     fun isPackageSupported_callsCorrectMethod() {
         appPermissionViewModel.isPackageSupported(TEST_APP_PACKAGE_NAME)
-        verify(healthPermissionReader).isRationalIntentDeclared(TEST_APP_PACKAGE_NAME)
+        verify(healthPermissionReader).isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)
     }
 
     private fun setupDeclaredAndGrantedPermissions() {
-        whenever(healthPermissionReader.isRationalIntentDeclared(any())).thenReturn(true)
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(any()))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
+        whenever(healthPermissionReader.getValidHealthPermissions(any()))
             .thenReturn(
                 listOf(
                     readExercisePermission,

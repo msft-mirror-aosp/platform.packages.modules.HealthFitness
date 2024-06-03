@@ -27,10 +27,12 @@
     <string name="no_data" msgid="1906986019249068659">"ಡೇಟಾ ಇಲ್ಲ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ಆ್ಯಪ್ ಅನುಮತಿಗಳು"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ಅನುಮತಿಗಳನ್ನು ನಿರ್ವಹಿಸಿ"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ಆ್ಯಪ್‌ಗಳಲ್ಲಿನ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ಗೆ ಆ್ಯಕ್ಸೆಸ್ ಇದೆ"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ಆ್ಯಪ್‌ಗಳಲ್ಲಿ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಹೊಂದಿವೆ"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಹೊಂದಿವೆ"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ಆ್ಯಪ್ ಆ್ಯಕ್ಸೆಸ್ ಹೊಂದಿದೆ"</string>
-    <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ಯಾವುದೂ ಅಲ್ಲ"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ಆ್ಯಪ್ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿದೆ}one{# ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿವೆ}other{# ಆ್ಯಪ್‌ಗಳು ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿವೆ}}"</string>
+    <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ಯಾವುದೂ ಇಲ್ಲ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ಪ್ರವೇಶದ ವಿವರಗಳು"</string>
     <string name="backup_title" msgid="211503191266235085">"ಬ್ಯಾಕಪ್"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ಡೇಟಾ ಮೂಲಗಳು ಮತ್ತು ಆದ್ಯತೆ"</string>
@@ -41,11 +43,11 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"ಕಳೆದ 24 ಗಂಟೆಗಳಲ್ಲಿ ಯಾವ ಆ್ಯಪ್‌ಗಳು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿವೆ ಎಂಬುದನ್ನು ನೋಡಿ"</string>
     <string name="today_header" msgid="1006837293203834373">"ಇಂದು"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"ನಿನ್ನೆ"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"ಓದಿರುವುದು: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"ಬರೆದಿರುವುದು: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"ಓದಿರಿ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"ಬರೆಯಿರಿ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ಅನುಮತಿಗಳನ್ನು ನಿರ್ವಹಿಸಿ"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"ಸಮಯ: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ಸಮಯ: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"ಚಟುವಟಿಕೆ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"ಚಟುವಟಿಕೆ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ದೇಹದ ಅಳತೆಗಳು"</string>
@@ -81,11 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"ನಿಮ್ಮ ಹೆಲ್ತ್‌ ಡೇಟಾಗೆ ಆ್ಯಕ್ಸೆಸ್ ಪಡೆಯಿರಿ"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"ಕಳೆಕೊಂಡ ಕ್ಯಾಲೋರಿ ಓದುತ್ತದೆ"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"ಕಳೆದುಕೊಂಡ ಕ್ಯಾಲೋರಿಗಳ ಮೊತ್ತವನ್ನು ಆ್ಯಪ್‌ಗೆ ಓದಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ."</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಓದುವಿಕೆ"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಓದುವಿಕೆ"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಆರೋಗ್ಯ ಡೇಟಾವನ್ನು ಓದಿರಿ"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"ಹಿನ್ನೆಲೆಯಲ್ಲಿ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಅನುಮತಿಸುವುದೇ?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"ನೀವು ಆ್ಯಪ್ ಅನ್ನು ಬಳಸದೇ ಇರುವಾಗ Health Connect ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಈ ಆ್ಯಪ್ ಅನ್ನು ಅನುಮತಿಸಿ"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"ನೀವು ಅನುಮತಿಸಿದರೆ, ಆ್ಯಪ್ ಅನ್ನು ನೀವು ಬಳಸದೇ ಇರುವಾಗ ಈ ಆ್ಯಪ್ Health Connect ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದು."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"ಹಿಂದಿನ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"ಹಿಂದಿನ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಅನುಮತಿಸಬೇಕೇ?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> ಗೂ ಮೊದಲು ಸೇರಿಸಲಾದ Health Connect ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಈ ಆ್ಯಪ್‌ಗೆ ಅನುಮತಿಸಿ"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"ಹಿಂದಿನ ಎಲ್ಲಾ Health Connect ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಈ ಆ್ಯಪ್‌ಗೆ ಅನುಮತಿಸಿ"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"ನೀವು ಅನುಮತಿಸಿದರೆ, ಈ ಆ್ಯಪ್ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> ಕ್ಕೂ ಮೊದಲು ಸೇರಿಸಲಾದ Health Connect ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದು."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"ನೀವು ಅನುಮತಿಸಿದರೆ, ಈ ಆ್ಯಪ್ ಹಿಂದಿನ ಎಲ್ಲಾ Health Connect ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಲ್ಲದು."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ಕರಗಿಸಿದ ಸಕ್ರಿಯ ಕ್ಯಾಲೋರಿಗಳು"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ಸಕ್ರಿಯ ಕ್ಯಾಲೋರಿಗಳನ್ನು ಕಳೆದುಕೊಳ್ಳಲಾಗಿದೆ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ಸಕ್ರಿಯ ಕ್ಯಾಲೋರಿಗಳನ್ನು ಕಳೆದುಕೊಂಡಿರುವುದರ ಕುರಿತು ಓದಿರಿ"</string>
@@ -258,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"ಎಲ್ಲವನ್ನೂ ಅನುಮತಿಸಿ"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"ಅನುಮತಿಸಬೇಡಿ"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Health Connect ಗೆ ಈ ಆ್ಯಪ್ ಓದಬೇಕು ಅಥವಾ ಬರೆಯಬೇಕು ಎಂದು ನೀವು ಬಯಸುವ ಡೇಟಾವನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"ನೀವು ಓದಲು ಆ್ಯಕ್ಸೆಸ್ ನೀಡಿದರೆ, ಹೊಸ ಡೇಟಾವನ್ನು ಹಾಗೂ ಕಳೆದ 30 ದಿನಗಳ ಡೇಟಾವನ್ನು ಈ ಆ್ಯಪ್ ಓದಬಹುದು"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"ನೀವು ಓದಲು ಆ್ಯಕ್ಸೆಸ್ ನೀಡಿದರೆ, ಹೊಸ ಡೇಟಾವನ್ನು ಹಾಗೂ ಕಳೆದ 30 ದಿನಗಳ ಡೇಟಾವನ್ನು ಈ ಆ್ಯಪ್ ಓದಬಹುದು"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"ನೀವು ಓದಲು ಆ್ಯಕ್ಸೆಸ್ ನೀಡಿದರೆ, ಆ್ಯಪ್ ಹೊಸ ಮತ್ತು ಹಿಂದಿನ ಡೇಟಾವನ್ನು ಓದಬಹುದು"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Health Connect ಅನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಅನ್ನು ಅನುಮತಿಸಬೇಕೆ?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಹೇಗೆ ನಿರ್ವಹಿಸುತ್ತದೆ ಎಂಬುದನ್ನು ಡೆವಲಪರ್ ಅವರ <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> ಯಲ್ಲಿ ನೀವು ತಿಳಿದುಕೊಳ್ಳಬಹುದು"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"ಗೌಪ್ಯತೆ ನೀತಿ"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ಎಲ್ಲಾ ಅನುಮತಿಗಳನ್ನು ತೆಗೆದುಹಾಕಬೇಕೆ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"ಎಲ್ಲವನ್ನೂ ತೆಗೆದುಹಾಕಿ"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಇನ್ನು ಮುಂದೆ Health Connect ನಿಂದ ಯಾವುದೇ ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.\n\nಇದು ಈ ಆ್ಯಪ್ ಹೊಂದಿರಬಹುದಾದ ಸ್ಥಳ, ಕ್ಯಾಮರಾ ಅಥವಾ ಮೈಕ್ರೊಫೋನ್‌ನಂತಹ ಇತರ ಅನುಮತಿಗಳ ಮೇಲೆ ಯಾವುದೇ ಪ್ರಭಾವ ಬೀರುವುದಿಲ್ಲ."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಇನ್ನು ಮುಂದೆ Health Connect ನಿಂದ ಯಾವುದೇ ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.\n\nಇದು ಈ ಆ್ಯಪ್ ಹೊಂದಿರಬಹುದಾದ ಸ್ಥಳ, ಕ್ಯಾಮರಾ ಅಥವಾ ಮೈಕ್ರೊಫೋನ್‌ನಂತಹ ಇತರ ಅನುಮತಿಗಳ ಮೇಲೆ ಯಾವುದೇ ಪ್ರಭಾವ ಬೀರುವುದಿಲ್ಲ."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಹಿನ್ನೆಲೆ ಡೇಟಾ ಸೇರಿದಂತೆ Health Connect ನಿಂದ ಯಾವುದೇ ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಇನ್ನು ಮುಂದೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.\n\nಈ ಆ್ಯಪ್ ಹೊಂದಿರಬಹುದಾದ ಸ್ಥಳ, ಕ್ಯಾಮರಾ ಅಥವಾ ಮೈಕ್ರೊಫೋನ್‌ನಂತಹ ಇತರ ಅನುಮತಿಗಳ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುವುದಿಲ್ಲ."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಹಿನ್ನೆಲೆ ಡೇಟಾ ಸೇರಿದಂತೆ Health Connect ನಿಂದ ಯಾವುದೇ ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಇನ್ನು ಮುಂದೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.\n\nಈ ಆ್ಯಪ್ ಹೊಂದಿರಬಹುದಾದ ಸ್ಥಳ, ಕ್ಯಾಮರಾ ಅಥವಾ ಮೈಕ್ರೊಫೋನ್‌ನಂತಹ ಇತರ ಅನುಮತಿಗಳ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುವುದಿಲ್ಲ."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಹಿನ್ನೆಲೆ ಮತ್ತು ಹಿಂದಿನ ಡೇಟಾ ಸೇರಿದಂತೆ Health Connect ನಿಂದ ಯಾವುದೇ ಡೇಟಾವನ್ನು ಓದಲು ಅಥವಾ ಬರೆಯಲು ಇನ್ನು ಮುಂದೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.\n\nಈ ಆ್ಯಪ್ ಹೊಂದಿರಬಹುದಾದ ಸ್ಥಳ, ಕ್ಯಾಮರಾ ಅಥವಾ ಮೈಕ್ರೊಫೋನ್‌ನಂತಹ ಇತರ ಅನುಮತಿಗಳ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುವುದಿಲ್ಲ."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect ನಿಂದ <xliff:g id="APP_NAME">%1$s</xliff:g> ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸಿ"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"ಮುಂದಿನ ದಿನ"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ಆಯ್ಕೆ ಮಾಡಿದ ದಿನ"</string>
@@ -298,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"ಆ್ಯಪ್ ಆ್ಯಕ್ಸೆಸ್"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ಹೊಂದಾಣಿಕೆಯಾಗುವ ಯಾವುದೇ ಆ್ಯಪ್‌ಗಳನ್ನು ನೀವು ಪ್ರಸ್ತುತ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿಲ್ಲ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"ಹೆಚ್ಚುವರಿ ಆ್ಯಕ್ಸೆಸ್"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ಈ ಆ್ಯಪ್‌ಗೆ ಹೆಚ್ಚುವರಿ ಅನುಮತಿಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ತೆಗೆದುಹಾಕಲಾದ ಆ್ಯಪ್ ಅನುಮತಿಗಳು"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect, <xliff:g id="APP_DATA">%s</xliff:g> ಗೆ ಸಂಬಂಧಿಸಿದ ಅನುಮತಿಗಳನ್ನು ತೆಗೆದುಹಾಕಿದೆ"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect, <xliff:g id="APP_DATA_0">%1$s</xliff:g> ಮತ್ತು <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ಗೆ ಸಂಬಂಧಿಸಿದ ಅನುಮತಿಗಳನ್ನು ತೆಗೆದುಹಾಕಿದೆ"</string>
@@ -309,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ಅರ್ಥವಾಯಿತು"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ಬ್ಯಾಕಪ್ ಮಾಡಿ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಿ"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿ ಹಾಗೂ ಇಂಪೋರ್ಟ್ ಮಾಡಿಕೊಳ್ಳಿ"</string>
-    <string name="recurring_export" msgid="111638340692746218">"ಮರುಕಳಿಸುವ ಎಕ್ಸ್‌ಪೋರ್ಟ್"</string>
-    <string name="restore_data" msgid="3401173690437871417">"ಡೇಟಾವನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"ಈ ಹಿಂದೆ ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಿ"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"ನಿಗದಿಪಡಿಸಲಾದ ರಫ್ತು"</string>
+    <string name="import_data" msgid="404502315533233094">"ಡೇಟಾವನ್ನು ಆಮದು ಮಾಡಿ"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"ಹಿಂದೆ ರಫ್ತು ಮಾಡಿದ ಫೈಲ್‌ನಿಂದ ಡೇಟಾವನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ರಫ್ತು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಸೇವ್ ಮಾಡಲು ಅನುಮತಿಸುತ್ತದೆ ಆದ್ದರಿಂದ ನೀವು ಅದನ್ನು ಹೊಸ ಫೋನ್‌ಗೆ ವರ್ಗಾಯಿಸಬಹುದು"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"ಆನ್ ಆಗಿದೆ"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"ಆಫ್ ಆಗಿದೆ"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"ಫ್ರೀಕ್ವೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ಫ್ರೀಕ್ವೆನ್ಸಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ಒಂದು ಬಾರಿ ಡೇಟಾ ಸೇವ್ ಮಾಡುವ ಆಯ್ಕೆಯನ್ನು ಮಾಡಿ ಅಥವಾ ಸಾಮಾನ್ಯ ಸಮಯಗಳಲ್ಲಿ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸೇವ್ ಆಗುವಂತೆ ಸೆಟ್ ಮಾಡಿ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ಪ್ರತಿದಿನ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ಸಾಪ್ತಾಹಿಕ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ಮಾಸಿಕ"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"ಎಲ್ಲಿಗೆ ಎಕ್ಸ್‌ಪೋರ್ಟ್ ಮಾಡಬೇಕು ಎಂದು ಆರಿಸಿ"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಆನ್ ಮಾಡಿ"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"ಡೇಟಾವನ್ನು ಸೇವ್ ಮಾಡುವ ಮೊದಲು ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಬೇಕಾಗಿದೆ. ಯಾರೂ, Google ಅಥವಾ Health Connect ಸಹ ಇದನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ನಿಮ್ಮ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ರಕ್ಷಿಸಲು ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ. ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಇಂಪೋರ್ಟ್ ಮಾಡಿಕೊಳ್ಳಲು ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಲು ನಿಮಗೆ ಈ ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯವಿದೆ."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"ಪಾಸ್‌ವರ್ಡ್"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"ಪಾಸ್‌ವರ್ಡ್ ಪುನರಾವರ್ತಿಸಿ"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"ಪಾಸ್‌ವರ್ಡ್ ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನೀವು ಮರೆತರೆ ಮತ್ತು ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಕಳೆದುಕೊಂಡರೆ, ನಿಮ್ಮ ಸೇವ್ ಮಾಡಿದ ಡೇಟಾವನ್ನು ರಿಕವರ್ ಮಾಡಲು Health Connect ನಿಮಗೆ ಸಹಾಯ ಮಾಡುವುದಿಲ್ಲ."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಟೈಪ್ ಮಾಡಿ"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"ನಿಮ್ಮ Health Connect ಡೇಟಾವನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ನಿಮ್ಮ ಎನ್‌ಕ್ರಿಪ್ಶನ್ ಪಾಸ್‌ವರ್ಡ್‌ನ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ಪಾಸ್ವರ್ಡ್ ಮರೆತುಹೋಗಿದೆಯೇ?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"ಪಾಸ್‌ವರ್ಡ್"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"ನೀವು ಇನ್ನೂ ನಿಮ್ಮ ಹಳೆಯ ಫೋನ್ ಅನ್ನು ಹೊಂದಿದ್ದರೆ, ಹೊಸ ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಡೇಟಾವನ್ನು ನೀವು ಮರು-ರಫ್ತು ಮಾಡಬಹುದು"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ಮುಂದಿನದು"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"ರದ್ದುಮಾಡಿ"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"ಮುಂದಿನದು"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ನಿಂದ ಆಮದು ಮಾಡಿಕೊಳ್ಳಿ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ಬಳಕೆಯನ್ನು ಪ್ರಾರಂಭಿಸಿ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ನಿಮ್ಮ ಆರೋಗ್ಯ ಹಾಗೂ ಫಿಟ್‌ನೆಸ್ ಡೇಟಾವನ್ನು ಸಂಗ್ರಹಿಸುತ್ತದೆ, ಅದರಿಂದ ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿರುವ ವಿವಿಧ ಆ್ಯಪ್‌ಗಳನ್ನು ಸಿಂಕ್ ಮಾಡಲು ನಿಮಗೆ ಸರಳವಾದ ಮಾರ್ಗವನ್ನು ಒದಗಿಸುತ್ತದೆ"</string>
     <string name="share_data" msgid="3481932156368883946">"ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳೊಂದಿಗೆ ಡೇಟಾವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ"</string>
@@ -336,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ಹಿಂದಿರುಗಿ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ಪ್ರಾರಂಭಿಸಿ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ಡೇಟಾ ಅಳಿಸಿ"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"ಅಳಿಸಲು ಡೇಟಾವನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ಮುಂದಿನದು"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ಈ ಪ್ರಕ್ರಿಯೆಯು ಆಯ್ಕೆಮಾಡಿದ ಸಮಯದಲ್ಲಿ Health Connect ಗೆ ಸೇರಿಸಲಾದ ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ"</string>
@@ -394,6 +423,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 ಕಿ.ಮೀ/ಗಂಟೆ}one{# ಕಿ.ಮೀ/ಗಂಟೆ}other{# ಕಿ.ಮೀ/ಗಂಟೆ}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{ಪ್ರತಿ ಗಂಟೆಗೆ 1 ಮೈಲಿ}one{ಪ್ರತಿ ಗಂಟೆಗೆ # ಮೈಲಿಗಳು}other{ಪ್ರತಿ ಗಂಟೆಗೆ # ಮೈಲಿಗಳು}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{ಪ್ರತಿ ಗಂಟೆಗೆ 1 ಕಿಲೋಮೀಟರ್}one{ಪ್ರತಿ ಗಂಟೆಗೆ # ಕಿಲೋಮೀಟರ್‌ಗಳು}other{ಪ್ರತಿ ಗಂಟೆಗೆ # ಕಿಲೋಮೀಟರ್‌ಗಳು}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ/ಮೈಲಿ"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ/ಕಿಮೀ"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ ಪ್ರತಿ ಮೈಲಿ"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ ಪ್ರತಿ ಕಿಲೋಮೀಟರ್"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ/100 ಯಾರ್ಡ್‌ಗಳು"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ/100 ಮೀಟರ್‌ಗಳು"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ ಪ್ರತಿ 100 ಯಾರ್ಡ್‌ಗಳು"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> ನಿಮಿಷ ಪ್ರತಿ 100 ಮೀಟರ್‌ಗಳು"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> ರಿಂದ <xliff:g id="END_TIME">%2$s</xliff:g> ರವರೆಗೆ"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> ರಿಂದ <xliff:g id="END_TIME">%2$s</xliff:g> ರವರೆಗೆ"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 ವೀಲ್‌ಚೇರ್ ಪುಶ್}one{# ವೀಲ್‌ಚೇರ್ ಪುಶ್‌ಗಳು}other{# ವೀಲ್‌ಚೇರ್ ಪುಶ್‌ಗಳು}}"</string>
@@ -419,6 +456,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"ಯಾವುದೇ ತೀರ್ಮಾನವಿಲ್ಲ"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ಮಿಸೆ}one{# ಮಿಸೆ}other{# ಮಿಸೆ}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ಮಿಲಿಸೆಕೆಂಡ್}one{# ಮಿಲಿಸೆಕೆಂಡ್‌ಗಳು}other{# ಮಿಲಿಸೆಕೆಂಡ್‌ಗಳು}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"ಟಿಪ್ಪಣಿಗಳು"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 ಬಾರಿ}one{# ಬಾರಿ}other{# ಬಾರಿ}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"ಸಕ್ರಿಯ: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"ಒಟ್ಟು: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"ಸಾಧ್ಯವಾದಷ್ಟು ಪುನರಾವರ್ತನೆಗಳು"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"ಪ್ರಯತ್ನದ ಮಟ್ಟ: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ಪುನರಾವರ್ತನೆ}one{# ಪುನರಾವರ್ತನೆಗಳು}other{# ಪುನರಾವರ್ತನೆಗಳು}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ಪುನರಾವರ್ತನೆ}one{# ಪುನರಾವರ್ತನೆಗಳು}other{# ಪುನರಾವರ್ತನೆಗಳು}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"ವ್ಯಾಯಾಮದ ಸೆಗ್ಮೆಂಟ್‌ಗಳು"</string>
@@ -656,36 +700,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 ಪೌಂಡ್}one{# ಪೌಂಡ್‌ಗಳು}other{# ಪೌಂಡ್‌ಗಳು}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 ಸ್ಟೋನ್}one{# ಸ್ಟೋನ್‌ಗಳು}other{# ಸ್ಟೋನ್‌ಗಳು}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}one{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}one{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 ಡಿಗ್ರಿ ಸೆಲ್ಸಿಯಸ್}one{# ಡಿಗ್ರಿಗಳ ಸೆಲ್ಸಿಯಸ್}other{# ಡಿಗ್ರಿಗಳ ಸೆಲ್ಸಿಯಸ್}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}one{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}one{#K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 ಕೆಲ್ವಿನ್}one{# ಕೆಲ್ವಿನ್‌ಗಳು}other{# ಕೆಲ್ವಿನ್‌ಗಳು}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}one{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}one{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 ಡಿಗ್ರಿ ಫ್ಯಾರನ್‌ಹೀಟ್}one{# ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್}other{# ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}one{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} ಡಿಗ್ರಿ ಸೆಲ್ಸಿಯಸ್}one{{formattedValue} ಡಿಗ್ರಿಗಳ ಸೆಲ್ಸಿಯಸ್}other{{formattedValue} ಡಿಗ್ರಿಗಳ ಸೆಲ್ಸಿಯಸ್}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}one{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} ಡಿಗ್ರಿ ಫ್ಯಾರನ್‌ಹೀಟ್}one{{formattedValue} ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್}other{{formattedValue} ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}one{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} ಕೆಲ್ವಿನ್}one{{formattedValue} ಕೆಲ್ವಿನ್‌ಗಳು}other{{formattedValue} ಕೆಲ್ವಿನ್‌ಗಳು}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}one{{formattedValue}℃ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}other{{formattedValue}℃ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} ಡಿಗ್ರಿ ಸೆಲ್ಸಿಯಸ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}one{{formattedValue} ಡಿಗ್ರಿಗಳ ಸೆಲ್ಸಿಯಸ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}other{{formattedValue} ಡಿಗ್ರಿಗಳ ಸೆಲ್ಸಿಯಸ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}one{{formattedValue}℉ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}other{{formattedValue}℉ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} ಡಿಗ್ರಿ ಫ್ಯಾರನ್‌ಹೀಟ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}one{{formattedValue} ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}other{{formattedValue} ಡಿಗ್ರಿಗಳ ಫ್ಯಾರನ್‌ಹೀಟ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}one{{formattedValue}K (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}other{{formattedValue}K (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} ಕೆಲ್ವಿನ್ (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}one{{formattedValue} ಕೆಲ್ವಿನ್‌ಗಳು (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}other{{formattedValue} ಕೆಲ್ವಿನ್‌ಗಳು (ಸರಾಸರಿ ವ್ಯತ್ಯಾಸ)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"ಕಂಕುಳು"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"ಬೆರಳು"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"ಹಣೆಯ ಉಷ್ಣಾಂಶ"</string>
@@ -696,12 +728,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"ಕಿವಿ"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"ಮಣಿಕಟ್ಟು"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"ಯೋನಿ"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"ಮಾಪನದ ಸ್ಥಳ"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"ಬೇಸ್‌ಲೈನ್"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"ಬೇಸ್‌ಲೈನ್‌ನಿಂದ ವ್ಯತ್ಯಾಸ"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 ಮೈಲಿ}one{# ಮೈಲಿಗಳು}other{# ಮೈಲಿಗಳು}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 ಕಿ.ಮೀ}one{# ಕಿ.ಮೀ}other{# ಕಿ.ಮೀ}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 ಮೈಲಿ}one{# ಮೈಲಿಗಳು}other{# ಮೈಲಿಗಳು}}"</string>
@@ -730,7 +759,7 @@
     <string name="distance_unit_kilometers_label" msgid="1361363017122240294">"ಕಿಲೋಮೀಟರ್‌ಗಳು"</string>
     <string name="distance_unit_miles_label" msgid="848850214987608211">"ಮೈಲಿಗಳು"</string>
     <string name="height_unit_centimeters_label" msgid="4096031670561995574">"ಸೆಂಟಿಮೀಟರ್‌ಗಳು"</string>
-    <string name="height_unit_feet_label" msgid="3311723678628261399">"ಅಡಿ ಮತ್ತು ಇಂಚು"</string>
+    <string name="height_unit_feet_label" msgid="3311723678628261399">"ಅಡಿಗಳು ಮತ್ತು ಇಂಚುಗಳು"</string>
     <string name="weight_unit_pound_label" msgid="8210663393844989211">"ಪೌಂಡ್‌ಗಳು"</string>
     <string name="weight_unit_kilogram_label" msgid="6623938920860887238">"ಕಿಲೋಗ್ರಾಂಗಳು"</string>
     <string name="weight_unit_stone_label" msgid="3063787243474847180">"ಸ್ಟೋನ್‌ಗಳು"</string>
@@ -741,25 +770,25 @@
     <string name="temperature_unit_kelvin_label" msgid="3786210768294615821">"ಕೆಲ್ವಿನ್"</string>
     <string name="help_and_feedback" msgid="4772169905005369871">"ಸಹಾಯ ಮತ್ತು ಪ್ರತಿಕ್ರಿಯೆ"</string>
     <string name="cant_see_all_your_apps_description" msgid="7344859063463536472">"ನಿಮಗೆ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾದ ಆ್ಯಪ್ ಕಾಣಿಸದಿದ್ದರೆ, ಅದು Health Connect ನೊಂದಿಗೆ ಇನ್ನೂ ಹೊಂದಾಣಿಕೆಯಾಗದಿರಬಹುದು"</string>
-    <string name="things_to_try" msgid="8200374691546152703">"ಮಾಡಬೇಕಾದ ಸಂಗತಿಗಳು"</string>
+    <string name="things_to_try" msgid="8200374691546152703">"ಪ್ರಯತ್ನಿಸಬಹುದಾದ ಸಂಗತಿಗಳು"</string>
     <string name="check_for_updates" msgid="3841090978657783101">"ಅಪ್‌ಡೇಟ್‌ಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಿ"</string>
-    <string name="check_for_updates_description" msgid="1347667778199095160">"ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳು ಅಪ್ ಟು ಡೇಟ್ ಆಗಿವೆಯೇ ಎಂಬುದನ್ನು ಪರಿಶೀಲಿಸುವುದು"</string>
+    <string name="check_for_updates_description" msgid="1347667778199095160">"ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳು ಅಪ್ ಟು ಡೇಟ್ ಆಗಿವೆಯೇ ಎಂಬುದನ್ನು ಪರಿಶೀಲಿಸಿ"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"ಹೊಂದಾಣಿಕೆಯಾಗುವ ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳನ್ನು ನೋಡಿ"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Google Play ನಲ್ಲಿ ಆ್ಯಪ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
-    <string name="send_feedback" msgid="7756927746070096780">"ಪ್ರತಿಕ್ರಿಯೆ ಕಳುಹಿಸಿ"</string>
-    <string name="send_feedback_description" msgid="2887207112856240778">"ಯಾವ ಆರೋಗ್ಯ &amp; ಮತ್ತು ಫಿಟ್‌ನೆಸ್ ಆ್ಯಪ್‌ಗಳು Health Connect ಜೊತೆಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸಬೇಕು ಎಂದು ನೀವು ಬಯಸುತ್ತೀರಿ ಎಂಬುದನ್ನು ನಮಗೆ ತಿಳಿಸಿ"</string>
+    <string name="send_feedback" msgid="7756927746070096780">"ಫೀಡ್‌ಬ್ಯಾಕ್ ಕಳುಹಿಸಿ"</string>
+    <string name="send_feedback_description" msgid="2887207112856240778">"Health Connect ನೊಂದಿಗೆ ಯಾವ ಆರೋಗ್ಯ ಮತ್ತು ಫಿಟ್‌ನೆಸ್ ಆ್ಯಪ್‌ಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸಬೇಕೆಂದು ನೀವು ಬಯಸುತ್ತೀರಿ ಎಂಬುದನ್ನು ನಮಗೆ ತಿಳಿಸಿ"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"‌Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸಿ"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸಿ"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"ನಿಗದಿತ ಸಮಯದ ನಂತರ ಡೇಟಾವನ್ನು ಅಳಿಸುವುದಕ್ಕೆ ನಿಗದಿಪಡಿಸುವ ಮೂಲಕ Health Connect ನಲ್ಲಿ ನಿಮ್ಮ ಡೇಟಾ ಎಷ್ಟು ಸಮಯದವರೆಗೆ ಸಂಗ್ರಹಿಸಿಡಬೇಕು ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ"</string>
-    <string name="auto_delete_learn_more" msgid="7416469042791307994">"ಸ್ವಯಂ-ಅಳಿಸುವಿಕೆ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"ನಿರ್ದಿಷ್ಟ ಸಮಯದ ನಂತರ ಡೇಟಾವನ್ನು ಅಳಿಸಲು ನಿಗದಿಪಡಿಸುವ ಮೂಲಕ Health Connect ನಲ್ಲಿ ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಎಷ್ಟು ಸಮಯದವರೆಗೆ ಸಂಗ್ರಹಿಸಿಡಲಾಗುತ್ತದೆ ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ"</string>
+    <string name="auto_delete_learn_more" msgid="7416469042791307994">"ಸ್ವಯಂಚಾಲಿತ ಅಳಿಸುವಿಕೆ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸಿ"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{# ತಿಂಗಳ ನಂತರ}one{# ತಿಂಗಳುಗಳ ನಂತರ}other{# ತಿಂಗಳುಗಳ ನಂತರ}}"</string>
     <string name="range_never" msgid="4429478261788361233">"ಎಂದಿಗೂ ಬೇಡ"</string>
     <string name="range_off" msgid="8178520557618184215">"ಆಫ್"</string>
     <string name="auto_delete_rationale" msgid="5255442126521464878">"ನೀವು ಈ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿದಾಗ, ನಿಮ್ಮ ಹೊಸ ಆದ್ಯತೆಗಳನ್ನು ಅನ್ವಯಿಸುವುದಕ್ಕಾಗಿ Health Connect ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಅಳಿಸುತ್ತದೆ"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{# ತಿಂಗಳ ನಂತರ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸಬೇಕೆ?}one{# ತಿಂಗಳುಗಳ ನಂತರ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸಬೇಕೆ?}other{# ತಿಂಗಳುಗಳ ನಂತರ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸಬೇಕೆ?}}"</string>
-    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{# ತಿಂಗಳ ನಂತರ Health Connect ಹೊಸ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಸೆಟ್ ಮಾಡುವುದರಿಂದ # ತಿಂಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸುತ್ತದೆ.}one{# ತಿಂಗಳುಗಳ ನಂತರ Health Connect ಹೊಸ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಸೆಟ್ ಮಾಡುವುದರಿಂದ # ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸುತ್ತದೆ.}other{# ತಿಂಗಳುಗಳ ನಂತರ Health Connect ಹೊಸ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಸೆಟ್ ಮಾಡುವುದರಿಂದ # ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸುತ್ತದೆ.}}"</string>
+    <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{# ತಿಂಗಳ ನಂತರ Health Connect ಹೊಸ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಸೆಟ್ ಮಾಡುವುದರಿಂದ # ತಿಂಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.}one{# ತಿಂಗಳುಗಳ ನಂತರ Health Connect ಹೊಸ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಸೆಟ್ ಮಾಡುವುದರಿಂದ # ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.}other{# ತಿಂಗಳುಗಳ ನಂತರ Health Connect ಹೊಸ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಸೆಟ್ ಮಾಡುವುದರಿಂದ # ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"ಸ್ವಯಂಚಾಲಿತ ಅಳಿಸುವಿಕೆಯನ್ನು ಸೆಟ್ ಮಾಡಿ"</string>
     <string name="deletion_started_title" msgid="1177766097121885025">"ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ಅಳಿಸಲಾಗುತ್ತದೆ"</string>
     <string name="deletion_started_x_months" msgid="6567199107249615612">"{count,plural, =1{# ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಎಲ್ಲಾ ಡೇಟಾವನ್ನು Health Connect ಅಳಿಸುತ್ತದೆ. ಈ ಬದಲಾವಣೆಗಳು ಕನೆಕ್ಟ್ ಮಾಡಲಾದ ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳಲು ಒಂದು ದಿನ ಬೇಕಾಗಬಹುದು.}one{# ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಎಲ್ಲಾ ಡೇಟಾವನ್ನು Health Connect ಅಳಿಸುತ್ತದೆ. ಈ ಬದಲಾವಣೆಗಳು ಕನೆಕ್ಟ್ ಮಾಡಲಾದ ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳಲು ಒಂದು ದಿನ ಬೇಕಾಗಬಹುದು.}other{# ತಿಂಗಳುಗಳಿಗಿಂತ ಹಳೆಯದಾದ ಎಲ್ಲಾ ಡೇಟಾವನ್ನು Health Connect ಅಳಿಸುತ್ತದೆ. ಈ ಬದಲಾವಣೆಗಳು ಕನೆಕ್ಟ್ ಮಾಡಲಾದ ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳಲು ಒಂದು ದಿನ ಬೇಕಾಗಬಹುದು.}}"</string>
@@ -795,10 +824,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"ಎಲ್ಲಾ ಮಾರ್ಗಗಳಿಗೆ ಅನುಮತಿಸಿ"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ಅನುಮತಿಸಬೇಡಿ"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"ಯಾವಾಗಲೂ ಅನುಮತಿಸಿ"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"ವ್ಯಾಯಾಮದ ಮಾರ್ಗದ ಹಂಚಿಕೆ"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"ಈ ಆ್ಯಪ್ ಕನೆಕ್ಟ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ಗಳಿಂದ ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಹೇಗೆ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡುತ್ತದೆ ಎಂಬುದನ್ನು ನಿಯಂತ್ರಿಸಿ"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"ವ್ಯಾಯಾಮ ಮಾಡುವ ಎಲ್ಲಾ ವಿಧಾನಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"ವಿಧಾನಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಅನುಮತಿಸಿ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ಪ್ರತಿ ಬಾರಿ ಕೇಳಿ"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"ಅನುಮತಿಸಬೇಡಿ"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"ಅನುಮತಿಸಬೇಡಿ"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ಎರಡೂ ಡೇಟಾ ಪ್ರಕಾರಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಬೇಕೇ?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ಎರಡೂ ಡೇಟಾ ಪ್ರಕಾರಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಬೇಕೇ?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ, ವ್ಯಾಯಾಮದ ಮಾರ್ಗಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವುದಕ್ಕಾಗಿ ವ್ಯಾಯಾಮಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಡೇಟಾಗೆ ರೀಡ್ ಆ್ಯಕ್ಸೆಸ್ ಅಗತ್ಯವಿದೆ"</string>
@@ -890,4 +919,19 @@
     <string name="last_month_header" msgid="1359164797239191253">"ಕಳೆದ ತಿಂಗಳು"</string>
     <string name="tab_entries" msgid="3402700951602029493">"ನಮೂದುಗಳು"</string>
     <string name="tab_access" msgid="7818197975407243701">"ಆ್ಯಕ್ಸೆಸ್"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಗೆ ಹೆಚ್ಚುವರಿ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಅನುಮತಿಸಬೇಕೇ?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Health Connect ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಸಹ ಬಯಸುತ್ತದೆ"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"ಈ ಆ್ಯಪ್‌ಗಾಗಿ ಹಿನ್ನೆಲೆ ಅಥವಾ ಹಿಂದಿನ ಡೇಟಾ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಆನ್ ಮಾಡಲು ಕನಿಷ್ಠ ಒಂದು ರೀಡ್ ಅನುಮತಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"ಈ ಆ್ಯಪ್‌ಗೆ ಹಿನ್ನೆಲೆ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಆನ್ ಮಾಡಲು ಕನಿಷ್ಠ ಒಂದು ರೀಡ್ ಅನುಮತಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"ಈ ಆ್ಯಪ್‌ಗಾಗಿ ಹಿಂದಿನ ಡೇಟಾ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಆನ್ ಮಾಡಲು ಕನಿಷ್ಠ ಒಂದು ರೀಡ್ ಅನುಮತಿಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

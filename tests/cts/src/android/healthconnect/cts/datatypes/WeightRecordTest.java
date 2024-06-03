@@ -259,24 +259,36 @@ public class WeightRecordTest {
         LocalDateTime recordTime = LocalDateTime.now(ZoneOffset.MIN);
         LocalTimeRangeFilter timeRangeFilter =
                 new LocalTimeRangeFilter.Builder()
-                        .setStartTime(recordTime.minus(1, ChronoUnit.SECONDS))
-                        .setEndTime(recordTime.plus(1, ChronoUnit.SECONDS))
+                        .setStartTime(recordTime)
+                        .setEndTime(recordTime.plusSeconds(2))
                         .build();
         String id1 =
                 TestUtils.insertRecordAndGetId(
                         getBaseWeightRecord(recordTime.toInstant(ZoneOffset.MIN), ZoneOffset.MIN));
         String id2 =
                 TestUtils.insertRecordAndGetId(
-                        getBaseWeightRecord(recordTime.toInstant(ZoneOffset.MAX), ZoneOffset.MAX));
+                        getBaseWeightRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusMillis(1999),
+                                ZoneOffset.MAX));
+        String id3 =
+                TestUtils.insertRecordAndGetId(
+                        getBaseWeightRecord(
+                                recordTime.toInstant(ZoneOffset.MAX).plusSeconds(2),
+                                ZoneOffset.MAX));
         TestUtils.assertRecordFound(id1, WeightRecord.class);
         TestUtils.assertRecordFound(id2, WeightRecord.class);
+        TestUtils.assertRecordFound(id3, WeightRecord.class);
+
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
                         .addRecordType(WeightRecord.class)
                         .setTimeRangeFilter(timeRangeFilter)
                         .build());
+
         TestUtils.assertRecordNotFound(id1, WeightRecord.class);
         TestUtils.assertRecordNotFound(id2, WeightRecord.class);
+        // TODO(b/331350683): Uncomment once LocalTimeRangeFilter#endTime is exclusive
+        // TestUtils.assertRecordFound(id3, WeightRecord.class);
     }
 
     @Test
@@ -502,7 +514,13 @@ public class WeightRecordTest {
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder().addRecordType(WeightRecord.class).build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     @Test

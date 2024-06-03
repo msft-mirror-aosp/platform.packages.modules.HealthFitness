@@ -16,18 +16,28 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static java.util.Objects.requireNonNull;
+
 import android.annotation.NonNull;
+import android.content.Context;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.os.UserHandle;
 import android.util.Slog;
 
+import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.HealthConnectDatabase;
+import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.utils.FilesUtil;
+import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * Class that manages export related tasks. In this context, export means to make an encrypted copy
@@ -36,43 +46,112 @@ import java.nio.file.Files;
  * @hide
  */
 public class ExportManager {
-    private static final String EXPORT_DATABASE_DIR_NAME = "export_data";
-    private static final String EXPORT_DATABASE_FILE_NAME = "healthconnect_export.db";
+
+    @VisibleForTesting static final String LOCAL_EXPORT_DATABASE_DIR_NAME = "export_import";
+
+    @VisibleForTesting
+    static final String LOCAL_EXPORT_DATABASE_FILE_NAME = "health_connect_export.db";
+
     private static final String TAG = "HealthConnectExportImport";
 
-    // TODO(b/325599879): Change visibility once there is a wrapper.
-    /** Writes the backup data into a local file. */
-    public String exportLocally(@NonNull UserHandle userHandle) {
-        Slog.d(TAG, "Incoming request to make a local copy for export");
+    // Tables to drop instead of tables to keep to avoid risk of bugs if new data types are added.
 
-        File exportDir =
-                new File(
-                        FilesUtil.getDataSystemCeHCDirectoryForUser(userHandle.getIdentifier()),
-                        EXPORT_DATABASE_DIR_NAME);
-        exportDir.mkdirs();
-        File exportFile = new File(exportDir, EXPORT_DATABASE_FILE_NAME);
+    /**
+     * Logs size is non-trivial, exporting them would make the process slower and the upload file
+     * would need more storage. Furthermore, logs from a previous device don't provide the user with
+     * useful information.
+     */
+    @VisibleForTesting
+    public static final List<String> TABLES_TO_CLEAR =
+            List.of(AccessLogsHelper.TABLE_NAME, ChangeLogsHelper.TABLE_NAME);
 
-        ParcelFileDescriptor pfd;
+    private final DatabaseContext mDatabaseContext;
+
+    public ExportManager(@NonNull Context context) {
+        requireNonNull(context);
+        mDatabaseContext =
+                DatabaseContext.create(context, LOCAL_EXPORT_DATABASE_DIR_NAME, context.getUser());
+    }
+
+    /**
+     * Makes a local copy of the HC database, deletes the unnecessary data for export and sends the
+     * data to a cloud provider.
+     */
+    public synchronized boolean runExport() {
+        Slog.i(TAG, "Export started");
+        File localExportFile;
         try {
-            exportFile.createNewFile();
-            pfd = ParcelFileDescriptor.open(exportFile, ParcelFileDescriptor.MODE_WRITE_ONLY);
-            try (FileOutputStream outputStream = new FileOutputStream(pfd.getFileDescriptor())) {
-                Files.copy(
-                        TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
-                        outputStream);
-            } catch (IOException | SecurityException e) {
-                Slog.e(TAG, "Failed to send data for export", e);
-            } finally {
-                try {
-                    pfd.close();
-                } catch (IOException e) {
-                    Slog.e(TAG, "Failed to close stream for export", e);
-                }
-            }
+            localExportFile = exportLocally();
         } catch (IOException e) {
-            Slog.e(TAG, "Failed to create file for export", e);
+            Slog.e(TAG, "Failed to create local file for export", e);
+            return false;
+        }
+        try {
+            exportToUri(ScheduledExportSettingsStorage.getUri(), localExportFile.toPath());
+        } catch (IOException e) {
+            Slog.e(TAG, "Failed to export to URI", e);
+            return false;
+        }
+        // TODO(b/325599879): Clean local file.
+        Slog.i(TAG, "Export completed");
+        return true;
+    }
+
+    private synchronized File exportLocally() throws IOException {
+        Slog.i(TAG, "Local export started");
+
+        File exportDir = mDatabaseContext.getDatabaseDir();
+        if (!exportDir.isDirectory() && !exportDir.mkdir()) {
+            throw new IOException("Unable to create directory for local export.");
+        }
+        // Delete the file if it already exists before writing.
+        File exportFile = new File(exportDir, LOCAL_EXPORT_DATABASE_FILE_NAME);
+        if ((exportFile.exists() && !exportFile.delete()) || !exportFile.createNewFile()) {
+            throw new IOException("Unable to create file for local export");
         }
 
-        return exportFile.getPath();
+        ParcelFileDescriptor pfd =
+                ParcelFileDescriptor.open(exportFile, ParcelFileDescriptor.MODE_WRITE_ONLY);
+        try (FileOutputStream outputStream = new FileOutputStream(pfd.getFileDescriptor())) {
+            // TODO(b/325599879): Add functionality for checking that the copy is not
+            //  corrupted. If so, repeat the copy and check again a limited number of times.
+            Files.copy(
+                    TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
+                    outputStream);
+        } catch (SecurityException e) {
+            Slog.e(TAG, "Failed to send data for local export", e);
+        } finally {
+            try {
+                pfd.close();
+            } catch (IOException e) {
+                Slog.e(TAG, "Failed to close stream for local export", e);
+            }
+        }
+
+        deleteLogTablesContent();
+
+        Slog.i(TAG, "Local export completed: " + exportFile.toPath().toAbsolutePath());
+        return exportFile;
+    }
+
+    private void exportToUri(Uri destinationUri, Path originPath) throws IOException {
+        Slog.i(TAG, "Export to URI started");
+        try (OutputStream outputStream =
+                mDatabaseContext.getContentResolver().openOutputStream(destinationUri)) {
+            Files.copy(originPath, outputStream);
+            Slog.i(TAG, "Export to URI completed");
+        }
+    }
+
+    // TODO(b/325599879): Double check if we need to vacuum the database after clearing the tables.
+    private void deleteLogTablesContent() {
+        try (HealthConnectDatabase exportDatabase =
+                new HealthConnectDatabase(mDatabaseContext, LOCAL_EXPORT_DATABASE_FILE_NAME)) {
+            for (String tableName : TABLES_TO_CLEAR) {
+                exportDatabase.getWritableDatabase().execSQL("DELETE FROM " + tableName + ";");
+            }
+        } catch (Exception e) {
+            Slog.e(TAG, "Failed to drop log tables for export database", e);
+        }
     }
 }

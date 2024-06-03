@@ -65,7 +65,7 @@ public final class SleepSessionRecordHelper
 
     /** Returns the table name to be created corresponding to this helper */
     @Override
-    String getMainTableName() {
+    public String getMainTableName() {
         return SLEEP_SESSION_RECORD_TABLE_NAME;
     }
 

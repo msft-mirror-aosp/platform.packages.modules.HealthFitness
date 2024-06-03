@@ -21,19 +21,21 @@
     <string name="health_connect_summary" msgid="6401520186678972547">"Эрүүл мэндийн өгөгдлийн аппын хандалтыг удирдах"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Зөвшөөрөл болон өгөгдөл"</string>
     <string name="home_subtitle" msgid="1750033322147357163">"Утсан дээрээ эрүүл мэнд, фитнесийн өгөгдлөө удирдаж, үүнд ямар аппууд хандаж болохыг хянана уу"</string>
-    <string name="data_title" msgid="4456619761533380816">"Өгөгдөл болон хандалт"</string>
+    <string name="data_title" msgid="4456619761533380816">"Өгөгдөл, хандалт"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Бүх ангилал"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Бүх ангиллыг харах"</string>
     <string name="no_data" msgid="1906986019249068659">"Өгөгдөл байхгүй байна"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Аппын зөвшөөрөл"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Аппууд болон зөвшөөрлөө удирдах"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>-с <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> апп хандах эрхтэй байна"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> аппаас <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> нь хандах эрхтэй байна"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aппад хандах эрхтэй байна"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> апп хандах эрхтэй байна"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 апп хандах эрхтэй байна}other{# aпп хандах эрхтэй байна}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Байхгүй"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Орсон мэдээллийн дэлгэрэнгүй"</string>
     <string name="backup_title" msgid="211503191266235085">"Нөөцлөх"</string>
-    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Дата сурвалж болон чухалчлал"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Өгөгдлийн сурвалж болон чухалчлал"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Нэгжүүд тохируулах"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Саяхны хандалт"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Сүүлийн үед ямар ч апп Health Connect-д хандаагүй байна"</string>
@@ -41,11 +43,11 @@
     <string name="recent_access_screen_description" msgid="331101209889185402">"Таны өгөгдөлд сүүлийн 24 цагт ямар аппууд хандсан болохыг харна уу"</string>
     <string name="today_header" msgid="1006837293203834373">"Өнөөдөр"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Өчигдөр"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Унших: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Бичих: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Уншсан: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Бичсэн: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Зөвшөөрлийг удирдах"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Хугацаа: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Цаг: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Дасгал, хөдөлгөөн"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"дасгал, хөдөлгөөн"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Биеийн хэмжээ"</string>
@@ -81,11 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"таны эрүүл мэндийн өгөгдөлд хандах"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Шатаасан калорийг унших"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Аппад шатаасан калори уншихыг зөвшөөрөх"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Ард унших"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"ард унших"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Эрүүл мэндийн өгөгдлийг ард унших"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Дэвсгэрт өгөгдөлд хандах"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д дэвсгэрт өгөгдөлд хандахыг зөвшөөрөх үү?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Та аппыг ашиглаагүй үедээ энэ аппад Health Connect-н өгөгдөлд хандахыг зөвшөөрөх"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Хэрэв та зөвшөөрвөл таныг аппыг ашиглаагүй үед энэ апп Health Connect-н өгөгдөлд хандах боломжтой."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Өмнөх өгөгдөлд хандах"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д өмнөх өгөгдөлд хандахыг зөвшөөрөх үү?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Энэ аппад <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>-с өмнө нэмсэн Health Connect-н өгөгдөлд хандахыг зөвшөөрөх"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Энэ аппад Health Connect-н өмнөх бүх өгөгдөлд хандахыг зөвшөөрнө үү"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Хэрэв та зөвшөөрвөл энэ апп <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>-с өмнө нэмсэн Health Connect-н өгөгдөлд хандах боломжтой."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Хэрэв та зөвшөөрвөл энэ апп Health Connect-н өмнөх бүх өгөгдөлд хандах боломжтой."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Идэвхтэй үед шатаасан калори"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"идэвхтэй үед шатаасан калори"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Идэвхтэй үед шатаасан калорийг унших"</string>
@@ -258,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Бүгдийг зөвшөөрөх"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Бүү зөвшөөр"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Та энэ аппад уншуулах эсвэл Health Connect-д бичүүлэхийг хүсэж буй өгөгдлөө сонгоно уу"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Хэрэв та унших эрх өгвөл энэ апп шинэ өгөгдөл болон сүүлийн 30 хоногийн өгөгдлийг унших боломжтой"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Хэрэв та унших эрх өгвөл апп шинэ өгөгдөл болон сүүлийн 30 хоногийн өгөгдлийг унших боломжтой"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Хэрэв та унших эрх өгвөл апп шинэ болон өмнөх өгөгдлийг унших боломжтой"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"<xliff:g id="APP_NAME">%1$s</xliff:g>-г Health Connect-д хандахыг зөвшөөрөх үү?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Таны өгөгдлийг <xliff:g id="APP_NAME">%1$s</xliff:g> хэрхэн зохицуулдаг болохыг та хөгжүүлэгчийн <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g>-с мэдэж авах боломжтой"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"нууцлалын бодлого"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Бүх зөвшөөрлийг хасах уу?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Бүгдийг хасах"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> цаашид Health Connect-н аливаа өгөгдлийг унших эсвэл бичих боломжгүй болно.\n\nЭнэ нь байршил, камер эсвэл микрофон зэрэг уг аппын бусад зөвшөөрөлд нөлөөлөхгүй."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> цаашид Health Connect-н аливаа өгөгдлийг унших эсвэл бичих боломжгүй болно.\n\nЭнэ нь байршил, камер эсвэл микрофон зэрэг уг аппад байж болох бусад зөвшөөрөлд нөлөөлөхгүй."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> арын өгөгдлийг оруулаад цаашид Health Connect-н аливаа өгөгдлийг унших эсвэл бичих боломжгүй болно.\n\nЭнэ нь байршил, камер эсвэл микрофон зэрэг уг аппад байж болох бусад зөвшөөрөлд нөлөөлөхгүй."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> хуучин өгөгдлийг оруулаад цаашид Health Connect-н аливаа өгөгдлийг унших эсвэл бичих боломжгүй болно.\n\nЭнэ нь байршил, камер эсвэл микрофон зэрэг уг аппад байж болох бусад зөвшөөрөлд нөлөөлөхгүй."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> арын болон хуучин өгөгдлийг оруулаад цаашид Health Connect-н аливаа өгөгдлийг унших эсвэл бичих боломжгүй болно.\n\nЭнэ нь байршил, камер эсвэл микрофон зэрэг уг аппад байж болох бусад зөвшөөрөлд нөлөөлөхгүй."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Мөн <xliff:g id="APP_NAME">%1$s</xliff:g>-н өгөгдлийг Health Connect-с устгана"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Дараах өдөр"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Сонгосон өдөр"</string>
@@ -298,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Аппын хандалт"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Та одоогоор ямар ч тохирох апп суулгаагүй байна"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Нэмэлт хандах эрх"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Энэ аппын нэмэлт зөвшөөрлүүдийг хассан"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Аппын зөвшөөрлийг хассан"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>-н зөвшөөрлийг хассан"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> болон <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>-н зөвшөөрлийг хассан"</string>
@@ -309,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ойлголоо"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Нөөцлөх болон сэргээх"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспорт хийх болон импорт хийх"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Тогтмол экспорт хийх"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Өгөгдөл сэргээх"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Өмнө нь экспорт хийсэн өгөгдлийг ачаална уу"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Хуваарьт экспорт"</string>
+    <string name="import_data" msgid="404502315533233094">"Өгөгдөл импорт хийх"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Өмнө нь экспорт хийсэн файлаас өгөгдөл сэргээнэ үү"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Экспорт танд өгөгдлөө хадгалах боломжийг олгох тул та өгөгдлөө шинэ утас руу шилжүүлэх боломжтой"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Нэмэлт мэдээлэл авах"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Асаалттай"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Унтраалттай"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Давтамж сонгох"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Давтамж сонгох"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Өгөгдлийг нэг удаа хадгалахаар сонгох эсвэл үүнийг тогтмол цагуудад автоматаар хадгалахаар тохируулна уу."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Өдөр бүр"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Долоо хоног бүр"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Сар бүр"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Хаана экспорт хийхээ сонгох"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Шифрлэлтийг асаах"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Өгөгдлийг хадгалахаас өмнө шифрлэсэн байх шаардлагатай. Хэн ч, бүр Google эсвэл Health Connect ч үүнд хандах боломжгүй байх болно."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Шифрлэгдсэн өгөгдлөө хамгаалахын тулд нууц үг үүсгэнэ үү. Өгөгдлөө импорт хийж, сэргээхийн тулд танд энэ нууц үг шаардлагатай болно."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Нууц үг"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Нууц үгийг давтах"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Нууц үгнүүд таарахгүй байна"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Хэрэв та нууц үгээ мартсан бөгөөд утсаа алдсан бол Health Connect танд хадгалсан өгөгдлөө сэргээхэд туслах боломжгүй."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Нууц үгээ бичиж оруулах"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect-н өгөгдлөө импорт хийхэд таны шифрлэлтийн нууц үг шаардлагатай"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Нууц үгээ мартсан уу?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Нууц үг"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Хэрэв танд хуучин утас тань байгаа бол та шинэ нууц үгээр өгөгдлөө дахин экспорт хийх боломжтой"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Буцах"</string>
     <string name="export_next_button" msgid="657930567137105172">"Дараах"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Цуцлах"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Дараах"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Дараахаас импорт хийх"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect-г ашиглаж эхлээрэй"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect таны эрүүл мэнд, фитнесийн өгөгдлийг хадгалснаар та утсан дээрээ байгаа өөр өөр аппуудыг энгийн аргаар синк хийх боломжтой болно"</string>
     <string name="share_data" msgid="3481932156368883946">"Аппуудтайгаа өгөгдөл хуваалцаарай"</string>
@@ -336,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Буцах"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Эхлүүлэх"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Өгөгдлийг устгах"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Устгах төлөвт орох"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Устгах төлөвөөс гарах"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Устгах өгөгдлийг сонгоно уу"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Дараах"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Энэ нь сонгосон хугацаанд Health Connect-д нэмсэн бүх өгөгдлийг бүрмөсөн устгана"</string>
@@ -394,6 +421,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 км/ц}other{# км/ц}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{Цагт 1 миль}other{Цагт # миль}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{Цагт 1 километр}other{Цагт # километр}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/миль"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/км"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"Мильд <xliff:g id="MINUTE">%1$s</xliff:g> минут"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"Километрт <xliff:g id="MINUTE">%1$s</xliff:g> минут"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/100 ярд"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> мин/100 метр"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"100 ярдад <xliff:g id="MINUTE">%1$s</xliff:g> минут"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"100 метрт <xliff:g id="MINUTE">%1$s</xliff:g> минут"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>-с <xliff:g id="END_TIME">%2$s</xliff:g> хүртэл"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>-с <xliff:g id="END_TIME">%2$s</xliff:g> хүртэл"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{Тэргэнцрийг 1 удаа түрэх}other{Тэргэнцрийг # удаа түрэх}}"</string>
@@ -419,6 +454,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Тодорхой бус"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 мс}other{# мс}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 миллисекунд}other{# миллисекунд}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Тэмдэглэл"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 удаа}other{# удаа}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Идэвхтэй: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Нийт: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Аль болох олон давталт"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Хүчин чармайлтын түвшин: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 оролт}other{# оролт}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 оролт}other{# оролт}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Дасгалын сегментүүд"</string>
@@ -656,36 +698,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 фунт}other{# фунт}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 стоун}other{# стоун}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{Цельсийн 1 хэм}other{Цельсийн # хэм}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 кельвин}other{# кельвин}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{Фаренгейтийн 1 хэм}other{Фаренгейтийн # хэм}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{Цельсийн {formattedValue} хэм}other{Цельсийн {formattedValue} хэм}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{Фаренгейтийн {formattedValue} хэм}other{Фаренгейтийн {formattedValue} хэм}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{Кельвиний {formattedValue}}other{Кельвиний {formattedValue}}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (дундаж хувилбар)}other{{formattedValue}℃ (дундаж хувилбар)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{Цельсийн {formattedValue} хэм (дундаж хувилбар)}other{Цельсийн {formattedValue} хэм (дундаж хувилбар)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (дундаж хувилбар)}other{{formattedValue}℉ (дундаж хувилбар)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{Фаренгейтийн {formattedValue} хэм (дундаж хувилбар)}other{Фаренгейтийн {formattedValue} хэм (дундаж хувилбар)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (дундаж хувилбар)}other{{formattedValue}K (дундаж хувилбар)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{Кельвиний {formattedValue} (дундаж хувилбар)}other{Кельвиний {formattedValue} (дундаж хувилбар)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Суга"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Хуруу"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Дух"</string>
@@ -696,12 +726,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Чих"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Бугуй"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Үтрээ"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Хэмжилтийн байршил"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Суурь үзүүлэлт"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Суурь үзүүлэлтийн хувилбар"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 миль}other{# миль}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 км}other{# км}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 миль}other{# миль}}"</string>
@@ -795,10 +822,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Бүх маршрутыг зөвшөөрөх"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Бүү зөвшөөр"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Үргэлж зөвшөөрөх"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Дасгалын маршрут хуваалцах"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Энэ апп холбогдсон аппуудаас дасгалын маршрутуудад хэрхэн ханддаг болохыг нь хянана уу"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Дасгалын маршрутуудад хандах"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д маршрутуудад хандахыг зөвшөөрнө"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Тухай бүрд асуух"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Бүү зөвшөөр"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Бүү зөвшөөр"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Өгөгдлийн хоёр төрлийг идэвхжүүлэх үү?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Өгөгдлийн хоёр төрлийг идэвхгүй болгох уу?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Дасгалын маршрутыг идэвхжүүлэхийн тулд <xliff:g id="APP_NAME">%1$s</xliff:g>-д дасгалыг унших эрх шаардлагатай"</string>
@@ -890,4 +917,14 @@
     <string name="last_month_header" msgid="1359164797239191253">"Өнгөрсөн сар"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Оролт"</string>
     <string name="tab_access" msgid="7818197975407243701">"Хандалт"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g>-д нэмэлт хандах эрхийг зөвшөөрөх үү?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> мөн Health Connect-н эдгээр тохиргоонд хандахыг хүсэж байна"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Энэ аппад арын эсвэл хуучин өгөгдлийн хандалтыг асаахын тулд дор хаяж нэг унших зөвшөөрлийг идэвхжүүлнэ үү"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Энэ аппад арын хэсгийн хандалтыг асаахын тулд дор хаяж нэг унших зөвшөөрлийг идэвхжүүлнэ үү"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Энэ аппад хуучин өгөгдлийн хандалтыг асаахын тулд дор хаяж нэг унших зөвшөөрлийг идэвхжүүлнэ үү"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect-н бүх өгөгдлийг бүрмөсөн устгах уу?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connect-с сонгосон өгөгдлийг бүрмөсөн устгах уу?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Бүх өгөгдлийг устгасан"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>-н өгөгдлийг устгасан"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> зүйл устгасан"</string>
 </resources>

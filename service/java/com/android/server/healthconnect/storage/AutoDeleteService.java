@@ -28,6 +28,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
@@ -88,8 +89,7 @@ public class AutoDeleteService {
         if (recordAutoDeletePeriod != 0) {
             // 0 represents that no period is set,to delete only if not 0 else don't do anything
             List<DeleteTableRequest> deleteTableRequests = new ArrayList<>();
-            RecordHelperProvider.getInstance()
-                    .getRecordHelpers()
+            RecordHelperProvider.getRecordHelpers()
                     .values()
                     .forEach(
                             (recordHelper) -> {
@@ -100,7 +100,7 @@ public class AutoDeleteService {
                             });
             try {
                 TransactionManager.getInitialisedInstance()
-                        .deleteWithoutChangeLogs(deleteTableRequests);
+                        .deleteAll(new DeleteTransactionRequest(deleteTableRequests));
             } catch (Exception exception) {
                 Slog.e(TAG, "Auto delete for records failed", exception);
                 // Don't rethrow as that will crash system_server

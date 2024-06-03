@@ -43,7 +43,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel.RevokeAllState.NotStarted
 import com.android.healthconnect.controller.permissions.app.ConnectedAppFragment
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.DISTANCE
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.EXERCISE
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType.READ
@@ -81,7 +81,6 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.kotlin.mock
 
@@ -115,7 +114,7 @@ class ConnectedAppFragmentTest {
             MutableLiveData(emptySet<DataTypePermission>())
         }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
-        whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
+        whenever(viewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         val writePermission = DataTypePermission(EXERCISE, WRITE)
         val readPermission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then {
@@ -132,6 +131,7 @@ class ConnectedAppFragmentTest {
         whenever(additionalAccessViewModel.additionalAccessState).then {
             MutableLiveData(AdditionalAccessViewModel.State())
         }
+        whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
 
         // disable animations
         toggleAnimation(false)
@@ -405,11 +405,11 @@ class ConnectedAppFragmentTest {
     }
 
     @Test
-    fun test_footerWithGrantTime_isDisplayed() {
+    fun footerWithGrantTime_whenNoHistoryRead_isDisplayed() {
         val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
         whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
@@ -431,6 +431,38 @@ class ConnectedAppFragmentTest {
     }
 
     @Test
+    fun footerWithGrantTime_whenHistoryRead_isNotDisplayed() {
+        val permission = DataTypePermission(DISTANCE, READ)
+        whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
+        whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(permission)) }
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
+            .thenReturn(true)
+        whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
+            .thenReturn(Intent())
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(AdditionalAccessViewModel.State(
+                historyReadUIState = AdditionalAccessViewModel.AdditionalPermissionState(
+                    isDeclared = true,
+                    isEnabled = false,
+                    isGranted = false
+                )
+            ))
+        }
+        launchFragment<ConnectedAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(
+            withText("To manage other Android permissions this app can " +
+                        "access, go to Settings > Apps" +
+                        "\n\n" +
+                        "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        onView(withText("Read privacy policy")).perform(scrollTo()).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.PRIVACY_POLICY_LINK)
+    }
+
+    @Test
     fun footerWithoutGrantTime_isDisplayed() {
         val permission = DataTypePermission(DISTANCE, READ)
         whenever(viewModel.appPermissions).then { MutableLiveData(listOf(permission)) }
@@ -438,7 +470,7 @@ class ConnectedAppFragmentTest {
             MutableLiveData<Set<DataTypePermission>>(setOf())
         }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent())
@@ -468,7 +500,7 @@ class ConnectedAppFragmentTest {
             MutableLiveData<Set<DataTypePermission>>(setOf())
         }
         whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
-        whenever(healthPermissionReader.isRationalIntentDeclared(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME))
             .thenReturn(true)
         whenever(healthPermissionReader.getApplicationRationaleIntent(TEST_APP_PACKAGE_NAME))
             .thenReturn(Intent(rationaleAction))
@@ -540,6 +572,26 @@ class ConnectedAppFragmentTest {
     }
 
     @Test
+    fun additionalAccessState_onlyOneAdditionalPermission_showsAdditionalAccess() {
+        val validState =
+            AdditionalAccessViewModel.State(
+                backgroundReadUIState =
+                    AdditionalAccessViewModel.AdditionalPermissionState(
+                        isDeclared = true, isEnabled = false, isGranted = false))
+        whenever(additionalAccessViewModel.additionalAccessState).then {
+            MutableLiveData(validState)
+        }
+
+        launchFragment<ConnectedAppFragment>(
+            bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
+
+        onView(withText(R.string.additional_access_label))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
+    }
+
+    @Test
     fun additionalAccessState_onClick_navigatesToAdditionalAccessFragment() {
         val validState =
             AdditionalAccessViewModel.State(
@@ -560,5 +612,6 @@ class ConnectedAppFragmentTest {
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.additionalAccessFragment)
+        verify(healthConnectLogger).logInteraction(AppAccessElement.ADDITIONAL_ACCESS_BUTTON)
     }
 }

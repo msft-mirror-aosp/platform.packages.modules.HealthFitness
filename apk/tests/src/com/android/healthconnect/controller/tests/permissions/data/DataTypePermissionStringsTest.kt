@@ -13,8 +13,8 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
@@ -48,7 +48,7 @@ class DataTypePermissionStringsTest {
     fun allDataTypePermissionsHaveStrings() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) || healthPermissionReader.isMedicalPermission(perm)
             }
         for (permission in allPermissions) {
             val type = DataTypePermission.fromPermissionString(permission).healthPermissionType

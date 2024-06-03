@@ -499,11 +499,19 @@ public class PowerRecordTest {
         TestUtils.verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder().addRecordType(PowerRecord.class).build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     private void testReadPowerRecordIds() throws InterruptedException {
-        List<Record> recordList = Arrays.asList(getCompletePowerRecord(), getCompletePowerRecord());
+        List<Record> recordList =
+                TestUtils.insertRecords(
+                        Arrays.asList(getCompletePowerRecord(), getCompletePowerRecord()));
         readPowerRecordUsingIds(recordList);
     }
 
@@ -519,8 +527,7 @@ public class PowerRecordTest {
         assertThat(result).containsExactlyElementsIn(insertedRecord);
     }
 
-    private void readPowerRecordUsingIds(List<Record> recordList) throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
+    private void readPowerRecordUsingIds(List<Record> insertedRecords) throws InterruptedException {
         ReadRecordsRequestUsingIds.Builder<PowerRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(PowerRecord.class);
         for (Record record : insertedRecords) {

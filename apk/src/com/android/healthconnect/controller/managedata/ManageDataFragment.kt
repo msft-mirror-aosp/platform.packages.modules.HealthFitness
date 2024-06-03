@@ -16,6 +16,7 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.logging.ManageDataElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -83,8 +84,8 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
             true
         }
 
-        if (featureUtils.isImportExportEnabled()) {
-            // TODO: b/325914485 - Add proper log name for the backup and restore button.
+        if (Flags.exportImport()) {
+            // TODO: b/325917291 - Add proper log name for the backup and restore button.
             backupAndRestorePreference?.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
                 true

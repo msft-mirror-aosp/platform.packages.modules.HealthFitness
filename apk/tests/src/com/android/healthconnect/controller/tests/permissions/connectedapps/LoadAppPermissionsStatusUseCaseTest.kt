@@ -17,7 +17,7 @@ package com.android.healthconnect.controller.tests.permissions.connectedapps
 
 import com.android.healthconnect.controller.permissions.app.HealthPermissionStatus
 import com.android.healthconnect.controller.permissions.app.LoadAppPermissionsStatusUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -59,7 +59,7 @@ class LoadAppPermissionsStatusUseCaseTest {
 
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(readExercisePermission.toString()))
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(readExercisePermission, writeExercisePermission))
 
         val result = loadAppPermissionsStatusUseCase.invoke(TEST_APP_PACKAGE_NAME)
@@ -80,7 +80,7 @@ class LoadAppPermissionsStatusUseCaseTest {
         loadGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(readExercisePermission.toString(), writeExercisePermission.toString()))
-        whenever(healthPermissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+        whenever(healthPermissionReader.getValidHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(listOf(writeExercisePermission))
 
         val result = loadAppPermissionsStatusUseCase.invoke(TEST_APP_PACKAGE_NAME)

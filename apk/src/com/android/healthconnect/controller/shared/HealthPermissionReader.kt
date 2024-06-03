@@ -23,7 +23,7 @@ import android.content.pm.PackageManager.PackageInfoFlags
 import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -65,8 +65,17 @@ constructor(
                 HealthPermissions.READ_EXERCISE_ROUTES,
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
                 HealthPermissions.READ_HEALTH_DATA_HISTORY)
+
+        private val medicalPermissions =
+            setOf(
+                HealthPermissions.WRITE_MEDICAL_RESOURCES,
+                HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION)
     }
 
+    /**
+     * Returns a list of app packageNames that have declared at least one health permission
+     * (additional or data type).
+     */
     fun getAppsWithHealthPermissions(): List<String> {
         return try {
             val appsWithDeclaredIntent =
@@ -76,7 +85,26 @@ constructor(
                     .map { it.activityInfo.packageName }
                     .distinct()
 
-            appsWithDeclaredIntent.filter { getDeclaredHealthPermissions(it).isNotEmpty() }
+            appsWithDeclaredIntent.filter { getValidHealthPermissions(it).isNotEmpty() }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    fun getAppsWithDataTypePermissions(): List<String> {
+        return try {
+            val appsWithDeclaredIntent =
+                context.packageManager
+                    .queryIntentActivities(
+                        getRationaleIntent(), ResolveInfoFlags.of(RESOLVE_INFO_FLAG))
+                    .map { it.activityInfo.packageName }
+                    .distinct()
+
+            appsWithDeclaredIntent.filter {
+                getValidHealthPermissions(it)
+                    .filterIsInstance<HealthPermission.DataTypePermission>()
+                    .isNotEmpty()
+            }
         } catch (e: Exception) {
             emptyList()
         }
@@ -106,10 +134,10 @@ constructor(
         }
     }
 
-    /** Returns a list of health permissions that can be rendered in permission list in our UI. */
-    fun getDeclaredHealthPermissions(packageName: String): List<DataTypePermission> {
+    /** Returns a list of health permissions declared by an app that can be rendered in our UI. */
+    fun getValidHealthPermissions(packageName: String): List<HealthPermission> {
         return try {
-            val permissions = getHealthPermissions(packageName)
+            val permissions = getDeclaredHealthPermissions(packageName)
             permissions.mapNotNull { permission -> parsePermission(permission) }
         } catch (e: NameNotFoundException) {
             emptyList()
@@ -117,7 +145,7 @@ constructor(
     }
 
     /** Returns a list of health permissions that are declared by an app. */
-    fun getHealthPermissions(packageName: String): List<String> {
+    fun getDeclaredHealthPermissions(packageName: String): List<String> {
         return try {
             val appInfo =
                 context.packageManager.getPackageInfo(
@@ -130,10 +158,12 @@ constructor(
     }
 
     fun getAdditionalPermissions(packageName: String): List<String> {
-        return getHealthPermissions(packageName).filter { perm -> isAdditionalPermission(perm) }
+        return getDeclaredHealthPermissions(packageName).filter { perm ->
+            isAdditionalPermission(perm) && !shouldHidePermission(perm)
+        }
     }
 
-    fun isRationalIntentDeclared(packageName: String): Boolean {
+    fun isRationaleIntentDeclared(packageName: String): Boolean {
         val intent = getRationaleIntent(packageName)
         val resolvedInfo =
             context.packageManager.queryIntentActivities(
@@ -150,14 +180,15 @@ constructor(
         return intent
     }
 
-    private fun parsePermission(permission: String): DataTypePermission? {
+    private fun parsePermission(permission: String): HealthPermission? {
         return try {
-            DataTypePermission.fromPermissionString(permission)
+            HealthPermission.fromPermissionString(permission)
         } catch (e: IllegalArgumentException) {
             null
         }
     }
 
+    /** Returns a list of all health permissions in the HEALTH permission group. */
     @VisibleForTesting
     fun getHealthPermissions(): List<String> {
         val permissions =
@@ -169,6 +200,10 @@ constructor(
 
     fun isAdditionalPermission(permission: String): Boolean {
         return additionalPermissions.contains(permission)
+    }
+
+    fun isMedicalPermission(permission: String): Boolean {
+        return medicalPermissions.contains(permission)
     }
 
     fun shouldHidePermission(permission: String): Boolean {

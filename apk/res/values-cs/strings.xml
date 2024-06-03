@@ -27,25 +27,27 @@
     <string name="no_data" msgid="1906986019249068659">"Žádná data"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Oprávnění aplikací"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Spravovat aplikace a oprávnění"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Přístup má <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> z <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikací"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Přístup má <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> z <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikací"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Přístup má několik aplikací: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Přístup má <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikace"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Přístup má 1 aplikace}few{Přístup mají # aplikace}many{Přístup má # aplikace}other{Přístup má # aplikací}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Žádné"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Podrobnosti o záznamu"</string>
     <string name="backup_title" msgid="211503191266235085">"Záloha"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Zdroje dat a priorita"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Nastavit jednotky"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Nedávný přístup"</string>
-    <string name="no_recent_access" msgid="4724297929902441784">"Žádné aplikace ke službě Health Connect v poslední době nepřistupovaly"</string>
+    <string name="no_recent_access" msgid="4724297929902441784">"Přístup ke službě Health Connect neměly v poslední době žádné aplikace"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Zobrazit veškerý nedávný přístup"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Zobrazte, které aplikace měly přístup k vašim datům za posledních 24 hodin"</string>
     <string name="today_header" msgid="1006837293203834373">"Dnes"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Včera"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Čtení: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Zápis: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Přečteno: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Zapsáno: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Spravovat oprávnění"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Čas: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktivita"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktivita"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Tělesné míry"</string>
@@ -81,11 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"přístup ke zdravotním údajům"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Číst spálené kalorie"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Umožňuje aplikaci číst spálené kalorie"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Čtení na pozadí"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"čtení na pozadí"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Čtení zdravotních údajů na pozadí"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Přístup k datům na pozadí"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k datům na pozadí?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Povolit této aplikaci přístup k datům Health Connect, když ji nepoužíváte"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect i v době, kdy ji nebudete používat."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Přístup k dřívějším datům"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k dřívějším datům?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Povolit této aplikaci přístup k datům Health Connect přidaným před <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povolit této aplikaci přístup ke všem dřívějším datům Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Pokud toto povolíte, bude mít aplikace přístup k datům Health Connect přidaným přede dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Pokud toto povolíte, bude mít aplikace přístup ke všem dřívějším datům Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalorie spálené aktivitou"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalorie spálené aktivitou"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Číst kalorie spálené aktivitou"</string>
@@ -258,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Povolit vše"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Nepovolovat"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Vyberte data, která má tato aplikace číst nebo zapisovat do služby Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Pokud aplikaci udělíte přístup pro čtení, bude moci číst nová data a data z posledních 30 dnů"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Pokud aplikaci udělíte přístup pro čtení, bude moct číst nová data a data z posledních 30 dnů"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Pokud aplikaci udělíte přístup pro čtení, bude moct číst nová i dřívější data"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup ke službě Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Informace o tom, jak aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> zpracovává vaše data, najdete v <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> vývojáře"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"zásadách ochrany soukromí"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Odebrat všechna oprávnění?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Odstranit vše"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> již nebude moci číst ani zapisovat žádná data ze služby Health Connect.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat žádná data ze služby Health Connect.\n\nTato akce nemá vliv na ostatní oprávnění, která aplikace má, jako je přístup k fotoaparátu, mikrofonu nebo poloze."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat žádná data ze služby Health Connect, včetně dat na pozadí.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat žádná data ze služby Health Connect, včetně dřívějších dat.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> už nebude moct číst ani zapisovat žádná data ze služby Health Connect, včetně dat na pozadí a dřívějších dat.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Také vymazat data aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> ze služby Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Další den"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Vybraný den"</string>
@@ -284,7 +295,7 @@
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"Odebrat přístup všem aplikacím?"</string>
     <string name="permissions_disconnect_all_dialog_message" msgid="3151109627457270499">"Žádné z vašich aplikací nebudou mít přístup k datům služby Health Connect a nebudou moci přidávat nová. Touto akcí nesmažete žádná existující data.\n\nTato akce nebude mít vliv na ostatní oprávnění, která aplikace má, jako je přístup k poloze, fotoaparátu nebo mikrofonu."</string>
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Odstranit vše"</string>
-    <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Spravovat aplikaci"</string>
+    <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Správa aplikace"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Zobrazit data aplikace"</string>
     <string name="delete_app_data" msgid="6890357774873859952">"Smazat data aplikace"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Neaktivní aplikace"</string>
@@ -295,9 +306,10 @@
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Pokud chcete spravovat ostatní oprávnění Androidu, ke kterým má aplikace přístup, přejděte do Nastavení a klepněte na Aplikace"</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Zobrazit zásady ochrany soukromí"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Použito během posledních 24 hodin"</string>
-    <string name="app_access_title" msgid="7137018424885371763">"Přístup aplikací"</string>
+    <string name="app_access_title" msgid="7137018424885371763">"Přístup aplikace"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálně nemáte nainstalované žádné kompatibilní aplikace"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Další přístup"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Této aplikaci byla odebrána další oprávnění"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odebrání oprávnění aplikacím"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Aplikace Health Connect odebrala oprávnění aplikaci <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Aplikace Health Connect odebrala oprávnění aplikacím <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -309,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Rozumím"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Zálohování a obnovení"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Export a import"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Opakovaný export"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Obnovit data"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Načíst dříve exportovaná data"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Plánovaný export"</string>
+    <string name="import_data" msgid="404502315533233094">"Importovat data"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Obnovit data z dříve exportovaného souboru"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Pomocí exportu můžete uložit svá data, abyste je mohli přenést do nového telefonu"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Další informace"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Zapnuto"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Vypnuto"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Vyberte, jak často"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Vyberte, jak často"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Vyberte jednorázové uložení dat nebo nastavte pravidelné automatické ukládání."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Každý den"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Každý týden"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Každý měsíc"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Vyberte, kam chcete data exportovat"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Zapnout šifrování"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Data musí být před uložením zašifrována. Nikdo k nim nebude mít přístup, ani Google nebo aplikace Health Connect."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Vytvořte heslo, které bude chránit vaše zašifrovaná data. Toto heslo budete potřebovat při importu a obnovení dat."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Heslo"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Zopakujte heslo"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Hesla se neshodují"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Pokud zapomenete heslo a ztratíte telefon, aplikace Health Connect uložená data obnovit nedokáže."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Zadejte heslo"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"K importu dat Health Connect je potřeba vaše šifrovací heslo"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Zapomněli jste heslo?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Heslo"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Pokud svůj starý telefon stále máte, můžete data exportovat znovu s novým heslem"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Zpět"</string>
     <string name="export_next_button" msgid="657930567137105172">"Další"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Zrušit"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Další"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Zdroj importu"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Začínáme se službou Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Služba Health Connect slouží k bezpečnému ukládání údajů o zdraví a kondici, což umožňuje jednoduše synchronizovat různé aplikace v telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Sdílení dat s aplikacemi"</string>
@@ -336,6 +361,10 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Zpět"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začít"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Smazat data"</string>
+    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
+    <skip />
+    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
+    <skip />
     <string name="time_range_title" msgid="6831605283322600165">"Vyberte data ke smazání"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Další"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Všechna data přidaná do služby Health Connect ve vybraném období budou trvale smazána"</string>
@@ -394,6 +423,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}few{# km/h}many{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 míle za hodinu}few{# míle za hodinu}many{# míle za hodinu}other{# mil za hodinu}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometr za hodinu}few{# kilometry za hodinu}many{# kilometru za hodinu}other{# kilometrů za hodinu}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/míli"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> min na míli"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> min na kilometr"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yardů"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metrů"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> min na 100 yardů"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> min na 100 metrů"</string>
     <string name="time_range_long" msgid="5067423945245490288">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 odstrčení invalidního vozíku}few{# odstrčení invalidního vozíku}many{# odstrčení invalidního vozíku}other{# odstrčení invalidního vozíku}}"</string>
@@ -416,9 +453,16 @@
     <string name="ovulation_positive" msgid="6588547263126320238">"Pozitivní"</string>
     <string name="ovulation_negative" msgid="591588801112312454">"Negativní"</string>
     <string name="ovulation_high" msgid="205362931427158291">"Vysoká"</string>
-    <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neprůkazný výsledek"</string>
+    <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neprůkazné"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}many{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}few{# milisekundy}many{# milisekundy}other{# milisekund}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Poznámky"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1×}few{#×}many{#×}other{#×}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Aktivní: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Celkem: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Co nejvíc opakování"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Úroveň úsilí: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 opakování}few{# opakování}many{# opakování}other{# opakování}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 opakování}few{# opakování}many{# opakování}other{# opakování}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmenty cvičení"</string>
@@ -656,36 +700,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 libra}few{# libry}many{# libry}other{# liber}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 kámen}few{# kameny}many{# kamenu}other{# kamenů}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1 ℃}few{# ℃}many{# ℃}other{# ℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}few{#℃}many{#℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 stupeň Celsia}few{# stupně Celsia}many{# stupně Celsia}other{# stupňů Celsia}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}few{# K}many{# K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1K}few{#K}many{#K}other{#K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}few{# kelviny}many{# kelvinu}other{# kelvinů}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1 ℉}few{# ℉}many{# ℉}other{# ℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}few{#℉}many{#℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 stupeň Fahrenheita}few{# stupně Fahrenheita}many{# stupně Fahrenheita}other{# stupňů Fahrenheita}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}few{{formattedValue}℃}many{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} stupeň Celsia}few{{formattedValue} stupně Celsia}many{{formattedValue} stupně Celsia}other{{formattedValue} stupňů Celsia}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}few{{formattedValue}℉}many{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} stupeň Fahrenheita}few{{formattedValue} stupně Fahrenheita}many{{formattedValue} stupně Fahrenheita}other{{formattedValue} stupňů Fahrenheita}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}K}few{{formattedValue}K}many{{formattedValue}K}other{{formattedValue}K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} kelvin}few{{formattedValue} kelviny}many{{formattedValue} kelvinu}other{{formattedValue} kelvinů}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (prům. odchylka)}few{{formattedValue}℃ (prům. odchylka)}many{{formattedValue}℃ (prům. odchylka)}other{{formattedValue}℃ (prům. odchylka)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} stupeň Celsia (průměrná odchylka)}few{{formattedValue} stupně Celsia (průměrná odchylka)}many{{formattedValue} stupně Celsia (průměrná odchylka)}other{{formattedValue} stupňů Celsia (průměrná odchylka)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (prům. odchylka)}few{{formattedValue}℉ (prům. odchylka)}many{{formattedValue}℉ (prům. odchylka)}other{{formattedValue}℉ (prům. odchylka)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} stupeň Fahrenheita (průměrná odchylka)}few{{formattedValue} stupně Fahrenheita (průměrná odchylka)}many{{formattedValue} stupně Fahrenheita (průměrná odchylka)}other{{formattedValue} stupňů Fahrenheita (průměrná odchylka)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}K (prům. odchylka)}few{{formattedValue}K (prům. odchylka)}many{{formattedValue}K (prům. odchylka)}other{{formattedValue}K (prům. odchylka)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} kelvin (průměrná odchylka)}few{{formattedValue} kelviny (průměrná odchylka)}many{{formattedValue} kelvinu (průměrná odchylka)}other{{formattedValue} kelvinů (průměrná odchylka)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Podpaží"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Prst"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Čelo"</string>
@@ -696,12 +728,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Ucho"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Zápěstí"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Pochva"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Místo měření"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Výchozí"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Odchylka od výchozí teploty"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 míle}few{# míle}many{# míle}other{# mil}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}few{# km}many{# km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 míle}few{# míle}many{# míle}other{# mil}}"</string>
@@ -745,19 +774,19 @@
     <string name="check_for_updates" msgid="3841090978657783101">"Zkontrolovat dostupnost aktualizací"</string>
     <string name="check_for_updates_description" msgid="1347667778199095160">"Ověřte, zda jsou nainstalované aplikace aktuální"</string>
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Zobrazit všechny kompatibilní aplikace"</string>
-    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Najít aplikace na Google Play"</string>
+    <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Projděte si aplikace na Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Odeslat zpětnou vazbu"</string>
     <string name="send_feedback_description" msgid="2887207112856240778">"Sdělte nám, které aplikace pro zdraví a fitness byste se službou Health Connect chtěli používat"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Obchod Play"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Automatické mazání"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Automatické mazání"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Naplánujete smazání svých dat ze služby Health Connect a tím určete, jak dlouho budou uložena"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Můžete naplánovat, jak dlouho mají být data ve službě Health Connect uložena a tím určit, po jaké době se mají smazat"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Další informace o automatickém mazání"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Automatické mazání dat"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Po # měsíci}few{Po # měsících}many{Po # měsíce}other{Po # měsících}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Nikdy"</string>
     <string name="range_off" msgid="8178520557618184215">"Vypnuto"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Když tato nastavení změníte, Health Connect odpovídajícím způsobem smažte stávající data"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Když tato nastavení změníte, Health Connect odpovídajícím způsobem smaže stávající data."</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Automaticky mazat data po # měsíci?}few{Automaticky mazat data po # měsících?}many{Automaticky mazat data po # měsíce?}other{Automaticky mazat data po # měsících?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect automaticky smaže nová data po # měsíci. Nastavením této možnosti se smažou také stávající data starší než # měsíc.}few{Health Connect automaticky smaže nová data po # měsících. Nastavením této možnosti se smažou také stávající data starší než # měsíce.}many{Health Connect automaticky smaže nová data po # měsíce. Nastavením této možnosti se smažou také stávající data starší než # měsíce.}other{Health Connect automaticky smaže nová data po # měsících. Nastavením této možnosti se smažou také stávající data starší než # měsíců.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Nastavit automatické mazání"</string>
@@ -795,10 +824,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Povolit všechny trasy"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nepovolovat"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Vždy povolit"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Sdílení tréninkových tras"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Ovládejte, jak tato aplikace přistupuje k tréninkovým trasám z připojených aplikací"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Přístup k trasám cvičení"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Povolte aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> přístup k trasám"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pokaždé se zeptat"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Nepovolovat"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Nepovolovat"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Povolit oba typy dat?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Zakázat oba typy dat?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> potřebuje přístup ke čtení pro cvičení, aby mohla aktivovat trasy cvičení"</string>
@@ -873,8 +902,8 @@
     <string name="data_totals_header" msgid="8316977153276216025">"Celková data"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Zdroje aplikací"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Přidejte na seznam zdroje aplikací, abyste zjistili, jak se mohou měnit celková data. Když aplikaci odstraníte ze seznamu, přestane přispívat k celkovým údajům, ale nadále bude mít oprávnění k zápisu."</string>
-    <string name="data_sources_empty_state" msgid="1899652759274805556">"Žádné zdroje aplikací"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Jakmile aplikacím udělíte oprávnění k zápisu dat z kategorie <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, zobrazí se zde zdroje."</string>
+    <string name="data_sources_empty_state" msgid="1899652759274805556">"Žádné aplikace"</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Jakmile aplikacím udělíte oprávnění k zápisu dat z kategorie <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, zdroje se zobrazí tady."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Jak fungují zdroje a určování priorit"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Přidat aplikaci"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Upravit zdroje aplikací"</string>
@@ -890,4 +919,19 @@
     <string name="last_month_header" msgid="1359164797239191253">"Minulý měsíc"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Záznamy"</string>
     <string name="tab_access" msgid="7818197975407243701">"Přístup"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Povolit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g> další přístup?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> chce také získat přístup k těmto nastavením Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Pokud pro tuto aplikaci chcete zapnout přístup k datům na pozadí nebo k dřívějším datům, povolte alespoň jedno oprávnění ke čtení"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Pokud pro tuto aplikaci chcete zapnout přístup na pozadí, povolte alespoň jedno oprávnění ke čtení"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Pokud pro tuto aplikaci chcete zapnout přístup k dřívějším datům, povolte alespoň jedno oprávnění ke čtení"</string>
+    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
+    <skip />
+    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
+    <skip />
+    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
+    <skip />
+    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
+    <skip />
+    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
+    <skip />
 </resources>

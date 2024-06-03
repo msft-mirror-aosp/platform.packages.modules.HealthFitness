@@ -45,7 +45,7 @@ class LoadDeclaredHealthPermissionUseCaseTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        whenever(healthPermissionReader.getHealthPermissions(TEST_APP_PACKAGE_NAME)).then {
+        whenever(healthPermissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME)).then {
             emptyList<String>()
         }
     }
@@ -54,6 +54,6 @@ class LoadDeclaredHealthPermissionUseCaseTest {
     fun execute_callsGetHealthPermissions() {
         useCase.invoke(TEST_APP_PACKAGE_NAME)
 
-        verify(healthPermissionReader).getHealthPermissions(safeEq(TEST_APP_PACKAGE_NAME))
+        verify(healthPermissionReader).getDeclaredHealthPermissions(safeEq(TEST_APP_PACKAGE_NAME))
     }
 }

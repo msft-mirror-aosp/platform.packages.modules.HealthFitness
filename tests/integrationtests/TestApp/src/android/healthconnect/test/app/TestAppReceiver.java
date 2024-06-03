@@ -16,8 +16,9 @@
 
 package android.healthconnect.test.app;
 
-import static android.health.connect.datatypes.ActiveCaloriesBurnedRecord.ACTIVE_CALORIES_TOTAL;
+import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 
+import static java.time.temporal.ChronoUnit.HOURS;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
@@ -30,6 +31,7 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.ReadRecordsRequestUsingFilters;
+import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.ReadRecordsResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.changelog.ChangeLogTokenRequest;
@@ -38,11 +40,13 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.ActiveCaloriesBurnedRecord;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.ExerciseSessionRecord;
+import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.Metadata;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.WeightRecord;
-import android.health.connect.datatypes.units.Energy;
 import android.health.connect.datatypes.units.Mass;
 import android.os.Bundle;
 
@@ -56,9 +60,14 @@ import java.util.stream.Collectors;
 public class TestAppReceiver extends BroadcastReceiver {
     public static final String ACTION_INSERT_STEPS_RECORDS = "action.INSERT_STEPS_RECORDS";
     public static final String ACTION_INSERT_WEIGHT_RECORDS = "action.INSERT_WEIGHT_RECORDS";
-    public static final String ACTION_READ_RECORDS_FOR_OTHER_APP =
-            "action.READ_RECORDS_FOR_OTHER_APP";
-    public static final String ACTION_AGGREGATE = "action.AGGREGATE";
+    public static final String ACTION_INSERT_EXERCISE_RECORD = "action.INSERT_EXERCISE_RECORD";
+    public static final String ACTION_INSERT_PLANNED_EXERCISE_RECORD =
+            "action.INSERT_PLANNED_EXERCISE_RECORD";
+    public static final String ACTION_READ_STEPS_RECORDS_USING_FILTERS =
+            "action.READ_STEPS_RECORDS_USING_FILTERS";
+    public static final String ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS =
+            "action.READ_STEPS_RECORDS_USING_RECORD_IDS";
+    public static final String ACTION_AGGREGATE_STEPS_COUNT = "action.AGGREGATE_STEPS_COUNT";
     public static final String ACTION_GET_CHANGE_LOG_TOKEN = "action.GET_CHANGE_LOG_TOKEN";
     public static final String ACTION_GET_CHANGE_LOGS = "action.GET_CHANGE_LOGS";
     public static final String ACTION_RESULT_SUCCESS = "action.SUCCESS";
@@ -79,7 +88,18 @@ public class TestAppReceiver extends BroadcastReceiver {
     /** Represents a list of values in {@code long}. */
     public static final String EXTRA_RECORD_VALUES = "extra.RECORD_VALUES";
 
+    /** Represents a long value. */
+    public static final String EXTRA_RECORD_VALUE = "extra.RECORD_VALUE";
+
+    /** This is used to represent the ID of a training plan completed by an exercise. */
+    public static final String EXTRA_PLANNED_EXERCISE_SESSION_ID =
+            "extra.PLANNED_EXERCISE_SESSION_ID";
+
     public static final String EXTRA_TOKEN = "extra.TOKEN";
+
+    /** Extra for a list of package names. */
+    public static final String EXTRA_PACKAGE_NAMES = "extra.PACKAGE_NAMES";
+
     public static final String EXTRA_SENDER_PACKAGE_NAME = "extra.SENDER_PACKAGE_NAME";
     private static final String TEST_SUITE_RECEIVER =
             "android.healthconnect.cts.utils.TestReceiver";
@@ -93,11 +113,20 @@ public class TestAppReceiver extends BroadcastReceiver {
             case ACTION_INSERT_WEIGHT_RECORDS:
                 insertWeightRecords(context, intent);
                 break;
-            case ACTION_READ_RECORDS_FOR_OTHER_APP:
-                readRecordsForOtherApp(context, intent);
+            case ACTION_INSERT_EXERCISE_RECORD:
+                insertExerciseRecord(context, intent);
                 break;
-            case ACTION_AGGREGATE:
-                aggregate(context, intent);
+            case ACTION_INSERT_PLANNED_EXERCISE_RECORD:
+                insertPlannedExerciseRecord(context, intent);
+                break;
+            case ACTION_READ_STEPS_RECORDS_USING_FILTERS:
+                readStepsRecordsUsingFilters(context, intent);
+                break;
+            case ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS:
+                readStepsRecordsUsingIds(context, intent);
+                break;
+            case ACTION_AGGREGATE_STEPS_COUNT:
+                aggregateStepsCount(context, intent);
                 break;
             case ACTION_GET_CHANGE_LOG_TOKEN:
                 getChangeLogToken(context, intent);
@@ -124,42 +153,71 @@ public class TestAppReceiver extends BroadcastReceiver {
         sendInsertRecordsResult(context, intent, outcome);
     }
 
-    private void readRecordsForOtherApp(Context context, Intent intent) {
-        DefaultOutcomeReceiver<ReadRecordsResponse<ActiveCaloriesBurnedRecord>> outcome =
-                new DefaultOutcomeReceiver<>();
-
+    private static void insertExerciseRecord(Context context, Intent intent) {
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
         getHealthConnectManager(context)
-                .readRecords(
-                        new ReadRecordsRequestUsingFilters.Builder<>(
-                                        ActiveCaloriesBurnedRecord.class)
-                                .addDataOrigins(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(getSenderPackageName(intent))
-                                                .build())
-                                .build(),
+                .insertRecords(
+                        List.of(createExerciseRecord(intent)), newSingleThreadExecutor(), outcome);
+        sendInsertRecordsResult(context, intent, outcome);
+    }
+
+    private static void insertPlannedExerciseRecord(Context context, Intent intent) {
+        DefaultOutcomeReceiver<InsertRecordsResponse> outcome = new DefaultOutcomeReceiver<>();
+        getHealthConnectManager(context)
+                .insertRecords(
+                        List.of(createPlannedExerciseRecord(intent)),
                         newSingleThreadExecutor(),
                         outcome);
+        sendInsertRecordsResult(context, intent, outcome);
+    }
 
+    private void readStepsRecordsUsingFilters(Context context, Intent intent) {
+        DefaultOutcomeReceiver<ReadRecordsResponse<StepsRecord>> outcome =
+                new DefaultOutcomeReceiver<>();
+        ReadRecordsRequestUsingFilters.Builder<StepsRecord> requestBuilder =
+                new ReadRecordsRequestUsingFilters.Builder<>(StepsRecord.class);
+        for (String packageName : getPackageNames(intent)) {
+            requestBuilder.addDataOrigins(
+                    new DataOrigin.Builder().setPackageName(packageName).build());
+        }
+        getHealthConnectManager(context)
+                .readRecords(requestBuilder.build(), newSingleThreadExecutor(), outcome);
         sendReadRecordsResult(context, intent, outcome);
     }
 
-    private void aggregate(Context context, Intent intent) {
-        DefaultOutcomeReceiver<AggregateRecordsResponse<Energy>> outcome =
+    private void readStepsRecordsUsingIds(Context context, Intent intent) {
+        DefaultOutcomeReceiver<ReadRecordsResponse<StepsRecord>> outcome =
+                new DefaultOutcomeReceiver<>();
+        ReadRecordsRequestUsingIds.Builder<StepsRecord> requestBuilder =
+                new ReadRecordsRequestUsingIds.Builder<>(StepsRecord.class);
+        List<String> recordIds = getRecordIds(intent);
+        for (String recordId : recordIds) {
+            requestBuilder.addId(recordId);
+        }
+        getHealthConnectManager(context)
+                .readRecords(requestBuilder.build(), newSingleThreadExecutor(), outcome);
+        sendReadRecordsResult(context, intent, outcome);
+    }
+
+    private void aggregateStepsCount(Context context, Intent intent) {
+        DefaultOutcomeReceiver<AggregateRecordsResponse<Long>> outcome =
                 new DefaultOutcomeReceiver<>();
 
+        AggregateRecordsRequest.Builder<Long> requestBuilder =
+                new AggregateRecordsRequest.Builder<Long>(
+                                new TimeInstantRangeFilter.Builder()
+                                        .setStartTime(Instant.EPOCH)
+                                        .setEndTime(Instant.now().plus(10, HOURS))
+                                        .build())
+                        .addAggregationType(STEPS_COUNT_TOTAL);
+        for (String packageName : getPackageNames(intent)) {
+            requestBuilder.addDataOriginsFilter(
+                    new DataOrigin.Builder().setPackageName(packageName).build());
+        }
         getHealthConnectManager(context)
-                .aggregate(
-                        new AggregateRecordsRequest.Builder<Energy>(
-                                        new TimeInstantRangeFilter.Builder()
-                                                .setEndTime(Instant.now())
-                                                .setStartTime(Instant.now().minusSeconds(10))
-                                                .build())
-                                .addAggregationType(ACTIVE_CALORIES_TOTAL)
-                                .build(),
-                        newSingleThreadExecutor(),
-                        outcome);
+                .aggregate(requestBuilder.build(), newSingleThreadExecutor(), outcome);
 
-        sendResult(context, intent, outcome);
+        sendAggregateStepsResult(context, intent, outcome);
     }
 
     private void getChangeLogToken(Context context, Intent intent) {
@@ -211,7 +269,25 @@ public class TestAppReceiver extends BroadcastReceiver {
         }
 
         final Bundle extras = new Bundle();
-        extras.putInt(EXTRA_RECORD_COUNT, outcome.getResult().getRecords().size());
+        List<? extends Record> records = outcome.getResult().getRecords();
+        extras.putInt(EXTRA_RECORD_COUNT, records.size());
+        extras.putStringArrayList(EXTRA_RECORD_IDS, new ArrayList<>(getRecordIds(records)));
+        sendSuccess(context, intent, extras);
+    }
+
+    private static void sendAggregateStepsResult(
+            Context context,
+            Intent intent,
+            DefaultOutcomeReceiver<? extends AggregateRecordsResponse<Long>> outcome) {
+        final HealthConnectException error = outcome.getError();
+        if (error != null) {
+            sendError(context, intent, error);
+            return;
+        }
+
+        Bundle extras = new Bundle();
+        long stepCounts = outcome.getResult().get(STEPS_COUNT_TOTAL);
+        extras.putLong(EXTRA_RECORD_VALUE, stepCounts);
         sendSuccess(context, intent, extras);
     }
 
@@ -302,6 +378,30 @@ public class TestAppReceiver extends BroadcastReceiver {
         return result;
     }
 
+    private static Record createExerciseRecord(Intent intent) {
+        String trainingPlanId = intent.getStringExtra(EXTRA_PLANNED_EXERCISE_SESSION_ID);
+        ExerciseSessionRecord record =
+                new ExerciseSessionRecord.Builder(
+                                new Metadata.Builder().build(),
+                                getTimes(intent, EXTRA_TIMES).get(0),
+                                getTimes(intent, EXTRA_END_TIMES).get(0),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING)
+                        .setPlannedExerciseSessionId(trainingPlanId)
+                        .build();
+        return record;
+    }
+
+    private static Record createPlannedExerciseRecord(Intent intent) {
+        PlannedExerciseSessionRecord record =
+                new PlannedExerciseSessionRecord.Builder(
+                                new Metadata.Builder().build(),
+                                ExerciseSessionType.EXERCISE_SESSION_TYPE_BIKING,
+                                getTimes(intent, EXTRA_TIMES).get(0),
+                                getTimes(intent, EXTRA_END_TIMES).get(0))
+                        .build();
+        return record;
+    }
+
     private static WeightRecord createWeightRecord(Instant time, String clientId, double weight) {
         return new WeightRecord.Builder(
                         new Metadata.Builder().setClientRecordId(clientId).build(),
@@ -316,7 +416,21 @@ public class TestAppReceiver extends BroadcastReceiver {
                 .collect(Collectors.toList());
     }
 
+    private static List<String> getPackageNames(Intent intent) {
+        List<String> packageNames = intent.getStringArrayListExtra(EXTRA_PACKAGE_NAMES);
+        return packageNames == null ? new ArrayList<>() : packageNames;
+    }
+
+    private static List<String> getRecordIds(Intent intent) {
+        List<String> recordIds = intent.getStringArrayListExtra(EXTRA_RECORD_IDS);
+        return recordIds == null ? new ArrayList<>() : recordIds;
+    }
+
     private static String getSenderPackageName(Intent intent) {
         return intent.getStringExtra(EXTRA_SENDER_PACKAGE_NAME);
+    }
+
+    private static List<String> getRecordIds(List<? extends Record> records) {
+        return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
     }
 }

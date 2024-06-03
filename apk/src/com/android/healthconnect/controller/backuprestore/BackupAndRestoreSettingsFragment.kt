@@ -17,32 +17,154 @@
 package com.android.healthconnect.controller.backuprestore
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.exportimport.ExportStatusPreference
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.exportimport.api.ExportSettings
+import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
+import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.pref
+import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment() {
-    // TODO: b/325914485 - Add proper logging and navigations for the backup and restore settings fragment.
+    // TODO: b/330169060 - Add proper logging for the backup and restore settings fragment.
 
     companion object {
-        const val RECURRING_EXPORT_PREFERENCE_KEY = "recurring_export"
+        const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
+        const val IMPORT_DATA_PREFERENCE_KEY = "import_data"
+        const val EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY = "settings_category"
     }
 
-    private val recurringExportPreference: HealthPreference? by lazy {
-        preferenceScreen.findPreference(RECURRING_EXPORT_PREFERENCE_KEY)
+    private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
+    private val exportStatusViewModel: ExportStatusViewModel by viewModels()
+
+    private val scheduledExportPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
     }
+
+    private val importDataPreference: HealthPreference? by lazy {
+        preferenceScreen.findPreference(IMPORT_DATA_PREFERENCE_KEY)
+    }
+
+    private val settingsCategory: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY)
+    }
+
+    private val dateFormatter: LocalDateTimeFormatter by lazy {
+        LocalDateTimeFormatter(requireContext())
+    }
+
+    private val footerPreference: FooterPreference by pref("backup_restore_footer")
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         setPreferencesFromResource(R.xml.backup_and_restore_settings_screen, rootKey)
 
-        recurringExportPreference?.setOnPreferenceClickListener {
-            findNavController().navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
+        footerPreference.setLearnMoreText(getString(R.string.backup_and_restore_footer_link_text))
+        footerPreference.setLearnMoreAction {
+            DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
+        }
+
+        scheduledExportPreference?.setOnPreferenceClickListener {
+            findNavController()
+                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
             true
+        }
+
+        importDataPreference?.setOnPreferenceClickListener {
+            findNavController()
+                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+            true
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
+            scheduledExportUiStatus ->
+            when (scheduledExportUiStatus) {
+                is ScheduledExportUiStatus.WithData -> {
+                    maybeShowPreviousExportStatus(scheduledExportUiStatus.scheduledExportUiState)
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
+
+        exportSettingsViewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
+            when (exportSettings) {
+                is ExportSettings.WithData -> {
+                    val frequency = exportSettings.frequency
+                    if (frequency == ExportFrequency.EXPORT_FREQUENCY_NEVER) {
+                        scheduledExportPreference?.setOnPreferenceClickListener {
+                            findNavController()
+                                .navigate(
+                                    R.id
+                                        .action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
+                            true
+                        }
+                    } else {
+                        scheduledExportPreference?.setOnPreferenceClickListener {
+                            findNavController()
+                                .navigate(
+                                    R.id
+                                        .action_backupAndRestoreSettingsFragment_to_scheduledExportFragment)
+                            true
+                        }
+                    }
+                    scheduledExportPreference?.summary = buildSummary(frequency)
+                }
+                is ExportSettings.LoadingFailed ->
+                    Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
+                else -> {}
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        exportSettingsViewModel.loadExportSettings()
+    }
+
+    private fun buildSummary(frequency: ExportFrequency): String {
+        val on = getString(R.string.automatic_export_on)
+        val automaticExportStatusId = R.string.automatic_export_status
+        return when (frequency) {
+            ExportFrequency.EXPORT_FREQUENCY_NEVER -> getString(R.string.automatic_export_off)
+            ExportFrequency.EXPORT_FREQUENCY_DAILY ->
+                getString(automaticExportStatusId, on, getString(R.string.frequency_daily))
+            ExportFrequency.EXPORT_FREQUENCY_WEEKLY ->
+                getString(automaticExportStatusId, on, getString(R.string.frequency_weekly))
+            ExportFrequency.EXPORT_FREQUENCY_MONTHLY ->
+                getString(automaticExportStatusId, on, getString(R.string.frequency_monthly))
+        }
+    }
+
+    private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
+        val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
+        if (lastSuccessfulExportTime != null) {
+            val lastExportTime =
+                getString(
+                    R.string.last_export_time,
+                    dateFormatter.formatLongDate(lastSuccessfulExportTime))
+            settingsCategory?.addPreference(
+                ExportStatusPreference(requireContext(), lastExportTime).also { it.order = 1 })
         }
     }
 }

@@ -16,7 +16,7 @@
 package com.android.healthconnect.controller.data.access
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
@@ -45,8 +45,8 @@ constructor(
     ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> =
         withContext(dispatcher) {
             try {
-                val appsWithHealthPermissions: List<String> =
-                    healthPermissionReader.getAppsWithHealthPermissions()
+                val appsWithDataTypePermissions: List<String> =
+                    healthPermissionReader.getAppsWithDataTypePermissions()
                 val contributingApps: List<AppMetadata> =
                     loadPermissionTypeContributorAppsUseCase.invoke(permissionType)
                 val readAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
@@ -54,7 +54,7 @@ constructor(
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
                 val inactiveAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
 
-                appsWithHealthPermissions.forEach {
+                appsWithDataTypePermissions.forEach {
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(it)
 

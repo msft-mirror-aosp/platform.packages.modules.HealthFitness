@@ -17,11 +17,16 @@
 package android.health.connect;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
 
+import static com.android.healthfitness.flags.Flags.FLAG_EXPORT_IMPORT;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+
 import android.Manifest;
 import android.annotation.CallbackExecutor;
+import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
@@ -76,8 +81,14 @@ import android.health.connect.changelog.ChangeLogsRequest;
 import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.datatypes.AggregationType;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
+import android.health.connect.exportimport.ExportImportDocumentProvider;
+import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
+import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
+import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.InternalExternalRecordConverter;
 import android.health.connect.migration.HealthConnectMigrationUiState;
@@ -300,6 +311,30 @@ public class HealthConnectManager {
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
 
     /**
+     * Unknown error during the last data export.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_ERROR_UNKNOWN = 0;
+
+    /**
+     * No error during the last data export.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_ERROR_NONE = 1;
+
+    /**
+     * Indicates that the last export failed because we lost access to the export file location.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_LOST_FILE_ACCESS = 2;
+
+    /**
      * Activity action: Launch activity exported by client application that handles onboarding to
      * Health Connect.
      *
@@ -515,7 +550,12 @@ public class HealthConnectManager {
             // illegal argument exception.
             records.forEach((record) -> record.getMetadata().setId(""));
             List<RecordInternal<?>> recordInternals =
-                    records.stream().map(Record::toRecordInternal).collect(Collectors.toList());
+                    records.stream()
+                            .map(
+                                    record ->
+                                            record.toRecordInternal()
+                                                    .setPackageName(mContext.getPackageName()))
+                            .collect(Collectors.toList());
             mService.insertRecords(
                     mContext.getAttributionSource(),
                     new RecordsParcel(recordInternals),
@@ -527,8 +567,9 @@ public class HealthConnectManager {
                                     () ->
                                             callback.onResult(
                                                     new InsertRecordsResponse(
-                                                            getRecordsWithUids(
-                                                                    records, parcel.getUids()))));
+                                                            toExternalRecordsWithUuids(
+                                                                    recordInternals,
+                                                                    parcel.getUids()))));
                         }
 
                         @Override
@@ -1425,6 +1466,20 @@ public class HealthConnectManager {
     }
 
     /**
+     * Allows setting lower rate limits in tests.
+     *
+     * @hide
+     */
+    @TestApi
+    public void setLowerRateLimitsForTesting(boolean enabled) throws NullPointerException {
+        try {
+            mService.setLowerRateLimitsForTesting(enabled);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Updates the download state of the Health Connect data.
      *
      * <p>The data should've been downloaded and the corresponding download states updated before
@@ -1700,6 +1755,11 @@ public class HealthConnectManager {
         }
     }
 
+    /** @hide */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({DATA_EXPORT_ERROR_UNKNOWN, DATA_EXPORT_ERROR_NONE, DATA_EXPORT_LOST_FILE_ACCESS})
+    public @interface DataExportError {}
+
     /**
      * Configures the settings for the scheduled export of Health Connect data.
      *
@@ -1713,6 +1773,41 @@ public class HealthConnectManager {
     public void configureScheduledExport(@Nullable ScheduledExportSettings settings) {
         try {
             mService.configureScheduledExport(settings, mContext.getUser());
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the document providers available to be used for export/import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void getScheduledExportStatus(
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<ScheduledExportStatus, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.getScheduledExportStatus(
+                    mContext.getUser(),
+                    new IScheduledExportStatusCallback.Stub() {
+                        @Override
+                        public void onResult(ScheduledExportStatus status) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(status));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
@@ -1737,6 +1832,43 @@ public class HealthConnectManager {
             return mService.getScheduledExportPeriodInDays(mContext.getUser());
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the document providers available to be used for export/import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void queryDocumentProviders(
+            @NonNull Executor executor,
+            @NonNull
+                    OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.queryDocumentProviders(
+                    mContext.getUser(),
+                    new IQueryDocumentProvidersCallback.Stub() {
+                        @Override
+                        public void onResult(List<ExportImportDocumentProvider> providers) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(providers));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
         }
     }
 
@@ -1777,10 +1909,14 @@ public class HealthConnectManager {
         };
     }
 
-    private List<Record> getRecordsWithUids(List<Record> records, List<String> uids) {
+    private List<Record> toExternalRecordsWithUuids(
+            List<RecordInternal<?>> recordInternals, List<String> uuids) {
         int i = 0;
-        for (Record record : records) {
-            record.getMetadata().setId(uids.get(i++));
+        List<Record> records = new ArrayList<>();
+
+        for (RecordInternal recordInternal : recordInternals) {
+            recordInternal.setUuid(uuids.get(i++));
+            records.add(recordInternal.toExternalRecord());
         }
 
         return records;
@@ -1880,5 +2016,176 @@ public class HealthConnectManager {
                 executor.execute(() -> callback.onError(exception));
             }
         };
+    }
+
+    /**
+     * Reads {@link MedicalResource}s based on a list of {@link MedicalIdFilter}s.
+     *
+     * <p>Number of resources returned by this API will depend based on below factors:
+     *
+     * <ul>
+     *   <li>When an app with read permissions allowed for the requested IDs but without the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from background then it will be able to read only its own inserted medical resources
+     *       and will not get medical resources inserted by other apps. This may be less than the
+     *       requested size.
+     *   <li>When an app with read permissions allowed for the requested IDs and with the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from background then it will be able to read the medical resources it has read
+     *       permissions for. This has the same size the app can read from foreground.
+     *   <li>When an app with all read permissions allowed for the requested IDs calls the API from
+     *       foreground then it will be able to read all the corresponding medical resources.
+     *   <li>When an app with less read permissions allowed to cover all the requested IDs calls the
+     *       API from foreground then it will be able to read only the medical resources it has read
+     *       permissions for. This may be less than the requested size.
+     *   <li>App with only write permission but no read permission allowed will be able to read only
+     *       its own inserted medical resources both when in foreground or background. This may be
+     *       less than the requested size.
+     *   <li>An app without both read and write permissions will not be able to read any medical
+     *       resources and the API will throw Security Exception.
+     * </ul>
+     *
+     * @param ids Identifiers on which to perform read operation.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if {@code ids} is empty or its size is more than 5000.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void readMedicalResources(
+            @NonNull List<MedicalIdFilter> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+        Objects.requireNonNull(ids);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (ids.size() >= MAXIMUM_PAGE_SIZE) {
+            throw new IllegalArgumentException("Maximum allowed pageSize is " + MAXIMUM_PAGE_SIZE);
+        }
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Reads {@link MedicalResource}s based on given filters in {@link ReadMedicalResourcesRequest}.
+     *
+     * <p>Number of resources returned by this API will depend based on below factors:
+     *
+     * <ul>
+     *   <li>When an app with read permissions allowed for the requested filters but without the
+     *       {@link android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls
+     *       the API from background then it will be able to read only its own inserted medical
+     *       resources and will not get medical resources inserted by other apps. This may be less
+     *       than the size the app can read from foreground.
+     *   <li>When an app with read permissions allowed for the requested filters and with the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from background then it will be able to read all the corresponding medical resources.
+     *       This has the same size the app can read from foreground.
+     *   <li>When an app with the read permissions allowed for the requested filters calls the API
+     *       from foreground then it will be able to read all the corresponding medical resources.
+     *   <li>App with only write permission but no read permission allowed will be able to read only
+     *       its own inserted medical resources both when in foreground or background.
+     *   <li>An app without both read and write permissions will not be able to read any medical
+     *       resources and the API will throw Security Exception.
+     * </ul>
+     *
+     * @param request The read request.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @throws IllegalArgumentException if request page size set is less than 1 or more than 5000 in
+     *     {@link ReadMedicalResourcesRequest}.
+     * @hide
+     */
+    // TODO(b/340569771): Make this flagged Api and add CTS tests.
+    public void readMedicalResources(
+            @NonNull ReadMedicalResourcesRequest request,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Creates a {@link MedicalDataSource} in HealthConnect based on the {@link
+     * CreateMedicalDataSourceRequest} request values.
+     *
+     * <p>A {@link MedicalDataSource} needs to be created before any {@link MedicalResource}s for
+     * that source can be inserted.
+     *
+     * <p>The following rules apply to {@link MedicalDataSource} creation.
+     *
+     * <ul>
+     *   <li>Only apps that have the
+     *       android.health.connect.HealthPermissions#WRITE_MEDICAL_RESOURCES are allowed to create
+     *       data sources.
+     *   <li>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
+     *       all medical data sources created by an app. The FHIR base uri cannot be updated after
+     *       creating the data source.
+     * </ul>
+     *
+     * @param request Creation request.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void createMedicalDataSource(
+            @NonNull CreateMedicalDataSourceRequest request,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<MedicalDataSource, HealthConnectException> callback) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Returns {@link MedicalDataSource}s for the provided list of {@link MedicalDataSource} ids.
+     *
+     * <p>The returned list of data sources will be in the same order as the {@code ids}.
+     *
+     * <p>Number of data sources returned by this API will depend based on below factors:
+     *
+     * <ul>
+     *   <li>If an empty list of {@code ids} is provided, no data sources will be returned.
+     *   <li>When an app with any read permission for medical data but without the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from the background then it will be able to read only its own inserted medical data
+     *       sources and will not get medical data sources inserted by other apps. This may be less
+     *       than the requested size.
+     *   <li>When an app with any read permission for medical data and with the {@link
+     *       android.health.connect.HealthPermissions#READ_HEALTH_DATA_IN_BACKGROUND} calls the API
+     *       from the background then it will be able to read all medical data sources.
+     *   <li>When an app with any read permission for medical data calls the API from the foreground
+     *       then it will be able to read all medical data sources.
+     *   <li>App with only write permission but no read permission allowed will be able to read only
+     *       its own inserted medical data sources both when in foreground or background. This may
+     *       be less than the requested size.
+     *   <li>An app without read or write permissions will not be able to read any medical data
+     *       sources and the API will throw Security Exception.
+     * </ul>
+     *
+     * @param ids Identifiers on which to perform read operation.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void getMedicalDataSources(
+            @NonNull List<String> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalDataSource>, HealthConnectException> callback) {
+        Objects.requireNonNull(ids);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (ids.isEmpty()) {
+            callback.onResult(List.of());
+            return;
+        }
+
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

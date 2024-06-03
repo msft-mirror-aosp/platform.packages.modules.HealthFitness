@@ -27,25 +27,27 @@
     <string name="no_data" msgid="1906986019249068659">"Không có dữ liệu"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Quyền cho ứng dụng"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Quản lý các ứng dụng và quyền"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ứng dụng có quyền truy cập"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>/<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> ứng dụng có quyền truy cập"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ứng dụng có quyền truy cập"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> ứng dụng có quyền truy cập"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ứng dụng có quyền truy cập}other{# ứng dụng có quyền truy cập}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Không có"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Thông tin nhập"</string>
     <string name="backup_title" msgid="211503191266235085">"Sao lưu"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Nguồn dữ liệu và mức độ ưu tiên"</string>
-    <string name="set_units_title" msgid="2657822539603758029">"Cài đặt đơn vị"</string>
+    <string name="set_units_title" msgid="2657822539603758029">"Đặt đơn vị"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Lần truy cập gần đây"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Không có ứng dụng nào truy cập vào Health Connect gần đây"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Xem mọi lần truy cập gần đây"</string>
     <string name="recent_access_screen_description" msgid="331101209889185402">"Xem những ứng dụng nào đã truy cập vào dữ liệu của bạn trong 24 giờ qua"</string>
     <string name="today_header" msgid="1006837293203834373">"Hôm nay"</string>
     <string name="yesterday_header" msgid="6652176268273681505">"Hôm qua"</string>
-    <string name="read_data_access_label" msgid="7145747310980361968">"Đọc: %s"</string>
-    <string name="write_data_access_label" msgid="7955988316773000250">"Ghi: %s"</string>
+    <string name="read_data_access_label" msgid="8968758932021241976">"Đọc: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
+    <string name="write_data_access_label" msgid="105976369853871061">"Ghi: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Quản lý quyền"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Thời gian: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Thời gian: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Hoạt động"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"hoạt động"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Số đo cơ thể"</string>
@@ -81,11 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"truy cập vào dữ liệu sức khoẻ của bạn"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"Đọc dữ liệu về lượng calo đã đốt cháy"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Cho phép ứng dụng đọc dữ liệu về lượng calo đã đốt cháy"</string>
-    <string name="background_read_uppercase_label" msgid="5727643918930403320">"Đọc ở chế độ nền"</string>
-    <string name="background_read_lowercase_label" msgid="2490218479761177680">"đọc ở chế độ nền"</string>
-    <string name="background_read_description" msgid="5263745158443722174">"Đọc dữ liệu sức khoẻ ở chế độ nền"</string>
-    <!-- no translation found for history_read_description (7347109472601749963) -->
-    <skip />
+    <string name="background_read_title" msgid="5061383169517186234">"Truy cập vào dữ liệu ở chế độ nền"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào dữ liệu ở chế độ nền?"</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Cho phép ứng dụng này truy cập vào dữ liệu trên Health Connect khi bạn không dùng ứng dụng"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào dữ liệu trên Health Connect khi bạn không dùng ứng dụng."</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Truy cập vào dữ liệu trước đây"</string>
+    <string name="historic_access_request_title" msgid="4645920231853414742">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào dữ liệu trước đây?"</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Cho phép ứng dụng này truy cập vào dữ liệu trên Health Connect được thêm vào trước <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Cho phép ứng dụng này truy cập vào tất cả dữ liệu trước đây của Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào dữ liệu trên Health Connect được thêm vào trước ngày <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Nếu bạn cho phép, ứng dụng này có thể truy cập vào tất cả dữ liệu trước đây của Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Lượng calo hoạt động đã đốt cháy"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"lượng calo hoạt động đã đốt cháy"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Đọc dữ liệu về lượng calo hoạt động đã đốt cháy"</string>
@@ -258,13 +265,17 @@
     <string name="request_permissions_allow_all" msgid="3419414351406638770">"Cho phép tất cả"</string>
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"Không cho phép"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Chọn dữ liệu bạn muốn ứng dụng này đọc hoặc ghi vào Health Connect"</string>
-    <string name="request_permissions_header_time_frame_desc" msgid="4617392728203291453">"Nếu bạn cấp quyền truy cập đọc, ứng dụng này có thể đọc dữ liệu mới và dữ liệu trong 30 ngày qua"</string>
+    <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Nếu bạn cấp quyền đọc, ứng dụng này có thể đọc dữ liệu mới và dữ liệu trong 30 ngày qua"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Nếu bạn cấp quyền đọc, ứng dụng này có thể đọc dữ liệu mới và dữ liệu trước đây"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào Health Connect?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Bạn có thể tìm hiểu cách <xliff:g id="APP_NAME">%1$s</xliff:g> xử lý dữ liệu của bạn trong <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> của nhà phát triển"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"chính sách quyền riêng tư"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Xoá tất cả các quyền?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Xoá tất cả"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect nữa.\n\nĐiều này không ảnh hưởng đến các quyền khác mà ứng dụng này có thể có, như vị trí, máy ảnh hoặc micrô."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect nữa.\n\nĐiều này không ảnh hưởng đến các quyền khác mà ứng dụng này có thể có, chẳng hạn như camera, micrô hoặc thông tin vị trí."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect được nữa, kể cả dữ liệu nền.\n\nĐiều này không ảnh hưởng đến những quyền khác mà ứng dụng này có thể có (chẳng hạn như quyền truy cập thông tin vị trí, camera hoặc micrô)."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect được nữa.\n\nĐiều này không ảnh hưởng đến những quyền khác mà ứng dụng này có thể có (chẳng hạn như quyền truy cập thông tin vị trí, camera hoặc micrô)."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> sẽ không thể đọc hoặc ghi bất kỳ dữ liệu nào từ Health Connect được nữa, kể cả dữ liệu nền và dữ liệu trước đây.\n\nĐiều này không ảnh hưởng đến những quyền khác mà ứng dụng này có thể có (chẳng hạn như quyền truy cập thông tin vị trí, camera hoặc micrô)."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Đồng thời xoá dữ liệu của <xliff:g id="APP_NAME">%1$s</xliff:g> khỏi Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Ngày tiếp theo"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Ngày đã chọn"</string>
@@ -298,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Quyền truy cập của ứng dụng"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Hiện bạn chưa cài đặt ứng dụng nào tương thích"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Quyền truy cập bổ sung"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Đã xoá các quyền bổ sung của ứng dụng này"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Đã xoá quyền cho ứng dụng"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect đã xoá quyền cho <xliff:g id="APP_DATA_0">%1$s</xliff:g> và <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -309,24 +321,37 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Tôi hiểu"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sao lưu và khôi phục"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Xuất và nhập"</string>
-    <string name="recurring_export" msgid="111638340692746218">"Xuất định kỳ"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Khôi phục dữ liệu"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Tải dữ liệu đã xuất trước đây"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Lần xuất theo lịch"</string>
+    <string name="import_data" msgid="404502315533233094">"Nhập dữ liệu"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Khôi phục dữ liệu từ tệp đã xuất trước đó"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Tính năng xuất giúp bạn lưu dữ liệu của mình để có thể chuyển dữ liệu đó sang chiếc điện thoại mới"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Tìm hiểu thêm"</string>
+    <string name="automatic_export_on" msgid="6972389773963624315">"Đang bật"</string>
+    <string name="automatic_export_off" msgid="3270255845008880841">"Đang tắt"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Chọn tần suất"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Chọn tần suất"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Chọn lưu dữ liệu một lần hoặc thiết lập để tự động lưu định kỳ."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Hằng ngày"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Hằng tuần"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Hằng tháng"</string>
-    <!-- no translation found for export_location_title (9016990510649325641) -->
-    <skip />
+    <string name="export_destination_title" msgid="1434632545224158402">"Chọn nơi xuất"</string>
     <string name="export_encryption_title" msgid="8910343790595514359">"Bật tính năng mã hoá"</string>
     <string name="export_encryption_safety_description" msgid="7873719607220791312">"Dữ liệu cần được mã hoá trước khi lưu. Không một ai, kể cả Google hay Health Connect, có thể truy cập vào dữ liệu đó."</string>
     <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Tạo một mật khẩu để bảo vệ dữ liệu đã mã hoá của bạn. Bạn sẽ cần mật khẩu này để nhập và khôi phục dữ liệu của mình."</string>
     <string name="export_password_hint" msgid="7095895042846772342">"Mật khẩu"</string>
     <string name="export_repeat_password_hint" msgid="6928833895602183194">"Nhập lại mật khẩu"</string>
+    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Mật khẩu không khớp"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Nếu bạn quên mật khẩu và mất điện thoại, Health Connect không thể giúp bạn khôi phục dữ liệu đã lưu."</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"Nhập mật khẩu"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Cần có mật khẩu mã hoá để nhập dữ liệu của bạn trên Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Bạn quên mật khẩu?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Mật khẩu"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Nếu vẫn còn chiếc điện thoại cũ, bạn có thể dùng mật khẩu mới để xuất lại dữ liệu"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Quay lại"</string>
     <string name="export_next_button" msgid="657930567137105172">"Tiếp theo"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Huỷ"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Tiếp theo"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Nhập từ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Làm quen với Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect lưu trữ dữ liệu về sức khoẻ và hoạt động thể dục của bạn, qua đó mang lại cho bạn một cách đơn giản để đồng bộ hoá nhiều ứng dụng trên điện thoại"</string>
     <string name="share_data" msgid="3481932156368883946">"Chia sẻ dữ liệu với ứng dụng"</string>
@@ -336,6 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Quay lại"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Bắt đầu"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Xoá dữ liệu"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Vào chế độ xoá"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Thoát khỏi chế độ xoá"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Chọn dữ liệu cần xoá"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Tiếp theo"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Thao tác này sẽ xoá vĩnh viễn tất cả dữ liệu được thêm vào Health Connect trong khoảng thời gian đã chọn"</string>
@@ -394,6 +421,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/giờ}other{# km/giờ}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 dặm/giờ}other{# dặm/giờ}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilomet/giờ}other{# kilomet/giờ}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/dặm"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/dặm"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/km"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/100 mét"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/100 yard"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> phút/100 mét"</string>
     <string name="time_range_long" msgid="5067423945245490288">"từ <xliff:g id="START_TIME">%1$s</xliff:g> đến <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"từ <xliff:g id="START_TIME">%1$s</xliff:g> đến <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 lần đẩy xe lăn}other{# lần đẩy xe lăn}}"</string>
@@ -419,6 +454,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Không xác định được"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 mili giây}other{# mili giây}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 mili giây}other{# mili giây}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Ghi chú"</string>
+    <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 lần}other{# lần}}"</string>
+    <string name="active_calories_burned" msgid="1164230083046893828">"Lượng calo đã đốt cháy hiện tại: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
+    <string name="total_calories_burned" msgid="1674210345283541450">"Tổng lượng calo đã đốt cháy: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
+    <string name="amrap_performance_goal" msgid="2225285957050151025">"Nhiều lần thực hiện nhất có thể"</string>
+    <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Mức nỗ lực: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 lần lặp lại}other{# lần lặp lại}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 lần lặp lại}other{# lần lặp lại}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Phân đoạn bài tập"</string>
@@ -656,36 +698,24 @@
     <string name="pounds_long_label" msgid="2916697485006416419">"{count,plural, =1{1 pao}other{# pao}}"</string>
     <string name="stone_long_label" msgid="8951426283449456468">"{count,plural, =1{1 xtôn}other{# xtôn}}"</string>
     <string name="stone_pound_long_label" msgid="1308941435682625204">"{stone_part} {pound_part}"</string>
-    <string name="temperature_celsius" msgid="4552465686251118136">"{value,plural, =1{1℃}other{#℃}}"</string>
+    <string name="temperature_celsius" msgid="8867121728397270787">"{value,plural, =1{1℃}other{#℃}}"</string>
     <string name="temperature_celsius_long" msgid="5789974427381333869">"{value,plural, =1{1 độ C}other{# độ C}}"</string>
-    <string name="temperature_kelvin" msgid="4805698375607189394">"{value,plural, =1{1 K}other{# K}}"</string>
+    <string name="temperature_kelvin" msgid="358565033091774943">"{value,plural, =1{1°K}other{#°K}}"</string>
     <string name="temperature_kelvin_long" msgid="6078037481989090665">"{value,plural, =1{1 kelvin}other{# kelvin}}"</string>
-    <string name="temperature_fahrenheit" msgid="8288674479506567057">"{value,plural, =1{1℉}other{#℉}}"</string>
+    <string name="temperature_fahrenheit" msgid="4907172619457051144">"{value,plural, =1{1℉}other{#℉}}"</string>
     <string name="temperature_fahrenheit_long" msgid="1668948424411289521">"{value,plural, =1{1 độ F}other{# độ F}}"</string>
-    <!-- no translation found for temperatureDelta_celsius (4027139004654243248) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_celsius_long (2696479973655631256) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit (3958333818549407912) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_fahrenheit_long (6245718323010730238) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin (8956765298317364018) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_kelvin_long (2778664973816301780) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius (4396290848174994509) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_celsius_long (2706133487120358878) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit (2033143518773987747) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_fahrenheit_long (4931676720311048821) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin (6068752736609778866) -->
-    <skip />
-    <!-- no translation found for temperatureDelta_average_kelvin_long (9202084701113373151) -->
-    <skip />
+    <string name="temperatureDelta_celsius" msgid="4715618675614337612">"{value,plural, =1{{formattedValue}℃}other{{formattedValue}℃}}"</string>
+    <string name="temperatureDelta_celsius_long" msgid="2696479973655631256">"{value,plural, =1{{formattedValue} độ C}other{{formattedValue} độ C}}"</string>
+    <string name="temperatureDelta_fahrenheit" msgid="4888310106252786060">"{value,plural, =1{{formattedValue}℉}other{{formattedValue}℉}}"</string>
+    <string name="temperatureDelta_fahrenheit_long" msgid="6245718323010730238">"{value,plural, =1{{formattedValue} độ F}other{{formattedValue} độ F}}"</string>
+    <string name="temperatureDelta_kelvin" msgid="3417124829968605912">"{value,plural, =1{{formattedValue}°K}other{{formattedValue}°K}}"</string>
+    <string name="temperatureDelta_kelvin_long" msgid="2778664973816301780">"{value,plural, =1{{formattedValue} độ K}other{{formattedValue} độ K}}"</string>
+    <string name="temperatureDelta_average_celsius" msgid="8285198789751919796">"{value,plural, =1{{formattedValue}℃ (dao động trung bình)}other{{formattedValue}℃ (dao động trung bình)}}"</string>
+    <string name="temperatureDelta_average_celsius_long" msgid="2706133487120358878">"{value,plural, =1{{formattedValue} độ C (chênh lệch trung bình)}other{{formattedValue} độ C (chênh lệch trung bình)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit" msgid="1610634095789007598">"{value,plural, =1{{formattedValue}℉ (dao động trung bình)}other{{formattedValue}℉ (dao động trung bình)}}"</string>
+    <string name="temperatureDelta_average_fahrenheit_long" msgid="4931676720311048821">"{value,plural, =1{{formattedValue} độ F (chênh lệch trung bình)}other{{formattedValue} độ F (chênh lệch trung bình)}}"</string>
+    <string name="temperatureDelta_average_kelvin" msgid="3525443354201467789">"{value,plural, =1{{formattedValue}°K (dao động trung bình)}other{{formattedValue}°K (dao động trung bình)}}"</string>
+    <string name="temperatureDelta_average_kelvin_long" msgid="9202084701113373151">"{value,plural, =1{{formattedValue} độ K (chênh lệch trung bình)}other{{formattedValue} độ K (chênh lệch trung bình)}}"</string>
     <string name="temperature_location_armpit" msgid="8359661261125563155">"Nách"</string>
     <string name="temperature_location_finger" msgid="4915449065770967487">"Ngón tay"</string>
     <string name="temperature_location_forehead" msgid="8603219464757434635">"Trán"</string>
@@ -696,12 +726,9 @@
     <string name="temperature_location_ear" msgid="7024374111156026034">"Tai"</string>
     <string name="temperature_location_wrist" msgid="5290446688282752346">"Cổ tay"</string>
     <string name="temperature_location_vagina" msgid="1689485374825231749">"Âm đạo"</string>
-    <!-- no translation found for skin_temperature_measurement_location_title (3801036455392782236) -->
-    <skip />
-    <!-- no translation found for skin_temperature_baseline_title (1883615483694543696) -->
-    <skip />
-    <!-- no translation found for skin_temperature_delta_details_heading (7789483766417087430) -->
-    <skip />
+    <string name="skin_temperature_measurement_location_title" msgid="3801036455392782236">"Vị trí đo"</string>
+    <string name="skin_temperature_baseline_title" msgid="1883615483694543696">"Giá trị cơ sở"</string>
+    <string name="skin_temperature_delta_details_heading" msgid="7789483766417087430">"Chênh lệch so với giá trị cơ sở"</string>
     <string name="distance_miles" msgid="5419172432458896478">"{dist,plural, =1{1 dặm}other{# dặm}}"</string>
     <string name="distance_km" msgid="6383736895665100602">"{dist,plural, =1{1 km}other{# km}}"</string>
     <string name="distance_miles_long" msgid="1830844568614100885">"{dist,plural, =1{1 dặm}other{# dặm}}"</string>
@@ -757,7 +784,7 @@
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{Sau # tháng}other{Sau # tháng}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Không bao giờ"</string>
     <string name="range_off" msgid="8178520557618184215">"Đang tắt"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Khi bạn thay đổi những chế độ cài đặt này, Health Connect sẽ xoá dữ liệu hiện có để phản ánh các lựa chọn ưu tiên mới của bạn"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Khi bạn thay đổi những chế độ cài đặt này, Health Connect sẽ xoá dữ liệu hiện có dựa trên các lựa chọn ưu tiên mới của bạn"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Tự động xoá dữ liệu sau # tháng?}other{Tự động xoá dữ liệu sau # tháng?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect sẽ tự động xoá dữ liệu mới sau # tháng. Chế độ cài đặt này cũng sẽ xoá dữ liệu hiện có đã lưu hơn # tháng.}other{Health Connect sẽ tự động xoá dữ liệu mới sau # tháng. Chế độ cài đặt này cũng sẽ xoá dữ liệu hiện có đã lưu hơn # tháng.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Thiết lập tính năng xoá tự động"</string>
@@ -795,10 +822,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Cho phép tất cả lộ trình"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Không cho phép"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Luôn cho phép"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Chia sẻ lộ trình tập luyện"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Kiểm soát cách ứng dụng này truy cập vào lộ trình tập luyện từ các ứng dụng đã kết nối"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Truy cập vào các lộ trình tập luyện"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Cho phép <xliff:g id="APP_NAME">%1$s</xliff:g> truy cập vào các lộ trình"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Luôn hỏi"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Không cho phép"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Không cho phép"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Bật quyền truy cập cả hai loại dữ liệu?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Tắt quyền truy cập cả hai loại dữ liệu?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> cần quyền đọc dữ liệu tập thể dục để bật lộ trình tập thể dục"</string>
@@ -890,4 +917,14 @@
     <string name="last_month_header" msgid="1359164797239191253">"Tháng trước"</string>
     <string name="tab_entries" msgid="3402700951602029493">"Mục nhập"</string>
     <string name="tab_access" msgid="7818197975407243701">"Quyền truy cập"</string>
+    <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Cấp thêm quyền cho <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> cũng muốn truy cập vào các chế độ cài đặt này trên Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Cần cấp ít nhất một quyền đọc để bật quyền truy cập khi ở nền sau hoặc quyền truy cập vào dữ liệu trước đây của ứng dụng"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Cần cấp ít nhất một quyền đọc để bật quyền truy cập khi ở nền sau của ứng dụng"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Cần cấp ít nhất một quyền đọc để bật quyền truy cập vào dữ liệu trước đây của ứng dụng"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Bạn muốn xoá vĩnh viễn toàn bộ dữ liệu khỏi Health Connect?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Bạn muốn xoá vĩnh viễn dữ liệu đã chọn khỏi Health Connect?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Đã xoá toàn bộ dữ liệu"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Đã xoá dữ liệu về <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Đã xoá <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> mục"</string>
 </resources>

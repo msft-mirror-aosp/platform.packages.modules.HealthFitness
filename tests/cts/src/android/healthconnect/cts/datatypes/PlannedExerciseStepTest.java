@@ -177,6 +177,42 @@ public class PlannedExerciseStepTest {
         assertThat(builder.clearPerformanceGoals().build().getPerformanceGoals()).isEmpty();
     }
 
+    @Test
+    public void getCompletionGoal() {
+        PlannedExerciseStep.Builder builder =
+                new PlannedExerciseStep.Builder(
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+
+        assertThat(builder.build().getCompletionGoal())
+                .isEqualTo(new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+    }
+
+    @Test
+    public void getExerciseType() {
+        PlannedExerciseStep.Builder builder =
+                new PlannedExerciseStep.Builder(
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+
+        assertThat(builder.build().getExerciseType())
+                .isEqualTo(ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING);
+    }
+
+    @Test
+    public void getExerciseCategory() {
+        PlannedExerciseStep.Builder builder =
+                new PlannedExerciseStep.Builder(
+                        ExerciseSessionType.EXERCISE_SESSION_TYPE_BOXING,
+                        PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE,
+                        new ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(100)));
+
+        assertThat(builder.build().getExerciseCategory())
+                .isEqualTo(PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void addingMultiplePerformanceGoalsOfSameType_throwsIllegalArgumentException() {
         PlannedExerciseStep.Builder builder =

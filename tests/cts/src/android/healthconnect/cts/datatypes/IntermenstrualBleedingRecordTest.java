@@ -91,9 +91,10 @@ public class IntermenstrualBleedingRecordTest {
     @Test
     public void testReadIntermenstrualBleedingRecord_usingIds() throws InterruptedException {
         List<Record> recordList =
-                Arrays.asList(
-                        getCompleteIntermenstrualBleedingRecord(),
-                        getCompleteIntermenstrualBleedingRecord());
+                TestUtils.insertRecords(
+                        Arrays.asList(
+                                getCompleteIntermenstrualBleedingRecord(),
+                                getCompleteIntermenstrualBleedingRecord()));
         readIntermenstrualBleedingRecordUsingIds(recordList);
     }
 
@@ -416,7 +417,13 @@ public class IntermenstrualBleedingRecordTest {
                         .addRecordType(IntermenstrualBleedingRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     @Test
@@ -542,9 +549,8 @@ public class IntermenstrualBleedingRecordTest {
         readIntermenstrualBleedingRecordUsingIds(insertedRecords);
     }
 
-    private void readIntermenstrualBleedingRecordUsingIds(List<Record> recordList)
+    private void readIntermenstrualBleedingRecordUsingIds(List<Record> insertedRecords)
             throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<IntermenstrualBleedingRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(IntermenstrualBleedingRecord.class);
         for (Record record : insertedRecords) {
