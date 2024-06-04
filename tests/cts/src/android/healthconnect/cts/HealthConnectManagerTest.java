@@ -32,6 +32,8 @@ import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
+import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
 import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -53,6 +55,7 @@ import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.AggregateRecordsResponse;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -1902,6 +1905,13 @@ public class HealthConnectManagerTest {
         }
 
         verifyRecordTypeResponse(response, expectedResponseMap);
+    }
+
+    @Test
+    public void testCreateMedicalDataSource_throws() throws InterruptedException {
+        CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
+
+        assertThrows(UnsupportedOperationException.class, () -> createMedicalDataSource(request));
     }
 
     @Test

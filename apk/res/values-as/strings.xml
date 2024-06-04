@@ -324,7 +324,7 @@
     <string name="scheduled_export" msgid="8737660963687364370">"সময়সূচী নিৰ্ধাৰিত ৰপ্তানি"</string>
     <string name="import_data" msgid="404502315533233094">"ডেটা আমদানি কৰক"</string>
     <string name="import_data_description" msgid="4040178599441724296">"পূৰ্বতে ৰপ্তানি কৰা ফাইলৰ পৰা ডেটা পুনঃস্থাপন কৰক"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ৰপ্তানিয়ে আপোনাক আপোনাৰ ডেটা ছেভ কৰিবলৈ দিয়ে যাতে আপুনি সেয়া কোনো নতুন ফ’নলৈ স্থানান্তৰ কৰিব পাৰে"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ৰপ্তানিয়ে আপোনাক নিজৰ ডেটা ছেভ কৰিবলৈ দিয়ে যাতে আপুনি সেয়া কোনো নতুন ফ’নলৈ স্থানান্তৰ কৰিব পাৰে"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"অধিক জানক"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"অন আছে"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"অফ আছে"</string>

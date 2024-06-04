@@ -322,7 +322,7 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pravljenje rezervnih kopija i vraćanje"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Uvoz i izvoz"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
-    <string name="import_data" msgid="404502315533233094">"Uvezi podatke"</string>
+    <string name="import_data" msgid="404502315533233094">"Uvoz podataka"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Vratite podatke iz prethodno izvezenog fajla"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Izvoz vam omogućava da sačuvate podatke kako biste mogli da ih prebacite na novi telefon"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Saznajte više"</string>

@@ -323,7 +323,7 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Invoer en uitvoer"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Geskeduleerde uitvoer"</string>
     <string name="import_data" msgid="404502315533233094">"Voer data in"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Herstel data van ’n voorheen uitgevoerde lêer af"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Stel data van ’n voorheen uitgevoerde lêer in"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Met uitvoer kan jy jou data stoor sodat jy dit na ’n nuwe foon kan oordra"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Meer inligting"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>

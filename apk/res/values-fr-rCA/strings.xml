@@ -343,7 +343,7 @@
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Les mots de passe ne correspondent pas"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Connexion santé ne peut pas vous aider à récupérer vos données enregistrées."</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Entrer le mot de passe"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Votre mot de passe de chiffrement est nécessaire pour importer vos données Connexion santé"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Votre mot de passe chiffré est nécessaire pour importer vos données Connexion santé"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Mot de passe oublié?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Mot de passe"</string>
     <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Si vous avez toujours votre ancien téléphone, vous pouvez exporter vos données à nouveau à l\'aide d\'un nouveau mot de passe"</string>

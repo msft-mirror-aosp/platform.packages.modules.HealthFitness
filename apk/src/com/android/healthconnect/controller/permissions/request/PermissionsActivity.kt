@@ -46,6 +46,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +65,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+
+    @Inject lateinit var featureUtils: FeatureUtils
 
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 
@@ -121,24 +124,34 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
         requestPermissionsViewModel.healthPermissionsList.observe(this) { allPermissions ->
+            val medicalPermissions =
+                allPermissions.filterIsInstance<HealthPermission.MedicalPermission>()
             val dataTypePermissions =
                 allPermissions.filterIsInstance<HealthPermission.DataTypePermission>()
             val additionalPermissions =
                 allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
+            val noMedicalRequest = medicalPermissions.isEmpty()
+            val noDataTypeRequest = dataTypePermissions.isEmpty()
+            val noAdditionalRequest = additionalPermissions.isEmpty()
 
             // Case 1 - no permissions
-            if (dataTypePermissions.isEmpty() && additionalPermissions.isEmpty()) {
+            if (noMedicalRequest && noDataTypeRequest && noAdditionalRequest) {
                 requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
                 handlePermissionResults()
             }
 
-            // Case 2 - just data type permissions
-            else if (additionalPermissions.isEmpty()) {
+            // Case 2 - just medical permissions
+            else if (noDataTypeRequest && noAdditionalRequest) {
+                showFragment(MedicalPermissionsFragment())
+            }
+
+            // Case 3 - just data type permissions
+            else if (noMedicalRequest && noAdditionalRequest) {
                 showFragment(DataTypePermissionsFragment())
             }
 
-            // Case 3 - just additional permissions
-            else if (dataTypePermissions.isEmpty()) {
+            // Case 4 - just additional permissions
+            else if (noMedicalRequest && noDataTypeRequest) {
                 if (!requestPermissionsViewModel.isAnyReadPermissionGranted()) {
                     Log.e(
                         TAG,
@@ -151,9 +164,38 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 showFragment(AdditionalPermissionsFragment())
             }
 
-            // Case 4 - combined permissions
-            else {
+            // Case 5 - medical and data type
+            else if (noAdditionalRequest) {
+                if (!requestPermissionsViewModel.isMedicalPermissionRequestConcluded()) {
+                    showFragment(MedicalPermissionsFragment())
+                } else {
+                    showFragment(DataTypePermissionsFragment())
+                }
+            }
+
+            // Case 6 - medical and additional
+            else if (noDataTypeRequest) {
+                if (!requestPermissionsViewModel.isMedicalPermissionRequestConcluded()) {
+                    showFragment(MedicalPermissionsFragment())
+                } else {
+                    showFragment(AdditionalPermissionsFragment())
+                }
+            }
+
+            // Case 7 - data type and additional
+            else if (noMedicalRequest) {
                 if (!requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
+                    showFragment(DataTypePermissionsFragment())
+                } else {
+                    showFragment(AdditionalPermissionsFragment())
+                }
+            }
+
+            // Case 8 - all three combined
+            else {
+                if (!requestPermissionsViewModel.isMedicalPermissionRequestConcluded()) {
+                    showFragment(MedicalPermissionsFragment())
+                } else if (!requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
                     showFragment(DataTypePermissionsFragment())
                 } else {
                     // After configuration change

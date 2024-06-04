@@ -323,7 +323,7 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporter et importer"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportation programmée"</string>
     <string name="import_data" msgid="404502315533233094">"Importer les données"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Restaurer les données d\'un fichier précédemment exporté"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Restaurez les données d\'un fichier précédemment exporté"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"L\'exportation vous permet d\'enregistrer vos données afin que vous puissiez les transférer sur un nouveau téléphone"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"En savoir plus"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activé"</string>

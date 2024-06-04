@@ -322,7 +322,7 @@
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ബാക്കപ്പ് ചെയ്ത് പുനഃസ്ഥാപിക്കൂ"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"എക്‌സ്‌പോർട്ട് ചെയ്യൂ, ഇമ്പോർട്ട് ചെയ്യൂ"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ഷെഡ്യൂൾ ചെയ്ത എക്‌സ്‌പോർട്ട്"</string>
-    <string name="import_data" msgid="404502315533233094">"ഡാറ്റ ഇംപോർട്ട് ചെയ്യുക"</string>
+    <string name="import_data" msgid="404502315533233094">"ഡാറ്റ ഇമ്പോർട്ട് ചെയ്യുക"</string>
     <string name="import_data_description" msgid="4040178599441724296">"മുമ്പ് എക്‌സ്‌പോർട്ട് ചെയ്ത ഫയലിൽ നിന്ന് ഡാറ്റ പുനഃസ്ഥാപിക്കുക"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ഡാറ്റ സംരക്ഷിക്കാൻ \'എക്‌സ്‌പോർട്ട് ചെയ്യുക\' നിങ്ങളെ അനുവദിക്കുന്നതിനാൽ നിങ്ങൾക്കത് ഒരു പുതിയ ഫോണിലേക്ക് കൈമാറാനാകും"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"കൂടുതലറിയുക"</string>
@@ -351,7 +351,7 @@
     <string name="export_next_button" msgid="657930567137105172">"അടുത്തത്"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"റദ്ദാക്കുക"</string>
     <string name="import_next_button" msgid="5706322508691854289">"അടുത്തത്"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"ഇനിപ്പറയുന്നതിൽ നിന്ന് ഇമ്പോർട്ടുചെയ്യുക"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ഇനിപ്പറയുന്നതിൽ നിന്ന് ഇമ്പോർട്ട് ചെയ്യൂ"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ഉപയോഗിച്ച് തുടങ്ങൂ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"നിങ്ങളുടെ ആരോഗ്യവും ഫിറ്റ്‌നസും സംബന്ധിച്ച ഡാറ്റ Health Connect സംഭരിക്കുന്നു, ഇതിലൂടെ നിങ്ങളുടെ ഫോണിലെ വ്യത്യസ്ത ആപ്പുകൾ എളുപ്പത്തിൽ സമന്വയിപ്പിക്കാനാകും"</string>
     <string name="share_data" msgid="3481932156368883946">"നിങ്ങളുടെ ആപ്പുകളുമായി ഡാറ്റ പങ്കിടുക"</string>

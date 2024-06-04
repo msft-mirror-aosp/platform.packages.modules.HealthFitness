@@ -361,10 +361,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Επιστροφή"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Έναρξη"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Διαγραφή δεδομένων"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Έναρξη διαγραφής"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Έξοδος από τη διαγραφή"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Επιλογή δεδομένων για διαγραφή"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Επόμενο"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Αυτή η ενέργεια διαγράφει όλα τα δεδομένα που έχουν προστεθεί στο Health Connect την επιλεγμένη χρονική περίοδο"</string>
@@ -924,14 +922,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Ενεργοποιήστε τουλάχιστον μία άδεια ανάγνωσης ώστε να ενεργοποιηθεί η πρόσβαση σε δεδομένα παρασκηνίου ή σε παλαιότερα δεδομένα για αυτή την εφαρμογή"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Ενεργοποιήστε τουλάχιστον μία άδεια ανάγνωσης ώστε να ενεργοποιηθεί η πρόσβαση στο παρασκήνιο για αυτή την εφαρμογή"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Ενεργοποιήστε τουλάχιστον μία άδεια ανάγνωσης ώστε να ενεργοποιηθεί η πρόσβαση σε παλαιότερα δεδομένα για αυτή την εφαρμογή"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Οριστική διαγραφή όλων των δεδομένων από το Health Connect;"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Οριστική διαγραφή των επιλεγμένων δεδομένων από το Health Connect;"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Διαγράφηκαν όλα τα δεδομένα"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> δεδομένα διαγράφηκαν"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> στοιχεία διαγράφηκαν"</string>
 </resources>

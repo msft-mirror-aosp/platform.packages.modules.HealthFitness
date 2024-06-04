@@ -323,8 +323,8 @@
     <string name="export_and_import_title" msgid="3241901922222465397">"Dışa aktarma ve içe aktarma"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Programlanmış dışa aktarma işlemi"</string>
     <string name="import_data" msgid="404502315533233094">"Verileri içe aktar"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Daha önce dışa aktarılmış bir dosyadaki verileri geri yükleyin"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma işlevi verilerinizi yeni bir telefona aktarabilmeniz için kaydetmenize olanak tanır"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Daha önce dışa aktarılan bir dosyadaki verileri geri yükleyin"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Daha fazla bilgi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Açık"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Kapalı"</string>
@@ -343,15 +343,15 @@
     <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Şifreler eşleşmiyor"</string>
     <string name="export_encryption_warning" msgid="664340221905199521">"Şifrenizi unutursanız ve telefonunuzu kaybederseniz Health Connect, kayıtlı verilerinizi kurtarmanıza yardımcı olamaz."</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Şifreyi yazın"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect verilerinizi içe aktarabilmek için şifreleme şifreniz gerekir"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect verilerinizi içe aktarmak için şifreleme sürecinde kullandığınız şifre gerekir"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Şifreyi mi unuttunuz?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Şifre"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Hâlâ eski telefonunuzu kullanıyorsanız yeni bir şifreyle verilerinizi yeniden dışa aktarabilirsiniz"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Eski telefonunuzu kullanmaya devam ediyorsanız verilerinizi yeni bir şifreyle tekrar dışa aktarabilirsiniz"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"İptal"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Sonraki"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Şu konumdan içe aktarın:"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Şuradan içe aktar:"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>

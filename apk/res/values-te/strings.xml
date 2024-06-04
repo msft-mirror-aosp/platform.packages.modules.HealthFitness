@@ -324,7 +324,7 @@
     <string name="scheduled_export" msgid="8737660963687364370">"షెడ్యూల్ చేయబడిన ఎగుమతి"</string>
     <string name="import_data" msgid="404502315533233094">"డేటాను దిగుమతి చేయండి"</string>
     <string name="import_data_description" msgid="4040178599441724296">"మునుపు ఎగుమతి చేసిన ఫైల్ నుండి డేటాను రీస్టోర్ చేయండి"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ఎగుమతి చేయడం అనేది మీ డేటాను సేవ్ చేయడానికి మిమ్మల్ని అనుమతిస్తుంది కాబట్టి మీరు దాన్ని కొత్త ఫోన్‌ను బదిలీ చేయవచ్చు"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ఎగుమతి (ఎక్స్‌పోర్ట్), మీ డేటాను సేవ్ చేయడానికి అనుమతిస్తుంది, తద్వారా మీరు ఆ డేటాను కొత్త ఫోన్‌కు బదిలీ చేయవచ్చు"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"మరింత తెలుసుకోండి"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ఆన్‌లో ఉంది"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ఆఫ్‌లో ఉంది"</string>

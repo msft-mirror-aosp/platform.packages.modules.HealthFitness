@@ -324,7 +324,7 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Esportazio programatua"</string>
     <string name="import_data" msgid="404502315533233094">"Inportatu datuak"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Leheneratu aurrez esportatutako fitxategi bateko datuak"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportatzeak datuak gordetzeko aukera ematen dizu, telefono berri batera transferitu ahal izateko"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Esportatzeak datuak gordetzeko aukera ematen dizu, beste telefono batera transferitu ahal izateko"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Lortu informazio gehiago"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktibatuta"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Desaktibatuta"</string>

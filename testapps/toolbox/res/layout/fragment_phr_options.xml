@@ -23,7 +23,8 @@ android:orientation="vertical">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -40,6 +41,22 @@ android:orientation="vertical">
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
             android:text="@string/phr_options_read_immunizations" />
+
+        <Button
+            android:id="@+id/phr_request_read_immunization_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_request_immunization" />
+
+        <Button
+            android:id="@+id/phr_request_read_and_write_medical_data_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_request_medical" />
 
         <Button
             android:id="@+id/phr_seed_fhir_jsons_button"

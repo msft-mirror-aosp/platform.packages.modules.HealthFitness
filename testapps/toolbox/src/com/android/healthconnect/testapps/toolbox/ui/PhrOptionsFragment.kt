@@ -25,10 +25,14 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.asOutcomeReceiver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.READ_IMMUNIZATION
 import com.android.healthconnect.testapps.toolbox.R
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.requireSystemService
 import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils.Companion.showMessageDialog
@@ -38,8 +42,46 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
+    private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private val healthConnectManager: HealthConnectManager by lazy {
         requireContext().requireSystemService()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Starting API Level 30 If permission is denied more than once, user doesn't see the dialog
+        // asking permissions again unless they grant the permission from settings.
+        mRequestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                permissionMap: Map<String, Boolean> ->
+                requestPermissionResultHandler(permissionMap)
+            }
+    }
+
+    private fun requestPermissionResultHandler(permissionMap: Map<String, Boolean>) {
+        var numberOfPermissionsMissing = MEDICAL_PERMISSIONS.size
+        for (value in permissionMap.values) {
+            if (value) {
+                numberOfPermissionsMissing--
+            }
+        }
+
+        if (numberOfPermissionsMissing == 0) {
+            Toast.makeText(
+                    this.requireContext(),
+                    R.string.all_medical_permissions_success,
+                    Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            Toast.makeText(
+                    this.requireContext(),
+                    getString(
+                        R.string.number_of_medical_permissions_not_granted,
+                        numberOfPermissionsMissing),
+                    Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,6 +94,14 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
             loadAllFhirJSONs()
         }
+
+        view.requireViewById<Button>(R.id.phr_request_read_immunization_button).setOnClickListener {
+            requestReadImmunizationPermission()
+        }
+
+        view
+            .requireViewById<Button>(R.id.phr_request_read_and_write_medical_data_button)
+            .setOnClickListener { requestMedicalPermissions() }
     }
 
     private fun executeAndShowMessage(block: suspend () -> String) {
@@ -86,9 +136,7 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         val jsonFiles = listFhirJSONFiles(requireContext())
         if (jsonFiles == null) {
             Log.e("loadAllFhirJSONs", "No JSON files were found.")
-            Toast.makeText(
-                context, "No JSON files were found.", Toast.LENGTH_SHORT)
-                    .show()
+            Toast.makeText(context, "No JSON files were found.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -111,8 +159,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         } catch (e: IOException) {
             Log.e("listFhirJSONFiles", "Error listing assets in path $path: $e")
             Toast.makeText(
-                context, "Error listing JSON files: ${e.localizedMessage}", Toast.LENGTH_SHORT)
-                    .show()
+                    context, "Error listing JSON files: ${e.localizedMessage}", Toast.LENGTH_SHORT)
+                .show()
             null
         }
     }
@@ -127,8 +175,8 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         } catch (e: IOException) {
             Log.e("loadJSONFromAsset", "Error reading JSON file: $e")
             Toast.makeText(
-                context, "Error reading JSON file: ${e.localizedMessage}", Toast.LENGTH_SHORT)
-                    .show()
+                    context, "Error reading JSON file: ${e.localizedMessage}", Toast.LENGTH_SHORT)
+                .show()
             null
         }
     }
@@ -139,5 +187,13 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         builder.setPositiveButton(android.R.string.ok) { _, _ -> }
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()
+    }
+
+    private fun requestReadImmunizationPermission() {
+        mRequestPermissionLauncher.launch(arrayOf(READ_IMMUNIZATION))
+    }
+
+    private fun requestMedicalPermissions() {
+        mRequestPermissionLauncher.launch(MEDICAL_PERMISSIONS)
     }
 }
