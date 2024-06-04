@@ -36,6 +36,7 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.isLocalFile
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment to allow the user to find and select the backup file to import and restore. */
@@ -104,9 +105,14 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
 
     private fun onSave(result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
-            // TODO: b/339189778 - Add test when import API is done.
-            findNavController()
-                .navigate(R.id.action_importSourceLocationFragment_to_importDecryptionFragment)
+            val fileUri = result.data?.data ?: return
+            if (isLocalFile(fileUri)) {
+                Toast.makeText(activity, R.string.import_invalid_storage, Toast.LENGTH_LONG).show()
+            } else {
+                // TODO: b/339189778 - Add test when import API is done.
+                findNavController()
+                    .navigate(R.id.action_importSourceLocationFragment_to_importDecryptionFragment)
+            }
         }
     }
 }

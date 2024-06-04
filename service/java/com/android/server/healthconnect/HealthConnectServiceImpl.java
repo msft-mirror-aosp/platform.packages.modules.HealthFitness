@@ -165,6 +165,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -308,12 +309,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         checkParamsNonNull(packageName, userHandle);
 
         throwIllegalStateExceptionIfDataSyncInProgress();
-        Instant date = mPermissionHelper.getHealthDataStartDateAccess(packageName, userHandle);
-        if (date == null) {
-            return Constants.DEFAULT_LONG;
-        } else {
-            return date.toEpochMilli();
-        }
+        Optional<Instant> date =
+                mPermissionHelper.getHealthDataStartDateAccess(packageName, userHandle);
+        return date.map(Instant::toEpochMilli).orElse(Constants.DEFAULT_LONG);
     }
 
     /**

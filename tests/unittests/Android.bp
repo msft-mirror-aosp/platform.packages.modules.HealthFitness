@@ -44,6 +44,7 @@ android_test {
         "cts-healthconnect-utils",
         "flag-junit",
         "healthfitness-aconfig-flags-lib",
+        "truth-java8-extension",
     ],
     jni_libs: [
         // Required for ExtendedMockito
