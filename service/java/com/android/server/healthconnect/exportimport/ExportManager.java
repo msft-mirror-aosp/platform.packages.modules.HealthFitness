@@ -25,8 +25,8 @@ import android.os.ParcelFileDescriptor;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
@@ -87,7 +87,7 @@ public class ExportManager {
             return false;
         }
         try {
-            exportToUri(ScheduledExportSettingsStorage.getUri(), localExportFile.toPath());
+            exportToUri(ExportImportSettingsStorage.getUri(), localExportFile.toPath());
         } catch (IOException e) {
             Slog.e(TAG, "Failed to export to URI", e);
             return false;

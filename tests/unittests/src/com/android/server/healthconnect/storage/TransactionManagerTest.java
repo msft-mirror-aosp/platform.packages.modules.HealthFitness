@@ -57,7 +57,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -262,7 +261,6 @@ public class TransactionManagerTest {
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    @Ignore("This test is flaky: b/344519535")
     public void readMedicalResourcesByIds_returnsEmpty() {
         MedicalIdFiltersParcel parcel =
                 new MedicalIdFiltersParcel(List.of(MedicalIdFilter.fromId(getUUID())));

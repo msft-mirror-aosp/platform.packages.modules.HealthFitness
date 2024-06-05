@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDailyService;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -46,6 +47,11 @@ public class ExportImportJobs {
 
     /** Schedule the periodic export job. */
     public static void schedulePeriodicExportJob(Context context, int userId) {
+        int periodInDays = ExportImportSettingsStorage.getScheduledExportPeriodInDays();
+        if (periodInDays <= 0) {
+            return;
+        }
+
         ComponentName componentName = new ComponentName(context, HealthConnectDailyService.class);
         final PersistableBundle extras = new PersistableBundle();
         extras.putInt(HealthConnectDailyService.EXTRA_USER_ID, userId);
@@ -54,8 +60,11 @@ public class ExportImportJobs {
                 new JobInfo.Builder(MIN_JOB_ID + userId, componentName)
                         .setRequiresCharging(true)
                         .setRequiresDeviceIdle(true)
-                        // TODO(b/325599089): Fetch duration from export settings.
-                        .setPeriodic(Duration.ofDays(1).toMillis(), Duration.ofHours(4).toMillis())
+                        .setPeriodic(
+                                Duration.ofDays(periodInDays).toMillis(),
+                                // Flex interval. The flex period begins after periodInDays - 4
+                                // hours or 5% of periodInDays, whatever is bigger.
+                                Duration.ofHours(4).toMillis())
                         .setExtras(extras);
 
         HealthConnectDailyService.schedule(
@@ -67,8 +76,7 @@ public class ExportImportJobs {
 
     /** Execute the periodic export job. */
     public static void executePeriodicExportJob(@NonNull Context context) {
-        // TODO(b/325599089): Add checking for frequency greater than 0.
-        if (exportImport()) {
+        if (exportImport() && ExportImportSettingsStorage.getScheduledExportPeriodInDays() > 0) {
             ExportManager exportManager = new ExportManager(context);
             exportManager.runExport();
         }

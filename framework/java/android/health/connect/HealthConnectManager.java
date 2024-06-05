@@ -85,8 +85,10 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ExportImportDocumentProvider;
+import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
+import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -1779,7 +1781,7 @@ public class HealthConnectManager {
     }
 
     /**
-     * Queries the document providers available to be used for export/import.
+     * Queries the status of a scheduled export.
      *
      * @throws RuntimeException for internal errors
      * @hide
@@ -1799,6 +1801,41 @@ public class HealthConnectManager {
                     new IScheduledExportStatusCallback.Stub() {
                         @Override
                         public void onResult(ScheduledExportStatus status) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(status));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the status of a data import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void getImportStatus(
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<ImportStatus, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.getImportStatus(
+                    mContext.getUser(),
+                    new IImportStatusCallback.Stub() {
+                        @Override
+                        public void onResult(ImportStatus status) {
                             Binder.clearCallingIdentity();
                             executor.execute(() -> callback.onResult(status));
                         }
