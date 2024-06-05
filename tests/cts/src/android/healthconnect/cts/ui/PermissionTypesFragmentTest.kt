@@ -23,17 +23,24 @@ import android.healthconnect.cts.lib.ActivityLauncher.launchDataActivity
 import android.healthconnect.cts.lib.TestAppProxy
 import android.healthconnect.cts.lib.UiTestUtils.clickOnText
 import android.healthconnect.cts.lib.UiTestUtils.waitDisplayed
+import android.healthconnect.cts.utils.DataFactory.getEmptyMetadata
 import android.healthconnect.cts.utils.TestUtils
 import android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords
 import androidx.test.uiautomator.By
+import com.android.compatibility.common.util.DisableAnimationRule
+import com.android.compatibility.common.util.FreezeRotationRule
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import org.junit.AfterClass
 import org.junit.BeforeClass
+import org.junit.Rule
 import org.junit.Test
 
 /** CTS test for HealthConnect Permission types screen. */
 class PermissionTypesFragmentTest : HealthConnectBaseTest() {
+    @get:Rule val disableAnimationRule = DisableAnimationRule()
+
+    @get:Rule val freezeRotationRule = FreezeRotationRule()
 
     companion object {
         private val APP_A_WITH_READ_WRITE_PERMS: TestAppProxy =
@@ -49,8 +56,7 @@ class PermissionTypesFragmentTest : HealthConnectBaseTest() {
             }
             val now = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             val record =
-                StepsRecord.Builder(TestUtils.getEmptyMetadata(), now.minusSeconds(30), now, 43)
-                    .build()
+                StepsRecord.Builder(getEmptyMetadata(), now.minusSeconds(30), now, 43).build()
             APP_A_WITH_READ_WRITE_PERMS.insertRecords(record)
             APP_B_WITH_READ_WRITE_PERMS.insertRecords(record)
         }

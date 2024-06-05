@@ -23,6 +23,7 @@ import static com.android.server.healthconnect.storage.utils.WhereClauses.Logica
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
+import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.ArrayMap;
@@ -78,6 +79,7 @@ public class UpsertTransactionRequest {
                 recordInternals,
                 context,
                 isInsertRequest,
+                false /* useProvidedUuid */,
                 false /* skipPackageNameAndLogs */,
                 extraPermsStateMap);
     }
@@ -87,22 +89,26 @@ public class UpsertTransactionRequest {
             @NonNull List<RecordInternal<?>> recordInternals,
             Context context,
             boolean isInsertRequest,
+            boolean useProvidedUuid,
             boolean skipPackageNameAndLogs) {
         this(
                 packageName,
                 recordInternals,
                 context,
                 isInsertRequest,
+                useProvidedUuid,
                 skipPackageNameAndLogs,
                 Collections.emptyMap());
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    public UpsertTransactionRequest(
+    private UpsertTransactionRequest(
             @Nullable String packageName,
             @NonNull List<RecordInternal<?>> recordInternals,
             Context context,
             boolean isInsertRequest,
+            // TODO(b/329237732): Use builder pattern for this class.
+            boolean useProvidedUuid,
             boolean skipPackageNameAndLogs,
             Map<String, Boolean> extraPermsStateMap) {
         mPackageName = packageName;
@@ -121,15 +127,19 @@ public class UpsertTransactionRequest {
             DeviceInfoHelper.getInstance().populateDeviceInfoId(recordInternal);
 
             if (isInsertRequest) {
-                // Always generate an uuid field for insert requests, we should not trust what is
-                // already present.
-                StorageUtils.addNameBasedUUIDTo(recordInternal);
-                mRecordTypes.add(recordInternal.getRecordType());
+                if (useProvidedUuid && recordInternal.getUuid() != null) {
+                    // Do nothing i.e. leave the UUID as provided. This is desired for backup and
+                    // restore to ensure references between records remain intact.
+                } else {
+                    // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
+                    StorageUtils.addNameBasedUUIDTo(recordInternal);
+                }
             } else {
                 // For update requests, generate uuid if the clientRecordID is present, else use the
                 // uuid passed as input.
                 StorageUtils.updateNameBasedUUIDIfRequired(recordInternal);
             }
+            mRecordTypes.add(recordInternal.getRecordType());
             recordInternal.setLastModifiedTime(Instant.now().toEpochMilli());
             addRequest(recordInternal, isInsertRequest);
         }
@@ -142,12 +152,14 @@ public class UpsertTransactionRequest {
                                         packageName, new ArrayList<>(mRecordTypes), UPSERT));
             }
 
-            Slog.d(
-                    TAG,
-                    "Upserting transaction for "
-                            + packageName
-                            + " with size "
-                            + recordInternals.size());
+            if (Constants.DEBUG) {
+                Slog.d(
+                        TAG,
+                        "Upserting transaction for "
+                                + packageName
+                                + " with size "
+                                + recordInternals.size());
+            }
         }
     }
 

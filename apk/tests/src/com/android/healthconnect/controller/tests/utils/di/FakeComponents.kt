@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.utils.di
 import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
+import android.health.connect.exportimport.ScheduledExportSettings
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -35,14 +36,24 @@ import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriori
 import com.android.healthconnect.controller.datasources.api.ILoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.ISleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
+import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
+import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
+import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
+import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.connectedapps.ILoadHealthPermissionApps
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
+import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.permissiontypes.api.ILoadPriorityListUseCase
 import com.android.healthconnect.controller.recentaccess.ILoadRecentAccessUseCase
 import com.android.healthconnect.controller.shared.HealthDataCategoryInt
 import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
+import com.android.healthconnect.controller.shared.app.IGetContributorAppInfoUseCase
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import java.time.Instant
 import java.time.LocalDate
@@ -388,5 +399,89 @@ class FakeLoadLastDateWithPriorityDataUseCase : ILoadLastDateWithPriorityDataUse
         lastDateWithPriorityDataMap.clear()
         exceptionMessage = ""
         forceFail = false
+    }
+}
+
+class FakeGetContributorAppInfoUseCase : IGetContributorAppInfoUseCase {
+
+    private var appInfoMap: Map<String, AppMetadata> = emptyMap()
+
+    fun setAppInfo(appInfoMap: Map<String, AppMetadata>) {
+        this.appInfoMap = appInfoMap
+    }
+
+    override suspend fun invoke(): Map<String, AppMetadata> {
+        return appInfoMap
+    }
+
+    fun reset() {
+        this.appInfoMap = emptyMap()
+    }
+}
+
+class FakeQueryRecentAccessLogsUseCase : IQueryRecentAccessLogsUseCase {
+    private var recentAccessMap: Map<String, Instant> = emptyMap()
+
+    fun recentAccessMap(recentAccessMap: Map<String, Instant>) {
+        this.recentAccessMap = recentAccessMap
+    }
+
+    override suspend fun invoke(): Map<String, Instant> {
+        return recentAccessMap
+    }
+
+    fun reset() {
+        this.recentAccessMap = emptyMap()
+    }
+}
+
+class FakeLoadExportSettingsUseCase : ILoadExportSettingsUseCase {
+    private var exportFrequency = EXPORT_FREQUENCY_NEVER
+
+    override suspend fun invoke(): ExportUseCaseResult<ExportFrequency> {
+        return ExportUseCaseResult.Success(exportFrequency)
+    }
+
+    fun updateExportFrequency(frequency: ExportFrequency) {
+        this.exportFrequency = frequency
+    }
+
+    fun reset() {
+        this.exportFrequency = EXPORT_FREQUENCY_NEVER
+    }
+}
+
+class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
+    var mostRecentSettings: ScheduledExportSettings =
+        ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+
+    override suspend fun invoke(settings: ScheduledExportSettings): ExportUseCaseResult<Unit> {
+        mostRecentSettings = settings
+        return ExportUseCaseResult.Success(Unit)
+    }
+
+    fun reset() {
+        mostRecentSettings =
+            ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
+    }
+}
+
+class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
+
+    private var state =
+        ExerciseRouteState(
+            exercisePermissionState = PermissionUiState.ASK_EVERY_TIME,
+            exerciseRoutePermissionState = PermissionUiState.ASK_EVERY_TIME)
+
+    fun setExerciseRouteState(state: ExerciseRouteState) {
+        this.state = state
+    }
+
+    override suspend fun execute(input: String): ExerciseRouteState {
+        return this.state
+    }
+
+    override suspend fun invoke(input: String): UseCaseResults<ExerciseRouteState> {
+        return UseCaseResults.Success(this.state)
     }
 }

@@ -74,11 +74,20 @@
     <!-- Migration -->
     <attr name="moreSpaceNeededIcon" format="reference"/>
     <attr name="updateNeededIcon" format="reference"/>
+    <attr name="settingsAlertIcon" format="reference"/>
 
     <!-- Data sources & priority -->
     <attr name="addIcon" format="reference"/>
     <attr name="editIcon" format="reference"/>
     <attr name="closeIcon" format="reference"/>
+
+    <!-- Backup and restore -->
+    <attr name="uploadIcon" format="reference"/>
+    <attr name="repeatIcon" format="reference"/>
+    <attr name="settingsBackupRestoreIcon" format="reference"/>
+
+    <attr name="lockIcon" format="reference"/>
+    <attr name="warningIcon" format="reference"/>
 
     <!-- END REGION -->
 

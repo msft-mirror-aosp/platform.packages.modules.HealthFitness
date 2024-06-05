@@ -56,12 +56,14 @@ public class HealthPermissionsTest {
     // sets.
     private static final Set<String> ALL_EXPECTED_HEALTH_PERMISSIONS =
             Set.of(
+                    HealthPermissions.READ_HEALTH_DATA_HISTORY,
                     HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
                     HealthPermissions.READ_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.READ_DISTANCE,
                     HealthPermissions.READ_ELEVATION_GAINED,
                     HealthPermissions.READ_EXERCISE,
-                    HealthPermissions.READ_EXERCISE_ROUTES_ALL,
+                    HealthPermissions.READ_EXERCISE_ROUTES,
+                    HealthPermissions.READ_PLANNED_EXERCISE,
                     HealthPermissions.READ_FLOORS_CLIMBED,
                     HealthPermissions.READ_STEPS,
                     HealthPermissions.READ_TOTAL_CALORIES_BURNED,
@@ -93,11 +95,13 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_OXYGEN_SATURATION,
                     HealthPermissions.READ_RESPIRATORY_RATE,
                     HealthPermissions.READ_RESTING_HEART_RATE,
+                    HealthPermissions.READ_SKIN_TEMPERATURE,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
                     HealthPermissions.WRITE_EXERCISE,
                     HealthPermissions.WRITE_EXERCISE_ROUTE,
+                    HealthPermissions.WRITE_PLANNED_EXERCISE,
                     HealthPermissions.WRITE_FLOORS_CLIMBED,
                     HealthPermissions.WRITE_STEPS,
                     HealthPermissions.WRITE_TOTAL_CALORIES_BURNED,
@@ -128,7 +132,8 @@ public class HealthPermissionsTest {
                     HealthPermissions.WRITE_HEART_RATE_VARIABILITY,
                     HealthPermissions.WRITE_OXYGEN_SATURATION,
                     HealthPermissions.WRITE_RESPIRATORY_RATE,
-                    HealthPermissions.WRITE_RESTING_HEART_RATE);
+                    HealthPermissions.WRITE_RESTING_HEART_RATE,
+                    HealthPermissions.WRITE_SKIN_TEMPERATURE);
     private PackageManager mPackageManager;
     private Context mContext;
     @Mock private PackageInfo mPackageInfo1;

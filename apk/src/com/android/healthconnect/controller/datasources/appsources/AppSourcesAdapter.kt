@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -136,6 +135,8 @@ class AppSourcesAdapter(
         itemView: View,
         private val onItemDragStartedListener: ItemTouchHelper?
     ) : RecyclerView.ViewHolder(itemView) {
+        private val EDIT_MODE_TAG = "edit_mode"
+        private val DRAG_MODE_TAG = "drag_mode"
         private val appPositionView: TextView
         private val appNameView: TextView
         private val appSourceSummary: TextView
@@ -158,19 +159,6 @@ class AppSourcesAdapter(
             appNameView.text = appMetadata.appName
             actionIconBackground.contentDescription =
                 context.getString(R.string.reorder_button_content_description, appNameView.text)
-            actionIconBackground.accessibilityDelegate =
-                object : View.AccessibilityDelegate() {
-                    override fun onInitializeAccessibilityNodeInfo(
-                        host: View,
-                        info: AccessibilityNodeInfo
-                    ) {
-                        super.onInitializeAccessibilityNodeInfo(host, info)
-                        info.addAction(
-                            AccessibilityNodeInfo.AccessibilityAction(
-                                DataSourcesElement.REORDER_APP_SOURCE_BUTTON.impressionId,
-                                context.getString(R.string.reorder_button_action_description)))
-                    }
-                }
 
             if (appUtils.isDefaultApp(context, appMetadata.packageName)) {
                 appSourceSummary.visibility = View.VISIBLE
@@ -195,6 +183,7 @@ class AppSourcesAdapter(
                 AttributeResolver.getDrawable(itemView.context, R.attr.closeIcon)
             actionIconBackground.contentDescription =
                 context.getString(R.string.remove_button_content_description, appNameView.text)
+            actionIconBackground.tag = EDIT_MODE_TAG
             actionView.setOnTouchListener(null)
             actionView.setOnClickListener {
                 logger.logInteraction(DataSourcesElement.REMOVE_APP_SOURCE_BUTTON)
@@ -227,6 +216,7 @@ class AppSourcesAdapter(
             } else {
                 actionIconBackground.background =
                     AttributeResolver.getDrawable(itemView.context, R.attr.priorityItemDragIcon)
+                actionIconBackground.tag = DRAG_MODE_TAG
                 actionView.setOnClickListener(null)
                 actionView.setOnTouchListener { _, event ->
                     logger.logInteraction(DataSourcesElement.REORDER_APP_SOURCE_BUTTON)

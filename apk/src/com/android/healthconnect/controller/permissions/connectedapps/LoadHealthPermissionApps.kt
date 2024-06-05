@@ -15,14 +15,14 @@
  */
 package com.android.healthconnect.controller.permissions.connectedapps
 
-import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.shared.QueryRecentAccessLogsUseCase
+import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
+import com.android.healthconnect.controller.permissions.shared.IQueryRecentAccessLogsUseCase
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus
-import com.android.healthconnect.controller.shared.app.GetContributorAppInfoUseCase
+import com.android.healthconnect.controller.shared.app.IGetContributorAppInfoUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,20 +33,22 @@ class LoadHealthPermissionApps
 @Inject
 constructor(
     private val healthPermissionReader: HealthPermissionReader,
-    private val loadGrantedHealthPermissionsUseCase: GetGrantedHealthPermissionsUseCase,
-    private val getContributorAppInfoUseCase: GetContributorAppInfoUseCase,
-    private val queryRecentAccessLogsUseCase: QueryRecentAccessLogsUseCase,
+    private val loadGrantedHealthPermissionsUseCase: IGetGrantedHealthPermissionsUseCase,
+    private val getContributorAppInfoUseCase: IGetContributorAppInfoUseCase,
+    private val queryRecentAccessLogsUseCase: IQueryRecentAccessLogsUseCase,
     private val appInfoReader: AppInfoReader,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ILoadHealthPermissionApps {
 
-    /** Returns a list of ConnectedAppMetadata. */
+    /** Returns a list of [ConnectedAppMetadata]. */
     override suspend operator fun invoke(): List<ConnectedAppMetadata> =
         withContext(dispatcher) {
             val appsWithHealthPermissions = healthPermissionReader.getAppsWithHealthPermissions()
             val appsWithData = getContributorAppInfoUseCase.invoke()
             val connectedApps = mutableListOf<ConnectedAppMetadata>()
             val recentAccess = queryRecentAccessLogsUseCase.invoke()
+            val appsWithOldHealthPermissions =
+                healthPermissionReader.getAppsWithOldHealthPermissions()
 
             connectedApps.addAll(
                 appsWithHealthPermissions.map { packageName ->
@@ -66,7 +68,19 @@ constructor(
                     .filter { !appsWithHealthPermissions.contains(it.packageName) }
                     .map { ConnectedAppMetadata(it, ConnectedAppStatus.INACTIVE) }
 
+            val appsThatNeedUpdating =
+                appsWithOldHealthPermissions
+                    .map { packageName ->
+                        val metadata = appInfoReader.getAppMetadata(packageName)
+                        ConnectedAppMetadata(
+                            metadata,
+                            ConnectedAppStatus.NEEDS_UPDATE,
+                            recentAccess[metadata.packageName])
+                    }
+                    .filter { !appsWithHealthPermissions.contains(it.appMetadata.packageName) }
+
             connectedApps.addAll(inactiveApps)
+            connectedApps.addAll(appsThatNeedUpdating)
             connectedApps
         }
 }

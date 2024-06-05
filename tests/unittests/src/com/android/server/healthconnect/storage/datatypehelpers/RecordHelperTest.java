@@ -45,7 +45,6 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.utils.OrderByClause;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,6 +53,7 @@ import org.junit.runner.RunWith;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
@@ -68,16 +68,10 @@ public class RecordHelperTest {
     @Before
     public void setup() throws Exception {
         HealthConnectUserContext context = testRule.getUserContext();
-        mTransactionManager = TransactionManager.getInstance(context);
+        mTransactionManager = testRule.getTransactionManager();
         DatabaseHelper.clearAllData(mTransactionManager);
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-    }
-
-    @After
-    public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
-        TransactionManager.clearInstance();
     }
 
     @Test
@@ -306,6 +300,7 @@ public class RecordHelperTest {
                 TEST_PACKAGE_NAME,
                 /* enforceSelfRead= */ false,
                 /* startDateAccess= */ 0,
-                /* extraPermsState= */ null);
+                /* grantedExtraReadPermissions= */ Set.of(),
+                /* isInForeground= */ true);
     }
 }

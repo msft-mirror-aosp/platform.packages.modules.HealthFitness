@@ -30,9 +30,10 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.shared.Constants
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
+import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.RecentAccessElement
@@ -55,6 +56,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
     }
 
     @Inject lateinit var logger: HealthConnectLogger
+    @Inject lateinit var timeSource: TimeSource
 
     private val viewModel: RecentAccessViewModel by viewModels()
     private lateinit var contentParent: FrameLayout
@@ -144,6 +146,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
             mRecentAccessYesterdayPreferenceGroup?.isVisible = false
             mRecentAccessTodayPreferenceGroup?.isVisible = false
             mRecentAccessNoDataPreference?.isVisible = true
+            mRecentAccessNoDataPreference?.isSelectable = false
             fab.isVisible = false
         } else {
             // if the first entry is yesterday, we don't need the 'Today' section
@@ -165,7 +168,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                             index < recentAppsList.size - 1 &&
                             !recentAppsList[index + 1].isToday)
                 val newPreference =
-                    RecentAccessPreference(requireContext(), recentApp, true).also {
+                    RecentAccessPreference(requireContext(), recentApp, timeSource, true).also {
                         if (!recentApp.isInactive) {
                             // Do not set click listeners for inactive apps
                             it.setOnPreferenceClickListener {

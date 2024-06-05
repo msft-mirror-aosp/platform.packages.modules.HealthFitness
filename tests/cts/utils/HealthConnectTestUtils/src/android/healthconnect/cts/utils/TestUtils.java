@@ -16,7 +16,8 @@
 
 package android.healthconnect.cts.utils;
 
-import static android.content.pm.PackageManager.GET_PERMISSIONS;
+import static android.Manifest.permission.READ_DEVICE_CONFIG;
+import static android.Manifest.permission.WRITE_ALLOWLISTED_DEVICE_CONFIG;
 import static android.health.connect.HealthDataCategory.ACTIVITY;
 import static android.health.connect.HealthDataCategory.BODY_MEASUREMENTS;
 import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
@@ -26,12 +27,23 @@ import static android.health.connect.HealthDataCategory.VITALS;
 import static android.health.connect.HealthPermissionCategory.BASAL_METABOLIC_RATE;
 import static android.health.connect.HealthPermissionCategory.EXERCISE;
 import static android.health.connect.HealthPermissionCategory.HEART_RATE;
+import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.STEPS;
-import static android.health.connect.datatypes.Metadata.RECORDING_METHOD_ACTIVELY_RECORDED;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
+import static android.healthconnect.cts.utils.DataFactory.NOW;
+import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
+import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_AGGREGATE_STEPS_COUNT;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_STEPS_RECORDS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_INSERT_WEIGHT_RECORDS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_FILTERS;
+import static android.healthconnect.test.app.TestAppReceiver.ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_END_TIMES;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_PACKAGE_NAMES;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_CLIENT_IDS;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_IDS;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_RECORD_VALUES;
 import static android.healthconnect.test.app.TestAppReceiver.EXTRA_SENDER_PACKAGE_NAME;
+import static android.healthconnect.test.app.TestAppReceiver.EXTRA_TIMES;
 
 import static com.android.compatibility.common.util.FeatureUtil.AUTOMOTIVE_FEATURE;
 import static com.android.compatibility.common.util.FeatureUtil.hasSystemFeature;
@@ -45,7 +57,6 @@ import static java.util.Objects.requireNonNull;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
 import android.health.connect.AggregateRecordsGroupedByPeriodResponse;
@@ -58,7 +69,6 @@ import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
-import android.health.connect.HealthPermissions;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.ReadRecordsRequest;
 import android.health.connect.ReadRecordsRequestUsingFilters;
@@ -86,15 +96,9 @@ import android.health.connect.datatypes.BoneMassRecord;
 import android.health.connect.datatypes.CervicalMucusRecord;
 import android.health.connect.datatypes.CyclingPedalingCadenceRecord;
 import android.health.connect.datatypes.DataOrigin;
-import android.health.connect.datatypes.Device;
 import android.health.connect.datatypes.DistanceRecord;
 import android.health.connect.datatypes.ElevationGainedRecord;
-import android.health.connect.datatypes.ExerciseLap;
-import android.health.connect.datatypes.ExerciseRoute;
-import android.health.connect.datatypes.ExerciseSegment;
-import android.health.connect.datatypes.ExerciseSegmentType;
 import android.health.connect.datatypes.ExerciseSessionRecord;
-import android.health.connect.datatypes.ExerciseSessionType;
 import android.health.connect.datatypes.FloorsClimbedRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HeartRateVariabilityRmssdRecord;
@@ -108,11 +112,13 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.OvulationTestRecord;
 import android.health.connect.datatypes.OxygenSaturationRecord;
+import android.health.connect.datatypes.PlannedExerciseSessionRecord;
 import android.health.connect.datatypes.PowerRecord;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.RespiratoryRateRecord;
 import android.health.connect.datatypes.RestingHeartRateRecord;
 import android.health.connect.datatypes.SexualActivityRecord;
+import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
@@ -121,72 +127,55 @@ import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
 import android.health.connect.datatypes.Vo2MaxRecord;
 import android.health.connect.datatypes.WeightRecord;
 import android.health.connect.datatypes.WheelchairPushesRecord;
-import android.health.connect.datatypes.units.Length;
-import android.health.connect.datatypes.units.Power;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.migration.MigrationException;
 import android.healthconnect.test.app.TestAppReceiver;
 import android.os.Bundle;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
-import android.os.UserHandle;
+import android.provider.DeviceConfig;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import com.android.compatibility.common.util.SystemUtil;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public final class TestUtils {
-    public static final String MANAGE_HEALTH_PERMISSIONS =
-            HealthPermissions.MANAGE_HEALTH_PERMISSIONS;
-    public static final String READ_EXERCISE_ROUTE_PERMISSION =
-            "android.permission.health.READ_EXERCISE_ROUTE";
-    private static final String HEALTH_PERMISSION_PREFIX = "android.permission.health.";
-    public static final String MANAGE_HEALTH_DATA = HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
-    public static final Instant SESSION_START_TIME = Instant.now().minus(10, ChronoUnit.DAYS);
-    public static final Instant SESSION_END_TIME =
-            Instant.now().minus(10, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS);
     private static final String TAG = "HCTestUtils";
     private static final int TIMEOUT_SECONDS = 5;
 
-    private static final String PKG_TEST_APP = "android.healthconnect.test.app";
+    public static final String PKG_TEST_APP = "android.healthconnect.test.app";
     private static final String TEST_APP_RECEIVER =
             PKG_TEST_APP + "." + TestAppReceiver.class.getSimpleName();
 
@@ -220,6 +209,16 @@ public final class TestUtils {
     }
 
     /**
+     * Insert record to the database.
+     *
+     * @param record record to insert
+     * @return inserted record
+     */
+    public static Record insertRecord(Record record) throws InterruptedException {
+        return insertRecords(Collections.singletonList(record)).get(0);
+    }
+
+    /**
      * Inserts records to the database.
      *
      * @param records records to insert
@@ -228,6 +227,16 @@ public final class TestUtils {
     public static List<Record> insertRecords(List<? extends Record> records)
             throws InterruptedException {
         return insertRecords(records, ApplicationProvider.getApplicationContext());
+    }
+
+    /**
+     * Inserts records to the database.
+     *
+     * @param records records to insert
+     * @return inserted records
+     */
+    public static List<Record> insertRecords(Record... records) throws InterruptedException {
+        return insertRecords(Arrays.asList(records), ApplicationProvider.getApplicationContext());
     }
 
     /**
@@ -248,28 +257,6 @@ public final class TestUtils {
         return returnedRecords;
     }
 
-    public static List<RecordTypeAndRecordIds> insertRecordsAndGetIds(
-            List<Record> records, Context context) throws InterruptedException {
-        List<Record> insertedRecords = insertRecords(records, context);
-
-        Map<String, List<String>> recordTypeToRecordIdsMap = new HashMap<>();
-        for (Record record : insertedRecords) {
-            recordTypeToRecordIdsMap.putIfAbsent(record.getClass().getName(), new ArrayList<>());
-            recordTypeToRecordIdsMap
-                    .get(record.getClass().getName())
-                    .add(record.getMetadata().getId());
-        }
-
-        List<RecordTypeAndRecordIds> recordTypeAndRecordIdsList = new ArrayList<>();
-        for (String recordType : recordTypeToRecordIdsMap.keySet()) {
-            recordTypeAndRecordIdsList.add(
-                    new RecordTypeAndRecordIds(
-                            recordType, recordTypeToRecordIdsMap.get(recordType)));
-        }
-
-        return recordTypeAndRecordIdsList;
-    }
-
     /**
      * Returns all records from the `records` list in their original order, but distinct by UUID.
      */
@@ -282,7 +269,8 @@ public final class TestUtils {
         return record -> seen.add(record.getMetadata().getId());
     }
 
-    public static void updateRecords(List<Record> records) throws InterruptedException {
+    /** Updates the provided records in the database. */
+    public static void updateRecords(List<? extends Record> records) throws InterruptedException {
         updateRecords(records, ApplicationProvider.getApplicationContext());
     }
 
@@ -307,302 +295,6 @@ public final class TestUtils {
         getHealthConnectManager(context)
                 .getChangeLogs(changeLogsRequest, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
-    }
-
-    public static Device buildDevice() {
-        return new Device.Builder()
-                .setManufacturer("google")
-                .setModel("Pixel4a")
-                .setType(2)
-                .build();
-    }
-
-    private static Metadata buildSessionMetadata(String packageName, double clientId) {
-        Device device =
-                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
-        DataOrigin dataOrigin = new DataOrigin.Builder().setPackageName(packageName).build();
-        return new Metadata.Builder()
-                .setDevice(device)
-                .setDataOrigin(dataOrigin)
-                .setClientRecordId(String.valueOf(clientId))
-                .build();
-    }
-
-    public static List<Record> getTestRecords() {
-        return Arrays.asList(
-                getStepsRecord(),
-                getHeartRateRecord(),
-                getBasalMetabolicRateRecord(),
-                buildExerciseSession());
-    }
-
-    public static List<Record> getTestRecords(String packageName, Double clientId) {
-        return Arrays.asList(
-                getExerciseSessionRecord(packageName, clientId, /* withRoute= */ true),
-                getStepsRecord(packageName, clientId),
-                getHeartRateRecord(packageName, clientId),
-                getBasalMetabolicRateRecord(packageName, clientId));
-    }
-
-    public static List<RecordAndIdentifier> getRecordsAndIdentifiers() {
-        return Arrays.asList(
-                new RecordAndIdentifier(RECORD_TYPE_STEPS, getStepsRecord()),
-                new RecordAndIdentifier(RECORD_TYPE_HEART_RATE, getHeartRateRecord()),
-                new RecordAndIdentifier(
-                        RECORD_TYPE_BASAL_METABOLIC_RATE, getBasalMetabolicRateRecord()));
-    }
-
-    public static ExerciseRoute.Location buildLocationTimePoint(Instant startTime) {
-        return new ExerciseRoute.Location.Builder(
-                        Instant.ofEpochMilli(
-                                (long) (startTime.toEpochMilli() + 10 + Math.random() * 50)),
-                        Math.random() * 50,
-                        Math.random() * 50)
-                .build();
-    }
-
-    public static ExerciseRoute buildExerciseRoute() {
-        return new ExerciseRoute(
-                List.of(
-                        buildLocationTimePoint(SESSION_START_TIME),
-                        buildLocationTimePoint(SESSION_START_TIME),
-                        buildLocationTimePoint(SESSION_START_TIME)));
-    }
-
-    public static StepsRecord getStepsRecord() {
-        double clientId = Math.random();
-        String packageName = ApplicationProvider.getApplicationContext().getPackageName();
-        return getStepsRecord(packageName, clientId);
-    }
-
-    public static StepsRecord getStepsRecord(String packageName, double clientId) {
-        Device device =
-                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
-        DataOrigin dataOrigin = new DataOrigin.Builder().setPackageName(packageName).build();
-        return new StepsRecord.Builder(
-                        new Metadata.Builder()
-                                .setDevice(device)
-                                .setDataOrigin(dataOrigin)
-                                .setClientRecordId("SR" + clientId)
-                                .build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
-                        10)
-                .build();
-    }
-
-    public static StepsRecord getStepsRecord(String id) {
-        Context context = ApplicationProvider.getApplicationContext();
-        Device device =
-                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
-        DataOrigin dataOrigin =
-                new DataOrigin.Builder().setPackageName(context.getPackageName()).build();
-        return new StepsRecord.Builder(
-                        new Metadata.Builder()
-                                .setDevice(device)
-                                .setId(id)
-                                .setDataOrigin(dataOrigin)
-                                .build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(1000),
-                        10)
-                .build();
-    }
-
-    public static HeartRateRecord getHeartRateRecord() {
-        String packageName = ApplicationProvider.getApplicationContext().getPackageName();
-        double clientId = Math.random();
-        return getHeartRateRecord(packageName, clientId);
-    }
-
-    public static HeartRateRecord getHeartRateRecord(String packageName, double clientId) {
-        HeartRateRecord.HeartRateSample heartRateSample =
-                new HeartRateRecord.HeartRateSample(72, Instant.now().plusMillis(100));
-        ArrayList<HeartRateRecord.HeartRateSample> heartRateSamples = new ArrayList<>();
-        heartRateSamples.add(heartRateSample);
-        heartRateSamples.add(heartRateSample);
-        Device device =
-                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
-        DataOrigin dataOrigin = new DataOrigin.Builder().setPackageName(packageName).build();
-
-        return new HeartRateRecord.Builder(
-                        new Metadata.Builder()
-                                .setDevice(device)
-                                .setDataOrigin(dataOrigin)
-                                .setClientRecordId("HR" + clientId)
-                                .build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(500),
-                        heartRateSamples)
-                .build();
-    }
-
-    public static HeartRateRecord getHeartRateRecord(int heartRate) {
-        HeartRateRecord.HeartRateSample heartRateSample =
-                new HeartRateRecord.HeartRateSample(heartRate, Instant.now().plusMillis(100));
-        ArrayList<HeartRateRecord.HeartRateSample> heartRateSamples = new ArrayList<>();
-        heartRateSamples.add(heartRateSample);
-        heartRateSamples.add(heartRateSample);
-
-        return new HeartRateRecord.Builder(
-                        new Metadata.Builder().build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(500),
-                        heartRateSamples)
-                .build();
-    }
-
-    public static HeartRateRecord getHeartRateRecord(int heartRate, Instant instant) {
-        HeartRateRecord.HeartRateSample heartRateSample =
-                new HeartRateRecord.HeartRateSample(heartRate, instant);
-        ArrayList<HeartRateRecord.HeartRateSample> heartRateSamples = new ArrayList<>();
-        heartRateSamples.add(heartRateSample);
-        heartRateSamples.add(heartRateSample);
-
-        return new HeartRateRecord.Builder(
-                        new Metadata.Builder().build(),
-                        instant,
-                        instant.plusMillis(1000),
-                        heartRateSamples)
-                .build();
-    }
-
-    public static BasalMetabolicRateRecord getBasalMetabolicRateRecord() {
-        String packageName = ApplicationProvider.getApplicationContext().getPackageName();
-        double clientId = Math.random();
-
-        return getBasalMetabolicRateRecord(packageName, clientId);
-    }
-
-    public static BasalMetabolicRateRecord getBasalMetabolicRateRecord(
-            String packageName, double clientId) {
-        Device device =
-                new Device.Builder()
-                        .setManufacturer("google")
-                        .setModel("Pixel4a")
-                        .setType(2)
-                        .build();
-        DataOrigin dataOrigin = new DataOrigin.Builder().setPackageName(packageName).build();
-        return new BasalMetabolicRateRecord.Builder(
-                        new Metadata.Builder()
-                                .setDevice(device)
-                                .setDataOrigin(dataOrigin)
-                                .setClientRecordId("BMR" + clientId)
-                                .build(),
-                        Instant.now(),
-                        Power.fromWatts(100.0))
-                .build();
-    }
-
-    public static ExerciseSessionRecord getExerciseSessionRecord(
-            String packageName, double clientId, boolean withRoute) {
-        Instant startTime = Instant.now().minusSeconds(3000).truncatedTo(ChronoUnit.MILLIS);
-        Instant endTime = Instant.now();
-        ExerciseSessionRecord.Builder builder =
-                new ExerciseSessionRecord.Builder(
-                                buildSessionMetadata(packageName, clientId),
-                                startTime,
-                                endTime,
-                                ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
-                        .setEndZoneOffset(ZoneOffset.MAX)
-                        .setStartZoneOffset(ZoneOffset.MIN)
-                        .setNotes("notes")
-                        .setTitle("title");
-
-        if (withRoute) {
-            builder.setRoute(
-                    new ExerciseRoute(
-                            List.of(
-                                    new ExerciseRoute.Location.Builder(startTime, 50., 50.).build(),
-                                    new ExerciseRoute.Location.Builder(
-                                                    startTime.plusSeconds(2), 51., 51.)
-                                            .build())));
-        }
-        return builder.build();
-    }
-
-    public static StepsRecord buildStepsRecord(
-            String startTime, String endTime, int stepsCount, String packageName) {
-        Device device =
-                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
-        DataOrigin dataOrigin = new DataOrigin.Builder().setPackageName(packageName).build();
-        return new StepsRecord.Builder(
-                        new Metadata.Builder().setDevice(device).setDataOrigin(dataOrigin).build(),
-                        getInstantTime(startTime),
-                        getInstantTime(endTime),
-                        stepsCount)
-                .build();
-    }
-
-    public static ExerciseSessionRecord buildExerciseSession(
-            String sessionStartTime, String sessionEndTime, Context context) {
-        return new ExerciseSessionRecord.Builder(
-                        new Metadata.Builder()
-                                .setDataOrigin(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(context.getPackageName())
-                                                .build())
-                                .setId("ExerciseSession" + Math.random())
-                                .setClientRecordId("ExerciseSessionClient" + Math.random())
-                                .build(),
-                        getInstantTime(sessionStartTime),
-                        getInstantTime(sessionEndTime),
-                        ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
-                .build();
-    }
-
-    public static ExerciseSessionRecord buildExerciseSession(
-            String sessionStartTime,
-            String sessionEndTime,
-            String pauseStart,
-            String pauseEnd,
-            Context context) {
-        List<ExerciseSegment> segmentList =
-                List.of(
-                        new ExerciseSegment.Builder(
-                                        getInstantTime(sessionStartTime),
-                                        getInstantTime(pauseStart),
-                                        ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_OTHER_WORKOUT)
-                                .setRepetitionsCount(10)
-                                .build(),
-                        new ExerciseSegment.Builder(
-                                        getInstantTime(pauseStart),
-                                        getInstantTime(pauseEnd),
-                                        ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_PAUSE)
-                                .build());
-
-        if (getInstantTime(sessionEndTime).compareTo(getInstantTime(pauseEnd)) > 0) {
-            segmentList.add(
-                    new ExerciseSegment.Builder(
-                                    getInstantTime(pauseEnd),
-                                    getInstantTime(sessionEndTime),
-                                    ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_OTHER_WORKOUT)
-                            .setRepetitionsCount(10)
-                            .build());
-        }
-
-        return new ExerciseSessionRecord.Builder(
-                        new Metadata.Builder()
-                                .setDataOrigin(
-                                        new DataOrigin.Builder()
-                                                .setPackageName(context.getPackageName())
-                                                .build())
-                                .setId("ExerciseSession" + Math.random())
-                                .setClientRecordId("ExerciseSessionClient" + Math.random())
-                                .build(),
-                        getInstantTime(sessionStartTime),
-                        getInstantTime(sessionEndTime),
-                        ExerciseSessionType.EXERCISE_SESSION_TYPE_FOOTBALL_AMERICAN)
-                .setSegments(segmentList)
-                .build();
-    }
-
-    public static Instant getInstantTime(String time) {
-        return LocalDateTime.parse(
-                        time + " Mon 5/15/2023",
-                        DateTimeFormatter.ofPattern("hh:mm a EEE M/d/uuuu", Locale.US))
-                .atZone(ZoneId.of("America/Toronto"))
-                .toInstant();
     }
 
     public static <T> AggregateRecordsResponse<T> getAggregateResponse(
@@ -650,16 +342,26 @@ public final class TestUtils {
 
     public static <T extends Record> List<T> readRecords(ReadRecordsRequest<T> request)
             throws InterruptedException {
-        return readRecords(request, ApplicationProvider.getApplicationContext());
+        return getReadRecordsResponse(request).getRecords();
     }
 
     public static <T extends Record> List<T> readRecords(
+            ReadRecordsRequest<T> request, Context context) throws InterruptedException {
+        return getReadRecordsResponse(request, context).getRecords();
+    }
+
+    public static <T extends Record> ReadRecordsResponse<T> getReadRecordsResponse(
+            ReadRecordsRequest<T> request) throws InterruptedException {
+        return getReadRecordsResponse(request, ApplicationProvider.getApplicationContext());
+    }
+
+    public static <T extends Record> ReadRecordsResponse<T> getReadRecordsResponse(
             ReadRecordsRequest<T> request, Context context) throws InterruptedException {
         assertThat(request.getRecordType()).isNotNull();
         HealthConnectReceiver<ReadRecordsResponse<T>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager(context)
                 .readRecords(request, Executors.newSingleThreadExecutor(), receiver);
-        return receiver.getResponse().getRecords();
+        return receiver.getResponse();
     }
 
     public static <T extends Record> void assertRecordNotFound(String uuid, Class<T> recordType)
@@ -775,6 +477,12 @@ public final class TestUtils {
         verifyDeleteRecords(recordIdFilters);
     }
 
+    /** Helper function to delete records from the DB, using HealthConnectManager. */
+    public static void deleteRecordsByIdFilter(List<RecordIdFilter> recordIdFilters)
+            throws InterruptedException {
+        verifyDeleteRecords(recordIdFilters);
+    }
+
     public static List<AccessLog> queryAccessLogs() throws InterruptedException {
         UiAutomation uiAutomation = InstrumentationRegistry.getInstrumentation().getUiAutomation();
         uiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
@@ -815,32 +523,6 @@ public final class TestUtils {
         } finally {
             uiAutomation.dropShellPermissionIdentity();
         }
-    }
-
-    public static ExerciseSessionRecord buildExerciseSession() {
-        return buildExerciseSession(buildExerciseRoute(), "Morning training", "rain");
-    }
-
-    public static SleepSessionRecord buildSleepSession() {
-        return new SleepSessionRecord.Builder(
-                        generateMetadata(), SESSION_START_TIME, SESSION_END_TIME)
-                .setNotes("warm")
-                .setTitle("Afternoon nap")
-                .setStages(
-                        List.of(
-                                new SleepSessionRecord.Stage(
-                                        SESSION_START_TIME,
-                                        SESSION_START_TIME.plusSeconds(300),
-                                        SleepSessionRecord.StageType.STAGE_TYPE_SLEEPING_LIGHT),
-                                new SleepSessionRecord.Stage(
-                                        SESSION_START_TIME.plusSeconds(300),
-                                        SESSION_START_TIME.plusSeconds(600),
-                                        SleepSessionRecord.StageType.STAGE_TYPE_SLEEPING_REM),
-                                new SleepSessionRecord.Stage(
-                                        SESSION_START_TIME.plusSeconds(900),
-                                        SESSION_START_TIME.plusSeconds(1200),
-                                        SleepSessionRecord.StageType.STAGE_TYPE_SLEEPING_DEEP)))
-                .build();
     }
 
     public static void startMigration() throws InterruptedException {
@@ -914,129 +596,6 @@ public final class TestUtils {
         }
 
         throw new AssertionError("Record not found with id: " + id);
-    }
-
-    public static Metadata generateMetadata() {
-        Context context = ApplicationProvider.getApplicationContext();
-        return new Metadata.Builder()
-                .setDevice(buildDevice())
-                .setId(UUID.randomUUID().toString())
-                .setClientRecordId("clientRecordId" + Math.random())
-                .setDataOrigin(
-                        new DataOrigin.Builder().setPackageName(context.getPackageName()).build())
-                .setDevice(buildDevice())
-                .setRecordingMethod(Metadata.RECORDING_METHOD_UNKNOWN)
-                .build();
-    }
-
-    public static HeartRateRecord getHugeHeartRateRecord() {
-        Device device =
-                new Device.Builder()
-                        .setManufacturer("google")
-                        .setModel("Pixel4a")
-                        .setType(2)
-                        .build();
-        DataOrigin dataOrigin =
-                new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
-        Metadata.Builder testMetadataBuilder = new Metadata.Builder();
-        testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        testMetadataBuilder.setClientRecordId("HRR" + Math.random());
-        testMetadataBuilder.setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED);
-
-        HeartRateRecord.HeartRateSample heartRateRecord =
-                new HeartRateRecord.HeartRateSample(10, Instant.now().plusMillis(100));
-        ArrayList<HeartRateRecord.HeartRateSample> heartRateRecords =
-                new ArrayList<>(Collections.nCopies(85000, heartRateRecord));
-
-        return new HeartRateRecord.Builder(
-                        testMetadataBuilder.build(),
-                        Instant.now(),
-                        Instant.now().plusMillis(500),
-                        heartRateRecords)
-                .build();
-    }
-
-    /** Creates and returns a {@link StepsRecord} with default arguments. */
-    public static StepsRecord getCompleteStepsRecord() {
-        return getCompleteStepsRecord(
-                Instant.now(),
-                Instant.now().plusMillis(1000),
-                /* clientRecordId= */ "SR" + Math.random());
-    }
-
-    /** Creates and returns a {@link StepsRecord} with the specified arguments. */
-    public static StepsRecord getCompleteStepsRecord(
-            Instant startTime, Instant endTime, String clientRecordId) {
-        Device device =
-                new Device.Builder().setManufacturer("google").setModel("Pixel").setType(1).build();
-        DataOrigin dataOrigin =
-                new DataOrigin.Builder().setPackageName("android.healthconnect.cts").build();
-
-        Metadata.Builder testMetadataBuilder = new Metadata.Builder();
-        testMetadataBuilder.setDevice(device).setDataOrigin(dataOrigin);
-        testMetadataBuilder.setClientRecordId(clientRecordId);
-        testMetadataBuilder.setRecordingMethod(RECORDING_METHOD_ACTIVELY_RECORDED);
-        Metadata testMetaData = testMetadataBuilder.build();
-        assertThat(testMetaData.getRecordingMethod()).isEqualTo(RECORDING_METHOD_ACTIVELY_RECORDED);
-        return new StepsRecord.Builder(testMetaData, startTime, endTime, 10).build();
-    }
-
-    public static StepsRecord getStepsRecord_update(
-            Record record, String id, String clientRecordId) {
-        Metadata metadata = record.getMetadata();
-        Metadata metadataWithId =
-                new Metadata.Builder()
-                        .setId(id)
-                        .setClientRecordId(clientRecordId)
-                        .setClientRecordVersion(metadata.getClientRecordVersion())
-                        .setDataOrigin(metadata.getDataOrigin())
-                        .setDevice(metadata.getDevice())
-                        .setLastModifiedTime(metadata.getLastModifiedTime())
-                        .build();
-        return new StepsRecord.Builder(
-                        metadataWithId, Instant.now(), Instant.now().plusMillis(2000), 20)
-                .setStartZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
-                .setEndZoneOffset(ZoneOffset.systemDefault().getRules().getOffset(Instant.now()))
-                .build();
-    }
-
-    private static ExerciseSessionRecord buildExerciseSession(
-            ExerciseRoute route, String title, String notes) {
-        return new ExerciseSessionRecord.Builder(
-                        generateMetadata(),
-                        SESSION_START_TIME,
-                        SESSION_END_TIME,
-                        ExerciseSessionType.EXERCISE_SESSION_TYPE_OTHER_WORKOUT)
-                .setRoute(route)
-                .setLaps(
-                        List.of(
-                                new ExerciseLap.Builder(
-                                                SESSION_START_TIME,
-                                                SESSION_START_TIME.plusSeconds(20))
-                                        .setLength(Length.fromMeters(10))
-                                        .build(),
-                                new ExerciseLap.Builder(
-                                                SESSION_END_TIME.minusSeconds(20), SESSION_END_TIME)
-                                        .build()))
-                .setSegments(
-                        List.of(
-                                new ExerciseSegment.Builder(
-                                                SESSION_START_TIME.plusSeconds(1),
-                                                SESSION_START_TIME.plusSeconds(10),
-                                                ExerciseSegmentType
-                                                        .EXERCISE_SEGMENT_TYPE_BENCH_PRESS)
-                                        .build(),
-                                new ExerciseSegment.Builder(
-                                                SESSION_START_TIME.plusSeconds(21),
-                                                SESSION_START_TIME.plusSeconds(124),
-                                                ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_BURPEE)
-                                        .setRepetitionsCount(15)
-                                        .build()))
-                .setEndZoneOffset(ZoneOffset.MAX)
-                .setStartZoneOffset(ZoneOffset.MIN)
-                .setNotes(notes)
-                .setTitle(title)
-                .build();
     }
 
     public static void populateAndResetExpectedResponseMap(
@@ -1130,6 +689,10 @@ public final class TestUtils {
                 new RecordTypeInfoTestResponse(
                         VITALS, HealthPermissionCategory.RESTING_HEART_RATE, new ArrayList<>()));
         expectedResponseMap.put(
+                SkinTemperatureRecord.class,
+                new RecordTypeInfoTestResponse(
+                        VITALS, HealthPermissionCategory.SKIN_TEMPERATURE, new ArrayList<>()));
+        expectedResponseMap.put(
                 ActiveCaloriesBurnedRecord.class,
                 new RecordTypeInfoTestResponse(
                         ACTIVITY,
@@ -1209,6 +772,9 @@ public final class TestUtils {
                 BasalMetabolicRateRecord.class,
                 new RecordTypeInfoTestResponse(
                         BODY_MEASUREMENTS, BASAL_METABOLIC_RATE, new ArrayList<>()));
+        expectedResponseMap.put(
+                PlannedExerciseSessionRecord.class,
+                new RecordTypeInfoTestResponse(ACTIVITY, PLANNED_EXERCISE, new ArrayList<>()));
     }
 
     public static FetchDataOriginsPriorityOrderResponse fetchDataOriginsPriorityOrder(
@@ -1230,131 +796,6 @@ public final class TestUtils {
         receiver.verifyNoExceptionOrThrow();
     }
 
-    public static void grantPermission(String pkgName, String permission) {
-        HealthConnectManager service = getHealthConnectManager();
-        runWithShellPermissionIdentity(
-                () ->
-                        service.getClass()
-                                .getMethod("grantHealthPermission", String.class, String.class)
-                                .invoke(service, pkgName, permission),
-                MANAGE_HEALTH_PERMISSIONS);
-    }
-
-    public static void revokePermission(String pkgName, String permission) {
-        HealthConnectManager service = getHealthConnectManager();
-        runWithShellPermissionIdentity(
-                () ->
-                        service.getClass()
-                                .getMethod(
-                                        "revokeHealthPermission",
-                                        String.class,
-                                        String.class,
-                                        String.class)
-                                .invoke(service, pkgName, permission, null),
-                MANAGE_HEALTH_PERMISSIONS);
-    }
-
-    /**
-     * Utility method to call {@link HealthConnectManager#revokeAllHealthPermissions(String,
-     * String)}.
-     */
-    public static void revokeAllPermissions(String packageName, @Nullable String reason) {
-        HealthConnectManager service = getHealthConnectManager();
-        runWithShellPermissionIdentity(
-                () ->
-                        service.getClass()
-                                .getMethod("revokeAllHealthPermissions", String.class, String.class)
-                                .invoke(service, packageName, reason),
-                MANAGE_HEALTH_PERMISSIONS);
-    }
-
-    /**
-     * Same as {@link #revokeAllPermissions(String, String)} but with a delay to wait for grant time
-     * to be updated.
-     */
-    public static void revokeAllPermissionsWithDelay(String packageName, @Nullable String reason)
-            throws InterruptedException {
-        revokeAllPermissions(packageName, reason);
-        Thread.sleep(500);
-    }
-
-    /**
-     * Utility method to call {@link
-     * HealthConnectManager#getHealthDataHistoricalAccessStartDate(String)}.
-     */
-    public static Instant getHealthDataHistoricalAccessStartDate(String packageName) {
-        HealthConnectManager service = getHealthConnectManager();
-        return (Instant)
-                runWithShellPermissionIdentity(
-                        () ->
-                                service.getClass()
-                                        .getMethod(
-                                                "getHealthDataHistoricalAccessStartDate",
-                                                String.class)
-                                        .invoke(service, packageName),
-                        MANAGE_HEALTH_PERMISSIONS);
-    }
-
-    public static void revokeHealthPermissions(String packageName) {
-        runWithShellPermissionIdentity(() -> revokeHealthPermissionsPrivileged(packageName));
-    }
-
-    private static void revokeHealthPermissionsPrivileged(String packageName)
-            throws PackageManager.NameNotFoundException {
-        final Context targetContext = androidx.test.InstrumentationRegistry.getTargetContext();
-        final PackageManager packageManager = targetContext.getPackageManager();
-        final UserHandle user = targetContext.getUser();
-
-        final PackageInfo packageInfo =
-                packageManager.getPackageInfo(
-                        packageName,
-                        PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
-
-        final String[] permissions = packageInfo.requestedPermissions;
-        if (permissions == null) {
-            return;
-        }
-
-        for (String permission : permissions) {
-            if (permission.startsWith(HEALTH_PERMISSION_PREFIX)) {
-                packageManager.revokeRuntimePermission(packageName, permission, user);
-            }
-        }
-    }
-
-    public static List<String> getGrantedHealthPermissions(String pkgName) {
-        final PackageInfo pi = getAppPackageInfo(pkgName);
-        final String[] requestedPermissions = pi.requestedPermissions;
-        final int[] requestedPermissionsFlags = pi.requestedPermissionsFlags;
-
-        if (requestedPermissions == null) {
-            return List.of();
-        }
-
-        final List<String> permissions = new ArrayList<>();
-
-        for (int i = 0; i < requestedPermissions.length; i++) {
-            if ((requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
-                if (requestedPermissions[i].startsWith(HEALTH_PERMISSION_PREFIX)) {
-                    permissions.add(requestedPermissions[i]);
-                }
-            }
-        }
-
-        return permissions;
-    }
-
-    private static PackageInfo getAppPackageInfo(String pkgName) {
-        final Context targetContext = androidx.test.InstrumentationRegistry.getTargetContext();
-        return runWithShellPermissionIdentity(
-                () ->
-                        targetContext
-                                .getPackageManager()
-                                .getPackageInfo(
-                                        pkgName,
-                                        PackageManager.PackageInfoFlags.of(GET_PERMISSIONS)));
-    }
-
     public static void deleteTestData() throws InterruptedException {
         verifyDeleteRecords(
                 new DeleteUsingFiltersRequest.Builder()
@@ -1368,17 +809,6 @@ public final class TestUtils {
                         .addRecordType(HeartRateRecord.class)
                         .addRecordType(BasalMetabolicRateRecord.class)
                         .build());
-    }
-
-    /** Revokes all granted Health permissions and re-grants them back. */
-    public static void revokeAndThenGrantHealthPermissions(String packageName) {
-        List<String> healthPerms = getGrantedHealthPermissions(packageName);
-
-        revokeHealthPermissions(packageName);
-
-        for (String perm : healthPerms) {
-            grantPermission(packageName, perm);
-        }
     }
 
     public static String runShellCommand(String command) throws IOException {
@@ -1405,7 +835,7 @@ public final class TestUtils {
     }
 
     @NonNull
-    private static HealthConnectManager getHealthConnectManager() {
+    static HealthConnectManager getHealthConnectManager() {
         return getHealthConnectManager(ApplicationProvider.getApplicationContext());
     }
 
@@ -1415,11 +845,40 @@ public final class TestUtils {
     }
 
     public static String getDeviceConfigValue(String key) {
-        return SystemUtil.runShellCommand("device_config get health_fitness " + key);
+        return runWithShellPermissionIdentity(
+                () -> DeviceConfig.getProperty(DeviceConfig.NAMESPACE_HEALTH_FITNESS, key),
+                READ_DEVICE_CONFIG);
     }
 
     public static void setDeviceConfigValue(String key, String value) {
-        SystemUtil.runShellCommand("device_config put health_fitness " + key + " " + value);
+        runWithShellPermissionIdentity(
+                () ->
+                        DeviceConfig.setProperty(
+                                DeviceConfig.NAMESPACE_HEALTH_FITNESS, key, value, false),
+                WRITE_ALLOWLISTED_DEVICE_CONFIG);
+    }
+
+    /** Reads {@link StepsRecord}s using record IDs. */
+    public static void readStepsRecordsUsingRecordIdsViaTestApp(
+            Context context, List<String> recordIds) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_RECORD_IDS, new ArrayList<>(recordIds));
+        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_RECORD_IDS, extras);
+    }
+
+    /** Reads {@link StepsRecord}s using package name filters. */
+    public static void readStepsRecordsUsingFiltersViaTestApp(
+            Context context, List<String> packageNameFilters) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
+        sendCommandToTestAppReceiver(context, ACTION_READ_STEPS_RECORDS_USING_FILTERS, extras);
+    }
+
+    /** Aggregates {@link StepsRecord}s using package name filters. */
+    public static void aggregateStepsCount(Context context, List<String> packageNameFilters) {
+        Bundle extras = new Bundle();
+        extras.putStringArrayList(EXTRA_PACKAGE_NAMES, new ArrayList<>(packageNameFilters));
+        sendCommandToTestAppReceiver(context, ACTION_AGGREGATE_STEPS_COUNT, extras);
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action) {
@@ -1427,6 +886,11 @@ public final class TestUtils {
     }
 
     public static void sendCommandToTestAppReceiver(Context context, String action, Bundle extras) {
+        // This call to reset() is important!
+        // reset() needs to be called every time before a call is made to the test app, otherwise,
+        // TestReceiver won't receive the result from the test app.
+        android.healthconnect.cts.utils.TestReceiver.reset();
+
         final Intent intent = new Intent(action).setClassName(PKG_TEST_APP, TEST_APP_RECEIVER);
         intent.putExtra(EXTRA_SENDER_PACKAGE_NAME, context.getPackageName());
         if (extras != null) {
@@ -1436,40 +900,70 @@ public final class TestUtils {
     }
 
     /** Sets up the priority list for aggregation tests. */
-    public static void setupAggregation(String packageName, int dataCategory)
-            throws InterruptedException {
-        insertRecordsForPriority(packageName);
+    public static void setupAggregation(String packageName, int dataCategory) {
+        try {
+            setupAggregation(
+                    record -> insertRecords(Collections.singletonList(record)),
+                    packageName,
+                    dataCategory);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        // Add the packageName inserting the records to the priority list manually
+    /** Sets up the priority list for aggregation tests. */
+    public static void setupAggregation(
+            ThrowingConsumer<Record> inserter, String packageName, int dataCategory)
+            throws Exception {
+        inserter.acceptOrThrow(getAnUnaggregatableRecord(packageName));
+        setupAggregation(List.of(packageName), dataCategory);
+    }
+
+    /**
+     * Sets up the priority list for aggregation tests.
+     *
+     * <p>In order for this method to work, eac of the {@code packageNames} needs to have at least
+     * one record of any type in the HC DB before this method is called.
+     *
+     * <p>This is mainly used to setup priority list for a test app, so a test can read aggregation
+     * of data inserted by a test app. It would be nicer if this method take an instance of a test
+     * app such as {@code TestAppProxy}, however, it would requires this TestUtils class depends on
+     * the dependency where the TestAppProxy comes from, which then would create a dependency cycle
+     * because TestAppProxy's dependency is already using this TestUtils class.
+     */
+    public static void setupAggregation(List<String> packageNames, int dataCategory)
+            throws Exception {
+        // Add the packageNames inserting the records to the priority list manually
         // Since CTS tests get their permissions granted at install time and skip
         // the Health Connect APIs that would otherwise add the packageName to the priority list
-
-        updatePriorityWithManageHealthDataPermission(dataCategory, Arrays.asList(packageName));
+        updatePriorityWithManageHealthDataPermission(dataCategory, packageNames);
         FetchDataOriginsPriorityOrderResponse newPriority =
                 getPriorityWithManageHealthDataPermission(dataCategory);
         List<String> newPriorityString =
                 newPriority.getDataOriginsPriorityOrder().stream()
                         .map(DataOrigin::getPackageName)
                         .toList();
-        assertThat(newPriorityString.size()).isEqualTo(1);
-        assertThat(newPriorityString.get(0)).isEqualTo(packageName);
+        assertThat(newPriorityString).isEqualTo(packageNames);
     }
 
     /** Inserts a record that does not support aggregation to enable the priority list. */
     public static void insertRecordsForPriority(String packageName) throws InterruptedException {
         // Insert records that do not support aggregation so that the AppInfoTable is initialised
-        MenstruationPeriodRecord recordToInsert =
-                new MenstruationPeriodRecord.Builder(
-                                new Metadata.Builder()
-                                        .setDataOrigin(
-                                                new DataOrigin.Builder()
-                                                        .setPackageName(packageName)
-                                                        .build())
-                                        .build(),
-                                Instant.now(),
-                                Instant.now().plusMillis(1000))
-                        .build();
-        insertRecords(Arrays.asList(recordToInsert));
+        insertRecords(List.of(getAnUnaggregatableRecord(packageName)));
+    }
+
+    /** Returns a {@link Record} that does not support aggregation. */
+    private static Record getAnUnaggregatableRecord(String packageName) {
+        return new MenstruationPeriodRecord.Builder(
+                        new Metadata.Builder()
+                                .setDataOrigin(
+                                        new DataOrigin.Builder()
+                                                .setPackageName(packageName)
+                                                .build())
+                                .build(),
+                        NOW,
+                        NOW.plusMillis(1000))
+                .build();
     }
 
     /** Updates the priority list after getting the MANAGE_HEALTH_DATA permission. */
@@ -1599,6 +1093,24 @@ public final class TestUtils {
         return response.get();
     }
 
+    /**
+     * Marks apps with any granted health permissions as connected to HC.
+     *
+     * <p>Test apps in CTS get their permissions auto granted without going through the HC
+     * connection flow which prevents the HC service from recording the app info in the database.
+     *
+     * <p>This method calls "getCurrentPriority" API behind the scenes which has a side effect of
+     * adding all the apps on the device with at least one health permission granted to the
+     * database.
+     */
+    public static void connectAppsWithGrantedPermissions() {
+        try {
+            getPriorityWithManageHealthDataPermission(1);
+        } catch (InterruptedException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     /** Zips given id and records lists to create a list of {@link RecordIdFilter}. */
     public static List<RecordIdFilter> getRecordIdFilters(
             List<String> recordIds, List<Record> records) {
@@ -1612,61 +1124,99 @@ public final class TestUtils {
                 .toList();
     }
 
-    public static Metadata getEmptyMetadata() {
-        return new Metadata.Builder().build();
-    }
-
-    /** Creates a {@link Metadata} with the given record id. */
-    public static Metadata getMetadataForId(String id) {
-        return new Metadata.Builder().setId(id).build();
-    }
-
-    /** Creates a {@link Metadata} with the given record id and data origin. */
-    public static Metadata getMetadataForId(String id, DataOrigin dataOrigin) {
-        return new Metadata.Builder().setId(id).setDataOrigin(dataOrigin).build();
-    }
-
-    /** Creates a {@link Metadata} with the given client record id. */
-    public static Metadata getMetadataForClientId(String clientId) {
-        return new Metadata.Builder().setClientRecordId(clientId).build();
-    }
-
-    /** Creates a {@link Metadata} with the given client record id and data origin. */
-    public static Metadata getMetadataForClientId(String clientId, DataOrigin dataOrigin) {
-        return new Metadata.Builder().setClientRecordId(clientId).setDataOrigin(dataOrigin).build();
-    }
-
-    /** Creates a {@link Metadata} with the given data origin. */
-    public static Metadata getMetadata(DataOrigin dataOrigin) {
-        return new Metadata.Builder().setDataOrigin(dataOrigin).build();
-    }
-
-    /** Creates a {@link DataOrigin} with the given package name. */
-    public static DataOrigin getDataOrigin(String packageName) {
-        return new DataOrigin.Builder().setPackageName(packageName).build();
-    }
-
-    /** Creates a list of {@link DataOrigin} from a list of package names. */
-    public static List<DataOrigin> getDataOrigins(String... packageNames) {
-        return Arrays.stream(packageNames).map(TestUtils::getDataOrigin).toList();
-    }
-
-    /** Creates a {@link ExerciseRoute.Location}. */
-    public static ExerciseRoute.Location getLocation(
-            Instant time, double latitude, double longitude) {
-        return new ExerciseRoute.Location.Builder(time, latitude, longitude).build();
-    }
-
-    /** Creates a {@link ExerciseRoute} with given locations. */
-    public static ExerciseRoute getExerciseRoute(ExerciseRoute.Location... locations) {
-        return new ExerciseRoute(Arrays.asList(locations));
-    }
-
     /** Creates an {@link Instant} representing the given local time yesterday at UTC. */
     public static Instant yesterdayAt(String localTime) {
         return LocalTime.parse(localTime)
                 .atDate(LocalDate.now().minusDays(1))
                 .toInstant(ZoneOffset.UTC);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertStepsRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime, long value) {
+        return insertStepsRecordViaTestApp(
+                context, startTime, endTime, /* clientId= */ null, value);
+    }
+
+    /** Inserts {@link StepsRecord} via test app with the specified data. */
+    public static String insertStepsRecordViaTestApp(
+            Context context, Instant startTime, Instant endTime, String clientId, long value) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {startTime.toEpochMilli()});
+        bundle.putLongArray(EXTRA_END_TIMES, new long[] {endTime.toEpochMilli()});
+        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
+        bundle.putLongArray(EXTRA_RECORD_VALUES, new long[] {value});
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_STEPS_RECORDS, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Inserts {@link WeightRecord} via test app with the specified data. */
+    public static String insertWeightRecordViaTestApp(Context context, Instant time, double value) {
+        return insertWeightRecordViaTestApp(context, time, /* clientId= */ null, value);
+    }
+
+    /** Inserts {@link WeightRecord} via test app with the specified data. */
+    public static String insertWeightRecordViaTestApp(
+            Context context, Instant time, String clientId, double value) {
+        Bundle bundle = new Bundle();
+        bundle.putLongArray(EXTRA_TIMES, new long[] {time.toEpochMilli()});
+        bundle.putStringArray(EXTRA_RECORD_CLIENT_IDS, new String[] {clientId});
+        bundle.putDoubleArray(EXTRA_RECORD_VALUES, new double[] {value});
+        sendCommandToTestAppReceiver(context, ACTION_INSERT_WEIGHT_RECORDS, bundle);
+        return android.healthconnect.cts.utils.TestReceiver.getResult()
+                .getStringArrayList(EXTRA_RECORD_IDS)
+                .get(0);
+    }
+
+    /** Extracts and returns ids of the provided records. */
+    public static List<String> getRecordIds(List<? extends Record> records) {
+        return records.stream().map(Record::getMetadata).map(Metadata::getId).toList();
+    }
+
+    /**
+     * Creates a {@link ReadRecordsRequestUsingFilters} with the filters being a {@code clazz} and a
+     * list of package names.
+     */
+    public static <T extends Record>
+            ReadRecordsRequestUsingFilters<T> createReadRecordsRequestUsingFilters(
+                    Class<T> clazz, Collection<String> packageNameFilters) {
+        ReadRecordsRequestUsingFilters.Builder<T> builder =
+                new ReadRecordsRequestUsingFilters.Builder<>(clazz);
+        for (String packageName : packageNameFilters) {
+            builder.addDataOrigins(getDataOrigin(packageName));
+        }
+        return builder.build();
+    }
+
+    /** Copies record ids from the one list to another in order. Workaround for b/328228842. */
+    // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
+    public static void copyRecordIdsViaReflection(
+            List<? extends Record> from, List<? extends Record> to) {
+        assertThat(from).hasSize(to.size());
+
+        for (int i = 0; i < from.size(); i++) {
+            copyRecordIdViaReflection(from.get(i), to.get(i));
+        }
+    }
+
+    // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
+    private static void copyRecordIdViaReflection(Record from, Record to) {
+        setRecordIdViaReflection(to.getMetadata(), from.getMetadata().getId());
+    }
+
+    // TODO(b/328228842): Avoid using reflection once we have Builder(Record) constructors
+    private static void setRecordIdViaReflection(Metadata metadata, String id) {
+        try {
+            Field field = Metadata.class.getDeclaredField("mId");
+            boolean isAccessible = field.isAccessible();
+            field.setAccessible(true);
+            field.set(metadata, id);
+            field.setAccessible(isAccessible);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static final class RecordAndIdentifier {
@@ -1714,24 +1264,6 @@ public final class TestUtils {
         }
     }
 
-    public static class RecordTypeAndRecordIds implements Serializable {
-        private String mRecordType;
-        private List<String> mRecordIds;
-
-        public RecordTypeAndRecordIds(String recordType, List<String> ids) {
-            mRecordType = recordType;
-            mRecordIds = ids;
-        }
-
-        public String getRecordType() {
-            return mRecordType;
-        }
-
-        public List<String> getRecordIds() {
-            return mRecordIds;
-        }
-    }
-
     private static class TestReceiver<T, E extends RuntimeException>
             implements OutcomeReceiver<T, E> {
         private final CountDownLatch mLatch = new CountDownLatch(1);
@@ -1767,5 +1299,24 @@ public final class TestUtils {
     private static final class HealthConnectReceiver<T>
             extends TestReceiver<T, HealthConnectException> {}
 
-    private static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+    public static final class MigrationReceiver extends TestReceiver<Void, MigrationException> {}
+
+    /**
+     * A {@link Consumer} that allows throwing checked exceptions from its single abstract method.
+     */
+    @FunctionalInterface
+    @SuppressWarnings("FunctionalInterfaceMethodChanged")
+    public interface ThrowingConsumer<T> extends Consumer<T> {
+        /** Implementations of this method might throw exception. */
+        void acceptOrThrow(T t) throws Exception;
+
+        @Override
+        default void accept(T t) {
+            try {
+                acceptOrThrow(t);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
 }

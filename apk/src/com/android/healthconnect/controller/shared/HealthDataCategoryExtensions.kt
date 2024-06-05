@@ -109,6 +109,7 @@ private object CategoriesMappers {
             HealthPermissionType.TOTAL_CALORIES_BURNED,
             HealthPermissionType.VO2_MAX,
             HealthPermissionType.WHEELCHAIR_PUSHES,
+            HealthPermissionType.PLANNED_EXERCISE,
         )
 
     val BODY_MEASUREMENTS_PERMISSION_GROUPS =
@@ -144,7 +145,8 @@ private object CategoriesMappers {
             HealthPermissionType.HEART_RATE_VARIABILITY,
             HealthPermissionType.OXYGEN_SATURATION,
             HealthPermissionType.RESPIRATORY_RATE,
-            HealthPermissionType.RESTING_HEART_RATE)
+            HealthPermissionType.RESTING_HEART_RATE,
+            HealthPermissionType.SKIN_TEMPERATURE)
 }
 
 /** List of available Health data categories. */

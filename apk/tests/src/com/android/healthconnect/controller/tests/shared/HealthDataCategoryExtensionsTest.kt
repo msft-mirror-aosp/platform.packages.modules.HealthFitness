@@ -25,7 +25,7 @@ import android.health.connect.HealthDataCategory.NUTRITION
 import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -56,12 +56,15 @@ class HealthDataCategoryExtensionsTest {
 
     @Test
     fun allHealthPermission_haveParentCategory() {
-        val allPermissions = healthPermissionReader.getHealthPermissions()
+        val allPermissions =
+            healthPermissionReader.getHealthPermissions().filterNot { perm ->
+                healthPermissionReader.isAdditionalPermission(perm)
+            }
         for (permissionString in allPermissions) {
-            val healthPermission = HealthPermission.fromPermissionString(permissionString)
+            val dataTypePermission = DataTypePermission.fromPermissionString(permissionString)
             assertThat(
                     HEALTH_DATA_CATEGORIES.any {
-                        it.healthPermissionTypes().contains(healthPermission.healthPermissionType)
+                        it.healthPermissionTypes().contains(dataTypePermission.healthPermissionType)
                     })
                 .isEqualTo(true)
         }
@@ -108,6 +111,8 @@ class HealthDataCategoryExtensionsTest {
     @Test
     fun fromHealthPermissionType() {
         assertThat(fromHealthPermissionType(HealthPermissionType.HEART_RATE)).isEqualTo(VITALS)
+        assertThat(fromHealthPermissionType(HealthPermissionType.PLANNED_EXERCISE))
+            .isEqualTo(ACTIVITY)
         assertThat(fromHealthPermissionType(HealthPermissionType.EXERCISE_ROUTE))
             .isEqualTo(ACTIVITY)
     }

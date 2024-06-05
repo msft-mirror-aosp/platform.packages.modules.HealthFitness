@@ -33,8 +33,12 @@ class HealthPermissionManagerImpl @Inject constructor(private val manager: Healt
         return manager.getHealthPermissionsFlags(packageName, permissions)
     }
 
-    override fun makeHealthPermissionsRequestable(packageName: String, permissions: List<String>) {
-        manager.makeHealthPermissionsRequestable(packageName, permissions)
+    override fun setHealthPermissionsUserFixedFlagValue(
+        packageName: String,
+        permissions: List<String>,
+        value: Boolean
+    ) {
+        manager.setHealthPermissionsUserFixedFlagValue(packageName, permissions, value)
     }
 
     override fun grantHealthPermission(packageName: String, permissionName: String) {
@@ -50,6 +54,6 @@ class HealthPermissionManagerImpl @Inject constructor(private val manager: Healt
     }
 
     override fun loadStartAccessDate(packageName: String?): Instant? {
-        return manager.getHealthDataHistoricalAccessStartDate(packageName)
+        return packageName?.let { manager.getHealthDataHistoricalAccessStartDate(it) }
     }
 }

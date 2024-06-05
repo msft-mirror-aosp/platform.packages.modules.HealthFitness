@@ -19,6 +19,7 @@ import android.content.Context
 import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RadioButton
@@ -71,6 +72,8 @@ constructor(
                 inflater.inflate(R.layout.widget_auto_delete_range_picker, widgetFrameParent, false)
                     as ViewGroup?
             widgetFrameParent.addView(autoDeleteWidget, 0)
+            widgetFrameParent.isFocusable = false
+            widgetFrameParent.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }
 
         val radioGroup: RadioGroup = holder.findViewById(R.id.radio_group_time_range) as RadioGroup

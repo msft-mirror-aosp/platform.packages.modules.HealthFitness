@@ -8,6 +8,11 @@
         android:id="@+id/migrationNavigationFragment"
         android:name="com.android.healthconnect.controller.migration.MigrationNavigationFragment">
         <action
+            android:id="@+id/action_migrationNavigationFragment_to_dataRestoreInProgressFragment"
+            app:popUpTo="@id/migrationNavigationFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/dataRestoreInProgressFragment"/>
+        <action
             android:id="@+id/action_migrationNavigationFragment_to_migrationInProgressFragment"
             app:popUpTo="@id/migrationNavigationFragment"
             app:popUpToInclusive="true"
@@ -34,6 +39,10 @@
     <fragment
         android:id="@+id/migrationInProgressFragment"
         android:name="com.android.healthconnect.controller.migration.MigrationInProgressFragment">
+    </fragment>
+    <fragment
+        android:id="@+id/dataRestoreInProgressFragment"
+        android:name="com.android.healthconnect.controller.migration.DataRestoreInProgressFragment">
     </fragment>
 
     <fragment
