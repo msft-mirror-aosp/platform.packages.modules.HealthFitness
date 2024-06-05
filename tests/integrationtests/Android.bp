@@ -43,6 +43,7 @@ android_test {
         "src/android/healthconnect/tests/backuprestore/*.java",
     ],
     min_sdk_version: "34",
+    target_sdk_version: "34",
     sdk_version: "module_current",
     test_config: "AndroidTestBackupRestore.xml",
     manifest: "AndroidManifestBackupRestore.xml",
@@ -81,6 +82,7 @@ android_test {
         "src/android/healthconnect/tests/exportimport/*.java",
     ],
     min_sdk_version: "34",
+    target_sdk_version: "34",
     sdk_version: "module_current",
     data: [
         ":HealthFitnessPermsTestApp",
@@ -112,6 +114,7 @@ android_test {
     ],
     min_sdk_version: "34",
     sdk_version: "module_current",
+    target_sdk_version: "34",
     test_config: "AndroidTestExportImport.xml",
     manifest: "AndroidManifestExportImport.xml",
     data: [

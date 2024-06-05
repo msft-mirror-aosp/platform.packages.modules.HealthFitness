@@ -16,6 +16,8 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.LAST_MODIFIED_TIME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
@@ -26,11 +28,14 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGE
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY_AUTOINCREMENT;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.internal.datatypes.MedicalResourceInternal;
@@ -43,6 +48,7 @@ import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 import com.android.server.healthconnect.storage.utils.WhereClauses;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,19 +67,9 @@ public class MedicalResourceHelper {
     private static final List<Pair<String, Integer>> UNIQUE_COLUMNS_INFO =
             List.of(new Pair<>(UUID_COLUMN_NAME, UpsertTableRequest.TYPE_BLOB));
 
-    @Nullable private static MedicalResourceHelper sMedicalResourceHelper;
-
     @NonNull
     public String getMainTableName() {
         return MEDICAL_RESOURCE_TABLE_NAME;
-    }
-
-    /** Returns an instance of MedicalResourceHelper class. */
-    public static synchronized MedicalResourceHelper getInstance() {
-        if (sMedicalResourceHelper == null) {
-            sMedicalResourceHelper = new MedicalResourceHelper();
-        }
-        return sMedicalResourceHelper;
     }
 
     @NonNull
@@ -138,5 +134,35 @@ public class MedicalResourceHelper {
                 DATA_SOURCE_ID_COLUMN_NAME, medicalResourceInternal.getDataSourceId());
         resourceContentValues.put(FHIR_DATA_COLUMN_NAME, medicalResourceInternal.getData());
         return resourceContentValues;
+    }
+
+    /**
+     * Returns List of {@code MedicalResourceInternal}s from the cursor. If the cursor contains more
+     * than {@link MAXIMUM_ALLOWED_CURSOR_COUNT} records, it throws {@link
+     * IllegalArgumentException}.
+     */
+    public List<MedicalResourceInternal> getMedicalResourceInternals(Cursor cursor) {
+        if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
+            throw new IllegalArgumentException(
+                    "Too many resources in the cursor. Max allowed: "
+                            + MAXIMUM_ALLOWED_CURSOR_COUNT);
+        }
+        List<MedicalResourceInternal> medicalResourceInternals = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                medicalResourceInternals.add(getMedicalResource(cursor));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return medicalResourceInternals;
+    }
+
+    private static MedicalResourceInternal getMedicalResource(Cursor cursor) {
+        MedicalResourceInternal resource = new MedicalResourceInternal();
+        resource.setUuid(getCursorUUID(cursor, UUID_COLUMN_NAME));
+        resource.setType(getCursorInt(cursor, RESOURCE_TYPE_COLUMN_NAME));
+        resource.setDataSourceId(String.valueOf(getCursorInt(cursor, DATA_SOURCE_ID_COLUMN_NAME)));
+        resource.setData(getCursorString(cursor, FHIR_DATA_COLUMN_NAME));
+        return resource;
     }
 }

@@ -22,6 +22,7 @@ import static com.android.server.healthconnect.permission.FirstGrantTimeDatastor
 import static com.android.server.healthconnect.permission.FirstGrantTimeDatastore.DATA_TYPE_STAGED;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth8.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -52,7 +53,6 @@ import androidx.test.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
@@ -63,6 +63,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -104,7 +105,6 @@ public class FirstGrantTimeUnitTest {
         when(mContext.getPackageManager()).thenReturn(mPackageManager);
         when(mContext.getSystemService(UserManager.class)).thenReturn(mUserManager);
         when(mUserManager.isUserUnlocked()).thenReturn(true);
-        PackageInfoUtils.setInstanceForTest(/* instance= */ null);
 
         mUiAutomation.adoptShellPermissionIdentity(
                 "android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS");
@@ -114,6 +114,7 @@ public class FirstGrantTimeUnitTest {
     @After
     public void tearDown() throws Exception {
         waitForAllScheduledTasksToComplete();
+        PackageInfoUtils.clearInstance();
     }
 
     @Test
@@ -136,7 +137,8 @@ public class FirstGrantTimeUnitTest {
             when(mPackageInfoUtils.getPackageUid(
                             eq(packageName), any(UserHandle.class), any(Context.class)))
                     .thenReturn(uid);
-            when(mPackageInfoUtils.getPackageNameFromUid(eq(uid))).thenReturn(packageName);
+            when(mPackageInfoUtils.getPackageNameFromUid(eq(uid)))
+                    .thenReturn(Optional.of(packageName));
         }
         when(mPackageInfoUtils.getPackagesHoldingHealthPermissions(
                         any(UserHandle.class), any(Context.class)))
@@ -155,9 +157,9 @@ public class FirstGrantTimeUnitTest {
                 ArgumentCaptor.forClass(UserGrantTimeState.class);
 
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(instant1);
+                .hasValue(instant1);
         assertThat(mGrantTimeManager.getFirstGrantTime(anotherPackage, CURRENT_USER))
-                .isEqualTo(instant2);
+                .hasValue(instant2);
 
         mGrantTimeManager.setFirstGrantTime(SELF_PACKAGE_NAME, instant3, CURRENT_USER);
         verify(mDatastore).writeForUser(captor.capture(), eq(CURRENT_USER), anyInt());
@@ -179,7 +181,7 @@ public class FirstGrantTimeUnitTest {
     public void testCurrentPackage_intentNotSupported_grantTimeIsNull() {
         when(mTracker.supportsPermissionUsageIntent(SELF_PACKAGE_NAME, CURRENT_USER))
                 .thenReturn(false);
-        assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER)).isNull();
+        assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER)).isEmpty();
     }
 
     @Test
@@ -205,7 +207,7 @@ public class FirstGrantTimeUnitTest {
                 .thenReturn(currentGrantTimeState);
 
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(now);
+                .hasValue(now);
     }
 
     @Test
@@ -244,14 +246,19 @@ public class FirstGrantTimeUnitTest {
     }
 
     @Test
-    @Ignore("b/312712918 this test is flaky")
     public void testCurrentPackage_intentSupported_grantTimeIsNotNull() {
-        assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isNotNull();
-        assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isGreaterThan(Instant.now().minusSeconds((long) 1e3));
-        assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isLessThan(Instant.now().plusSeconds((long) 1e3));
+        // Calling getFirstGrantTime will set grant time for the package
+        Optional<Instant> firstGrantTime =
+                mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER);
+        assertThat(firstGrantTime).isPresent();
+
+        assertThat(firstGrantTime.get()).isGreaterThan(Instant.now().minusSeconds((long) 1e3));
+        assertThat(firstGrantTime.get()).isLessThan(Instant.now().plusSeconds((long) 1e3));
+        firstGrantTime.ifPresent(
+                grantTime -> {
+                    assertThat(grantTime).isGreaterThan(Instant.now().minusSeconds((long) 1e3));
+                    assertThat(grantTime).isLessThan(Instant.now().plusSeconds((long) 1e3));
+                });
         verify(mDatastore)
                 .writeForUser(
                         ArgumentMatchers.any(),
@@ -265,29 +272,27 @@ public class FirstGrantTimeUnitTest {
     @Test
     public void testCurrentPackage_noGrantTimeBackupBecameAvailable_grantTimeEqualToStaged() {
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isNotNull();
+                .isPresent();
         Instant backupTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(null, backupTime);
         mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(backupTime);
+                .hasValue(backupTime);
     }
 
     @Test
-    @Ignore("b/312712918 this test is flaky")
     public void testCurrentPackage_noBackup_useRecordedTime() {
         Instant stateTime = Instant.now().minusSeconds((long) 1e5);
         UserGrantTimeState stagedState = setupGrantTimeState(stateTime, null);
 
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(stateTime);
+                .hasValue(stateTime);
         mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(stateTime);
+                .hasValue(stateTime);
     }
 
     @Test
-    @Ignore("b/312712918 this test is flaky")
     public void testCurrentPackage_noBackup_grantTimeEqualToStaged() {
         Instant backupTime = Instant.now().minusSeconds((long) 1e5);
         Instant stateTime = backupTime.plusSeconds(10);
@@ -295,7 +300,7 @@ public class FirstGrantTimeUnitTest {
 
         mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(backupTime);
+                .hasValue(backupTime);
     }
 
     @Test
@@ -305,7 +310,7 @@ public class FirstGrantTimeUnitTest {
 
         mGrantTimeManager.applyAndStageGrantTimeStateForUser(CURRENT_USER, stagedState);
         assertThat(mGrantTimeManager.getFirstGrantTime(SELF_PACKAGE_NAME, CURRENT_USER))
-                .isEqualTo(stateTime);
+                .hasValue(stateTime);
     }
 
     @Test
