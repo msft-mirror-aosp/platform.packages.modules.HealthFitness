@@ -16,6 +16,17 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_PACKAGE_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSource;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalDataSourceBuilder;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalDataSource;
@@ -28,45 +39,42 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class MedicalDataSourceTest {
-    private static final String MEDICAL_DATA_SOURCE_ID = "medical_data_source_id";
-    private static final String PACKAGE_NAME = "package_name";
-    private static final String FHIR_BASE_URI = "fhir_base_uri";
-    private static final String DISPLAY_NAME = "display_name";
 
     @Test
     public void testMedicalDataSourceBuilder_constructor() {
         MedicalDataSource dataSource =
                 new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
+                                DATA_SOURCE_ID,
+                                DATA_SOURCE_PACKAGE_NAME,
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME)
                         .build();
 
-        assertThat(dataSource.getId()).isEqualTo(MEDICAL_DATA_SOURCE_ID);
-        assertThat(dataSource.getPackageName()).isEqualTo(PACKAGE_NAME);
-        assertThat(dataSource.getFhirBaseUri()).isEqualTo(FHIR_BASE_URI);
-        assertThat(dataSource.getDisplayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(dataSource.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+        assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
     }
 
     @Test
     public void testMedicalDataSourceBuilder_setAllFields() {
         MedicalDataSource dataSource =
                 new MedicalDataSource.Builder("", "", "", "")
-                        .setId(MEDICAL_DATA_SOURCE_ID)
-                        .setPackageName(PACKAGE_NAME)
-                        .setFhirBaseUri(FHIR_BASE_URI)
-                        .setDisplayName(DISPLAY_NAME)
+                        .setId(DATA_SOURCE_ID)
+                        .setPackageName(DATA_SOURCE_PACKAGE_NAME)
+                        .setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI)
+                        .setDisplayName(DATA_SOURCE_DISPLAY_NAME)
                         .build();
 
-        assertThat(dataSource.getId()).isEqualTo(MEDICAL_DATA_SOURCE_ID);
-        assertThat(dataSource.getPackageName()).isEqualTo(PACKAGE_NAME);
-        assertThat(dataSource.getFhirBaseUri()).isEqualTo(FHIR_BASE_URI);
-        assertThat(dataSource.getDisplayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(dataSource.getId()).isEqualTo(DATA_SOURCE_ID);
+        assertThat(dataSource.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+        assertThat(dataSource.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+        assertThat(dataSource.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
     }
 
     @Test
     public void testMedicalDataSourceBuilder_fromExistingBuilder() {
-        MedicalDataSource.Builder original =
-                new MedicalDataSource.Builder(
-                        MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME);
+        MedicalDataSource.Builder original = getMedicalDataSourceBuilder();
 
         MedicalDataSource dataSource = new MedicalDataSource.Builder(original).build();
 
@@ -75,10 +83,7 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testMedicalDataSourceBuilder_fromExistingInstance() {
-        MedicalDataSource original =
-                new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
-                        .build();
+        MedicalDataSource original = getMedicalDataSource();
 
         MedicalDataSource dataSource = new MedicalDataSource.Builder(original).build();
 
@@ -89,12 +94,18 @@ public class MedicalDataSourceTest {
     public void testMedicalDataSource_toString() {
         MedicalDataSource dataSource =
                 new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
+                                DATA_SOURCE_ID,
+                                DATA_SOURCE_PACKAGE_NAME,
+                                DATA_SOURCE_FHIR_BASE_URI,
+                                DATA_SOURCE_DISPLAY_NAME)
                         .build();
         String expectedPropertiesString =
                 String.format(
                         "id=%s,packageName=%s,fhirBaseUri=%s,displayName=%s",
-                        MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME);
+                        DATA_SOURCE_ID,
+                        DATA_SOURCE_PACKAGE_NAME,
+                        DATA_SOURCE_FHIR_BASE_URI,
+                        DATA_SOURCE_DISPLAY_NAME);
 
         assertThat(dataSource.toString())
                 .isEqualTo(String.format("MedicalDataSource{%s}", expectedPropertiesString));
@@ -102,14 +113,8 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testMedicalDataSource_equals() {
-        MedicalDataSource dataSource1 =
-                new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
-                        .build();
-        MedicalDataSource dataSource2 =
-                new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
-                        .build();
+        MedicalDataSource dataSource1 = getMedicalDataSource();
+        MedicalDataSource dataSource2 = getMedicalDataSource();
 
         assertThat(dataSource1.equals(dataSource2)).isTrue();
         assertThat(dataSource1.hashCode()).isEqualTo(dataSource2.hashCode());
@@ -117,23 +122,20 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testMedicalDataSource_equals_comparesAllValues() {
-        MedicalDataSource dataSource =
-                new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
-                        .build();
+        MedicalDataSource dataSource = getMedicalDataSource();
         MedicalDataSource dataSourceDifferentBaseUri =
                 new MedicalDataSource.Builder(dataSource)
-                        .setFhirBaseUri("different_base_uri")
+                        .setFhirBaseUri(DIFFERENT_DATA_SOURCE_BASE_URI)
                         .build();
         MedicalDataSource dataSourceDifferentDisplayName =
                 new MedicalDataSource.Builder(dataSource)
-                        .setFhirBaseUri("different_display_name")
+                        .setDisplayName(DIFFERENT_DATA_SOURCE_DISPLAY_NAME)
                         .build();
         MedicalDataSource dataSourceDifferentId =
-                new MedicalDataSource.Builder(dataSource).setFhirBaseUri("different_id").build();
+                new MedicalDataSource.Builder(dataSource).setId(DIFFERENT_DATA_SOURCE_ID).build();
         MedicalDataSource dataSourceDifferentPackageName =
                 new MedicalDataSource.Builder(dataSource)
-                        .setFhirBaseUri("different_package_name")
+                        .setPackageName(DIFFERENT_DATA_SOURCE_PACKAGE_NAME)
                         .build();
 
         assertThat(dataSourceDifferentBaseUri.equals(dataSource)).isFalse();
@@ -148,10 +150,7 @@ public class MedicalDataSourceTest {
 
     @Test
     public void testWriteToParcelThenRestore_objectsAreIdentical() {
-        MedicalDataSource original =
-                new MedicalDataSource.Builder(
-                                MEDICAL_DATA_SOURCE_ID, PACKAGE_NAME, FHIR_BASE_URI, DISPLAY_NAME)
-                        .build();
+        MedicalDataSource original = getMedicalDataSource();
 
         Parcel parcel = Parcel.obtain();
         original.writeToParcel(parcel, 0);

@@ -27,6 +27,7 @@ import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
+import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
@@ -366,4 +367,11 @@ interface IHealthConnectService {
      * @hide
      */
     void setLowerRateLimitsForTesting(in boolean enabled);
+
+    /**
+    * Gets the status of the ongoing data import.
+    *
+    * @hide
+    */
+    void getImportStatus(in UserHandle userHandle, in IImportStatusCallback callback);
 }

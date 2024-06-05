@@ -28,6 +28,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.HealthFitnessUiStatsLog.*
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeShowWhatsNewDialog
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
@@ -48,13 +51,18 @@ import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.FeatureUtils
+import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.NavigationUtils
 import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
+import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
+import com.android.healthfitness.flags.Flags
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 /** Home fragment for Health Connect. */
@@ -68,6 +76,9 @@ class HomeFragment : Hilt_HomeFragment() {
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
+        private const val EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY =
+            "export_file_access_error_banner"
+        private const val HOME_FRAGMENT_BANNER_ORDER = 1
 
         @JvmStatic fun newInstance() = HomeFragment()
     }
@@ -83,6 +94,7 @@ class HomeFragment : Hilt_HomeFragment() {
     private val recentAccessViewModel: RecentAccessViewModel by viewModels()
     private val homeFragmentViewModel: HomeFragmentViewModel by viewModels()
     private val migrationViewModel: MigrationViewModel by activityViewModels()
+    private val exportStatusViewModel: ExportStatusViewModel by activityViewModels()
 
     private val mDataAndAccessPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(DATA_AND_ACCESS_PREFERENCE_KEY)
@@ -98,6 +110,10 @@ class HomeFragment : Hilt_HomeFragment() {
 
     private val mManageDataPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(MANAGE_DATA_PREFERENCE_KEY)
+    }
+
+    private val dateFormatter: LocalDateTimeFormatter by lazy {
+        LocalDateTimeFormatter(requireContext())
     }
 
     private lateinit var migrationBannerSummary: String
@@ -165,6 +181,20 @@ class HomeFragment : Hilt_HomeFragment() {
                 }
             }
         }
+
+        if (Flags.exportImport()) {
+            exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
+                scheduledExportUiStatus ->
+                when (scheduledExportUiStatus) {
+                    is ScheduledExportUiStatus.WithData -> {
+                        maybeShowExportErrorBanner(scheduledExportUiStatus.scheduledExportUiState)
+                    }
+                    else -> {
+                        // do nothing
+                    }
+                }
+            }
+        }
     }
 
     private fun showMigrationState(migrationRestoreState: MigrationRestoreState) {
@@ -214,6 +244,44 @@ class HomeFragment : Hilt_HomeFragment() {
         }
     }
 
+    private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
+        when (scheduledExportUiState.dataExportError) {
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS -> {
+                scheduledExportUiState.lastSuccessfulExportTime?.let {
+                    preferenceScreen.addPreference(
+                        getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
+                }
+            }
+            else -> {
+                // Do nothing yet.
+            }
+        }
+    }
+
+    private fun getExportFileAccessErrorBanner(
+        lastSuccessfulDate: Instant,
+        periodInDays: Int
+    ): BannerPreference {
+        // TODO: b/325917283 - Add proper logging for the export file access error banner.
+        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+            it.setPrimaryButton(
+                getString(R.string.export_file_access_error_banner_button),
+                ErrorPageElement.UNKNOWN_ELEMENT)
+            it.title = getString(R.string.export_file_access_error_banner_title)
+            it.key = EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY
+            it.summary =
+                getString(
+                    R.string.export_file_access_error_banner_summary,
+                    dateFormatter.formatLongDate(
+                        lastSuccessfulDate.plus(periodInDays.toLong(), ChronoUnit.DAYS)))
+            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+            it.setPrimaryButtonOnClickListener {
+                findNavController().navigate(R.id.action_homeFragment_to_exportSetupActivity)
+            }
+            it.order = HOME_FRAGMENT_BANNER_ORDER
+        }
+    }
+
     private fun getMigrationBanner(): BannerPreference {
         return BannerPreference(requireContext(), MigrationElement.MIGRATION_RESUME_BANNER).also {
             it.setPrimaryButton(
@@ -227,7 +295,7 @@ class HomeFragment : Hilt_HomeFragment() {
             it.setPrimaryButtonOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_migrationActivity)
             }
-            it.order = 1
+            it.order = HOME_FRAGMENT_BANNER_ORDER
         }
     }
 

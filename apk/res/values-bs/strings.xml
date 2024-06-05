@@ -319,7 +319,17 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zašto Health Connect uklanja odobrenja za aplikaciju"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ako se aplikacija obustavi ili ukloni s Google Playa, Health Connect automatski uklanja njena odobrenja.\n\nTo znači da aplikacija više neće moći pristupati podacima koji su pohranjeni u Health Connectu. Ako je ova aplikacija prethodno bilježila podatke, pojavit će se na listi neaktivnih aplikacija."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Razumijem"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Izrada sigurnosne kopije i vraćanje"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"Izvoz i uvoz"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
     <string name="import_data" msgid="404502315533233094">"Uvezite podatke"</string>
@@ -335,23 +345,26 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Sedmično"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mjesečno"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Odaberite lokaciju za izvoz"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Uključite šifriranje"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci se trebaju šifrirati prije pohranjivanja. Neće im moći pristupiti niko, čak ni Google ni Health Connect."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Kreirajte lozinku da zaštitite šifrirane podatke. Trebat ćete tu lozinku da uvezete i vratite podatke."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Lozinka"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovite lozinku"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Lozinke se ne podudaraju"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite lozinku i izgubite telefon, Health Connect vam neće moći pomoći da vratite sačuvane podatke."</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
     <string name="import_decryption_title" msgid="396608799208392844">"Upišite lozinku"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Da uvezete podatke Health Connecta, potrebna je lozinka za šifriranje"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Zaboravili ste lozinku?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Lozinka"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ako još uvijek imate stari telefon, možete ponovo uvesti podatke s novom lozinkom"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ako još uvijek imate stari telefon, možete ponovo izvesti podatke s novom lozinkom"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprijed"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Otkaži"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Naprijed"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Uvezite sa"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Uvezite s lokacije"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Počnite koristiti Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke sa svojim aplikacijama"</string>
@@ -361,10 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazad"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Započnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Brisanje podataka"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Ulazak u brisanje"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Izlazak iz brisanja"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Odaberite podatke za brisanje"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Naprijed"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Ovim će se trajno izbrisati svi podaci dodani u Health Connect u odabranom vremenskom periodu"</string>
@@ -924,14 +935,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogućite najmanje jedno odobrenje za čitanje da za ovu aplikaciju uključite pristup iz pozadine ili pristup historijskim podacima"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogućite najmanje jedno odobrenje za čitanje da za ovu aplikaciju uključite pristup iz pozadine"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogućite najmanje jedno odobrenje za čitanje da za ovu aplikaciju uključite pristup historijskim podacima"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Trajno izbrisati sve podatke iz Health Connecta?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Trajno izbrisati odabrane podatke iz Health Connecta?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Izbrisani su svi podaci"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Izbrisani su podaci \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\""</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Izbrisano je više stavki (ukupno <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>)"</string>
 </resources>

@@ -139,7 +139,14 @@
 
   <!-- region Phr Options screen -->
   <string name="phr_options_title">PHR Options</string>
-  <string name="phr_options_read_immunizations">Read Immunizations</string>
+  <string name="phr_options_create_data_source">Create data source</string>
+  <string name="phr_options_insert_immunization">Insert immunization</string>
+  <string name="phr_options_resource_id_placeholder">Insert immunization to see the id</string>
+  <string name="phr_options_read_by_id">Read FHIR Resource For Id</string>
   <string name="phr_options_seed_fhir_jsons">Seed FHIR JSONs</string>
+  <string name="phr_options_request_immunization">Request read immunization permission</string>
+  <string name="phr_options_request_medical">Request all medical permissions</string>
+  <string name="all_medical_permissions_success">All medical permissions were successfully granted</string>
+  <string name="number_of_medical_permissions_not_granted">%1$d medical permissions still not granted</string>
   <!--endregion-->
 </resources>

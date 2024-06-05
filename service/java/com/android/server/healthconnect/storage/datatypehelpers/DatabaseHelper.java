@@ -17,13 +17,12 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import android.annotation.NonNull;
-import android.util.Pair;
 
 import com.android.server.healthconnect.storage.TransactionManager;
+import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,7 +32,7 @@ import java.util.Set;
  */
 public abstract class DatabaseHelper {
 
-    private static Set<DatabaseHelper> sDatabaseHelpers = new HashSet<>();
+    private static final Set<DatabaseHelper> sDatabaseHelpers = new HashSet<>();
 
     protected DatabaseHelper() {
         sDatabaseHelpers.add(this);
@@ -61,5 +60,5 @@ public abstract class DatabaseHelper {
 
     protected abstract String getMainTableName();
 
-    protected abstract List<Pair<String, String>> getColumnInfo();
+    protected abstract CreateTableRequest getCreateTableRequest();
 }

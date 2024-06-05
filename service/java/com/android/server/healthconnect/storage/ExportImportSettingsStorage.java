@@ -21,49 +21,40 @@ import static android.health.connect.Constants.DEFAULT_INT;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
-import android.security.keystore.KeyProperties;
-import android.security.keystore.KeyProtection;
 
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.time.Instant;
-import java.util.Arrays;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Stores the settings for the scheduled export service.
  *
  * @hide
  */
-public final class ScheduledExportSettingsStorage {
+public final class ExportImportSettingsStorage {
     // Scheduled Export Settings
-    private static final String EXPORT_SALT_PREFERENCE_KEY = "export_salt_key";
     private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
-    private static final String EXPORT_KEYSTORE_ENTRY = "health_connect_export_key";
 
     // Scheduled Export State
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
             "last_successful_export_key";
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
 
+    // Import State
+    private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
+    private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
+
     /**
      * Configures the settings for the scheduled export of Health Connect data.
      *
      * @param settings Settings to use for the scheduled export. Use null to clear the settings.
      */
-    public static void configure(@Nullable ScheduledExportSettings settings)
-            throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
+    public static void configure(@Nullable ScheduledExportSettings settings) {
         if (settings != null) {
             configureNonNull(settings);
         } else {
@@ -72,29 +63,7 @@ public final class ScheduledExportSettingsStorage {
     }
 
     /** Configures the settings for the scheduled export of Health Connect data. */
-    private static void configureNonNull(@NonNull ScheduledExportSettings settings)
-            throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
-        // Android key store type is from
-        // https://developer.android.com/privacy-and-security/keystore#UsingAndroidKeyStore.
-        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-        keyStore.load(null);
-
-        if (settings.getSecretKey() != null && settings.getSalt() != null) {
-            SecretKey secretKey =
-                    new SecretKeySpec(settings.getSecretKey(), KeyProperties.KEY_ALGORITHM_AES);
-            keyStore.setEntry(
-                    EXPORT_KEYSTORE_ENTRY,
-                    new KeyStore.SecretKeyEntry(secretKey),
-                    new KeyProtection.Builder(KeyProperties.PURPOSE_ENCRYPT)
-                            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                            .build());
-
-            String salt = Arrays.toString(settings.getSalt());
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(EXPORT_SALT_PREFERENCE_KEY, salt);
-        }
-
+    private static void configureNonNull(@NonNull ScheduledExportSettings settings) {
         if (settings.getUri() != null) {
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(
@@ -109,15 +78,7 @@ public final class ScheduledExportSettingsStorage {
     }
 
     /** Clears the settings for the scheduled export of Health Connect data. */
-    private static void clear()
-            throws KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
-        // Android key store type is from
-        // https://developer.android.com/privacy-and-security/keystore#UsingAndroidKeyStore.
-        KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
-        keyStore.load(null);
-        keyStore.deleteEntry(EXPORT_KEYSTORE_ENTRY);
-
-        PreferenceHelper.getInstance().removeKey(EXPORT_SALT_PREFERENCE_KEY);
+    private static void clear() {
         PreferenceHelper.getInstance().removeKey(EXPORT_URI_PREFERENCE_KEY);
         PreferenceHelper.getInstance().removeKey(EXPORT_PERIOD_PREFERENCE_KEY);
     }
@@ -167,5 +128,32 @@ public final class ScheduledExportSettingsStorage {
                         ? HealthConnectManager.DATA_EXPORT_ERROR_NONE
                         : Integer.parseInt(lastExportError),
                 periodInDays == null ? 0 : Integer.parseInt(periodInDays));
+    }
+
+    /** Set to true when an import starts and to false when a data import completes */
+    public static void setImportOngoing(boolean importOngoing) {
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(
+                        IMPORT_ONGOING_PREFERENCE_KEY, String.valueOf(importOngoing));
+    }
+
+    /** Set errors during the last failed import attempt. */
+    public static void setLastImportError(@ImportStatus.DataImportError int error) {
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(LAST_IMPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
+    }
+
+    /** Get the status of the last data import. */
+    public static ImportStatus getImportStatus() {
+        PreferenceHelper prefHelper = PreferenceHelper.getInstance();
+        String lastImportError = prefHelper.getPreference(LAST_IMPORT_ERROR_PREFERENCE_KEY);
+        boolean importOngoing =
+                Boolean.parseBoolean(prefHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY));
+
+        return new ImportStatus(
+                lastImportError == null
+                        ? ImportStatus.DATA_IMPORT_ERROR_NONE
+                        : Integer.parseInt(lastImportError),
+                importOngoing);
     }
 }
