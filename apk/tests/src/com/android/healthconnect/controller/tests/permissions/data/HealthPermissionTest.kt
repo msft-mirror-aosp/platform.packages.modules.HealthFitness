@@ -22,6 +22,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission.Da
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.ACTIVE_CALORIES_BURNED
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.BLOOD_GLUCOSE
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
@@ -61,7 +62,8 @@ class HealthPermissionTest {
     fun fromPermissionString_canParseAllDataTypePermissions() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) || healthPermissionReader.isMedicalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) ||
+                    healthPermissionReader.isMedicalPermission(perm)
             }
         for (permissionString in allPermissions) {
             assertThat(fromPermissionString(permissionString).toString())
@@ -77,7 +79,7 @@ class HealthPermissionTest {
             }
         for (permissionString in medicalPermissions) {
             assertThat(fromPermissionString(permissionString).toString())
-                    .isEqualTo(permissionString)
+                .isEqualTo(permissionString)
         }
     }
 
@@ -93,10 +95,12 @@ class HealthPermissionTest {
     @Test
     fun fromPermissionString_returnsCorrectMedicalPermission() {
         assertThat(fromPermissionString("android.permission.health.WRITE_MEDICAL_RESOURCES"))
-                .isEqualTo(MedicalPermission(HealthPermissions.WRITE_MEDICAL_RESOURCES))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
 
-        assertThat(fromPermissionString("android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"))
-                .isEqualTo(MedicalPermission(HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION))
+        assertThat(
+                fromPermissionString(
+                    "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"))
+            .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATION))
     }
 
     @Test

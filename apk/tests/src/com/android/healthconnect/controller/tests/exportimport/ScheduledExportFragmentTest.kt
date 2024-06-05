@@ -16,8 +16,11 @@
 
 package com.android.healthconnect.controller.tests.exportimport
 
+import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportSettings
+import android.health.connect.exportimport.ScheduledExportStatus
 import android.os.Bundle
+import android.os.OutcomeReceiver
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -32,6 +35,7 @@ import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
 import dagger.hilt.android.testing.BindValue
@@ -44,11 +48,17 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 
 @HiltAndroidTest
 @UninstallModules(HealthDataExportManagerModule::class)
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 class ScheduledExportFragmentTest {
+    companion object {
+        private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
+    }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -64,10 +74,23 @@ class ScheduledExportFragmentTest {
         whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
             ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays
         }
+        val scheduledExportStatus =
+            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+        doAnswer(prepareAnswer(scheduledExportStatus))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
     }
 
     @Test
     fun scheduledExportFragment_isDisplayedCorrectly() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withText("On")).check(matches(isDisplayed()))
@@ -75,6 +98,22 @@ class ScheduledExportFragmentTest {
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
+
+        onView(withText("Next export: October 21, 2022")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun scheduledExportFragment_whenLastSuccessfulExportDateIsNull_doesNotShowNextExportStatus() {
+        val scheduledExportStatus =
+            ScheduledExportStatus(
+                null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, TEST_EXPORT_PERIOD_IN_DAYS)
+        doAnswer(prepareAnswer(scheduledExportStatus))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("Next export: October 21, 2022")).check(doesNotExist())
     }
 
     @Test
@@ -167,5 +206,16 @@ class ScheduledExportFragmentTest {
             .configureScheduledExport(
                 ScheduledExportSettings.withPeriodInDays(
                     ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+    }
+
+    private fun prepareAnswer(
+        scheduledExportStatus: ScheduledExportStatus
+    ): (InvocationOnMock) -> Nothing? {
+        val answer = { args: InvocationOnMock ->
+            val receiver = args.arguments[1] as OutcomeReceiver<ScheduledExportStatus, *>
+            receiver.onResult(scheduledExportStatus)
+            null
+        }
+        return answer
     }
 }

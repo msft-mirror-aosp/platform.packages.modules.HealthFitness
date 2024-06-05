@@ -33,12 +33,17 @@ public final class ExportImportDocumentProviderTest {
     private static final String TEST_SUMMARY = "user@documentprovider.com";
     private static final int TEST_ICON_RESOURCE_ID = 1178;
     private static final Uri TEST_ROOT_URI = Uri.parse("root://documentprovider.com/");
+    private static final String TEST_AUTHORITY = "documentprovider.com";
 
     @Test
     public void testDeserailize() {
         ExportImportDocumentProvider documentProvider =
                 new ExportImportDocumentProvider(
-                        TEST_TITLE, TEST_SUMMARY, TEST_ICON_RESOURCE_ID, TEST_ROOT_URI);
+                        TEST_TITLE,
+                        TEST_SUMMARY,
+                        TEST_ICON_RESOURCE_ID,
+                        TEST_ROOT_URI,
+                        TEST_AUTHORITY);
 
         Parcel documentProviderParcel = writeToParcel(documentProvider);
         documentProviderParcel.setDataPosition(0);
@@ -49,6 +54,7 @@ public final class ExportImportDocumentProviderTest {
         assertThat(deserializedDocumentProvider.getSummary()).isEqualTo(TEST_SUMMARY);
         assertThat(deserializedDocumentProvider.getIconResource()).isEqualTo(TEST_ICON_RESOURCE_ID);
         assertThat(deserializedDocumentProvider.getRootUri()).isEqualTo(TEST_ROOT_URI);
+        assertThat(deserializedDocumentProvider.getAuthority()).isEqualTo(TEST_AUTHORITY);
     }
 
     private static Parcel writeToParcel(ExportImportDocumentProvider documentProvider) {
