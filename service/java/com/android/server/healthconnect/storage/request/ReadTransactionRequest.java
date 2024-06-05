@@ -21,8 +21,10 @@ import static android.health.connect.Constants.DEFAULT_INT;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.PageTokenWrapper;
+import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
@@ -58,7 +60,7 @@ public class ReadTransactionRequest {
             Set<String> grantedExtraReadPermissions,
             boolean isInForeground) {
         RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(request.getRecordType());
+                RecordHelperProvider.getRecordHelper(request.getRecordType());
         mReadTableRequests =
                 Collections.singletonList(
                         recordHelper.getReadTableRequest(
@@ -87,14 +89,22 @@ public class ReadTransactionRequest {
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
                         mReadTableRequests.add(
-                                RecordHelperProvider.getInstance()
-                                        .getRecordHelper(recordType)
+                                RecordHelperProvider.getRecordHelper(recordType)
                                         .getReadTableRequest(
                                                 packageName,
                                                 uuids,
                                                 startDateAccessMillis,
                                                 grantedExtraReadPermissions,
                                                 isInForeground)));
+        mPageSize = DEFAULT_INT;
+        mPageToken = null;
+    }
+
+    public ReadTransactionRequest(MedicalIdFiltersParcel medicalIdFiltersParcel) {
+        MedicalResourceHelper medicalResourceHelper = new MedicalResourceHelper();
+        mReadTableRequests =
+                Collections.singletonList(
+                        medicalResourceHelper.getReadTableRequest(medicalIdFiltersParcel));
         mPageSize = DEFAULT_INT;
         mPageToken = null;
     }

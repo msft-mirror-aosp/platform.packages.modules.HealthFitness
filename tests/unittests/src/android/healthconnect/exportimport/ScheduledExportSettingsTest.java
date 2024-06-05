@@ -29,34 +29,10 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-
 @RunWith(AndroidJUnit4.class)
 public final class ScheduledExportSettingsTest {
-    private static final String TEST_PASSWORD = "testpassword";
-    private static final byte[] TEST_SALT = new byte[] {1, 2, 3, 4};
     private static final Uri TEST_URI =
             Uri.parse("content://com.android.server.healthconnect/testuri");
-
-    @Test
-    public void testWithSecretKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        ScheduledExportSettings settings =
-                ScheduledExportSettings.withSecretKey(generateSecretKey(), TEST_SALT);
-
-        Parcel settingsParcel = writeToParcel(settings);
-        settingsParcel.setDataPosition(0);
-        ScheduledExportSettings deserializedSettings =
-                settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
-
-        assertThat(deserializedSettings.getSecretKey()).isEqualTo(settings.getSecretKey());
-        assertThat(deserializedSettings.getSalt()).isEqualTo(TEST_SALT);
-        assertThat(deserializedSettings.getUri()).isNull();
-        assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(DEFAULT_INT);
-    }
 
     @Test
     public void testWithUri() {
@@ -67,8 +43,6 @@ public final class ScheduledExportSettingsTest {
         ScheduledExportSettings deserializedSettings =
                 settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
 
-        assertThat(deserializedSettings.getSecretKey()).isNull();
-        assertThat(deserializedSettings.getSalt()).isNull();
         assertThat(deserializedSettings.getUri()).isEqualTo(TEST_URI);
         assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(DEFAULT_INT);
     }
@@ -82,17 +56,58 @@ public final class ScheduledExportSettingsTest {
         ScheduledExportSettings deserializedSettings =
                 settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
 
-        assertThat(deserializedSettings.getSecretKey()).isNull();
-        assertThat(deserializedSettings.getSalt()).isNull();
         assertThat(deserializedSettings.getUri()).isNull();
         assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(7);
     }
 
-    private static byte[] generateSecretKey()
-            throws NoSuchAlgorithmException, InvalidKeySpecException {
-        PBEKeySpec pbeKeySpec = new PBEKeySpec(TEST_PASSWORD.toCharArray(), TEST_SALT, 1000, 256);
-        SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-        return secretKeyFactory.generateSecret(pbeKeySpec).getEncoded();
+    @Test
+    public void testWithUriAndPeriodInDays() {
+        ScheduledExportSettings settings =
+                ScheduledExportSettings.withUriAndPeriodInDays(TEST_URI, 7);
+
+        Parcel settingsParcel = writeToParcel(settings);
+        settingsParcel.setDataPosition(0);
+        ScheduledExportSettings deserializedSettings =
+                settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
+
+        assertThat(deserializedSettings.getUri()).isEqualTo(TEST_URI);
+        assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(7);
+    }
+
+    @Test
+    public void testEquals_andHashCode_withPeriodInDays() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(7);
+
+        assertThat(settingsA).isEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withDifferentPeriodInDays() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(8);
+
+        assertThat(settingsA).isNotEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withUri() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withUri(TEST_URI);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withUri(TEST_URI);
+
+        assertThat(settingsA).isEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isEqualTo(settingsB.hashCode());
+    }
+
+    @Test
+    public void testEquals_andHashCode_withDifferentUri() {
+        ScheduledExportSettings settingsA = ScheduledExportSettings.withUri(TEST_URI);
+        ScheduledExportSettings settingsB = ScheduledExportSettings.withUri(Uri.EMPTY);
+
+        assertThat(settingsA).isNotEqualTo(settingsB);
+        assertThat(settingsA.hashCode()).isNotEqualTo(settingsB.hashCode());
     }
 
     private static Parcel writeToParcel(ScheduledExportSettings settings) {

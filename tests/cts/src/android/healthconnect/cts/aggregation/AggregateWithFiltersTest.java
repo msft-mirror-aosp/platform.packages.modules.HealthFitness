@@ -23,11 +23,16 @@ import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
 import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENTS_COUNT;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.health.connect.datatypes.WeightRecord.WEIGHT_MAX;
+import static android.health.connect.datatypes.WeightRecord.WEIGHT_MIN;
+import static android.healthconnect.cts.aggregation.DataFactory.getOpenEndTimeFilter;
+import static android.healthconnect.cts.aggregation.DataFactory.getOpenStartTimeFilter;
 import static android.healthconnect.cts.aggregation.DataFactory.getTimeFilter;
 import static android.healthconnect.cts.utils.DataFactory.getDataOrigin;
 import static android.healthconnect.cts.utils.DataFactory.getDistanceRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.DataFactory.getStepsRecord;
+import static android.healthconnect.cts.utils.DataFactory.getWeightRecord;
 import static android.healthconnect.cts.utils.TestUtils.PKG_TEST_APP;
 import static android.healthconnect.cts.utils.TestUtils.deleteAllStagedRemoteData;
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponse;
@@ -35,6 +40,7 @@ import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGrou
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
 import static android.healthconnect.cts.utils.TestUtils.insertStepsRecordViaTestApp;
+import static android.healthconnect.cts.utils.TestUtils.insertWeightRecordViaTestApp;
 import static android.healthconnect.cts.utils.TestUtils.setupAggregation;
 import static android.healthconnect.cts.utils.TestUtils.updatePriorityWithManageHealthDataPermission;
 
@@ -52,6 +58,7 @@ import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.units.Length;
+import android.health.connect.datatypes.units.Mass;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
@@ -310,6 +317,141 @@ public class AggregateWithFiltersTest {
         assertThat(groupedByPeriodResponses).hasSize(1);
         assertThat(groupedByPeriodResponses.get(0).get(STEPS_COUNT_TOTAL)).isNull();
         assertThat(groupedByPeriodResponses.get(0).getDataOrigins(STEPS_COUNT_TOTAL)).isEmpty();
+    }
+
+    @Test
+    public void timeRangeFilter_priorityType_outOfRangePriorityDataTrimmed() throws Exception {
+        Instant startTime = Instant.now().minus(1, DAYS);
+        Instant endTime = startTime.plus(1, HOURS);
+        ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
+        LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
+        LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
+        insertStepsRecordViaTestApp(
+                mContext, startTime.minusMillis(1000), startTime.plusMillis(1000), 1000);
+        insertRecords(
+                List.of(getStepsRecord(10, endTime.minusMillis(1000), endTime.plusMillis(1000))));
+        updatePriorityWithManageHealthDataPermission(
+                ACTIVITY, ImmutableList.of(PKG_TEST_APP, mPackageName));
+
+        AggregateRecordsRequest<Long> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Long>(getTimeFilter(startTime, endTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+
+        AggregateRecordsResponse<Long> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(505);
+        assertThat(aggregateResponse.getDataOrigins(STEPS_COUNT_TOTAL))
+                .containsExactly(getDataOrigin(mPackageName), getDataOrigin(PKG_TEST_APP));
+
+        AggregateRecordsRequest<Long> requestWithLocalTimeFilter =
+                new AggregateRecordsRequest.Builder<Long>(
+                                getTimeFilter(startLocalTime, endLocalTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalTimeFilter);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(505);
+        assertThat(aggregateResponse2.getDataOrigins(STEPS_COUNT_TOTAL))
+                .containsExactly(getDataOrigin(mPackageName), getDataOrigin(PKG_TEST_APP));
+    }
+
+    @Test
+    public void timeRangeFilter_nonPriorityType_outOfRangeNonPriorityDataExcluded()
+            throws Exception {
+        Instant startTime = Instant.now().minus(1, DAYS);
+        Instant endTime = startTime.plus(1, HOURS);
+        ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(startTime);
+        LocalDateTime startLocalTime = startTime.atOffset(dataZone).toLocalDateTime();
+        LocalDateTime endLocalTime = endTime.atOffset(dataZone).toLocalDateTime();
+        insertWeightRecordViaTestApp(mContext, startTime.minusMillis(1), 70);
+        insertRecords(
+                List.of(getWeightRecord(80, endTime), getWeightRecord(77, endTime.minusMillis(1))));
+
+        AggregateRecordsRequest<Mass> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Mass>(getTimeFilter(startTime, endTime))
+                        .addAggregationType(WEIGHT_MAX)
+                        .build();
+
+        AggregateRecordsResponse<Mass> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(WEIGHT_MAX)).isEqualTo(Mass.fromGrams(77));
+        assertThat(aggregateResponse.getDataOrigins(WEIGHT_MAX))
+                .containsExactly(getDataOrigin(mPackageName));
+
+        AggregateRecordsRequest<Mass> requestWithLocalTimeFilter =
+                new AggregateRecordsRequest.Builder<Mass>(
+                                getTimeFilter(startLocalTime, endLocalTime))
+                        .addAggregationType(WEIGHT_MIN)
+                        .build();
+        AggregateRecordsResponse<Mass> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalTimeFilter);
+        assertThat(aggregateResponse2.get(WEIGHT_MIN)).isEqualTo(Mass.fromGrams(77));
+        assertThat(aggregateResponse2.getDataOrigins(WEIGHT_MIN))
+                .containsExactly(getDataOrigin(mPackageName));
+    }
+
+    @Test
+    public void timeRangeFilter_openStartTime_aggregateDataFromEpoch() throws Exception {
+        Instant filterEndTime = Instant.now().minus(1, DAYS);
+        ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(filterEndTime);
+        LocalDateTime endLocalTime = filterEndTime.atOffset(dataZone).toLocalDateTime();
+        insertRecords(
+                List.of(
+                        // fully in range
+                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochMilli(456)),
+                        // partially in range (29/30)
+                        getStepsRecord(
+                                30000,
+                                filterEndTime.minus(29, HOURS),
+                                filterEndTime.plus(1, HOURS))));
+
+        AggregateRecordsRequest<Long> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(filterEndTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
+
+        AggregateRecordsRequest<Long> requestWithLocalFilter =
+                new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(endLocalTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalFilter);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
+    }
+
+    @Test
+    public void timeRangeFilter_openEndTime_aggregateDataUntilFuture() throws Exception {
+        Instant now = Instant.now();
+        Instant filterStartTime = Instant.now().minus(1, DAYS);
+        ZoneOffset dataZone = ZoneOffset.systemDefault().getRules().getOffset(filterStartTime);
+        LocalDateTime startLocalTime = filterStartTime.atOffset(dataZone).toLocalDateTime();
+        insertRecords(
+                List.of(
+                        getStepsRecord(666, now.minusMillis(1000), now.plusMillis(1000)),
+                        getStepsRecord(
+                                2000,
+                                filterStartTime.minusMillis(1000),
+                                filterStartTime.plusMillis(1000))));
+
+        AggregateRecordsRequest<Long> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Long>(getOpenEndTimeFilter(filterStartTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(1666);
+
+        AggregateRecordsRequest<Long> requestWithLocalFilter =
+                new AggregateRecordsRequest.Builder<Long>(getOpenEndTimeFilter(startLocalTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalFilter);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(1666);
     }
 
     @Test

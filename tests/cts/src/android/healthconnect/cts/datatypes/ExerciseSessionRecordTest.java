@@ -16,6 +16,9 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
+import static android.health.connect.RecordIdFilter.fromId;
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
 import static android.healthconnect.cts.utils.DataFactory.SESSION_END_TIME;
 import static android.healthconnect.cts.utils.DataFactory.SESSION_START_TIME;
 import static android.healthconnect.cts.utils.DataFactory.buildExerciseRoute;
@@ -31,6 +34,8 @@ import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.DeleteUsingFiltersRequest;
@@ -479,6 +484,44 @@ public class ExerciseSessionRecordTest {
     }
 
     @Test
+    public void testDeleteRecord_usingIds_forAnotherApp_fails() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(buildSessionMinimal());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(buildExerciseSession());
+
+        HealthConnectException error =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.verifyDeleteRecords(
+                                        List.of(fromId(ExerciseSessionRecord.class, id))));
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void testDeleteRecord_usingTime_forAnotherApp_notDeleted() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(buildSessionMinimal());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(buildExerciseSession());
+
+        TestUtils.verifyDeleteRecords(
+                ExerciseSessionRecord.class,
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.EPOCH)
+                        .setEndTime(Instant.now())
+                        .build());
+
+        List<ExerciseSessionRecord> records =
+                TestUtils.readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(ExerciseSessionRecord.class)
+                                .addId(id)
+                                .build());
+
+        assertThat(records).isNotEmpty();
+        assertThat(records.get(0).getMetadata().getId()).isEqualTo(id);
+    }
+
+    @Test
     public void testUpdateRecords_validInput_dataBaseUpdatedSuccessfully()
             throws InterruptedException {
 
@@ -634,7 +677,13 @@ public class ExerciseSessionRecordTest {
                         .addRecordType(ExerciseSessionRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     @Test

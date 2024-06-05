@@ -20,22 +20,21 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.health.connect.MedicalIdFilter;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
+import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.server.healthconnect.HealthConnectUserContext;
-import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +46,6 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class ReadTransactionRequestTest {
     @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
-
-    @Before
-    public void setup() {
-        HealthConnectUserContext context = testRule.getUserContext();
-        TransactionManager.getInstance(context);
-    }
 
     @Test
     public void createReadByFilterRequest_noPageToken_correctPaginationInfo() {
@@ -111,6 +104,21 @@ public class ReadTransactionRequestTest {
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE, ramdonUuids));
 
         assertThat(request.getReadRequests()).hasSize(2);
+        assertThat(request.getPageToken()).isNull();
+        assertThat(request.getPageSize()).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void testReadTransactionUsingMedicalId_correctReadRequests() {
+        MedicalIdFiltersParcel parcel =
+                new MedicalIdFiltersParcel(
+                        List.of(
+                                MedicalIdFilter.fromId(UUID.randomUUID().toString()),
+                                MedicalIdFilter.fromId(UUID.randomUUID().toString())));
+
+        ReadTransactionRequest request = getReadTransactionRequest(parcel);
+
+        assertThat(request.getReadRequests()).hasSize(1);
         assertThat(request.getPageToken()).isNull();
         assertThat(request.getPageSize()).isEqualTo(Optional.empty());
     }

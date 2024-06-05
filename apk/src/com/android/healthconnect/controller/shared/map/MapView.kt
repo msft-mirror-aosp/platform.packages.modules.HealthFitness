@@ -23,7 +23,7 @@ import android.health.connect.datatypes.ExerciseRoute
 import android.health.connect.datatypes.ExerciseRoute.Location
 import android.util.AttributeSet
 import android.view.View
-import com.android.healthconnect.controller.R
+import com.android.settingslib.widget.theme.R
 import java.lang.Math.toDegrees
 import java.lang.Math.toRadians
 import kotlin.math.asin

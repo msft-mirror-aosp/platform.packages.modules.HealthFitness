@@ -18,9 +18,6 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.android.healthconnect.testapps.toolbox">
 
-  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND" />
-  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY" />
-
   <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED" />
   <uses-permission android:name="android.permission.health.READ_BASAL_BODY_TEMPERATURE" />
   <uses-permission android:name="android.permission.health.READ_BASAL_METABOLIC_RATE" />
@@ -35,6 +32,7 @@
   <uses-permission android:name="android.permission.health.READ_DISTANCE" />
   <uses-permission android:name="android.permission.health.READ_ELEVATION_GAINED" />
   <uses-permission android:name="android.permission.health.READ_EXERCISE" />
+  <uses-permission android:name="android.permission.health.READ_PLANNED_EXERCISE" />
   <uses-permission android:name="android.permission.health.READ_EXERCISE_ROUTES" />
   <uses-permission android:name="android.permission.health.READ_FLOORS_CLIMBED" />
   <uses-permission android:name="android.permission.health.READ_HEART_RATE" />
@@ -73,6 +71,7 @@
   <uses-permission android:name="android.permission.health.WRITE_DISTANCE" />
   <uses-permission android:name="android.permission.health.WRITE_ELEVATION_GAINED" />
   <uses-permission android:name="android.permission.health.WRITE_EXERCISE" />
+  <uses-permission android:name="android.permission.health.WRITE_PLANNED_EXERCISE" />
   <uses-permission android:name="android.permission.health.WRITE_FLOORS_CLIMBED" />
   <uses-permission android:name="android.permission.health.WRITE_HEART_RATE" />
   <uses-permission android:name="android.permission.health.WRITE_HEART_RATE_VARIABILITY" />
@@ -97,6 +96,10 @@
   <uses-permission android:name="android.permission.health.WRITE_WHEELCHAIR_PUSHES" />
   <uses-permission android:name="android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING" />
   <uses-permission android:name="android.permission.health.WRITE_EXERCISE_ROUTE" />
+
+  <!--  Medical permissions -->
+  <uses-permission android:name="android.permission.health.WRITE_MEDICAL_RESOURCES"/>
+  <uses-permission android:name="android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"/>
 
   <!--  Additional permissions -->
   <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND"/>

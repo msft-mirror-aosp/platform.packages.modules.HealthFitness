@@ -165,7 +165,7 @@ class SettingsManagePermissionFragment : Hilt_SettingsManagePermissionFragment()
     }
 
     private fun getNoAppsPreference(@StringRes res: Int): Preference {
-        return Preference(context).also {
+        return Preference(requireContext()).also {
             it.setTitle(res)
             it.isSelectable = false
         }

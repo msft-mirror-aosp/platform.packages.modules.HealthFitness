@@ -89,6 +89,9 @@ public class ProxyActivity extends Activity {
      * activity.
      *
      * <p>The app calling this method must have {@link ProxyActivity} declared in the manifest.
+     *
+     * <p>Use {@link #launchActivityForResult(Intent)} if no interaction with the activity is
+     * required instead of passing a no-op runnable to this method as the latter is flaky.
      */
     public static Instrumentation.ActivityResult launchActivityForResult(
             Intent intent, Runnable runnable) throws Exception {
@@ -97,22 +100,37 @@ public class ProxyActivity extends Activity {
         containerIntent.putExtra(Intent.EXTRA_INTENT, intent);
 
         var scenario = ActivityScenario.launchActivityForResult(containerIntent);
-        scenario.onActivity(
-                activity -> {
-                    getUiDevice().waitForIdle();
-                    runnable.run();
-                });
+        if (runnable != null) {
+            scenario.onActivity(
+                    activity -> {
+                        getUiDevice().waitForIdle();
+                        runnable.run();
+                    });
+        }
 
         Instrumentation.ActivityResult result = scenario.getResult();
 
-        Exception exception =
-                result.getResultData().getParcelableExtra(PROXY_ACTIVITY_ERROR, Exception.class);
+        Intent resultData = result.getResultData();
+        if (resultData != null) {
+            Exception exception =
+                    result.getResultData()
+                            .getParcelableExtra(PROXY_ACTIVITY_ERROR, Exception.class);
 
-        if (exception != null) {
-            throw exception;
+            if (exception != null) {
+                throw exception;
+            }
         }
 
         return result;
+    }
+
+    /**
+     * Same as {@link #launchActivityForResult(Intent, Runnable)} for cases when an interaction with
+     * the activity is not required.
+     */
+    public static Instrumentation.ActivityResult launchActivityForResult(Intent intent)
+            throws Exception {
+        return launchActivityForResult(intent, null);
     }
 
     private void finishWithException(Exception e) {

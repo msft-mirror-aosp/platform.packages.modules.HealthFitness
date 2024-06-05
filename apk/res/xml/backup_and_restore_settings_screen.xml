@@ -17,15 +17,22 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:key="settings_category"
-        android:title="@string/export_and_import_title">
+        android:title="@string/export_and_import_title"
+        android:order="0">
         <com.android.healthconnect.controller.shared.preference.HealthPreference
-            android:key="export_automatically"
+            android:key="scheduled_export"
             android:icon="?attr/repeatIcon"
-            android:title="@string/export_automatically" />
+            android:title="@string/scheduled_export"
+            android:order="2"/>
         <com.android.healthconnect.controller.shared.preference.HealthPreference
-            android:key="restore_data"
-            android:icon="?attr/settingsBackupRestoreIcon"
-            android:title="@string/restore_data"
-            android:summary="@string/restore_data_description" />
+            android:key="import_data"
+            android:icon="?attr/importIcon"
+            android:title="@string/import_data"
+            android:summary="@string/import_data_description"
+            android:order="3"/>
     </PreferenceCategory>
+    <com.android.settingslib.widget.FooterPreference
+        android:key="backup_restore_footer"
+        android:title="@string/backup_and_restore_footer_body_text"
+        android:order="4"/>
 </PreferenceScreen>

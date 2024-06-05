@@ -18,6 +18,7 @@
 
 package com.android.healthconnect.controller.tests.navigation
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
@@ -26,6 +27,7 @@ import android.content.Intent.makeMainActivity
 import android.health.connect.HealthConnectManager.ACTION_HEALTH_HOME_SETTINGS
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_DATA
 import android.health.connect.HealthConnectManager.ACTION_MANAGE_HEALTH_PERMISSIONS
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,6 +46,9 @@ import com.android.healthconnect.controller.autodelete.AutoDeleteViewModel.AutoD
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.*
 import com.android.healthconnect.controller.categories.HealthDataCategoryViewModel.CategoriesFragmentState.WithData
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.*
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
@@ -55,6 +60,7 @@ import com.android.healthconnect.controller.permissions.app.AppPermissionViewMod
 import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -79,10 +85,13 @@ import org.mockito.Mockito.*
 class TrampolineActivityTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
     @BindValue val migrationViewModel: MigrationViewModel = mock(MigrationViewModel::class.java)
     @BindValue val autoDeleteViewModel: AutoDeleteViewModel = mock(AutoDeleteViewModel::class.java)
+    @BindValue
+    val exportStatusViewModel: ExportStatusViewModel = mock(ExportStatusViewModel::class.java)
     @BindValue
     val categoryViewModel: HealthDataCategoryViewModel =
         mock(HealthDataCategoryViewModel::class.java)
@@ -94,6 +103,11 @@ class TrampolineActivityTest {
     @Before
     fun setup() {
         hiltRule.inject()
+
+        // Required for aconfig flag reading for tests run on pre V devices
+        InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation()
+            .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG)
 
         showOnboarding(context, show = false)
         (deviceInfoUtils as FakeDeviceInfoUtils).setHealthConnectAvailable(true)
@@ -112,6 +126,12 @@ class TrampolineActivityTest {
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
         }
         val writePermission =
             DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
@@ -135,6 +155,9 @@ class TrampolineActivityTest {
         whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
+        whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {
+            MutableLiveData(false)
+        }
     }
 
     @Test

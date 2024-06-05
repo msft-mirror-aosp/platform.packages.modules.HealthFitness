@@ -15,7 +15,6 @@
  */
 package com.android.healthconnect.controller.permissions.request
 
-import android.health.connect.HealthPermissions
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
@@ -95,7 +94,8 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     private fun setupAllowButton(permissionList: List<AdditionalPermission>) {
         logger.logImpression(allowButtonName)
 
-        if (viewModel.isDataTypePermissionRequestConcluded()) {
+        if (viewModel.isDataTypePermissionRequestConcluded() ||
+            viewModel.isMedicalPermissionRequestConcluded()) {
             // if requested additional permissions == 1 then allow by default
             if (permissionList.size == 1) {
                 getAllowButton().isEnabled = true
@@ -142,14 +142,12 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
         category.removeAll()
         category.isVisible = true
 
-        category.addPreference(getBackgroundReadPreference())
         category.addPreference(getHistoryReadPreference(appMetadata))
+        category.addPreference(getBackgroundReadPreference())
     }
 
     private fun getBackgroundReadPreference(): HealthSwitchPreference {
-        val additionalPermission =
-            AdditionalPermission.fromPermissionString(
-                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+        val additionalPermission = AdditionalPermission.READ_HEALTH_DATA_IN_BACKGROUND
         val additionalPermissionStrings =
             AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
         val value = viewModel.isPermissionLocallyGranted(additionalPermission)
@@ -172,8 +170,7 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     }
 
     private fun getHistoryReadPreference(appMetadata: AppMetadata): HealthSwitchPreference {
-        val additionalPermission =
-            AdditionalPermission.fromPermissionString(HealthPermissions.READ_HEALTH_DATA_HISTORY)
+        val additionalPermission = AdditionalPermission.READ_HEALTH_DATA_HISTORY
         val additionalPermissionStrings =
             AdditionalPermissionStrings.fromAdditionalPermission(additionalPermission)
         val value = viewModel.isPermissionLocallyGranted(additionalPermission)
@@ -196,7 +193,7 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     }
 
     private fun getHistoryReadPermissionPreferenceSummary(appMetadata: AppMetadata): String {
-        val additionalPermission = AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_HISTORY)
+        val additionalPermission = AdditionalPermission.READ_HEALTH_DATA_HISTORY
         val dataAccessDate = viewModel.loadAccessDate(appMetadata.packageName)
         return if (dataAccessDate != null) {
             val formattedDate = dateFormatter.formatLongDate(dataAccessDate)
@@ -212,7 +209,7 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
     }
 
     private fun getHistoryReadPermissionRequestText(appMetadata: AppMetadata): String {
-        val additionalPermission = AdditionalPermission(HealthPermissions.READ_HEALTH_DATA_HISTORY)
+        val additionalPermission = AdditionalPermission.READ_HEALTH_DATA_HISTORY
         val dataAccessDate = viewModel.loadAccessDate(appMetadata.packageName)
         return if (dataAccessDate != null) {
             val formattedDate = dateFormatter.formatLongDate(dataAccessDate)

@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"Fără date"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Permisiuni pentru aplicație"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Gestionează aplicațiile și permisiunile"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> din <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicații au acces"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> din <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicații au acces"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicații au acces"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicație are acces"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{O aplicație are acces}few{# aplicații au acces}other{# de aplicații au acces}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Niciuna"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalii despre intrare"</string>
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Scriere: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestionează permisiunile"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Ora: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Oră: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activitate"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activitate"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Măsurători corporale"</string>
@@ -88,9 +90,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Să acceseze datele anterioare"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Permiți accesul <xliff:g id="APP_NAME">%1$s</xliff:g> la datele anterioare?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Permite accesul aplicației la datele Health Connect adăugate până pe <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Permite accesul aplicației la datele Health Connect anterioare"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permite accesul aplicației la toate datele Health Connect anterioare"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Dacă acorzi permisiunea, aplicația poate să acceseze datele Health Connect adăugate până pe <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Dacă acorzi permisiunea, aplicația poate să acceseze datele Health Connect anterioare."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Dacă acorzi permisiunea, aplicația poate să acceseze toate datele Health Connect anterioare."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorii active arse"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calorii active arse"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Să citească date despre caloriile active arse"</string>
@@ -270,7 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politica de confidențialitate"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Elimini toate permisiunile?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Elimină-le pe toate"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu va mai putea să citească sau să scrie date din Health Connect.\n\nAcest lucru nu afectează celelalte permisiuni pe care le poate avea aplicația, cum ar fi cele pentru locație, camera foto sau microfon."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu va mai putea să citească sau să scrie date din Health Connect.\n\nAcest lucru nu afectează celelalte permisiuni pe care le poate avea aplicația, cum ar fi cele pentru locație, camera foto sau microfon."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu va mai putea să citească sau să scrie date din Health Connect, inclusiv date de fundal.\n\nAcest lucru nu afectează celelalte permisiuni pe care le poate avea aplicația, cum ar fi cele pentru locație, camera foto sau microfon."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu va mai putea să citească sau să scrie date din Health Connect, inclusiv date anterioare.\n\nAcest lucru nu afectează celelalte permisiuni pe care le poate avea aplicația, cum ar fi cele pentru locație, camera foto sau microfon."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu va mai putea să citească sau să scrie date din Health Connect, inclusiv date de fundal și date anterioare.\n\nAcest lucru nu afectează celelalte permisiuni pe care le poate avea aplicația, cum ar fi cele pentru locație, camera foto sau microfon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Șterge datele <xliff:g id="APP_NAME">%1$s</xliff:g> din Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Ziua următoare"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Ziua selectată"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accesul la aplicații"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentan, nu ai aplicații compatibile instalate"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Acces suplimentar"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S-au eliminat permisiunile suplimentare pentru această aplicație"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"S-au eliminat permisiunile pentru aplicație"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect a eliminat permisiunile pentru <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect a eliminat permisiunile pentru <xliff:g id="APP_DATA_0">%1$s</xliff:g> și <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -313,28 +319,53 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"De ce elimină Health Connect permisiunile pentru aplicație"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Dacă o aplicație este eliminată sau suspendată pe Google Play, Health Connect îi elimină automat permisiunile.\n\nPrin urmare, aplicația nu mai poate accesa datele stocate în Health Connect. Dacă aplicația are date scrise anterior, apare în lista aplicațiilor inactive."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Backup și restabilire"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"Exportare și importare"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Exportă automat"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Restabilirea datelor"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Încarcă datele exportate anterior"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Export programat"</string>
+    <string name="import_data" msgid="404502315533233094">"Importă date"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Restabilește datele dintr-un fișier exportat anterior"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Prin exportare poți să salvezi datele ca să le transferi pe alt telefon"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Află mai multe"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activat"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Dezactivat"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Alege frecvența"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Alege frecvența"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Alege să salvezi datele o dată sau setează-le să se salveze automat, la ore fixe."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Zilnic"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Săptămânal"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Lunar"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Locație pentru export"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Activează criptarea"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Datele trebuie criptate înainte de a fi salvate. Nimeni, nici Google sau Health Connect, nu le vor putea accesa."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Creează o parolă pentru a-ți proteja datele criptate. Vei avea nevoie de această parolă pentru a importa și a restabili datele."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Parolă"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Repetă parola"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Dacă uiți parola și pierzi telefonul, Health Connect nu te poate ajuta să recuperezi datele salvate."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"Alegeți locul exportului"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"Introdu parola"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Parola pentru criptare este necesară pentru a importa datele Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Ai uitat parola?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Parolă"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Dacă mai ai telefonul vechi, poți să exporți din nou datele folosind o parolă nouă"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Înapoi"</string>
     <string name="export_next_button" msgid="657930567137105172">"Înainte"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"Noțiuni introductive despre Health Connect"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Anulează"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Înainte"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importă din"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
+    <string name="onboarding_title" msgid="8550656211291180188">"Noțiuni introductive despre Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect îți stochează datele despre sănătate și fitness, oferindu-ți o metodă simplă de a sincroniza aplicațiile diverse de pe telefon"</string>
     <string name="share_data" msgid="3481932156368883946">"Permite accesul aplicațiilor la date"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Alege datele pe care fiecare aplicație le poate citi sau scrie în Health Connect"</string>
@@ -343,6 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Înapoi"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Începe"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Șterge datele"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Începe ștergerea"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Încheie ștergerea"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Alege datele de șters"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Înainte"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Astfel, se vor șterge definitiv toate datele adăugate în Health Connect în intervalul de timp selectat"</string>
@@ -401,6 +434,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}few{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milă pe oră}few{# mile pe oră}other{# de mile pe oră}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometru pe oră}few{# kilometri pe oră}other{# de kilometri pe oră}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/milă"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minut pe milă"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minut pe kilometru"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 yarzi"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metri"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minut pe 100 yarzi"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minut pe 100 metri"</string>
     <string name="time_range_long" msgid="5067423945245490288">"de la <xliff:g id="START_TIME">%1$s</xliff:g> la <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"de la <xliff:g id="START_TIME">%1$s</xliff:g> la <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{O împingere a scaunului cu rotile}few{# împingeri ale scaunului cu rotile}other{# de împingeri ale scaunului cu rotile}}"</string>
@@ -426,11 +467,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Neconcludent"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}few{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{O milisecundă}few{# milisecunde}other{# de milisecunde}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Note"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{O dată}few{De # ori}other{De # de ori}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Active: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Cât mai multe repetiții"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nivelul de efort: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rep.}few{# rep.}other{# rep.}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{O repetare}few{# repetări}other{# de repetări}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmente de exerciții"</string>
@@ -792,10 +835,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permite toate traseele"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Nu permite"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permite întotdeauna"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Afișarea traseului pentru exerciții"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Alege modul în care aplicația accesează traseele pentru exerciții din aplicațiile conectate"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accesează traseele pentru exerciții"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Permite ca <xliff:g id="APP_NAME">%1$s</xliff:g> să acceseze trasee"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Întreabă de fiecare dată"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Nu permite"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Nu permite"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Activezi ambele tipuri de date?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Dezactivezi ambele tipuri de date?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> necesită acces pentru citire la datele despre exerciții pentru a activa traseele pentru exerciții"</string>
@@ -889,4 +932,12 @@
     <string name="tab_access" msgid="7818197975407243701">"Acces"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Permiți accesul suplimentar pentru <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> solicită și permisiunea de a accesa aceste setări Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activează cel puțin o permisiune de citire ca să activezi accesul la fundal sau la datele anterioare pentru această aplicație"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Activează cel puțin o permisiune de citire ca să activezi accesul la fundal pentru această aplicație"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Activează cel puțin o permisiune de citire ca să activezi accesul la datele anterioare pentru această aplicație"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Ștergi definitiv toate datele din Health Connect?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Ștergi definitiv datele selectate din Health Connect?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"S-au șters toate datele"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"S-au șters datele despre <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elemente șterse"</string>
 </resources>

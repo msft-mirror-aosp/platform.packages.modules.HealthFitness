@@ -182,6 +182,8 @@ class MockedPermissionsActivityTest {
             .check(matches(isDisplayed()))
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -230,8 +232,6 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
-        Espresso.onIdle()
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
 
@@ -260,7 +260,6 @@ class MockedPermissionsActivityTest {
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
-
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
@@ -295,6 +294,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -398,10 +399,15 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -414,6 +420,8 @@ class MockedPermissionsActivityTest {
         onView(withText("Allow additional access for $TEST_APP_NAME?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -476,6 +484,8 @@ class MockedPermissionsActivityTest {
         onView(withText("Allow $TEST_APP_NAME to access Health Connect?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -488,6 +498,8 @@ class MockedPermissionsActivityTest {
         onView(withText("Allow additional access for $TEST_APP_NAME?"))
             .check(matches(isDisplayed()))
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.dont_allow).callOnClick()
         }
 
@@ -548,7 +560,10 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         // This should show additional permissions only
         onView(withText("Allow additional access for $TEST_APP_NAME?"))
             .check(matches(isDisplayed()))
@@ -593,6 +608,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -628,6 +645,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.dont_allow).callOnClick()
         }
 
@@ -665,6 +684,8 @@ class MockedPermissionsActivityTest {
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
 
         scenario.onActivity { activity: PermissionsActivity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
             activity.findViewById<Button>(R.id.allow).callOnClick()
         }
 
@@ -740,7 +761,10 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         onView(withText("Health Connect integration in progress"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))
@@ -759,7 +783,7 @@ class MockedPermissionsActivityTest {
         verify(healthConnectLogger)
             .logInteraction(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON)
 
-        // Needed to makes sure activity has finished
+        // Needed to make sure activity has finished
         Thread.sleep(2_000)
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
@@ -794,7 +818,10 @@ class MockedPermissionsActivityTest {
         val startActivityIntent = getPermissionScreenIntent(permissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
-
+        scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        Espresso.onIdle()
         onView(withText("Health Connect restore in progress"))
             .inRoot(isDialog())
             .check(matches(isDisplayed()))

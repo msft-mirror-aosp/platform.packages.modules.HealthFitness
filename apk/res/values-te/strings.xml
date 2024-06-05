@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"డేటా లేదు"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"యాప్ అనుమతులు"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"మీ యాప్‌లు, అలాగే అనుమతులను మేనేజ్ చేయండి"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>లో <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> యాప్‌లు యాక్సెస్‌ను కలిగి ఉన్నాయి"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>లో` <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> యాప్‌లు యాక్సెస్‌ను కలిగి ఉన్నాయి"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> యాప్‌లకు యాక్సెస్ ఉంది"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> యాప్‌నకు యాక్సెస్ ఉంది"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 యాప్‌నకు యాక్సెస్ ఉంది}other{# యాప్‌లకు యాక్సెస్ ఉంది}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ఏదీ లేదు"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ఎంట్రీ వివరాలు"</string>
     <string name="backup_title" msgid="211503191266235085">"బ్యాకప్"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"రాసింది: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"అనుమతులను మేనేజ్ చేయండి"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"సమయం: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"సమయం: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"యాక్టివిటీ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"యాక్టివిటీ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"శరీర కొలతలు"</string>
@@ -88,9 +90,9 @@
     <string name="historic_access_title" msgid="3584594624937737030">"మునుపటి డేటాను యాక్సెస్ చేయండి"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"మునుపటి డేటాను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌ను అనుమతించాలా?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీలోపు జోడించిన Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"మునుపటి Health Connect డేటాను యాక్సెస్ చేయడానికి ఈ యాప్‌ను అనుమతించండి"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"గతంలోని Health Connect డేటా మొత్తాన్ని యాక్సెస్ చేయడానికి ఈ యాప్‌నకు అనుమతినివ్వండి"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"మీరు అనుమతిస్తే, ఈ యాప్ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> తేదీలోపు జోడించబడిన Health Connect డేటాను యాక్సెస్ చేయగలదు."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"మీరు అనుమతిస్తే, ఈ యాప్ మునుపటి Health Connect డేటాను యాక్సెస్ చేయగలదు."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"మీరు అనుమతినిస్తే, ఈ యాప్ గతంలోని Health Connect డేటా మొత్తాన్ని యాక్సెస్ చేయగలదు."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటా"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటా"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ఖర్చు అయిన యాక్టివ్ కేలరీల డేటాను చదువుతుంది"</string>
@@ -270,7 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"గోప్యతా పాలసీ"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"అన్ని అనుమతులను తీసివేయాలా?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"అన్నీ తీసివేయండి"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై Health Connect నుండి ఎలాంటి డేటాను చదవడం లేదా రాయడం సాధ్యపడదు.\n\nఇది ఈ యాప్ కలిగి ఉండే లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులపై ప్రభావం చూపదు."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై Health Connect నుండి ఎలాంటి డేటాను చదవలేరు లేదా రాయలేరు.\n\nఇది ఈ యాప్ కలిగి ఉండే కెమెరా, మైక్రోఫోన్, లేదా లొకేషన్ వంటి ఇతర అనుమతులపై ప్రభావం చూపదు."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై బ్యాక్‌గ్రౌండ్ డేటాతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nఈ యాప్‌నకు ఉన్న లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై గతంలోని డేటాతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nఈ యాప్‌నకు ఉన్న లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ఇకపై బ్యాక్‌గ్రౌండ్, గతంలోని డేటతో సహా Health Connect నుండి ఏ డేటాను చదవలేదు లేదా రాయలేదు.\n\nఈ యాప్‌నకు ఉన్న లొకేషన్, కెమెరా, లేదా మైక్రోఫోన్ వంటి ఇతర అనుమతులను ఇది ప్రభావితం చేయదు."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Health Connect నుండి <xliff:g id="APP_NAME">%1$s</xliff:g> డేటాను కూడా తొలగించండి"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"తర్వాతి రోజు"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ఎంచుకున్న రోజు"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"యాప్ యాక్సెస్"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"మీ వద్ద ప్రస్తుతం అనుకూలమైన యాప్‌లు ఏవీ ఇన్‌స్టాల్ అయి లేవు"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"అదనపు యాక్సెస్‌"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ఈ యాప్‌నకు సంబంధించిన అదనపు అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"యాప్ అనుమతులు తీసివేయబడ్డాయి"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g>‌కు అనుమతులను తీసివేసింది"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g>, <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>‌కు అనుమతులను తీసివేసింది"</string>
@@ -313,28 +319,53 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect యాప్ అనుమతులను ఎందుకు తీసివేస్తుంది"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play నుండి యాప్ సస్పెండ్ చేయబడినా లేదా తీసివేయబడినా, Health Connect దాని అనుమతులను ఆటోమేటిక్‌గా తీసివేస్తుంది.\n\nయాప్ ఇకపై Health Connectలో స్టోర్ చేసిన డేటాను యాక్సెస్ చేయలేదని దీని అర్థం. ఈ యాప్ మునుపు రాసిన డేటాను కలిగి ఉంటే, అది ఇన్‌యాక్టివ్ యాప్‌ల లిస్ట్‌లో కనిపిస్తుంది."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"అర్థమైంది"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"బ్యాకప్, రీస్టోర్"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"ఎగుమతి, దిగుమతి"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"ఆటోమేటిక్‌గా ఎగుమతి చేయండి"</string>
-    <string name="restore_data" msgid="3401173690437871417">"డేటాను రీస్టోర్ చేయండి"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"మునుపు ఎగుమతి చేసిన డేటాను లోడ్ చేయండి"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"షెడ్యూల్ చేయబడిన ఎగుమతి"</string>
+    <string name="import_data" msgid="404502315533233094">"డేటాను దిగుమతి చేయండి"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"మునుపు ఎగుమతి చేసిన ఫైల్ నుండి డేటాను రీస్టోర్ చేయండి"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ఎగుమతి (ఎక్స్‌పోర్ట్), మీ డేటాను సేవ్ చేయడానికి అనుమతిస్తుంది, తద్వారా మీరు ఆ డేటాను కొత్త ఫోన్‌కు బదిలీ చేయవచ్చు"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"మరింత తెలుసుకోండి"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ఆన్‌లో ఉంది"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ఆఫ్‌లో ఉంది"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"ఫ్రీక్వెన్సీని ఎంచుకోండి"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ఫ్రీక్వెన్సీని ఎంచుకోండి"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ఒకసారి డేటాను సేవ్ చేయడానికి ఎంచుకోండి లేదా ప్రతిసారీ ఆటోమేటిక్‌గా సేవ్ చేయడానికి సెట్ చేయండి."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"రోజుకు ఒకసారి"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"వారానికి ఒకసారి"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"నెలకు ఒకసారి"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"లొకేషన్‌ను ఎగుమతి చేయండి"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"ఎన్‌క్రిప్షన్‌ను ఆన్ చేయండి"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"డేటాను సేవ్ చేసే ముందు, దాన్ని ఎన్‌క్రిప్ట్ చేయాలి. Google లేదా Health Connectతో సహా ఎవ్వరూ కూడా దీన్ని యాక్సెస్ చేయలేరు."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ఎన్‌క్రిప్ట్ చేసిన మీ డేటాను రక్షించుకోవడానికి పాస్‌వర్డ్‌ను క్రియేట్ చేయండి. మీ డేటాను దిగుమతి చేసుకోవడానికి, రీస్టోర్ చేయడానికి మీకు ఈ పాస్‌వర్డ్ అవసరం."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"పాస్‌వర్డ్"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"పాస్‌వర్డ్‌ను మళ్లీ ఎంటర్ చేయండి"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"మీరు పాస్‌వర్డ్‌ను మర్చిపోయి, ఫోన్ పోగొట్టుకుంటే, సేవ్ చేయబడిన మీ డేటాను రికవర్ చేయడంలో Health Connect సహాయపడలేదు."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"ఎక్కడికి ఎగుమతి చేయాలో ఎంచుకోండి"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"పాస్‌వర్డ్‌ను టైప్ చేయండి"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"మీ Health Connect డేటాను దిగుమతి చేసుకోవడానికి మీ ఎన్‌క్రిప్షన్ పాస్‌వర్డ్ అవసరం"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"పాస్‌వర్డ్‌ను మరచిపోయారా?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"పాస్‌వర్డ్"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"మీ వద్ద ఇప్పటికీ మీ పాత ఫోన్ ఉంటే, మీరు కొత్త పాస్‌వర్డ్‌తో మీ డేటాను మళ్లీ ఎగుమతి చేయవచ్చు"</string>
     <string name="export_back_button" msgid="3550795479165524982">"వెనుకకు"</string>
     <string name="export_next_button" msgid="657930567137105172">"తర్వాతకు"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"Health Connectను ప్రారంభించండి"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"రద్దు చేయండి"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"తర్వాత"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"దీని నుండి దిగుమతి చేయండి"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
+    <string name="onboarding_title" msgid="8550656211291180188">"Health Connectను ప్రారంభించండి"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు సంబంధించిన డేటాను స్టోర్ చేస్తుంది, తద్వారా మీరు మీ డేటాను ఫోన్​లోని విభిన్న రకాల యాప్‌లతో సులభంగా సింక్ చేయవచ్చు"</string>
     <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>
     <string name="share_data_description" msgid="2919871301634375092">"ప్రతి ఒక్క యాప్ Health Connectలో ఏ డేటాను రీడ్‌ చేయాలి లేదా రైట్ చేయాలి అన్నది ఎంచుకోండి"</string>
@@ -343,6 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"వెనుకకు వెళ్లండి"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ప్రారంభించండి"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"డేటాను తొలగించండి"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"తొలగింపు ప్రాసెస్‌ను ప్రారంభిస్తుంది"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"తొలగింపు ప్రాసెస్‌ను ఆపివేస్తుంది"</string>
     <string name="time_range_title" msgid="6831605283322600165">"తొలగించడానికి డేటాను ఎంచుకోండి"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"తర్వాత"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ఇది ఎంచుకున్న సమయ వ్యవధిలో Health Connectకు జోడించబడిన మొత్తం డేటాను శాశ్వతంగా తొలగిస్తుంది"</string>
@@ -401,6 +434,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 కి.మీ/గం}other{# కి.మీ/గం}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{గంటకు 1 మైలు}other{గంటకు # మైళ్లు}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{గంటకు 1 కిలోమీటర్}other{గంటకు # కిలోమీటర్‌లు}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> నిమి/మై"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> నిమి/కిమీ"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"ఒక మైలుకు <xliff:g id="MINUTE">%1$s</xliff:g> నిమిషం"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"ఒక కిలోమీటర్‌కు <xliff:g id="MINUTE">%1$s</xliff:g> నిమిషం"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> నిమి/100 యా"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> నిమి/100 మీ"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"ప్రతి 100 యార్డ్‌లకు <xliff:g id="MINUTE">%1$s</xliff:g> నిమిషం"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"ప్రతి 100 మీటర్‌లకు <xliff:g id="MINUTE">%1$s</xliff:g> నిమిషం"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g> నుండి <xliff:g id="END_TIME">%2$s</xliff:g> వరకు"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g> నుండి <xliff:g id="END_TIME">%2$s</xliff:g> వరకు"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 వీల్‌చెయిర్ పుష్}other{# వీల్‌చెయిర్ పుష్‌లు}}"</string>
@@ -426,11 +467,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"అసంపూర్ణం"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 మిసె}other{# మిసె}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 మిల్లీసెకను}other{# మిల్లీసెకన్లు}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"గమనికలు"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 సారి}other{# సార్లు}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"యాక్టివ్: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"మొత్తం: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"వీలైనన్ని సార్లు రిపీట్ చేయండి"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"ప్రయత్న స్థాయి: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 సారి}other{# సార్లు}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 రిపిటీషన్}other{# రిపిటీషన్‌లు}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"వ్యాయామ విభాగాలు"</string>
@@ -792,10 +835,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"అన్ని మార్గాలను అనుమతించండి"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"అనుమతించవద్దు"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"ఎల్లవేళలా అనుమతించబడుతుంది"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"వ్యాయామం మార్గం షేరింగ్"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"కనెక్ట్ చేయబడిన యాప్‌ల నుండి వ్యాయామం మార్గాలను ఈ యాప్ ఎలా యాక్సెస్ చేస్తుందో కంట్రోల్ చేయండి"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"వ్యాయామ మార్గాలను యాక్సెస్ చేయండి"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"మార్గాలను యాక్సెస్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>ను అనుమతించండి"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ప్రతిసారి అడగండి"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"అనుమతించవద్దు"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"అనుమతించవద్దు"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"రెండు రకాల డేటాను ఎనేబుల్ చేయాలా?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"రెండు రకాల డేటాను డిజేబుల్ చేయాలా?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"వ్యాయామ సెషన్‌కు సంబంధించిన మార్గాలను ఎనేబుల్ చేయడానికి <xliff:g id="APP_NAME">%1$s</xliff:g>‌కు వ్యాయామం సంబంధిత డేటాకు రీడ్ యాక్సెస్ అవసరం"</string>
@@ -889,4 +932,12 @@
     <string name="tab_access" msgid="7818197975407243701">"యాక్సెస్"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> కోసం అదనపు యాక్సెస్‌ను అనుమతించాలా?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> కూడా ఈ Health Connect సెట్టింగ్‌లను యాక్సెస్ చేయాలనుకుంటోంది"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"ఈ యాప్‌నకు సంబంధించిన బ్యాక్‌గ్రౌండ్ లేదా గతంలోని డేటాకు యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"ఈ యాప్‌నకు సంబంధించిన బ్యాక్‌గ్రౌండ్ యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"ఈ యాప్‌నకు సంబంధించిన గతంలోని డేటాకు యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect నుండి మొత్తం డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connect నుండి ఎంచుకున్న డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"మొత్తం డేటా తొలగించబడింది"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> డేటా తొలగించబడింది"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ఐటెమ్‌లు తొలగించబడ్డాయి"</string>
 </resources>

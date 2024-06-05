@@ -36,7 +36,6 @@
     <attr name="autoDeleteIcon" format="reference"/>
     <attr name="autoDeleteOffIcon" format="reference"/>
     <attr name="deleteIcon" format="reference" />
-    <attr name="exportDataIcon" format="reference" />
     <attr name="activityCategoryIcon" format="reference"/>
     <attr name="bodyMeasurementsCategoryIcon" format="reference"/>
     <attr name="cycleTrackingCategoryIcon" format="reference"/>
@@ -50,6 +49,9 @@
 
     <!-- Data access page -->
     <attr name="seeAllEntriesIcon" format="reference"/>
+    <attr name="deleteForeverIcon" format="reference"/>
+    <attr name="checkboxUncheckedIcon" format="reference"/>
+    <attr name="checkboxCheckedIcon" format="reference"/>
 
     <!-- Data entries page -->
     <attr name="nextDayIcon" format="reference"/>
@@ -84,10 +86,12 @@
     <!-- Backup and restore -->
     <attr name="uploadIcon" format="reference"/>
     <attr name="repeatIcon" format="reference"/>
-    <attr name="settingsBackupRestoreIcon" format="reference"/>
+    <attr name="importIcon" format="reference" />
+    <attr name="importDataIcon" format="reference" />
 
-    <attr name="lockIcon" format="reference"/>
     <attr name="warningIcon" format="reference"/>
+    <attr name="passwordIcon" format="reference"/>
+    <attr name="infoIcon" format="reference"/>
 
     <!-- END REGION -->
 
@@ -117,6 +121,7 @@
     <attr name="textAppearanceSubheader3" format="reference"/>
     <attr name="textAppearanceRouteRequest" format="reference"/>
     <attr name="textAppearancePreferenceCategory" format="reference"/>
+    <attr name="textAppearanceErrorMessage" format="reference"/>
 
     <!-- Buttons -->
     <attr name="dialogButtonFull" format="reference"/>
@@ -125,7 +130,10 @@
     <attr name="buttonBorderLess" format="reference"/>
     <attr name="permissionGrantButtonList" format="reference"/>
     <attr name="permissionGrantButtonTop" format="reference"/>
-    <attr name="permissionGrantButtonButton" format="reference"/>
+    <attr name="permissionGrantButtonBottom" format="reference"/>
+
+    <!-- EditText -->
+    <attr name="editTextPasswordTheme" format="reference"/>
 
     <!-- Dialogs -->
     <attr name="alertDialogTheme" format="reference"/>

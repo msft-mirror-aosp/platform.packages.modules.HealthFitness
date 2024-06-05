@@ -22,11 +22,18 @@ import android.health.connect.datatypes.BodyWaterMassRecord
 import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.Device
 import android.health.connect.datatypes.DistanceRecord
+import android.health.connect.datatypes.ExerciseCompletionGoal
+import android.health.connect.datatypes.ExercisePerformanceGoal
+import android.health.connect.datatypes.ExerciseSegmentType
+import android.health.connect.datatypes.ExerciseSessionType
 import android.health.connect.datatypes.HeartRateRecord
 import android.health.connect.datatypes.HydrationRecord
 import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseBlock
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
+import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.Record
 import android.health.connect.datatypes.SleepSessionRecord
 import android.health.connect.datatypes.StepsRecord
@@ -38,6 +45,7 @@ import android.health.connect.datatypes.units.Mass
 import android.health.connect.datatypes.units.Percentage
 import android.health.connect.datatypes.units.Power
 import android.health.connect.datatypes.units.Temperature
+import android.health.connect.datatypes.units.Velocity
 import android.health.connect.datatypes.units.Volume
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -45,17 +53,16 @@ import com.android.healthconnect.controller.dataentries.units.PowerConverter
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.app.AppMetadata
-import com.android.healthconnect.controller.utils.SystemTimeSource
+import com.android.healthconnect.controller.utils.TimeSource
 import com.android.healthconnect.controller.utils.randomInstant
 import com.android.healthconnect.controller.utils.toInstant
-import com.android.healthconnect.controller.utils.toLocalDate
 import com.android.healthconnect.controller.utils.toLocalDateTime
 import com.google.common.truth.Truth.assertThat
 import java.time.Instant
 import java.time.LocalDate
-import java.time.Period
 import kotlin.random.Random
 import org.mockito.Mockito
+import java.time.ZoneOffset
 
 val NOW: Instant = Instant.parse("2022-10-20T07:06:05.432Z")
 val MIDNIGHT: Instant = Instant.parse("2022-10-20T00:00:00.000Z")
@@ -138,6 +145,92 @@ fun getRandomRecord(healthPermissionType: HealthPermissionType, date: LocalDate)
             throw IllegalArgumentException(
                 "HealthPermissionType $healthPermissionType not supported")
     }
+}
+
+fun getSamplePlannedExerciseSessionRecord(): PlannedExerciseSessionRecord {
+    val exerciseBlock1 =
+        getPlannedExerciseBlock(
+            repetitions = 1,
+            description = "Warm up",
+            exerciseSteps =
+                listOf(
+                    getPlannedExerciseStep(
+                        exerciseSegmentType = ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                        completionGoal =
+                            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(1000.0)),
+                        performanceGoals =
+                            listOf(
+                                ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                                ExercisePerformanceGoal.SpeedGoal(
+                                    Velocity.fromMetersPerSecond(25.0),
+                                    Velocity.fromMetersPerSecond(15.0))))))
+    val exerciseBlock2 =
+        getPlannedExerciseBlock(
+            repetitions = 1,
+            description = "Main set",
+            exerciseSteps =
+                listOf(
+                    getPlannedExerciseStep(
+                        exerciseSegmentType = ExerciseSegmentType.EXERCISE_SEGMENT_TYPE_RUNNING,
+                        completionGoal =
+                            ExerciseCompletionGoal.DistanceGoal(Length.fromMeters(4000.0)),
+                        performanceGoals =
+                            listOf(
+                                ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                                ExercisePerformanceGoal.SpeedGoal(
+                                    Velocity.fromMetersPerSecond(50.0),
+                                    Velocity.fromMetersPerSecond(25.0))))))
+    val exerciseBlocks = listOf(exerciseBlock1, exerciseBlock2)
+
+    return getPlannedExerciseSessionRecord(
+        title = "Morning Run",
+        note = "Morning quick run by the park",
+        exerciseBlocks = exerciseBlocks)
+}
+
+fun getPlannedExerciseSessionRecord(
+    title: String,
+    note: String,
+    exerciseBlocks: List<PlannedExerciseBlock>
+): PlannedExerciseSessionRecord {
+    return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
+        .setTitle(title)
+        .setNotes(note)
+        .setBlocks(exerciseBlocks)
+        .build()
+}
+
+private fun basePlannedExerciseSession(exerciseType: Int): PlannedExerciseSessionRecord.Builder {
+    val builder: PlannedExerciseSessionRecord.Builder =
+        PlannedExerciseSessionRecord.Builder(
+            getMetaData(), exerciseType, NOW, NOW.plusSeconds(3600))
+    builder.setNotes("Sample training plan notes")
+    builder.setTitle("Training plan title")
+    builder.setStartZoneOffset(ZoneOffset.UTC)
+    builder.setEndZoneOffset(ZoneOffset.UTC)
+    return builder
+}
+
+fun getPlannedExerciseBlock(
+    repetitions: Int,
+    description: String,
+    exerciseSteps: List<PlannedExerciseStep>
+): PlannedExerciseBlock {
+    return PlannedExerciseBlock.Builder(repetitions)
+        .setDescription(description)
+        .setSteps(exerciseSteps)
+        .build()
+}
+
+fun getPlannedExerciseStep(
+    exerciseSegmentType: Int,
+    completionGoal: ExerciseCompletionGoal,
+    performanceGoals: List<ExercisePerformanceGoal>
+): PlannedExerciseStep {
+    return PlannedExerciseStep.Builder(
+            exerciseSegmentType, PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE, completionGoal)
+        .setPerformanceGoals(performanceGoals)
+        .build()
 }
 
 fun getMetaData(): Metadata {
@@ -224,24 +317,6 @@ fun verifyBodyWaterMassListsEqual(actual: List<Record>, expected: List<Record>) 
 
 val START_TIME = Instant.parse("2023-06-12T22:30:00Z")
 
-val INSTANT_TODAY =
-    Instant.ofEpochMilli(SystemTimeSource.currentTimeMillis())
-        .toLocalDate()
-        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-        .toInstant()
-
-val INSTANT_YESTERDAY =
-    INSTANT_TODAY.toLocalDate()
-        .minus(Period.ofDays(1))
-        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-        .toInstant()
-
-val INSTANT_TWO_DAYS_AGO =
-    INSTANT_YESTERDAY.toLocalDate()
-        .minus(Period.ofDays(1))
-        .atStartOfDay(SystemTimeSource.deviceZoneOffset())
-        .toInstant()
-
 // pre-defined Instants within a day, week, and month of the START_TIME Instant
 val INSTANT_DAY: Instant = Instant.parse("2023-06-11T23:30:00Z")
 val INSTANT_DAY2: Instant = Instant.parse("2023-06-12T02:00:00Z")
@@ -305,18 +380,24 @@ val BODYWATERMASS_WEEK: BodyWaterMassRecord =
     getBodyWaterMassRecord(INSTANT_WEEK, Mass.fromGrams(1000.0))
 
 // records using today's date, yesterday's date, and the date two days ago - for header testing
-val DISTANCE_TWODAYSAGO_2000: DistanceRecord =
-    getDistanceRecord(Length.fromMeters(2000.0), INSTANT_TWO_DAYS_AGO)
-val WEIGHT_TWODAYSAGO_95: WeightRecord =
-    getWeightRecord(INSTANT_TWO_DAYS_AGO, Mass.fromGrams(95000.0))
-val OXYGENSATURATION_YESTERDAY_99: OxygenSaturationRecord =
-    getOxygenSaturationRecord(INSTANT_YESTERDAY, Percentage.fromValue(99.0))
-val DISTANCE_YESTERDAY_2500: DistanceRecord =
-    getDistanceRecord(Length.fromMeters(2500.0), INSTANT_YESTERDAY)
-val SLEEP_TODAY_0H30: SleepSessionRecord =
-    getSleepSessionRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(1800))
-val HYDRATION_TODAY_2L: HydrationRecord =
-    getHydrationRecord(INSTANT_TODAY, INSTANT_TODAY.plusSeconds(900), Volume.fromLiters(2.0))
+fun getMixedRecordsAcrossTwoDays(timeSource: TimeSource): List<Record> {
+    val instantToday: Instant = timeSource.currentLocalDateTime().toInstant()
+    val instantYesterday: Instant = timeSource.currentLocalDateTime().minusDays(1).toInstant()
+    return listOf(
+        getHydrationRecord(instantToday, instantToday.plusSeconds(900), Volume.fromLiters(2.0)),
+        getSleepSessionRecord(instantToday, instantToday.plusSeconds(1800)),
+        getDistanceRecord(Length.fromMeters(2500.0), instantYesterday),
+        getOxygenSaturationRecord(instantYesterday, Percentage.fromValue(99.0)))
+}
+
+fun getMixedRecordsAcrossThreeDays(timeSource: TimeSource): List<Record> {
+    val instantTwoDaysAgo: Instant = timeSource.currentLocalDateTime().minusDays(2).toInstant()
+    return getMixedRecordsAcrossTwoDays(timeSource)
+        .plus(
+            listOf(
+                getWeightRecord(instantTwoDaysAgo, Mass.fromGrams(95000.0)),
+                getDistanceRecord(Length.fromMeters(2000.0), instantTwoDaysAgo)))
+}
 
 // test data constants - end
 

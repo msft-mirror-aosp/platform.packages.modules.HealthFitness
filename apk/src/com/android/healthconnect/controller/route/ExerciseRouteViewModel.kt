@@ -113,7 +113,7 @@ constructor(
                 return false
             }
 
-            appInfo.requestedPermissions.contains(READ_EXERCISE_ROUTES)
+            appInfo.requestedPermissions!!.contains(READ_EXERCISE_ROUTES)
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "isPermissionDeclared error", e)
             false

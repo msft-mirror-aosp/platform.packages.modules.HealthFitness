@@ -2,6 +2,7 @@ package com.android.healthconnect.controller.utils
 
 import android.content.Context
 import android.provider.DeviceConfig
+import com.android.healthfitness.flags.Flags
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,11 +25,11 @@ interface FeatureUtils {
 
     fun isHistoryReadEnabled(): Boolean
 
-    fun isImportExportEnabled(): Boolean
-
     fun isSkinTemperatureEnabled(): Boolean
 
     fun isPlannedExerciseEnabled(): Boolean
+
+    fun isPersonalHealthRecordEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -44,7 +45,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
             "aggregation_source_controls_enable"
         private const val PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED =
             "new_information_architecture_enable"
-        private const val PROPERTY_IMPORT_EXPORT_ENABLED = "import_export_enable"
+        private const val PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED = "personal_health_record_enable"
     }
 
     private val lock = Any()
@@ -69,9 +70,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
 
-    private var isImportExportEnabled =
-        DeviceConfig.getBoolean(
-            HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_IMPORT_EXPORT_ENABLED, false)
+    private var isPersonalHealthRecordEnabled = Flags.personalHealthRecord()
 
     override fun isNewAppPriorityEnabled(): Boolean {
         synchronized(lock) {
@@ -105,31 +104,31 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
 
     override fun isBackgroundReadEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
     override fun isHistoryReadEnabled(): Boolean {
         synchronized(lock) {
-            return false
-        }
-    }
-
-    override fun isImportExportEnabled(): Boolean {
-        synchronized(lock) {
-            return isImportExportEnabled
+            return true
         }
     }
 
     override fun isPlannedExerciseEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
         }
     }
 
     override fun isSkinTemperatureEnabled(): Boolean {
         synchronized(lock) {
-            return false
+            return true
+        }
+    }
+
+    override fun isPersonalHealthRecordEnabled(): Boolean {
+        synchronized(lock) {
+            return isPersonalHealthRecordEnabled
         }
     }
 
@@ -156,9 +155,8 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                         isNewInformationArchitectureEnabled =
                             properties.getBoolean(
                                 PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
-                    PROPERTY_IMPORT_EXPORT_ENABLED ->
-                        isImportExportEnabled =
-                            properties.getBoolean(PROPERTY_IMPORT_EXPORT_ENABLED, false)
+                    PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED ->
+                        properties.getBoolean(PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED, false)
                 }
             }
         }

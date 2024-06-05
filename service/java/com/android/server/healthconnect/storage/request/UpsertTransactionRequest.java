@@ -18,6 +18,7 @@ package com.android.server.healthconnect.storage.request;
 
 import static android.health.connect.Constants.UPSERT;
 
+import static com.android.server.healthconnect.storage.utils.StorageUtils.addNameBasedUUIDTo;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
@@ -25,6 +26,7 @@ import android.annotation.Nullable;
 import android.content.Context;
 import android.health.connect.Constants;
 import android.health.connect.datatypes.RecordTypeIdentifier;
+import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -32,8 +34,8 @@ import android.util.Slog;
 
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
@@ -61,12 +63,11 @@ import java.util.stream.Collectors;
 public class UpsertTransactionRequest {
     private static final String TAG = "HealthConnectUTR";
     @NonNull private final List<UpsertTableRequest> mUpsertRequests = new ArrayList<>();
-    @NonNull private final String mPackageName;
     private final List<UpsertTableRequest> mAccessLogs = new ArrayList<>();
     private final boolean mSkipPackageNameAndLogs;
     @RecordTypeIdentifier.RecordType Set<Integer> mRecordTypes = new ArraySet<>();
 
-    private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
+    @Nullable private ArrayMap<String, Boolean> mExtraWritePermissionsToState;
 
     public UpsertTransactionRequest(
             @Nullable String packageName,
@@ -101,6 +102,27 @@ public class UpsertTransactionRequest {
                 Collections.emptyMap());
     }
 
+    // TODO(b/341044947): update this to take in InsertMedicalResourceRequest once that is
+    // checked in.
+    public UpsertTransactionRequest(
+            @NonNull String packageName,
+            @NonNull List<MedicalResourceInternal> medicalResourceInternals) {
+        this(packageName, medicalResourceInternals, /* skipPackageNameAndLogs= */ false);
+    }
+
+    private UpsertTransactionRequest(
+            @NonNull String packageName,
+            @NonNull List<MedicalResourceInternal> medicalResourceInternals,
+            boolean skipPackageNameAndLogs) {
+        mSkipPackageNameAndLogs = skipPackageNameAndLogs;
+        for (MedicalResourceInternal medicalResourceInternal : medicalResourceInternals) {
+            addNameBasedUUIDTo(medicalResourceInternal);
+            addRequest(medicalResourceInternal);
+        }
+        // TODO(b/337018927): Add support for change logs and access logs.
+        // TODO(b/337020806): Add support for updating medical resources.
+    }
+
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private UpsertTransactionRequest(
             @Nullable String packageName,
@@ -111,7 +133,6 @@ public class UpsertTransactionRequest {
             boolean useProvidedUuid,
             boolean skipPackageNameAndLogs,
             Map<String, Boolean> extraPermsStateMap) {
-        mPackageName = packageName;
         mSkipPackageNameAndLogs = skipPackageNameAndLogs;
         if (extraPermsStateMap != null && !extraPermsStateMap.isEmpty()) {
             mExtraWritePermissionsToState = new ArrayMap<>();
@@ -132,7 +153,7 @@ public class UpsertTransactionRequest {
                     // restore to ensure references between records remain intact.
                 } else {
                     // Otherwise, we should generate a fresh UUID. Don't let the client choose it.
-                    StorageUtils.addNameBasedUUIDTo(recordInternal);
+                    addNameBasedUUIDTo(recordInternal);
                 }
             } else {
                 // For update requests, generate uuid if the clientRecordID is present, else use the
@@ -168,24 +189,6 @@ public class UpsertTransactionRequest {
     }
 
     @NonNull
-    public List<UpsertTableRequest> getInsertRequestsForChangeLogs() {
-        if (mSkipPackageNameAndLogs) {
-            return Collections.emptyList();
-        }
-        long currentTime = Instant.now().toEpochMilli();
-        ChangeLogsHelper.ChangeLogs insertChangeLogs =
-                new ChangeLogsHelper.ChangeLogs(UPSERT, mPackageName, currentTime);
-        for (UpsertTableRequest upsertRequest : mUpsertRequests) {
-            insertChangeLogs.addUUID(
-                    upsertRequest.getRecordInternal().getRecordType(),
-                    upsertRequest.getRecordInternal().getAppInfoId(),
-                    upsertRequest.getRecordInternal().getUuid());
-        }
-
-        return insertChangeLogs.getUpsertTableRequests();
-    }
-
-    @NonNull
     public List<UpsertTableRequest> getUpsertRequests() {
         return mUpsertRequests;
     }
@@ -209,7 +212,7 @@ public class UpsertTransactionRequest {
 
     private void addRequest(@NonNull RecordInternal<?> recordInternal, boolean isInsertRequest) {
         RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordInternal.getRecordType());
+                RecordHelperProvider.getRecordHelper(recordInternal.getRecordType());
         Objects.requireNonNull(recordHelper);
 
         UpsertTableRequest request =
@@ -219,6 +222,14 @@ public class UpsertTransactionRequest {
             request.setUpdateWhereClauses(generateWhereClausesForUpdate(recordInternal));
         }
         request.setRecordInternal(recordInternal);
+        mUpsertRequests.add(request);
+    }
+
+    private void addRequest(@NonNull MedicalResourceInternal medicalResourceInternal) {
+        MedicalResourceHelper medicalResourceHelper = new MedicalResourceHelper();
+
+        UpsertTableRequest request =
+                medicalResourceHelper.getUpsertTableRequest(medicalResourceInternal);
         mUpsertRequests.add(request);
     }
 }

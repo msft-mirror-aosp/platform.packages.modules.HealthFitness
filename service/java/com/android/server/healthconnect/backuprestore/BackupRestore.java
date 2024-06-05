@@ -17,8 +17,6 @@
 package com.android.server.healthconnect.backuprestore;
 
 import static android.health.connect.Constants.DEFAULT_INT;
-import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_FETCHING_DATA;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_NONE;
 import static android.health.connect.HealthConnectDataState.RESTORE_ERROR_UNKNOWN;
@@ -31,15 +29,11 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UNKNOWN;
-import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_USER_ID;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorBlob;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,19 +45,11 @@ import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager.DataDownloadState;
-import android.health.connect.PageTokenWrapper;
-import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
-import android.health.connect.datatypes.Record;
-import android.health.connect.internal.datatypes.PlannedExerciseSessionRecordInternal;
-import android.health.connect.internal.datatypes.RecordInternal;
-import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
@@ -76,26 +62,19 @@ import android.text.format.DateUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
-import android.util.Pair;
 import android.util.Slog;
 
-import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectThreadScheduler;
+import com.android.server.healthconnect.exportimport.DatabaseContext;
+import com.android.server.healthconnect.exportimport.DatabaseMerger;
 import com.android.server.healthconnect.migration.MigrationStateManager;
 import com.android.server.healthconnect.permission.FirstGrantTimeManager;
 import com.android.server.healthconnect.permission.GrantTimeXmlHelper;
 import com.android.server.healthconnect.permission.UserGrantTimeState;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.request.DeleteTableRequest;
-import com.android.server.healthconnect.storage.request.ReadTableRequest;
-import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
-import com.android.server.healthconnect.storage.request.UpsertTransactionRequest;
-import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.android.server.healthconnect.utils.FilesUtil;
 import com.android.server.healthconnect.utils.RunnableWithThrowable;
 
@@ -128,23 +107,17 @@ public final class BackupRestore {
     // Key for storing the current data download state
     @VisibleForTesting
     public static final String DATA_DOWNLOAD_STATE_KEY = "data_download_state_key";
-    // The below values for the IntDef are defined in chronological order of the restore process.
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_UNKNOWN = 0;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING = 1;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS = 2;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_STAGING_DONE = 3;
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS = 4;
-    // See b/290172311 for details.
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE = 5;
 
-    @VisibleForTesting
-    public static final int INTERNAL_RESTORE_STATE_MERGING_DONE = 6;
+    // The below values for the IntDef are defined in chronological order of the restore process.
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_UNKNOWN = 0;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING = 1;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_STAGING_IN_PROGRESS = 2;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_STAGING_DONE = 3;
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS = 4;
+    // See b/290172311 for details.
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_MERGING_DONE_OLD_CODE = 5;
+
+    @VisibleForTesting public static final int INTERNAL_RESTORE_STATE_MERGING_DONE = 6;
 
     @VisibleForTesting
     static final long DATA_DOWNLOAD_TIMEOUT_INTERVAL_MILLIS = 14 * DateUtils.DAY_IN_MILLIS;
@@ -214,21 +187,19 @@ public final class BackupRestore {
     @VisibleForTesting
     static final String GRANT_TIME_FILE_NAME = "health-permissions-first-grant-times.xml";
 
-    @VisibleForTesting
-    static final String STAGED_DATABASE_NAME = "healthconnect_staged.db";
+    @VisibleForTesting static final String STAGED_DATABASE_DIR = "remote_staged";
+
+    @VisibleForTesting static final String STAGED_DATABASE_NAME = "healthconnect_staged.db";
 
     private static final String TAG = "HealthConnectBackupRestore";
     private final ReentrantReadWriteLock mStatesLock = new ReentrantReadWriteLock(true);
     private final FirstGrantTimeManager mFirstGrantTimeManager;
     private final MigrationStateManager mMigrationStateManager;
 
-    private final StagedDatabaseContext mStagedDbContext;
     private final Context mContext;
-    private final Map<Long, String> mStagedPackageNamesByAppIds = new ArrayMap<>();
     private final Object mMergingLock = new Object();
 
-    @GuardedBy("mMergingLock")
-    private HealthConnectDatabase mStagedDatabase;
+    private final DatabaseMerger mDatabaseMerger;
 
     private boolean mActivelyStagingRemoteData = false;
 
@@ -243,13 +214,12 @@ public final class BackupRestore {
         mMigrationStateManager = migrationStateManager;
         mContext = context;
         mCurrentForegroundUser = mContext.getUser();
-        mStagedDbContext = StagedDatabaseContext.create(context, mCurrentForegroundUser);
+        mDatabaseMerger = new DatabaseMerger(context);
     }
 
     public void setupForUser(UserHandle currentForegroundUser) {
         Slog.d(TAG, "Performing user switch operations.");
         mCurrentForegroundUser = currentForegroundUser;
-        mStagedDbContext.updateForegroundUser(mCurrentForegroundUser);
         HealthConnectThreadScheduler.scheduleInternalTask(this::scheduleAllJobs);
     }
 
@@ -290,9 +260,11 @@ public final class BackupRestore {
     public void stageAllHealthConnectRemoteData(
             Map<String, ParcelFileDescriptor> pfdsByFileName,
             Map<String, HealthConnectException> exceptionsByFileName,
-            int userId,
+            @NonNull UserHandle userHandle,
             @NonNull IDataStagingFinishedCallback callback) {
-        File stagedRemoteDataDir = getStagedRemoteDataDirectoryForUser(userId);
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        File stagedRemoteDataDir = dbContext.getDatabaseDir();
         try {
             stagedRemoteDataDir.mkdirs();
 
@@ -416,8 +388,7 @@ public final class BackupRestore {
         if (downloadState == DATA_DOWNLOAD_COMPLETE) {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_WAITING_FOR_STAGING, false /* force */);
         } else if (downloadState == DATA_DOWNLOAD_FAILED) {
-            setInternalRestoreState(
-                    INTERNAL_RESTORE_STATE_MERGING_DONE, false /* force */);
+            setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false /* force */);
             setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
         }
     }
@@ -425,11 +396,13 @@ public final class BackupRestore {
     /** Deletes all the staged data and resets all the states. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
-            mStagedDbContext.deleteDatabase(STAGED_DATABASE_NAME);
-            mStagedDatabase = null;
-            FilesUtil.deleteDir(getStagedRemoteDataDirectoryForUser(userHandle.getIdentifier()));
+            dbContext.deleteDatabase(STAGED_DATABASE_NAME);
+            FilesUtil.deleteDir(dbContext.getDatabaseDir());
         }
         setDataDownloadState(DATA_DOWNLOAD_STATE_UNKNOWN, true /* force */);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_UNKNOWN, true /* force */);
@@ -438,26 +411,26 @@ public final class BackupRestore {
 
     /** Shares the {@link HealthConnectDataState} in the provided callback. */
     public @HealthConnectDataState.DataRestoreState int getDataRestoreState() {
-        @HealthConnectDataState.DataRestoreState int dataRestoreState = RESTORE_STATE_IDLE;
-
         @InternalRestoreState int currentRestoreState = getInternalRestoreState();
-
-        if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_DONE) {
-            // already with correct values.
-        } else if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
-            dataRestoreState = RESTORE_STATE_IN_PROGRESS;
-        } else if (currentRestoreState != INTERNAL_RESTORE_STATE_UNKNOWN) {
-            dataRestoreState = RESTORE_STATE_PENDING;
-        }
-
         @DataDownloadState int currentDownloadState = getDataDownloadState();
-        if (currentDownloadState == DATA_DOWNLOAD_FAILED) {
-            // already with correct values.
-        } else if (currentDownloadState != DATA_DOWNLOAD_STATE_UNKNOWN) {
-            dataRestoreState = RESTORE_STATE_PENDING;
+
+        // Return IDLE if neither the download or restore has started yet.
+        if (currentRestoreState == INTERNAL_RESTORE_STATE_UNKNOWN
+                && currentDownloadState == DATA_DOWNLOAD_STATE_UNKNOWN) {
+            return RESTORE_STATE_IDLE;
         }
 
-        return dataRestoreState;
+        // Return IDLE if restore is complete.
+        if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_DONE) {
+            return RESTORE_STATE_IDLE;
+        }
+        // Return IN_PROGRESS if merging is currently in progress.
+        if (currentRestoreState == INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS) {
+            return RESTORE_STATE_IN_PROGRESS;
+        }
+
+        // In all other cases, return restore pending.
+        return RESTORE_STATE_PENDING;
     }
 
     /** Get the current data restore error. */
@@ -479,8 +452,10 @@ public final class BackupRestore {
 
     /** Returns the file names of all the staged files. */
     @VisibleForTesting
-    public Set<String> getStagedRemoteFileNames(int userId) {
-        File[] allFiles = getStagedRemoteDataDirectoryForUser(userId).listFiles();
+    public Set<String> getStagedRemoteFileNames(@NonNull UserHandle userHandle) {
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, userHandle);
+        File[] allFiles = dbContext.getDatabaseDir().listFiles();
         if (allFiles == null) {
             return Collections.emptySet();
         }
@@ -621,12 +596,13 @@ public final class BackupRestore {
         }
 
         int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
-        File stagedDbFile = mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME);
+        DatabaseContext dbContext =
+                DatabaseContext.create(mContext, STAGED_DATABASE_DIR, mCurrentForegroundUser);
+        File stagedDbFile = dbContext.getDatabasePath(STAGED_DATABASE_NAME);
         if (stagedDbFile.exists()) {
             try (SQLiteDatabase stagedDb =
-                         SQLiteDatabase.openDatabase(
-                                 stagedDbFile,
-                                 new SQLiteDatabase.OpenParams.Builder().build())) {
+                    SQLiteDatabase.openDatabase(
+                            stagedDbFile, new SQLiteDatabase.OpenParams.Builder().build())) {
                 int stagedDbVersion = stagedDb.getVersion();
                 Slog.i(
                         TAG,
@@ -646,9 +622,15 @@ public final class BackupRestore {
 
         Slog.i(TAG, "Starting the data merge.");
         setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_IN_PROGRESS, false);
-        mergeGrantTimes();
-        mergeDatabase();
+        mergeGrantTimes(dbContext);
+        mergeDatabase(dbContext);
         setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
+
+        // Reset the error in case it was due to version diff.
+        // TODO(b/327170886): Should we always set it to NONE once merging is done?
+        if (getDataRestoreError() == RESTORE_ERROR_VERSION_DIFF) {
+            setDataRestoreError(RESTORE_ERROR_NONE);
+        }
     }
 
     private Map<String, File> getBackupFilesByFileNames(UserHandle userHandle) {
@@ -663,7 +645,7 @@ public final class BackupRestore {
         try {
             grantTimeFile.createNewFile();
             GrantTimeXmlHelper.serializeGrantTimes(
-                    grantTimeFile, mFirstGrantTimeManager.createBackupState(userHandle));
+                    grantTimeFile, mFirstGrantTimeManager.getGrantTimeStateForUser(userHandle));
             backupFilesByFileNames.put(grantTimeFile.getName(), grantTimeFile);
         } catch (IOException e) {
             Slog.e(TAG, "Could not create the grant time file for backup.", e);
@@ -735,8 +717,7 @@ public final class BackupRestore {
                 && currentDownloadState != DATA_DOWNLOAD_RETRY) {
             Slog.i(
                     TAG,
-                    "Attempt to schedule download timeout job with state: "
-                            + currentDownloadState);
+                    "Attempt to schedule download timeout job with state: " + currentDownloadState);
             // We are not in the correct state. There's no need to set the timer.
             return;
         }
@@ -779,8 +760,7 @@ public final class BackupRestore {
             setDataDownloadState(DATA_DOWNLOAD_FAILED, false);
             setDataRestoreError(RESTORE_ERROR_FETCHING_DATA);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_KEY, "");
+            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_KEY, "");
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY, "");
         } else {
@@ -836,8 +816,7 @@ public final class BackupRestore {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
             setDataRestoreError(RESTORE_ERROR_UNKNOWN);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_STAGING_TIMEOUT_KEY, "");
+            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_STAGING_TIMEOUT_KEY, "");
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(DATA_STAGING_TIMEOUT_CANCELLED_KEY, "");
         } else {
@@ -891,8 +870,7 @@ public final class BackupRestore {
             setInternalRestoreState(INTERNAL_RESTORE_STATE_MERGING_DONE, false);
             setDataRestoreError(RESTORE_ERROR_UNKNOWN);
             // Remove the remaining timeouts from the disk
-            PreferenceHelper.getInstance()
-                    .insertOrReplacePreference(DATA_MERGING_TIMEOUT_KEY, "");
+            PreferenceHelper.getInstance().insertOrReplacePreference(DATA_MERGING_TIMEOUT_KEY, "");
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(DATA_MERGING_TIMEOUT_CANCELLED_KEY, "");
         } else {
@@ -935,8 +913,7 @@ public final class BackupRestore {
         // Set the start time
         PreferenceHelper.getInstance()
                 .insertOrReplacePreference(
-                        DATA_MERGING_RETRY_KEY,
-                        Long.toString(Instant.now().toEpochMilli()));
+                        DATA_MERGING_RETRY_KEY, Long.toString(Instant.now().toEpochMilli()));
     }
 
     private void executeRetryMergingJob() {
@@ -958,13 +935,14 @@ public final class BackupRestore {
     }
 
     private void triggerMergingIfApplicable() {
-        HealthConnectThreadScheduler.scheduleInternalTask(() -> {
-            if (shouldAttemptMerging()) {
-                Slog.i(TAG, "Attempting merging.");
-                setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, true);
-                merge();
-            }
-        });
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    if (shouldAttemptMerging()) {
+                        Slog.i(TAG, "Attempting merging.");
+                        setInternalRestoreState(INTERNAL_RESTORE_STATE_STAGING_DONE, true);
+                        merge();
+                    }
+                });
     }
 
     private long getRemainingTimeoutMillis(
@@ -990,14 +968,6 @@ public final class BackupRestore {
         }
     }
 
-    /**
-     * Get the dir for the user with all the staged data - either from the cloud restore or from the
-     * d2d process.
-     */
-    private static File getStagedRemoteDataDirectoryForUser(int userId) {
-        return getNamedHcDirectoryForUser("remote_staged", userId);
-    }
-
     private static File getBackupDataDirectoryForUser(int userId) {
         return getNamedHcDirectoryForUser("backup", userId);
     }
@@ -1007,274 +977,29 @@ public final class BackupRestore {
         return new File(hcDirectoryForUser, dirName);
     }
 
-    private void mergeGrantTimes() {
+    private void mergeGrantTimes(DatabaseContext dbContext) {
         Slog.i(TAG, "Merging grant times.");
-        File restoredGrantTimeFile =
-                new File(
-                        getStagedRemoteDataDirectoryForUser(mCurrentForegroundUser.getIdentifier()),
-                        GRANT_TIME_FILE_NAME);
+        File restoredGrantTimeFile = new File(dbContext.getDatabaseDir(), GRANT_TIME_FILE_NAME);
         UserGrantTimeState userGrantTimeState =
                 GrantTimeXmlHelper.parseGrantTime(restoredGrantTimeFile);
-        mFirstGrantTimeManager.applyAndStageBackupDataForUser(
+        mFirstGrantTimeManager.applyAndStageGrantTimeStateForUser(
                 mCurrentForegroundUser, userGrantTimeState);
     }
 
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    private void mergeDatabase() {
+    private void mergeDatabase(DatabaseContext dbContext) {
         synchronized (mMergingLock) {
-            if (!mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
+            if (!dbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
                 Slog.i(TAG, "No staged db found.");
                 // no db was staged
                 return;
             }
 
-            // We never read from the staged db if the module version is behind the staged db
-            // version. So, we are guaranteed that the merging code will be able to read all the
-            // records from the db - as the upcoming code is guaranteed to understand the records
-            // present in the staged db.
-
-            // We are sure to migrate the db now, so prepare
-            prepInternalDataPerStagedDb();
-
-            // Determine the order in which we should migrate data types. This involves first
-            // migrating data types according to the specified ordering overrides. Remaining
-            // records are migrated in no particular order.
-            List<Integer> recordTypesWithOrderingOverrides =
-                    RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES.stream()
-                            .flatMap(List::stream)
-                            .toList();
-            List<Integer> recordTypesWithoutOrderingOverrides =
-                    RecordMapper.getInstance()
-                            .getRecordIdToExternalRecordClassMap()
-                            .keySet()
-                            .stream()
-                            .filter(it -> !recordTypesWithOrderingOverrides.contains(it))
-                            .toList();
-
-            // Migrate special case records in their defined order.
-            for (List<Integer> recordTypeMigrationGroup :
-                    RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES) {
-                for (Integer recordTypeToMigrate : recordTypeMigrationGroup) {
-                    mergeRecordsOfType(
-                            recordTypeToMigrate,
-                            RecordMapper.getInstance()
-                                    .getRecordIdToExternalRecordClassMap()
-                                    .get(recordTypeToMigrate));
-                }
-                // Delete records within a group together, once all records within that group
-                // have been migrated. This ensures referential integrity is preserved during
-                // migration.
-                for (Integer recordTypeToMigrate : recordTypeMigrationGroup) {
-                    deleteRecordsOfType(
-                            recordTypeToMigrate,
-                            RecordMapper.getInstance()
-                                    .getRecordIdToExternalRecordClassMap()
-                                    .get(recordTypeToMigrate));
-                }
-            }
-            // Migrate remaining record types in no particular order.
-            for (Integer recordTypeToMigrate : recordTypesWithoutOrderingOverrides) {
-                mergeRecordsOfType(
-                        recordTypeToMigrate,
-                        RecordMapper.getInstance()
-                                .getRecordIdToExternalRecordClassMap()
-                                .get(recordTypeToMigrate));
-                deleteRecordsOfType(
-                        recordTypeToMigrate,
-                        RecordMapper.getInstance()
-                                .getRecordIdToExternalRecordClassMap()
-                                .get(recordTypeToMigrate));
-            }
-
-            Slog.i(TAG, "Sync app info records after restored data merge.");
-            AppInfoHelper.getInstance().syncAppInfoRecordTypesUsed();
+            mDatabaseMerger.merge(new HealthConnectDatabase(dbContext, STAGED_DATABASE_NAME));
 
             // Delete the staged db as we are done merging.
             Slog.i(TAG, "Deleting staged db after merging.");
-            mStagedDbContext.deleteDatabase(STAGED_DATABASE_NAME);
-            mStagedDatabase = null;
-        }
-    }
-
-    private <T extends Record> void mergeRecordsOfType(int recordType, Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordType);
-        // Read all the records of the given type from the staged db and insert them into the
-        // existing healthconnect db.
-        PageTokenWrapper token = EMPTY_PAGE_TOKEN;
-        do {
-            var recordsToMergeAndToken = getRecordsToMerge(recordTypeClass, token, recordHelper);
-            if (recordsToMergeAndToken.first.isEmpty()) {
-                break;
-            }
-            Slog.d(TAG, "Found record to merge: " + recordsToMergeAndToken.first.getClass());
-            if (recordType == RECORD_TYPE_PLANNED_EXERCISE_SESSION) {
-                // For training plans we nullify any autogenerated references to exercise sessions.
-                // When the corresponding exercise sessions get migrated, these references will be
-                // automatically generated again.
-                recordsToMergeAndToken.first.forEach(
-                        it -> {
-                            PlannedExerciseSessionRecordInternal record =
-                                    (PlannedExerciseSessionRecordInternal) it;
-                            record.setCompletedExerciseSessionId(null);
-                        });
-            }
-            // Using null package name for making insertion for two reasons:
-            // 1. we don't want to update the logs for this package.
-            // 2. we don't want to update the package name in the records as they already have the
-            //    correct package name.
-            UpsertTransactionRequest upsertTransactionRequest =
-                    new UpsertTransactionRequest(
-                            null /* packageName */,
-                            recordsToMergeAndToken.first,
-                            mContext,
-                            true /* isInsertRequest */,
-                            true /* useProvidedUuid */,
-                            true /* skipPackageNameAndLogs */);
-            TransactionManager.getInitialisedInstance()
-                    .insertAll(upsertTransactionRequest.getUpsertRequests());
-
-            token = recordsToMergeAndToken.second;
-        } while (!token.isEmpty());
-    }
-
-    private <T extends Record> void deleteRecordsOfType(int recordType, Class<T> recordTypeClass) {
-        RecordHelper<?> recordHelper =
-                RecordHelperProvider.getInstance().getRecordHelper(recordType);
-        // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
-        // final query.
-        Slog.d(TAG, "Deleting table for: " + recordTypeClass);
-        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-        DeleteTableRequest deleteTableRequest =
-                recordHelper.getDeleteTableRequest(
-                        null /* packageFilters */,
-                        DEFAULT_LONG /* startTime */,
-                        DEFAULT_LONG /* endTime */,
-                        false /* useLocalTimeFilter */);
-
-        getStagedDatabase().getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
-    }
-
-    private <T extends Record> Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
-            Class<T> recordTypeClass, PageTokenWrapper requestToken, RecordHelper<?> recordHelper) {
-        ReadRecordsRequestUsingFilters<T> readRecordsRequest =
-                new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
-                        .setPageSize(2000)
-                        .setPageToken(requestToken.encode())
-                        .build();
-
-        Set<String> grantedExtraReadPermissions =
-                Set.copyOf(recordHelper.getExtraReadPermissions());
-
-        // Working with startDateAccess of -1 as we don't want to have time based filtering in the
-        // query.
-        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-        ReadTransactionRequest readTransactionRequest =
-                new ReadTransactionRequest(
-                        null,
-                        readRecordsRequest.toReadRecordsRequestParcel(),
-                        // Avoid time based filtering.
-                        /* startDateAccessMillis= */ DEFAULT_LONG,
-                        /* enforceSelfRead= */ false,
-                        grantedExtraReadPermissions,
-                        // Make sure foreground only types get included in the response.
-                        /* isInForeground= */ true);
-
-        List<RecordInternal<?>> recordInternalList;
-        PageTokenWrapper token;
-        ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
-        try (Cursor cursor = read(readTableRequest)) {
-            Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
-                    recordHelper.getNextInternalRecordsPageAndToken(
-                            cursor,
-                            readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
-                            requireNonNull(readTransactionRequest.getPageToken()),
-                            mStagedPackageNamesByAppIds);
-            recordInternalList = readResult.first;
-            token = readResult.second;
-            populateInternalRecordsWithExtraData(recordInternalList, readTableRequest);
-        }
-        return Pair.create(recordInternalList, token);
-    }
-
-    private Cursor read(ReadTableRequest request) {
-        synchronized (mMergingLock) {
-            return getStagedDatabase()
-                    .getReadableDatabase()
-                    .rawQuery(request.getReadCommand(), null);
-
-        }
-    }
-
-    private void populateInternalRecordsWithExtraData(
-            List<RecordInternal<?>> records, ReadTableRequest request) {
-        if (request.getExtraReadRequests() == null) {
-            return;
-        }
-        for (ReadTableRequest extraDataRequest : request.getExtraReadRequests()) {
-            Cursor cursorExtraData = read(extraDataRequest);
-            request.getRecordHelper()
-                    .updateInternalRecordsWithExtraFields(
-                            records, cursorExtraData, extraDataRequest.getTableName());
-        }
-    }
-
-    private void prepInternalDataPerStagedDb() {
-        try (Cursor cursor = read(new ReadTableRequest(AppInfoHelper.TABLE_NAME))) {
-            while (cursor.moveToNext()) {
-                long rowId = getCursorLong(cursor, RecordHelper.PRIMARY_COLUMN_NAME);
-                String packageName = getCursorString(cursor, AppInfoHelper.PACKAGE_COLUMN_NAME);
-                String appName = getCursorString(cursor, AppInfoHelper.APPLICATION_COLUMN_NAME);
-                byte[] icon = getCursorBlob(cursor, AppInfoHelper.APP_ICON_COLUMN_NAME);
-                mStagedPackageNamesByAppIds.put(rowId, packageName);
-
-                // If this package is not installed on the target device and is not present in the
-                // health db, then fill the health db with the info from source db.
-                AppInfoHelper.getInstance()
-                        .addOrUpdateAppInfoIfNotInstalled(
-                                mContext, packageName, appName, icon, false /* onlyReplace */);
-            }
-        }
-    }
-
-    @VisibleForTesting
-    HealthConnectDatabase getStagedDatabase() {
-        synchronized (mMergingLock) {
-            if (mStagedDatabase == null) {
-                mStagedDatabase = new HealthConnectDatabase(mStagedDbContext, STAGED_DATABASE_NAME);
-            }
-            return mStagedDatabase;
-        }
-    }
-
-    /**
-     * {@link Context} for the staged health connect db.
-     *
-     * @hide
-     */
-    static final class StagedDatabaseContext extends ContextWrapper {
-        private volatile UserHandle mCurrentForegroundUser;
-
-        StagedDatabaseContext(@NonNull Context context, UserHandle userHandle) {
-            super(context);
-            requireNonNull(context);
-            mCurrentForegroundUser = userHandle;
-        }
-
-        public void updateForegroundUser(UserHandle userHandle) {
-            mCurrentForegroundUser = userHandle;
-        }
-
-        @Override
-        public File getDatabasePath(String name) {
-            File stagedDataDir =
-                    getStagedRemoteDataDirectoryForUser(mCurrentForegroundUser.getIdentifier());
-            stagedDataDir.mkdirs();
-            return new File(stagedDataDir, name);
-        }
-
-        static StagedDatabaseContext create(@NonNull Context context, UserHandle handle) {
-            return new StagedDatabaseContext(context, handle);
+            dbContext.deleteDatabase(STAGED_DATABASE_NAME);
         }
     }
 
@@ -1342,8 +1067,8 @@ public final class BackupRestore {
                 if (result != JobScheduler.RESULT_SUCCESS) {
                     Slog.e(
                             TAG,
-                            "Failed to schedule: " + jobInfo.getExtras().getString(
-                                    EXTRA_JOB_NAME_KEY));
+                            "Failed to schedule: "
+                                    + jobInfo.getExtras().getString(EXTRA_JOB_NAME_KEY));
                 }
             } finally {
                 Binder.restoreCallingIdentity(token);

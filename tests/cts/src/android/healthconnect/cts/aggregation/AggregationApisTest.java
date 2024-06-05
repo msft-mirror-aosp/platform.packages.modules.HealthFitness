@@ -258,30 +258,31 @@ public class AggregationApisTest {
                         getWeightRecord(60.0, time.minus(15, DAYS), dataZone),
                         getWeightRecord(70.0, time.minus(60, DAYS), dataZone)));
 
-        LocalTimeRangeFilter timeFilter = getTimeFilter(localTime.minusDays(70), localTime);
+        LocalDateTime startTime = localTime.minusDays(70);
+        AggregateRecordsRequest<Mass> request =
+                new AggregateRecordsRequest.Builder<Mass>(getTimeFilter(startTime, localTime))
+                        .addAggregationType(WEIGHT_AVG)
+                        .build();
+        Period period = Period.ofMonths(1);
         List<AggregateRecordsGroupedByPeriodResponse<Mass>> responses =
-                getAggregateResponseGroupByPeriod(
-                        new AggregateRecordsRequest.Builder<Mass>(timeFilter)
-                                .addAggregationType(WEIGHT_AVG)
-                                .build(),
-                        Period.ofMonths(1));
+                getAggregateResponseGroupByPeriod(request, period);
 
         assertThat(responses).hasSize(3);
         // (day -70) - (day -40), weight avg = 70
         assertMassWithTolerance(responses.get(0).get(WEIGHT_AVG), 70.0);
-        assertThat(responses.get(0).getStartTime()).isEqualTo(localTime.minusDays(70));
-        assertThat(responses.get(0).getEndTime()).isEqualTo(localTime.minusDays(70).plusMonths(1));
+        assertThat(responses.get(0).getStartTime()).isEqualTo(startTime);
+        assertThat(responses.get(0).getEndTime()).isEqualTo(startTime.plus(period));
         assertThat(responses.get(0).getZoneOffset(WEIGHT_AVG)).isEqualTo(dataZone);
         // (day -40) - (day -10), weight avg = (50 + 60) / 2
+        startTime = startTime.plus(period);
         assertMassWithTolerance(responses.get(1).get(WEIGHT_AVG), 55.0);
-        assertThat(responses.get(1).getStartTime())
-                .isEqualTo(localTime.minusDays(70).plusMonths(1));
-        assertThat(responses.get(1).getEndTime()).isEqualTo(localTime.minusDays(70).plusMonths(2));
+        assertThat(responses.get(1).getStartTime()).isEqualTo(startTime);
+        assertThat(responses.get(1).getEndTime()).isEqualTo(startTime.plus(period));
         assertThat(responses.get(1).getZoneOffset(WEIGHT_AVG)).isEqualTo(dataZone);
         // (day -10) - localTime, no weight
+        startTime = startTime.plus(period);
         assertThat(responses.get(2).get(WEIGHT_AVG)).isNull();
-        assertThat(responses.get(2).getStartTime())
-                .isEqualTo(localTime.minusDays(70).plusMonths(2));
+        assertThat(responses.get(2).getStartTime()).isEqualTo(startTime);
         assertThat(responses.get(2).getEndTime()).isEqualTo(localTime);
         assertThat(responses.get(2).getZoneOffset(WEIGHT_AVG)).isNull();
     }

@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"Nuk ka të dhëna"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Lejet e aplikacioneve"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Menaxho aplikacionet dhe lejet"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> nga <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikacione ka qasje"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> nga <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplikacione kanë qasje"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacione kanë qasje"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacion ka qasje"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplikacion ka qasje}other{# aplikacione kanë qasje}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Asnjë"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detajet e hyrjes"</string>
     <string name="backup_title" msgid="211503191266235085">"Rezervimi"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Shkruan te: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Menaxho lejet"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Koha: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Koha: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Aktiviteti"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"aktiviteti"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Matjet e trupit"</string>
@@ -84,13 +86,13 @@
     <string name="background_read_title" msgid="5061383169517186234">"Të ketë qasje te të dhënat në sfond"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Të lejohet që <xliff:g id="APP_NAME">%1$s</xliff:g> të ketë qasje te të dhënat në sfond?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Lejo që ky aplikacion të ketë qasje te të dhënat e Health Connect kur ti nuk e përdor aplikacionin"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Nëse e lejon, ky aplikacion mund të ketë qasje te të dhënat e Health Connect kur ti nuk e përdor aplikacionin"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Nëse e lejon, ky aplikacion mund të ketë qasje te të dhënat e Health Connect kur ti nuk e përdor aplikacionin."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Të qaset te të dhënat e kaluara"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Të lejohet që <xliff:g id="APP_NAME">%1$s</xliff:g> të ketë qasje te të dhënat e kaluara?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Lejo që ky aplikacion të ketë qasje te të dhënat e Health Connect që janë shtuar para datës <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Lejo që ky aplikacion të ketë qasje te të dhënat e kaluara të Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Nëse e lejon, ky aplikacion mund të ketë qasje te të dhënat e Health Connect që janë shtuar para datës <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Nëse e lejon, ky aplikacion mund të ketë qasje te të dhënat e kaluara të Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Lejo që ky aplikacion të ketë qasje te të gjitha të dhënat e kaluara të Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Nëse e lejon, ky aplikacion mund të ketë qasje te të dhënat e Health Connect që janë shtuar para datës <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Nëse e lejon, ky aplikacion mund të ketë qasje te të gjitha të dhënat e kaluara të Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalori aktive të djegura"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"kalori aktive të djegura"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Të lexojë të dhënat për kaloritë aktive të djegura"</string>
@@ -270,7 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"politika e privatësisë"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Të hiqen të gjitha lejet?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Hiqi të gjitha"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> nuk do të mund të lexojë apo të shkruajë më asnjë të dhënë nga Health Connect.\n\nKjo nuk ndikon te lejet e tjera që ky aplikacion mund të ketë, si p.sh. te vendndodhja, kamera ose mikrofoni."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> nuk do të mund të lexojë apo të shkruajë më asnjë të dhënë nga Health Connect.\n\nKjo nuk ndikon te lejet e tjera që ky aplikacion mund të ketë, si p.sh. te kamera, mikrofoni ose vendndodhja."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> nuk do të mund të lexojë apo të shkruajë më asnjë të dhënë nga Health Connect, duke përfshirë të dhënat në sfond.\n\nKjo nuk ndikon te lejet e tjera që ky aplikacion mund të ketë, si p.sh. te vendndodhja, kamera ose mikrofoni."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> nuk do të mund të lexojë apo të shkruajë më asnjë të dhënë nga Health Connect, duke përfshirë të dhënat në sfond.\n\nKjo nuk ndikon te lejet e tjera që ky aplikacion mund të ketë, si p.sh. te vendndodhja, kamera ose mikrofoni."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> nuk do të mund të lexojë apo të shkruajë më asnjë të dhënë nga Health Connect, duke përfshirë të dhënat në sfond dhe të dhënat e kaluara.\n\nKjo nuk ndikon te lejet e tjera që ky aplikacion mund të ketë, si p.sh. te vendndodhja, kamera ose mikrofoni."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Gjithashtu, fshi të dhënat e <xliff:g id="APP_NAME">%1$s</xliff:g> nga Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Dita tjetër"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dita e zgjedhur"</string>
@@ -296,14 +301,15 @@
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Aplikacionet joaktive"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Këto aplikacione nuk kanë më qasje, por kanë ende të dhëna të ruajtura në Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> mund të lexojë të dhënat e shtuara pas datës <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"Për të menaxhuar lejet e tjera tek të cilat ky aplikacion mund të ketë qasje, shko te Cilësimet &gt; Aplikacionet"</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"Për të menaxhuar lejet e tjera të Android te të cilat ky aplikacion mund të ketë qasje, shko te Cilësimet &gt; Aplikacionet"</string>
     <string name="manage_permissions_rationale" msgid="9183689798847740274">"Të dhënat që ndan me <xliff:g id="APP_NAME">%1$s</xliff:g> mbulohen nga politika e privatësisë së tij"</string>
-    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Për të menaxhuar lejet e tjera të Android tek të cilat mund të ketë qasje ky aplikacion, shko te \"Cilësimet\" dhe më pas trokit tek \"Aplikacionet\""</string>
+    <string name="other_android_permissions_content_description" msgid="2261431010048933820">"Për të menaxhuar lejet e tjera të Android te të cilat ky aplikacion mund të ketë qasje, shko te \"Cilësimet\" dhe më pas trokit tek \"Aplikacionet\""</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"Lexo politikën e privatësisë"</string>
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Qasja gjatë 24 orëve të fundit"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Qasja e aplikacionit"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Aktualisht nuk ke asnjë aplikacion të përputhshëm të instaluar"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Qasja shtesë"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"U hoqën lejet shtesë për këtë aplikacion"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Lejet e hequra të aplikacioneve"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ka hequr lejet për <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ka hequr lejet për <xliff:g id="APP_DATA_0">%1$s</xliff:g> dhe <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -313,28 +319,53 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pse i heq Health Connect lejet e aplikacioneve"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Nëse një aplikacion pezullohet ose hiqet nga Google Play, Health Connect i heq automatikisht lejet e tij.\n\nKjo do të thotë që aplikacioni nuk mund të ketë më qasje te të dhënat e ruajtura në Health Connect. Nëse ky aplikacion ka të dhëna që janë shkruar më herët, ai shfaqet në listën e aplikacioneve joaktive."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"E kuptova"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Rezervo dhe restauro"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"Eksporto dhe importo"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Eksporto automatikisht"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Restauro të dhënat"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Ngarko të dhënat e eksportuara më parë"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Eksportimi i planifikuar"</string>
+    <string name="import_data" msgid="404502315533233094">"Importo të dhënat"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Restauro të dhënat nga një skedar i eksportuar më parë"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Eksportimi të lejon që t\'i ruash të dhënat e tua që të mund t\'i transferosh te një telefon i ri"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Mëso më shumë"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aktiv"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Joaktiv"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Zgjidh shpeshtësinë"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Zgjidh shpeshtësinë"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Zgjidh t\'i ruash të dhënat një herë ose caktoje atë për t\'i ruajtur automatikisht në intervale të rregullta"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Çdo ditë"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Çdo javë"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Çdo muaj"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Vendndodhja e eksportimit"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Aktivizo enkriptimin"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Të dhënat duhet të enkriptohen para se të ruhen. Asnjë, as edhe Google apo Health Connect, nuk do të mund të kenë qasje në to."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Krijo një fjalëkalim për të mbrojtur të dhënat e tua të enkriptuara. Do të të duhet ky fjalëkalim për të importuar dhe restauruar të dhënat e tua."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Fjalëkalimi"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Përsërit fjalëkalimin"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Nëse e harron fjalëkalimin dhe e humb telefonin, Health Connect nuk mund të të ndihmojë të rikuperosh të dhënat e ruajtura."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"Zgjidh vendin e eksportimit"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"Shkruaj fjalëkalimin"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Për të importuar të dhënat e tua të Health Connect nevojitet fjalëkalimi i enkriptimit"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Harrove fjalëkalimin?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Fjalëkalimi"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Nëse e ke akoma telefonin tënd të vjetër, mund t\'i rieksportosh të dhënat e tua me një fjalëkalim të ri"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Pas"</string>
     <string name="export_next_button" msgid="657930567137105172">"Para"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"Fillo me Health Connect"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Anulo"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Para"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importo nga"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
+    <string name="onboarding_title" msgid="8550656211291180188">"Fillo me Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ruan të dhënat e tua të shëndetit dhe të fitnesit, duke të ofruar një mënyrë të thjeshtë për të sinkronizuar aplikacione të ndryshme në telefonin tënd"</string>
     <string name="share_data" msgid="3481932156368883946">"Ndaj të dhënat me aplikacionet e tua"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Zgjidh të dhënat që çdo aplikacion mund të lexojë ose të shkruajë në Health Connect"</string>
@@ -343,6 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Kthehu prapa"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Fillo"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Fshi të dhënat"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Kalo te fshirja"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Dil nga fshirja"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Zgjidh të dhënat që do të fshihen"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Para"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Kjo fshin përgjithmonë të gjitha të dhënat e shtuara në Health Connect në periudhën e zgjedhur kohore"</string>
@@ -401,6 +434,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/orë}other{# km/orë}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milje në orë}other{# milje në orë}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometër në orë}other{# kilometra në orë}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min./milje"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min./km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minutë për milje"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minutë për kilometër"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min./100 jardë"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min./100 metra"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minutë për 100 jardë"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minutë për 100 metra"</string>
     <string name="time_range_long" msgid="5067423945245490288">"nga <xliff:g id="START_TIME">%1$s</xliff:g> deri në <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"nga <xliff:g id="START_TIME">%1$s</xliff:g> deri më <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 shtyrje e karriges me rrota}other{# shtyrje të karriges me rrota}}"</string>
@@ -426,11 +467,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Jobindës"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekondë}other{# milisekonda}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Shënime"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 herë}other{# herë}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Aktiv: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Në total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Sa më shumë përsëritje që të jetë e mundur"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Niveli i përpjekjeve: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 përsëritje}other{# përsëritje}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 përsëritje}other{# përsëritje}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segmentet e ushtrimit"</string>
@@ -792,10 +835,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Lejo të gjitha itineraret"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Mos lejo"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Lejo gjithmonë"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Ndarja e itinerarit të stërvitjes"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Kontrollo se si qaset ky aplikacion tek itineraret e stërvitjes nga aplikacionet e lidhura"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Qasu tek itineraret e ushtrimit"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Lejo që <xliff:g id="APP_NAME">%1$s</xliff:g> të ketë qasje tek itineraret"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pyet çdo herë"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Mos lejo"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Mos lejo"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Të aktivizohen të dyja llojet e të dhënave?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Të çaktivizohen të dyja llojet e të dhënave?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> ka nevojë për qasje për lexim te stërvitja që të mund të aktivizohen itineraret e stërvitjes"</string>
@@ -889,4 +932,12 @@
     <string name="tab_access" msgid="7818197975407243701">"Qasja"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Të lejohet qasja shtesë për <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> dëshiron gjithashtu që të ketë qasje te këto cilësime të Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Aktivizo të paktën një leje për lexim për të aktivizuar qasjen në sfond ose qasjen te të dhënat e kaluara për këtë aplikacion"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Aktivizo të paktën një leje për lexim për të aktivizuar qasjen në sfond për këtë aplikacion"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Aktivizo të paktën një leje për lexim për të aktivizuar qasjen te të dhënat e kaluara për këtë aplikacion"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Të fshihen përgjithmonë të gjitha të dhënat nga Health Connect?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Të fshihen përgjithmonë të dhënat e zgjedhura nga Health Connect?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Të gjitha të dhënat u fshinë"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Të dhënat e \"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>\" u fshinë"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> artikuj u fshinë"</string>
 </resources>

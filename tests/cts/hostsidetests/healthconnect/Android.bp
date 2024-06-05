@@ -23,7 +23,7 @@ android_test_helper_app {
     platform_apis: true,
     static_libs: [
         "ctstestrunner-axt",
-        "cts-healthconnect-lib"
+        "cts-healthconnect-lib",
     ],
     sdk_version: "test_current",
     min_sdk_version: "34",
@@ -31,7 +31,7 @@ android_test_helper_app {
     srcs: [
         "HealthConnectTestHelper/src/**/*.java",
         "HealthConnectTestHelper/src/**/*.kt",
-        ],
+    ],
     libs: ["junit"],
 }
 
@@ -82,13 +82,14 @@ android_test_helper_app {
 
 android_test {
     name: "CtsHealthConnectHostSideDeviceTestCases",
+    team: "trendy_team_android_health",
     manifest: "device/AndroidManifest.xml",
     test_config: "device/AndroidTest.xml",
     defaults: ["cts_defaults"],
     srcs: [
         "device/**/*.java",
-        "device/**/*.kt"
-        ],
+        "device/**/*.kt",
+    ],
     static_libs: [
         "cts-healthconnect-lib",
         "modules-utils-build_system",
@@ -114,21 +115,23 @@ android_test {
         "android.test.runner",
         "framework-healthfitness",
     ],
-    data : [
-          ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
-          ":CtsHealthConnectTestAppBWithNormalReadWritePermission",
-          ":CtsHealthConnectTestAppWithDataManagePermission",
-          ":CtsHealthConnectTestAppWithNoPermission",
-          ":CtsHealthConnectTestAppWithWritePermissionsOnly",
-    ]
+    java_resource_dirs: ["res"],
+    data: [
+        ":CtsHealthConnectTestAppAWithNormalReadWritePermission",
+        ":CtsHealthConnectTestAppBWithNormalReadWritePermission",
+        ":CtsHealthConnectTestAppWithDataManagePermission",
+        ":CtsHealthConnectTestAppWithNoPermission",
+        ":CtsHealthConnectTestAppWithWritePermissionsOnly",
+    ],
 }
 
 java_test_host {
     name: "CtsHealthConnectHostTestCases",
+    team: "trendy_team_android_health",
     defaults: ["cts_defaults"],
     srcs: [
         "host/**/*.java",
-        "host/**/*.kt"
+        "host/**/*.kt",
     ],
     test_suites: [
         "cts",
@@ -140,12 +143,14 @@ java_test_host {
         "compatibility-host-util",
         "cts-tradefed",
         "tradefed",
-        "truth-prebuilt",
+        "truth",
     ],
     static_libs: [
         "cts-statsd-atom-host-test-utils",
+        "androidx.annotation_annotation",
     ],
+    java_resource_dirs: ["host/res"],
     data: [
         ":CtsHealthConnectTestApp",
-    ]
+    ],
 }

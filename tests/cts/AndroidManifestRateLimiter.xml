@@ -36,8 +36,6 @@
     <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
                      android:label="CTS HealthConnect tests"
                      android:targetPackage="android.healthconnect.cts.ratelimiter">
-        <meta-data android:name="listener"
-                   android:value="com.android.cts.runner.CtsTestRunListener"/>
     </instrumentation>
 
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>

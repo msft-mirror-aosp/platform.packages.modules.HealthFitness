@@ -1,0 +1,25 @@
+package: "com.android.healthfitness.flags"
+container: "com.android.healthfitness"
+
+flag {
+    name: "personal_health_record"
+    is_exported: true
+    namespace: "healthfitness"
+    description: "Flag for adding new PHR features."
+    bug: "329271826"
+}
+
+flag {
+    name: "personal_health_record_database"
+    is_exported: true
+    namespace: "healthfitness"
+    description: "Flag for guarding DB schema changes for PHR features."
+    bug: "340809376"
+}
+
+flag {
+    name: "export_import"
+    namespace: "healthfitness"
+    description: "Flag for adding new export/import feature."
+    bug: "318484778"
+}

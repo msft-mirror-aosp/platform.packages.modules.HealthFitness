@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"No hi ha dades"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Permisos d\'aplicacions"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Gestiona les aplicacions i els permisos"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicacions té accés"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> de <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> aplicacions tenen accés"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicacions tenen accés"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplicació té accés"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 aplicació té accés}other{# aplicacions tenen accés}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Cap"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Detalls de l\'entrada"</string>
     <string name="backup_title" msgid="211503191266235085">"Còpia de seguretat"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Escriptura: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Gestiona els permisos"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Temps: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Hora: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Activitat"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"activitat"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Mesures corporals"</string>
@@ -83,14 +85,14 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Permet que l\'aplicació llegeixi les calories cremades"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Accedir a les dades en segon pla"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades en segon pla?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada quan no la facis servir"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada quan no la facis servir."</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada quan no l\'estiguis utilitzant"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada quan no l\'estiguis utilitzant."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Accedir a les dades anteriors"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les dades anteriors?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Permet que aquesta aplicació accedeixi a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Permet que aquesta aplicació accedeixi a les dades anteriors de Salut connectada"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permet que aquesta aplicació accedeixi a les dades anteriors de Salut connectada"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Si ho permets, aquesta aplicació podrà accedir a les dades de Salut connectada afegides abans del dia <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Si ho permets, aquesta aplicació podrà accedir a les dades anteriors de Salut connectada."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si ho permets, aquesta aplicació podrà accedir a les dades anteriors de Salut connectada."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calories actives cremades"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"calories actives cremades"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Llegir calories actives cremades"</string>
@@ -264,13 +266,16 @@
     <string name="request_permissions_dont_allow" msgid="6375307410951549030">"No permetis"</string>
     <string name="request_permissions_header_desc" msgid="5561173070722750153">"Tria les dades que vols que aquesta aplicació pugui llegir o escriure a Salut connectada"</string>
     <string name="request_permissions_header_time_frame_desc" msgid="3023660534681391973">"Si li dones accés de lectura, l\'aplicació podrà llegir les dades noves i les dels 30 darrers dies"</string>
-    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si li dones accés de lectura, l\'aplicació podrà llegir les dades noves i anteriors"</string>
+    <string name="request_permissions_header_time_frame_history_desc" msgid="3792732353571153175">"Si li dones accés de lectura, l\'aplicació podrà llegir les dades noves i les anteriors"</string>
     <string name="request_permissions_header_title" msgid="4264236128614363479">"Vols permetre que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a Salut connectada?"</string>
     <string name="request_permissions_rationale" msgid="6154280355215802538">"Pots obtenir informació sobre com <xliff:g id="APP_NAME">%1$s</xliff:g> gestiona les teves dades a la <xliff:g id="PRIVACY_POLICY_LINK">%2$s</xliff:g> del desenvolupador"</string>
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"política de privadesa"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Vols suprimir tots els permisos?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Suprimeix-ho tot"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada.\n\nAixò no afecta els altres permisos que aquesta aplicació pugui tenir, com ara els d\'accés a la ubicació, a la càmera o al micròfon."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la càmera, el micròfon o la ubicació."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades en segon pla.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la ubicació, la càmera o el micròfon."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades anteriors.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la ubicació, la càmera o el micròfon."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g> ja no podrà llegir ni escriure dades de Salut connectada, ni tan sols les dades en segon pla o les dades anteriors.\n\nAixò no afecta altres permisos que pot tenir aquesta aplicació, com ara els relacionats amb la ubicació, la càmera o el micròfon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Suprimeix també les dades de <xliff:g id="APP_NAME">%1$s</xliff:g> de Salut connectada"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Dia següent"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Dia seleccionat"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Accés de l\'aplicació"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Actualment no tens cap aplicació compatible instal·lada"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Accés addicional"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"S\'han suprimit els permisos addicionals per a aquesta aplicació"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Aplicacions amb permisos suprimits"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Salut connectada ha suprimit els permisos de <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -313,28 +319,53 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Per què Salut connectada suprimeix els permisos d\'aplicacions"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si una aplicació se suspèn o suprimeix de Google Play, Salut connectada en suprimeix els permisos automàticament.\n\nAixò significa que l\'aplicació ja no podrà accedir a les dades emmagatzemades a Salut Connectada. Si aquesta aplicació ha escrit dades anteriorment, apareixerà a la llista d\'aplicacions inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entesos"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporta i importa"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Exporta automàticament"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Restaura les dades"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Carrega les dades exportades anteriorment"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Exportació programada"</string>
+    <string name="import_data" msgid="404502315533233094">"Importa les dades"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Restaura les dades d\'un fitxer exportat anteriorment"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"L\'exportació et permet desar les dades perquè puguis transferir-les a un telèfon nou"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Més informació"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activada"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Desactivada"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Tria la freqüència"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Tria la freqüència"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Tria si vols desar les dades una vegada o configura que es desin automàticament en intervals regulars."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Cada dia"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Cada setmana"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Cada mes"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Exporta la ubicació"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Activa l\'encriptació"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Cal encriptar les dades abans de desar-les. Ningú, ni tan sols Salut connectada o Google, hi podrà accedir."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea una contrasenya per protegir les teves dades encriptades. Necessitaràs aquesta contrasenya per importar i restaurar les dades."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Contrasenya"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Repeteix la contrasenya"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Si oblides la contrasenya o perds el telèfon, Salut connectada no podrà ajudar-te a recuperar les teves dades desades."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"Tria on vols exportar"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"Escriu la contrasenya"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Cal la contrasenya d\'encriptació per importar les teves dades de Salut connectada"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Has oblidat la contrasenya?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Contrasenya"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Si encara tens el telèfon antic, pots tornar a exportar les dades amb una contrasenya nova"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Enrere"</string>
     <string name="export_next_button" msgid="657930567137105172">"Següent"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"Comença amb Salut connectada"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Cancel·la"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Següent"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Importa des de"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
+    <string name="onboarding_title" msgid="8550656211291180188">"Comença amb Salut connectada"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Salut connectada emmagatzema les teves dades de salut i fitnes, i t\'ofereix una manera senzilla de sincronitzar les diverses aplicacions del telèfon"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparteix dades amb les aplicacions"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Tria les dades que cada aplicació pot llegir o escriure a Salut connectada"</string>
@@ -343,6 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Torna"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Comença"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Suprimeix les dades"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Entra a la supressió"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Surt de la supressió"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Tria les dades que vols suprimir"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Següent"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Aquesta acció suprimeix permanentment totes les dades que s\'han afegit a Salut connectada durant el període de temps seleccionat"</string>
@@ -401,6 +434,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milla per hora}other{# milles per hora}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 quilòmetre per hora}other{# quilòmetres per hora}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/milla"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per milla"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per quilòmetre"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 iardes"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 metres"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per 100 iardes"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> minut per 100 metres"</string>
     <string name="time_range_long" msgid="5067423945245490288">"des de les <xliff:g id="START_TIME">%1$s</xliff:g> fins a les <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"des del dia <xliff:g id="START_TIME">%1$s</xliff:g> fins al dia <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 impuls en cadira de rodes}other{# impulsos en cadira de rodes}}"</string>
@@ -426,11 +467,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"No concloent"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 mil·lisegon}other{# mil·lisegons}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Notes"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 vegada}other{# vegades}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Calories actives cremades: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Total: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Tantes repeticions com sigui possible"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Nivell d\'esforç: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 rep}other{# rep}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 repetició}other{# repeticions}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Segments d\'exercici"</string>
@@ -792,10 +835,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Permet totes les rutes"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"No permetis"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Permet sempre"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Compartició de la ruta d\'exercici"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Controla la manera com accedeix aquesta aplicació a les rutes d\'exercici d\'aplicacions connectades"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Accedeix a les rutes d\'exercici"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> accedeixi a les rutes"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Pregunta sempre"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"No permetis"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"No permetis"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Vols activar els dos tipus de dades?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Vols desactivar els dos tipus de dades?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> necessita accés de lectura a l\'exercici per poder activar les rutes d\'exercici"</string>
@@ -889,4 +932,12 @@
     <string name="tab_access" msgid="7818197975407243701">"Accedeix"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Vols permetre accés addicional a <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> també vol accedir a la configuració de Salut connectada"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activa almenys un permís de lectura per poder activar l\'accés en segon pla o a les dades anteriors d\'aquesta aplicació"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Activa almenys un permís de lectura per poder activar l\'accés en segon pla d\'aquesta aplicació"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Activa almenys un permís de lectura per poder activar l\'accés a les dades anteriors d\'aquesta aplicació"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Vols suprimir permanentment totes les dades de Salut connectada?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Vols suprimir permanentment les dades seleccionades de Salut connectada?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"S\'han suprimit totes les dades"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"S\'han suprimit les dades de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"S\'han suprimit <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elements"</string>
 </resources>

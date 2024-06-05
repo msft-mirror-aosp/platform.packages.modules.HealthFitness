@@ -34,6 +34,7 @@ package com.android.healthconnect.controller.permissions.app
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.os.Bundle
 import android.view.View
+import android.widget.CompoundButton.OnCheckedChangeListener
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
@@ -70,14 +71,12 @@ import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.dismissLoadingDialog
 import com.android.healthconnect.controller.utils.logging.AppAccessElement
-import com.android.healthconnect.controller.utils.logging.AppPermissionsElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.healthconnect.controller.utils.showLoadingDialog
 import com.android.settingslib.widget.AppHeaderPreference
 import com.android.settingslib.widget.FooterPreference
-import com.android.settingslib.widget.OnMainSwitchChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -155,6 +154,17 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 switchPreference.isChecked = healthPermission in granted
             }
         }
+        appPermissionViewModel.lastReadPermissionDisconnected.observe(viewLifecycleOwner) { lastRead
+            ->
+            if (lastRead) {
+                Toast.makeText(
+                        requireContext(),
+                        R.string.removed_additional_permissions_toast,
+                        Toast.LENGTH_LONG)
+                    .show()
+                appPermissionViewModel.markLastReadShown()
+            }
+        }
 
         deletionViewModel.appPermissionReloadNeeded.observe(viewLifecycleOwner) { isReloadNeeded ->
             if (isReloadNeeded) appPermissionViewModel.loadPermissionsForPackage(packageName)
@@ -175,6 +185,20 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             if (event.shouldShowDialog) {
                 DisableExerciseRoutePermissionDialog.createDialog(packageName, event.appName)
                     .show(childFragmentManager, DISABLE_EXERCISE_ROUTE_DIALOG_TAG)
+            }
+        }
+
+        childFragmentManager.setFragmentResultListener(DISCONNECT_CANCELED_EVENT, this) { _, _ ->
+            allowAllPreference.isChecked = true
+        }
+
+        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
+            val permissionsUpdated = appPermissionViewModel.revokeAllPermissions(packageName)
+            if (!permissionsUpdated) {
+                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
+            }
+            if (bundle.containsKey(KEY_DELETE_DATA) && bundle.getBoolean(KEY_DELETE_DATA)) {
+                appPermissionViewModel.deleteAppData(packageName, appName)
             }
         }
 
@@ -227,7 +251,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 val additionalAccessPref =
                     HealthPreference(requireContext()).also {
                         it.key = KEY_ADDITIONAL_ACCESS
-                        it.logName = AppPermissionsElement.ADDITIONAL_ACCESS_BUTTON
+                        it.logName = AppAccessElement.ADDITIONAL_ACCESS_BUTTON
                         it.setTitle(R.string.additional_access_label)
                         it.setOnPreferenceClickListener { _ ->
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
@@ -249,11 +273,11 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         return manageDataCategory.children.none { it.key == KEY_ADDITIONAL_ACCESS }
     }
 
-    private val onSwitchChangeListener = OnMainSwitchChangeListener { switchView, isChecked ->
+    private val onSwitchChangeListener = OnCheckedChangeListener { buttonView, isChecked ->
         if (isChecked) {
             val permissionsUpdated = appPermissionViewModel.grantAllPermissions(packageName)
             if (!permissionsUpdated) {
-                switchView.isChecked = false
+                buttonView.isChecked = false
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
         } else {
@@ -272,20 +296,6 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     }
 
     private fun showRevokeAllPermissions() {
-        childFragmentManager.setFragmentResultListener(DISCONNECT_CANCELED_EVENT, this) { _, _ ->
-            allowAllPreference.isChecked = true
-        }
-
-        childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
-            val permissionsUpdated = appPermissionViewModel.revokeAllPermissions(packageName)
-            if (!permissionsUpdated) {
-                Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
-            }
-            if (bundle.containsKey(KEY_DELETE_DATA) && bundle.getBoolean(KEY_DELETE_DATA)) {
-                appPermissionViewModel.deleteAppData(packageName, appName)
-            }
-        }
-
         DisconnectDialogFragment(appName).show(childFragmentManager, DisconnectDialogFragment.TAG)
     }
 
@@ -317,7 +327,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                         it.logNameActive = AppAccessElement.PERMISSION_SWITCH_ACTIVE
                         it.logNameInactive = AppAccessElement.PERMISSION_SWITCH_INACTIVE
                         it.setOnPreferenceChangeListener { _, newValue ->
-                            allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
+                            allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
                             val checked = newValue as Boolean
                             val permissionUpdated =
                                 appPermissionViewModel.updatePermission(
@@ -329,7 +339,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                                         Toast.LENGTH_SHORT)
                                     .show()
                             }
-                            allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
+                            allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
                             permissionUpdated
                         }
                     }
@@ -358,7 +368,11 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 PARAGRAPH_SEPARATOR +
                 getString(R.string.manage_permissions_rationale, appName)
 
-        if (isAtLeastOneGranted) {
+        val isHistoryReadAvailable =
+            additionalAccessViewModel
+                .additionalAccessState.value?.historyReadUIState?.isDeclared ?: false
+        // Do not show the access date here if history read is available
+        if (isAtLeastOneGranted && !isHistoryReadAvailable) {
             val dataAccessDate = appPermissionViewModel.loadAccessDate(packageName)
             dataAccessDate?.let {
                 val formattedDate = dateFormatter.formatLongDate(dataAccessDate)

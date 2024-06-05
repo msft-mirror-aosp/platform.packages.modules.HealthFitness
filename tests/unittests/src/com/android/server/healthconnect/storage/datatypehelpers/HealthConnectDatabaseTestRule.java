@@ -18,9 +18,6 @@ package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static com.android.server.healthconnect.TestUtils.TEST_USER;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
-
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -30,19 +27,20 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.TransactionManager;
 
 import org.junit.rules.ExternalResource;
 import org.mockito.MockitoSession;
 import org.mockito.quality.Strictness;
 
 import java.io.File;
-import java.util.Arrays;
 
 /** A test rule that deals with ground work of setting up a mock Health Connect database. */
 public class HealthConnectDatabaseTestRule extends ExternalResource {
+    private static final String TAG = "HealthConnectDatabaseTestRule";
     private MockitoSession mStaticMockSession;
-    private File mMockDataDirectory;
     private HealthConnectUserContext mContext;
+    private TransactionManager mTransactionManager;
 
     @Override
     public void before() {
@@ -55,37 +53,32 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         mContext =
                 new HealthConnectUserContext(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        mMockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
-        when(Environment.getDataDirectory()).thenReturn(mMockDataDirectory);
+        File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
+        when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+        TransactionManager.cleanUpForTest();
+        mTransactionManager = TransactionManager.getInstance(mContext);
+        // Init any needed helpers here.
+        // Helpers are initialised during database onCreate(). When running a test in case the
+        // database is already initialised, not all helpers might be initialised.
+        // In this case, DatabaseHelper.clearAllData() may not clear all data as expected.
+        ChangeLogsHelper.getInstance();
     }
 
     @Override
     public void after() {
-        deleteDir(mMockDataDirectory);
-        mStaticMockSession.finishMocking();
+        try {
+            DatabaseHelper.clearAllData(mTransactionManager);
+            TransactionManager.cleanUpForTest();
+        } finally {
+            mStaticMockSession.finishMocking();
+        }
     }
 
     public HealthConnectUserContext getUserContext() {
         return mContext;
     }
 
-    private static void deleteDir(File dir) {
-        File[] files = dir.listFiles();
-        if (files != null) {
-            for (var file : files) {
-                if (file.isDirectory()) {
-                    deleteDir(file);
-                } else {
-                    assertThat(file.delete()).isTrue();
-                }
-            }
-        }
-        assertWithMessage(
-                        "Directory "
-                                + dir.getAbsolutePath()
-                                + " is not empty, Files present = "
-                                + Arrays.toString(dir.list()))
-                .that(dir.delete())
-                .isTrue();
+    public TransactionManager getTransactionManager() {
+        return mTransactionManager;
     }
 }

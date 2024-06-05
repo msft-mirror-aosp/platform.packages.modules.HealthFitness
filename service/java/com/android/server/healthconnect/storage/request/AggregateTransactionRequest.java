@@ -62,13 +62,12 @@ public final class AggregateTransactionRequest {
 
         final AggregationTypeIdMapper aggregationTypeIdMapper =
                 AggregationTypeIdMapper.getInstance();
-        RecordHelperProvider recordHelperProvider = RecordHelperProvider.getInstance();
         for (int id : request.getAggregateIds()) {
             AggregationType<?> aggregationType = aggregationTypeIdMapper.getAggregationTypeFor(id);
             List<Integer> recordTypeIds = aggregationType.getApplicableRecordTypeIds();
             if (recordTypeIds.size() == 1) {
                 RecordHelper<?> recordHelper =
-                        recordHelperProvider.getRecordHelper(recordTypeIds.get(0));
+                        RecordHelperProvider.getRecordHelper(recordTypeIds.get(0));
                 AggregateTableRequest aggregateTableRequest =
                         recordHelper.getAggregateTableRequest(
                                 aggregationType,

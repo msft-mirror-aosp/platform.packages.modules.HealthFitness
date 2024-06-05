@@ -26,6 +26,7 @@ import android.util.ArrayMap;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.dx.mockito.inline.extended.ExtendedMockito;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.storage.AutoDeleteService;
 import com.android.server.healthconnect.storage.TransactionManager;
@@ -77,6 +78,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.Vo2MaxRecordHelp
 import com.android.server.healthconnect.storage.datatypehelpers.WeightRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.WheelchairPushesRecordHelper;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
+import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import org.junit.Rule;
@@ -140,7 +142,7 @@ public class AutoDeleteServiceTest {
 
         AutoDeleteService.startAutoDelete(mContext);
 
-        verify(mRecordHelperProvider, never()).getRecordHelpers();
+        ExtendedMockito.verify(RecordHelperProvider::getRecordHelpers, never());
         verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(
@@ -156,7 +158,6 @@ public class AutoDeleteServiceTest {
     public void testStartAutoDelete_getPreferenceReturnNonNull() {
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
-        when(RecordHelperProvider.getInstance()).thenReturn(mRecordHelperProvider);
         when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
         when(ActivityDateHelper.getInstance()).thenReturn(mActivityDateHelper);
         when(HealthDataCategoryPriorityHelper.getInstance())
@@ -164,16 +165,22 @@ public class AutoDeleteServiceTest {
 
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY))
                 .thenReturn(String.valueOf(30));
-        when(mRecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
+        when(RecordHelperProvider.getRecordHelpers()).thenReturn(getRecordHelpers());
 
         AutoDeleteService.startAutoDelete(mContext);
 
-        verify(mTransactionManager, Mockito.times(3))
+        verify(mTransactionManager, Mockito.times(2))
                 .deleteWithoutChangeLogs(
                         Mockito.argThat(
                                 (List<DeleteTableRequest> deleteTableRequestsList) ->
                                         checkTableNames_getPreferenceReturnNonNull(
                                                 deleteTableRequestsList)));
+        verify(mTransactionManager)
+                .deleteAll(
+                        Mockito.argThat(
+                                (DeleteTransactionRequest request) ->
+                                        checkTableNames_getPreferenceReturnNonNull(
+                                                request.getDeleteTableRequests())));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
         verify(mActivityDateHelper).reSyncForAllRecords();
         verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);

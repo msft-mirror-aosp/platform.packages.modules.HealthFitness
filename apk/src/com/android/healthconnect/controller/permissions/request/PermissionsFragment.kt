@@ -47,7 +47,7 @@ abstract class PermissionsFragment : PreferenceFragmentCompat() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val rootView = inflater.inflate(R.layout.fragment_permissions_request, container, false)
         prefView = rootView.findViewById(R.id.preference_container)
         preferenceContainer =

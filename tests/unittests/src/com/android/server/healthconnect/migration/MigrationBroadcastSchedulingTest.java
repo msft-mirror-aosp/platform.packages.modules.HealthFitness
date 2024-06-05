@@ -97,6 +97,7 @@ public class MigrationBroadcastSchedulingTest {
     @Before
     public void setUp() {
         when(mContext.getSystemService(JobScheduler.class)).thenReturn(mJobScheduler);
+        when(mContext.getPackageName()).thenReturn("packageName");
         when(mJobScheduler.forNamespace(MIGRATION_BROADCAST_NAMESPACE)).thenReturn(mJobScheduler);
         when(HealthConnectDeviceConfigManager.getInitialisedInstance())
                 .thenReturn(mHealthConnectDeviceConfigManager);

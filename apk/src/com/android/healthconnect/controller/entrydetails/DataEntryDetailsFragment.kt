@@ -25,16 +25,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionTitle
 import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSessionDetail
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ItemDataEntrySeparator
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseBlockEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseSessionEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseStepEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.ReverseSessionDetail
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SeriesDataEntry
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.data.entries.FormattedEntry.SleepSessionEntry
 import com.android.healthconnect.controller.dataentries.ExerciseSessionItemViewBinder
 import com.android.healthconnect.controller.dataentries.OnDeleteEntryListener
+import com.android.healthconnect.controller.dataentries.PlannedExerciseSessionItemViewBinder
 import com.android.healthconnect.controller.dataentries.SeriesDataItemViewBinder
 import com.android.healthconnect.controller.dataentries.SleepSessionItemViewBinder
 import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_TYPE
@@ -107,6 +113,14 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
             onItemClickedListener = null,
             onDeleteEntryListenerClicked = onDeleteEntryListener)
     }
+    private val plannedExerciseSessionViewBinder by lazy {
+        PlannedExerciseSessionItemViewBinder(
+            showSecondAction = false, onItemClickedListener = null, onDeleteEntryClicked = null)
+    }
+    private val plannedExerciseBlockViewBinder by lazy { PlannedExerciseBlockViewBinder() }
+    private val plannedExerciseStepViewBinder by lazy { PlannedExerciseStepViewBinder() }
+    private val exercisePerformanceGoalViewBinder by lazy { ExercisePerformanceGoalViewBinder() }
+    private val formattedSectionContentViewBinder by lazy { FormattedSectionContentViewBinder() }
     private val exerciseSessionItemViewBinder by lazy {
         ExerciseSessionItemViewBinder(
             showSecondAction = false,
@@ -119,6 +133,7 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
             onItemClickedListener = null,
             onDeleteEntryClicked = onDeleteEntryListener)
     }
+    private val itemDataEntrySeparatorViewBinder by lazy { ItemDataEntrySeparatorViewBinder() }
     private val sessionDetailViewBinder by lazy { SessionDetailViewBinder() }
     private val sessionHeaderViewBinder by lazy { SessionHeaderViewBinder() }
     private val reverseSessionDetailViewBinder by lazy { ReverseSessionDetailViewBinder() }
@@ -166,9 +181,17 @@ class DataEntryDetailsFragment : Hilt_DataEntryDetailsFragment() {
                 .setViewBinder(FormattedSessionDetail::class.java, sessionDetailViewBinder)
                 .setViewBinder(SessionHeader::class.java, sessionHeaderViewBinder)
                 .setViewBinder(ReverseSessionDetail::class.java, reverseSessionDetailViewBinder)
+                .setViewBinder(FormattedSectionTitle::class.java, formattedSectionTitleViewBinder)
                 .setViewBinder(
-                    FormattedEntry.FormattedSectionTitle::class.java,
-                    formattedSectionTitleViewBinder)
+                    FormattedSectionContent::class.java, formattedSectionContentViewBinder)
+                .setViewBinder(
+                    PlannedExerciseSessionEntry::class.java, plannedExerciseSessionViewBinder)
+                .setViewBinder(
+                    PlannedExerciseBlockEntry::class.java, plannedExerciseBlockViewBinder)
+                .setViewBinder(PlannedExerciseStepEntry::class.java, plannedExerciseStepViewBinder)
+                .setViewBinder(
+                    ExercisePerformanceGoalEntry::class.java, exercisePerformanceGoalViewBinder)
+                .setViewBinder(ItemDataEntrySeparator::class.java, itemDataEntrySeparatorViewBinder)
                 .build()
         recyclerView =
             view.findViewById<RecyclerView?>(R.id.data_entries_list).apply {

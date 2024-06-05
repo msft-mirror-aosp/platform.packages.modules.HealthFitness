@@ -19,10 +19,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton.OnCheckedChangeListener
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
-import androidx.preference.SwitchPreference
+import androidx.preference.TwoStatePreference
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission
@@ -36,7 +37,6 @@ import com.android.healthconnect.controller.shared.preference.HealthSwitchPrefer
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.logging.PermissionsElement
-import com.android.settingslib.widget.OnMainSwitchChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -64,24 +64,23 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
         preferenceScreen.findPreference(ALLOW_ALL_PREFERENCE)
     }
 
-    private val mReadPermissionCategory: PreferenceGroup? by lazy {
+    private val readPermissionCategory: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(READ_CATEGORY)
     }
 
-    private val mWritePermissionCategory: PreferenceGroup? by lazy {
+    private val writePermissionCategory: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(WRITE_CATEGORY)
     }
 
-    private val onSwitchChangeListener: OnMainSwitchChangeListener =
-        OnMainSwitchChangeListener { _, grant ->
-            mReadPermissionCategory?.children?.forEach { preference ->
-                (preference as SwitchPreference).isChecked = grant
-            }
-            mWritePermissionCategory?.children?.forEach { preference ->
-                (preference as SwitchPreference).isChecked = grant
-            }
-            viewModel.updateDataTypePermissions(grant)
+    private val onSwitchChangeListener = OnCheckedChangeListener { _, grant ->
+        readPermissionCategory?.children?.forEach { preference ->
+            (preference as TwoStatePreference).isChecked = grant
         }
+        writePermissionCategory?.children?.forEach { preference ->
+            (preference as TwoStatePreference).isChecked = grant
+        }
+        viewModel.updateDataTypePermissions(grant)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +97,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         logger.setPageId(pageName)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -119,9 +118,9 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
                 logger.logInteraction(PermissionsElement.APP_RATIONALE_LINK)
                 startActivity(startRationaleIntent)
             }
-            mReadPermissionCategory?.title =
+            readPermissionCategory?.title =
                 getString(R.string.read_permission_category, app.appName)
-            mWritePermissionCategory?.title =
+            writePermissionCategory?.title =
                 getString(R.string.write_permission_category, app.appName)
         }
         viewModel.healthPermissionsList.observe(viewLifecycleOwner) { allPermissions ->
@@ -196,8 +195,8 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
     }
 
     private fun updateDataList(permissionsList: List<HealthPermission.DataTypePermission>) {
-        mReadPermissionCategory?.removeAll()
-        mWritePermissionCategory?.removeAll()
+        readPermissionCategory?.removeAll()
+        writePermissionCategory?.removeAll()
 
         permissionsList
             .sortedBy {
@@ -209,16 +208,16 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
             .forEach { permission ->
                 val value = viewModel.isPermissionLocallyGranted(permission)
                 if (PermissionsAccessType.READ == permission.permissionsAccessType) {
-                    mReadPermissionCategory?.addPreference(
+                    readPermissionCategory?.addPreference(
                         getPermissionPreference(value, permission))
                 } else if (PermissionsAccessType.WRITE == permission.permissionsAccessType) {
-                    mWritePermissionCategory?.addPreference(
+                    writePermissionCategory?.addPreference(
                         getPermissionPreference(value, permission))
                 }
             }
 
-        mReadPermissionCategory?.apply { isVisible = (preferenceCount != 0) }
-        mWritePermissionCategory?.apply { isVisible = (preferenceCount != 0) }
+        readPermissionCategory?.apply { isVisible = (preferenceCount != 0) }
+        writePermissionCategory?.apply { isVisible = (preferenceCount != 0) }
     }
 
     private fun getPermissionPreference(

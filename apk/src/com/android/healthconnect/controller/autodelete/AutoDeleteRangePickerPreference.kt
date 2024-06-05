@@ -19,6 +19,7 @@ import android.content.Context
 import android.icu.text.MessageFormat
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RadioButton
@@ -54,10 +55,10 @@ constructor(
         key = AUTO_DELETE_RANGE_PICKER_PREFERENCE_KEY
     }
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        val widgetFrame: ViewGroup = holder?.findViewById(android.R.id.widget_frame) as ViewGroup
+        val widgetFrame: ViewGroup = holder.findViewById(android.R.id.widget_frame) as ViewGroup
         val widgetFrameParent: LinearLayout = widgetFrame.parent as LinearLayout
 
         val iconFrame: LinearLayout? = holder.findViewById(android.R.id.icon_frame) as LinearLayout?
@@ -71,6 +72,8 @@ constructor(
                 inflater.inflate(R.layout.widget_auto_delete_range_picker, widgetFrameParent, false)
                     as ViewGroup?
             widgetFrameParent.addView(autoDeleteWidget, 0)
+            widgetFrameParent.isFocusable = false
+            widgetFrameParent.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }
 
         val radioGroup: RadioGroup = holder.findViewById(R.id.radio_group_time_range) as RadioGroup

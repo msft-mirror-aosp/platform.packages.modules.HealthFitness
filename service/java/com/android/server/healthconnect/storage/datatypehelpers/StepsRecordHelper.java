@@ -52,7 +52,7 @@ public final class StepsRecordHelper extends IntervalRecordHelper<StepsRecordInt
 
     @Override
     @NonNull
-    String getMainTableName() {
+    public String getMainTableName() {
         return STEPS_TABLE_NAME;
     }
 

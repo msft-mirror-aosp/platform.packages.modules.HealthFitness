@@ -29,30 +29,46 @@
         android:layout_alignParentTop="true"
         android:layout_above="@+id/action_container" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/action_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/spacing_large"
         android:paddingVertical="@dimen/spacing_normal"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/dont_allow"
-            style="@style/Widget.HealthConnect.DialogButton.Outline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/request_permissions_dont_allow" />
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/dont_allow"
+                style="@style/Widget.HealthConnect.DialogButton.Outline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="@string/request_permissions_dont_allow" />
+        </FrameLayout>
 
-        <Button
-            android:id="@+id/allow"
-            style="@style/Widget.HealthConnect.DialogButton.Outline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:enabled="false"
-            android:text="@string/request_permissions_allow" />
-    </RelativeLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/allow"
+                style="@style/Widget.HealthConnect.DialogButton.Outline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                android:maxLines="2"
+                android:enabled="false"
+                android:text="@string/request_permissions_allow" />
+        </FrameLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

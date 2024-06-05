@@ -16,14 +16,19 @@
 
 package android.healthconnect.cts.datatypes;
 
+import static android.health.connect.HealthConnectException.ERROR_INVALID_ARGUMENT;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_AVG;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.HeartRateRecord.BPM_MIN;
 import static android.health.connect.datatypes.HeartRateRecord.HEART_MEASUREMENTS_COUNT;
+import static android.healthconnect.cts.lib.TestAppProxy.APP_WRITE_PERMS_ONLY;
+import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getHeartRateRecord;
 import static android.healthconnect.cts.utils.TestUtils.readRecordsWithPagination;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 import android.health.connect.AggregateRecordsGroupedByDurationResponse;
@@ -481,6 +486,44 @@ public class HeartRateRecordTest {
     }
 
     @Test
+    public void testDeleteStepsRecord_usingIds_forAnotherApp_fails() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteHeartRateRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseHeartRateRecord(100));
+
+        HealthConnectException error =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.verifyDeleteRecords(
+                                        List.of(RecordIdFilter.fromId(HeartRateRecord.class, id))));
+
+        assertThat(error.getErrorCode()).isEqualTo(ERROR_INVALID_ARGUMENT);
+    }
+
+    @Test
+    public void testDeleteHeartRateRecord_usingTime_forAnotherApp_notDeleted() throws Exception {
+        // Insert a record to make sure the app is connected to Health Connect
+        TestUtils.insertRecordAndGetId(getCompleteStepsRecord());
+        String id = APP_WRITE_PERMS_ONLY.insertRecord(getBaseHeartRateRecord(100));
+
+        TestUtils.verifyDeleteRecords(
+                HeartRateRecord.class,
+                new TimeInstantRangeFilter.Builder()
+                        .setStartTime(Instant.EPOCH)
+                        .setEndTime(Instant.now())
+                        .build());
+
+        List<HeartRateRecord> records =
+                TestUtils.readRecords(
+                        new ReadRecordsRequestUsingIds.Builder<>(HeartRateRecord.class)
+                                .addId(id)
+                                .build());
+        assertThat(records).isNotEmpty();
+        assertThat(records.get(0).getMetadata().getId()).isEqualTo(id);
+    }
+
+    @Test
     public void testZoneOffsets() {
         final ZoneOffset defaultZoneOffset =
                 ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
@@ -843,7 +886,13 @@ public class HeartRateRecordTest {
                         .addRecordType(HeartRateRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
     }
 
     @Test

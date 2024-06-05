@@ -44,41 +44,39 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.tests.utils.BODYTEMPERATURE_MONTH
 import com.android.healthconnect.controller.tests.utils.BODYWATERMASS_WEEK
 import com.android.healthconnect.controller.tests.utils.DISTANCE_STARTDATE_1500
-import com.android.healthconnect.controller.tests.utils.DISTANCE_TWODAYSAGO_2000
-import com.android.healthconnect.controller.tests.utils.DISTANCE_YESTERDAY_2500
 import com.android.healthconnect.controller.tests.utils.HYDRATION_MONTH
 import com.android.healthconnect.controller.tests.utils.HYDRATION_MONTH2
 import com.android.healthconnect.controller.tests.utils.HYDRATION_MONTH3
-import com.android.healthconnect.controller.tests.utils.HYDRATION_TODAY_2L
 import com.android.healthconnect.controller.tests.utils.INSTANT_DAY
 import com.android.healthconnect.controller.tests.utils.INSTANT_MONTH3
-import com.android.healthconnect.controller.tests.utils.INSTANT_TWO_DAYS_AGO
 import com.android.healthconnect.controller.tests.utils.INSTANT_WEEK
 import com.android.healthconnect.controller.tests.utils.INTERMENSTRUAL_BLEEDING_DAY
 import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_DAY
 import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_DAY2
-import com.android.healthconnect.controller.tests.utils.OXYGENSATURATION_YESTERDAY_99
 import com.android.healthconnect.controller.tests.utils.SLEEP_DAY_0H20
 import com.android.healthconnect.controller.tests.utils.SLEEP_DAY_1H45
 import com.android.healthconnect.controller.tests.utils.SLEEP_DAY_9H15
 import com.android.healthconnect.controller.tests.utils.SLEEP_MONTH_81H15
-import com.android.healthconnect.controller.tests.utils.SLEEP_TODAY_0H30
 import com.android.healthconnect.controller.tests.utils.SLEEP_WEEK_33H15
 import com.android.healthconnect.controller.tests.utils.SLEEP_WEEK_9H15
 import com.android.healthconnect.controller.tests.utils.START_TIME
+import com.android.healthconnect.controller.tests.utils.TestTimeSource
 import com.android.healthconnect.controller.tests.utils.WEIGHT_DAY_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_MONTH_100
 import com.android.healthconnect.controller.tests.utils.WEIGHT_STARTDATE_100
-import com.android.healthconnect.controller.tests.utils.WEIGHT_TWODAYSAGO_95
 import com.android.healthconnect.controller.tests.utils.WEIGHT_WEEK_100
+import com.android.healthconnect.controller.tests.utils.getMixedRecordsAcrossThreeDays
+import com.android.healthconnect.controller.tests.utils.getMixedRecordsAcrossTwoDays
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.android.healthconnect.controller.tests.utils.verifyBodyWaterMassListsEqual
-import com.android.healthconnect.controller.tests.utils.verifyOxygenSaturationListsEqual
 import com.android.healthconnect.controller.tests.utils.verifyHydrationListsEqual
+import com.android.healthconnect.controller.tests.utils.verifyOxygenSaturationListsEqual
 import com.android.healthconnect.controller.tests.utils.verifySleepSessionListsEqual
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import com.android.healthconnect.controller.utils.atStartOfDay
+import com.android.healthconnect.controller.utils.toInstant
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.Instant
@@ -88,6 +86,7 @@ import java.util.TimeZone
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -104,11 +103,13 @@ import org.mockito.stubbing.Stubber
 class LoadEntriesHelperUseCaseTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @BindValue @JvmField val timeSource = TestTimeSource
 
     private val defaultStartTime: Instant = START_TIME
 
     private val healthConnectManager: HealthConnectManager =
         Mockito.mock(HealthConnectManager::class.java)
+
     @Inject lateinit var healthDataEntryFormatter: HealthDataEntryFormatter
 
     private lateinit var context: Context
@@ -116,50 +117,54 @@ class LoadEntriesHelperUseCaseTest {
 
     @Captor
     lateinit var menstruationRequestCaptor:
-            ArgumentCaptor<ReadRecordsRequestUsingFilters<IntermenstrualBleedingRecord>>
+        ArgumentCaptor<ReadRecordsRequestUsingFilters<IntermenstrualBleedingRecord>>
     @Captor
     lateinit var sleepSessionRequestCaptor:
-            ArgumentCaptor<ReadRecordsRequestUsingFilters<SleepSessionRecord>>
+        ArgumentCaptor<ReadRecordsRequestUsingFilters<SleepSessionRecord>>
     @Captor
     lateinit var stepsRequestCaptor: ArgumentCaptor<ReadRecordsRequestUsingFilters<StepsRecord>>
     @Captor
     lateinit var weightRequestCaptor: ArgumentCaptor<ReadRecordsRequestUsingFilters<WeightRecord>>
     @Captor
     lateinit var bodyTempRequestCaptor:
-            ArgumentCaptor<ReadRecordsRequestUsingFilters<BodyTemperatureRecord>>
+        ArgumentCaptor<ReadRecordsRequestUsingFilters<BodyTemperatureRecord>>
     @Captor
     lateinit var oxygenSaturationRequestCaptor:
-            ArgumentCaptor<ReadRecordsRequestUsingFilters<OxygenSaturationRecord>>
+        ArgumentCaptor<ReadRecordsRequestUsingFilters<OxygenSaturationRecord>>
     @Captor
     lateinit var hydrationRequestCaptor:
-            ArgumentCaptor<ReadRecordsRequestUsingFilters<HydrationRecord>>
+        ArgumentCaptor<ReadRecordsRequestUsingFilters<HydrationRecord>>
     @Captor
     lateinit var bodyWaterMassRequestCaptor:
-            ArgumentCaptor<ReadRecordsRequestUsingFilters<BodyWaterMassRecord>>
+        ArgumentCaptor<ReadRecordsRequestUsingFilters<BodyWaterMassRecord>>
 
     @Before
     fun setup() {
+        hiltRule.inject()
         MockitoAnnotations.initMocks(this)
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.US)
-        hiltRule.inject()
         loadEntriesHelper =
-            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager)
+            LoadEntriesHelper(context, healthDataEntryFormatter, healthConnectManager, timeSource)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+    }
+
+    @After
+    fun teardown() {
+        timeSource.reset()
     }
 
     @Test
     fun loadSleepData_withinDay_returnsListOfRecords_sortedByDescendingStartTime() = runTest {
-
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(DateNavigationPeriod.PERIOD_DAY, HealthPermissionType.SLEEP)
+            setupReadRecordTest(DateNavigationPeriod.PERIOD_DAY, HealthPermissionType.SLEEP)
 
         val actual = loadEntriesHelper.readRecords(input)
 
         val expected = listOf(SLEEP_DAY_9H15, SLEEP_DAY_0H20, SLEEP_DAY_1H45)
 
         assertArgumentRequestCaptorValidity(
-                sleepSessionRequestCaptor, timeRangeFilter, SleepSessionRecord::class.java)
+            sleepSessionRequestCaptor, timeRangeFilter, SleepSessionRecord::class.java)
         verifySleepSessionListsEqual(actual, expected)
     }
 
@@ -167,19 +172,19 @@ class LoadEntriesHelperUseCaseTest {
     fun loadSleepDataUseCase_withinWeek_returnsListOfRecords_sortedByDescendingStartTime() =
         runTest {
             val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                    setupReadRecordTest(DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.SLEEP)
+                setupReadRecordTest(DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.SLEEP)
 
             val actual = loadEntriesHelper.readRecords(input)
             val expected =
-                    listOf(
-                            SLEEP_WEEK_9H15,
-                            SLEEP_DAY_9H15,
-                            SLEEP_DAY_0H20,
-                            SLEEP_DAY_1H45,
-                            SLEEP_WEEK_33H15)
+                listOf(
+                    SLEEP_WEEK_9H15,
+                    SLEEP_DAY_9H15,
+                    SLEEP_DAY_0H20,
+                    SLEEP_DAY_1H45,
+                    SLEEP_WEEK_33H15)
 
             assertArgumentRequestCaptorValidity(
-                    sleepSessionRequestCaptor, timeRangeFilter, SleepSessionRecord::class.java)
+                sleepSessionRequestCaptor, timeRangeFilter, SleepSessionRecord::class.java)
             verifySleepSessionListsEqual(actual, expected)
         }
 
@@ -187,76 +192,78 @@ class LoadEntriesHelperUseCaseTest {
     fun loadSleepDataUseCase_withinMonth_returnsListOfRecords_sortedByDescendingStartTime() =
         runTest {
             val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                    setupReadRecordTest(DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.SLEEP)
+                setupReadRecordTest(DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.SLEEP)
 
             val actual = loadEntriesHelper.readRecords(input)
             val expected =
-                    listOf(
-                            SLEEP_MONTH_81H15,
-                            SLEEP_WEEK_9H15,
-                            SLEEP_DAY_9H15,
-                            SLEEP_DAY_0H20,
-                            SLEEP_DAY_1H45,
-                            SLEEP_WEEK_33H15)
+                listOf(
+                    SLEEP_MONTH_81H15,
+                    SLEEP_WEEK_9H15,
+                    SLEEP_DAY_9H15,
+                    SLEEP_DAY_0H20,
+                    SLEEP_DAY_1H45,
+                    SLEEP_WEEK_33H15)
 
             assertArgumentRequestCaptorValidity(
-                    sleepSessionRequestCaptor, timeRangeFilter, SleepSessionRecord::class.java)
+                sleepSessionRequestCaptor, timeRangeFilter, SleepSessionRecord::class.java)
             verifySleepSessionListsEqual(actual, expected)
         }
 
+    @Test
     fun loadHydrationUseCase_withinWeek_returnsListOfRecords_sortedByDescendingStartTime() =
-            runTest {
-                val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                        setupReadRecordTest(
-                                DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.HYDRATION)
+        runTest {
+            val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
+                setupReadRecordTest(
+                    DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.HYDRATION)
 
-                val actual = loadEntriesHelper.readRecords(input)
-                val expected = listOf(HYDRATION_MONTH3, HYDRATION_MONTH2, HYDRATION_MONTH)
+            val actual = loadEntriesHelper.readRecords(input)
+            val expected = listOf(HYDRATION_MONTH3, HYDRATION_MONTH2, HYDRATION_MONTH)
 
-                assertArgumentRequestCaptorValidity(
-                        hydrationRequestCaptor, timeRangeFilter, HydrationRecord::class.java)
-                verifyHydrationListsEqual(actual, expected)
-            }
+            assertArgumentRequestCaptorValidity(
+                hydrationRequestCaptor, timeRangeFilter, HydrationRecord::class.java)
+            verifyHydrationListsEqual(actual, expected)
+        }
 
     @Test
     fun loadOxygenSaturationUseCase_withinDay_returnsListOfRecords_sortedByDescendingStartTime() =
-            runTest {
-                val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                        setupReadRecordTest(
-                                DateNavigationPeriod.PERIOD_DAY, HealthPermissionType.OXYGEN_SATURATION)
+        runTest {
+            val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
+                setupReadRecordTest(
+                    DateNavigationPeriod.PERIOD_DAY, HealthPermissionType.OXYGEN_SATURATION)
 
-                val actual = loadEntriesHelper.readRecords(input)
-                val expected = listOf(OXYGENSATURATION_DAY2, OXYGENSATURATION_DAY)
+            val actual = loadEntriesHelper.readRecords(input)
+            val expected = listOf(OXYGENSATURATION_DAY2, OXYGENSATURATION_DAY)
 
-                assertArgumentRequestCaptorValidity(
-                        oxygenSaturationRequestCaptor, timeRangeFilter, OxygenSaturationRecord::class.java)
-                verifyOxygenSaturationListsEqual(actual, expected)
-            }
+            assertArgumentRequestCaptorValidity(
+                oxygenSaturationRequestCaptor, timeRangeFilter, OxygenSaturationRecord::class.java)
+            verifyOxygenSaturationListsEqual(actual, expected)
+        }
 
     @Test
     fun loadFloorsClimbedUseCase_withinMonth_returnsEmptyListOfRecords() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(
-                        DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.FLOORS_CLIMBED)
+            setupReadRecordTest(
+                DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.FLOORS_CLIMBED)
 
         val actual = loadEntriesHelper.readRecords(input)
 
         assertThat(actual.size).isEqualTo(0)
         assertArgumentRequestCaptorValidity(
-                stepsRequestCaptor, timeRangeFilter, FloorsClimbedRecord::class.java)
+            stepsRequestCaptor, timeRangeFilter, FloorsClimbedRecord::class.java)
     }
 
     @Test
     fun loadBodyWaterMass_withinWeek_singleRecord_lastRecordAndGetRecordsReturnsSame() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(
-                        DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.BODY_WATER_MASS)
+            setupReadRecordTest(
+                DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.BODY_WATER_MASS)
 
         val expectedGetRecords = loadEntriesHelper.readRecords(input)
         val expectedGetLastRecord = loadEntriesHelper.readLastRecord(input)
         val actual = listOf(BODYWATERMASS_WEEK)
 
-        assertArgumentRequestCaptorValidity(bodyWaterMassRequestCaptor, timeRangeFilter, BodyWaterMassRecord::class.java, 2)
+        assertArgumentRequestCaptorValidity(
+            bodyWaterMassRequestCaptor, timeRangeFilter, BodyWaterMassRecord::class.java, 2)
         assertThat(expectedGetLastRecord.size).isEqualTo(expectedGetRecords.size)
         assertThat(bodyWaterMassRequestCaptor.value.pageSize).isEqualTo(1)
         assertThat(bodyWaterMassRequestCaptor.value.isAscending).isFalse()
@@ -268,34 +275,34 @@ class LoadEntriesHelperUseCaseTest {
     @Test
     fun readLastRecord_forBodyTemperature_returnsListOfOneRecord() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(
-                        DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.BODY_TEMPERATURE)
+            setupReadRecordTest(
+                DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.BODY_TEMPERATURE)
 
         val expected = loadEntriesHelper.readLastRecord(input)
         val actual = listOf(BODYTEMPERATURE_MONTH)
 
         assertArgumentRequestCaptorValidity(
-                bodyTempRequestCaptor, timeRangeFilter, BodyTemperatureRecord::class.java)
+            bodyTempRequestCaptor, timeRangeFilter, BodyTemperatureRecord::class.java)
         assertThat(actual.size).isEqualTo(expected.size)
         assertThat(bodyTempRequestCaptor.value.pageSize).isEqualTo(1)
         assertThat(bodyTempRequestCaptor.value.isAscending).isFalse()
         assertThat(actual[0].time).isEqualTo(INSTANT_MONTH3)
         assertThat(actual[0].measurementLocation)
-                .isEqualTo(BodyTemperatureMeasurementLocation.MEASUREMENT_LOCATION_MOUTH)
+            .isEqualTo(BodyTemperatureMeasurementLocation.MEASUREMENT_LOCATION_MOUTH)
         assertThat(actual[0].temperature).isEqualTo(Temperature.fromCelsius(100.0))
     }
 
     @Test
     fun readLastRecord_forDistance_returnsListOfOneRecord() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.DISTANCE)
+            setupReadRecordTest(DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.DISTANCE)
 
         val actual = loadEntriesHelper.readLastRecord(input)
 
         val expected = listOf(DISTANCE_STARTDATE_1500)
 
         assertArgumentRequestCaptorValidity(
-                stepsRequestCaptor, timeRangeFilter, DistanceRecord::class.java)
+            stepsRequestCaptor, timeRangeFilter, DistanceRecord::class.java)
         assertThat(actual.size).isEqualTo(expected.size)
         assertThat((actual[0] as DistanceRecord).distance).isEqualTo(expected[0].distance)
         assertThat((actual[0] as DistanceRecord).startTime).isEqualTo(defaultStartTime)
@@ -307,14 +314,14 @@ class LoadEntriesHelperUseCaseTest {
     @Test
     fun readLastRecord_forIntermenstrualBleeding_returnsListOfOneRecord() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(
-                        DateNavigationPeriod.PERIOD_DAY, HealthPermissionType.INTERMENSTRUAL_BLEEDING)
+            setupReadRecordTest(
+                DateNavigationPeriod.PERIOD_DAY, HealthPermissionType.INTERMENSTRUAL_BLEEDING)
 
         val actual = loadEntriesHelper.readLastRecord(input)
         val expected = listOf(INTERMENSTRUAL_BLEEDING_DAY)
 
         assertArgumentRequestCaptorValidity(
-                menstruationRequestCaptor, timeRangeFilter, IntermenstrualBleedingRecord::class.java)
+            menstruationRequestCaptor, timeRangeFilter, IntermenstrualBleedingRecord::class.java)
         assertThat(actual.size).isEqualTo(expected.size)
         assertThat((actual[0] as IntermenstrualBleedingRecord).time).isEqualTo(INSTANT_DAY)
         assertThat(menstruationRequestCaptor.value.pageSize).isEqualTo(1)
@@ -324,13 +331,13 @@ class LoadEntriesHelperUseCaseTest {
     @Test
     fun readLastRecord_forWeight_returnsListOfOneRecord() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.WEIGHT)
+            setupReadRecordTest(DateNavigationPeriod.PERIOD_WEEK, HealthPermissionType.WEIGHT)
 
         val actual = loadEntriesHelper.readLastRecord(input)
         val expected = listOf(WEIGHT_WEEK_100)
 
         assertArgumentRequestCaptorValidity(
-                weightRequestCaptor, timeRangeFilter, WeightRecord::class.java)
+            weightRequestCaptor, timeRangeFilter, WeightRecord::class.java)
         assertThat(actual.size).isEqualTo(expected.size)
         assertThat((actual[0] as WeightRecord).weight).isEqualTo(expected[0].weight)
         assertThat((actual[0] as WeightRecord).time).isEqualTo(INSTANT_WEEK)
@@ -341,92 +348,85 @@ class LoadEntriesHelperUseCaseTest {
     @Test
     fun readLastRecord_forTotalCaloriesBurned_whenNoData_returnsEmptyList() = runTest {
         val (input: LoadDataEntriesInput, timeRangeFilter: TimeInstantRangeFilter) =
-                setupReadRecordTest(
-                        DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.ACTIVE_CALORIES_BURNED)
+            setupReadRecordTest(
+                DateNavigationPeriod.PERIOD_MONTH, HealthPermissionType.ACTIVE_CALORIES_BURNED)
 
         val actual = loadEntriesHelper.readLastRecord(input)
 
         assertThat(actual.size).isEqualTo(0)
         assertArgumentRequestCaptorValidity(
-                stepsRequestCaptor, timeRangeFilter, ActiveCaloriesBurnedRecord::class.java)
+            stepsRequestCaptor, timeRangeFilter, ActiveCaloriesBurnedRecord::class.java)
         assertThat(stepsRequestCaptor.value.pageSize).isEqualTo(1)
         assertThat(stepsRequestCaptor.value.isAscending).isFalse()
     }
 
     @Test
     fun readRecordsFromDifferentDays_twoSequentialDays_sectionHeadersInserted() = runTest {
-        val recordList: List<Record> =
-                listOf(
-                        SLEEP_TODAY_0H30,
-                        HYDRATION_TODAY_2L,
-                        DISTANCE_YESTERDAY_2500,
-                        OXYGENSATURATION_YESTERDAY_99)
+        timeSource.setNow(START_TIME)
+
+        val recordList: List<Record> = getMixedRecordsAcrossTwoDays(timeSource)
 
         val formattedEntry: List<FormattedEntry> =
-                loadEntriesHelper.maybeAddDateSectionHeaders(
-                        recordList, DateNavigationPeriod.PERIOD_WEEK, true)
+            loadEntriesHelper.maybeAddDateSectionHeaders(
+                recordList, DateNavigationPeriod.PERIOD_WEEK, true)
 
         val potentialHeaderToday = formattedEntry[0]
         val potentialHeaderYesterday = formattedEntry[3]
         assertThat(formattedEntry.size).isEqualTo(6)
         assertThat(potentialHeaderToday)
-                .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
+            .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
         assertThat((potentialHeaderToday as FormattedEntry.EntryDateSectionHeader).date)
-                .isEqualTo("Today")
+            .isEqualTo("Today")
         assertThat(potentialHeaderYesterday)
-                .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
+            .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
         assertThat((potentialHeaderYesterday as FormattedEntry.EntryDateSectionHeader).date)
-                .isEqualTo("Yesterday")
+            .isEqualTo("Yesterday")
     }
 
     @Test
     fun readRecordsFromDifferentDays_threeSequentialDays_sectionHeadersInserted() = runTest {
-        val recordList: List<Record> =
-                listOf(
-                        SLEEP_TODAY_0H30,
-                        HYDRATION_TODAY_2L,
-                        DISTANCE_YESTERDAY_2500,
-                        OXYGENSATURATION_YESTERDAY_99,
-                        WEIGHT_TWODAYSAGO_95,
-                        DISTANCE_TWODAYSAGO_2000)
+        timeSource.setNow(START_TIME)
+        val recordList: List<Record> = getMixedRecordsAcrossThreeDays(timeSource)
 
         val formattedEntry: List<FormattedEntry> =
-                loadEntriesHelper.maybeAddDateSectionHeaders(
-                        recordList, DateNavigationPeriod.PERIOD_WEEK, true)
+            loadEntriesHelper.maybeAddDateSectionHeaders(
+                recordList, DateNavigationPeriod.PERIOD_WEEK, true)
 
         val potentialHeaderToday = formattedEntry[0]
         val potentialHeaderYesterday = formattedEntry[3]
         val potentialHeaderTwoDaysAgo = formattedEntry[6]
         assertThat(formattedEntry.size).isEqualTo(9)
         assertThat(potentialHeaderToday)
-                .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
+            .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
         assertThat((potentialHeaderToday as FormattedEntry.EntryDateSectionHeader).date)
-                .isEqualTo("Today")
+            .isEqualTo("Today")
         assertThat(potentialHeaderYesterday)
-                .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
+            .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
         assertThat((potentialHeaderYesterday as FormattedEntry.EntryDateSectionHeader).date)
-                .isEqualTo("Yesterday")
+            .isEqualTo("Yesterday")
         assertThat(potentialHeaderTwoDaysAgo)
-                .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
+            .isInstanceOf(FormattedEntry.EntryDateSectionHeader::class.java)
         assertThat((potentialHeaderTwoDaysAgo as FormattedEntry.EntryDateSectionHeader).date)
-                .isEqualTo(LocalDateTimeFormatter(context).formatLongDate(INSTANT_TWO_DAYS_AGO))
+            .isEqualTo(
+                LocalDateTimeFormatter(context)
+                    .formatLongDate(timeSource.currentLocalDateTime().minusDays(2).toInstant()))
     }
 
     private fun prepareDistanceAnswer(): (InvocationOnMock) -> ReadRecordsResponse<DistanceRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<DistanceRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<DistanceRecord>, *>
             receiver.onResult(getMonthDistanceRecords())
             getMonthDistanceRecords()
         }
     }
 
     private fun prepareWeightAnswer(
-            dateNavigationPeriod: DateNavigationPeriod? = null
+        dateNavigationPeriod: DateNavigationPeriod? = null
     ): (InvocationOnMock) -> ReadRecordsResponse<WeightRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<WeightRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<WeightRecord>, *>
             when (dateNavigationPeriod) {
                 DateNavigationPeriod.PERIOD_DAY -> {
                     receiver.onResult(getDayWeightRecords())
@@ -449,120 +449,121 @@ class LoadEntriesHelperUseCaseTest {
     }
 
     private fun prepareMenstruationPeriodAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<IntermenstrualBleedingRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<IntermenstrualBleedingRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2]
-                            as OutcomeReceiver<ReadRecordsResponse<IntermenstrualBleedingRecord>, *>
+                args.arguments[2]
+                    as OutcomeReceiver<ReadRecordsResponse<IntermenstrualBleedingRecord>, *>
             receiver.onResult(getMenstruationPeriodRecords())
             getMenstruationPeriodRecords()
         }
     }
 
     private fun prepareEmptyCaloriesAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<TotalCaloriesBurnedRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<TotalCaloriesBurnedRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2]
-                            as OutcomeReceiver<ReadRecordsResponse<TotalCaloriesBurnedRecord>, *>
+                args.arguments[2]
+                    as OutcomeReceiver<ReadRecordsResponse<TotalCaloriesBurnedRecord>, *>
             receiver.onResult(getEmptyCaloriesRecords())
             getEmptyCaloriesRecords()
         }
     }
 
     private fun prepareEmptyFloorsClimbedAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<FloorsClimbedRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<FloorsClimbedRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<FloorsClimbedRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<FloorsClimbedRecord>, *>
             receiver.onResult(getEmptyFloorsClimbedRecords())
             getEmptyFloorsClimbedRecords()
         }
     }
 
     private fun prepareBodyTemperatureAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<BodyTemperatureRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<BodyTemperatureRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<BodyTemperatureRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<BodyTemperatureRecord>, *>
             receiver.onResult(getBodyTemperatureRecords())
             getBodyTemperatureRecords()
         }
     }
 
     private fun prepareSleepAnswer(
-            timePeriod: DateNavigationPeriod
+        timePeriod: DateNavigationPeriod
     ): (InvocationOnMock) -> ReadRecordsResponse<SleepSessionRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<SleepSessionRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<SleepSessionRecord>, *>
             receiver.onResult(getSleepRecords(timePeriod))
             getSleepRecords(timePeriod)
         }
     }
 
     private fun prepareOxygenSaturationAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<OxygenSaturationRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<OxygenSaturationRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<OxygenSaturationRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<OxygenSaturationRecord>, *>
             receiver.onResult(getOxygenSaturationRecords())
             getOxygenSaturationRecords()
         }
     }
 
     private fun prepareHydrationAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<HydrationRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<HydrationRecord> {
         return { args: InvocationOnMock ->
             val receiver =
-                    args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<HydrationRecord>, *>
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<HydrationRecord>, *>
             receiver.onResult(getHydrationRecords())
             getHydrationRecords()
         }
     }
 
     private fun prepareBodyWaterMassAnswer():
-            (InvocationOnMock) -> ReadRecordsResponse<BodyWaterMassRecord> {
+        (InvocationOnMock) -> ReadRecordsResponse<BodyWaterMassRecord> {
         return { args: InvocationOnMock ->
-            val receiver = args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<BodyWaterMassRecord>, *>
+            val receiver =
+                args.arguments[2] as OutcomeReceiver<ReadRecordsResponse<BodyWaterMassRecord>, *>
             receiver.onResult(getBodyWaterMassRecords())
             getBodyWaterMassRecords()
         }
     }
 
     private fun getSleepRecords(
-            timePeriod: DateNavigationPeriod
+        timePeriod: DateNavigationPeriod
     ): ReadRecordsResponse<SleepSessionRecord> {
         return when (timePeriod) {
             DateNavigationPeriod.PERIOD_DAY ->
                 return ReadRecordsResponse<SleepSessionRecord>(
-                        listOf(SLEEP_DAY_9H15, SLEEP_DAY_0H20, SLEEP_DAY_1H45), -1)
+                    listOf(SLEEP_DAY_9H15, SLEEP_DAY_0H20, SLEEP_DAY_1H45), -1)
             DateNavigationPeriod.PERIOD_WEEK ->
                 return ReadRecordsResponse<SleepSessionRecord>(
-                        listOf(
-                                SLEEP_DAY_9H15,
-                                SLEEP_DAY_0H20,
-                                SLEEP_DAY_1H45,
-                                SLEEP_WEEK_33H15,
-                                SLEEP_WEEK_9H15),
-                        -1)
+                    listOf(
+                        SLEEP_DAY_9H15,
+                        SLEEP_DAY_0H20,
+                        SLEEP_DAY_1H45,
+                        SLEEP_WEEK_33H15,
+                        SLEEP_WEEK_9H15),
+                    -1)
             DateNavigationPeriod.PERIOD_MONTH ->
                 return ReadRecordsResponse<SleepSessionRecord>(
-                        listOf(
-                                SLEEP_DAY_9H15,
-                                SLEEP_DAY_0H20,
-                                SLEEP_DAY_1H45,
-                                SLEEP_WEEK_33H15,
-                                SLEEP_WEEK_9H15,
-                                SLEEP_MONTH_81H15),
-                        -1)
+                    listOf(
+                        SLEEP_DAY_9H15,
+                        SLEEP_DAY_0H20,
+                        SLEEP_DAY_1H45,
+                        SLEEP_WEEK_33H15,
+                        SLEEP_WEEK_9H15,
+                        SLEEP_MONTH_81H15),
+                    -1)
             else -> throw IllegalArgumentException("DateNavigationPeriod $timePeriod not supported")
         }
     }
 
     private fun getOxygenSaturationRecords(): ReadRecordsResponse<OxygenSaturationRecord> {
         return ReadRecordsResponse<OxygenSaturationRecord>(
-                listOf(OXYGENSATURATION_DAY2, OXYGENSATURATION_DAY), -1)
+            listOf(OXYGENSATURATION_DAY2, OXYGENSATURATION_DAY), -1)
     }
 
     private fun getBodyTemperatureRecords(): ReadRecordsResponse<BodyTemperatureRecord> {
@@ -575,7 +576,7 @@ class LoadEntriesHelperUseCaseTest {
 
     private fun getMenstruationPeriodRecords(): ReadRecordsResponse<IntermenstrualBleedingRecord> {
         return ReadRecordsResponse<IntermenstrualBleedingRecord>(
-                listOf(INTERMENSTRUAL_BLEEDING_DAY), -1)
+            listOf(INTERMENSTRUAL_BLEEDING_DAY), -1)
     }
 
     private fun getDayWeightRecords(): ReadRecordsResponse<WeightRecord> {
@@ -600,7 +601,7 @@ class LoadEntriesHelperUseCaseTest {
 
     private fun getHydrationRecords(): ReadRecordsResponse<HydrationRecord> {
         return ReadRecordsResponse<HydrationRecord>(
-                listOf(HYDRATION_MONTH3, HYDRATION_MONTH2, HYDRATION_MONTH), -1)
+            listOf(HYDRATION_MONTH3, HYDRATION_MONTH2, HYDRATION_MONTH), -1)
     }
 
     private fun getEmptyCaloriesRecords(): ReadRecordsResponse<TotalCaloriesBurnedRecord> {
@@ -612,66 +613,66 @@ class LoadEntriesHelperUseCaseTest {
     }
 
     private fun setupReadRecordTest(
-            timePeriod: DateNavigationPeriod,
-            permissionType: HealthPermissionType
+        timePeriod: DateNavigationPeriod,
+        permissionType: HealthPermissionType
     ): Pair<LoadDataEntriesInput, TimeInstantRangeFilter> {
         val input =
-                LoadDataEntriesInput(
-                        displayedStartTime = defaultStartTime.atStartOfDay(),
-                        packageName = null,
-                        period = timePeriod,
-                        showDataOrigin = true,
-                        permissionType = permissionType)
+            LoadDataEntriesInput(
+                displayedStartTime = defaultStartTime.atStartOfDay(),
+                packageName = null,
+                period = timePeriod,
+                showDataOrigin = true,
+                permissionType = permissionType)
         val timeRangeFilter =
-                loadEntriesHelper.getTimeFilter(defaultStartTime.atStartOfDay(), timePeriod, true)
+            loadEntriesHelper.getTimeFilter(defaultStartTime.atStartOfDay(), timePeriod, true)
 
         var mockitoStubber: Stubber =
-                when (permissionType) {
-                    HealthPermissionType.ACTIVE_CALORIES_BURNED ->
-                        Mockito.doAnswer(prepareEmptyCaloriesAnswer())
-                    HealthPermissionType.SLEEP -> Mockito.doAnswer(prepareSleepAnswer(timePeriod))
-                    HealthPermissionType.WEIGHT -> Mockito.doAnswer(prepareWeightAnswer(timePeriod))
-                    HealthPermissionType.DISTANCE -> Mockito.doAnswer(prepareDistanceAnswer())
-                    HealthPermissionType.INTERMENSTRUAL_BLEEDING ->
-                        Mockito.doAnswer(prepareMenstruationPeriodAnswer())
-                    HealthPermissionType.BODY_TEMPERATURE ->
-                        Mockito.doAnswer(prepareBodyTemperatureAnswer())
-                    HealthPermissionType.OXYGEN_SATURATION ->
-                        Mockito.doAnswer(prepareOxygenSaturationAnswer())
-                    HealthPermissionType.HYDRATION -> Mockito.doAnswer(prepareHydrationAnswer())
-                    HealthPermissionType.FLOORS_CLIMBED ->
-                        Mockito.doAnswer(prepareEmptyFloorsClimbedAnswer())
-                    HealthPermissionType.BODY_WATER_MASS ->
-                        Mockito.doAnswer(prepareBodyWaterMassAnswer())
-                    else ->
-                        throw IllegalArgumentException(
-                                "HealthPermissionType $permissionType not supported")
-                }
+            when (permissionType) {
+                HealthPermissionType.ACTIVE_CALORIES_BURNED ->
+                    Mockito.doAnswer(prepareEmptyCaloriesAnswer())
+                HealthPermissionType.SLEEP -> Mockito.doAnswer(prepareSleepAnswer(timePeriod))
+                HealthPermissionType.WEIGHT -> Mockito.doAnswer(prepareWeightAnswer(timePeriod))
+                HealthPermissionType.DISTANCE -> Mockito.doAnswer(prepareDistanceAnswer())
+                HealthPermissionType.INTERMENSTRUAL_BLEEDING ->
+                    Mockito.doAnswer(prepareMenstruationPeriodAnswer())
+                HealthPermissionType.BODY_TEMPERATURE ->
+                    Mockito.doAnswer(prepareBodyTemperatureAnswer())
+                HealthPermissionType.OXYGEN_SATURATION ->
+                    Mockito.doAnswer(prepareOxygenSaturationAnswer())
+                HealthPermissionType.HYDRATION -> Mockito.doAnswer(prepareHydrationAnswer())
+                HealthPermissionType.FLOORS_CLIMBED ->
+                    Mockito.doAnswer(prepareEmptyFloorsClimbedAnswer())
+                HealthPermissionType.BODY_WATER_MASS ->
+                    Mockito.doAnswer(prepareBodyWaterMassAnswer())
+                else ->
+                    throw IllegalArgumentException(
+                        "HealthPermissionType $permissionType not supported")
+            }
 
         mockitoStubber
-                .`when`(healthConnectManager)
-                .readRecords(
-                        ArgumentMatchers.any(ReadRecordsRequestUsingFilters::class.java),
-                        ArgumentMatchers.any(),
-                        ArgumentMatchers.any())
+            .`when`(healthConnectManager)
+            .readRecords(
+                ArgumentMatchers.any(ReadRecordsRequestUsingFilters::class.java),
+                ArgumentMatchers.any(),
+                ArgumentMatchers.any())
 
         return Pair(input, timeRangeFilter)
     }
 
     private fun assertArgumentRequestCaptorValidity(
-            requestCaptor: ArgumentCaptor<out ReadRecordsRequestUsingFilters<out Record>>,
-            timeRangeFilter: TimeInstantRangeFilter,
-            recordType: Class<out Record>,
-            wantedInvocationCount: Int = 1
+        requestCaptor: ArgumentCaptor<out ReadRecordsRequestUsingFilters<out Record>>,
+        timeRangeFilter: TimeInstantRangeFilter,
+        recordType: Class<out Record>,
+        wantedInvocationCount: Int = 1
     ) {
         Mockito.verify(healthConnectManager, Mockito.times(wantedInvocationCount))
-                .readRecords(requestCaptor.capture(), ArgumentMatchers.any(), ArgumentMatchers.any())
+            .readRecords(requestCaptor.capture(), ArgumentMatchers.any(), ArgumentMatchers.any())
         assertThat(requestCaptor.value.recordType).isEqualTo(recordType)
         assertThat((requestCaptor.value.timeRangeFilter as TimeInstantRangeFilter).startTime)
-                .isEqualTo(timeRangeFilter.startTime)
+            .isEqualTo(timeRangeFilter.startTime)
         assertThat((requestCaptor.value.timeRangeFilter as TimeInstantRangeFilter).endTime)
-                .isEqualTo(timeRangeFilter.endTime)
+            .isEqualTo(timeRangeFilter.endTime)
         assertThat((requestCaptor.value.timeRangeFilter as TimeInstantRangeFilter).isBounded)
-                .isEqualTo(timeRangeFilter.isBounded)
+            .isEqualTo(timeRangeFilter.isBounded)
     }
 }

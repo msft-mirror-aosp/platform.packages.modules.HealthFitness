@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package healthconnect.exportimport;
+package com.android.server.healthconnect.exportimport;
 
+import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
+import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.getReadTransactionRequest;
@@ -24,6 +26,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.Manifest;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
 
@@ -32,17 +35,16 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.TestUtils;
-import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 import com.android.server.healthconnect.storage.request.ReadTransactionRequest;
+import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -73,7 +75,7 @@ public class ImportManagerTest {
     @Before
     public void setUp() throws Exception {
         mContext = mDatabaseTestRule.getUserContext();
-        mTransactionManager = TransactionManager.getInstance(mContext);
+        mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
         TestUtils.runWithShellPermissionIdentity(
@@ -83,14 +85,8 @@ public class ImportManagerTest {
         mImportManager = new ImportManager(mContext);
     }
 
-    @After
-    public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
-        TransactionManager.clearInstance();
-    }
-
     @Test
-    public void testRunImport_copiesAllData() throws Exception {
+    public void copiesAllData() throws Exception {
         List<String> uuids =
                 mTransactionTestUtils.insertRecords(
                         TEST_PACKAGE_NAME,
@@ -98,13 +94,12 @@ public class ImportManagerTest {
                         createBloodPressureRecord(234, 120.0, 80.0));
 
         File originalDb = mTransactionManager.getDatabasePath();
-        File copy = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
-
-        Files.copy(originalDb.toPath(), copy.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(copy.toPath());
+        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -118,7 +113,62 @@ public class ImportManagerTest {
 
         List<RecordInternal<?>> records = mTransactionManager.readRecordsByIds(request);
         assertThat(records).hasSize(2);
-        assertThat(records.get(0).getUuid()).isEqualTo(UUID.fromString(uuids.get(0)));
-        assertThat(records.get(1).getUuid()).isEqualTo(UUID.fromString(uuids.get(1)));
+        assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
+        assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
+    }
+
+    @Test
+    public void skipsMissingTables() throws Exception {
+        List<String> uuids =
+                mTransactionTestUtils.insertRecords(
+                        TEST_PACKAGE_NAME,
+                        createStepsRecord(123, 345, 100),
+                        createBloodPressureRecord(234, 120.0, 80.0));
+
+        File originalDb = mTransactionManager.getDatabasePath();
+        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Delete steps record table in import db.
+        String stepsRecordTableName =
+                RecordHelperProvider.getRecordHelper(RecordTypeIdentifier.RECORD_TYPE_STEPS)
+                        .getMainTableName();
+        try (SQLiteDatabase importDb =
+                SQLiteDatabase.openDatabase(
+                        dbToImport, new SQLiteDatabase.OpenParams.Builder().build())) {
+            importDb.execSQL("DROP TABLE " + stepsRecordTableName);
+        }
+
+        DatabaseHelper.clearAllData(mTransactionManager);
+
+        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+
+        List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
+        List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
+        ReadTransactionRequest request =
+                getReadTransactionRequest(
+                        ImmutableMap.of(
+                                RecordTypeIdentifier.RECORD_TYPE_STEPS,
+                                stepsUuids,
+                                RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE,
+                                bloodPressureUuids));
+
+        List<RecordInternal<?>> records = mTransactionManager.readRecordsByIds(request);
+        assertThat(records).hasSize(1);
+        assertThat(records.get(0).getUuid()).isEqualTo(bloodPressureUuids.get(0));
+    }
+
+    @Test
+    public void deletesTheDatabase() throws Exception {
+        File originalDb = mTransactionManager.getDatabasePath();
+        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+
+        File databaseDir =
+                DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
+                        .getDatabaseDir();
+        assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
     }
 }

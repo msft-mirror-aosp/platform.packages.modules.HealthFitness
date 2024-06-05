@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"Ni podatkov"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Dovoljenja za aplikacije"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Upravljanje aplikacij in dovoljenj"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od toliko aplikacij: <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"Dostop ima toliko aplikacij: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> od <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>."</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"Dostop ima toliko aplikacij: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>."</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"Dostop ima <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> aplikacija."</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{Dostop ima 1 aplikacija}one{Dostop ima # aplikacija}two{Dostop imata # aplikaciji}few{Dostop imajo # aplikacije}other{Dostop ima # aplikacij}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Brez"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Podrobnosti vnosa"</string>
     <string name="backup_title" msgid="211503191266235085">"Varnostno kopiranje"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"Pisanje: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Upravljanje dovoljenj"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Čas: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"Čas: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Dejavnost"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"dejavnost"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Telesne meritve"</string>
@@ -83,14 +85,14 @@
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"Aplikaciji omogoča branje porabljenih kalorij"</string>
     <string name="background_read_title" msgid="5061383169517186234">"Dostop do podatkov v ozadju"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"Želite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovoliti dostop do podatkov v ozadju?"</string>
-    <string name="background_read_description" msgid="3203594555849969283">"Tej aplikaciji dovolite dostop do podatkov aplikacije Health Connect, ko ne uporabljate te aplikacije"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"Če to dovolite, lahko ta aplikacija dostopa do podatkov aplikacije Health Connect, ko ne uporabljate te aplikacije."</string>
+    <string name="background_read_description" msgid="3203594555849969283">"Tej aplikaciji dovolite dostop do podatkov storitve Health Connect, ko ne uporabljate te aplikacije"</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"Če to dovolite, lahko ta aplikacija dostopa do podatkov storitve Health Connect, ko ne uporabljate te aplikacije."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"Dostop do preteklih podatkov"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Želite aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> dovoliti dostop do preteklih podatkov?"</string>
-    <string name="historic_access_description" msgid="2616669701088141765">"Tej aplikaciji dovolite dostop do podatkov aplikacije Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"Tej aplikaciji dovolite dostop do preteklih podatkov aplikacije Health Connect"</string>
-    <string name="historic_access_request_description" msgid="136335743939253358">"Če to dovolite, lahko ta aplikacija dostopa do podatkov aplikacije Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"Če to dovolite, lahko ta aplikacija dostopa do preteklih podatkov aplikacije Health Connect."</string>
+    <string name="historic_access_description" msgid="2616669701088141765">"Tej aplikaciji dovolite dostop do podatkov storitve Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Tej aplikaciji dovolite dostop do vseh preteklih podatkov storitve Health Connect"</string>
+    <string name="historic_access_request_description" msgid="136335743939253358">"Če to dovolite, lahko ta aplikacija dostopa do podatkov storitve Health Connect, ki so bili dodani pred dnem <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Če to dovolite, lahko ta aplikacija dostopa do vseh preteklih podatkov storitve Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Porabljene kalorije med dejavnostjo"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"porabljene kalorije med dejavnostjo"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"Branje porabljenih kalorij med dejavnostjo"</string>
@@ -270,7 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"pravilnik o zasebnosti"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"Želite odstraniti vsa dovoljenja?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"Odstrani vse"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ne bo več mogla brati ali zapisovati podatkov storitve Health Connect.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za lokacijo, fotoaparat ali mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ne bo več mogla brati ali zapisovati podatkov storitve Health Connect.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za fotoaparat, mikrofon ali lokacijo."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ne bo več mogla brati ali zapisovati podatkov storitve Health Connect, vključno s prenosom podatkov v ozadju.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za lokacijo, fotoaparat ali mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ne bo več mogla brati ali zapisovati podatkov storitve Health Connect, vključno s preteklimi podatki.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za lokacijo, fotoaparat ali mikrofon."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> ne bo več mogla brati ali zapisovati podatkov storitve Health Connect, vključno s prenosom podatkov v ozadju in preteklimi podatki.\n\nTo ne vpliva na druga dovoljenja, ki jih morda ima ta aplikacija, na primer za lokacijo, fotoaparat ali mikrofon."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"Iz storitve Health Connect izbriši tudi podatke aplikacije <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"Naslednji dan"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"Izbrani dan"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"Dostop aplikacije"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Trenutno nimate nameščene nobene združljive aplikacije."</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatni dostop"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Dodatna dovoljenja za to aplikacijo so odstranjena"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odstranjena dovoljenja za aplikacije"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Storitev Health Connect je odstranila dovoljenja za aplikacijo <xliff:g id="APP_DATA">%s</xliff:g>."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Storitev Health Connect je odstranila dovoljenja za aplikaciji <xliff:g id="APP_DATA_0">%1$s</xliff:g> in <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>."</string>
@@ -313,28 +319,45 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zakaj Health Connect odstrani dovoljenja za aplikacije"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Če je aplikacija blokirana ali odstranjena iz Googla Play, Health Connect samodejno odstrani njena dovoljenja.\n\nTo pomeni, da aplikacija ne more več dostopati do podatkov, shranjenih v storitvi Health Connect. Če je ta aplikacija pred tem zapisovala podatke, je prikazana na seznamu neaktivnih aplikacij."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Razumem"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Nastavite"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Podatkov ni bilo mogoče izvoziti"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Pri izvozu za <xliff:g id="DATE">%1$s</xliff:g> je prišlo do težave. Nastavite nov izvoz po urniku in poskusite znova."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Naslednji izvoz: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Varnostno kopiranje in obnovitev"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Zadnji izvoz: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Izvoz in uvoz"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"Samodejni izvoz"</string>
-    <string name="restore_data" msgid="3401173690437871417">"Obnovitev podatkov"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"Nalaganje predhodno izvoženih podatkov"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"Načrtovan izvoz"</string>
+    <string name="import_data" msgid="404502315533233094">"Uvozi podatke"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Obnovite podatke iz predhodno izvožene datoteke"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Izvoz vam omogoča, da shranite podatke in jih prenesete v novi telefon"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Več o tem"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Vklopljeno"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Izklopljeno"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"Izbira pogostosti"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"Izbira pogostosti"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"Izberite enkratno shranjevanje podatkov ali samodejno shranjevanje ob rednih urah."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Tedensko"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mesečno"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"Lokacija izvoza"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Vklopite šifriranje"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podatke morate šifrirati, preden jih shranite. Nihče, niti Google ali Health Connect, ne bo imel dostopa do njih."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Ustvarite geslo za zaščito šifriranih podatkov. To geslo boste potrebovali za uvoz in obnovitev podatkov."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Geslo"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovite geslo"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Če pozabite geslo ali izgubite telefon, vam Health Connect ne more pomagati obnoviti shranjenih podatkov."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"Izbira lokacije izvoza"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"Vnos gesla"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Za uvoz podatkov storitve Health Connect je potrebno vaše geslo za šifriranje"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Ali ste pozabili geslo?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"Geslo"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Če še vedno imate stari telefon, lahko podatke znova izvozite z novim geslom"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazaj"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprej"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"Začnite uporabljati Health Connect"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"Prekliči"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"Naprej"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Uvoz iz"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Izbira računa"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Prekliči"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Končano"</string>
+    <string name="onboarding_title" msgid="8550656211291180188">"Začetek uporabe storitve Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect shranjuje vaše podatke o zdravju in telesni pripravljenosti ter vam omogoča, da na preprost način sinhronizirate različne aplikacije v telefonu."</string>
     <string name="share_data" msgid="3481932156368883946">"Deljenje podatkov z aplikacijami"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Izberite, katere podatke lahko aplikacije berejo ali zapisujejo v storitvi Health Connect."</string>
@@ -343,6 +366,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazaj"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Začnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Izbriši podatke"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Odpiranje načina za brisanje"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Zapiranje načina za brisanje"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Izbira podatkov za izbris"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Naprej"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"S tem trajno izbrišete vse podatke, dodane v Health Connect v izbranem obdobju."</string>
@@ -401,6 +426,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 km/h}one{# km/h}two{# km/h}few{# km/h}other{# km/h}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 milja na uro}one{# milja na uro}two{# milji na uro}few{# milje na uro}other{# milj na uro}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 kilometer na uro}one{# kilometer na uro}two{# kilometra na uro}few{# kilometri na uro}other{# kilometrov na uro}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> min/miljo"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> min/km"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> min na miljo"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> min na kilometer"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 jrd"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> min/100 m"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> min na 100 jardov"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> min na 100 metrov"</string>
     <string name="time_range_long" msgid="5067423945245490288">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"od <xliff:g id="START_TIME">%1$s</xliff:g> do <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1 potisk invalidskega vozička}one{# potisk invalidskega vozička}two{# potiska invalidskega vozička}few{# potiski invalidskega vozička}other{# potiskov invalidskega vozička}}"</string>
@@ -426,11 +459,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"Nedoločljivo"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ms}one{# ms}two{# ms}few{# ms}other{# ms}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 milisekunda}one{# milisekunda}two{# milisekundi}few{# milisekunde}other{# milisekund}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"Opombe"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1-krat}one{#-krat}two{#-krat}few{#-krat}other{#-krat}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"Kalorije med dejavnostjo: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"Skupno: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"Čim več ponovitev"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"Stopnja naprezanja: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ponovitev}one{# ponovitev}two{# ponovitvi}few{# ponovitve}other{# ponovitev}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ponovitev}one{# ponovitev}two{# ponovitvi}few{# ponovitve}other{# ponovitev}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"Vadbeni segmenti"</string>
@@ -792,10 +827,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"Dovoli vse poti"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"Ne dovoli"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"Vedno dovoli"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"Deljenje vadbenih poti"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"Nadzorujte, kako ta aplikacija dostopa do vadbenih poti iz povezanih aplikacij"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"Dostop do vadbenih poti"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"Dovolite, da aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> dostopa do poti"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"Vedno vprašaj"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"Ne dovoli"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"Ne dovoli"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Želite omogočiti obe vrsti podatkov?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Želite onemogočiti obe vrsti podatkov?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"Za omogočanje vadbenih poti potrebuje aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> dostop za branje vadbe"</string>
@@ -888,5 +923,13 @@
     <string name="tab_entries" msgid="3402700951602029493">"Vnosi"</string>
     <string name="tab_access" msgid="7818197975407243701">"Dostop"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"Želite dovoliti dodaten dostop za aplikacijo <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
-    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi dostopati tudi do teh nastavitev aplikacije Health Connect"</string>
+    <string name="request_additional_permissions_description" msgid="4179425089090269042">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> želi dostopati tudi do teh nastavitev za Health Connect"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogočite vsaj eno dovoljenje za branje, če želite za to aplikacijo vklopiti dostop iz ozadja ali dostop do preteklih podatkov"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogočite vsaj eno dovoljenje za branje, če želite za to aplikacijo vklopiti dostop iz ozadja"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogočite vsaj eno dovoljenje za branje, če želite za to aplikacijo vklopiti dostop do preteklih podatkov"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Želite trajno izbrisati vse podatke iz storitve Health Connect?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Želite izbrane podatke trajno izbrisati iz storitve Health Connect?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Vsi podatki so bili izbrisani"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Podatki za »<xliff:g id="PERMISSION_TYPE">%s</xliff:g>« so bili izbrisani"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Št. izbrisanih elementov: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
 </resources>

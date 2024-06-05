@@ -17,6 +17,7 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
+import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
 import static android.health.connect.Constants.DELETE;
 import static android.health.connect.Constants.UPSERT;
 
@@ -29,6 +30,8 @@ import static com.android.server.healthconnect.storage.utils.StorageUtils.getCur
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
 import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
+import static java.lang.Integer.min;
+
 import android.annotation.NonNull;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -39,6 +42,7 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.util.ArrayMap;
 import android.util.Pair;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -65,9 +69,9 @@ import java.util.stream.Collectors;
 public final class ChangeLogsHelper extends DatabaseHelper {
     public static final String TABLE_NAME = "change_logs_table";
     private static final String RECORD_TYPE_COLUMN_NAME = "record_type";
-    private static final String APP_ID_COLUMN_NAME = "app_id";
-    private static final String UUIDS_COLUMN_NAME = "uuids";
-    private static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
+    @VisibleForTesting public static final String APP_ID_COLUMN_NAME = "app_id";
+    @VisibleForTesting public static final String UUIDS_COLUMN_NAME = "uuids";
+    @VisibleForTesting public static final String OPERATION_TYPE_COLUMN_NAME = "operation_type";
     private static final String TIME_COLUMN_NAME = "time";
     private static final int NUM_COLS = 5;
 
@@ -86,6 +90,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
+    @Override
     @NonNull
     public CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
@@ -170,7 +175,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
     }
 
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
         columnInfo.add(new Pair<>(RECORD_TYPE_COLUMN_NAME, INTEGER));
@@ -223,26 +228,7 @@ public final class ChangeLogsHelper extends DatabaseHelper {
         private final Map<RecordTypeAndAppIdPair, List<UUID>> mRecordTypeAndAppIdToUUIDMap =
                 new ArrayMap<>();
         @OperationType.OperationTypes private final int mOperationType;
-        private final String mPackageName;
         private final long mChangeLogTimeStamp;
-
-        /**
-         * Creates a change logs object used to add a new change log for {@code operationType} for
-         * {@code packageName} logged at time {@code timeStamp }
-         *
-         * @param operationType Type of the operation for which change log is added whether insert
-         *     or delete.
-         * @param packageName Package name of the records for which change log is added.
-         * @param timeStamp Time when the change log is added.
-         */
-        public ChangeLogs(
-                @OperationType.OperationTypes int operationType,
-                @NonNull String packageName,
-                long timeStamp) {
-            mOperationType = operationType;
-            mPackageName = packageName;
-            mChangeLogTimeStamp = timeStamp;
-        }
 
         /**
          * Creates a change logs object used to add a new change log for {@code operationType}
@@ -252,14 +238,12 @@ public final class ChangeLogsHelper extends DatabaseHelper {
          *     or delete.
          * @param timeStamp Time when the change log is added.
          */
-        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         public ChangeLogs(@OperationType.OperationTypes int operationType, long timeStamp) {
             mOperationType = operationType;
             mChangeLogTimeStamp = timeStamp;
-            mPackageName = null;
         }
 
-        public Map<Integer, List<UUID>> getRecordTypeToUUIDMap() {
+        private Map<Integer, List<UUID>> getRecordTypeToUUIDMap() {
             Map<Integer, List<UUID>> recordTypeToUUIDMap = new ArrayMap<>();
             mRecordTypeAndAppIdToUUIDMap.forEach(
                     (recordTypeAndAppIdPair, uuids) -> {
@@ -302,21 +286,26 @@ public final class ChangeLogsHelper extends DatabaseHelper {
          *     mRecordTypeAndAppIdPairToUUIDMap}
          */
         public List<UpsertTableRequest> getUpsertTableRequests() {
-            Objects.requireNonNull(mPackageName);
-
             List<UpsertTableRequest> requests =
                     new ArrayList<>(mRecordTypeAndAppIdToUUIDMap.size());
             mRecordTypeAndAppIdToUUIDMap.forEach(
                     (recordTypeAndAppIdPair, uuids) -> {
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put(
-                                RECORD_TYPE_COLUMN_NAME, recordTypeAndAppIdPair.getRecordType());
-                        contentValues.put(APP_ID_COLUMN_NAME, recordTypeAndAppIdPair.getAppId());
-                        contentValues.put(OPERATION_TYPE_COLUMN_NAME, mOperationType);
-                        contentValues.put(TIME_COLUMN_NAME, mChangeLogTimeStamp);
-                        contentValues.put(
-                                UUIDS_COLUMN_NAME, StorageUtils.getSingleByteArray(uuids));
-                        requests.add(new UpsertTableRequest(TABLE_NAME, contentValues));
+                        for (int i = 0; i < uuids.size(); i += DEFAULT_PAGE_SIZE) {
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(
+                                    RECORD_TYPE_COLUMN_NAME,
+                                    recordTypeAndAppIdPair.getRecordType());
+                            contentValues.put(
+                                    APP_ID_COLUMN_NAME, recordTypeAndAppIdPair.getAppId());
+                            contentValues.put(OPERATION_TYPE_COLUMN_NAME, mOperationType);
+                            contentValues.put(TIME_COLUMN_NAME, mChangeLogTimeStamp);
+                            contentValues.put(
+                                    UUIDS_COLUMN_NAME,
+                                    StorageUtils.getSingleByteArray(
+                                            uuids.subList(
+                                                    i, min(i + DEFAULT_PAGE_SIZE, uuids.size()))));
+                            requests.add(new UpsertTableRequest(TABLE_NAME, contentValues));
+                        }
                     });
             return requests;
         }

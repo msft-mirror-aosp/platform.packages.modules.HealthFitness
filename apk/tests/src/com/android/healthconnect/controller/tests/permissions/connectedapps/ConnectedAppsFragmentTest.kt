@@ -15,6 +15,7 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
+import android.content.Intent
 import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
@@ -56,6 +57,7 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.AppStoreUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.NavigationUtils
@@ -77,7 +79,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
@@ -103,7 +104,6 @@ class ConnectedAppsFragmentTest {
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
         hiltRule.inject()
         whenever(viewModel.disconnectAllState).then { MutableLiveData(NotStarted) }
         whenever(viewModel.alertDialogActive).then { MutableLiveData(false) }

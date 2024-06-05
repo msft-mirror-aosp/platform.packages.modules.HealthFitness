@@ -47,6 +47,8 @@ import android.health.connect.datatypes.Metadata
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
+import android.health.connect.datatypes.PlannedExerciseBlock
+import android.health.connect.datatypes.PlannedExerciseSessionRecord
 import android.health.connect.datatypes.PowerRecord
 import android.health.connect.datatypes.PowerRecord.PowerRecordSample
 import android.health.connect.datatypes.Record
@@ -168,7 +170,6 @@ class InsertOrUpdateRecords {
             mFieldNameToFieldInput: HashMap<String, InputFieldView>,
             metaData: Metadata,
         ): Record {
-
             val record: Record
             when (recordClass) {
                 StepsRecord::class -> {
@@ -575,6 +576,33 @@ class InsertOrUpdateRecords {
                                     setLaps(
                                         mFieldNameToFieldInput["mLaps"]?.getFieldValue()
                                             as List<ExerciseLap>)
+                                }
+                            }
+                            .build()
+                }
+                PlannedExerciseSessionRecord::class -> {
+                    val startTime = mFieldNameToFieldInput["startTime"]?.getFieldValue() as Instant
+                    record =
+                        PlannedExerciseSessionRecord.Builder(
+                                metaData,
+                                mFieldNameToFieldInput["mPlannedExerciseType"]
+                                    ?.getFieldValue()
+                                    .toString()
+                                    .toInt(),
+                                startTime,
+                                mFieldNameToFieldInput["endTime"]?.getFieldValue() as Instant,
+                            )
+                            .apply {
+                                if (!mFieldNameToFieldInput["mNotes"]!!.isEmpty()) {
+                                    setNotes(getStringValue(mFieldNameToFieldInput, "mNotes"))
+                                }
+                                if (!mFieldNameToFieldInput["mTitle"]!!.isEmpty()) {
+                                    setTitle(getStringValue(mFieldNameToFieldInput, "mTitle"))
+                                }
+                                if (!mFieldNameToFieldInput["mBlocks"]!!.isEmpty()) {
+                                    setBlocks(
+                                        mFieldNameToFieldInput["mBlocks"]?.getFieldValue()
+                                            as List<PlannedExerciseBlock>)
                                 }
                             }
                             .build()

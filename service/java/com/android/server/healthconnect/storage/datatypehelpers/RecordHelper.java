@@ -58,7 +58,6 @@ import androidx.annotation.Nullable;
 
 import com.android.server.healthconnect.storage.request.AggregateParams;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
-import com.android.server.healthconnect.storage.request.AlterTableRequest;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
@@ -106,13 +105,15 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     }
 
     public DeleteTableRequest getDeleteRequestForAutoDelete(int recordAutoDeletePeriodInDays) {
-        return new DeleteTableRequest(getMainTableName())
+        return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
                 .setTimeFilter(
                         getStartTimeColumnName(),
                         Instant.EPOCH.toEpochMilli(),
                         Instant.now()
                                 .minus(recordAutoDeletePeriodInDays, ChronoUnit.DAYS)
-                                .toEpochMilli());
+                                .toEpochMilli())
+                .setPackageFilter(APP_INFO_ID_COLUMN_NAME, List.of())
+                .setRequiresUuId(UUID_COLUMN_NAME);
     }
 
     /** Database migration. Introduces automatic local time generation. */
@@ -166,10 +167,11 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         whereClauses.addNestedWhereClauses(
                 getFilterByStartAccessDateWhereClauses(
                         appInfoHelper.getAppInfoId(callingPackage), startDateAccess));
-        // start/end time filter
+        // data start time < filter end time
         whereClauses.addWhereLessThanClause(startTimeColumnName, endTime);
         if (endTimeColumnName != null) {
             // for IntervalRecord, filters by overlapping
+            // data end time >= filter start time
             whereClauses.addWhereGreaterThanOrEqualClause(endTimeColumnName, startTime);
         } else {
             // for InstantRecord, filters by whether time falls into [startTime, endTime)
@@ -240,7 +242,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
     @SuppressWarnings("unchecked")
     public UpsertTableRequest getUpsertTableRequest(
             RecordInternal<?> recordInternal,
-            ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToStateMap) {
         ContentValues upsertValues = getContentValues((T) recordInternal);
         updateUpsertValuesIfRequired(upsertValues, extraWritePermissionToStateMap);
         UpsertTableRequest upsertTableRequest =
@@ -298,7 +300,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * during updates to determine which child rows should be deleted.
      */
     public List<TableColumnPair> getChildTablesWithRowsToBeDeletedDuringUpdate(
-            ArrayMap<String, Boolean> extraWritePermissionToState) {
+            @Nullable ArrayMap<String, Boolean> extraWritePermissionToState) {
         return getAllChildTables().stream().map(it -> new TableColumnPair(it, PARENT_KEY)).toList();
     }
 
@@ -314,22 +316,6 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     @NonNull
     protected List<CreateTableRequest.GeneratedColumnInfo> getGeneratedColumnInfo() {
-        return Collections.emptyList();
-    }
-
-    /**
-     * SQLite only permits FK constraints to be added at column creation time. This poses a problem
-     * however, as depending on the order (undefined) in which we ask record helpers to create their
-     * tables, the referenced column may not exist. The solution is to add columns with a FK in a
-     * separate step, after main table creation.
-     *
-     * <p>As a concrete example, the {@link
-     * android.health.connect.datatypes.PlannedExerciseSessionRecord} data type has references to
-     * exercise sessions, and thus necessitates a foreign key constraint to the ID column of the
-     * exercise session table.
-     */
-    @NonNull
-    public List<AlterTableRequest> getColumnsToCreateWithForeignKeyConstraints() {
         return Collections.emptyList();
     }
 
@@ -404,7 +390,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 .setWhereClause(
                         new WhereClauses(AND)
                                 .addWhereInClauseWithoutQuotes(
-                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexString(uuids))
+                                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids))
                                 .addWhereLaterThanTimeClause(
                                         getStartTimeColumnName(), startDateAccess))
                 .setRecordHelper(this)
@@ -616,7 +602,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     public DeleteTableRequest getDeleteTableRequest(List<UUID> ids) {
         return new DeleteTableRequest(getMainTableName(), getRecordIdentifier())
-                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids))
+                .setIds(UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids))
                 .setRequiresUuId(UUID_COLUMN_NAME)
                 .setEnforcePackageCheck(APP_INFO_ID_COLUMN_NAME, UUID_COLUMN_NAME);
     }
@@ -653,7 +639,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
 
     /** Returns the table name to be created corresponding to this helper */
     @NonNull
-    abstract String getMainTableName();
+    public abstract String getMainTableName();
 
     /** Returns the information required to perform aggregate operation. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
@@ -778,7 +764,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
         WhereClauses filterByIdsWhereClauses =
                 new WhereClauses(AND)
                         .addWhereInClauseWithoutQuotes(
-                                UUID_COLUMN_NAME, StorageUtils.getListOfHexString(ids));
+                                UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(ids));
 
         if (enforceSelfRead) {
             if (callingAppInfoId == DEFAULT_LONG) {
@@ -897,6 +883,35 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
      * Returns any SQL commands that should be executed after the provided record has been upserted.
      */
     List<String> getPostUpsertCommands(RecordInternal<?> record) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * When a record is deleted, this will be called. The read requests must return a cursor with
+     * {@link #UUID_COLUMN_NAME} and {@link #APP_INFO_ID_COLUMN_NAME} values. This information will
+     * be used to generate modification changelogs for each UUID.
+     *
+     * <p>A concrete example of when this is used is for training plans. The deletion of a training
+     * plan will nullify the 'plannedExerciseSessionId' field of any exercise sessions that
+     * referenced it. When a training plan is deleted, a read request is made on the exercise
+     * session table to find any exercise sessions that referenced it.
+     */
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByDeletion(
+            UUID deletedRecordUuid) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * When a record is upserted, this will be called. The read requests must return a cursor with a
+     * {@link #UUID_COLUMN_NAME} and {@link #APP_INFO_ID_COLUMN_NAME} values. This information will
+     * be used to generate modification changelogs for each UUID.
+     *
+     * <p>A concrete example of when this is used is for training plans. The upsertion of an
+     * exercise session may modify the 'completedSessionId' field of any planned sessions that
+     * referenced it.
+     */
+    public List<ReadTableRequest> getReadRequestsForRecordsModifiedByUpsertion(
+            UUID upsertedRecordId, UpsertTableRequest upsertTableRequest) {
         return Collections.emptyList();
     }
 

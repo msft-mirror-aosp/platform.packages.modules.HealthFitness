@@ -57,7 +57,8 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setupLogger()
         super.onCreate(savedInstanceState)
-        val appBarLayout = requireActivity().findViewById<AppBarLayout>(R.id.app_bar)
+        val appBarLayout = requireActivity().findViewById<AppBarLayout>(
+            com.android.settingslib.collapsingtoolbar.R.id.app_bar)
         appBarLayout?.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
         appBarLayout?.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_FOCUSED)
     }
@@ -72,7 +73,7 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         logger.setPageId(pageName)
         val rootView =
             inflater.inflate(R.layout.preference_frame, container, /*attachToRoot */ false)
@@ -96,7 +97,7 @@ abstract class HealthPreferenceFragment : PreferenceFragmentCompat() {
         preferenceManager.preferenceComparisonCallback = HealthPreferenceComparisonCallback()
     }
 
-    override fun onCreateAdapter(preferenceScreen: PreferenceScreen?): RecyclerView.Adapter<*> {
+    override fun onCreateAdapter(preferenceScreen: PreferenceScreen): RecyclerView.Adapter<*> {
         val adapter = super.onCreateAdapter(preferenceScreen)
         /* By default, the PreferenceGroupAdapter does setHasStableIds(true). Since each Preference
          * is internally allocated with an auto-incremented ID, it does not allow us to gracefully

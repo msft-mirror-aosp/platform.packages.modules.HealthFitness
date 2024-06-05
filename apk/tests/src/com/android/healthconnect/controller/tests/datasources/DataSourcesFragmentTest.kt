@@ -756,7 +756,7 @@ class DataSourcesFragmentTest {
                             hasDescendant(withText(TEST_APP_NAME_2)),
                             hasDescendant(withTagValue(`is`("edit_mode")))))))
 
-        onView(withId(R.id.spinner)).perform(click())
+        onView(withId(com.android.settingslib.widget.spinner.R.id.spinner)).perform(click())
         onView(withText("Sleep")).perform(click())
 
         onView(withId(R.id.linear_layout_recycle_view))

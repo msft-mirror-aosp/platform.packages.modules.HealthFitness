@@ -16,30 +16,29 @@
 package com.android.healthconnect.controller.tests.dataentries.formatters
 
 import android.content.Context
-import android.health.connect.datatypes.DataOrigin
 import android.health.connect.datatypes.ExerciseCompletionGoal
 import android.health.connect.datatypes.ExercisePerformanceGoal
 import android.health.connect.datatypes.ExerciseSegmentType
-import android.health.connect.datatypes.ExerciseSessionType
-import android.health.connect.datatypes.Metadata
-import android.health.connect.datatypes.PlannedExerciseBlock
-import android.health.connect.datatypes.PlannedExerciseSessionRecord
-import android.health.connect.datatypes.PlannedExerciseStep
 import android.health.connect.datatypes.units.Length
 import android.health.connect.datatypes.units.Velocity
 import androidx.test.platform.app.InstrumentationRegistry
-import com.android.healthconnect.controller.data.entries.FormattedEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ExercisePerformanceGoalEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.FormattedSectionContent
+import com.android.healthconnect.controller.data.entries.FormattedEntry.ItemDataEntrySeparator
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseBlockEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.PlannedExerciseStepEntry
+import com.android.healthconnect.controller.data.entries.FormattedEntry.SessionHeader
 import com.android.healthconnect.controller.dataentries.formatters.PlannedExerciseSessionRecordFormatter
-import com.android.healthconnect.controller.tests.utils.START_TIME
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseBlock
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseSessionRecord
+import com.android.healthconnect.controller.tests.utils.getPlannedExerciseStep
 import com.android.healthconnect.controller.tests.utils.setLocale
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.Locale
 import java.util.TimeZone
-import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -80,8 +79,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(15.0)))))),
+                                            Velocity.fromMetersPerSecond(15.0),
+                                            Velocity.fromMetersPerSecond(25.0)))))),
                 getPlannedExerciseBlock(
                     repetitions = 1,
                     description = "Main set",
@@ -96,8 +95,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(50.0),
-                                            Velocity.fromMetersPerSecond(25.0)))))))
+                                            Velocity.fromMetersPerSecond(25.0),
+                                            Velocity.fromMetersPerSecond(50.0)))))))
 
         assertThat(
                 formatter.formatTitle(
@@ -124,8 +123,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                 listOf(
                                     ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(25.0),
-                                        Velocity.fromMetersPerSecond(15.0))))))
+                                        Velocity.fromMetersPerSecond(15.0),
+                                        Velocity.fromMetersPerSecond(25.0))))))
         val exerciseBlock2 =
             getPlannedExerciseBlock(
                 repetitions = 1,
@@ -140,8 +139,8 @@ class PlannedExerciseSessionRecordFormatterTest {
                                 listOf(
                                     ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                     ExercisePerformanceGoal.SpeedGoal(
-                                        Velocity.fromMetersPerSecond(50.0),
-                                        Velocity.fromMetersPerSecond(25.0))))))
+                                        Velocity.fromMetersPerSecond(25.0),
+                                        Velocity.fromMetersPerSecond(50.0))))))
         val exerciseBlocks = listOf(exerciseBlock1, exerciseBlock2)
 
         assertThat(
@@ -152,9 +151,15 @@ class PlannedExerciseSessionRecordFormatterTest {
                         exerciseBlocks = exerciseBlocks)))
             .isEqualTo(
                 listOf(
-                    FormattedEntry.PlannedExerciseBlockEntry(
-                        block = exerciseBlock1, title = "Warm up x1", titleA11y = "Warm up 1 time"),
-                    FormattedEntry.PlannedExerciseStepEntry(
+                    ItemDataEntrySeparator(),
+                    SessionHeader("Notes"),
+                    FormattedSectionContent("Morning quick run by the park"),
+                    ItemDataEntrySeparator(),
+                    PlannedExerciseBlockEntry(
+                        block = exerciseBlock1,
+                        title = "Warm up: 1 time",
+                        titleA11y = "Warm up 1 time"),
+                    PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
                                 exerciseSegmentType =
@@ -165,15 +170,27 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(100, 150),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(25.0),
-                                            Velocity.fromMetersPerSecond(15.0)))),
+                                            Velocity.fromMetersPerSecond(15.0),
+                                            Velocity.fromMetersPerSecond(25.0)))),
                         title = "1 km Running",
                         titleA11y = "1 kilometre Running"),
-                    FormattedEntry.PlannedExerciseBlockEntry(
+                    ExercisePerformanceGoalEntry(
+                        goal = ExercisePerformanceGoal.HeartRateGoal(100, 150),
+                        title = "100 bpm - 150 bpm",
+                        titleA11y = "100 beats per minute - 150 beats per minute"),
+                    ExercisePerformanceGoalEntry(
+                        goal =
+                            ExercisePerformanceGoal.SpeedGoal(
+                                Velocity.fromMetersPerSecond(15.0),
+                                Velocity.fromMetersPerSecond(25.0)),
+                        title = "00:40 min/km - 01:06 min/km",
+                        titleA11y = "00:40 minute per kilometre - 01:06 minute per kilometre"),
+                    ItemDataEntrySeparator(),
+                    PlannedExerciseBlockEntry(
                         block = exerciseBlock2,
-                        title = "Main set x1",
+                        title = "Main set: 1 time",
                         titleA11y = "Main set 1 time"),
-                    FormattedEntry.PlannedExerciseStepEntry(
+                    PlannedExerciseStepEntry(
                         step =
                             getPlannedExerciseStep(
                                 exerciseSegmentType =
@@ -184,66 +201,22 @@ class PlannedExerciseSessionRecordFormatterTest {
                                     listOf(
                                         ExercisePerformanceGoal.HeartRateGoal(150, 180),
                                         ExercisePerformanceGoal.SpeedGoal(
-                                            Velocity.fromMetersPerSecond(50.0),
-                                            Velocity.fromMetersPerSecond(25.0)))),
+                                            Velocity.fromMetersPerSecond(25.0),
+                                            Velocity.fromMetersPerSecond(50.0)))),
                         title = "4 km Running",
-                        titleA11y = "4 kilometres Running")))
-    }
-
-    private fun getPlannedExerciseSessionRecord(
-        title: String,
-        note: String,
-        exerciseBlocks: List<PlannedExerciseBlock>
-    ): PlannedExerciseSessionRecord {
-        return basePlannedExerciseSession(ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
-            .setTitle(title)
-            .setNotes(note)
-            .setBlocks(exerciseBlocks)
-            .build()
-    }
-
-    private fun basePlannedExerciseSession(
-        exerciseType: Int
-    ): PlannedExerciseSessionRecord.Builder {
-        val builder: PlannedExerciseSessionRecord.Builder =
-            PlannedExerciseSessionRecord.Builder(
-                buildMetadata(null), exerciseType, START_TIME, START_TIME.plusSeconds(3600))
-        builder.setNotes("Sample training plan notes")
-        builder.setTitle("Training plan title")
-        builder.setStartZoneOffset(ZoneOffset.UTC)
-        builder.setEndZoneOffset(ZoneOffset.UTC)
-        return builder
-    }
-
-    private fun buildMetadata(clientRecordId: String? = null): Metadata {
-        return Metadata.Builder()
-            .setDataOrigin(
-                DataOrigin.Builder().setPackageName("android.healthconnect.platform").build())
-            .setId(UUID.randomUUID().toString())
-            .setClientRecordId(clientRecordId)
-            .setRecordingMethod(Metadata.RECORDING_METHOD_ACTIVELY_RECORDED)
-            .build()
-    }
-
-    private fun getPlannedExerciseBlock(
-        repetitions: Int,
-        description: String,
-        exerciseSteps: List<PlannedExerciseStep>
-    ): PlannedExerciseBlock {
-        return PlannedExerciseBlock.Builder(repetitions)
-            .setDescription(description)
-            .setSteps(exerciseSteps)
-            .build()
-    }
-
-    private fun getPlannedExerciseStep(
-        exerciseSegmentType: Int,
-        completionGoal: ExerciseCompletionGoal,
-        performanceGoals: List<ExercisePerformanceGoal>
-    ): PlannedExerciseStep {
-        return PlannedExerciseStep.Builder(
-                exerciseSegmentType, PlannedExerciseStep.EXERCISE_CATEGORY_ACTIVE, completionGoal)
-            .setPerformanceGoals(performanceGoals)
-            .build()
+                        titleA11y = "4 kilometres Running"),
+                    ExercisePerformanceGoalEntry(
+                        goal = ExercisePerformanceGoal.HeartRateGoal(150, 180),
+                        title = "150 bpm - 180 bpm",
+                        titleA11y = "150 beats per minute - 180 beats per minute"),
+                    ExercisePerformanceGoalEntry(
+                        goal =
+                            ExercisePerformanceGoal.SpeedGoal(
+                                Velocity.fromMetersPerSecond(25.0),
+                                Velocity.fromMetersPerSecond(50.0)),
+                        title = "00:20 min/km - 00:40 min/km",
+                        titleA11y = "00:20 minute per kilometre - 00:40 minute per kilometre"),
+                    ItemDataEntrySeparator()),
+            )
     }
 }

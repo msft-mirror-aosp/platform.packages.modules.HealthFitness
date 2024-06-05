@@ -488,7 +488,7 @@ class RouteRequestActivityTest {
         verify(healthConnectLogger)
             .logInteraction(MigrationElement.MIGRATION_IN_PROGRESS_DIALOG_BUTTON)
 
-        // Needed to makes sure activity has finished
+        // Needed to make sure activity is destroyed
         Thread.sleep(2_000)
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }
@@ -535,7 +535,7 @@ class RouteRequestActivityTest {
         verify(healthConnectLogger)
             .logInteraction(DataRestoreElement.RESTORE_IN_PROGRESS_DIALOG_BUTTON)
 
-        // Needed to makes sure activity has finished
+        // Needed to make sure activity is destroyed
         Thread.sleep(2_000)
         assertEquals(Lifecycle.State.DESTROYED, scenario.state)
     }

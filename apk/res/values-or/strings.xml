@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"କୌଣସି ଡାଟା ନାହିଁ"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"ଆପ ଅନୁମତିଗୁଡ଼ିକ"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"ଆପଣଙ୍କ ଆପ୍ସ ଏବଂ ଅନୁମତିଗୁଡ଼ିକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ଟିରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପର ଆକ୍ସେସ୍ ଅଛି"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>ଟିରୁ <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପ୍ସର ଆକ୍ସେସ ଅଛି"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>ଟି ଆପର ଆକ୍ସେସ ଅଛି"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{1 ଆପର ଆକ୍ସେସ ଅଛି}other{# ଆପ୍ସର ଆକ୍ସେସ ଅଛି}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"କିଛି ନାହିଁ"</string>
     <string name="entry_details_title" msgid="590184849040247850">"ଏଣ୍ଟ୍ରି ବିବରଣୀ"</string>
     <string name="backup_title" msgid="211503191266235085">"ବେକଅପ ନିଅନ୍ତୁ"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"ଲେଖନ୍ତୁ: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"ଅନୁମତିଗୁଡ଼ିକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"ସମୟ: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"ସମୟ: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"କାର୍ଯ୍ୟକଳାପ"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"କାର୍ଯ୍ୟକଳାପ"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"ଶରୀର ପରିମାପ"</string>
@@ -61,7 +63,7 @@
     <string name="browse_data_category" msgid="4813955610391357638">"ଡାଟା ବ୍ରାଉଜ କରନ୍ତୁ"</string>
     <string name="manage_data_section" msgid="5859629270946511903">"ଡାଟାକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
     <string name="export_data_button" msgid="7783329820434117744">"ଡାଟା ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"</string>
-    <string name="delete_all_data_button" msgid="7238755635416521487">"ସମସ୍ତ ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
+    <string name="delete_all_data_button" msgid="7238755635416521487">"ସବୁ ଡାଟା ଡିଲିଟ କରନ୍ତୁ"</string>
     <string name="no_categories" msgid="2636778482437506241">"Health Connectରେ ଆପଣଙ୍କର କୌଣସି ଡାଟା ନାହିଁ"</string>
     <string name="permission_types_title" msgid="7698058200557389436">"ଆପଣଙ୍କ ଡାଟା"</string>
     <string name="app_priority_button" msgid="3126133977893705098">"ଆପ ପ୍ରାଥମିକତା"</string>
@@ -81,16 +83,16 @@
     <string name="permgroupdesc_health" msgid="252080476917407273">"ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
     <string name="permlab_readCaloriesBurned" msgid="8998140381590624692">"ଖର୍ଚ୍ଚ ହୋଇଥିବା କେଲୋରୀର ଡାଟା ପଢ଼"</string>
     <string name="permdesc_readCaloriesBurned" msgid="9012595355389868570">"ଖର୍ଚ୍ଚ ହୋଇଥିବା କେଲୋରୀର ଡାଟା ପଢ଼ିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ"</string>
-    <string name="background_read_title" msgid="5061383169517186234">"ପୃଷ୍ଠପଟରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
-    <string name="background_read_request_title" msgid="8492898140120977977">"ପୃଷ୍ଠପଟରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦେବେ?"</string>
+    <string name="background_read_title" msgid="5061383169517186234">"ବେକଗ୍ରାଉଣ୍ଡରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
+    <string name="background_read_request_title" msgid="8492898140120977977">"ବେକଗ୍ରାଉଣ୍ଡରେ ଥିବା ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦେବେ?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"ଆପଣ ଆପ ବ୍ୟବହାର କରୁନଥିବା ସମୟରେ Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଏହି ଆପକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"ଯଦି ଆପଣ ଅନୁମତି ଦିଅନ୍ତି, ତେବେ ଆପଣ ଆପ ବ୍ୟବହାର କରୁନଥିବା ସମୟରେ ଏହି ଆପ Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିପାରିବ।"</string>
     <string name="historic_access_title" msgid="3584594624937737030">"ଅତୀତର ଡାଟାକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"ଅତୀତର ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦେବେ?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> ପୂର୍ବରୁ ଯୋଗ କରାଯାଇଥିବା Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଏହି ଆପକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"ଅତୀତର Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଏହି ଆପକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"ଅତୀତର ସମସ୍ତ Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିବା ପାଇଁ ଏହି ଆପକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"ଯଦି ଆପଣ ଅନୁମତି ଦିଅନ୍ତି, ତେବେ <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g> ପୂର୍ବରୁ ଯୋଗ କରାଯାଇଥିବା Health Connect ଡାଟାକୁ ଏହି ଆପ ଆକ୍ସେସ କରିପାରିବ।"</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"ଯଦି ଆପଣ ଅନୁମତି ଦିଅନ୍ତି, ତେବେ ଏହି ଆପ ଅତୀତର Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିପାରିବ।"</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"ଯଦି ଆପଣ ଅନୁମତି ଦିଅନ୍ତି, ତେବେ ଏହି ଆପ ଅତୀତର ସମସ୍ତ Health Connect ଡାଟାକୁ ଆକ୍ସେସ କରିପାରିବ।"</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"ଖର୍ଚ୍ଚ ହୋଇଥିବା ସକ୍ରିୟ କେଲୋରୀ"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"ଖର୍ଚ୍ଚ ହୋଇଥିବା ସକ୍ରିୟ କେଲୋରୀ"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"ଖର୍ଚ୍ଚ ହୋଇଥିବା ସକ୍ରିୟ କେଲୋରୀର ଡାଟା ପଢ଼ନ୍ତୁ"</string>
@@ -270,7 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"ଗୋପନୀୟତା ନୀତି"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"ସବୁ ଅନୁମତିକୁ କାଢ଼ି ଦେବେ?"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"ସବୁ କାଢ଼ି ଦିଅନ୍ତୁ"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"<xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କ୍ୟାମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"<xliff:g id="APP_NAME">%1$s</xliff:g>, Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର କେମେରା, ମାଇକ୍ରୋଫୋନ କିମ୍ବା ଲୋକେସନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"<xliff:g id="APP_NAME">%1$s</xliff:g>, ବେକଗ୍ରାଉଣ୍ଡ ଏବଂ ପୂର୍ବର ଡାଟା ସମେତ Health Connectରୁ କୌଣସି ଡାଟାକୁ ଆଉ ପଢ଼ିବା କିମ୍ବା ଲେଖିବା ପାଇଁ ସକ୍ଷମ ହେବ ନାହିଁ।\n\nଏହି ଆପର ଲୋକେସନ, କେମେରା କିମ୍ବା ମାଇକ୍ରୋଫୋନ ପରି ରହିଥିବା ଅନ୍ୟ ଅନୁମତିଗୁଡ଼ିକୁ ଏହା ପ୍ରଭାବିତ କରେ ନାହିଁ।"</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"ଏହା ସହିତ, Health Connectରୁ <xliff:g id="APP_NAME">%1$s</xliff:g> ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"ପରବର୍ତ୍ତୀ ଦିନ"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"ଚୟନିତ ଦିନ"</string>
@@ -292,7 +297,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"ସବୁ କାଢ଼ି ଦିଅନ୍ତୁ"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"ଆପକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
     <string name="see_app_data" msgid="3951030076195119476">"ଆପ ଡାଟା ଦେଖନ୍ତୁ"</string>
-    <string name="delete_app_data" msgid="6890357774873859952">"ଆପ ଡାଟାକୁ ଡିଲିଟ କରିବେ?"</string>
+    <string name="delete_app_data" msgid="6890357774873859952">"ଆପ ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"ନିଷ୍କ୍ରିୟ ଆପ୍ସ"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"ଏହି ଆପ୍ସର ଆଉ ଆକ୍ସେସ ନାହିଁ, କିନ୍ତୁ ଏବେ ବି ଷ୍ଟୋର କରାଯାଇଥିବା ଡାଟା Health Connectରେ ଅଛି"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g> ପରେ ଯୋଗ କରାଯାଇଥିବା ଡାଟାକୁ ପଢ଼ିପାରିବ"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"ଆପ ଆକ୍ସେସ"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ବର୍ତ୍ତମାନ ଆପଣଙ୍କର କୌଣସି କମ୍ପାଟିବଲ ଆପ୍ସ ଇନଷ୍ଟଲ କରାଯାଇନାହିଁ"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"ଅତିରିକ୍ତ ଆକ୍ସେସ"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"ଏହି ଆପ ପାଇଁ ଅତିରିକ୍ତ ଅନୁମତିକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"ଆପ ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦିଆଯାଇଛି"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect <xliff:g id="APP_DATA">%s</xliff:g> ପାଇଁ ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦେଇଛି"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect <xliff:g id="APP_DATA_0">%1$s</xliff:g> ଏବଂ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ପାଇଁ ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦେଇଛି"</string>
@@ -313,28 +319,53 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ଆପ ଅନୁମତିଗୁଡ଼ିକୁ କାହିଁକି କାଢ଼ି ଦିଏ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ଯଦି ଏକ ଆପକୁ Google Playରୁ ସସପେଣ୍ଡ କରାଯାଏ କିମ୍ବା କାଢ଼ି ଦିଆଯାଏ, ତେବେ Health Connect ସ୍ୱଚାଳିତ ଭାବେ ଏହାର ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦିଏ।\n\nଏହାର ଅର୍ଥ ହେଉଛି ଏହି ଆପଟି Health Connectରେ ଷ୍ଟୋର କରାଯାଇଥିବା ଡାଟାକୁ ଆଉ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ। ଯଦି ଏହି ଆପରେ ପୂର୍ବରୁ ଲିଖିତ ଡାଟା ଅଛି, ତେବେ ଏହା ନିଷ୍କ୍ରିୟ ଆପ୍ସ ତାଲିକାରେ ଦେଖାଯାଏ।"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ବୁଝିଗଲି"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ବେକଅପ ନେଇ ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"ଏକ୍ସପୋର୍ଟ ଏବଂ ଇମ୍ପୋର୍ଟ"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"ସ୍ୱତଃ ଏକ୍ସପୋର୍ଟ କରନ୍ତୁ"</string>
-    <string name="restore_data" msgid="3401173690437871417">"ଡାଟା ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଡାଟାକୁ ଲୋଡ କରନ୍ତୁ"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ"</string>
+    <string name="import_data" msgid="404502315533233094">"ଡାଟା ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଏକ ଫାଇଲରୁ ଡାଟା ରିଷ୍ଟୋର କରେ"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ଏକ୍ସପୋର୍ଟ ଆପଣଙ୍କୁ ଆପଣଙ୍କ ଡାଟା ସେଭ କରିବାକୁ ଦିଏ ଯାହା ଫଳରେ ଆପଣ ଏହାକୁ ଏକ ନୂଆ ଫୋନକୁ ଟ୍ରାନ୍ସଫର କରିପାରିବେ"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ଅଧିକ ଜାଣନ୍ତୁ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ଚାଲୁ ଅଛି"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ବନ୍ଦ ଅଛି"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"ବାରମ୍ବାରତା ବାଛନ୍ତୁ"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"ବାରମ୍ବାରତା ବାଛନ୍ତୁ"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"ଥରେ ଡାଟା ସେଭ କରିବାକୁ ବାଛନ୍ତୁ କିମ୍ବା ନିୟମିତ ସମୟରେ ସ୍ୱତଃ ସେଭ କରିବାକୁ ଏହାକୁ ସେଟ କରନ୍ତୁ।"</string>
     <string name="frequency_daily" msgid="3596412357416125727">"ଦୈନିକ"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ସାପ୍ତାହିକ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ମାସିକ"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଡାଟାର ଲୋକେସନ"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"ଏନକ୍ରିପସନ୍ ଚାଲୁ କରନ୍ତୁ"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ଡାଟା ସେଭ ହେବା ପୂର୍ବରୁ ଏହାକୁ ଏନକ୍ରିପ୍ଟ କରାଯିବା ଆବଶ୍ୟକ। Google କିମ୍ବା Health Connect ସମେତ କେହି ବି ଏହାକୁ ଆକ୍ସେସ କରିବାକୁ ସକ୍ଷମ ହେବେ ନାହିଁ।"</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ଆପଣଙ୍କ ଏନକ୍ରିପ୍ଟ କରାଯାଇଥିବା ଡାଟାକୁ ସୁରକ୍ଷିତ ରଖିବା ପାଇଁ ଏକ ପାସୱାର୍ଡ ତିଆରି କରନ୍ତୁ। ଆପଣଙ୍କ ଡାଟା ଇମ୍ପୋର୍ଟ କରି ରିଷ୍ଟୋର କରିବା ପାଇଁ ଆପଣ ଏହି ପାସୱାର୍ଡ ଅବଶ୍ୟକ କରିବେ।"</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"ପାସୱାର୍ଡ"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ପାସୱାର୍ଡ ରିପିଟ କରନ୍ତୁ"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"ଯଦି ଆପଣ ଆପଣଙ୍କ ପାସୱାର୍ଡକୁ ଭୁଲି ଯାଆନ୍ତି ଏବଂ ଆପଣଙ୍କ ଫୋନକୁ ହରାନ୍ତି, Health Connect ଆପଣଙ୍କୁ ଆପଣଙ୍କର ସେଭ ହୋଇଥିବା ଡାଟାକୁ ରିକଭର କରିବାରେ ସାହାଯ୍ୟ କରିପାରିବ ନାହିଁ।"</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"କେଉଁଠିକୁ ଏକ୍ସପୋର୍ଟ କରିବେ ତାହା ବାଛନ୍ତୁ"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"ପାସୱାର୍ଡ ଟାଇପ କରନ୍ତୁ"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"ଆପଣଙ୍କ Health Connect ଡାଟାକୁ ଇମ୍ପୋର୍ଟ କରିବା ପାଇଁ ଆପଣଙ୍କର ଏନକ୍ରିପସନ ପାସୱାର୍ଡ ଆବଶ୍ୟକ"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"ପାସୱାର୍ଡ"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"ଯଦି ଆପଣଙ୍କ ପାଖରେ ଏବେ ବି ଆପଣଙ୍କର ପୁରୁଣା ଫୋନ ଅଛି, ତେବେ ଆପଣ ଏକ ନୂଆ ପାସୱାର୍ଡ ସହିତ ଆପଣଙ୍କ ଡାଟାକୁ ପୁଣି-ଏକ୍ସପୋର୍ଟ କରିପାରିବେ"</string>
     <string name="export_back_button" msgid="3550795479165524982">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ପରବର୍ତ୍ତୀ"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"ବାତିଲ କରନ୍ତୁ"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"ପରବର୍ତ୍ତୀ"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"ଏଠାରୁ ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
+    <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଆପଣଙ୍କ ଫୋନରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
     <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>
     <string name="share_data_description" msgid="2919871301634375092">"ପ୍ରତ୍ୟେକ ଆପ Health Connectରୁ କେଉଁ ଡାଟା ପଢ଼ିପାରିବ କିମ୍ବା ଲେଖିପାରିବ ତାହା ବାଛନ୍ତୁ"</string>
@@ -343,6 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ଡାଟାକୁ ଡିଲିଟ କରନ୍ତୁ"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ଡିଲିସନ ସ୍ଥିତିରେ ପ୍ରବେଶ କରନ୍ତୁ"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ଡିଲିସନ ସ୍ଥିତିରୁ ବାହାରି ଯାଆନ୍ତୁ"</string>
     <string name="time_range_title" msgid="6831605283322600165">"ଡିଲିଟ କରିବାକୁ ଡାଟା ବାଛନ୍ତୁ"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ପରବର୍ତ୍ତୀ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ବଛାଯାଇଥିବା ସମୟ ଅବଧିରେ Health Connectରେ ଯୋଗ କରାଯାଇଥିବା ସମସ୍ତ ଡାଟାକୁ ଏହା ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରେ"</string>
@@ -401,6 +434,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 କିମି/ଘ}other{# କିମି/ଘ}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{ଘଣ୍ଟା ପ୍ରତି 1 ମାଇଲ}other{ଘଣ୍ଟା ପ୍ରତି # ମାଇଲ}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{ଘଣ୍ଟା ପ୍ରତି 1 କିଲୋମିଟର}other{ଘଣ୍ଟା ପ୍ରତି # କିଲୋମିଟର}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ/ମାଇଲ"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ/କିମି"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ ପ୍ରିତି ମାଇଲ"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ ପ୍ରତି କିଲୋମିଟର"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ/100 ଗଜ"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ/100 ମିଟର"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ ପ୍ରତି 100 ଗଜ"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"<xliff:g id="MINUTE">%1$s</xliff:g> ମିନିଟ ପ୍ରତି 100 ମିଟର"</string>
     <string name="time_range_long" msgid="5067423945245490288">"<xliff:g id="START_TIME">%1$s</xliff:g>ରୁ <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"<xliff:g id="START_TIME">%1$s</xliff:g>ରୁ <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{1ଟି ହ୍ୱିଲଚେୟାର ପୁସ}other{#ଟି ହ୍ୱିଲଚେୟାର ପୁସ}}"</string>
@@ -426,11 +467,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"ଅସ୍ପଷ୍ଟ"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ମିଲିସେକେଣ୍ଡ}other{# ମିଲିସେକେଣ୍ଡ}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ମିଲିସେକେଣ୍ଡ}other{# ମିଲିସେକେଣ୍ଡ}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"ନୋଟଗୁଡ଼ିକ"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{1 ଥର}other{# ଥର}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"ସକ୍ରିୟ: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"ମୋଟ: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"ଯଥା ସମ୍ଭବ ଅଧିକ ରିପିଟିସନ"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"ପ୍ରଚେଷ୍ଟା ଲେଭେଲ: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{1 ଥର ରିପିଟିସନ}other{# ଥର ରିପିଟିସନ}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{1 ଥର ରିପିଟିସନ}other{# ଥର ରିପିଟିସନ}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"ବ୍ୟାୟାମର ସେଗମେଣ୍ଟଗୁଡ଼ିକ"</string>
@@ -792,10 +835,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"ସମସ୍ତ ରୁଟକୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ଅନୁମତି ଦିଅନ୍ତୁ ନାହିଁ"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"ସର୍ବଦା ଅନୁମତି ଦିଅନ୍ତୁ"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"ବ୍ୟାୟାମ ରୁଟ ସେୟାର କରିବା"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"କନେକ୍ଟ ହୋଇଥିବା ଆପ୍ସରୁ ଏହି ଆପ ବ୍ୟାୟାମ ରୁଟଗୁଡ଼ିକୁ କିପରି ଆକ୍ସେସ କରିବ ତାହା ନିୟନ୍ତ୍ରଣ କରନ୍ତୁ"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"ବ୍ୟାୟାମ ରୁଟଗୁଡ଼ିକୁ ଆକ୍ସେସ କରନ୍ତୁ"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"ରୁଟଗୁଡ଼ିକୁ ଆକ୍ସେସ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"ପ୍ରତ୍ୟେକ ଥର ପଚାରନ୍ତୁ"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"ଅନୁମତି ଦିଅନ୍ତୁ ନାହିଁ"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"ଅନୁମତି ଦିଅନ୍ତୁ ନାହିଁ"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"ଉଭୟ ଡାଟା ପ୍ରକାରକୁ ସକ୍ଷମ କରିବେ?"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"ଉଭୟ ଡାଟା ପ୍ରକାରକୁ ଅକ୍ଷମ କରିବେ?"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"ବ୍ୟାୟମ ରୁଟଗୁଡ଼ିକୁ ସକ୍ଷମ କରିବା ପାଇଁ <xliff:g id="APP_NAME">%1$s</xliff:g> ବ୍ୟାୟାମ ଡାଟାକୁ ପଢ|‌ଇବା ଆକ୍ସେସ ଆବଶ୍ୟକ କରେ"</string>
@@ -889,4 +932,12 @@
     <string name="tab_access" msgid="7818197975407243701">"ଆକ୍ସେସ କରନ୍ତୁ"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> ପାଇଁ ଅତିରିକ୍ତ ଆକ୍ସେସକୁ ଅନୁମତି ଦେବେ?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ମଧ୍ୟ ଏହି Health Connect ସେଟିଂସକୁ ଆକ୍ସେସ କରିବାକୁ ଚାହେଁ"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"ଏହି ଆପ ପାଇଁ ପୃଷ୍ଠପଟ କିମ୍ବା ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"ଏହି ଆପ ପାଇଁ ପୃଷ୍ଠପଟ ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"ଏହି ଆପ ପାଇଁ ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connectରୁ ସମସ୍ତ ଡାଟାକୁ ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରିବେ?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connectରୁ ଚୟନିତ ଡାଟାକୁ ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରିବେ?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"ସମସ୍ତ ଡାଟା ଡିଲିଟ କରାଯାଇଛି"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ଡାଟା ଡିଲିଟ କରାଯାଇଛି"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ଆଇଟମ ଡିଲିଟ କରାଯାଇଛି"</string>
 </resources>

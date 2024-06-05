@@ -30,6 +30,18 @@
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
+
+    <!--
+    Disable the receiver in tests.
+
+    This receiver listens to ACTION_BOOT_COMPLETED actions and on Android V the system sends
+    ACTION_BOOT_COMPLETED to the test app whenever it gets initialized. The receiver gets triggered
+    before Hilt is able to initialize the dependency injection graph which causes a crash.
+    See https://developer.android.com/partners/google-apps/android-15/changes#enhanced-stop-states.
+    -->
+    <receiver
+        android:name="com.android.healthconnect.controller.safetycenter.SafetySourceBroadcastReceiver"
+        android:enabled="false"/>
   </application>
 
   <queries>

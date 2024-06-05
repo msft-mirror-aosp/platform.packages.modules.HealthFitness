@@ -27,9 +27,11 @@
     <string name="no_data" msgid="1906986019249068659">"ما مِن بيانات"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"أذونات التطبيقات"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"إدارة التطبيقات والأذونات"</string>
+    <string name="only_one_connected_app_button_subtitle" msgid="1429452274331178121">"تم منح الإذن إلى <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> تطبيق"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> من إجمالي <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g>"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"التطبيقات التي تملك الإذن بالوصول: <xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>"</string>
     <string name="connected_apps_one_app_connected_subtitle" msgid="9095815882509754340">"يملك تطبيق واحد (<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g>) الإذن بالوصول"</string>
+    <string name="connected_apps_connected_subtitle" msgid="7412413366085718583">"{count,plural, =1{هناك تطبيق واحد مسموح له بالوصول إلى البيانات}zero{هناك # تطبيق مسموح له بالوصول إلى البيانات}two{هناك تطبيقان مسموح لهما بالوصول إلى البيانات}few{هناك # تطبيقات مسموح لها بالوصول إلى البيانات}many{هناك # تطبيقًا مسموح له بالوصول إلى البيانات}other{هناك # تطبيق مسموح له بالوصول إلى البيانات}}"</string>
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"ما مِن تطبيقات"</string>
     <string name="entry_details_title" msgid="590184849040247850">"تفاصيل الإدخال"</string>
     <string name="backup_title" msgid="211503191266235085">"الاحتفاظ بنسخة احتياطية"</string>
@@ -45,7 +47,7 @@
     <string name="write_data_access_label" msgid="105976369853871061">"الكتابة: <xliff:g id="DATA_TYPE">%s</xliff:g>"</string>
     <string name="data_type_separator" msgid="1299848322898210658">"، "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"إدارة الأذونات"</string>
-    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"الوقت: %s"</string>
+    <string name="recent_access_time_content_descritption" msgid="1137471676075811472">"الوقت: <xliff:g id="RECENT_ACCESS_TIME">%1$s</xliff:g>"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"النشاط"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"النشاط"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"قياسات الجسم"</string>
@@ -84,13 +86,13 @@
     <string name="background_read_title" msgid="5061383169517186234">"الوصول إلى البيانات في الخلفية"</string>
     <string name="background_read_request_title" msgid="8492898140120977977">"هل تريد السماح بوصول \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إلى البيانات في الخلفية؟"</string>
     <string name="background_read_description" msgid="3203594555849969283">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect في حال عدم استخدام التطبيق"</string>
-    <string name="background_read_request_description" msgid="1664402237648709581">"إذا منحت هذا الإذن، فسيُسمح لهذا التطبيق بالوصول إلى بيانات Health Connect في حال عدم استخدام التطبيق."</string>
+    <string name="background_read_request_description" msgid="1664402237648709581">"إذا منحت هذا الإذن، سيتمكّن هذا التطبيق من الوصول إلى بيانات Health Connect حتّى عند عدم استخدامك للتطبيق."</string>
     <string name="historic_access_title" msgid="3584594624937737030">"الوصول إلى البيانات السابقة"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"هل تريد منح \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن الوصول إلى البيانات السابقة؟"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect التي تمت إضافتها قبل ‎<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="2143495641153611603">"السماح لهذا التطبيق بالوصول إلى بيانات Health Connect السابقة"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"السماح لهذا التطبيق بالوصول إلى جميع بيانات Health Connect السابقة"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"إذا منحت هذا الإذن، فسيُسمح لهذا التطبيق بالوصول إلى بيانات Health Connect التي تمت إضافتها قبل ‎<xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
-    <string name="historic_access_request_description_fallback" msgid="7963417900733387912">"إذا منحت هذا الإذن، فسيُسمح لهذا التطبيق بالوصول إلى بيانات Health Connect السابقة."</string>
+    <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"يؤدي منح هذا الإذن إلى السماح للتطبيق بالوصول إلى جميع بيانات Health Connect السابقة."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني"</string>
     <string name="active_calories_burned_lowercase_label" msgid="6743090878253096737">"السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني"</string>
     <string name="active_calories_burned_read_content_description" msgid="6449442660408754186">"قراءة بيانات السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني"</string>
@@ -104,8 +106,8 @@
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"كتابة مسار التمرين الرياضي"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"قراءة مسار التمرين الرياضي"</string>
     <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"قراءة مسارات التمارين الرياضية"</string>
-    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"بيانات خطط التدريب"</string>
-    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"بيانات خطط التدريب"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"الخطط التدريبية"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"الخطط التدريبية"</string>
     <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"قراءة بيانات خطط التدريب"</string>
     <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"كتابة بيانات خطط التدريب"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"المسافة"</string>
@@ -270,7 +272,10 @@
     <string name="request_permissions_privacy_policy" msgid="228503452643555737">"سياسة الخصوصية"</string>
     <string name="permissions_disconnect_dialog_title" msgid="7355211540619034695">"هل تريد إزالة كل الأذونات؟"</string>
     <string name="permissions_disconnect_dialog_disconnect" msgid="8854787587948224752">"إزالة الكل"</string>
-    <string name="permissions_disconnect_dialog_message" msgid="8679363015400954541">"لن يتمكَّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أو كتابة أي بيانات من تطبيق Health Connect.\n\nلا يؤثر هذا الإجراء في الأذونات الأخرى التي قد يمتلكها هذا التطبيق، مثلاً الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
+    <string name="permissions_disconnect_dialog_message" msgid="7961269838207365478">"لم يعد بإمكان \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" تعديل أي بيانات من تطبيق Health Connect أو الاطّلاع عليها.\n\nلا يؤثر هذا الإجراء في الأذونات الأخرى التي قد تُمنح لهذا التطبيق، مثل أذونات الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
+    <string name="permissions_disconnect_dialog_message_background" msgid="8655975996293893596">"لن يتمكّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أي بيانات من تطبيق Health Connect أو كتابتها، بما في ذلك بيانات الخلفية.\n\nولا يؤثِّر هذا الإجراء في الأذونات الأخرى التي قد تُمنَح لهذا التطبيق، مثل الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
+    <string name="permissions_disconnect_dialog_message_history" msgid="3793206180295111081">"لن يتمكّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أي بيانات من تطبيق Health Connect أو كتابتها، بما في ذلك البيانات السابقة.\n\nولا يؤثِّر هذا الإجراء في الأذونات الأخرى التي قد تُمنَح لهذا التطبيق، مثل الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
+    <string name="permissions_disconnect_dialog_message_combined" msgid="4163369526932602203">"لن يتمكّن تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بعد ذلك من قراءة أي بيانات من تطبيق Health Connect أو كتابتها، بما في ذلك بيانات الخلفية أو البيانات السابقة.\n\nولا يؤثِّر هذا الإجراء في الأذونات الأخرى التي قد تُمنَح لهذا التطبيق، مثل الوصول إلى الموقع الجغرافي أو الكاميرا أو الميكروفون."</string>
     <string name="permissions_disconnect_dialog_checkbox" msgid="8646951566431872823">"حذف بيانات تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" أيضًا من Health Connect"</string>
     <string name="navigation_next_day" msgid="8853443471183944219">"اليوم التالي"</string>
     <string name="navigation_selected_day" msgid="2510843479734091348">"اليوم المحدَّد"</string>
@@ -284,7 +289,7 @@
     <string name="settings_and_help_header" msgid="5749710693017621168">"الإعدادات والمساعدة"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"إزالة إمكانية وصول كل التطبيقات للبيانات"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"مسموح للتطبيق بقراءة البيانات التالية:"</string>
-    <string name="manage_permissions_write_header" msgid="6876806848658168370">"مسموح له بكتابة بيانات"</string>
+    <string name="manage_permissions_write_header" msgid="6876806848658168370">"مسموح له بكتابة البيانات التالية:"</string>
     <string name="no_apps_allowed" msgid="5794833581324128108">"لم يتم السماح لأي تطبيقات."</string>
     <string name="no_apps_denied" msgid="743327680286446017">"لم يتم رفض أي تطبيقات"</string>
     <string name="permissions_disconnect_all_dialog_title" msgid="27474286046207122">"هل تريد إزالة إمكانية وصول كل التطبيقات؟"</string>
@@ -296,7 +301,7 @@
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"التطبيقات غير النشطة"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"لن تتمكن هذه التطبيقات من الوصول إلى البيانات بعد ذلك، ولكن لا يزال لديها بيانات مخزَّنة في تطبيق Health Connect."</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"يمكن لتطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" قراءة البيانات التي تمت إضافتها بعد <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
-    <string name="other_android_permissions" msgid="8051485761573324702">"لإدارة أذونات Android الأخرى التي يمكن لهذا التطبيق الوصول إليها، انتقِل إلى الإعدادات &gt; التطبيقات"</string>
+    <string name="other_android_permissions" msgid="8051485761573324702">"لإدارة أذونات Android الأخرى التي يمكن لهذا التطبيق الوصول إليها، انتقِل إلى \"الإعدادات\" &gt; \"التطبيقات\""</string>
     <string name="manage_permissions_rationale" msgid="9183689798847740274">"تخضع البيانات التي تشاركها مع تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" لسياسة الخصوصية التي يُطبِّقها"</string>
     <string name="other_android_permissions_content_description" msgid="2261431010048933820">"لإدارة أذونات Android الأخرى التي يمكن لهذا التطبيق الوصول إليها، انتقِل إلى \"الإعدادات\" ثم انقر على \"التطبيقات\"."</string>
     <string name="manage_permissions_learn_more" msgid="2503189875093300767">"قراءة سياسة الخصوصية"</string>
@@ -304,6 +309,7 @@
     <string name="app_access_title" msgid="7137018424885371763">"إمكانية وصول التطبيق إلى البيانات"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ليس لديك الآن أي تطبيقات متوافقة مثبَّتة"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"إذن الوصول الإضافي"</string>
+    <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"تمت إزالة الأذونات الإضافية لهذا التطبيق"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"أذونات التطبيقات التي تمت إزالتها"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA">%s</xliff:g>\"."</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"أزال تطبيق Health Connect أذونات \"<xliff:g id="APP_DATA_0">%1$s</xliff:g>\" و\"<xliff:g id="APP_DATA_TWO">%2$s</xliff:g>\"."</string>
@@ -313,28 +319,53 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"سبب إزالة تطبيق Health Connect لأذونات التطبيقات"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"في حال تعليق أحد التطبيقات أو إزالته من Google Play، يزيل تطبيق Health Connect تلقائيًا أذونات هذا التطبيق.\n\nويعني هذا أنه لم يُعد بإمكان هذا التطبيق الوصول إلى البيانات المخزَّنة في Health Connect. إذا كتب هذا التطبيق البيانات في وقت سابق، سيظهر في قائمة التطبيقات غير النشطة."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"حسنًا"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"الاحتفاظ بنسخة احتياطية والاستعادة"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"التصدير والاستيراد"</string>
-    <string name="export_automatically" msgid="8820158546399774250">"التصدير التلقائي"</string>
-    <string name="restore_data" msgid="3401173690437871417">"استعادة البيانات"</string>
-    <string name="restore_data_description" msgid="6505730490741240861">"تحميل البيانات التي تم تصديرها سابقًا"</string>
+    <string name="scheduled_export" msgid="8737660963687364370">"عملية التصدير المُجدوَلة"</string>
+    <string name="import_data" msgid="404502315533233094">"استيراد البيانات"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"استعادة البيانات من ملف تم تصديره في السابق"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"تسمح ميزة التصدير بحفظ البيانات حتى تتمكن من نقلها إلى هاتف جديد"</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"مزيد من المعلومات"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"مفعَّل"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"غير مفعَّل"</string>
+    <string name="choose_frequency_category" msgid="2230821549715237663">"اختيار معدّل التكرار"</string>
     <string name="choose_frequency" msgid="1077467424225083246">"اختيار معدّل حفظ البيانات"</string>
     <string name="choose_frequency_description" msgid="752601326653048254">"يمكنك اختيار حفظ البيانات مرة واحدة أو الضبط على حفظها تلقائيًا في أوقات منتظمة."</string>
     <string name="frequency_daily" msgid="3596412357416125727">"يوميًا"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"أسبوعيًا"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"شهريًا"</string>
-    <string name="export_location_title" msgid="9016990510649325641">"مكان البيانات التي يتم تصديرها"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"تفعيل التشفير"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"يجب تشفير البيانات قبل حفظها. لا يمكن لأحد الوصول إلى بياناتك، بما في ذلك Google أو تطبيق Health Connect."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"أنشئ كلمة مرور لحماية بياناتك المشفّرة. ستحتاج إليها عند استيراد بياناتك أو استعادتها."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"أدخِل كلمة المرور"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"أدخِل كلمة المرور مرة أخرى"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"في حال نسيان كلمة المرور وفقدان الهاتف، لا يمكن لتطبيق Health Connect المساعدة في استرداد بياناتك المحفوظة."</string>
+    <string name="export_destination_title" msgid="1434632545224158402">"اختيار مكان التصدير"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
+    <string name="import_decryption_title" msgid="396608799208392844">"اكتب كلمة المرور"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"يجب اختيار كلمة مرور التشفير لاستيراد بيانات تطبيق Health Connect"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"هل نسيت كلمة المرور؟"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"كلمة المرور"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"إذا كان هاتفك القديم لا يزال معك، يمكنك إعادة تصدير بياناتك باستخدام كلمة مرور جديدة"</string>
     <string name="export_back_button" msgid="3550795479165524982">"رجوع"</string>
     <string name="export_next_button" msgid="657930567137105172">"التالي"</string>
-    <string name="onboarding_title" msgid="7930941018430608076">"بدء استخدام Health Connect"</string>
+    <string name="import_cancel_button" msgid="2191598074422096715">"إلغاء"</string>
+    <string name="import_next_button" msgid="5706322508691854289">"التالي"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"الاستيراد من"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
+    <string name="onboarding_title" msgid="8550656211291180188">"بدء استخدام Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"يُخزِّن تطبيق Health Connect بيانات الصحة واللياقة البدنية، ما يمنحك طريقة بسيطة لمزامنة التطبيقات المختلفة على هاتفك."</string>
     <string name="share_data" msgid="3481932156368883946">"مشاركة البيانات مع تطبيقاتك"</string>
     <string name="share_data_description" msgid="2919871301634375092">"اختَر البيانات التي يمكن لكل تطبيق قراءتها من تطبيق Health Connect أو كتابتها فيه."</string>
@@ -343,6 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"الرجوع"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"بدء"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"حذف البيانات"</string>
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"إدخال طلب الحذف"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"إلغاء الحذف"</string>
     <string name="time_range_title" msgid="6831605283322600165">"اختيار البيانات المُراد حذفها"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"التالي"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"يؤدي اختيار فترة زمنية من الفترات أدناه إلى حذف جميع البيانات المُضافة إلى Health Connect نهائيًا خلال تلك الفترة."</string>
@@ -401,6 +434,14 @@
     <string name="velocity_speed_km" msgid="2807705003203399350">"{value,plural, =1{1 كيلومتر/ساعة}zero{# كيلومتر/ساعة}two{# كيلومتر/ساعة}few{# كيلومتر/ساعة}many{# كيلومتر/ساعة}other{# كيلومتر/ساعة}}"</string>
     <string name="velocity_speed_miles_long" msgid="7945167764392834498">"{value,plural, =1{1 ميل في الساعة}zero{# ميل في الساعة}two{# ميل في الساعة}few{# ميل في الساعة}many{# ميل في الساعة}other{# ميل في الساعة}}"</string>
     <string name="velocity_speed_km_long" msgid="3962310367408338322">"{value,plural, =1{1 كيلومتر في الساعة}zero{# كيلومتر في الساعة}two{# كيلومتر في الساعة}few{# كيلومتر في الساعة}many{# كيلومتر في الساعة}other{# كيلومتر في الساعة}}"</string>
+    <string name="velocity_minute_miles" msgid="7700413725988014667">"‫<xliff:g id="MINUTE">%1$s</xliff:g> د/ميل"</string>
+    <string name="velocity_minute_km" msgid="4772380313506015301">"‫<xliff:g id="MINUTE">%1$s</xliff:g> د/كلم"</string>
+    <string name="velocity_minute_miles_long" msgid="6889048307278340076">"‫<xliff:g id="MINUTE">%1$s</xliff:g> دقيقة لكل ميل"</string>
+    <string name="velocity_minute_km_long" msgid="4037299863590066470">"‫<xliff:g id="MINUTE">%1$s</xliff:g> دقيقة لكل كيلومتر"</string>
+    <string name="velocity_minute_per_one_hundred_yards" msgid="647561643828842315">"‫<xliff:g id="MINUTE">%1$s</xliff:g> د/100 ياردة"</string>
+    <string name="velocity_minute_per_one_hundred_meters" msgid="4636956099725561607">"‫<xliff:g id="MINUTE">%1$s</xliff:g> د/100 م"</string>
+    <string name="velocity_minute_per_one_hundred_yards_long" msgid="3005945921657283386">"‫<xliff:g id="MINUTE">%1$s</xliff:g> دقيقة لكل 100 ياردة"</string>
+    <string name="velocity_minute_per_one_hundred_meters_long" msgid="6806485527680697198">"‫<xliff:g id="MINUTE">%1$s</xliff:g> دقيقة لكل 100 متر"</string>
     <string name="time_range_long" msgid="5067423945245490288">"من <xliff:g id="START_TIME">%1$s</xliff:g> إلى <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="date_range_long" msgid="6022190423982451176">"من <xliff:g id="START_TIME">%1$s</xliff:g> إلى <xliff:g id="END_TIME">%2$s</xliff:g>"</string>
     <string name="wheelchair_pushes" msgid="5807293867148465190">"{count,plural, =1{دَفعة واحدة للكرسي المتحرك}zero{# دَفعة للكرسي المتحرك}two{دفعتَان للكرسي المتحرك}few{# دَفعات للكرسي المتحرك}many{# دَفعة للكرسي المتحرك}other{# دَفعة للكرسي المتحرك}}"</string>
@@ -426,11 +467,13 @@
     <string name="ovulation_inconclusive" msgid="3447066667631538756">"غير حاسمة"</string>
     <string name="milliseconds" msgid="284845884516037268">"{count,plural, =1{1 ميلي ثانية}zero{# ميلي ثانية}two{# ميلي ثانية}few{# ميلي ثانية}many{# ميلي ثانية}other{# ميلي ثانية}}"</string>
     <string name="milliseconds_long" msgid="93246373745977286">"{count,plural, =1{1 ميلي ثانية}zero{# ميلي ثانية}two{# ميلي ثانية}few{# ميلي ثانية}many{# ميلي ثانية}other{# ميلي ثانية}}"</string>
+    <string name="planned_exercise_session_notes_title" msgid="5398114870366766242">"ملاحظات"</string>
     <string name="planned_exercise_block_repetitions" msgid="230530785149273276">"{count,plural, =1{مرة واحدة}zero{‫# مرة}two{مرتان}few{‫# مرات}many{‫# مرة}other{‫# مرة}}"</string>
     <string name="active_calories_burned" msgid="1164230083046893828">"السعرات الحرارية المحروقة نتيجة ممارسة نشاط بدني: <xliff:g id="ACTIVE_CALORIES">%1$s</xliff:g>"</string>
     <string name="total_calories_burned" msgid="1674210345283541450">"إجمالي السعرات الحرارية المحروقة: <xliff:g id="TOTAL_CALORIES">%1$s</xliff:g>"</string>
     <string name="amrap_performance_goal" msgid="2225285957050151025">"أكبر عدد ممكن من مرّات التكرار"</string>
     <string name="rate_of_perceived_exertion_goal" msgid="7025839991503747361">"مستوى الجهد: <xliff:g id="VALUE">%1$d</xliff:g>/10"</string>
+    <string name="elapsed_time_placeholder" msgid="5154979833935704302">"--:--"</string>
     <string name="repetitions" msgid="5092687490665962229">"{count,plural, =1{التكرار مرة واحدة}zero{التكرار # مرة}two{التكرار مرّتَان}few{التكرار # مرات}many{التكرار # مرة}other{التكرار # مرة}}"</string>
     <string name="repetitions_long" msgid="9056502282298182438">"{count,plural, =1{التكرار مرة واحدة}zero{التكرار # مرة}two{التكرار مرّتَان}few{التكرار # مرات}many{التكرار # مرة}other{التكرار # مرة}}"</string>
     <string name="exercise_segments_header" msgid="2992953017179406012">"شرائح التمرين الرياضي"</string>
@@ -508,7 +551,7 @@
     <string name="stretching" msgid="8667864173383423787">"تمارين التمدّد"</string>
     <string name="surfing" msgid="7612503593241904984">"ركوب الأمواج"</string>
     <string name="swimming_open_water" msgid="1030388267758027037">"السباحة في المياه المفتوحة"</string>
-    <string name="swimming_pool" msgid="1584809250142187550">"السباحة في حمام السباحة"</string>
+    <string name="swimming_pool" msgid="1584809250142187550">"السباحة في حوض سباحة"</string>
     <string name="swimming_freestyle" msgid="5969535751316106638">"حرة"</string>
     <string name="swimming_backstroke" msgid="7293002996518694035">"ظّهر"</string>
     <string name="swimming_breaststroke" msgid="7168282910654289593">"صَدر"</string>
@@ -792,10 +835,10 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"السماح بالوصول إلى كل المسارات"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"عدم السماح"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"السماح دائمًا"</string>
-    <string name="route_permissions_label" msgid="5201501195020295860">"مشاركة مسار التمرين الرياضي"</string>
-    <string name="route_permissions_summary" msgid="4670908225783213910">"يمكنك التحكُّم في كيفية وصول هذا التطبيق إلى مسارات التمارين الرياضية من التطبيقات المرتبطة"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"الوصول إلى مسارات التمارين الرياضية"</string>
+    <string name="route_permissions_summary" msgid="704859311037374130">"السماح لـ \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بالوصول إلى مسارات التمارين الرياضية"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"السؤال في كل مرّة"</string>
-    <string name="route_permissions_deny" msgid="4263802925221258853">"عدم السماح"</string>
+    <string name="route_permissions_deny" msgid="4955644777239169593">"عدم السماح"</string>
     <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"هل تريد تفعيل كلا نوعَي البيانات؟"</string>
     <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"هل تريد إيقاف كلا نوعَي البيانات؟"</string>
     <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"يتطلّب تطبيق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذنًا بقراءة التمارين الرياضية حتى يتم تفعيل مساراتها."</string>
@@ -889,4 +932,12 @@
     <string name="tab_access" msgid="7818197975407243701">"إذن الوصول"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"هل تريد منح \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" إذن الوصول الإضافي؟"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"‫\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" بحاجة إلى الوصول أيضًا إلى إعدادات Health Connect هذه"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات في الخلفية أو البيانات السابقة"</string>
+    <string name="additional_access_background_footer" msgid="1638739578431818525">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات في الخلفية"</string>
+    <string name="additional_access_history_footer" msgid="5326814559930548467">"يجب منح إذن واحد بالقراءة على الأقل لتفعيل وصول هذا التطبيق إلى البيانات السابقة"</string>
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"هل تريد حذف جميع البيانات نهائيًا من Health Connect؟"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"هل تريد حذف البيانات المحدّدة نهائيًا من Health Connect؟"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"تم حذف جميع البيانات"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"تم حذف بيانات <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"تم حذف <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
 </resources>

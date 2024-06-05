@@ -61,7 +61,7 @@ class OnboardingScreenTest {
     fun onboardingScreen_isDisplayedCorrectly() {
         startOnboardingActivity()
 
-        onView(withText("Get Started with Health\u00A0Connect")).check(matches(isDisplayed()))
+        onView(withText("Get started with Health\u00A0Connect")).check(matches(isDisplayed()))
         onView(
                 withText(
                     "Health\u00A0Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone"))

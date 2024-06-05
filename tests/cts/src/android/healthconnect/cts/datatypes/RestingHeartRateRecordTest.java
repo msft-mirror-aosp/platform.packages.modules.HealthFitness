@@ -572,7 +572,16 @@ public class RestingHeartRateRecordTest {
                         .addRecordType(RestingHeartRateRecord.class)
                         .build());
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(insertedRecords.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(
+                        insertedRecords.stream()
+                                .map(Record::getMetadata)
+                                .map(Metadata::getId)
+                                .toList());
     }
 
     RestingHeartRateRecord getRestingHeartRateRecord_update(
