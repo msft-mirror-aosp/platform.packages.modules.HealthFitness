@@ -33,7 +33,7 @@ class ExportFrequencyRadioGroupPreference(
 
     companion object {
         const val EXPORT_FREQUENCY_RADIO_GROUP_PREFERENCE =
-            "export_frequency_radiou_group_preference"
+            "export_frequency_radio_group_preference"
     }
 
     init {
