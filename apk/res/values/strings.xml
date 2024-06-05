@@ -39,6 +39,9 @@
     <string name="backup_title" description="Label for a button that takes the user to backup settings. [CHAR_LIMIT=40]">Backup</string>
     <string name="data_sources_and_priority_title" description="Label for a button that takes the user to app priority settings. [CHAR_LIMIT=40]">Data sources and priority</string>
     <string name="set_units_title" description="Label for a button that takes the user to unit settings. [CHAR_LIMIT=40]">Set units</string>
+    <string name="manage_data_preferences_category_title" description="Label for the grouped preference settings for managing data. [CHAR_LIMIT=40]">Preferences</string>
+    <string name="manage_data_category_title" description="Label for the category for managing data. [CHAR_LIMIT=40]">Manage data</string>
+    <string name="backup_and_restore_settings_summary" description="Summary for the backup and restore setting preference. [CHAR_LIMIT=NONE]">Export and import data</string>
 
     <!-- endregion -->
 

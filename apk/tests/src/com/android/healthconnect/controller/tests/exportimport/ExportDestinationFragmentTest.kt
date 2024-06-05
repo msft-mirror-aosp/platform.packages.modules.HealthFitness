@@ -51,6 +51,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportDestinationFragment
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -388,7 +389,11 @@ class ExportDestinationFragmentTest {
 
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
-                ScheduledExportSettings.withUri(TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI))
+                ScheduledExportSettings.withUriAndPeriodInDays(
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI,
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
+                )
+            )
     }
 
     @Test

@@ -17,13 +17,16 @@
 package com.android.healthconnect.testapps.toolbox.ui
 
 import android.content.Context
+import android.health.connect.CreateMedicalDataSourceRequest
 import android.health.connect.HealthConnectManager
 import android.health.connect.MedicalIdFilter
+import android.health.connect.datatypes.MedicalDataSource
 import android.health.connect.datatypes.MedicalResource
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -87,8 +90,18 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.requireViewById<Button>(R.id.phr_read_immunizations_button).setOnClickListener {
-            executeAndShowMessage { readAllMedicalResources() }
+        view.requireViewById<Button>(R.id.phr_create_data_source_button).setOnClickListener {
+            executeAndShowMessage {
+                createMedicalDataSource("Hospital X", "example.fhir.com/R4/123")
+            }
+        }
+
+        view.requireViewById<Button>(R.id.phr_insert_immunization_button).setOnClickListener {
+            executeAndShowMessage { insertImmunization(view) }
+        }
+
+        view.requireViewById<Button>(R.id.phr_read_by_id_button).setOnClickListener {
+            executeAndShowMessage { readMedicalResourceForIdFromTextbox(view) }
         }
 
         view.requireViewById<Button>(R.id.phr_seed_fhir_jsons_button).setOnClickListener {
@@ -117,14 +130,40 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
         }
     }
 
-    private suspend inline fun readAllMedicalResources(): String =
-        readMedicalResources().joinToString(separator = "\n", transform = MedicalResource::toString)
+    private suspend fun insertImmunization(view: View): String {
+        val immunizationResource = loadJSONFromAsset(requireContext(), "immunization_1.json")
+        Log.d("INSERT_MEDICAL_RESOURCE", "Writing immunization ${immunizationResource}")
+        // TODO(b/343375877) Replace this with call to HC after insert API is implemented
+        val insertedResourceId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
+        return insertedResourceId
+    }
 
-    private suspend fun readMedicalResources(): List<MedicalResource> {
+    private suspend fun createMedicalDataSource(displayName: String, fhirBaseUri: String): String {
+        val dataSource =
+            suspendCancellableCoroutine<MedicalDataSource> { continuation ->
+                healthConnectManager.createMedicalDataSource(
+                    CreateMedicalDataSourceRequest.Builder(displayName, fhirBaseUri).build(),
+                    Runnable::run,
+                    continuation.asOutcomeReceiver())
+            }
+        Log.d("CREATE_MEDICAL_DATA_SOURCE", "Created source: ${dataSource.toString()}")
+        return dataSource.toString()
+    }
+
+    private suspend fun readMedicalResourceForIdFromTextbox(view: View): String {
+        val resourceId =
+            view.findViewById<EditText>(R.id.phr_immunization_id_text).getText().toString()
+        return readMedicalResourcesById(listOf(resourceId))
+            .joinToString(separator = "\n", transform = MedicalResource::toString)
+    }
+
+    private suspend fun readMedicalResourcesById(ids: List<String>): List<MedicalResource> {
+        Log.d("READ_MEDICAL_RESOURCES", "Reading resource with ids ${ids.toString()}")
         val resources =
             suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
                 healthConnectManager.readMedicalResources(
-                    listOf(MedicalIdFilter.fromId("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")),
+                    ids.map(MedicalIdFilter::fromId),
                     Runnable::run,
                     continuation.asOutcomeReceiver())
             }

@@ -2146,6 +2146,24 @@ public class HealthConnectManager {
     }
 
     /**
+     * Deletes a list of medical resources by id. Ids that don't exist will be ignored.
+     *
+     * <p>Deletions are performed in a transaction i.e. either all will be deleted or none.
+     *
+     * @param ids The ids to delete.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @hide
+     */
+    // TODO: b/338035191 - Make this flagged Api and add CTS tests.
+    public void deleteMedicalResources(
+            @NonNull List<MedicalIdFilter> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
      * Creates a {@link MedicalDataSource} in HealthConnect based on the {@link
      * CreateMedicalDataSourceRequest} request values.
      *
