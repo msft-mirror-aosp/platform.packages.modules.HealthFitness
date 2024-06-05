@@ -319,7 +319,17 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ਨੇ ਐਪ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਕਿਉਂ ਹਟਾ ਦਿੱਤਾ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ਜੇ ਕਿਸੇ ਐਪ ਨੂੰ Google Play ਤੋਂ ਮੁਅੱਤਲ ਕਰ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ ਜਾਂ ਹਟਾ ਦਿੱਤਾ ਜਾਂਦਾ ਹੈ, ਤਾਂ Health Connect ਐਪ ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਇਸ ਦੀਆਂ ਇਜਾਜ਼ਤਾਂ ਨੂੰ ਹਟਾ ਦਿੰਦੀ ਹੈ।\n\nਇਸਦਾ ਮਤਲਬ ਹੈ ਕਿ ਐਪ ਹੁਣ Health Connect ਵਿੱਚ ਸਟੋਰ ਕੀਤੇ ਡਾਟੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀ। ਜੇ ਇਸ ਐਪ ਵਿੱਚ ਪਹਿਲਾਂ ਤੋਂ ਰੱਖਿਅਤ ਕੀਤਾ ਹੋਇਆ ਡਾਟਾ ਹੈ, ਤਾਂ ਇਹ ਅਕਿਰਿਆਸ਼ੀਲ ਐਪਾਂ ਦੀ ਸੂਚੀ ਵਿੱਚ ਦਿਸੇਗਾ।"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ਸਮਝ ਲਿਆ"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ਬੈਕਅੱਪ ਲਓ ਅਤੇ ਮੁੜ-ਬਹਾਲ ਕਰੋ"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"ਨਿਰਯਾਤ ਅਤੇ ਆਯਾਤ ਕਰੋ"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ਨਿਯਤ ਨਿਰਯਾਤ"</string>
     <string name="import_data" msgid="404502315533233094">"ਡਾਟਾ ਆਯਾਤ ਕਰੋ"</string>
@@ -335,13 +345,8 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"ਹਫ਼ਤਾਵਾਰੀ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ਮਹੀਨਾਵਾਰ"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"ਚੁਣੋ ਕਿ ਕਿੱਥੇ ਨਿਰਯਾਤ ਕਰਨਾ ਹੈ"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"ਇਨਕ੍ਰਿਪਸ਼ਨ ਚਾਲੂ ਕਰੋ"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ਡਾਟੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸਨੂੰ ਇਨਕ੍ਰਿਪਟਡ ਕਰਨ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਕੋਈ ਵੀ, ਇੱਥੋਂ ਤੱਕ ਕਿ Google ਜਾਂ Health Connect ਵੀ ਇਸ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਣਗੇ।"</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ਆਪਣੇ ਇਨਕ੍ਰਿਪਟਡ ਡਾਟੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਲਈ ਪਾਸਵਰਡ ਬਣਾਓ। ਤੁਹਾਨੂੰ ਆਪਣੇ ਡਾਟੇ ਨੂੰ ਆਯਾਤ ਅਤੇ ਮੁੜ-ਬਹਾਲ ਕਰਨ ਲਈ ਇਸ ਪਾਸਵਰਡ ਦੀ ਲੋੜ ਪਵੇਗੀ।"</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"ਪਾਸਵਰਡ"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"ਪਾਸਵਰਡ ਦੁਹਰਾਓ"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"ਪਾਸਵਰਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦੇ"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"ਜੇ ਤੁਸੀਂ ਆਪਣਾ ਪਾਸਵਰਡ ਭੁੱਲ ਜਾਂਦੇ ਹੋ ਅਤੇ ਆਪਣਾ ਫ਼ੋਨ ਗੁਆ ਦਿੰਦੇ ਹੋ, ਤਾਂ Health Connect ਤੁਹਾਡੇ ਰੱਖਿਅਤ ਕੀਤੇ ਡਾਟੇ ਨੂੰ ਮੁੜ-ਹਾਸਲ ਕਰਨ ਵਿੱਚ ਤੁਹਾਡੀ ਮਦਦ ਨਹੀਂ ਕਰ ਸਕਦਾ।"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
     <string name="import_decryption_title" msgid="396608799208392844">"ਪਾਸਵਰਡ ਟਾਈਪ ਕਰੋ"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"ਤੁਹਾਡੇ Health Connect ਡਾਟੇ ਨੂੰ ਆਯਾਤ ਕਰਨ ਲਈ ਤੁਹਾਡਾ ਇਨਕ੍ਰਿਪਸ਼ਨ ਪਾਸਵਰਡ ਲੋੜੀਂਦਾ ਹੈ"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ਕੀ ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?"</string>
@@ -352,6 +357,14 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"ਰੱਦ ਕਰੋ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ਅੱਗੇ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ਇਸ ਤੋਂ ਆਯਾਤ ਕਰੋ"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ਨਾਲ ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ਤੁਹਾਨੂੰ ਆਪਣੇ ਫ਼ੋਨ \'ਤੇ ਵੱਖ-ਵੱਖ ਐਪਾਂ ਨੂੰ ਸਿੰਕ ਕਰਨ ਦਾ ਸਰਲ ਤਰੀਕਾ ਦੇ ਕੇ, ਤੁਹਾਡੇ ਸਿਹਤ ਅਤੇ ਫਿੱਟਨੈੱਸ ਸੰਬੰਧੀ ਡਾਟੇ ਨੂੰ ਸਟੋਰ ਕਰਦੀ ਹੈ"</string>
     <string name="share_data" msgid="3481932156368883946">"ਆਪਣੀਆਂ ਐਪਾਂ ਨਾਲ ਡਾਟਾ ਸਾਂਝਾ ਕਰੋ"</string>
@@ -361,10 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ਵਾਪਸ ਜਾਓ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ਸ਼ੁਰੂਆਤ ਕਰੋ"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ਡਾਟਾ ਮਿਟਾਓ"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ਡਾਟਾ ਮਿਟਾਉਣ ਦੀ ਪ੍ਰਕਿਰਿਆ ਸ਼ੁਰੂ ਕਰੋ"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ਡਾਟਾ ਮਿਟਾਉਣ ਦੀ ਪ੍ਰਕਿਰਿਆ ਬੰਦ ਕਰੋ"</string>
     <string name="time_range_title" msgid="6831605283322600165">"ਮਿਟਾਉਣ ਲਈ ਡਾਟਾ ਚੁਣੋ"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"ਅੱਗੇ ਜਾਓ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ਇਸ ਨਾਲ ਚੁਣੀ ਗਈ ਸਮਾਂ ਮਿਆਦ ਦੌਰਾਨ Health Connect ਵਿੱਚ ਸ਼ਾਮਲ ਕੀਤਾ ਸਾਰਾ ਡਾਟਾ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟ ਜਾਂਦਾ ਹੈ"</string>
@@ -924,14 +935,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ਇਸ ਐਪ ਲਈ ਬੈਕਗ੍ਰਾਊਂਡ ਜਾਂ ਪਿਛਲੇ ਡਾਟੇ ਤੱਕ ਪਹੁੰਚ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਪੜ੍ਹਨ ਸੰਬੰਧੀ ਇਜਾਜ਼ਤ ਚਾਲੂ ਕਰੋ"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ਇਸ ਐਪ ਲਈ ਬੈਕਗ੍ਰਾਊਂਡ ਪਹੁੰਚ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਪੜ੍ਹਨ ਸੰਬੰਧੀ ਇਜਾਜ਼ਤ ਚਾਲੂ ਕਰੋ"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ਇਸ ਐਪ ਲਈ ਪਿਛਲੇ ਡਾਟੇ ਤੱਕ ਪਹੁੰਚ ਨੂੰ ਚਾਲੂ ਕਰਨ ਲਈ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਪੜ੍ਹਨ ਸੰਬੰਧੀ ਇਜਾਜ਼ਤ ਚਾਲੂ ਕਰੋ"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"ਕੀ Health Connect ਤੋਂ ਸਾਰਾ ਡਾਟਾ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣਾ ਹੈ?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"ਕੀ Health Connect ਤੋਂ ਚੁਣਿਆ ਗਿਆ ਡਾਟਾ ਪੱਕੇ ਤੌਰ \'ਤੇ ਮਿਟਾਉਣਾ ਹੈ?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"ਸਾਰਾ ਡਾਟਾ ਮਿਟਾਇਆ ਗਿਆ"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ਡਾਟਾ ਮਿਟਾਇਆ ਗਿਆ"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ਆਈਟਮਾਂ ਮਿਟਾਈਆਂ ਗਈਆਂ"</string>
 </resources>

@@ -340,8 +340,8 @@ class SettingsManageAppPermissionsFragmentTest {
         }
 
         onView(
-            withText(
-                "$TEST_APP_NAME can read data added after October 20, 2022" +
+                withText(
+                    "$TEST_APP_NAME can read data added after October 20, 2022" +
                         "\n\n" +
                         "Data you share with $TEST_APP_NAME is covered by their privacy policy"))
             .perform(scrollTo())

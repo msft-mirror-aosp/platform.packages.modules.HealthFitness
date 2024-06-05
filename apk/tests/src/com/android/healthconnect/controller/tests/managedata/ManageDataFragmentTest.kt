@@ -113,12 +113,26 @@ class ManageDataFragmentTest {
 
     @Test
     @DisableFlags(Flags.FLAG_EXPORT_IMPORT)
-    fun manageDataFragment_importExportFlagOff_backupButtonNotDisplayed() {
+    fun manageDataFragment_importExportFlagOff_preferenceCategoriesAndBackupButtonNotDisplayed() {
         launchFragment<ManageDataFragment>(Bundle())
 
         onView(withText("Auto-delete")).check(matches(isDisplayed()))
         onView(withText("Set units")).check(matches(isDisplayed()))
         onView(withText("Backup and restore")).check(doesNotExist())
+        onView(withText("Preferences")).check(doesNotExist())
+        onView(withText("Manage data")).check(doesNotExist())
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
+    fun manageDataFragment_importExportFlagOn_displayedCorrectly() {
+        launchFragment<ManageDataFragment>(Bundle())
+
+        onView(withText("Auto-delete")).check(matches(isDisplayed()))
+        onView(withText("Set units")).check(matches(isDisplayed()))
+        onView(withText("Backup and restore")).check(matches(isDisplayed()))
+        onView(withText("Preferences")).check(matches(isDisplayed()))
+        onView(withText("Manage data")).check(matches(isDisplayed()))
     }
 
     @Test

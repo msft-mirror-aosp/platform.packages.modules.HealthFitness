@@ -80,7 +80,6 @@
             <item type="drawable" name="ic_import_data"/>
             <item type="drawable" name="ic_import"/>
 
-            <item type="drawable" name="ic_lock"/>
             <item type="drawable" name="ic_warning"/>
             <item type="drawable" name="ic_password"/>
             <item type="drawable" name="ic_info"/>

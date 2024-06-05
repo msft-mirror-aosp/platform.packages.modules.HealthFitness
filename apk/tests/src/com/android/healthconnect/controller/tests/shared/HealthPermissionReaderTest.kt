@@ -9,6 +9,7 @@ import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
@@ -102,6 +103,25 @@ class HealthPermissionReaderTest {
     }
 
     @Test
+    fun getDeclaredHealthPermissions_medicalFlagOn_returnsAllPermissions() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        assertThat(permissionReader.getDeclaredHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(
+                HealthPermissions.READ_ACTIVE_CALORIES_BURNED,
+                HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
+                HealthPermissions.READ_EXERCISE,
+                HealthPermissions.WRITE_EXERCISE,
+                HealthPermissions.READ_SLEEP,
+                HealthPermissions.WRITE_SLEEP,
+                HealthPermissions.READ_EXERCISE_ROUTES,
+                HealthPermissions.WRITE_EXERCISE_ROUTE,
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND,
+                HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION,
+                HealthPermissions.WRITE_MEDICAL_RESOURCES)
+    }
+
+    @Test
     fun isRationalIntentDeclared_withIntent_returnsTrue() {
         assertThat(permissionReader.isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)).isTrue()
     }
@@ -184,7 +204,7 @@ class HealthPermissionReaderTest {
 
     @Test
     fun isMedicalPermission_withMedicalPermission_returnsTrue() = runTest {
-        val perm = HealthPermission.MedicalPermission(HealthPermissions.WRITE_MEDICAL_RESOURCES)
+        val perm = HealthPermission.MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
         assertThat(permissionReader.isMedicalPermission(perm.toString())).isTrue()
     }
 

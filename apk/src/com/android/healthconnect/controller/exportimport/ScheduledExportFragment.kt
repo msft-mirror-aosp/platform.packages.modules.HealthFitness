@@ -27,9 +27,14 @@ import com.android.healthconnect.controller.exportimport.ExportFrequencyRadioGro
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.temporal.ChronoUnit
 
 /** Fragment showing the status of configured automatic fragment. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
@@ -40,9 +45,11 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
     companion object {
         const val SCHEDULED_EXPORT_CONTROL_PREFERENCE_KEY = "scheduled_export_control_preference"
         const val CHOOSE_FREQUENCY_PREFERENCE_KEY = "choose_frequency"
+        const val EXPORT_STATUS_PREFERENCE_ORDER = 1
     }
 
-    private val viewModel: ExportSettingsViewModel by viewModels()
+    private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
+    private val exportStatusViewModel: ExportStatusViewModel by viewModels()
 
     private val scheduledExportControlPreference: HealthMainSwitchPreference? by lazy {
         preferenceScreen.findPreference(SCHEDULED_EXPORT_CONTROL_PREFERENCE_KEY)
@@ -50,6 +57,10 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
 
     private val chooseFrequencyPreferenceGroup: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(CHOOSE_FREQUENCY_PREFERENCE_KEY)
+    }
+
+    private val dateFormatter: LocalDateTimeFormatter by lazy {
+        LocalDateTimeFormatter(requireContext())
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -60,7 +71,19 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
+        exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
+            scheduledExportUiStatus ->
+            when (scheduledExportUiStatus) {
+                is ScheduledExportUiStatus.WithData -> {
+                    maybeShowNextExportStatus(scheduledExportUiStatus.scheduledExportUiState)
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
+
+        exportSettingsViewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
             when (exportSettings) {
                 is ExportSettings.WithData -> {
                     if (exportSettings.frequency != ExportFrequency.EXPORT_FREQUENCY_NEVER) {
@@ -74,14 +97,14 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
                             getString(R.string.automatic_export_off)
                         chooseFrequencyPreferenceGroup?.setVisible(false)
                     }
-                    viewModel.updatePreviousExportFrequency(exportSettings.frequency)
+                    exportSettingsViewModel.updatePreviousExportFrequency(exportSettings.frequency)
                     if (chooseFrequencyPreferenceGroup?.findPreference<Preference>(
                         EXPORT_FREQUENCY_RADIO_GROUP_PREFERENCE) == null) {
                         val exportFrequencyPreference =
                             ExportFrequencyRadioGroupPreference(
                                 requireContext(),
                                 exportSettings.frequency,
-                                viewModel::updateExportFrequency)
+                                exportSettingsViewModel::updateExportFrequency)
                         chooseFrequencyPreferenceGroup?.addPreference(exportFrequencyPreference)
                     }
                 }
@@ -96,12 +119,30 @@ class ScheduledExportFragment : Hilt_ScheduledExportFragment() {
 
         scheduledExportControlPreference?.addOnSwitchChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.previousExportFrequency.value?.let { previousExportFrequency ->
-                    viewModel.updateExportFrequency(previousExportFrequency)
+                exportSettingsViewModel.previousExportFrequency.value?.let { previousExportFrequency
+                    ->
+                    exportSettingsViewModel.updateExportFrequency(previousExportFrequency)
                 }
             } else {
-                viewModel.updateExportFrequency(ExportFrequency.EXPORT_FREQUENCY_NEVER)
+                exportSettingsViewModel.updateExportFrequency(
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER)
             }
+        }
+    }
+
+    private fun maybeShowNextExportStatus(scheduledExportUiState: ScheduledExportUiState) {
+        val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
+        val periodInDays = scheduledExportUiState.periodInDays
+        if (lastSuccessfulExportTime != null) {
+            val nextExportTime =
+                getString(
+                    R.string.next_export_time,
+                    dateFormatter.formatLongDate(
+                        lastSuccessfulExportTime.plus(periodInDays.toLong(), ChronoUnit.DAYS)))
+            preferenceScreen.addPreference(
+                ExportStatusPreference(requireContext(), nextExportTime).also {
+                    it.order = EXPORT_STATUS_PREFERENCE_ORDER
+                })
         }
     }
 }
