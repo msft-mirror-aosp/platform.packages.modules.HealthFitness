@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.healthconnect.controller.utils
 
-import androidx.annotation.Keep
-import java.security.spec.KeySpec
+package com.android.healthconnect.controller.exportimport.api
 
-class ScryptKeySpec(
-    @get:Keep val password: CharArray,
-    @get:Keep val salt: ByteArray,
-    @get:Keep val costParameter: Int,
-    @get:Keep val blockSize: Int,
-    @get:Keep val parallelizationParameter: Int,
-    @get:Keep val keyLength: Int
-) : KeySpec
+import java.time.Instant
+
+/**
+ * Internal class representing the [ScheduledExportStatus] received from the HealthConnectManager.
+ */
+data class ScheduledExportUiState(
+    val lastSuccessfulExportTime: Instant?,
+    val dataExportError: DataExportError,
+    val periodInDays: Int
+) {
+    enum class DataExportError {
+        DATA_EXPORT_ERROR_UNKNOWN,
+        DATA_EXPORT_ERROR_NONE,
+        DATA_EXPORT_LOST_FILE_ACCESS
+    }
+}

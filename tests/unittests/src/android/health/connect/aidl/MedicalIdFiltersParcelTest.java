@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package android.healthconnect.aidl;
+package android.health.connect.aidl;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.MedicalIdFilter;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.os.Parcel;
 
 import org.junit.Test;

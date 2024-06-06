@@ -38,6 +38,7 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.DATA_TYPE_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
@@ -185,7 +186,16 @@ class HomeFragment : Fragment() {
             PackageManager.PERMISSION_GRANTED
     }
 
-    private fun isHealthPermissionMissing(): Boolean {
+    private fun isMedicalPermissionMissing(): Boolean {
+        for (permission in MEDICAL_PERMISSIONS) {
+            if (!isPermissionGranted(permission)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isDataTypePermissionMissing(): Boolean {
         for (permission in DATA_TYPE_PERMISSIONS) {
             if (!isPermissionGranted(permission)) {
                 return true
@@ -224,22 +234,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestHealthPermissions() {
-        if (!isHealthPermissionMissing()) {
-            // all health granted, just need to request additional
-            requestAdditionalPermissions()
-            return
-        } else if (!isAdditionalPermissionMissing()) {
-            // all additional granted, just need to request health
-            requestDataTypePermissions()
-            return
-        } else {
-            mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
-            return
-        }
+        mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
+        return
     }
 
     private fun requestDataTypePermissions() {
-        if (isHealthPermissionMissing()) {
+        if (isDataTypePermissionMissing()) {
             mRequestPermissionLauncher.launch(DATA_TYPE_PERMISSIONS)
             return
         }

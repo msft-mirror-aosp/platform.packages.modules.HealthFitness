@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect;
+package android.health.connect;
 
 import static android.health.connect.datatypes.units.Length.fromMeters;
 
