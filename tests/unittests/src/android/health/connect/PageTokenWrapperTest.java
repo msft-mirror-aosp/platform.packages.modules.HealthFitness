@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.healthconnect;
+package android.health.connect;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
@@ -22,8 +22,6 @@ import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertThrows;
-
-import android.health.connect.PageTokenWrapper;
 
 import androidx.test.runner.AndroidJUnit4;
 

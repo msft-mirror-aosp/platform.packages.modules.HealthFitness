@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -48,8 +47,6 @@ public final class ScheduledExportSettings implements Parcelable {
                 }
             };
 
-    @Nullable private final byte[] mSecretKey;
-    @Nullable private final byte[] mSalt;
     @Nullable private final Uri mUri;
     private final int mPeriodInDays;
 
@@ -57,30 +54,12 @@ public final class ScheduledExportSettings implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ScheduledExportSettings that)) return false;
-        return mPeriodInDays == that.mPeriodInDays
-                && Arrays.equals(mSecretKey, that.mSecretKey)
-                && Arrays.equals(mSalt, that.mSalt)
-                && Objects.equals(mUri, that.mUri);
+        return mPeriodInDays == that.mPeriodInDays && Objects.equals(mUri, that.mUri);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(mUri, mPeriodInDays);
-        result = 31 * result + Arrays.hashCode(mSecretKey);
-        result = 31 * result + Arrays.hashCode(mSalt);
-        return result;
-    }
-
-    /**
-     * Returns a {@link ScheduledExportSettings} to update the secret key and salt used for
-     * encrypting the exported data.
-     */
-    public static ScheduledExportSettings withSecretKey(
-            @NonNull byte[] secretKey, @NonNull byte[] salt) {
-        Objects.requireNonNull(secretKey);
-        Objects.requireNonNull(salt);
-
-        return new ScheduledExportSettings(secretKey, salt, null, DEFAULT_INT);
+        return Objects.hash(mUri, mPeriodInDays);
     }
 
     /**
@@ -89,7 +68,7 @@ public final class ScheduledExportSettings implements Parcelable {
     public static ScheduledExportSettings withUri(@NonNull Uri uri) {
         Objects.requireNonNull(uri);
 
-        return new ScheduledExportSettings(null, null, uri, DEFAULT_INT);
+        return new ScheduledExportSettings(uri, DEFAULT_INT);
     }
 
     /**
@@ -102,60 +81,34 @@ public final class ScheduledExportSettings implements Parcelable {
             throw new IllegalArgumentException("periodInDays should be between 0 and 30");
         }
 
-        return new ScheduledExportSettings(null, null, null, periodInDays);
+        return new ScheduledExportSettings(null, periodInDays);
+    }
+
+    /**
+     * Returns a {@link ScheduledExportSettings} to update the period in days between scheduled
+     * exports.
+     */
+    public static ScheduledExportSettings withUriAndPeriodInDays(
+            @NonNull Uri uri, @IntRange(from = 0, to = 30) int periodInDays) {
+        // TODO: b/345152760 - change to builder pattern so we can avoid duplicated argument check
+        Objects.requireNonNull(uri);
+        if (periodInDays < 0 || periodInDays > 30) {
+            throw new IllegalArgumentException("periodInDays should be between 0 and 30");
+        }
+
+        return new ScheduledExportSettings(uri, periodInDays);
     }
 
     private ScheduledExportSettings(@NonNull Parcel in) {
-        boolean hasSecretKey = in.readBoolean();
-        if (hasSecretKey) {
-            int length = in.readInt();
-            mSecretKey = new byte[length];
-            in.readByteArray(mSecretKey);
-        } else {
-            mSecretKey = null;
-        }
-
-        boolean hasSalt = in.readBoolean();
-        if (hasSalt) {
-            int length = in.readInt();
-            mSalt = new byte[length];
-            in.readByteArray(mSalt);
-        } else {
-            mSalt = null;
-        }
-
         boolean hasUri = in.readBoolean();
         mUri = hasUri ? Uri.parse(in.readString()) : null;
 
         mPeriodInDays = in.readInt();
     }
 
-    private ScheduledExportSettings(
-            @Nullable byte[] secretKey,
-            @Nullable byte[] salt,
-            @Nullable Uri uri,
-            int periodInDays) {
-        mSecretKey = secretKey;
-        mSalt = salt;
+    private ScheduledExportSettings(@Nullable Uri uri, int periodInDays) {
         mUri = uri;
         mPeriodInDays = periodInDays;
-    }
-
-    /**
-     * Returns the secret key to use for encrypting the exported data or null to keep the existing
-     * secret key.
-     */
-    @Nullable
-    public byte[] getSecretKey() {
-        return mSecretKey;
-    }
-
-    /**
-     * Returns the random salt used to generate the secret key or null to keep the existing salt.
-     */
-    @Nullable
-    public byte[] getSalt() {
-        return mSalt;
     }
 
     /** Returns the URI to write to when exporting data or null to keep the existing URI. */
@@ -179,18 +132,6 @@ public final class ScheduledExportSettings implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeBoolean(mSecretKey != null);
-        if (mSecretKey != null) {
-            dest.writeInt(mSecretKey.length);
-            dest.writeByteArray(mSecretKey);
-        }
-
-        dest.writeBoolean(mSalt != null);
-        if (mSalt != null) {
-            dest.writeInt(mSalt.length);
-            dest.writeByteArray(mSalt);
-        }
-
         dest.writeBoolean(mUri != null);
         if (mUri != null) {
             dest.writeString(mUri.toString());

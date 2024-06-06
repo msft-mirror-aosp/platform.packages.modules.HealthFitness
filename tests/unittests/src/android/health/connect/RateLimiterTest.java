@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package android.healthconnect;
+package android.health.connect;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
 import android.Manifest;
 import android.app.UiAutomation;
 import android.content.Context;
-import android.health.connect.HealthConnectException;
 import android.health.connect.ratelimiter.RateLimiter;
 import android.health.connect.ratelimiter.RateLimiter.QuotaCategory;
 

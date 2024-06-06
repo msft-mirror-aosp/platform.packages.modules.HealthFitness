@@ -319,12 +319,22 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ایپ کی اجازتوں کو کیوں ہٹاتی ہے"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"اگر کسی ایپ کو Google Play سے معطل یا ہٹا دیا جاتا ہے تو Health Connect خود کار طور پر اس کی اجازتوں کو ہٹا دیتی ہے۔\n\nاس کا مطلب ہے کہ ایپ Health Connect میں محفوظ کردہ ڈیٹا تک مزید رسائی حاصل نہیں کر سکتی۔ اگر اس ایپ میں پہلے ڈیٹا لکھا ہوا ہے تو یہ غیر فعال ایپس کی فہرست میں ظاہر ہوتا ہے۔"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"سمجھ آ گئی"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"بیک اپ اور بحالی"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"برآمد اور درآمد کریں"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"شیڈول کردہ برآمد"</string>
     <string name="import_data" msgid="404502315533233094">"ڈیٹا درآمد کریں"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"گزشتہ برآمد کردہ فائل سے ڈیٹا کو بحال کریں"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"برآمد کریں آپ کو اپنے ڈیٹا کو محفوظ کرنے کی سہولت دیتا ہے تاکہ آپ اسے نئے فون میں منتقل کر سکیں"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"کسی گزشتہ برآمد کردہ فائل سے ڈیٹا کو بحال کریں"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"\'برآمد کریں\' خصوصیت آپ کو اپنے ڈیٹا کو محفوظ کرنے کی سہولت دیتی ہے تاکہ آپ اسے نئے فون میں منتقل کر سکیں"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"مزید جانیں"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"آن ہے"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"آف ہے"</string>
@@ -335,23 +345,26 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"ہفتہ وار"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ماہانہ"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"منتخب کریں کہ کہاں برآمد کرنا ہے"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"مرموز کاری آن کریں"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ڈیٹا کو محفوظ کرنے سے پہلے مرموز کرنے کی ضرورت ہے۔ کوئی بھی، یہاں تک کہ Google یا Health Connect بھی، اس تک رسائی حاصل نہیں کر سکے گا۔"</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"اپنے مرموز کردہ ڈیٹا کو محفوظ کرنے کے لیے پاس ورڈ بنائیں۔ آپ کو اپنے ڈیٹا کو درآمد اور بحال کرنے کے لیے اس پاس ورڈ کی ضرورت ہوگی۔"</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"پاس ورڈ"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"پاس ورڈ دہرائیں"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"پاس ورڈز مماثل نہیں ہیں"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"اگر آپ اپنا پاس ورڈ بھول جاتے ہیں اور اپنا فون کھو دیتے ہیں تو Health Connect آپ کے محفوظ کردہ ڈیٹا کو بازیاب کرنے میں آپ کی مدد نہیں کر سکتا۔"</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
     <string name="import_decryption_title" msgid="396608799208392844">"پاس ورڈ ٹائپ کریں"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"آپ کے Health Connect ڈیٹا کو درآمد کرنے کے لیے آپ کی مرموز کاری سے متعلق پاس ورڈ درکار ہے"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"آپ کے Health Connect ڈیٹا کو درآمد کرنے کیلئے، آپ کا اینکرپشن پاس ورڈ درکار ہے"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"پاس ورڈ بھول گئے؟"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"پاس ورڈ"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"اگر آپ کے پاس اب بھی آپ کا پرانا فون ہے تو آپ ایک نئے پاس ورڈ کی مدد سے اپنا ڈیٹا دوبارہ برآمد کر سکتے ہیں"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"اگر آپ کے پاس اب بھی اپنا پرانا فون ہے تو آپ ایک نئے پاس ورڈ کی مدد سے اپنا ڈیٹا دوبارہ برآمد کر سکتے ہیں"</string>
     <string name="export_back_button" msgid="3550795479165524982">"واپس جائیں"</string>
     <string name="export_next_button" msgid="657930567137105172">"آگے جائیں"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"منسوخ کریں"</string>
     <string name="import_next_button" msgid="5706322508691854289">"آگے جائیں"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"اس سے درآمد کریں"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"یہاں سے درآمد کریں"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect کے ساتھ شروع کریں"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect ایپ آپ کے صحت اور تندرستی کے ڈیٹا کو اسٹور کرتی ہے جو آپ کے فون پر مختلف ایپس کو سِنک کرنے کا ایک آسان طریقہ فراہم کرتا ہے"</string>
     <string name="share_data" msgid="3481932156368883946">"اپنی ایپس کے ساتھ ڈیٹا کا اشتراک کریں"</string>
@@ -361,10 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"واپس جائیں"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"شروع کریں"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ڈیٹا حذف کریں"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"حذف کے عمل میں داخل ہوں"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"حذف کے عمل سے باہر نکلیں"</string>
     <string name="time_range_title" msgid="6831605283322600165">"حذف کرنے کے لیے ڈیٹا کا انتخاب کریں"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"آگے جائیں"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"اس سے منتخب کردہ وقت کے دوران Health Connect میں شامل کردہ تمام ڈیٹا مستقل طور پر حذف ہو جاتا ہے"</string>
@@ -924,14 +935,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"اس ایپ کے لیے پس منظر یا ماضی کے ڈیٹا تک رسائی کو آن کرنے کے لیے کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"اس ایپ کے لیے پس منظر میں ہونے پر رسائی کو آن کرنے کی خاطر کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"اس ایپ کے لیے ماضی کے ڈیٹا تک رسائی کو آن کرنے کے لیے کم از کم ایک پڑھنے کی اجازت کو فعال کریں"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"‫Health Connect سے تمام ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"‫Health Connect سے منتخب کردہ ڈیٹا کو مستقل طور پر حذف کریں؟"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"تمام ڈیٹا حذف کر دیا گیا"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ڈیٹا حذف ہو گیا"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> آئٹمز حذف ہو گئے"</string>
 </resources>

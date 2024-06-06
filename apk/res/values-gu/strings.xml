@@ -319,7 +319,17 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect દ્વારા ઍપ પરવાનગીઓ કાઢી નાખવાનું કારણ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"જો કોઈ ઍપને Google Playમાંથી સસ્પેન્ડ કરવામાં કે કાઢી નાખવામાં આવે, તો Health Connect ઑટોમૅટિક રીતે તેની પરવાનગીઓ કાઢી નાખે છે.\n\nતેનો અર્થ એ થાય છે કે ઍપ હવેથી Health Connectમાં સ્ટોર કરેલો ડેટા ઍક્સેસ કરી શકશે નહીં. જો આ ઍપમાં અગાઉ લખવામાં આવેલો કોઈ ડેટા હોય, તો તે નિષ્ક્રિય ઍપની સૂચિમાં દેખાય છે."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"સમજાઈ ગયું"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"બૅકઅપ લો અને રિસ્ટોર કરો"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"નિકાસ અને આયાત"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"શેડ્યૂલ કરેલી નિકાસ"</string>
     <string name="import_data" msgid="404502315533233094">"ડેટા આયાત કરો"</string>
@@ -335,13 +345,8 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"દર અઠવાડિયે"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"દર મહિને"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"ક્યા નિકાસ કરવી તે પસંદ કરો"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"એન્ક્રિપ્શન ચાલુ કરો"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ડેટા સાચવવામાં આવે તે પહેલાં તેને એન્ક્રિપ્ટ કરવો જરૂરી છે. કોઈપણ વ્યક્તિ, Google કે Health Connect પણ તેને ઍક્સેસ કરી શકશે નહીં."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"તમારા એન્ક્રિપ્ટેડ ડેટાને સુરક્ષિત રાખવા માટે કોઈ પાસવર્ડ બનાવો. તમારો ડેટા આયાત કરવા અને તેને રિસ્ટોર કરવા માટે, તમને આ પાસવર્ડની જરૂર પડશે."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"પાસવર્ડ"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"પાસવર્ડ રિપીટ કરો"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"પાસવર્ડનો મેળ થતો નથી"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"જો તમે તમારો પાસવર્ડ ભૂલી જાઓ અને તમારો ફોન ખોવાઈ ગયો હોય, તો Health Connect તમને તમારો સાચવેલો ડેટા રિકવર કરવામાં સહાય કરી શકશે નહીં."</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
     <string name="import_decryption_title" msgid="396608799208392844">"પાસવર્ડ ટાઇપ કરો"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Health Connectના તમારા ડેટાની આયાત કરવા માટે, તમારા એન્ક્રિપ્શન પાસવર્ડની જરૂર છે"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"શું પાસવર્ડ ભૂલી ગયા છો?"</string>
@@ -352,6 +357,14 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"રદ કરો"</string>
     <string name="import_next_button" msgid="5706322508691854289">"આગળ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"આમાંથી આયાત કરો"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect સાથે શરુ કરો"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect તમારો આરોગ્ય અને ફિટનેસ સંબંધિત ડેટા સ્ટોર કરે છે, જેનાથી તમે તમારા ફોન પર વિવિધ ઍપ સરળ રીતે સિંક કરી શકો છો"</string>
     <string name="share_data" msgid="3481932156368883946">"તમારી ઍપ સાથે ડેટા શેર કરો"</string>
@@ -361,10 +374,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"પાછા જાઓ"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"શરૂ કરો"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ડેટા ડિલીટ કરો"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"ડિલીટ કરવાની પ્રક્રિયામાં દાખલ થાઓ"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"ડિલીટ કરવાની પ્રક્રિયામાંથી બહાર નીકળો"</string>
     <string name="time_range_title" msgid="6831605283322600165">"ડિલીટ કરવા માટે ડેટાની પસંદગી કરો"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"આગળ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"આમ કરવાથી પસંદગીના સમયગાળામાં Health Connectમાં ઉમેરવામાં આવેલો બધો ડેટા કાયમ માટે ડિલીટ કરવામાં આવે છે"</string>
@@ -924,14 +935,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"આ ઍપ માટે બૅકગ્રાઉન્ડ કે અગાઉના ડેટાનો ઍક્સેસ ચાલુ કરવા માટે, વાંચવાની ઓછામાં ઓછી એક પરવાનગી ચાલુ કરો"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"આ ઍપ માટે બૅકગ્રાઉન્ડ ઍક્સેસ ચાલુ કરવા માટે, વાંચવાની ઓછામાં ઓછી એક પરવાનગી ચાલુ કરો"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"આ ઍપ માટે અગાઉના ડેટાનો ઍક્સેસ ચાલુ કરવા માટે, વાંચવાની ઓછામાં ઓછી એક પરવાનગી ચાલુ કરો"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connectમાંથી તમામ ડેટા કાયમ માટે ડિલીટ કરી નાખીએ?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connectમાંથી પસંદ કરેલો ડેટા કાયમ માટે ડિલીટ કરી નાખીએ?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"તમામ ડેટા કાયમ માટે ડિલીટ કરવામાં આવ્યો"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g>નો ડેટા ડિલીટ કરવામાં આવ્યો"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> આઇટમ ડિલીટ કરી"</string>
 </resources>

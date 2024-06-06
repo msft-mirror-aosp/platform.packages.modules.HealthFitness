@@ -320,4 +320,41 @@ class AdditionalPermissionsFragmentTest {
 
         onView(withText("Allow")).check(matches(ViewMatchers.isEnabled()))
     }
+
+    @Test
+    fun allowButton_medicalRequestConcluded_isEnabled() {
+        val permissions =
+            arrayOf(
+                HealthPermissions.READ_HEALTH_DATA_HISTORY,
+                HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
+
+        whenever(viewModel.isMedicalPermissionRequestConcluded()).thenReturn(true)
+
+        whenever(viewModel.healthPermissionsList).then {
+            MutableLiveData(permissions.toPermissionsList())
+        }
+        whenever(viewModel.additionalPermissionsList).then {
+            MutableLiveData(permissions.toPermissionsList())
+        }
+        whenever(viewModel.additionalPermissionsInfo).then {
+            MutableLiveData(
+                AdditionalPermissionsInfo(
+                    permissions.toPermissionsList().map { it as AdditionalPermission }, TEST_APP))
+        }
+
+        whenever(viewModel.getPermissionGrants()).then {
+            mapOf(
+                fromPermissionString(HealthPermissions.READ_HEALTH_DATA_HISTORY) to
+                    PermissionState.GRANTED,
+                fromPermissionString(HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND) to
+                    PermissionState.NOT_GRANTED)
+        }
+        whenever(viewModel.grantedAdditionalPermissions).then {
+            MutableLiveData(setOf(AdditionalPermission.READ_HEALTH_DATA_HISTORY))
+        }
+
+        launchFragment<AdditionalPermissionsFragment>(bundleOf())
+
+        onView(withText("Allow")).check(matches(ViewMatchers.isEnabled()))
+    }
 }

@@ -121,7 +121,7 @@ public final class DocumentProvidersManager {
 
             documentProviders.add(
                     new ExportImportDocumentProvider(
-                            title, summary, iconResource, rootDocumentUri));
+                            title, summary, iconResource, rootDocumentUri, authority));
         }
     }
 
