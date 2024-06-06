@@ -46,10 +46,12 @@ import android.content.pm.ResolveInfo;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMigrationCallback;
+import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.migration.MigrationException;
 import android.health.connect.restore.StageRemoteDataRequest;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
@@ -86,6 +88,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeoutException;
 
 /** Unit test class for {@link HealthConnectServiceImpl} */
@@ -132,7 +135,9 @@ public class HealthConnectServiceImplTest {
                     "getActivityDates",
                     "configureScheduledExport",
                     "getScheduledExportStatus",
-                    "getScheduledExportPeriodInDays");
+                    "getScheduledExportPeriodInDays",
+                    "getImportStatus",
+                    "runImport");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
     public static final Set<String> DO_NOT_BLOCK_CALLS_DURING_DATA_SYNC_LIST =
@@ -151,6 +156,8 @@ public class HealthConnectServiceImplTest {
                     "insertMinDataMigrationSdkExtensionVersion",
                     "asBinder",
                     "queryDocumentProviders");
+
+    private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
 
     @Rule
     public final ExtendedMockitoRule mExtendedMockitoRule =
@@ -178,6 +185,7 @@ public class HealthConnectServiceImplTest {
     private HealthConnectServiceImpl mHealthConnectService;
     private UserHandle mUserHandle;
     private File mMockDataDirectory;
+    private ThreadPoolExecutor mInternalTaskScheduler;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -191,6 +199,7 @@ public class HealthConnectServiceImplTest {
         mUserHandle = UserHandle.of(UserHandle.myUserId());
         when(mServiceContext.getPackageManager()).thenReturn(mPackageManager);
         when(mServiceContext.getUser()).thenReturn(mUserHandle);
+        mInternalTaskScheduler = HealthConnectThreadScheduler.sInternalBackgroundExecutor;
 
         mContext =
                 new HealthConnectUserContext(
@@ -448,6 +457,16 @@ public class HealthConnectServiceImplTest {
         Thread.sleep(500);
         verify(mMigrationStateManager).validateSetMinSdkVersion();
         verify(mCallback).onSuccess();
+    }
+
+    @Test
+    public void testConfigureScheduledExport_schedulesAnInternalTask() throws Exception {
+        long taskCount = mInternalTaskScheduler.getCompletedTaskCount();
+        mHealthConnectService.configureScheduledExport(
+                ScheduledExportSettings.withUri(Uri.parse(TEST_URI)), mUserHandle);
+        Thread.sleep(500);
+
+        assertThat(mInternalTaskScheduler.getCompletedTaskCount()).isEqualTo(taskCount + 1);
     }
 
     /**

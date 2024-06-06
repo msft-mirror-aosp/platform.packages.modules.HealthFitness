@@ -226,7 +226,7 @@ public class UpsertTransactionRequest {
     }
 
     private void addRequest(@NonNull MedicalResourceInternal medicalResourceInternal) {
-        MedicalResourceHelper medicalResourceHelper = MedicalResourceHelper.getInstance();
+        MedicalResourceHelper medicalResourceHelper = new MedicalResourceHelper();
 
         UpsertTableRequest request =
                 medicalResourceHelper.getUpsertTableRequest(medicalResourceInternal);
