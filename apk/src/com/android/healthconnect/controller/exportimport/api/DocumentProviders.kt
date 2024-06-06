@@ -16,6 +16,9 @@
 package com.android.healthconnect.controller.exportimport.api
 
 import android.net.Uri
+import android.provider.DocumentsContract
+
+private const val DOWNLOADS_AUTHORITY = "com.android.providers.downloads.documents"
 
 /** Document providers for exporting/importing Health Connect data. */
 sealed class DocumentProviders {
@@ -34,3 +37,8 @@ data class DocumentProviderInfo(val title: String, val authority: String, val ic
 
 /** Root with in a document provider (usually corresponds to an account). */
 data class DocumentProviderRoot(val summary: String, val uri: Uri)
+
+/** Returns true if the given document uri is a local device storage file. */
+fun isLocalFile(uri: Uri): Boolean =
+    uri.authority == DocumentsContract.EXTERNAL_STORAGE_PROVIDER_AUTHORITY ||
+        uri.authority == DOWNLOADS_AUTHORITY

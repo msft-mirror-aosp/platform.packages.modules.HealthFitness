@@ -319,7 +319,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Zašto Povezivanje zdravlja uklanja dozvole za aplikacije"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ako je aplikacija suspendovana ili uklonjena sa Google Play-a, Povezivanje zdravlja automatski uklanja njene dozvole.\n\nTo znači da aplikacija više ne može da pristupa podacima sačuvanim u Povezivanju zdravlja. Ako je ova aplikacija prethodno upisivala podatke, pojaviće se na listi neaktivnih aplikacija."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Važi"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Podesite"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Izvoz podataka nije uspeo"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> je došlo je do problema sa izvozom. Podesite novi zakazani izvoz i probajte ponovo."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Sledeći izvoz: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pravljenje rezervnih kopija i vraćanje"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Poslednji izvoz: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Uvoz i izvoz"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
     <string name="import_data" msgid="404502315533233094">"Uvoz podataka"</string>
@@ -335,13 +340,8 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Jednom nedeljno"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Jednom mesečno"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Odaberite gde želite da izvezete"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Uključite šifrovanje"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Podaci moraju da se šifruju pre čuvanja. Niko neće moći da im pristupi, čak ni Google ni Povezivanje zdravlja."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Napravite lozinku da biste zaštitili šifrovane podatke. Ova lozinka vam treba za uvoz i vraćanje podataka."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Lozinka"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ponovo unesite lozinku"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Lozinke se ne podudaraju"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Ako zaboravite lozinku ili izgubite telefon, Povezivanje zdravlja ne može da vam pomogne da vratite sačuvane podatke."</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
     <string name="import_decryption_title" msgid="396608799208392844">"Unesite lozinku"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Lozinka za šifrovanje je potrebna za uvoz podataka Povezivanja zdravlja"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Zaboravili ste lozinku?"</string>
@@ -352,6 +352,11 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Otkaži"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Dalje"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Uvezite iz"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Odaberite nalog"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Otkaži"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Gotovo"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Započnite sa Povezivanjem zdravlja"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Povezivanje zdravlja čuva vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizujete različite aplikacije na telefonu"</string>
     <string name="share_data" msgid="3481932156368883946">"Delite podatke sa aplikacijama"</string>
@@ -361,10 +366,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Nazad"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Započnite"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Brisanje podataka"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Uđi u brisanje"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Izađi iz brisanja"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Odaberite podatke za brisanje"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Dalje"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Ovim trajno brišete sve podatke dodate u Povezivanje zdravlja u odabranom periodu"</string>
@@ -924,14 +927,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Omogućite bar jednu dozvolu za čitanje da biste za ovu aplikaciju uključili pristup pozadinskim ili ranijim podacima"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Omogućite bar jednu dozvolu za čitanje da biste za ovu aplikaciju uključili pristup u pozadini"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Omogućite bar jednu dozvolu za čitanje da biste za ovu aplikaciju uključili pristup ranijim podacima"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Želite trajno da izbrišite sve podatke iz Povezivanja zdravlja?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Želite trajno da izbrišite izabrane podatke iz Povezivanja zdravlja?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Svi podaci su izbrisani"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Izbrisani su podaci tipa <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"Izbrisanih stavki: <xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>"</string>
 </resources>

@@ -39,6 +39,9 @@
     <string name="backup_title" description="Label for a button that takes the user to backup settings. [CHAR_LIMIT=40]">Backup</string>
     <string name="data_sources_and_priority_title" description="Label for a button that takes the user to app priority settings. [CHAR_LIMIT=40]">Data sources and priority</string>
     <string name="set_units_title" description="Label for a button that takes the user to unit settings. [CHAR_LIMIT=40]">Set units</string>
+    <string name="manage_data_preferences_category_title" description="Label for the grouped preference settings for managing data. [CHAR_LIMIT=40]">Preferences</string>
+    <string name="manage_data_category_title" description="Label for the category for managing data. [CHAR_LIMIT=40]">Manage data</string>
+    <string name="backup_and_restore_settings_summary" description="Summary for the backup and restore setting preference. [CHAR_LIMIT=NONE]">Export and import data</string>
 
     <!-- endregion -->
 
@@ -348,6 +351,15 @@
     <string name="skin_temperature_read_content_description" description="Content description for switch that enables permissions for reading the user's skin temperature data [CHAR_LIMIT=NONE]">Read skin temperature</string>
     <string name="skin_temperature_write_content_description" description="Content description for switch that enables permissions for writing the user's skin temperature data [CHAR_LIMIT=NONE]">Write skin temperature</string>
     <!--endregion-->
+
+    <!-- region Medical data types -->
+    <string name="all_medical_data_uppercase_label" description="Uppercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">All medical data</string>
+    <string name="all_medical_data_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">all medical data</string>
+    <string name="all_medical_data_content_description" description="Content description for switch that enables permissions for writing the user's medical data [CHAR_LIMIT=NONE]">Write all medical data</string>
+
+    <string name="immunization_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Immunization</string>
+    <string name="immunization_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">immunization</string>
+    <string name="immunization_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunization</string>
     <!--endregion-->
 
     <!-- region Permissions -->
@@ -451,6 +463,7 @@
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
 
     <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to export</string>
+    <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a storage app to export your data</string>
 
     <string name="import_decryption_title" description="Title of the 'Type password' screen where the user enters their password to decrypt the imported backup. [CHAR_LIMIT=40]">Type password</string>
     <string name="import_decryption_description" description="Description about the password required for backup decryption. [CHAR_LIMIT=NONE]">Your encryption password is needed to import your Health&#160;Connect data</string>
@@ -463,6 +476,7 @@
     <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page. [CHAR_LIMIT=40]">Cancel</string>
     <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow. [CHAR_LIMIT=40]">Next</string>
     <string name="import_source_location_title" description="Title of the 'Import from' screen where the use chooses the location where their backup is saved. [CHAR_LIMIT=40]">Import from</string>
+    <string name="import_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to import their data from. [CHAR_LIMIT=NONE]">Please choose a storage app to import your data</string>
 
     <string name="export_import_choose_account_title" description="Title of a dialog where users select the account to export data to or import data from. [CHAR_LIMIT=40]">Choose an account</string>
     <string name="export_import_choose_account_cancel_button" description="Text on a button that cancels the user picking an account to export data to or import data from. [CHAR_LIMIT=40]">Cancel</string>

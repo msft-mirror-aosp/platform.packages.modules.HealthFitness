@@ -51,6 +51,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportDestinationFragment
+import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -70,6 +71,7 @@ import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.times
 
 @HiltAndroidTest
 @UninstallModules(HealthDataExportManagerModule::class)
@@ -100,6 +102,11 @@ class ExportDestinationFragmentTest {
         private val TEST_DOCUMENT_PROVIDER_2_ROOT_URI =
             Uri.parse(
                 "content://android.healthconnect.tests.documentprovider2.documents/root/account")
+
+        private val EXTERNAL_STORAGE_DOCUMENT_URI =
+            Uri.parse("content://com.android.externalstorage.documents/document")
+        private val DOWNLOADS_DOCUMENT_URI =
+            Uri.parse("content://com.android.providers.downloads.documents/document")
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -382,7 +389,57 @@ class ExportDestinationFragmentTest {
 
         Mockito.verify(healthDataExportManager)
             .configureScheduledExport(
-                ScheduledExportSettings.withUri(TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI))
+                ScheduledExportSettings.withUriAndPeriodInDays(
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI,
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
+                )
+            )
+    }
+
+    @Test
+    fun exportDestinationFragment_chooseExternalStorageFile_doesNotUpdateUri() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+        intending(hasAction(Intent.ACTION_CREATE_DOCUMENT))
+            .respondWith(ActivityResult(RESULT_OK, Intent().setData(EXTERNAL_STORAGE_DOCUMENT_URI)))
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(click())
+
+        Mockito.verify(healthDataExportManager, times(0)).configureScheduledExport(any())
+    }
+
+    @Test
+    fun exportDestinationFragment_chooseDownloadsFile_doesNotUpdateUri() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+        intending(hasAction(Intent.ACTION_CREATE_DOCUMENT))
+            .respondWith(ActivityResult(RESULT_OK, Intent().setData(DOWNLOADS_DOCUMENT_URI)))
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(click())
+
+        Mockito.verify(healthDataExportManager, times(0)).configureScheduledExport(any())
     }
 
     @Test

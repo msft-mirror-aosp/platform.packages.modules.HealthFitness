@@ -910,11 +910,17 @@ public final class TransactionManager {
         return sTransactionManager;
     }
 
-    /** Clear the static instance held in memory, so unit tests can perform correctly. */
+    /** Cleans up the database and this manager, so unit tests can run correctly. */
     @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @VisibleForTesting
-    public static void clearInstance() {
-        sTransactionManager = null;
+    public static void cleanUpForTest() {
+        if (sTransactionManager != null) {
+            // Close the DB before we delete the DB file to avoid the exception in b/333679690.
+            sTransactionManager.getWritableDb().close();
+            sTransactionManager.getReadableDb().close();
+            SQLiteDatabase.deleteDatabase(sTransactionManager.getDatabasePath());
+            sTransactionManager = null;
+        }
     }
 
     @NonNull

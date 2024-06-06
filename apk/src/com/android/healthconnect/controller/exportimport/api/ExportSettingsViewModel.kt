@@ -37,6 +37,7 @@ constructor(
     private val queryDocumentProvidersUseCase: IQueryDocumentProvidersUseCase
 ) : ViewModel() {
     private val _storedExportSettings = MutableLiveData<ExportSettings>()
+    private val _selectedExportFrequency = MutableLiveData<ExportFrequency>()
     private val _previousExportFrequency = MutableLiveData<ExportFrequency?>()
     private val _documentProviders = MutableLiveData<DocumentProviders>()
 
@@ -48,6 +49,10 @@ constructor(
     val previousExportFrequency: LiveData<ExportFrequency?>
         get() = _previousExportFrequency
 
+    /** Holds the user selected export frequency. */
+    val selectedExportFrequency: LiveData<ExportFrequency?>
+        get() = _selectedExportFrequency
+
     /** Holds the supported document providers. */
     val documentProviders: LiveData<DocumentProviders>
         get() = _documentProviders
@@ -55,6 +60,7 @@ constructor(
     init {
         loadExportSettings()
         loadDocumentProviders()
+        _selectedExportFrequency.value = ExportFrequency.EXPORT_FREQUENCY_NEVER
     }
 
     /** Triggers a load of export settings. */
@@ -100,10 +106,29 @@ constructor(
         updateExportSettings(settings)
     }
 
+    /**
+     * Updates the uri and the selected frequency to write to in scheduled exports of Health Connect
+     * data.
+     */
+    fun updateExportUriWithSelectedFrequency(uri: Uri) {
+        val settings =
+            ScheduledExportSettings.withUriAndPeriodInDays(
+                uri,
+                _selectedExportFrequency.value?.periodInDays
+                    ?: ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
+            )
+        updateExportSettings(settings)
+    }
+
     /** Updates the frequency of scheduled exports of Health Connect data. */
     fun updateExportFrequency(frequency: ExportFrequency) {
         val settings = ScheduledExportSettings.withPeriodInDays(frequency.periodInDays)
         updateExportSettings(settings)
+    }
+
+    /** Updates the stored frequency of scheduled exports of Health Connect data. */
+    fun updateSelectedFrequency(frequency: ExportFrequency) {
+        _selectedExportFrequency.value = frequency
     }
 
     private fun updateExportSettings(settings: ScheduledExportSettings) {

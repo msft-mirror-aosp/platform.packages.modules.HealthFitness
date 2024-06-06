@@ -319,7 +319,17 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Чаму выдаляюцца дазволы праграм на доступ да даных праграмы \"Здароўе і спорт\""</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Калі праграма блакіруецца ці выдаляецца з Google Play, аўтаматычна выдаляюцца яе дазволы на доступ да даных у праграме \"Здароўе і спорт\".\n\nТакім чынам, заблакіраваная ці выдаленая праграма страчвае доступ да даных, захаваных у праграме \"Здароўе і спорт\". Калі такая праграма раней запісвала даныя, яна з\'явіцца ў спісе неактыўных праграм."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
+    <skip />
+    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
+    <skip />
+    <!-- no translation found for next_export_time (3138247220014510213) -->
+    <skip />
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Рэзервовыя копіі і аднаўленне"</string>
+    <!-- no translation found for last_export_time (9205875050823594041) -->
+    <skip />
     <string name="export_and_import_title" msgid="3241901922222465397">"Экспарт і імпарт"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Запланаваны экспарт"</string>
     <string name="import_data" msgid="404502315533233094">"Імпартаваць даныя"</string>
@@ -335,13 +345,8 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Штотыдзень"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Штомесяц"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Выберыце, куды экспартаваць даныя"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Уключыце шыфраванне"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Перад захаваннем даныя трэба зашыфраваць. Ніхто, нават Google ці Здароўе і спорт, не змогуць атрымаць да іх доступ."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Стварыце пароль, каб абараніць зашыфраваныя даныя. Гэты пароль спатрэбіцца, калі вы захочаце імпартаваць і аднавіць даныя."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Пароль"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Увядзіце пароль яшчэ раз"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Паролі не супадаюць"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Калі вы забудзеце пароль і згубіце тэлефон, то не зможаце аднавіць захаваныя даныя праз Здароўе і спорт."</string>
+    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
+    <skip />
     <string name="import_decryption_title" msgid="396608799208392844">"Увядзіце пароль"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Каб імпартаваць даныя праграмы \"Здароўе і спорт\", неабходна ўвесці пароль, зададзены для шыфравання"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Забылі пароль?"</string>
@@ -352,6 +357,14 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Скасаваць"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Далей"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Шлях для імпарту"</string>
+    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
+    <skip />
+    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Пачатак працы з праграмай \"Здароўе і спорт\""</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Праграма \"Здароўе і спорт\" захоўвае даныя пра ваша здароўе і фізічную актыўнасць і забяспечвае сінхранізацыю розных праграм на тэлефоне"</string>
     <string name="share_data" msgid="3481932156368883946">"Абагульвайце даныя з праграмамі"</string>

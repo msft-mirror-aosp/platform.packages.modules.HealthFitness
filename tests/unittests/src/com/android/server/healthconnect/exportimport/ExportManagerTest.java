@@ -29,8 +29,8 @@ import android.net.Uri;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
@@ -153,7 +153,8 @@ public class ExportManagerTest {
                         mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
         File remoteDir = dbContext.getDatabaseDir();
         File remoteFile = new File(remoteDir, REMOTE_EXPORT_DATABASE_FILE_NAME);
-        ScheduledExportSettingsStorage.configure(
+
+        ExportImportSettingsStorage.configure(
                 ScheduledExportSettings.withUri(Uri.parse(remoteFile.toURI().toString())));
     }
 

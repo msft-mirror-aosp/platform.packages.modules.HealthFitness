@@ -99,6 +99,11 @@ class ImportSourceLocationFragmentTest {
         private val TEST_DOCUMENT_PROVIDER_2_ROOT_URI =
             Uri.parse(
                 "content://android.healthconnect.tests.documentprovider2.documents/root/account")
+
+        private val EXTERNAL_STORAGE_DOCUMENT_URI =
+            Uri.parse("content://com.android.externalstorage.documents/document")
+        private val DOWNLOADS_DOCUMENT_URI =
+            Uri.parse("content://com.android.providers.downloads.documents/document")
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -377,6 +382,62 @@ class ImportSourceLocationFragmentTest {
 
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.importDecryptionFragment)
+    }
+
+    @Test
+    fun importSourceLocationFragment_chooseExternalStorageFile_doesNotNavigateToNewScreen() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ImportSourceLocationFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.import_nav_graph)
+            navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        intending(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+            .respondWith(ActivityResult(RESULT_OK, Intent().setData(EXTERNAL_STORAGE_DOCUMENT_URI)))
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.importSourceLocationFragment)
+    }
+
+    @Test
+    fun importSourceLocationFragment_chooseDownloadsFile_doesNotNavigateToNewScreen() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ImportSourceLocationFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.import_nav_graph)
+            navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+        intending(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+            .respondWith(ActivityResult(RESULT_OK, Intent().setData(DOWNLOADS_DOCUMENT_URI)))
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withId(R.id.export_import_next_button)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id)
+            .isEqualTo(R.id.importSourceLocationFragment)
     }
 
     @Test

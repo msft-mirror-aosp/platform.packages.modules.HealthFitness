@@ -259,8 +259,8 @@ public class TransactionManagerTest {
         assertThat(uuidList).hasSize(DEFAULT_PAGE_SIZE + 1);
     }
 
-    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void readMedicalResourcesByIds_returnsEmpty() {
         MedicalIdFiltersParcel parcel =
                 new MedicalIdFiltersParcel(List.of(MedicalIdFilter.fromId(getUUID())));

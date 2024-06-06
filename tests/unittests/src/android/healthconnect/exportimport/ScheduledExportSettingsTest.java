@@ -61,6 +61,20 @@ public final class ScheduledExportSettingsTest {
     }
 
     @Test
+    public void testWithUriAndPeriodInDays() {
+        ScheduledExportSettings settings =
+                ScheduledExportSettings.withUriAndPeriodInDays(TEST_URI, 7);
+
+        Parcel settingsParcel = writeToParcel(settings);
+        settingsParcel.setDataPosition(0);
+        ScheduledExportSettings deserializedSettings =
+                settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
+
+        assertThat(deserializedSettings.getUri()).isEqualTo(TEST_URI);
+        assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(7);
+    }
+
+    @Test
     public void testEquals_andHashCode_withPeriodInDays() {
         ScheduledExportSettings settingsA = ScheduledExportSettings.withPeriodInDays(7);
         ScheduledExportSettings settingsB = ScheduledExportSettings.withPeriodInDays(7);

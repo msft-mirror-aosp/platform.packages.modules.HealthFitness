@@ -85,8 +85,10 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ExportImportDocumentProvider;
+import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
+import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -1779,7 +1781,7 @@ public class HealthConnectManager {
     }
 
     /**
-     * Queries the document providers available to be used for export/import.
+     * Queries the status of a scheduled export.
      *
      * @throws RuntimeException for internal errors
      * @hide
@@ -1799,6 +1801,41 @@ public class HealthConnectManager {
                     new IScheduledExportStatusCallback.Stub() {
                         @Override
                         public void onResult(ScheduledExportStatus status) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(status));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the status of a data import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void getImportStatus(
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<ImportStatus, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.getImportStatus(
+                    mContext.getUser(),
+                    new IImportStatusCallback.Stub() {
+                        @Override
+                        public void onResult(ImportStatus status) {
                             Binder.clearCallingIdentity();
                             executor.execute(() -> callback.onResult(status));
                         }
@@ -2105,6 +2142,24 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Deletes a list of medical resources by id. Ids that don't exist will be ignored.
+     *
+     * <p>Deletions are performed in a transaction i.e. either all will be deleted or none.
+     *
+     * @param ids The ids to delete.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @hide
+     */
+    // TODO: b/338035191 - Make this flagged Api and add CTS tests.
+    public void deleteMedicalResources(
+            @NonNull List<MedicalIdFilter> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
         throw new UnsupportedOperationException("Not implemented");
     }
 

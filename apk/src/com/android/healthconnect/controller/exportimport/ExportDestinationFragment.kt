@@ -29,11 +29,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.isLocalFile
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Export destination fragment for Health Connect. */
@@ -44,7 +45,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     private val saveResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(contract, ::onSave)
 
-    private val viewModel: ExportSettingsViewModel by viewModels()
+    private val viewModel: ExportSettingsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -104,8 +105,12 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     private fun onSave(result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
             val fileUri = result.data?.data ?: return
-            viewModel.updateExportUri(fileUri)
-            requireActivity().finish()
+            if (isLocalFile(fileUri)) {
+                Toast.makeText(activity, R.string.export_invalid_storage, Toast.LENGTH_LONG).show()
+            } else {
+                viewModel.updateExportUriWithSelectedFrequency(fileUri)
+                requireActivity().finish()
+            }
         }
     }
 }
