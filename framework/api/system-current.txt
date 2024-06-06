@@ -135,6 +135,12 @@ package android.health.connect {
     field public static final String MANAGE_HEALTH_PERMISSIONS = "android.permission.MANAGE_HEALTH_PERMISSIONS";
   }
 
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalPermissionCategory {
+    field public static final int ALL_MEDICAL_DATA = 1; // 0x1
+    field public static final int IMMUNIZATION = 2; // 0x2
+    field public static final int UNKNOWN = 0; // 0x0
+  }
+
   public class RecordTypeInfoResponse {
     method @NonNull public java.util.List<android.health.connect.datatypes.DataOrigin> getContributingPackages();
     method public int getDataCategory();

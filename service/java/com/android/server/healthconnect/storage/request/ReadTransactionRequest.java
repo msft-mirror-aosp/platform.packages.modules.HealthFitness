@@ -101,7 +101,7 @@ public class ReadTransactionRequest {
     }
 
     public ReadTransactionRequest(MedicalIdFiltersParcel medicalIdFiltersParcel) {
-        MedicalResourceHelper medicalResourceHelper = MedicalResourceHelper.getInstance();
+        MedicalResourceHelper medicalResourceHelper = new MedicalResourceHelper();
         mReadTableRequests =
                 Collections.singletonList(
                         medicalResourceHelper.getReadTableRequest(medicalIdFiltersParcel));

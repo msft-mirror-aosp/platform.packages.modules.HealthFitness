@@ -16,8 +16,8 @@
 package com.android.healthconnect.controller.permissiontypes.api
 
 import android.health.connect.HealthConnectManager
-import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.HealthDataCategory
+import android.health.connect.RecordTypeInfoResponse
 import android.health.connect.datatypes.Record
 import android.util.Log
 import androidx.core.os.asOutcomeReceiver

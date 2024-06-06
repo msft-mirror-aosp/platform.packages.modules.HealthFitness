@@ -85,8 +85,10 @@ import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ExportImportDocumentProvider;
+import android.health.connect.exportimport.IImportStatusCallback;
 import android.health.connect.exportimport.IQueryDocumentProvidersCallback;
 import android.health.connect.exportimport.IScheduledExportStatusCallback;
+import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.health.connect.internal.datatypes.RecordInternal;
@@ -97,6 +99,7 @@ import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.migration.MigrationException;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
@@ -311,20 +314,20 @@ public class HealthConnectManager {
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
 
     /**
-     * Unknown error during the last data export.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_UNKNOWN = 0;
-
-    /**
      * No error during the last data export.
      *
      * @hide
      */
     @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_NONE = 1;
+    public static final int DATA_EXPORT_ERROR_NONE = 0;
+
+    /**
+     * Unknown error during the last data export.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_ERROR_UNKNOWN = 1;
 
     /**
      * Indicates that the last export failed because we lost access to the export file location.
@@ -1779,7 +1782,7 @@ public class HealthConnectManager {
     }
 
     /**
-     * Queries the document providers available to be used for export/import.
+     * Queries the status of a scheduled export.
      *
      * @throws RuntimeException for internal errors
      * @hide
@@ -1808,6 +1811,59 @@ public class HealthConnectManager {
                             returnError(executor, exception, callback);
                         }
                     });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the status of a data import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void getImportStatus(
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<ImportStatus, HealthConnectException> callback) {
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        try {
+            mService.getImportStatus(
+                    mContext.getUser(),
+                    new IImportStatusCallback.Stub() {
+                        @Override
+                        public void onResult(ImportStatus status) {
+                            Binder.clearCallingIdentity();
+                            executor.execute(() -> callback.onResult(status));
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Queries the status of a data import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void runImport(@NonNull Uri file) {
+        Objects.requireNonNull(file);
+        try {
+            mService.runImport(mContext.getUser(), file);
         } catch (RemoteException e) {
             e.rethrowFromSystemServer();
         }
@@ -2094,13 +2150,66 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if request page size set is less than 1 or more than 5000 in
      *     {@link ReadMedicalResourcesRequest}.
-     * @hide
      */
-    // TODO(b/340569771): Make this flagged Api and add CTS tests.
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
             @NonNull ReadMedicalResourcesRequest request,
             @NonNull Executor executor,
-            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+            @NonNull
+                    OutcomeReceiver<ReadMedicalResourcesResponse, HealthConnectException>
+                            callback) {
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Deletes a list of medical resources by id. Ids that don't exist will be ignored.
+     *
+     * <p>Deletions are performed in a transaction i.e. either all will be deleted or none.
+     *
+     * @param ids The ids to delete.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     * @hide
+     */
+    // TODO: b/338035191 - Make this flagged Api and add CTS tests.
+    public void deleteMedicalResources(
+            @NonNull List<MedicalIdFilter> ids,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<Void, HealthConnectException> callback) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
+     * Creates a {@link MedicalDataSource} in HealthConnect based on the {@link
+     * CreateMedicalDataSourceRequest} request values.
+     *
+     * <p>A {@link MedicalDataSource} needs to be created before any {@link MedicalResource}s for
+     * that source can be inserted.
+     *
+     * <p>The following rules apply to {@link MedicalDataSource} creation.
+     *
+     * <ul>
+     *   <li>Only apps that have the
+     *       android.health.connect.HealthPermissions#WRITE_MEDICAL_RESOURCES are allowed to create
+     *       data sources.
+     *   <li>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
+     *       all medical data sources created by an app. The FHIR base uri cannot be updated after
+     *       creating the data source.
+     * </ul>
+     *
+     * @param request Creation request.
+     * @param executor Executor on which to invoke the callback.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void createMedicalDataSource(
+            @NonNull CreateMedicalDataSourceRequest request,
+            @NonNull Executor executor,
+            @NonNull OutcomeReceiver<MedicalDataSource, HealthConnectException> callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);

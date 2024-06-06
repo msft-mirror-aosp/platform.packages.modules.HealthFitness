@@ -208,6 +208,11 @@ public final class TransactionTestUtils {
         }
     }
 
+    /** Returns a valid UUID string. */
+    public static String getUUID() {
+        return "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    }
+
     private static ExerciseRouteInternal createExerciseRoute(Instant startTime) {
         int numberOfLocations = 3;
         double latitude = 52.13;

@@ -2,6 +2,7 @@ package com.android.healthconnect.controller.utils
 
 import android.content.Context
 import android.provider.DeviceConfig
+import com.android.healthfitness.flags.Flags
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +28,8 @@ interface FeatureUtils {
     fun isSkinTemperatureEnabled(): Boolean
 
     fun isPlannedExerciseEnabled(): Boolean
+
+    fun isPersonalHealthRecordEnabled(): Boolean
 }
 
 class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnPropertiesChangedListener {
@@ -42,6 +45,7 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
             "aggregation_source_controls_enable"
         private const val PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED =
             "new_information_architecture_enable"
+        private const val PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED = "personal_health_record_enable"
     }
 
     private val lock = Any()
@@ -65,6 +69,8 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
     private var isNewInformationArchitectureEnabled =
         DeviceConfig.getBoolean(
             HEALTH_FITNESS_FLAGS_NAMESPACE, PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
+
+    private var isPersonalHealthRecordEnabled = Flags.personalHealthRecord()
 
     override fun isNewAppPriorityEnabled(): Boolean {
         synchronized(lock) {
@@ -120,6 +126,12 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
         }
     }
 
+    override fun isPersonalHealthRecordEnabled(): Boolean {
+        synchronized(lock) {
+            return isPersonalHealthRecordEnabled
+        }
+    }
+
     override fun onPropertiesChanged(properties: DeviceConfig.Properties) {
         synchronized(lock) {
             if (!properties.namespace.equals(HEALTH_FITNESS_FLAGS_NAMESPACE)) {
@@ -143,6 +155,8 @@ class FeatureUtilsImpl(context: Context) : FeatureUtils, DeviceConfig.OnProperti
                         isNewInformationArchitectureEnabled =
                             properties.getBoolean(
                                 PROPERTY_NEW_INFORMATION_ARCHITECTURE_ENABLED, false)
+                    PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED ->
+                        properties.getBoolean(PROPERTY_PERSONAL_HEALTH_RECORD_ENABLED, false)
                 }
             }
         }
