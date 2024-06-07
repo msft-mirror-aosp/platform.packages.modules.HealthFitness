@@ -112,6 +112,7 @@ import android.health.connect.ratelimiter.RateLimiterException;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
@@ -2145,6 +2146,9 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                     }
                 });
     }
+
+    @Override
+    public void runImport(@NonNull UserHandle user, @NonNull Uri file) {}
 
     /** Queries the document providers available to be used for export/import. */
     @Override

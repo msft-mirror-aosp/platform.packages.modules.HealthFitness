@@ -26,14 +26,16 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
@@ -64,6 +66,7 @@ import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
 import android.health.connect.MedicalIdFilter;
+import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
@@ -132,8 +135,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HealthConnectManagerTest {
     private static final String TAG = "HealthConnectManagerTest";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts";
-
-    private static final int MAXIMUM_PAGE_SIZE = 5000;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -1946,6 +1947,16 @@ public class HealthConnectManagerTest {
         assertThrows(
                 UnsupportedOperationException.class,
                 () -> TestUtils.readMedicalResourcesByIds(ids));
+    }
+
+    @Test
+    public void testReadMedicalResources_byRequest_throws() {
+        ReadMedicalResourcesRequest request =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> TestUtils.readMedicalResourcesByRequest(request));
     }
 
     private boolean isEmptyContributingPackagesForAll(

@@ -24,7 +24,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
 
-import androidx.annotation.NonNull;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDailyService;
@@ -74,12 +73,19 @@ public class ExportImportJobs {
                 builder.build());
     }
 
-    /** Execute the periodic export job. */
-    public static void executePeriodicExportJob(@NonNull Context context) {
-        if (exportImport() && ExportImportSettingsStorage.getScheduledExportPeriodInDays() > 0) {
-            ExportManager exportManager = new ExportManager(context);
-            exportManager.runExport();
+    /**
+     * Execute the periodic export job. It returns true if the export was successful (no need to
+     * reschedule the job). False otherwise.
+     */
+    // TODO(b/318484778): Use dependency injection instead of passing an instance to the method.
+    public static boolean executePeriodicExportJob(ExportManager exportManager) {
+        if (!exportImport() || ExportImportSettingsStorage.getScheduledExportPeriodInDays() <= 0) {
+            // If there is no need to run the export, it counts like a success regarding job
+            // reschedule.
+            return true;
         }
+
+        return exportManager.runExport();
 
         // TODO(b/325599089): Cancel job if flag is off.
 

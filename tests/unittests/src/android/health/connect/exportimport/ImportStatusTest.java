@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package android.healthconnect.exportimport;
+package android.health.connect.exportimport;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.exportimport.ImportStatus;
 import android.os.Parcel;
 
 import androidx.test.runner.AndroidJUnit4;

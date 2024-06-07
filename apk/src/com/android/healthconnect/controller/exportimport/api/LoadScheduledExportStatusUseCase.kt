@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportStatus
+import android.util.Log
 import androidx.core.os.asOutcomeReceiver
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -67,6 +68,7 @@ constructor(
             try {
                 ExportUseCaseResult.Success(execute())
             } catch (exception: Exception) {
+                Log.i(TAG, "Load scheduled export status error: ", exception)
                 ExportUseCaseResult.Failed(exception)
             }
         }

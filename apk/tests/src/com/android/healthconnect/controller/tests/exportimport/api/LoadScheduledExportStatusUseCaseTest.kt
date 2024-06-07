@@ -19,30 +19,37 @@ package com.android.healthconnect.controller.tests.exportimport.api
 import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportStatus
-import android.os.OutcomeReceiver
 import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.exportimport.api.LoadScheduledExportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.service.HealthDataExportManagerModule
+import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataExportManager
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doAnswer
 
+@HiltAndroidTest
+@UninstallModules(HealthDataExportManagerModule::class)
 class LoadScheduledExportStatusUseCaseTest {
+    @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
 
     private lateinit var useCase: LoadScheduledExportStatusUseCase
-    private val healthDataExportManager: HealthDataExportManager =
-        Mockito.mock(HealthDataExportManager::class.java)
 
     @Before
     fun setup() {
         useCase = LoadScheduledExportStatusUseCase(healthDataExportManager)
+    }
+
+    @After
+    fun teardown() {
+        (healthDataExportManager as FakeHealthDataExportManager).reset()
     }
 
     @Test
@@ -50,9 +57,8 @@ class LoadScheduledExportStatusUseCaseTest {
         val scheduledExportStatus =
             ScheduledExportStatus(
                 Instant.ofEpochMilli(100), HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS, 7)
-        doAnswer(prepareAnswer(scheduledExportStatus))
-            .`when`(healthDataExportManager)
-            .getScheduledExportStatus(any(), any())
+        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
+            scheduledExportStatus)
 
         val result = useCase.invoke()
 
@@ -66,9 +72,9 @@ class LoadScheduledExportStatusUseCaseTest {
 
     @Test
     fun invoke_callsHealthDataExportManager_returnsFailure() = runTest {
-        doAnswer { throw HealthConnectException(HealthConnectException.ERROR_UNKNOWN) }
-            .`when`(healthDataExportManager)
-            .getScheduledExportStatus(any(), any())
+        val exception = HealthConnectException(HealthConnectException.ERROR_UNKNOWN)
+        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatusException(
+            exception)
 
         val result = useCase.invoke()
 
@@ -77,16 +83,5 @@ class LoadScheduledExportStatusUseCaseTest {
             .isTrue()
         assertThat((result.exception as HealthConnectException).errorCode)
             .isEqualTo(HealthConnectException.ERROR_UNKNOWN)
-    }
-
-    private fun prepareAnswer(
-        scheduledExportStatus: ScheduledExportStatus
-    ): (InvocationOnMock) -> Nothing? {
-        val answer = { args: InvocationOnMock ->
-            val receiver = args.arguments[1] as OutcomeReceiver<ScheduledExportStatus, *>
-            receiver.onResult(scheduledExportStatus)
-            null
-        }
-        return answer
     }
 }

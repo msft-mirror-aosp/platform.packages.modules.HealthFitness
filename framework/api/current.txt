@@ -78,6 +78,7 @@ package android.health.connect {
     method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void getMedicalDataSources(@NonNull java.util.List<java.lang.String>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalDataSource>,android.health.connect.HealthConnectException>);
     method public void insertRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.InsertRecordsResponse,android.health.connect.HealthConnectException>);
     method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull java.util.List<android.health.connect.MedicalIdFilter>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull android.health.connect.ReadMedicalResourcesRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadMedicalResourcesResponse,android.health.connect.HealthConnectException>);
     method public <T extends android.health.connect.datatypes.Record> void readRecords(@NonNull android.health.connect.ReadRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadRecordsResponse<T>,android.health.connect.HealthConnectException>);
     method public void updateRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
     field public static final String ACTION_MANAGE_HEALTH_PERMISSIONS = "android.health.connect.action.MANAGE_HEALTH_PERMISSIONS";
@@ -200,6 +201,25 @@ package android.health.connect {
     method @NonNull public String getFhirResourceType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceId> CREATOR;
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method public int getMedicalResourceType();
+    method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
+    method public long getPageToken();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesRequest> CREATOR;
+  }
+
+  public static final class ReadMedicalResourcesRequest.Builder {
+    ctor public ReadMedicalResourcesRequest.Builder(int);
+    ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest.Builder);
+    ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setMedicalResourceType(int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageToken(long);
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {

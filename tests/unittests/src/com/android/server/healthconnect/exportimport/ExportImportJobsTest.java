@@ -16,6 +16,7 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -25,7 +26,10 @@ import static org.mockito.Mockito.when;
 import android.app.job.JobScheduler;
 import android.content.Context;
 import android.health.connect.exportimport.ScheduledExportSettings;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.modules.utils.testing.ExtendedMockitoRule;
 import com.android.server.healthconnect.FakePreferenceHelper;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
@@ -47,8 +51,11 @@ public class ExportImportJobsTest {
     public final ExtendedMockitoRule mExtendedMockitoRule =
             new ExtendedMockitoRule.Builder(this).mockStatic(PreferenceHelper.class).build();
 
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+
     @Mock Context mContext;
     @Mock private JobScheduler mJobScheduler;
+    @Mock private ExportManager mExportManager;
     private final PreferenceHelper mFakePreferenceHelper = new FakePreferenceHelper();
 
     @Before
@@ -66,6 +73,7 @@ public class ExportImportJobsTest {
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(0));
 
         ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
+
         verify(mJobScheduler, times(0)).schedule(any());
     }
 
@@ -75,7 +83,60 @@ public class ExportImportJobsTest {
 
         ExportImportJobs.schedulePeriodicExportJob(mContext, 0);
         verify(mJobScheduler, times(1)).schedule(any());
+
         ExportImportJobs.schedulePeriodicExportJob(mContext, 1);
         verify(mJobScheduler, times(2)).schedule(any());
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
+    public void executePeriodicExportJob_withPeriodZero_doesNotRunExport() {
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(0));
+
+        ExportImportJobs.executePeriodicExportJob(mExportManager);
+
+        verify(mExportManager, times(0)).runExport();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
+    public void executePeriodicExportJob_withPeriodZero_returnsTrue() {
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(0));
+
+        boolean isExportSuccessful = ExportImportJobs.executePeriodicExportJob(mExportManager);
+
+        assertThat(isExportSuccessful).isTrue();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
+    public void executePeriodicExportJob_withPeriodGreaterThanZero_runsExport() {
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+
+        ExportImportJobs.executePeriodicExportJob(mExportManager);
+
+        verify(mExportManager, times(1)).runExport();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
+    public void executePeriodicExportJob_successfulExport_returnsTrue() {
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        when(mExportManager.runExport()).thenReturn(true);
+
+        boolean isExportSuccessful = ExportImportJobs.executePeriodicExportJob(mExportManager);
+
+        assertThat(isExportSuccessful).isTrue();
+    }
+
+    @Test
+    @EnableFlags({Flags.FLAG_EXPORT_IMPORT})
+    public void executePeriodicExportJob_failedExport_returnsFalse() {
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withPeriodInDays(1));
+        when(mExportManager.runExport()).thenReturn(false);
+
+        boolean isExportSuccessful = ExportImportJobs.executePeriodicExportJob(mExportManager);
+
+        assertThat(isExportSuccessful).isFalse();
     }
 }
