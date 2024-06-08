@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"Rezervimi"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Burimet e të dhënave dhe përparësia"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Cakto njësitë"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"Qasja së fundi"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Asnjë aplikacion nuk ka pasur qasje së fundi te Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Shiko të gjitha qasjet e fundit"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura e lëkurës"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lexo temperaturën e lëkurës"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Shkruaj temperaturën e lëkurës"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Lejo \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" të lexojë"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Lejo \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" të shkruajë"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Anulo"</string>
@@ -319,17 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pse i heq Health Connect lejet e aplikacioneve"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Nëse një aplikacion pezullohet ose hiqet nga Google Play, Health Connect i heq automatikisht lejet e tij.\n\nKjo do të thotë që aplikacioni nuk mund të ketë më qasje te të dhënat e ruajtura në Health Connect. Nëse ky aplikacion ka të dhëna që janë shkruar më herët, ai shfaqet në listën e aplikacioneve joaktive."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"E kuptova"</string>
-    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
-    <skip />
-    <!-- no translation found for next_export_time (3138247220014510213) -->
-    <skip />
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Konfiguro"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Të dhënat nuk mund të eksportoheshin"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Pati një problem me eksportimin për datën <xliff:g id="DATE">%1$s</xliff:g>. Konfiguro një eksportim të ri të planifikuar dhe provo përsëri."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Eksportimi i radhës: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Rezervo dhe restauro"</string>
-    <!-- no translation found for last_export_time (9205875050823594041) -->
-    <skip />
+    <string name="last_export_time" msgid="9205875050823594041">"Eksportimi i fundit: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Eksporto dhe importo"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Eksportimi i planifikuar"</string>
     <string name="import_data" msgid="404502315533233094">"Importo të dhënat"</string>
@@ -359,12 +372,9 @@
     <string name="import_source_location_title" msgid="4444467438013749461">"Importo nga"</string>
     <!-- no translation found for import_invalid_storage (4873640088459948487) -->
     <skip />
-    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
-    <skip />
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Zgjidh një llogari"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Anulo"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"U krye"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Fillo me Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ruan të dhënat e tua të shëndetit dhe të fitnesit, duke të ofruar një mënyrë të thjeshtë për të sinkronizuar aplikacione të ndryshme në telefonin tënd"</string>
     <string name="share_data" msgid="3481932156368883946">"Ndaj të dhënat me aplikacionet e tua"</string>

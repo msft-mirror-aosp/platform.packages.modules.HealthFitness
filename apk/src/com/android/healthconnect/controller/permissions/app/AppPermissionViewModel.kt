@@ -26,7 +26,6 @@ import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
-import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
@@ -135,7 +134,7 @@ constructor(
     val lastReadPermissionDisconnected: LiveData<Boolean>
         get() = _lastReadPermissionDisconnected
 
-    private var additionalPermissions: List<String> = emptyList()
+    private var grantedAdditionalPermissions: List<String> = emptyList()
 
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
@@ -163,8 +162,9 @@ constructor(
                     .map { it.healthPermission }
                     .filterIsInstance<DataTypePermission>()
                     .toSet())
-            additionalPermissions =
+            grantedAdditionalPermissions =
                 permissionsList
+                    .filter { it.isGranted }
                     .map { it.healthPermission }
                     .filterIsInstance<HealthPermission.AdditionalPermission>()
                     .map { it.additionalPermission }
@@ -207,9 +207,10 @@ constructor(
             if (grant) {
                 grantPermission(packageName, dataTypePermission)
             } else {
-                revokePermission(dataTypePermission, packageName)
                 if (shouldDisplayExerciseRouteDialog(packageName, dataTypePermission)) {
                     _showDisableExerciseRouteEvent.postValue(true)
+                } else {
+                    revokePermission(dataTypePermission, packageName)
                 }
             }
 
@@ -241,29 +242,12 @@ constructor(
         _grantedPermissions.postValue(grantedPermissions)
 
         val lastReadPermissionRevoked =
-            additionalPermissions.isNotEmpty() &&
+            grantedAdditionalPermissions.isNotEmpty() &&
                 (readPermissionsBeforeDisconnect > readPermissionsAfterDisconnect) &&
                 readPermissionsAfterDisconnect == 0
 
         if (lastReadPermissionRevoked) {
-            // If exercise routes is already "Ask every time", do not revoke again
-            additionalPermissions.forEach { permission ->
-                if (permission == READ_EXERCISE_ROUTES) {
-                    val isExerciseRoutePermissionAskEveryTime = runBlocking {
-                        when (val exerciseRouteState =
-                            loadExerciseRoutePermissionUseCase(packageName)) {
-                            is UseCaseResults.Success -> {
-                                exerciseRouteState.data.exerciseRoutePermissionState ==
-                                    ASK_EVERY_TIME
-                            }
-                            else -> false
-                        }
-                    }
-
-                    if (isExerciseRoutePermissionAskEveryTime) {
-                        return@forEach
-                    }
-                }
+            grantedAdditionalPermissions.forEach { permission ->
                 revokePermissionsStatusUseCase.invoke(packageName, permission)
             }
         }
@@ -285,14 +269,7 @@ constructor(
             return false
         }
 
-        return runBlocking {
-            when (val exerciseRouteState = loadExerciseRoutePermissionUseCase(packageName)) {
-                is UseCaseResults.Success -> {
-                    exerciseRouteState.data.exerciseRoutePermissionState == ALWAYS_ALLOW
-                }
-                else -> false
-            }
-        }
+        return isExerciseRoutePermissionAlwaysAllow(packageName)
     }
 
     fun grantAllPermissions(packageName: String): Boolean {
@@ -312,7 +289,20 @@ constructor(
 
     fun disableExerciseRoutePermission(packageName: String) {
         revokePermission(fromPermissionString(READ_EXERCISE), packageName)
-        revokePermissionsStatusUseCase(packageName, READ_EXERCISE_ROUTES)
+        // the revokePermission call will automatically revoke all additional permissions
+        // including Exercise Routes if the READ_EXERCISE permission is the last READ permission
+        if (isExerciseRoutePermissionAlwaysAllow(packageName)) {
+            revokePermissionsStatusUseCase(packageName, READ_EXERCISE_ROUTES)
+        }
+    }
+
+    private fun isExerciseRoutePermissionAlwaysAllow(packageName: String): Boolean = runBlocking {
+        when (val exerciseRouteState = loadExerciseRoutePermissionUseCase(packageName)) {
+            is UseCaseResults.Success -> {
+                exerciseRouteState.data.exerciseRoutePermissionState == ALWAYS_ALLOW
+            }
+            else -> false
+        }
     }
 
     fun revokeAllPermissions(packageName: String): Boolean {

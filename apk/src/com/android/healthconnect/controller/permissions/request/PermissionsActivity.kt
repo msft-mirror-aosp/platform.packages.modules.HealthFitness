@@ -18,7 +18,6 @@
 
 package com.android.healthconnect.controller.permissions.request
 
-import android.app.Activity.*
 import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.content.pm.PackageManager

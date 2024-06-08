@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"Còpia de seguretat"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Fonts de dades i prioritat"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Defineix les unitats"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"Accés recent"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Cap aplicació ha accedit a Salut connectada recentment"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Mostra tots els accessos recents"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura de la pell"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Llegir la temperatura de la pell"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escriure la temperatura de la pell"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> llegeixi"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> escrigui"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Cancel·la"</string>
@@ -319,17 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Per què Salut connectada suprimeix els permisos d\'aplicacions"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si una aplicació se suspèn o suprimeix de Google Play, Salut connectada en suprimeix els permisos automàticament.\n\nAixò significa que l\'aplicació ja no podrà accedir a les dades emmagatzemades a Salut Connectada. Si aquesta aplicació ha escrit dades anteriorment, apareixerà a la llista d\'aplicacions inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entesos"</string>
-    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
-    <skip />
-    <!-- no translation found for next_export_time (3138247220014510213) -->
-    <skip />
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Configura"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"No s\'han pogut exportar les dades"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Hi ha hagut un problema amb l\'exportació del dia <xliff:g id="DATE">%1$s</xliff:g>. Configura una exportació programada nova i torna-ho a provar."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Pròxima exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Còpia de seguretat i restauració"</string>
-    <!-- no translation found for last_export_time (9205875050823594041) -->
-    <skip />
+    <string name="last_export_time" msgid="9205875050823594041">"Darrera exportació: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporta i importa"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportació programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importa les dades"</string>
@@ -345,8 +358,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Cada setmana"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Cada mes"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Tria on vols exportar"</string>
-    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
-    <skip />
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Tria una aplicació d\'emmagatzematge per exportar les teves dades"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Escriu la contrasenya"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Cal la contrasenya d\'encriptació per importar les teves dades de Salut connectada"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Has oblidat la contrasenya?"</string>
@@ -357,14 +369,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancel·la"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Següent"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importa des de"</string>
-    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
-    <skip />
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Tria una aplicació d\'emmagatzematge per importar les teves dades"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Tria un compte"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancel·la"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Fet"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Comença amb Salut connectada"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Salut connectada emmagatzema les teves dades de salut i fitnes, i t\'ofereix una manera senzilla de sincronitzar les diverses aplicacions del telèfon"</string>
     <string name="share_data" msgid="3481932156368883946">"Comparteix dades amb les aplicacions"</string>
