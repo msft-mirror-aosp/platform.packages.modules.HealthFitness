@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"Biztonsági mentés"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Adatforrások és prioritás"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Egységek beállítása"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"Legutóbbi hozzáférés"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Egyetlen alkalmazás sem fért hozzá a Health Connect szolgáltatáshoz a közelmúltban"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Az összes legutóbbi hozzáférés megtekintése"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"bőrhőmérséklet"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Bőrhőmérséklet olvasása"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Bőrhőmérséklet írása"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Olvasási jogosultság a(z) „<xliff:g id="APP_NAME">%1$s</xliff:g>” alkalmazásnak"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Írási jogosultság a(z) „<xliff:g id="APP_NAME">%1$s</xliff:g>” alkalmazásnak"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Mégse"</string>
@@ -319,7 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Miért távolít el a Health Connect alkalmazásengedélyeket?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ha valamelyik alkalmazás felfüggesztésre vagy eltávolításra kerül a Google Playen, a Health Connect automatikusan eltávolítja az engedélyeit.\n\nEz azt jelenti, hogy az adott alkalmazás a továbbiakban már nem férhet hozzá a Health Connect szolgáltatásban tárolt adatokhoz. Ha az alkalmazás korábban rögzített adatokat, akkor az inaktív alkalmazások listájában lesz látható."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Értem"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Beállítás"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Nem sikerült exportálni az adatokat"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Hiba történt a következő dátumra ütemezett exportálással: <xliff:g id="DATE">%1$s</xliff:g>. Állítson be új ütemezett exportálást, majd próbálja újra."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Következő exportálás: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Biztonsági mentés és visszaállítás"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Legutóbbi exportálás: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exportálás és importálás"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Ütemezett exportálás"</string>
     <string name="import_data" msgid="404502315533233094">"Adatok importálása"</string>
@@ -335,13 +358,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Hetente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Havonta"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Válassza ki az exportálás helyét"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Titkosítás bekapcsolása"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Az adatokat titkosítani kell a mentésük előtt. Senki, még a Google vagy a Health Connect sem tud majd hozzájuk férni."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Hozzon létre egy jelszót titkosított adatainak védelme érdekében. Erre a jelszóra adatai importálásához és visszaállításához lesz szüksége."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Jelszó"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Jelszó megismétlése"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"A jelszavak nem egyeznek"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Ha elfelejti a jelszavát, és elveszti a telefonját, a Health Connect nem tud segíteni az elveszett adatok visszaállításában."</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Válassza ki a tárolóalkalmazást, amelybe exportálni szeretné az adatait"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Jelszó beírása"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Szükség van a titkosítási jelszavára a Health Connect-adatai importálásához"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Elfelejtette jelszavát?"</string>
@@ -352,6 +369,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Mégse"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Következő"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importálás innen:"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Válassza ki a tárolóalkalmazást, amelyből importálni szeretné az adatait"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Fiók kiválasztása"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Mégse"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Kész"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Kezdő lépések a Health Connect szolgáltatással"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"A Health Connect tárolja az egészségével és a fitnesztevékenységeivel kapcsolatos adatokat, így könnyedén szinkronizálhatja a telefonján lévő különböző alkalmazásokat"</string>
     <string name="share_data" msgid="3481932156368883946">"Megoszthat adatokat az alkalmazásaival"</string>
@@ -361,10 +382,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Vissza"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Kezdő lépések"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Adatok törlése"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Belépés a törlésbe"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Kilépés a törlésből"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Válassza ki a törölni kívánt adatokat"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Következő"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Ezzel véglegesen törli a Health Connect szolgáltatáshoz a kiválasztott időszakban hozzáadott adatokat"</string>
@@ -924,14 +943,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Engedélyezzen legalább egy olvasási engedélyt az alkalmazáshoz való háttérbeli vagy korábbi adathozzáférés bekapcsolásához"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Engedélyezzen legalább egy olvasási engedélyt az alkalmazáshoz való háttérhozzáférés bekapcsolásához"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Engedélyezzen legalább egy olvasási engedélyt az alkalmazáshoz való korábbi adathozzáférés bekapcsolásához"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Véglegesen törli a Health Connect összes adatát?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Véglegesen törli a Health Connect kiválasztott adatait?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Minden adat törölve"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> típusú adatok törölve"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elem törölve"</string>
 </resources>

@@ -42,7 +42,6 @@ import com.android.healthconnect.controller.shared.app.AppMetadata
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -61,7 +60,7 @@ class AccessFragmentTest {
 
     @BindValue val viewModel: AccessViewModel = Mockito.mock(AccessViewModel::class.java)
     private lateinit var navHostController: TestNavHostController
-    private lateinit var context : Context
+    private lateinit var context: Context
 
     @Before
     fun setup() {
@@ -192,10 +191,10 @@ class AccessFragmentTest {
     @Test
     fun whenAppNameClicked_navigatesToConnectedApp() {
         val map =
-                mapOf(
-                        AppAccessState.Read to listOf(TEST_APP),
-                        AppAccessState.Write to emptyList(),
-                        AppAccessState.Inactive to emptyList())
+            mapOf(
+                AppAccessState.Read to listOf(TEST_APP),
+                AppAccessState.Write to emptyList(),
+                AppAccessState.Inactive to emptyList())
 
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))

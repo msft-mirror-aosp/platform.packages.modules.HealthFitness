@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package android.healthconnect.exportimport;
+package android.health.connect.exportimport;
 
 import static android.health.connect.Constants.DEFAULT_INT;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
 import android.os.Parcel;
 
@@ -57,6 +56,20 @@ public final class ScheduledExportSettingsTest {
                 settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
 
         assertThat(deserializedSettings.getUri()).isNull();
+        assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(7);
+    }
+
+    @Test
+    public void testWithUriAndPeriodInDays() {
+        ScheduledExportSettings settings =
+                ScheduledExportSettings.withUriAndPeriodInDays(TEST_URI, 7);
+
+        Parcel settingsParcel = writeToParcel(settings);
+        settingsParcel.setDataPosition(0);
+        ScheduledExportSettings deserializedSettings =
+                settingsParcel.readTypedObject(ScheduledExportSettings.CREATOR);
+
+        assertThat(deserializedSettings.getUri()).isEqualTo(TEST_URI);
         assertThat(deserializedSettings.getPeriodInDays()).isEqualTo(7);
     }
 

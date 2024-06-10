@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"បម្រុង​ទុក"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ប្រភពទិន្នន័យ និងអាទិភាព"</string>
     <string name="set_units_title" msgid="2657822539603758029">"កំណត់ឯកតា"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"ការចូលប្រើថ្មីៗ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"មិនមានកម្មវិធីណាមួយបានចូលប្រើ Health Connect ថ្មីៗនេះទេ"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"មើលគ្រប់ការចូលប្រើប្រាស់ថ្មីៗនេះ"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"សីតុណ្ហភាពស្បែក"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"អានសីតុណ្ហភាពស្បែក"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"សរសេរសីតុណ្ហភាពស្បែក"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"អនុញ្ញាតឱ្យ “<xliff:g id="APP_NAME">%1$s</xliff:g>” អាន"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"អនុញ្ញាតឱ្យ “<xliff:g id="APP_NAME">%1$s</xliff:g>” សរសេរ"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"បោះបង់"</string>
@@ -319,7 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ហេតុអ្វីបានជា Health Connect ដកការអនុញ្ញាតកម្មវិធី"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ប្រសិនបើ​កម្មវិធីមួយ​ត្រូវបានផ្អាក ឬដកចេញពី Google Play នោះ Health Connect នឹងដកការអនុញ្ញាតរបស់ខ្លួនចេញ​ដោយស្វ័យប្រវត្តិ។\n\nនេះមានន័យថា កម្មវិធីមិនអាចចូលប្រើប្រាស់​ទិន្នន័យដែលរក្សាទុក​នៅក្នុង Health Connect បានទៀតទេ។ ប្រសិនបើកម្មវិធីនេះធ្លាប់បានសរសេរទិន្នន័យពីមុន នោះវានឹងបង្ហាញនៅក្នុងបញ្ជីកម្មវិធីអសកម្ម។"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"យល់ហើយ"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"រៀបចំ"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"មិនអាចនាំចេញទិន្នន័យបានទេ"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"មានបញ្ហាជាមួយនឹងការនាំចេញសម្រាប់ថ្ងៃទី <xliff:g id="DATE">%1$s</xliff:g>។ សូមរៀបចំការនាំចេញដែលបានកំណត់កាលវិភាគថ្មី រួចព្យាយាមម្ដងទៀត។"</string>
+    <string name="next_export_time" msgid="3138247220014510213">"ការនាំចេញបន្ទាប់៖ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"បម្រុងទុក និង​ស្ដារ"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"ការនាំចេញចុងក្រោយ៖ <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"នាំចេញ និងនាំចូល"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"បានកំណត់ពេលនាំចេញ"</string>
     <string name="import_data" msgid="404502315533233094">"នាំចូលទិន្នន័យ"</string>
@@ -335,13 +358,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"ប្រចាំសប្ដាហ៍"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ប្រចាំខែ"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"ជ្រើសរើសកន្លែងដែលត្រូវនាំចេញ"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"បើក​ការ​អ៊ីនគ្រីប"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ត្រូវអ៊ីនគ្រីបទិន្នន័យជាមុនសិន ទើបរក្សាទុកបាន។ គ្មាននរណាម្នាក់ សូម្បីតែ Google ឬ Health Connect នឹងអាចចូលប្រើទិន្នន័យនេះបានទេ។"</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"បង្កើតពាក្យសម្ងាត់ ដើម្បីការពារទិន្នន័យដែលបានអ៊ីនគ្រីបរបស់អ្នក។ អ្នកនឹងត្រូវការពាក្យសម្ងាត់នេះ ដើម្បីនាំចូល និងស្ដារទិន្នន័យរបស់អ្នក។"</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"ពាក្យសម្ងាត់"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"បញ្ចូលពាក្យសម្ងាត់ម្តងទៀត"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"ពាក្យសម្ងាត់​មិន​ត្រូវ​គ្នាទេ"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"ប្រសិនបើអ្នកភ្លេចពាក្យសម្ងាត់របស់អ្នក និងបាត់ទូរសព្ទរបស់អ្នក នោះ Health Connect មិនអាចជួយអ្នកស្ដារឡើងវិញនូវទិន្នន័យដែលបានរក្សាទុករបស់អ្នកបានទេ។"</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"សូមជ្រើសរើសកម្មវិធីផ្ទុក ដើម្បីនាំចេញទិន្នន័យរបស់អ្នក"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"វាយបញ្ចូលពាក្យសម្ងាត់"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"ចាំបាច់ត្រូវមានពាក្យសម្ងាត់នៃការ​អ៊ីនគ្រីបរបស់អ្នក ដើម្បីនាំចូលទិន្នន័យ Health Connect របស់អ្នក"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ភ្លេចពាក្យសម្ងាត់ឬ?"</string>
@@ -352,6 +369,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"បោះបង់"</string>
     <string name="import_next_button" msgid="5706322508691854289">"បន្ទាប់"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"នាំចូល​ពី"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"សូមជ្រើសរើសកម្មវិធីផ្ទុក ដើម្បីនាំចូលទិន្នន័យរបស់អ្នក"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"ជ្រើសរើសគណនី"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"បោះបង់"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"រួចរាល់"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ចាប់ផ្ដើមជាមួយ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើទូរសព្ទ​របស់អ្នក"</string>
     <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>

@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Mga data source at priyoridad"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Itakda ang mga unit"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"Kamakailang na-access"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Walang app na kamakailangang nag-access ng Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Tingnan lahat ng kamakailang access"</string>
@@ -258,6 +264,12 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura ng balat"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Basahin ang temperatura ng balat"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"I-write ang temperatura ng balat"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Lahat ng medikal na data"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"lahat ng medikal na data"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"I-write ang lahat ng medikal na data"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunization"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunization"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"I-read ang immunization"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Payagang mag-read ang “<xliff:g id="APP_NAME">%1$s</xliff:g>”"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Payagang mag-write ang “<xliff:g id="APP_NAME">%1$s</xliff:g>”"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Kanselahin"</string>
@@ -319,7 +331,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Bakit nag-aalis ng mga pahintulot sa app ang Health Connect"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Kung sinuspinde o inalis sa Google Play ang isang app, awtomatikong aalisin ng Health Connect ang mga pahintulot nito.\n\nIbig sabihin, hindi na maa-access ng app ang data na naka-store sa Health Connect. Kung dating nagra-write ng data ang app na ito, lalabas ito sa listahan ng mga hindi aktibong app."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"I-set up"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Hindi ma-export ang data"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Nagkaproblema sa pag-export para sa <xliff:g id="DATE">%1$s</xliff:g>. Mag-set up ng bagong nakaiskedyul na pag-export at subukan ulit."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Susunod na pag-export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Pag-back up at pag-restore"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Huling pag-export: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"I-export at i-import"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Nakaiskedyul na pag-export"</string>
     <string name="import_data" msgid="404502315533233094">"I-import ang data"</string>
@@ -335,13 +352,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Linggo-linggo"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Buwanan"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Piliin kung saan ie-export"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"I-on ang pag-encrypt"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Kailangang naka-encrypt ang data bago ito i-save. Walang sinuman, kahit na Google o Health Connect, ang makakapag-access dito."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Gumawa ng password para protektahan ang iyong naka-encrypt na data. Kakailanganin mo ang password na ito para ma-import at ma-restore ang iyong data."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Password"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Ulitin ang password"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Hindi tugma ang mga password"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Kung makalimutan mo ang iyong password at mawala ang telepono mo, hindi ka matutulungan ng Health Connect na ma-recover ang iyong na-save na data."</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Pumili ng storage app para ma-export ang iyong data"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"I-type ang password"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Kailangan ang iyong password sa pag-encrypt para ma-import ang data ng Health Connect mo"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Nakalimutan ang password?"</string>
@@ -352,6 +363,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Kanselahin"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Susunod"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Mag-import mula sa"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Pumili ng storage app para ma-import ang iyong data"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Pumili ng account"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Kanselahin"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Tapos na"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Magsimula sa Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa telepono mo"</string>
     <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>

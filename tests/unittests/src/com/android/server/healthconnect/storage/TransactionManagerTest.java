@@ -57,27 +57,38 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
 public class TransactionManagerTest {
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     private static final String TEST_PACKAGE_NAME = "package.name";
 
-    @Rule public final HealthConnectDatabaseTestRule testRule = new HealthConnectDatabaseTestRule();
+    private final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new HealthConnectDatabaseTestRule();
+
+    // SetFlagsRule needs to be executed before any rules that accesses aconfig flags. Otherwise,
+    // we will get failure like in b/344587256.
+    // This is a workaround due to b/335666574, however the tests are still relevant even if the
+    // rules have to run in this order. So we won't have to revert this even when b/335666574 is
+    // fixed.
+    // See https://chat.google.com/room/AAAAoLBF6rc/4N8gVXyQY5E
+    @Rule
+    public TestRule chain =
+            RuleChain.outerRule(new SetFlagsRule()).around(mHealthConnectDatabaseTestRule);
 
     private TransactionTestUtils mTransactionTestUtils;
     private TransactionManager mTransactionManager;
 
     @Before
     public void setup() {
-        HealthConnectUserContext context = testRule.getUserContext();
-        mTransactionManager = testRule.getTransactionManager();
+        HealthConnectUserContext context = mHealthConnectDatabaseTestRule.getUserContext();
+        mTransactionManager = mHealthConnectDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(context, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
     }
@@ -262,7 +273,6 @@ public class TransactionManagerTest {
 
     @Test
     @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
-    @Ignore("This test is flaky: b/344519535")
     public void readMedicalResourcesByIds_returnsEmpty() {
         MedicalIdFiltersParcel parcel =
                 new MedicalIdFiltersParcel(List.of(MedicalIdFilter.fromId(getUUID())));

@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.tests.permissions.request
 
 import android.content.pm.PackageManager
 import android.health.connect.HealthPermissions.READ_EXERCISE
+import android.health.connect.HealthPermissions.READ_EXERCISE_ROUTES
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_HISTORY
 import android.health.connect.HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND
 import android.health.connect.HealthPermissions.READ_HEART_RATE
@@ -578,6 +579,34 @@ class RequestPermissionViewModelTest {
                     fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.GRANTED,
                     fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
                         PermissionState.GRANTED))
+    }
+
+    @Test
+    fun requestAdditionalPermissions_skipsExerciseRoutePermission_updatesPermissionState() {
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE_ROUTES))
+        val permissions =
+            arrayOf(
+                READ_EXERCISE,
+                READ_SLEEP,
+                READ_HEALTH_DATA_HISTORY,
+                READ_HEALTH_DATA_IN_BACKGROUND,
+                READ_EXERCISE_ROUTES)
+        viewModel.init(TEST_APP_PACKAGE_NAME, permissions)
+        viewModel.updateAdditionalPermissions(false)
+
+        viewModel.requestAdditionalPermissions(TEST_APP_PACKAGE_NAME)
+        assertThat(permissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
+            .containsExactly(READ_EXERCISE_ROUTES)
+        assertThat(viewModel.getPermissionGrants())
+            .isEqualTo(
+                mutableMapOf(
+                    fromPermissionString(READ_EXERCISE) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_SLEEP) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_HISTORY) to PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_HEALTH_DATA_IN_BACKGROUND) to
+                        PermissionState.NOT_GRANTED,
+                    fromPermissionString(READ_EXERCISE_ROUTES) to PermissionState.GRANTED))
     }
 
     @Test

@@ -157,7 +157,7 @@
         <!-- END REGION -->
 
         <!-- Popup Menu -->
-        <item name="android:itemBackground">@color/settingslib_materialColorSurfaceContainer</item>
+        <item name="android:itemBackground">@color/settingslib_dialog_background</item>
         <!-- END REGION -->
     </style>
 

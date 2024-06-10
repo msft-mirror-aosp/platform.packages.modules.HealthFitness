@@ -21,6 +21,7 @@ import static android.health.connect.Constants.DEFAULT_INT;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.HealthConnectManager;
+import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.exportimport.ScheduledExportStatus;
 import android.net.Uri;
@@ -34,7 +35,7 @@ import java.time.Instant;
  *
  * @hide
  */
-public final class ScheduledExportSettingsStorage {
+public final class ExportImportSettingsStorage {
     // Scheduled Export Settings
     private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
@@ -43,6 +44,10 @@ public final class ScheduledExportSettingsStorage {
     private static final String LAST_SUCCESSFUL_EXPORT_PREFERENCE_KEY =
             "last_successful_export_key";
     private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
+
+    // Import State
+    private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
+    private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
 
     /**
      * Configures the settings for the scheduled export of Health Connect data.
@@ -123,5 +128,32 @@ public final class ScheduledExportSettingsStorage {
                         ? HealthConnectManager.DATA_EXPORT_ERROR_NONE
                         : Integer.parseInt(lastExportError),
                 periodInDays == null ? 0 : Integer.parseInt(periodInDays));
+    }
+
+    /** Set to true when an import starts and to false when a data import completes */
+    public static void setImportOngoing(boolean importOngoing) {
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(
+                        IMPORT_ONGOING_PREFERENCE_KEY, String.valueOf(importOngoing));
+    }
+
+    /** Set errors during the last failed import attempt. */
+    public static void setLastImportError(@ImportStatus.DataImportError int error) {
+        PreferenceHelper.getInstance()
+                .insertOrReplacePreference(LAST_IMPORT_ERROR_PREFERENCE_KEY, String.valueOf(error));
+    }
+
+    /** Get the status of the last data import. */
+    public static ImportStatus getImportStatus() {
+        PreferenceHelper prefHelper = PreferenceHelper.getInstance();
+        String lastImportError = prefHelper.getPreference(LAST_IMPORT_ERROR_PREFERENCE_KEY);
+        boolean importOngoing =
+                Boolean.parseBoolean(prefHelper.getPreference(IMPORT_ONGOING_PREFERENCE_KEY));
+
+        return new ImportStatus(
+                lastImportError == null
+                        ? ImportStatus.DATA_IMPORT_ERROR_NONE
+                        : Integer.parseInt(lastImportError),
+                importOngoing);
     }
 }

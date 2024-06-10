@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"బ్యాకప్"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"డేటా సోర్స్‌లు, ప్రాధాన్యత"</string>
     <string name="set_units_title" msgid="2657822539603758029">"యూనిట్‌లను సెట్ చేయండి"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"ఇటీవలి యాక్సెస్"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"యాప్‌లు ఏవీ ఇటీవల Health Connectను యాక్సెస్ చేయలేదు"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"అన్ని ఇటీవలి యాక్సెస్‌లను చూడండి"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"చర్మం ఉష్ణోగ్రత"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"చర్మం ఉష్ణోగ్రతను చదవండి"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"చర్మం ఉష్ణోగ్రత గురించి రాయండి"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"చదవడానికి \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" యాప్‌ను అనుమతించండి"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"రాయడానికి \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" యాప్‌ను అనుమతించండి"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"రద్దు చేయండి"</string>
@@ -319,7 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect యాప్ అనుమతులను ఎందుకు తీసివేస్తుంది"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Play నుండి యాప్ సస్పెండ్ చేయబడినా లేదా తీసివేయబడినా, Health Connect దాని అనుమతులను ఆటోమేటిక్‌గా తీసివేస్తుంది.\n\nయాప్ ఇకపై Health Connectలో స్టోర్ చేసిన డేటాను యాక్సెస్ చేయలేదని దీని అర్థం. ఈ యాప్ మునుపు రాసిన డేటాను కలిగి ఉంటే, అది ఇన్‌యాక్టివ్ యాప్‌ల లిస్ట్‌లో కనిపిస్తుంది."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"అర్థమైంది"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"సెటప్ చేయండి"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"డేటాను ఎగుమతి చేయడం సాధ్యపడలేదు"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g>న ఎగుమతి చేయడంలో సమస్య ఏర్పడింది. దయచేసి కొత్త ఎగుమతి షెడ్యూల్‌ను సెటప్ చేసి, మళ్లీ ట్రై చేయండి."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"తదుపరి ఎగుమతి తేదీ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"బ్యాకప్, రీస్టోర్"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"చివరగా ఎగుమతి చేసిన తేదీ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ఎగుమతి, దిగుమతి"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"షెడ్యూల్ చేయబడిన ఎగుమతి"</string>
     <string name="import_data" msgid="404502315533233094">"డేటాను దిగుమతి చేయండి"</string>
@@ -335,13 +358,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"వారానికి ఒకసారి"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"నెలకు ఒకసారి"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"ఎక్కడికి ఎగుమతి చేయాలో ఎంచుకోండి"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"ఎన్‌క్రిప్షన్‌ను ఆన్ చేయండి"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"డేటాను సేవ్ చేసే ముందు, దాన్ని ఎన్‌క్రిప్ట్ చేయాలి. Google లేదా Health Connectతో సహా ఎవ్వరూ కూడా దీన్ని యాక్సెస్ చేయలేరు."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"ఎన్‌క్రిప్ట్ చేసిన మీ డేటాను రక్షించుకోవడానికి పాస్‌వర్డ్‌ను క్రియేట్ చేయండి. మీ డేటాను దిగుమతి చేసుకోవడానికి, రీస్టోర్ చేయడానికి మీకు ఈ పాస్‌వర్డ్ అవసరం."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"పాస్‌వర్డ్"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"పాస్‌వర్డ్‌ను మళ్లీ ఎంటర్ చేయండి"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"పాస్‌వర్డ్‌లు మ్యాచ్ కాలేదు"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"మీరు పాస్‌వర్డ్‌ను మర్చిపోయి, ఫోన్ పోగొట్టుకుంటే, సేవ్ చేయబడిన మీ డేటాను రికవర్ చేయడంలో Health Connect సహాయపడలేదు."</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"మీ డేటాను ఎగుమతి చేయడానికి దయచేసి స్టోరేజ్ యాప్‌ను ఎంచుకోండి"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"పాస్‌వర్డ్‌ను టైప్ చేయండి"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"మీ Health Connect డేటాను దిగుమతి చేసుకోవడానికి మీ ఎన్‌క్రిప్షన్ పాస్‌వర్డ్ అవసరం"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"పాస్‌వర్డ్‌ను మరచిపోయారా?"</string>
@@ -352,6 +369,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"రద్దు చేయండి"</string>
     <string name="import_next_button" msgid="5706322508691854289">"తర్వాత"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"దీని నుండి దిగుమతి చేయండి"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"మీ డేటాను దిగుమతి చేయడానికి దయచేసి స్టోరేజ్ యాప్‌ను ఎంచుకోండి"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"ఒక ఖాతాను ఎంచుకోండి"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"రద్దు చేయండి"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"పూర్తయింది"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connectను ప్రారంభించండి"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect మీ ఆరోగ్యానికి, ఫిట్‌నెస్‌కు సంబంధించిన డేటాను స్టోర్ చేస్తుంది, తద్వారా మీరు మీ డేటాను ఫోన్​లోని విభిన్న రకాల యాప్‌లతో సులభంగా సింక్ చేయవచ్చు"</string>
     <string name="share_data" msgid="3481932156368883946">"మీ యాప్‌లతో డేటాను షేర్ చేయండి"</string>
@@ -361,10 +382,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"వెనుకకు వెళ్లండి"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"ప్రారంభించండి"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"డేటాను తొలగించండి"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"తొలగింపు ప్రాసెస్‌ను ప్రారంభిస్తుంది"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"తొలగింపు ప్రాసెస్‌ను ఆపివేస్తుంది"</string>
     <string name="time_range_title" msgid="6831605283322600165">"తొలగించడానికి డేటాను ఎంచుకోండి"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"తర్వాత"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"ఇది ఎంచుకున్న సమయ వ్యవధిలో Health Connectకు జోడించబడిన మొత్తం డేటాను శాశ్వతంగా తొలగిస్తుంది"</string>
@@ -924,14 +943,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"ఈ యాప్‌నకు సంబంధించిన బ్యాక్‌గ్రౌండ్ లేదా గతంలోని డేటాకు యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ఈ యాప్‌నకు సంబంధించిన బ్యాక్‌గ్రౌండ్ యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ఈ యాప్‌నకు సంబంధించిన గతంలోని డేటాకు యాక్సెస్‌ను ఆన్ చేయడానికి కనీసం ఒక రీడ్ అనుమతిని ఎనేబుల్ చేయండి"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect నుండి మొత్తం డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connect నుండి ఎంచుకున్న డేటాను శాశ్వతంగా తొలగించాలా?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"మొత్తం డేటా తొలగించబడింది"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> డేటా తొలగించబడింది"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> ఐటెమ్‌లు తొలగించబడ్డాయి"</string>
 </resources>

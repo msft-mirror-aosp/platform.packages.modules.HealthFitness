@@ -39,6 +39,9 @@
     <string name="backup_title" description="Label for a button that takes the user to backup settings. [CHAR_LIMIT=40]">Backup</string>
     <string name="data_sources_and_priority_title" description="Label for a button that takes the user to app priority settings. [CHAR_LIMIT=40]">Data sources and priority</string>
     <string name="set_units_title" description="Label for a button that takes the user to unit settings. [CHAR_LIMIT=40]">Set units</string>
+    <string name="manage_data_preferences_category_title" description="Label for the grouped preference settings for managing data. [CHAR_LIMIT=40]">Preferences</string>
+    <string name="manage_data_category_title" description="Label for the category for managing data. [CHAR_LIMIT=40]">Manage data</string>
+    <string name="backup_and_restore_settings_summary" description="Summary for the backup and restore setting preference. [CHAR_LIMIT=NONE]">Export and import data</string>
 
     <!-- endregion -->
 
@@ -348,6 +351,15 @@
     <string name="skin_temperature_read_content_description" description="Content description for switch that enables permissions for reading the user's skin temperature data [CHAR_LIMIT=NONE]">Read skin temperature</string>
     <string name="skin_temperature_write_content_description" description="Content description for switch that enables permissions for writing the user's skin temperature data [CHAR_LIMIT=NONE]">Write skin temperature</string>
     <!--endregion-->
+
+    <!-- region Medical data types -->
+    <string name="all_medical_data_uppercase_label" description="Uppercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">All medical data</string>
+    <string name="all_medical_data_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">all medical data</string>
+    <string name="all_medical_data_content_description" description="Content description for switch that enables permissions for writing the user's medical data [CHAR_LIMIT=NONE]">Write all medical data</string>
+
+    <string name="immunization_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Immunization</string>
+    <string name="immunization_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">immunization</string>
+    <string name="immunization_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunization</string>
     <!--endregion-->
 
     <!-- region Permissions -->

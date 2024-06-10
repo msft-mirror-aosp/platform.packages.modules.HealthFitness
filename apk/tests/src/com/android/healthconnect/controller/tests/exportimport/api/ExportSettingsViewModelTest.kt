@@ -180,4 +180,22 @@ class ExportSettingsViewModelTest {
 
         assertThat(viewModel.previousExportFrequency.value).isEqualTo(EXPORT_FREQUENCY_DAILY)
     }
+
+    @Test
+    fun updateSelectedExportFrequency() {
+        viewModel.updateSelectedFrequency(EXPORT_FREQUENCY_DAILY)
+
+        assertThat(viewModel.selectedExportFrequency.value).isEqualTo(EXPORT_FREQUENCY_DAILY)
+    }
+
+    @Test
+    fun updateExportUriWithSelectedFrequency_updatesSetting() = runTest {
+        viewModel.updateSelectedFrequency(EXPORT_FREQUENCY_DAILY)
+        viewModel.updateExportUriWithSelectedFrequency(TEST_URI)
+        advanceUntilIdle()
+
+        assertThat(updateExportSettingsUseCase.mostRecentSettings.uri).isEqualTo(TEST_URI)
+        assertThat(updateExportSettingsUseCase.mostRecentSettings.periodInDays)
+            .isEqualTo(EXPORT_FREQUENCY_DAILY.periodInDays)
+    }
 }

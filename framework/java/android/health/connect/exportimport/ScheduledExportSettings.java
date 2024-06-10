@@ -84,6 +84,21 @@ public final class ScheduledExportSettings implements Parcelable {
         return new ScheduledExportSettings(null, periodInDays);
     }
 
+    /**
+     * Returns a {@link ScheduledExportSettings} to update the period in days between scheduled
+     * exports.
+     */
+    public static ScheduledExportSettings withUriAndPeriodInDays(
+            @NonNull Uri uri, @IntRange(from = 0, to = 30) int periodInDays) {
+        // TODO: b/345152760 - change to builder pattern so we can avoid duplicated argument check
+        Objects.requireNonNull(uri);
+        if (periodInDays < 0 || periodInDays > 30) {
+            throw new IllegalArgumentException("periodInDays should be between 0 and 30");
+        }
+
+        return new ScheduledExportSettings(uri, periodInDays);
+    }
+
     private ScheduledExportSettings(@NonNull Parcel in) {
         boolean hasUri = in.readBoolean();
         mUri = hasUri ? Uri.parse(in.readString()) : null;

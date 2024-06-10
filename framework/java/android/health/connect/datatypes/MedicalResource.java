@@ -71,7 +71,7 @@ public final class MedicalResource implements Parcelable {
         requireNonNull(id);
         requireNonNull(dataSourceId);
         requireNonNull(data);
-        validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+        validateMedicalResourceType(type);
 
         mId = id;
         mType = type;
@@ -157,6 +157,19 @@ public final class MedicalResource implements Parcelable {
     public static final Set<Integer> VALID_TYPES =
             Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
 
+    /**
+     * Validates the provided {@code medicalResourceType} is in the {@link
+     * MedicalResource#VALID_TYPES} set.
+     *
+     * <p>Throws {@link IllegalArgumentException} if not.
+     *
+     * @hide
+     */
+    public static void validateMedicalResourceType(@MedicalResourceType int medicalResourceType) {
+        validateIntDefValue(
+                medicalResourceType, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+    }
+
     /** Indicates whether some other object is "equal to" this one. */
     @Override
     public boolean equals(Object o) {
@@ -202,7 +215,7 @@ public final class MedicalResource implements Parcelable {
             requireNonNull(id);
             requireNonNull(dataSourceId);
             requireNonNull(data);
-            validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+            validateMedicalResourceType(type);
 
             mId = id;
             mType = type;
@@ -243,7 +256,7 @@ public final class MedicalResource implements Parcelable {
          */
         @NonNull
         public Builder setType(@MedicalResourceType int type) {
-            validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+            validateMedicalResourceType(type);
             mType = type;
             return this;
         }

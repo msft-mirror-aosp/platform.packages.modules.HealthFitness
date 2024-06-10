@@ -29,7 +29,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
@@ -45,7 +45,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     private val saveResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(contract, ::onSave)
 
-    private val viewModel: ExportSettingsViewModel by viewModels()
+    private val viewModel: ExportSettingsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,7 +108,7 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
             if (isLocalFile(fileUri)) {
                 Toast.makeText(activity, R.string.export_invalid_storage, Toast.LENGTH_LONG).show()
             } else {
-                viewModel.updateExportUri(fileUri)
+                viewModel.updateExportUriWithSelectedFrequency(fileUri)
                 requireActivity().finish()
             }
         }
