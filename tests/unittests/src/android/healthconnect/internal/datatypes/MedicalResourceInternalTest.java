@@ -22,7 +22,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.internal.datatypes.MedicalResourceInternal;
-import android.os.Parcel;
 
 import org.junit.Test;
 
@@ -32,19 +31,6 @@ public class MedicalResourceInternalTest {
     private static final UUID MEDICAL_RESOURCE_ID = UUID.randomUUID();
     private static final String DATA_SOURCE_ID = "data_source_id";
     private static final String DATA = "{\"resourceType\" : \"Immunization\"}";
-
-    @Test
-    public void testMedicalResourceInternal_writeToParcelThenRestore_objectsAreIdentical() {
-        MedicalResourceInternal original = buildMedicalResourceInternal();
-
-        Parcel parcel = Parcel.obtain();
-        original.writeToParcel(parcel);
-        parcel.setDataPosition(0);
-        MedicalResourceInternal restored = MedicalResourceInternal.readFromParcel(parcel);
-
-        assertThat(restored).isEqualTo(original);
-        parcel.recycle();
-    }
 
     @Test
     public void testMedicalResourceInternal_convertToExternalAndBack_objectsAreIdentical() {

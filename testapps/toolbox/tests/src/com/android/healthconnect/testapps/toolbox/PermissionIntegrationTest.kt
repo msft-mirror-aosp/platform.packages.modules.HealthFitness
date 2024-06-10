@@ -10,7 +10,18 @@ class PermissionIntegrationTest {
     @Test
     fun toolboxAppShouldRequestAllHealthPermissions() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        Truth.assertThat(Constants.DATA_TYPE_PERMISSIONS.sorted())
+        Truth.assertThat(Constants.HEALTH_PERMISSIONS.sorted())
+            .isEqualTo(HealthConnectManager.getHealthPermissions(context).sorted())
+    }
+
+    @Test
+    fun toolboxAppShouldRequestAllMedicalPermissions() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val allPermissions =
+            Constants.MEDICAL_PERMISSIONS +
+                Constants.DATA_TYPE_PERMISSIONS +
+                Constants.ADDITIONAL_PERMISSIONS
+        Truth.assertThat(allPermissions.sorted())
             .isEqualTo(HealthConnectManager.getHealthPermissions(context).sorted())
     }
 }

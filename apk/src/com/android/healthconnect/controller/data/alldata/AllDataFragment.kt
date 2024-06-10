@@ -30,7 +30,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.categories.HealthDataCategoriesFragment.Companion.CATEGORY_KEY
 import com.android.healthconnect.controller.data.appdata.AppDataFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.data.appdata.PermissionTypesPerCategory
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.selectabledeletion.DeletionConstants.START_DELETION_KEY
 import com.android.healthconnect.controller.selectabledeletion.DeletionFragment
@@ -191,7 +191,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
             permissionTypesPerCategory.data
                 .sortedBy {
-                    getString(DataTypePermissionStrings.fromPermissionType(it).uppercaseLabel)
+                    getString(FitnessPermissionStrings.fromPermissionType(it).uppercaseLabel)
                 }
                 .forEach { permissionType ->
                     preferenceCategory.addPreference(
@@ -277,7 +277,7 @@ open class AllDataFragment : Hilt_AllDataFragment() {
 
             preference.icon = categoryIcon
             preference.setTitle(
-                DataTypePermissionStrings.fromPermissionType(permissionType).uppercaseLabel)
+                FitnessPermissionStrings.fromPermissionType(permissionType).uppercaseLabel)
 
             preference.setHealthPermissionType(permissionType)
             // TODO(b/291249677): Add in upcoming CL.

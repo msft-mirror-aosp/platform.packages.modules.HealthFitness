@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.util.Slog;
 
@@ -61,7 +62,7 @@ public final class ImportManager {
     }
 
     /** Reads and merges the backup data from a local file. */
-    public synchronized void runImport(Path pathToImport, UserHandle userHandle) {
+    public synchronized void runImport(UserHandle userHandle, Uri file) {
         Slog.i(TAG, "Import started");
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
@@ -69,8 +70,9 @@ public final class ImportManager {
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
         importDbFile.mkdirs();
         try {
+            Path filePath = FileSystems.getDefault().getPath(file.getPath());
             Path destinationPath = FileSystems.getDefault().getPath(importDbFile.getAbsolutePath());
-            Files.copy(pathToImport, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(filePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException | SecurityException e) {
             Slog.e(TAG, "Failed to get copy to destination: " + importDbFile.getName(), e);
             importDbFile.delete();
