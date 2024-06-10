@@ -25,7 +25,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import androidx.preference.TwoStatePreference
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions
@@ -41,7 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint(PermissionsFragment::class)
-class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
+class FitnessPermissionsFragment : Hilt_FitnessPermissionsFragment() {
 
     companion object {
         private const val ALLOW_ALL_PREFERENCE = "allow_all_preference"
@@ -79,7 +79,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
         writePermissionCategory?.children?.forEach { preference ->
             (preference as TwoStatePreference).isChecked = grant
         }
-        viewModel.updateDataTypePermissions(grant)
+        viewModel.updateFitnessPermissions(grant)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,12 +124,12 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
                 getString(R.string.write_permission_category, app.appName)
         }
         viewModel.healthPermissionsList.observe(viewLifecycleOwner) { allPermissions ->
-            val dataTypePermissions =
-                allPermissions.filterIsInstance<HealthPermission.DataTypePermission>()
+            val fitnessPermissions =
+                allPermissions.filterIsInstance<HealthPermission.FitnessPermission>()
             val additionalPermissions =
                 allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
 
-            updateDataList(dataTypePermissions)
+            updateDataList(fitnessPermissions)
             setupAllowAll()
 
             setupAllowButton(additionalPermissions.isNotEmpty())
@@ -140,20 +140,20 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
     private fun setupAllowButton(isCombinedPermissionRequest: Boolean) {
         logger.logImpression(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
 
-        if (!viewModel.isDataTypePermissionRequestConcluded()) {
-            viewModel.grantedDataTypePermissions.observe(viewLifecycleOwner) { grantedPermissions ->
+        if (!viewModel.isFitnessPermissionRequestConcluded()) {
+            viewModel.grantedFitnessPermissions.observe(viewLifecycleOwner) { grantedPermissions ->
                 getAllowButton().isEnabled = grantedPermissions.isNotEmpty()
             }
         }
 
         if (isCombinedPermissionRequest) {
             getAllowButton().setOnClickListener {
-                viewModel.setDataTypePermissionRequestConcluded(true)
-                // When data type permissions are concluded we need to
-                // grant/revoke only the data type permissions, to trigger the
+                viewModel.setFitnessPermissionRequestConcluded(true)
+                // When fitness permissions are concluded we need to
+                // grant/revoke only the fitness permissions, to trigger the
                 // access date. We can't request all at once because we might accidentally
                 // set the additional permissions USER_FIXED
-                viewModel.requestDataTypePermissions(getPackageNameExtra())
+                viewModel.requestFitnessPermissions(getPackageNameExtra())
                 logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
                 // navigate to additional permissions
                 requireActivity()
@@ -166,7 +166,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
             // Just health permissions
             getAllowButton().setOnClickListener {
                 logger.logInteraction(PermissionsElement.ALLOW_PERMISSIONS_BUTTON)
-                viewModel.requestDataTypePermissions(getPackageNameExtra())
+                viewModel.requestFitnessPermissions(getPackageNameExtra())
                 this.handlePermissionResults(viewModel.getPermissionGrants())
             }
         }
@@ -177,14 +177,14 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
 
         getDontAllowButton().setOnClickListener {
             logger.logInteraction(PermissionsElement.CANCEL_PERMISSIONS_BUTTON)
-            viewModel.updateDataTypePermissions(false)
-            viewModel.requestDataTypePermissions(getPackageNameExtra())
+            viewModel.updateFitnessPermissions(false)
+            viewModel.requestFitnessPermissions(getPackageNameExtra())
             handlePermissionResults(viewModel.getPermissionGrants())
         }
     }
 
     private fun setupAllowAll() {
-        viewModel.allDataTypePermissionsGranted.observe(viewLifecycleOwner) { allPermissionsGranted
+        viewModel.allFitnessPermissionsGranted.observe(viewLifecycleOwner) { allPermissionsGranted
             ->
             // does not trigger removing/enabling all permissions
             allowAllPreference?.removeOnSwitchChangeListener(onSwitchChangeListener)
@@ -194,7 +194,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
         allowAllPreference?.addOnSwitchChangeListener(onSwitchChangeListener)
     }
 
-    private fun updateDataList(permissionsList: List<HealthPermission.DataTypePermission>) {
+    private fun updateDataList(permissionsList: List<HealthPermission.FitnessPermission>) {
         readPermissionCategory?.removeAll()
         writePermissionCategory?.removeAll()
 
@@ -202,7 +202,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
             .sortedBy {
                 requireContext()
                     .getString(
-                        DataTypePermissionStrings.fromPermissionType(it.healthPermissionType)
+                        FitnessPermissionStrings.fromPermissionType(it.healthPermissionType)
                             .uppercaseLabel)
             }
             .forEach { permission ->
@@ -222,7 +222,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
 
     private fun getPermissionPreference(
         defaultValue: Boolean,
-        permission: HealthPermission.DataTypePermission
+        permission: HealthPermission.FitnessPermission
     ): Preference {
         return HealthSwitchPreference(requireContext()).also {
             val healthCategory =
@@ -231,7 +231,7 @@ class DataTypePermissionsFragment : Hilt_DataTypePermissionsFragment() {
             it.icon = healthCategory.icon(requireContext())
             it.setDefaultValue(defaultValue)
             it.setTitle(
-                DataTypePermissionStrings.fromPermissionType(permission.healthPermissionType)
+                FitnessPermissionStrings.fromPermissionType(permission.healthPermissionType)
                     .uppercaseLabel)
             it.logNameActive = PermissionsElement.PERMISSION_SWITCH
             it.logNameInactive = PermissionsElement.PERMISSION_SWITCH

@@ -68,7 +68,6 @@ public class ExportManagerTest {
     private TransactionTestUtils mTransactionTestUtils;
     private ExportManager mExportManager;
     private DatabaseContext mExportedDbContext;
-    private static final String TAG = "HealthConnectExportImport";
 
     @Before
     public void setUp() throws Exception {
@@ -123,7 +122,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_makesLocalCopyOfDatabase() {
+    public void runExport_deletesLocalCopyOfDatabase() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
@@ -132,9 +131,13 @@ public class ExportManagerTest {
         assertThat(mExportManager.runExport()).isTrue();
 
         assertThat(
-                DatabaseContext.create(mContext, LOCAL_EXPORT_DATABASE_DIR_NAME, mContext.getUser())
-                        .getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME)
-                        .exists());
+                        DatabaseContext.create(
+                                        mContext,
+                                        LOCAL_EXPORT_DATABASE_DIR_NAME,
+                                        mContext.getUser())
+                                .getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME)
+                                .exists())
+                .isFalse();
     }
 
     @Test

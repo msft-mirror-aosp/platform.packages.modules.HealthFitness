@@ -291,7 +291,7 @@ class AdditionalPermissionsFragmentTest {
                 HealthPermissions.READ_HEALTH_DATA_IN_BACKGROUND)
 
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
-        whenever(viewModel.isDataTypePermissionRequestConcluded()).thenReturn(true)
+        whenever(viewModel.isFitnessPermissionRequestConcluded()).thenReturn(true)
 
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
