@@ -57,7 +57,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.TrampolineActivity
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -134,9 +134,9 @@ class TrampolineActivityTest {
                         NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
         }
         val writePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
         whenever(
                 appPermissionViewModel.shouldNavigateToAppPermissionsFragment(

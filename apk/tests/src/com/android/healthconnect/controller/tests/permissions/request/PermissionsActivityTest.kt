@@ -244,7 +244,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun intentSkipsHiddenDataTypePermissions() {
+    fun intentSkipsHiddenFitnessPermissions() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
         val permissions =
             arrayOf(READ_EXERCISE, READ_SLEEP, READ_SKIN_TEMPERATURE, WRITE_ACTIVE_CALORIES_BURNED)
@@ -316,7 +316,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun intentDisplaysDataTypePermissions() {
+    fun intentDisplaysFitnessPermissions() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -408,7 +408,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun requestDataTypePermissions_alreadyGrantedRestDenied_sendsResultOk() {
+    fun requestFitnessPermissions_alreadyGrantedRestDenied_sendsResultOk() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
@@ -486,7 +486,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun grantOneDataTypePermission_sendsResultOk() {
+    fun grantOneFitnessPermission_sendsResultOk() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -684,7 +684,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun clickOnCancel_deniesAllDataTypePermissions_finishesActivity() {
+    fun clickOnCancel_deniesAllFitnessPermissions_finishesActivity() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
         val startActivityIntent = getPermissionScreenIntent(permissions)

@@ -1281,9 +1281,9 @@
     <!-- region Additional Access -->
     <string name="request_additional_permissions_header_title" description="Title for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]">Allow additional access for <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>?</string>
     <string name="request_additional_permissions_description" description="Description for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> also wants to access these Health&#160;Connect settings</string>
-    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
-    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
-    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
+    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
+    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
+    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
     <!--  endregion -->
 
     <!-- region Delete dialogs -->
