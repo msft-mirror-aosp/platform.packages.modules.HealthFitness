@@ -14,6 +14,7 @@
 
 package {
     default_applicable_licenses: ["Android-Apache-2.0"],
+    default_team: "trendy_team_android_health",
 }
 
 android_test {
@@ -54,6 +55,8 @@ android_test {
         "cts-wm-util",
         "modules-utils-build",
         "testng",
+        "flag-junit",
+        "healthfitness-aconfig-flags-lib",
         "cts-healthconnect-utils",
         "cts-healthconnect-lib",
     ],
@@ -97,7 +100,7 @@ android_test {
         "cts-healthconnect-lib",
     ],
     min_sdk_version: "34",
-    sdk_version: "module_current",
+    sdk_version: "test_current",
     test_config: "AndroidTestNoPermission.xml",
     manifest: "AndroidManifestNoPermission.xml",
     data: [
@@ -174,7 +177,7 @@ android_test {
         "cts-healthconnect-utils",
     ],
     min_sdk_version: "34",
-    sdk_version: "module_current",
+    sdk_version: "test_current",
     test_config: "AndroidTestRateLimiter.xml",
     manifest: "AndroidManifestRateLimiter.xml",
 }
@@ -217,7 +220,7 @@ android_test {
         "cts-healthconnect-utils",
     ],
     min_sdk_version: "34",
-    sdk_version: "module_current",
+    sdk_version: "test_current",
     test_config: "AndroidTestUI.xml",
     manifest: "AndroidManifestUI.xml",
     data: [
@@ -258,7 +261,7 @@ android_test {
         "cts-healthconnect-utils",
     ],
     min_sdk_version: "34",
-    sdk_version: "module_current",
+    sdk_version: "test_current",
     test_config: "AndroidTestShowMigrationInfoIntentAbsent.xml",
     manifest: "AndroidManifestShowMigrationInfoIntentAbsent.xml",
 }

@@ -20,6 +20,7 @@ import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.os.Bundle
+import android.os.OutcomeReceiver
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -35,19 +36,21 @@ import com.android.healthconnect.controller.exportimport.api.HealthDataExportMan
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.NOW
-import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataExportManager
 import com.android.healthconnect.controller.tests.utils.launchFragment
-import com.google.common.truth.Truth.assertThat
+import com.android.healthconnect.controller.tests.utils.whenever
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 
 @HiltAndroidTest
 @UninstallModules(HealthDataExportManagerModule::class)
@@ -60,33 +63,34 @@ class ScheduledExportFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
+    // TODO: b/330484311 - Replace the mock with a fake.
+    @BindValue
+    val healthDataExportManager: HealthDataExportManager =
+        Mockito.mock(HealthDataExportManager::class.java)
 
     @Before
     fun setup() {
         hiltRule.inject()
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays
+        }
         val scheduledExportStatus =
             ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            scheduledExportStatus)
-    }
-
-    @After
-    fun tearDown() {
-        (healthDataExportManager as FakeHealthDataExportManager).reset()
+        doAnswer(prepareAnswer(scheduledExportStatus))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
     }
 
     @Test
     fun scheduledExportFragment_isDisplayedCorrectly() {
-        val scheduledExportStatus =
-            ScheduledExportStatus(
-                NOW, HealthConnectManager.DATA_EXPORT_ERROR_NONE, TEST_EXPORT_PERIOD_IN_DAYS)
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            scheduledExportStatus)
-
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withText("On")).check(matches(isDisplayed()))
@@ -94,6 +98,7 @@ class ScheduledExportFragmentTest {
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
+
         onView(withText("Next export: October 21, 2022")).check(matches(isDisplayed()))
     }
 
@@ -102,8 +107,9 @@ class ScheduledExportFragmentTest {
         val scheduledExportStatus =
             ScheduledExportStatus(
                 null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, TEST_EXPORT_PERIOD_IN_DAYS)
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            scheduledExportStatus)
+        doAnswer(prepareAnswer(scheduledExportStatus))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
 
         launchFragment<ScheduledExportFragment>(Bundle())
 
@@ -112,10 +118,9 @@ class ScheduledExportFragmentTest {
 
     @Test
     fun scheduledExportFragment_dailyExport_checkedButtonMatchesExportFrequency() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
-
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays
+        }
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
@@ -123,10 +128,9 @@ class ScheduledExportFragmentTest {
 
     @Test
     fun scheduledExportFragment_weeklyExport_checkedButtonMatchesExportFrequency() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
-
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays
+        }
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_weekly)).check(matches(isChecked()))
@@ -134,10 +138,9 @@ class ScheduledExportFragmentTest {
 
     @Test
     fun scheduledExportFragment_monthlyExport_checkedButtonMatchesExportFrequency() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
-
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays
+        }
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_monthly)).check(matches(isChecked()))
@@ -151,8 +154,10 @@ class ScheduledExportFragmentTest {
 
         onView(withText("Off")).check(matches(isDisplayed()))
         advanceUntilIdle()
-        assertThat(healthDataExportManager.getScheduledExportPeriodInDays())
-            .isEqualTo(ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
     }
 
     @Test
@@ -174,27 +179,43 @@ class ScheduledExportFragmentTest {
 
         onView(withText("On")).perform(click())
         onView(withText("Off")).check(matches(isDisplayed()))
-        advanceUntilIdle()
-        assertThat(healthDataExportManager.getScheduledExportPeriodInDays())
-            .isEqualTo(ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays)
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
         onView(withText("Off")).perform(click())
 
         advanceUntilIdle()
-        assertThat(healthDataExportManager.getScheduledExportPeriodInDays())
-            .isEqualTo(ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays)
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
     }
 
     @Test
     fun scheduledExportFragment_selectsAnotherFrequency_updatesExportFrequency() = runTest {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+        whenever(healthDataExportManager.getScheduledExportPeriodInDays()).then {
+            ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays
+        }
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withId(R.id.radio_button_daily)).check(matches(isChecked()))
         onView(withId(R.id.radio_button_monthly)).perform(click())
         advanceUntilIdle()
-        assertThat(healthDataExportManager.getScheduledExportPeriodInDays())
-            .isEqualTo(ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays)
+        Mockito.verify(healthDataExportManager)
+            .configureScheduledExport(
+                ScheduledExportSettings.withPeriodInDays(
+                    ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+    }
+
+    private fun prepareAnswer(
+        scheduledExportStatus: ScheduledExportStatus
+    ): (InvocationOnMock) -> Nothing? {
+        val answer = { args: InvocationOnMock ->
+            val receiver = args.arguments[1] as OutcomeReceiver<ScheduledExportStatus, *>
+            receiver.onResult(scheduledExportStatus)
+            null
+        }
+        return answer
     }
 }
