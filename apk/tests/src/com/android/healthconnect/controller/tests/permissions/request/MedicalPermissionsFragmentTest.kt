@@ -37,7 +37,7 @@ import androidx.test.platform.app.InstrumentationRegistry.*
 import com.android.compatibility.common.util.DisableAnimationRule
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.PermissionState
@@ -83,7 +83,7 @@ class MedicalPermissionsFragmentTest {
     val viewModel: RequestPermissionViewModel = mock(RequestPermissionViewModel::class.java)
     @BindValue val healthConnectLogger: HealthConnectLogger = mock(HealthConnectLogger::class.java)
 
-    val emptyDataTypePermissionList: List<HealthPermission> = listOf()
+    val emptyFitnessPermissionList: List<HealthPermission> = listOf()
 
     @Before
     fun setup() {
@@ -99,7 +99,7 @@ class MedicalPermissionsFragmentTest {
         }
         `when`(viewModel.allMedicalPermissionsGranted).then { MutableLiveData(false) }
         `when`(viewModel.grantedMedicalPermissions).then {
-            MutableLiveData(emptySet<DataTypePermission>())
+            MutableLiveData(emptySet<FitnessPermission>())
         }
         toggleAnimation(false)
     }
@@ -270,8 +270,8 @@ class MedicalPermissionsFragmentTest {
     fun allowAllToggleOn_updatesAllPermissions() {
         val permissions =
             listOf(
-                DataTypePermission.fromPermissionString(READ_STEPS),
-                DataTypePermission.fromPermissionString(WRITE_DISTANCE),
+                FitnessPermission.fromPermissionString(READ_STEPS),
+                FitnessPermission.fromPermissionString(WRITE_DISTANCE),
                 fromPermissionString(READ_MEDICAL_RESOURCES_IMMUNIZATION),
                 fromPermissionString(WRITE_MEDICAL_RESOURCES),
             )
@@ -336,7 +336,7 @@ class MedicalPermissionsFragmentTest {
                 HealthPermission.fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED)
         }
         whenever(viewModel.grantedMedicalPermissions).then {
-            MutableLiveData(emptySet<DataTypePermission>())
+            MutableLiveData(emptySet<FitnessPermission>())
         }
 
         launchFragment<MedicalPermissionsFragment>(bundleOf())

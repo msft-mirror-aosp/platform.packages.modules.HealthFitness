@@ -13,8 +13,8 @@
  */
 package com.android.healthconnect.controller.tests.permissions.data
 
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.google.common.truth.Truth.assertThat
@@ -26,7 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class DataTypePermissionStringsTest {
+class FitnessPermissionStringsTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
@@ -40,19 +40,20 @@ class DataTypePermissionStringsTest {
     @Test
     fun allHealthPermissionTypesHaveStrings() {
         for (type in HealthPermissionType.values()) {
-            assertThat(DataTypePermissionStrings.fromPermissionType(type)).isNotNull()
+            assertThat(FitnessPermissionStrings.fromPermissionType(type)).isNotNull()
         }
     }
 
     @Test
-    fun allDataTypePermissionsHaveStrings() {
+    fun allFitnessPermissionsHaveStrings() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) || healthPermissionReader.isMedicalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) ||
+                    healthPermissionReader.isMedicalPermission(perm)
             }
         for (permission in allPermissions) {
-            val type = DataTypePermission.fromPermissionString(permission).healthPermissionType
-            assertThat(DataTypePermissionStrings.fromPermissionType(type)).isNotNull()
+            val type = FitnessPermission.fromPermissionString(permission).healthPermissionType
+            assertThat(FitnessPermissionStrings.fromPermissionType(type)).isNotNull()
         }
     }
 }

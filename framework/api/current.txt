@@ -114,6 +114,7 @@ package android.health.connect {
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_RESOURCES_IMMUNIZATION = "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS_SESSION = "android.permission.health.READ_MINDFULNESS_SESSION";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
@@ -153,6 +154,7 @@ package android.health.connect {
     field public static final String WRITE_LEAN_BODY_MASS = "android.permission.health.WRITE_LEAN_BODY_MASS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_RESOURCES = "android.permission.health.WRITE_MEDICAL_RESOURCES";
     field public static final String WRITE_MENSTRUATION = "android.permission.health.WRITE_MENSTRUATION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS_SESSION = "android.permission.health.WRITE_MINDFULNESS_SESSION";
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";
@@ -1161,6 +1163,31 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setLastModifiedTime(@NonNull java.time.Instant);
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setRecordingMethod(int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.mindfulness") public final class MindfulnessSessionRecord extends android.health.connect.datatypes.IntervalRecord {
+    method public int getMindfulnessSessionType();
+    method @Nullable public CharSequence getNotes();
+    method @Nullable public CharSequence getTitle();
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Long> MINDFULNESS_DURATION_TOTAL;
+    field public static final int MINDFULNESS_SESSION_TYPE_BREATHING = 3; // 0x3
+    field public static final int MINDFULNESS_SESSION_TYPE_MEDITATION = 1; // 0x1
+    field public static final int MINDFULNESS_SESSION_TYPE_MOVEMENT = 5; // 0x5
+    field public static final int MINDFULNESS_SESSION_TYPE_MUSIC = 4; // 0x4
+    field public static final int MINDFULNESS_SESSION_TYPE_UNGUIDED = 6; // 0x6
+    field public static final int MINDFULNESS_SESSION_TYPE_UNKNOWN = 0; // 0x0
+    field public static final int MINDFULNESS_SESSION_TYPE_YOGA = 2; // 0x2
+  }
+
+  public static final class MindfulnessSessionRecord.Builder {
+    ctor public MindfulnessSessionRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant, int);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord build();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder clearEndZoneOffset();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder clearStartZoneOffset();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setNotes(@Nullable CharSequence);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setTitle(@Nullable CharSequence);
   }
 
   public final class NutritionRecord extends android.health.connect.datatypes.IntervalRecord {
