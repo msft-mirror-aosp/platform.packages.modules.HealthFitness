@@ -31,14 +31,24 @@ import static com.google.common.truth.Truth.assertThat;
 
 import android.health.connect.datatypes.MedicalResource;
 import android.os.Parcel;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.healthfitness.flags.Flags;
+
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
+@RequiresFlagsEnabled(Flags.FLAG_PERSONAL_HEALTH_RECORD)
 public class MedicalResourceTest {
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
     @Test
     public void testMedicalResourceBuilder_requiredFieldsOnly() {
         MedicalResource resource =

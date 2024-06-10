@@ -39,13 +39,13 @@ sealed class HealthPermission {
             } else if (permission in medicalPermissions) {
                 MedicalPermission.fromPermissionString(permission)
             } else {
-                DataTypePermission.fromPermissionString(permission)
+                FitnessPermission.fromPermissionString(permission)
             }
         }
     }
 
     /** Pair of {@link HealthPermissionType} and {@link PermissionsAccessType}. */
-    data class DataTypePermission(
+    data class FitnessPermission(
         val healthPermissionType: HealthPermissionType,
         val permissionsAccessType: PermissionsAccessType
     ) : HealthPermission() {
@@ -53,16 +53,16 @@ sealed class HealthPermission {
             private const val READ_PERMISSION_PREFIX = "android.permission.health.READ_"
             private const val WRITE_PERMISSION_PREFIX = "android.permission.health.WRITE_"
 
-            fun fromPermissionString(permission: String): DataTypePermission {
+            fun fromPermissionString(permission: String): FitnessPermission {
                 return if (permission.startsWith(READ_PERMISSION_PREFIX)) {
                     val type =
                         getHealthPermissionType(permission.substring(READ_PERMISSION_PREFIX.length))
-                    DataTypePermission(type, PermissionsAccessType.READ)
+                    FitnessPermission(type, PermissionsAccessType.READ)
                 } else if (permission.startsWith(WRITE_PERMISSION_PREFIX)) {
                     val type =
                         getHealthPermissionType(
                             permission.substring(WRITE_PERMISSION_PREFIX.length))
-                    DataTypePermission(type, PermissionsAccessType.WRITE)
+                    FitnessPermission(type, PermissionsAccessType.WRITE)
                 } else {
                     throw IllegalArgumentException("Fitness permission not supported! $permission")
                 }

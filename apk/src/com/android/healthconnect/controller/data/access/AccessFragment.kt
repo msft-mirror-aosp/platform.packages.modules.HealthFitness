@@ -29,7 +29,7 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppMetadata

@@ -17,10 +17,8 @@
 package com.android.healthconnect.controller.tests.backuprestore
 
 import android.content.Context
-import android.health.connect.HealthConnectManager
-import android.health.connect.exportimport.ScheduledExportSettings
-import android.health.connect.exportimport.ScheduledExportStatus
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
@@ -33,28 +31,39 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.backuprestore.BackupAndRestoreSettingsFragment
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
-import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
-import com.android.healthconnect.controller.service.HealthDataExportManagerModule
+import com.android.healthconnect.controller.exportimport.api.ExportSettings
+import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.NOW
-import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataExportManager
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.tests.utils.whenever
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
 
 @HiltAndroidTest
-@UninstallModules(HealthDataExportManagerModule::class)
 class BackupAndRestoreSettingsFragmentTest {
+
+    companion object {
+        private const val TEST_EXPORT_PERIOD_IN_DAYS = 1
+    }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
-    @BindValue val healthDataExportManager: HealthDataExportManager = FakeHealthDataExportManager()
+    @BindValue
+    val exportSettingsViewModel: ExportSettingsViewModel =
+        Mockito.mock(ExportSettingsViewModel::class.java)
+
+    @BindValue
+    val exportStatusViewModel: ExportStatusViewModel =
+        Mockito.mock(ExportStatusViewModel::class.java)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -65,29 +74,30 @@ class BackupAndRestoreSettingsFragmentTest {
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
 
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            ScheduledExportStatus(
-                null,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
-    }
-
-    @After
-    fun tearDown() {
-        (healthDataExportManager as FakeHealthDataExportManager).reset()
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        null,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        /** periodInDays= */
+                        0)))
+        }
     }
 
     @Test
     fun backupAndRestoreSettingsFragmentInit_showsFragmentCorrectly() {
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            ScheduledExportStatus(
-                NOW,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
-
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+        }
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
 
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -104,15 +114,17 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_withNoLastSuccessfulDate_doesNotShowLastExportTime() {
-        (healthDataExportManager as FakeHealthDataExportManager).setScheduledExportStatus(
-            ScheduledExportStatus(
-                null,
-                HealthConnectManager.DATA_EXPORT_ERROR_NONE,
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
-
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        null,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Last export: October 20, 2022")).check(doesNotExist())
@@ -120,9 +132,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_clicksScheduledExportWhenItIsOff_navigatesToExportSetupActivity() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
@@ -136,9 +148,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_clicksScheduledExportWhenItIsOn_navigatesToScheduledExportFragment() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
             navHostController.setGraph(R.navigation.nav_graph)
             navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
@@ -152,9 +164,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_whenExportFrequencyIsNever_showsCorrectSummary() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Off")).check(matches(isDisplayed()))
@@ -162,9 +174,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_whenExportFrequencyIsDaily_showsCorrectSummary() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_DAILY.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("On • Daily")).check(matches(isDisplayed()))
@@ -172,9 +184,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_whenExportFrequencyIsWeekly_showsCorrectSummary() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_WEEKLY.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("On • Weekly")).check(matches(isDisplayed()))
@@ -182,9 +194,9 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @Test
     fun backupAndRestoreSettingsFragment_whenExportFrequencyIsMonthly_showsCorrectSummary() {
-        healthDataExportManager.configureScheduledExport(
-            ScheduledExportSettings.withPeriodInDays(
-                ExportFrequency.EXPORT_FREQUENCY_MONTHLY.periodInDays))
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_MONTHLY))
+        }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("On • Monthly")).check(matches(isDisplayed()))
