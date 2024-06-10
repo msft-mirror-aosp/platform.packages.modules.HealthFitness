@@ -1,8 +1,10 @@
 package com.android.healthconnect.controller.tests
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.platform.test.flag.junit.SetFlagsRule
 import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ActivityScenario.launchActivityForResult
 import androidx.test.espresso.Espresso.onView
@@ -11,6 +13,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.MainActivity
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.migration.MigrationViewModel.MigrationFragmentState.WithData
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState
@@ -18,6 +23,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.DataRestoreUiState
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.shared.Constants
+import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.showOnboarding
 import com.android.healthconnect.controller.tests.utils.whenever
 import dagger.hilt.android.testing.BindValue
@@ -36,14 +42,22 @@ import org.mockito.Mockito
 class MainActivityTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @BindValue val viewModel: MigrationViewModel = Mockito.mock(MigrationViewModel::class.java)
+    @BindValue
+    val exportStatusViewModel: ExportStatusViewModel =
+        Mockito.mock(ExportStatusViewModel::class.java)
 
     private lateinit var context: Context
 
     @Before
     fun setup() {
         hiltRule.inject()
+        // Required for aconfig flag reading for tests run on pre V devices
+        InstrumentationRegistry.getInstrumentation()
+            .getUiAutomation()
+            .adoptShellPermissionIdentity(Manifest.permission.READ_DEVICE_CONFIG)
         context = InstrumentationRegistry.getInstrumentation().context
         whenever(viewModel.getCurrentMigrationUiState()).then {
             MigrationRestoreState(
@@ -58,6 +72,12 @@ class MainActivityTest {
                         migrationUiState = MigrationUiState.IDLE,
                         dataRestoreState = DataRestoreUiState.IDLE,
                         dataRestoreError = DataRestoreUiError.ERROR_NONE)))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
         }
     }
 

@@ -398,11 +398,32 @@ public class AggregateWithFiltersTest {
         LocalDateTime endLocalTime = filterEndTime.atOffset(dataZone).toLocalDateTime();
         insertRecords(
                 List.of(
+                        // fully in range
                         getStepsRecord(123, Instant.EPOCH, Instant.ofEpochMilli(456)),
+                        // partially in range (29/30)
                         getStepsRecord(
-                                2000,
-                                filterEndTime.minusMillis(1000),
-                                filterEndTime.plusMillis(1000))));
+                                30000,
+                                filterEndTime.minus(29, HOURS),
+                                filterEndTime.plus(1, HOURS))));
+
+        // debug call starts, local time filter with closed ends
+        AggregateRecordsRequest<Long> debuggingRequestWithLocalFilter =
+                new AggregateRecordsRequest.Builder<Long>(
+                                getTimeFilter(endLocalTime.minusDays(30), endLocalTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> debuggingAggregateResponse =
+                getAggregateResponse(debuggingRequestWithLocalFilter);
+        assertThat(debuggingAggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29000);
+        // debug call ends
+
+        // Aggregate with local filter first, to see if the order matters
+        AggregateRecordsRequest<Long> requestWithLocalFilter =
+                new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(endLocalTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse2 =
+                getAggregateResponse(requestWithLocalFilter);
 
         AggregateRecordsRequest<Long> requestWithInstantFilter =
                 new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(filterEndTime))
@@ -410,15 +431,11 @@ public class AggregateWithFiltersTest {
                         .build();
         AggregateRecordsResponse<Long> aggregateResponse =
                 getAggregateResponse(requestWithInstantFilter);
-        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(1123);
 
-        AggregateRecordsRequest<Long> requestWithLocalFilter =
-                new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(endLocalTime))
-                        .addAggregationType(STEPS_COUNT_TOTAL)
-                        .build();
-        AggregateRecordsResponse<Long> aggregateResponse2 =
-                getAggregateResponse(requestWithLocalFilter);
-        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(1123);
+        // checking the result of instant request aggregation first, so it doesn't get cut by the
+        // assertion failure of the local request aggregation result
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
     }
 
     @Test

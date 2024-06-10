@@ -21,17 +21,22 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
+import com.android.healthconnect.controller.exportimport.ExportStatusPreference
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
+import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
-import dagger.hilt.android.AndroidEntryPoint
-import com.android.settingslib.widget.FooterPreference
-import com.android.healthconnect.controller.utils.pref
-import android.content.Intent
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
+import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.pref
+import com.android.settingslib.widget.FooterPreference
+import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
@@ -41,9 +46,11 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     companion object {
         const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
         const val IMPORT_DATA_PREFERENCE_KEY = "import_data"
+        const val EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY = "settings_category"
     }
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
+    private val exportStatusViewModel: ExportStatusViewModel by viewModels()
 
     private val scheduledExportPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
@@ -51,6 +58,14 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private val importDataPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(IMPORT_DATA_PREFERENCE_KEY)
+    }
+
+    private val settingsCategory: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY)
+    }
+
+    private val dateFormatter: LocalDateTimeFormatter by lazy {
+        LocalDateTimeFormatter(requireContext())
     }
 
     private val footerPreference: FooterPreference by pref("backup_restore_footer")
@@ -72,13 +87,25 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
         importDataPreference?.setOnPreferenceClickListener {
             findNavController()
-                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+                .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
             true
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
+            scheduledExportUiStatus ->
+            when (scheduledExportUiStatus) {
+                is ScheduledExportUiStatus.WithData -> {
+                    maybeShowPreviousExportStatus(scheduledExportUiStatus.scheduledExportUiState)
+                }
+                else -> {
+                    // do nothing
+                }
+            }
+        }
 
         exportSettingsViewModel.storedExportSettings.observe(viewLifecycleOwner) { exportSettings ->
             when (exportSettings) {
@@ -126,6 +153,18 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                 getString(automaticExportStatusId, on, getString(R.string.frequency_weekly))
             ExportFrequency.EXPORT_FREQUENCY_MONTHLY ->
                 getString(automaticExportStatusId, on, getString(R.string.frequency_monthly))
+        }
+    }
+
+    private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
+        val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
+        if (lastSuccessfulExportTime != null) {
+            val lastExportTime =
+                getString(
+                    R.string.last_export_time,
+                    dateFormatter.formatLongDate(lastSuccessfulExportTime))
+            settingsCategory?.addPreference(
+                ExportStatusPreference(requireContext(), lastExportTime).also { it.order = 1 })
         }
     }
 }
