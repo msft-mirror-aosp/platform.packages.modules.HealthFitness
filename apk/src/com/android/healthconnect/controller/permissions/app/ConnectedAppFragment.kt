@@ -369,8 +369,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                 getString(R.string.manage_permissions_rationale, appName)
 
         val isHistoryReadAvailable =
-            additionalAccessViewModel
-                .additionalAccessState.value?.historyReadUIState?.isDeclared ?: false
+            additionalAccessViewModel.additionalAccessState.value?.historyReadUIState?.isDeclared
+                ?: false
         // Do not show the access date here if history read is available
         if (isAtLeastOneGranted && !isHistoryReadAvailable) {
             val dataAccessDate = appPermissionViewModel.loadAccessDate(packageName)

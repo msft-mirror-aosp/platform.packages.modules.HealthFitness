@@ -34,6 +34,7 @@ import android.health.connect.exportimport.ScheduledExportSettings;
 import android.health.connect.migration.MigrationEntity;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.net.Uri;
 
 import android.os.UserHandle;
 
@@ -374,4 +375,11 @@ interface IHealthConnectService {
     * @hide
     */
     void getImportStatus(in UserHandle userHandle, in IImportStatusCallback callback);
+
+    /**
+    * Imports the given compressed database file.
+    *
+    * @hide
+    */
+    void runImport(in UserHandle userHandle, in Uri file);
 }

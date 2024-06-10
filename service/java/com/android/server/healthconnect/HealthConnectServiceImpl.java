@@ -112,6 +112,7 @@ import android.health.connect.ratelimiter.RateLimiterException;
 import android.health.connect.restore.BackupFileNamesSet;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
@@ -129,6 +130,7 @@ import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.migration.DataMigrationManager;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -201,6 +203,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final MigrationUiStateManager mMigrationUiStateManager;
+    private final ImportManager mImportManager;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -227,6 +230,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
         mMigrationUiStateManager = migrationUiStateManager;
+        mImportManager = new ImportManager(mContext);
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
     }
@@ -2144,6 +2148,15 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         tryAndThrowException(callback, exception, ERROR_INTERNAL);
                     }
                 });
+    }
+
+    @Override
+    public void runImport(@NonNull UserHandle user, @NonNull Uri file) {
+        try {
+            mImportManager.runImport(user, file);
+        } catch (Exception e) {
+            Slog.e(TAG, "Import failed", e);
+        }
     }
 
     /** Queries the document providers available to be used for export/import. */

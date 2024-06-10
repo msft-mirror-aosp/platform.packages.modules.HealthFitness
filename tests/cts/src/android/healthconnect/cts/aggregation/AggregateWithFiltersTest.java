@@ -406,20 +406,35 @@ public class AggregateWithFiltersTest {
                                 filterEndTime.minus(29, HOURS),
                                 filterEndTime.plus(1, HOURS))));
 
-        AggregateRecordsRequest<Long> requestWithInstantFilter =
-                new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(filterEndTime))
+        // debug call starts, local time filter with closed ends
+        AggregateRecordsRequest<Long> debuggingRequestWithLocalFilter =
+                new AggregateRecordsRequest.Builder<Long>(
+                                getTimeFilter(endLocalTime.minusDays(30), endLocalTime))
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
-        AggregateRecordsResponse<Long> aggregateResponse =
-                getAggregateResponse(requestWithInstantFilter);
-        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
+        AggregateRecordsResponse<Long> debuggingAggregateResponse =
+                getAggregateResponse(debuggingRequestWithLocalFilter);
+        assertThat(debuggingAggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29000);
+        // debug call ends
 
+        // Aggregate with local filter first, to see if the order matters
         AggregateRecordsRequest<Long> requestWithLocalFilter =
                 new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(endLocalTime))
                         .addAggregationType(STEPS_COUNT_TOTAL)
                         .build();
         AggregateRecordsResponse<Long> aggregateResponse2 =
                 getAggregateResponse(requestWithLocalFilter);
+
+        AggregateRecordsRequest<Long> requestWithInstantFilter =
+                new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(filterEndTime))
+                        .addAggregationType(STEPS_COUNT_TOTAL)
+                        .build();
+        AggregateRecordsResponse<Long> aggregateResponse =
+                getAggregateResponse(requestWithInstantFilter);
+
+        // checking the result of instant request aggregation first, so it doesn't get cut by the
+        // assertion failure of the local request aggregation result
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
         assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
     }
 

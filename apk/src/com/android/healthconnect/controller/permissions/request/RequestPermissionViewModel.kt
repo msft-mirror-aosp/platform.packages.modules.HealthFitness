@@ -281,6 +281,7 @@ constructor(
     fun requestAdditionalPermissions(packageName: String) {
         requestedPermissions
             .filterKeys { it is AdditionalPermission }
+            .filterKeys { it != AdditionalPermission.READ_EXERCISE_ROUTES }
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }

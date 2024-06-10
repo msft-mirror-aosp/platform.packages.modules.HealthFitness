@@ -292,7 +292,7 @@ class AppPermissionViewModelTest {
         getGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME,
             listOf(
-                readExercisePermission.toString(),
+                readNutritionPermission.toString(),
                 writeDistancePermission.toString(),
                 readExerciseRoutesPermission.additionalPermission,
                 readHistoryDataPermission.additionalPermission,
@@ -322,11 +322,11 @@ class AppPermissionViewModelTest {
                     writeSleepPermission,
                     writeDistancePermission))
         assertThat(grantedPermissionsResult)
-            .containsExactlyElementsIn(setOf(readExercisePermission, writeDistancePermission))
+            .containsExactlyElementsIn(setOf(readNutritionPermission, writeDistancePermission))
 
         val result =
             appPermissionViewModel.updatePermission(
-                TEST_APP_PACKAGE_NAME, readExercisePermission, false)
+                TEST_APP_PACKAGE_NAME, readNutritionPermission, false)
         advanceUntilIdle()
 
         assertThat(grantedPermissionsObserver.getLastValue())
@@ -359,7 +359,6 @@ class AppPermissionViewModelTest {
             listOf(
                 readExercisePermission.toString(),
                 writeDistancePermission.toString(),
-                readExerciseRoutesPermission.additionalPermission,
                 readHistoryDataPermission.additionalPermission,
                 readDataInBackgroundPermission.additionalPermission))
 

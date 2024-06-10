@@ -38,6 +38,7 @@ import static android.health.connect.HealthPermissionCategory.HYDRATION;
 import static android.health.connect.HealthPermissionCategory.INTERMENSTRUAL_BLEEDING;
 import static android.health.connect.HealthPermissionCategory.LEAN_BODY_MASS;
 import static android.health.connect.HealthPermissionCategory.MENSTRUATION;
+import static android.health.connect.HealthPermissionCategory.MINDFULNESS_SESSION;
 import static android.health.connect.HealthPermissionCategory.NUTRITION;
 import static android.health.connect.HealthPermissionCategory.OVULATION_TEST;
 import static android.health.connect.HealthPermissionCategory.OXYGEN_SATURATION;
@@ -55,6 +56,7 @@ import static android.health.connect.HealthPermissionCategory.VO2_MAX;
 import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 
+import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import android.annotation.FlaggedApi;
@@ -458,6 +460,15 @@ public final class HealthPermissions {
             "android.permission.health.READ_PLANNED_EXERCISE";
 
     /**
+     * Allows an application to read user's mindfulness session data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_MINDFULNESS)
+    public static final String READ_MINDFULNESS_SESSION =
+            "android.permission.health.READ_MINDFULNESS_SESSION";
+
+    /**
      * Allows an application to write the user's calories burned data.
      *
      * <p>Protection level: dangerous.
@@ -749,6 +760,15 @@ public final class HealthPermissions {
     public static final String WRITE_PLANNED_EXERCISE =
             "android.permission.health.WRITE_PLANNED_EXERCISE";
 
+    /**
+     * Allows an application to write user's mindfulness session data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi(FLAG_MINDFULNESS)
+    public static final String WRITE_MINDFULNESS_SESSION =
+            "android.permission.health.WRITE_MINDFULNESS_SESSION";
+
     /** Personal Health Record permissions */
 
     /**
@@ -977,6 +997,7 @@ public final class HealthPermissions {
         sHealthCategoryToWritePermissionMap.put(RESTING_HEART_RATE, WRITE_RESTING_HEART_RATE);
         sHealthCategoryToWritePermissionMap.put(SKIN_TEMPERATURE, WRITE_SKIN_TEMPERATURE);
         sHealthCategoryToWritePermissionMap.put(PLANNED_EXERCISE, WRITE_PLANNED_EXERCISE);
+        sHealthCategoryToWritePermissionMap.put(MINDFULNESS_SESSION, WRITE_MINDFULNESS_SESSION);
 
         // Populate permission category to read permission map
         sHealthCategoryToReadPermissionMap.put(ACTIVE_CALORIES_BURNED, READ_ACTIVE_CALORIES_BURNED);
@@ -1017,6 +1038,7 @@ public final class HealthPermissions {
         sHealthCategoryToReadPermissionMap.put(RESTING_HEART_RATE, READ_RESTING_HEART_RATE);
         sHealthCategoryToReadPermissionMap.put(SKIN_TEMPERATURE, READ_SKIN_TEMPERATURE);
         sHealthCategoryToReadPermissionMap.put(PLANNED_EXERCISE, READ_PLANNED_EXERCISE);
+        sHealthCategoryToReadPermissionMap.put(MINDFULNESS_SESSION, READ_MINDFULNESS_SESSION);
     }
 
     private static synchronized void populateWriteHealthPermissionToHealthDataCategoryMap() {
@@ -1158,5 +1180,8 @@ public final class HealthPermissions {
                     WRITE_RESPIRATORY_RATE,
                     WRITE_RESTING_HEART_RATE
                 });
+
+        sDataCategoryToWritePermissionsMap.put(
+                HealthDataCategory.WELLNESS, new String[] {WRITE_MINDFULNESS_SESSION});
     }
 }
