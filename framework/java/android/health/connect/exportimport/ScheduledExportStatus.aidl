@@ -1,7 +1,7 @@
 package android.health.connect.exportimport;
 
 /**
- * Status for the scheduled scheduled export.
+ * Status for a scheduled export.
  *
  * @hide
  */

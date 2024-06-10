@@ -92,6 +92,7 @@ public class PreferenceHelper extends DatabaseHelper {
         getPreferences().putAll(keyValues);
     }
 
+    @Override
     @NonNull
     public CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
@@ -149,9 +150,8 @@ public class PreferenceHelper extends DatabaseHelper {
         }
     }
 
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(KEY_COLUMN_NAME, TEXT_NOT_NULL_UNIQUE));
         columnInfo.add(new Pair<>(VALUE_COLUMN_NAME, TEXT_NULL));
