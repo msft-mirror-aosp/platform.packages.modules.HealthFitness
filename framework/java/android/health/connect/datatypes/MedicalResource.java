@@ -26,6 +26,8 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -36,12 +38,15 @@ import java.util.Set;
  * type is specified via {@link MedicalResourceType}.
  */
 @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-public final class MedicalResource {
+public final class MedicalResource implements Parcelable {
     /** Unknown medical resource type. */
     public static final int MEDICAL_RESOURCE_TYPE_UNKNOWN = 0;
 
+    /** Medical resource type to capture the immunizations data. */
+    public static final int MEDICAL_RESOURCE_TYPE_IMMUNIZATION = 1;
+
     /** @hide */
-    @IntDef({MEDICAL_RESOURCE_TYPE_UNKNOWN})
+    @IntDef({MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MedicalResourceType {}
 
@@ -66,13 +71,43 @@ public final class MedicalResource {
         requireNonNull(id);
         requireNonNull(dataSourceId);
         requireNonNull(data);
-        validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+        validateMedicalResourceType(type);
 
         mId = id;
         mType = type;
         mDataSourceId = dataSourceId;
         mData = data;
     }
+
+    /**
+     * Constructs this object with the data present in {@code parcel}. It should be in the same
+     * order as {@link MedicalResource#writeToParcel}.
+     */
+    private MedicalResource(@NonNull Parcel in) {
+        requireNonNull(in);
+        mId = requireNonNull(in.readString());
+        mType = in.readInt();
+        mDataSourceId = requireNonNull(in.readString());
+        mData = requireNonNull(in.readString());
+    }
+
+    @NonNull
+    public static final Creator<MedicalResource> CREATOR =
+            new Creator<>() {
+                /**
+                 * Reading from the {@link Parcel} should have the same order as {@link
+                 * MedicalResource#writeToParcel}.
+                 */
+                @Override
+                public MedicalResource createFromParcel(Parcel in) {
+                    return new MedicalResource(in);
+                }
+
+                @Override
+                public MedicalResource[] newArray(int size) {
+                    return new MedicalResource[size];
+                }
+            };
 
     /** Returns the unique identifier of this data. */
     @NonNull
@@ -98,13 +133,42 @@ public final class MedicalResource {
         return mData;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    /** Populates a {@link Parcel} with the self information. */
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        requireNonNull(dest);
+        dest.writeString(getId());
+        dest.writeInt(getType());
+        dest.writeString(getDataSourceId());
+        dest.writeString(getData());
+    }
+
     /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
      *
      * @hide
      */
-    public static final Set<Integer> VALID_TYPES = Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN);
+    public static final Set<Integer> VALID_TYPES =
+            Set.of(MEDICAL_RESOURCE_TYPE_UNKNOWN, MEDICAL_RESOURCE_TYPE_IMMUNIZATION);
+
+    /**
+     * Validates the provided {@code medicalResourceType} is in the {@link
+     * MedicalResource#VALID_TYPES} set.
+     *
+     * <p>Throws {@link IllegalArgumentException} if not.
+     *
+     * @hide
+     */
+    public static void validateMedicalResourceType(@MedicalResourceType int medicalResourceType) {
+        validateIntDefValue(
+                medicalResourceType, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+    }
 
     /** Indicates whether some other object is "equal to" this one. */
     @Override
@@ -151,7 +215,7 @@ public final class MedicalResource {
             requireNonNull(id);
             requireNonNull(dataSourceId);
             requireNonNull(data);
-            validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+            validateMedicalResourceType(type);
 
             mId = id;
             mType = type;
@@ -192,7 +256,7 @@ public final class MedicalResource {
          */
         @NonNull
         public Builder setType(@MedicalResourceType int type) {
-            validateIntDefValue(type, VALID_TYPES, MedicalResourceType.class.getSimpleName());
+            validateMedicalResourceType(type);
             mType = type;
             return this;
         }

@@ -36,7 +36,6 @@ import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -47,12 +46,7 @@ public class MedicalResourceHelperTest {
             UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
     private static final String DATA_SOURCE_ID = "nhs/123";
     private static final String FHIR_DATA = "{\"resourceType\" : \"Immunization\"}";
-    private MedicalResourceHelper mMedicalResourceHelper;
-
-    @Before
-    public void setup() {
-        mMedicalResourceHelper = MedicalResourceHelper.getInstance();
-    }
+    private final MedicalResourceHelper mMedicalResourceHelper = new MedicalResourceHelper();
 
     @Test
     public void getUpsertTableRequest_correctResult() {

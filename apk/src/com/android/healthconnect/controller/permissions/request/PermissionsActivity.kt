@@ -18,7 +18,6 @@
 
 package com.android.healthconnect.controller.permissions.request
 
-import android.app.Activity.*
 import android.content.Intent
 import android.content.Intent.EXTRA_PACKAGE_NAME
 import android.content.pm.PackageManager
@@ -46,6 +45,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +64,8 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+
+    @Inject lateinit var featureUtils: FeatureUtils
 
     private val requestPermissionsViewModel: RequestPermissionViewModel by viewModels()
 
@@ -121,24 +123,34 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
         }
 
         requestPermissionsViewModel.healthPermissionsList.observe(this) { allPermissions ->
-            val dataTypePermissions =
-                allPermissions.filterIsInstance<HealthPermission.DataTypePermission>()
+            val medicalPermissions =
+                allPermissions.filterIsInstance<HealthPermission.MedicalPermission>()
+            val fitnessPermissions =
+                allPermissions.filterIsInstance<HealthPermission.FitnessPermission>()
             val additionalPermissions =
                 allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
+            val noMedicalRequest = medicalPermissions.isEmpty()
+            val noDataTypeRequest = fitnessPermissions.isEmpty()
+            val noAdditionalRequest = additionalPermissions.isEmpty()
 
             // Case 1 - no permissions
-            if (dataTypePermissions.isEmpty() && additionalPermissions.isEmpty()) {
+            if (noMedicalRequest && noDataTypeRequest && noAdditionalRequest) {
                 requestPermissionsViewModel.requestHealthPermissions(getPackageNameExtra())
                 handlePermissionResults()
             }
 
-            // Case 2 - just data type permissions
-            else if (additionalPermissions.isEmpty()) {
-                showFragment(DataTypePermissionsFragment())
+            // Case 2 - just medical permissions
+            else if (noDataTypeRequest && noAdditionalRequest) {
+                showFragment(MedicalPermissionsFragment())
             }
 
-            // Case 3 - just additional permissions
-            else if (dataTypePermissions.isEmpty()) {
+            // Case 3 - just fitness permissions
+            else if (noMedicalRequest && noAdditionalRequest) {
+                showFragment(FitnessPermissionsFragment())
+            }
+
+            // Case 4 - just additional permissions
+            else if (noMedicalRequest && noDataTypeRequest) {
                 if (!requestPermissionsViewModel.isAnyReadPermissionGranted()) {
                     Log.e(
                         TAG,
@@ -147,14 +159,43 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                 }
 
                 // Show only additional access request
-                requestPermissionsViewModel.setDataTypePermissionRequestConcluded(true)
+                requestPermissionsViewModel.setFitnessPermissionRequestConcluded(true)
                 showFragment(AdditionalPermissionsFragment())
             }
 
-            // Case 4 - combined permissions
+            // Case 5 - medical and data type
+            else if (noAdditionalRequest) {
+                if (!requestPermissionsViewModel.isMedicalPermissionRequestConcluded()) {
+                    showFragment(MedicalPermissionsFragment())
+                } else {
+                    showFragment(FitnessPermissionsFragment())
+                }
+            }
+
+            // Case 6 - medical and additional
+            else if (noDataTypeRequest) {
+                if (!requestPermissionsViewModel.isMedicalPermissionRequestConcluded()) {
+                    showFragment(MedicalPermissionsFragment())
+                } else {
+                    showFragment(AdditionalPermissionsFragment())
+                }
+            }
+
+            // Case 7 - data type and additional
+            else if (noMedicalRequest) {
+                if (!requestPermissionsViewModel.isFitnessPermissionRequestConcluded()) {
+                    showFragment(FitnessPermissionsFragment())
+                } else {
+                    showFragment(AdditionalPermissionsFragment())
+                }
+            }
+
+            // Case 8 - all three combined
             else {
-                if (!requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
-                    showFragment(DataTypePermissionsFragment())
+                if (!requestPermissionsViewModel.isMedicalPermissionRequestConcluded()) {
+                    showFragment(MedicalPermissionsFragment())
+                } else if (!requestPermissionsViewModel.isFitnessPermissionRequestConcluded()) {
+                    showFragment(FitnessPermissionsFragment())
                 } else {
                     // After configuration change
                     showFragment(AdditionalPermissionsFragment())
@@ -200,12 +241,12 @@ class PermissionsActivity : Hilt_PermissionsActivity() {
                     requestPermissionsViewModel.appMetadata.value?.appName),
                 null,
             ) { _, _ ->
-                if (requestPermissionsViewModel.isDataTypePermissionRequestConcluded()) {
+                if (requestPermissionsViewModel.isFitnessPermissionRequestConcluded()) {
                     requestPermissionsViewModel.updateAdditionalPermissions(false)
                     requestPermissionsViewModel.requestAdditionalPermissions(getPackageNameExtra())
                 } else {
-                    requestPermissionsViewModel.updateDataTypePermissions(false)
-                    requestPermissionsViewModel.requestDataTypePermissions(getPackageNameExtra())
+                    requestPermissionsViewModel.updateFitnessPermissions(false)
+                    requestPermissionsViewModel.requestFitnessPermissions(getPackageNameExtra())
                 }
 
                 handlePermissionResults()

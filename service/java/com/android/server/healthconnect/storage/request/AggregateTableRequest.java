@@ -191,7 +191,9 @@ public class AggregateTableRequest {
             }
         }
 
-        return appendAggregateCommand(builder, usingPriority);
+        String command = appendAggregateCommand(builder, usingPriority);
+        Slog.d(TAG, command);
+        return command;
     }
 
     /** Sets time filter for table request. */

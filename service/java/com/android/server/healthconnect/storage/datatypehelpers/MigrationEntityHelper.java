@@ -61,13 +61,10 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     }
 
     /** Returns a request to create a table for this helper. */
+    @Override
     @NonNull
     public CreateTableRequest getCreateTableRequest() {
-        return new CreateTableRequest(
-                TABLE_NAME,
-                List.of(
-                        new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY),
-                        new Pair<>(COLUMN_ENTITY_ID, TEXT_NOT_NULL_UNIQUE)));
+        return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
     @Override
@@ -75,8 +72,7 @@ public final class MigrationEntityHelper extends DatabaseHelper {
         return TABLE_NAME;
     }
 
-    @Override
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(COLUMN_ENTITY_ID, TEXT_NOT_NULL_UNIQUE));

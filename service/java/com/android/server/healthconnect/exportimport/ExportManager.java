@@ -20,18 +20,21 @@ import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectManager;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.AccessLogsHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -77,69 +80,112 @@ public class ExportManager {
      * Makes a local copy of the HC database, deletes the unnecessary data for export and sends the
      * data to a cloud provider.
      */
-    public synchronized void runExport() {
-        Slog.i(TAG, "Export started");
-        exportToUri(ScheduledExportSettingsStorage.getUri(), exportLocally().toPath());
-        // TODO(b/325599879): Clean local file.
-        Slog.i(TAG, "Export completed");
+    public synchronized boolean runExport() {
+        Slog.i(TAG, "Export started.");
+        File localExportFile;
+        try {
+            localExportFile = exportLocally();
+        } catch (Exception e) {
+            Slog.e(TAG, "Failed to create local file for export", e);
+            ExportImportSettingsStorage.setLastExportError(
+                    HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+            deleteLocalExportFile(
+                    new File(mDatabaseContext.getDatabaseDir(), LOCAL_EXPORT_DATABASE_FILE_NAME));
+            return false;
+        }
+
+        try {
+            try {
+                deleteLogTablesContent();
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to prepare local file for export", e);
+                ExportImportSettingsStorage.setLastExportError(
+                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                return false;
+            }
+
+            try {
+                exportToUri(ExportImportSettingsStorage.getUri(), localExportFile.toPath());
+            } catch (FileNotFoundException e) {
+                Slog.e(TAG, "Lost access to export location", e);
+                ExportImportSettingsStorage.setLastExportError(
+                        HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+                return false;
+            } catch (Exception e) {
+                Slog.e(TAG, "Failed to export to URI", e);
+                ExportImportSettingsStorage.setLastExportError(
+                        HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+                return false;
+            }
+
+            Slog.i(TAG, "Export completed.");
+            return true;
+        } finally {
+            deleteLocalExportFile(localExportFile);
+        }
     }
 
-    private synchronized File exportLocally() {
-        Slog.i(TAG, "Local export started");
+    private File exportLocally() throws IOException {
+        Slog.i(TAG, "Local export started.");
 
         File exportDir = mDatabaseContext.getDatabaseDir();
-        exportDir.mkdirs();
+        if (!exportDir.isDirectory() && !exportDir.mkdir()) {
+            throw new IOException("Unable to create directory for local export.");
+        }
+        // Delete the file if it already exists before writing.
         File exportFile = new File(exportDir, LOCAL_EXPORT_DATABASE_FILE_NAME);
+        if ((exportFile.exists() && !exportFile.delete()) || !exportFile.createNewFile()) {
+            throw new IOException("Unable to create file for local export.");
+        }
 
-        ParcelFileDescriptor pfd;
-        try {
-            exportFile.createNewFile();
-            pfd = ParcelFileDescriptor.open(exportFile, ParcelFileDescriptor.MODE_WRITE_ONLY);
+        try (ParcelFileDescriptor pfd =
+                ParcelFileDescriptor.open(exportFile, ParcelFileDescriptor.MODE_WRITE_ONLY)) {
+            if (pfd == null) {
+                throw new IOException("Unable to copy data to local file for export");
+            }
             try (FileOutputStream outputStream = new FileOutputStream(pfd.getFileDescriptor())) {
-                // TODO(b/325599879): Add functionality for checking that the copy is not
-                //  corrupted. If so, repeat the copy and check again a limited number of times.
+                // TODO(b/325599879): Replace with SQLite Online Backup API
                 Files.copy(
                         TransactionManager.getInitialisedInstance().getDatabasePath().toPath(),
                         outputStream);
-            } catch (IOException | SecurityException e) {
-                Slog.e(TAG, "Failed to send data for local export", e);
-            } finally {
-                try {
-                    pfd.close();
-                } catch (IOException e) {
-                    Slog.e(TAG, "Failed to close stream for local export", e);
-                }
             }
-        } catch (IOException e) {
-            Slog.e(TAG, "Failed to create file for local export", e);
         }
 
-        deleteLogTablesContent();
-
-        Slog.i(TAG, "Local export completed: " + exportFile.toPath().toAbsolutePath().toString());
+        Slog.i(TAG, "Local export completed: " + exportFile.toPath().toAbsolutePath());
         return exportFile;
     }
 
-    private void exportToUri(Uri destinationUri, Path originPath) {
-        Slog.i(TAG, "Export to URI started");
+    private void exportToUri(Uri destinationUri, Path originPath) throws IOException {
+        Slog.i(TAG, "Export to URI started.");
         try (OutputStream outputStream =
                 mDatabaseContext.getContentResolver().openOutputStream(destinationUri)) {
+            if (outputStream == null) {
+                throw new IOException("Unable to copy data to URI for export.");
+            }
             Files.copy(originPath, outputStream);
-            Slog.i(TAG, "Export to URI completed");
-        } catch (IOException e) {
-            Slog.e(TAG, "Failed to export to URI", e);
+            Slog.i(TAG, "Export to URI completed.");
         }
     }
 
     // TODO(b/325599879): Double check if we need to vacuum the database after clearing the tables.
-    private void deleteLogTablesContent() {
+    private void deleteLogTablesContent() throws IOException {
+        Slog.i(TAG, "Drop log tables started.");
         try (HealthConnectDatabase exportDatabase =
                 new HealthConnectDatabase(mDatabaseContext, LOCAL_EXPORT_DATABASE_FILE_NAME)) {
             for (String tableName : TABLES_TO_CLEAR) {
                 exportDatabase.getWritableDatabase().execSQL("DELETE FROM " + tableName + ";");
             }
         } catch (Exception e) {
-            Slog.e(TAG, "Failed to drop log tables for export database", e);
+            throw new IOException("Unable to drop log tables for export database.");
         }
+        Slog.i(TAG, "Drop log tables completed.");
+    }
+
+    private void deleteLocalExportFile(File localExportFile) {
+        Slog.i(TAG, "Delete local export file started.");
+        if (localExportFile.exists()) {
+            SQLiteDatabase.deleteDatabase(localExportFile);
+        }
+        Slog.i(TAG, "Delete local export file completed.");
     }
 }

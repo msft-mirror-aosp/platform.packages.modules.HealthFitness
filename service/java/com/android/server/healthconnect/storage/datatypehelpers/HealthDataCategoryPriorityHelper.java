@@ -93,8 +93,9 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
+    @Override
     @NonNull
-    public final CreateTableRequest getCreateTableRequest() {
+    public CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
@@ -381,7 +382,7 @@ public class HealthDataCategoryPriorityHelper extends DatabaseHelper {
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(HEALTH_DATA_CATEGORY_COLUMN_NAME, INTEGER_UNIQUE));

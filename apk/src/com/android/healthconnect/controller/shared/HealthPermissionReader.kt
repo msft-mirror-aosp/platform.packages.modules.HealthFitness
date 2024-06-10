@@ -91,7 +91,7 @@ constructor(
         }
     }
 
-    fun getAppsWithDataTypePermissions(): List<String> {
+    fun getAppsWithFitnessPermissions(): List<String> {
         return try {
             val appsWithDeclaredIntent =
                 context.packageManager
@@ -102,7 +102,7 @@ constructor(
 
             appsWithDeclaredIntent.filter {
                 getValidHealthPermissions(it)
-                    .filterIsInstance<HealthPermission.DataTypePermission>()
+                    .filterIsInstance<HealthPermission.FitnessPermission>()
                     .isNotEmpty()
             }
         } catch (e: Exception) {
@@ -206,12 +206,17 @@ constructor(
         return medicalPermissions.contains(permission)
     }
 
+    fun isFitnessPermission(permission: String): Boolean {
+        return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
+    }
+
     fun shouldHidePermission(permission: String): Boolean {
         return shouldHideSessionTypes(permission) ||
             shouldHideBackgroundReadPermission(permission) ||
             shouldHideSkinTemperaturePermissions(permission) ||
             shouldHidePlannedExercisePermissions(permission) ||
-            shouldHideHistoryReadPermission(permission)
+            shouldHideHistoryReadPermission(permission) ||
+            shouldHideMedicalPermission(permission)
     }
 
     private fun shouldHideSkinTemperaturePermissions(permission: String): Boolean {
@@ -236,6 +241,10 @@ constructor(
 
     private fun shouldHideHistoryReadPermission(permission: String): Boolean {
         return permission in historyReadPermission && !featureUtils.isHistoryReadEnabled()
+    }
+
+    private fun shouldHideMedicalPermission(permission: String): Boolean {
+        return permission in medicalPermissions && !featureUtils.isPersonalHealthRecordEnabled()
     }
 
     private fun getRationaleIntent(packageName: String? = null): Intent {

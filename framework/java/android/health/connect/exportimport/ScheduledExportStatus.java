@@ -28,7 +28,7 @@ import android.os.Parcelable;
 import java.time.Instant;
 
 /**
- * Status for the scheduled scheduled export.
+ * Status for a scheduled export.
  *
  * @hide
  */

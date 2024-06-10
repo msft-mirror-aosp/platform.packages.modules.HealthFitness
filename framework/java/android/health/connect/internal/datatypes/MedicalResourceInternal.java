@@ -23,8 +23,6 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.MedicalResource.MedicalResourceType;
-import android.os.Parcel;
-import android.text.TextUtils;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -117,35 +115,6 @@ public final class MedicalResourceInternal {
                 .setType(external.getType())
                 .setDataSourceId(external.getDataSourceId())
                 .setData(external.getData());
-    }
-
-    /**
-     * Populates {@code parcel} with the self information, required to reconstruct this object
-     * during IPC.
-     */
-    @NonNull
-    public void writeToParcel(@NonNull Parcel parcel) {
-        requireNonNull(parcel);
-        parcel.writeString(mUuid == null ? "" : mUuid.toString());
-        parcel.writeInt(getType());
-        parcel.writeString(getDataSourceId());
-        parcel.writeString(getData());
-    }
-
-    /**
-     * Populates this object with the data present in {@code parcel}. Reads should be in the same
-     * order as write.
-     */
-    @NonNull
-    public static MedicalResourceInternal readFromParcel(@NonNull Parcel parcel) {
-        requireNonNull(parcel);
-        String uuidString = parcel.readString();
-        UUID uuid = TextUtils.isEmpty(uuidString) ? null : UUID.fromString(uuidString);
-        return new MedicalResourceInternal()
-                .setUuid(uuid)
-                .setType(parcel.readInt())
-                .setDataSourceId(parcel.readString())
-                .setData(parcel.readString());
     }
 
     @Override
