@@ -91,7 +91,7 @@ constructor(
         }
     }
 
-    fun getAppsWithDataTypePermissions(): List<String> {
+    fun getAppsWithFitnessPermissions(): List<String> {
         return try {
             val appsWithDeclaredIntent =
                 context.packageManager
@@ -102,7 +102,7 @@ constructor(
 
             appsWithDeclaredIntent.filter {
                 getValidHealthPermissions(it)
-                    .filterIsInstance<HealthPermission.DataTypePermission>()
+                    .filterIsInstance<HealthPermission.FitnessPermission>()
                     .isNotEmpty()
             }
         } catch (e: Exception) {
@@ -206,7 +206,7 @@ constructor(
         return medicalPermissions.contains(permission)
     }
 
-    fun isDataTypePermission(permission: String): Boolean {
+    fun isFitnessPermission(permission: String): Boolean {
         return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
     }
 

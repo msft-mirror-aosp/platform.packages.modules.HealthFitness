@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"ବେକଅପ ନିଅନ୍ତୁ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ଡାଟା ସୋର୍ସ ଏବଂ ପ୍ରାଥମିକତା"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ୟୁନିଟ ସେଟ କରନ୍ତୁ"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"ବର୍ତ୍ତମାନର ଆକ୍ସେସ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"କୌଣସି ଆପ୍ସ ବର୍ତ୍ତମାନ Health Connectକୁ ଆକ୍ସେସ କରିନାହିଁ"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"ବର୍ତ୍ତମାନର ସମସ୍ତ ଆକ୍ସେସ ଦେଖନ୍ତୁ"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ସ୍କିନ ତାପମାତ୍ରା"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"ସ୍କିନ ତାପମାତ୍ରା ପଢ଼ନ୍ତୁ"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"ସ୍କିନ ତାପମାତ୍ରା ଲେଖନ୍ତୁ"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"ପଢ଼ିବା ପାଇଁ “<xliff:g id="APP_NAME">%1$s</xliff:g>”କୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"ଲେଖିବା ପାଇଁ “<xliff:g id="APP_NAME">%1$s</xliff:g>”କୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"ବାତିଲ କରନ୍ତୁ"</string>
@@ -319,17 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ଆପ ଅନୁମତିଗୁଡ଼ିକୁ କାହିଁକି କାଢ଼ି ଦିଏ"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"ଯଦି ଏକ ଆପକୁ Google Playରୁ ସସପେଣ୍ଡ କରାଯାଏ କିମ୍ବା କାଢ଼ି ଦିଆଯାଏ, ତେବେ Health Connect ସ୍ୱଚାଳିତ ଭାବେ ଏହାର ଅନୁମତିଗୁଡ଼ିକୁ କାଢ଼ି ଦିଏ।\n\nଏହାର ଅର୍ଥ ହେଉଛି ଏହି ଆପଟି Health Connectରେ ଷ୍ଟୋର କରାଯାଇଥିବା ଡାଟାକୁ ଆଉ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ। ଯଦି ଏହି ଆପରେ ପୂର୍ବରୁ ଲିଖିତ ଡାଟା ଅଛି, ତେବେ ଏହା ନିଷ୍କ୍ରିୟ ଆପ୍ସ ତାଲିକାରେ ଦେଖାଯାଏ।"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"ବୁଝିଗଲି"</string>
-    <!-- no translation found for export_file_access_error_banner_button (6336949702329425932) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_title (8290988049467813322) -->
-    <skip />
-    <!-- no translation found for export_file_access_error_banner_summary (1226999878868505503) -->
-    <skip />
-    <!-- no translation found for next_export_time (3138247220014510213) -->
-    <skip />
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"ସେଟ ଅପ କରନ୍ତୁ"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ଡାଟା ଏକ୍ସପୋର୍ଟ କରାଯାଇପାରିଲା ନାହିଁ।"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> ପାଇଁ ଏକ୍ସପୋର୍ଟ ସହ ଏକ ସମସ୍ୟା ହୋଇଛି। ଦୟାକରି ଏକ ନୂଆ ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ ସେଟ ଅପ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
+    <string name="next_export_time" msgid="3138247220014510213">"ପରବର୍ତ୍ତୀ ଏକ୍ସପୋର୍ଟ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ବେକଅପ ନେଇ ରିଷ୍ଟୋର କରନ୍ତୁ"</string>
-    <!-- no translation found for last_export_time (9205875050823594041) -->
-    <skip />
+    <string name="last_export_time" msgid="9205875050823594041">"ଗତ ଏକ୍ସପୋର୍ଟ: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ଏକ୍ସପୋର୍ଟ ଏବଂ ଇମ୍ପୋର୍ଟ"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ"</string>
     <string name="import_data" msgid="404502315533233094">"ଡାଟା ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
@@ -345,8 +358,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"ସାପ୍ତାହିକ"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ମାସିକ"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"କେଉଁଠିକୁ ଏକ୍ସପୋର୍ଟ କରିବେ ତାହା ବାଛନ୍ତୁ"</string>
-    <!-- no translation found for export_invalid_storage (3945266169513895950) -->
-    <skip />
+    <string name="export_invalid_storage" msgid="3945266169513895950">"ଆପଣଙ୍କ ଡାଟା ଏକ୍ସପୋର୍ଟ କରିବାକୁ ଦୟାକରି ଏକ ଷ୍ଟୋରେଜ ଆପ ବାଛନ୍ତୁ"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"ପାସୱାର୍ଡ ଟାଇପ କରନ୍ତୁ"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"ଆପଣଙ୍କ Health Connect ଡାଟାକୁ ଇମ୍ପୋର୍ଟ କରିବା ପାଇଁ ଆପଣଙ୍କର ଏନକ୍ରିପସନ ପାସୱାର୍ଡ ଆବଶ୍ୟକ"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ପାସୱାର୍ଡ ଭୁଲି ଯାଇଛନ୍ତି?"</string>
@@ -357,14 +369,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"ବାତିଲ କରନ୍ତୁ"</string>
     <string name="import_next_button" msgid="5706322508691854289">"ପରବର୍ତ୍ତୀ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ଏଠାରୁ ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
-    <!-- no translation found for import_invalid_storage (4873640088459948487) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_title (1047021319012735232) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_cancel_button (7975616126298263479) -->
-    <skip />
-    <!-- no translation found for export_import_choose_account_done_button (8450305343787469429) -->
-    <skip />
+    <string name="import_invalid_storage" msgid="4873640088459948487">"ଆପଣଙ୍କ ଡାଟା ଇମ୍ପୋର୍ଟ କରିବାକୁ ଦୟାକରି ଏକ ଷ୍ଟୋରେଜ ଆପ ବାଛନ୍ତୁ"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"ଏକ ଆକାଉଣ୍ଟ ବାଛନ୍ତୁ"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ବାତିଲ କରନ୍ତୁ"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"ହୋଇଗଲା"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଆପଣଙ୍କ ଫୋନରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
     <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>

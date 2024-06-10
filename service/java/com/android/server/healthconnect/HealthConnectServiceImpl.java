@@ -130,6 +130,7 @@ import com.android.server.appop.AppOpsManagerLocal;
 import com.android.server.healthconnect.backuprestore.BackupRestore;
 import com.android.server.healthconnect.exportimport.DocumentProvidersManager;
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.exportimport.ImportManager;
 import com.android.server.healthconnect.logging.HealthConnectServiceLogger;
 import com.android.server.healthconnect.migration.DataMigrationManager;
 import com.android.server.healthconnect.migration.MigrationCleaner;
@@ -202,6 +203,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     private final AppOpsManagerLocal mAppOpsManagerLocal;
     private final MigrationUiStateManager mMigrationUiStateManager;
+    private final ImportManager mImportManager;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -228,6 +230,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mBackupRestore =
                 new BackupRestore(mFirstGrantTimeManager, mMigrationStateManager, mContext);
         mMigrationUiStateManager = migrationUiStateManager;
+        mImportManager = new ImportManager(mContext);
         migrationCleaner.attachTo(migrationStateManager);
         mMigrationUiStateManager.attachTo(migrationStateManager);
     }
@@ -2148,7 +2151,13 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     }
 
     @Override
-    public void runImport(@NonNull UserHandle user, @NonNull Uri file) {}
+    public void runImport(@NonNull UserHandle user, @NonNull Uri file) {
+        try {
+            mImportManager.runImport(user, file);
+        } catch (Exception e) {
+            Slog.e(TAG, "Import failed", e);
+        }
+    }
 
     /** Queries the document providers available to be used for export/import. */
     @Override
