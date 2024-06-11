@@ -27,6 +27,7 @@ import android.os.UserManager;
 import android.util.Slog;
 
 import com.android.server.SystemService;
+import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -199,7 +200,7 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectDailyJobs.schedule(
                                 mContext, mCurrentForegroundUser.getIdentifier());
                     } catch (Exception e) {
-                        Slog.e(TAG, "Failed to scheduled Health Connect daily service.", e);
+                        Slog.e(TAG, "Failed to schedule Health Connect daily service.", e);
                     }
                 });
 
@@ -227,6 +228,16 @@ public class HealthConnectManagerService extends SystemService {
                         PreferenceHelper.getInstance().initializePreferences();
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to initialize preferences cache", e);
+                    }
+                });
+
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    try {
+                        ExportImportJobs.schedulePeriodicExportJob(
+                                mContext, mCurrentForegroundUser.getIdentifier());
+                    } catch (Exception e) {
+                        Slog.e(TAG, "Failed to schedule periodic export job.", e);
                     }
                 });
     }

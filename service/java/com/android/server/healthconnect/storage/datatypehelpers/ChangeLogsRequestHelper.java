@@ -76,7 +76,7 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
     }
 
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
@@ -116,9 +116,8 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(PACKAGES_TO_FILTERS_COLUMN_NAME, TEXT_NOT_NULL));

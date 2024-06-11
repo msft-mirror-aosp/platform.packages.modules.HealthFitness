@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"ব্যাক-আপ নিন"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ডেটা সোর্স ও প্রায়োরিটি"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ইউনিট সেট করুন"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"সাম্প্রতিক অ্যাক্সেস"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"সম্প্রতি কোনও অ্যাপ Health Connect অ্যাক্সেস করেনি"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"সাম্প্রতিক সব অ্যাক্সেস দেখুন"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"শরীরের তাপমাত্রার ডেটা"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"শরীরের তাপমাত্রার ডেটা দেখার অনুমতি"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"শরীরের তাপমাত্রার ডেটা এডিট করার অনুমতি"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”-কে দেখার অনুমতি দিন"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”-কে এডিট করার অনুমতি দিন"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"বাতিল করুন"</string>
@@ -319,12 +337,17 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect কেন অ্যাপকে দেওয়া অনুমতি সরিয়ে দেয়"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"কোনও অ্যাপ Google Play থেকে সাসপেন্ড করা বা সরানো হলে, Health Connect অটোমেটিকভাবে এর অনুমতি সরিয়ে দেয়।\n\nএর অর্থ হল অ্যাপটি Health Connect-এ স্টোর করে রাখা ডেটা আর অ্যাক্সেস করতে পারবে না। এই অ্যাপ যদি আগে কোনও ডেটা সেভ করে থাকে, বন্ধ থাকা অ্যাপের তালিকায় এটি দেখা যাবে।"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"বুঝেছি"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"সেট-আপ করুন"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"ডেটা এক্সপোর্ট করা যায়নি"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> তারিখের জন্য এক্সপোর্ট করার ক্ষেত্রে কোনও সমস্যা হয়েছে। একটি নতুন শিডিউল করা এক্সপোর্ট সেট-আপ করে আবার চেষ্টা করুন।"</string>
+    <string name="next_export_time" msgid="3138247220014510213">"পরবর্তী এক্সপোর্ট: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"ব্যাক-আপ নিন ও ফিরিয়ে আনুন"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"গতবারের এক্সপোর্ট: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"এক্সপোর্ট ও ইমপোর্ট করুন"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"শিডিউল করা এক্সপোর্ট"</string>
-    <string name="import_data" msgid="404502315533233094">"ডেটা ইমপোর্ট করুন"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"আগে এক্সপোর্ট করা হয়েছে এমন ফাইল থেকে ডেটা আবার ফিরিয়ে আনুন"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"\'এক্সপোর্ট\' ফিচার আপনাকে নিজের ডেটা সেভ করতে দেয়, যাতে আপনি তা নতুন ফোনে ট্রান্সফার করতে পারেন"</string>
+    <string name="import_data" msgid="404502315533233094">"ডেটা ইম্পোর্ট করুন"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"আগে এক্সপোর্ট করা হয়েছে এমন ফাইল থেকে ডেটা ফিরিয়ে আনুন"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"এক্সপোর্ট ফিচার আপনাকে নিজের ডেটা সেভ করতে দেয়, যাতে আপনি তা নতুন ফোনে ট্রান্সফার করতে পারেন"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"আরও জানুন"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"চালু আছে"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"বন্ধ আছে"</string>
@@ -335,15 +358,9 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"সাপ্তাহিক"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"মাসিক"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"কোথায় এক্সপোর্ট করবেন তা বেছে নিন"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"এনক্রিপশন চালু করুন"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"ডেটা সেভ করার আগে এনক্রিপ্ট করতে হবে। কোনওটিই নয়, এমনকি Google বা Health Connect, এটি অ্যাক্সেস করতে পারবে না।"</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"আপনার এনক্রিপ্ট করা ডেটা সুরক্ষিত রাখতে পাসওয়ার্ড তৈরি করুন। আপনার ডেটা ইমপোর্ট করতে ও ফিরিয়ে আনতে এই পাসওয়ার্ড প্রয়োজন হবে।"</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"পাসওয়ার্ড"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"পাসওয়ার্ড আবার লিখুন"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"পাসওয়ার্ড মিলছে না"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"আপনি নিজের পাসওয়ার্ড ভুলে গেলে এবং হারিয়ে ফেললে, Health Connect আপনার সেভ করা ডেটা ফিরিয়ে আনার জন্য সাহায্য করতে পারবে না।"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"পাসওয়ার্ড টাইপ করুন"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"আপনার Health Connect ডেটা ইমপোর্ট করতে আপনার এনক্রিপশন ডেটা প্রয়োজন"</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"আপনার ডেটা এক্সপোর্ট করার জন্য কোনও একটি স্টোরেজ অ্যাপ বেছে নিন"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"পাসওয়ার্ড লিখুন"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect ডেটা ইম্পোর্ট করতে আপনার এনক্রিপশন পাসওয়ার্ড প্রয়োজন"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"পাসওয়ার্ড ভুলে গেছেন?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"পাসওয়ার্ড"</string>
     <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"আপনার কাছে এখনও পুরনো ফোন থাকলে, নতুন পাসওয়ার্ডের মাধ্যমে আপনি নিজের ডেটা আবার এক্সপোর্ট করতে পারবেন"</string>
@@ -351,7 +368,11 @@
     <string name="export_next_button" msgid="657930567137105172">"পরবর্তী"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"বাতিল করুন"</string>
     <string name="import_next_button" msgid="5706322508691854289">"পরবর্তী"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"এখান থেকে ইমপোর্ট করুন"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"এখান থেকে ইম্পোর্ট করুন"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"আপনার ডেটা ইমপোর্ট করার জন্য কোনও একটি স্টোরেজ অ্যাপ বেছে নিন"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"কোনও অ্যাকাউন্ট বেছে নিন"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"বাতিল করুন"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"হয়ে গেছে"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ব্যবহার শুরু করুন"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, আপনার স্বাস্থ্য ও ফিটনেস সংক্রান্ত ডেটা সেভ করে, যার ফলে সহজেই বিভিন্ন অ্যাপ আপনার ফোনে সিঙ্ক করে নিতে পারেন"</string>
     <string name="share_data" msgid="3481932156368883946">"অ্যাপের সাথে ডেটা শেয়ার করুন"</string>
@@ -361,10 +382,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"ফিরে যান"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"শুরু করুন"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"ডেটা মুছে দিন"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"\'মুছে দিন\' স্ট্যাটাসে যান"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"\'মুছে দিন\' স্ট্যাটাস ছেড়ে বেরিয়ে আসুন"</string>
     <string name="time_range_title" msgid="6831605283322600165">"ডেটা মুছে দেওয়ার সময়সীমা বেছে নেওয়া"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"পরবর্তী"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"এর ফলে, বেছে নেওয়া সময় সীমার মধ্যে Health Connect-এর সাথে যোগ করা সব ডেটা স্থায়ীভাবে মুছে যায়"</string>
@@ -924,14 +943,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"এই অ্যাপে ব্যাকগ্রাউন্ড বা পুরনো ডেটা অ্যাক্সেস করার সুবিধা চালু করতে কমপক্ষে একটি রিড পার্মিশন চালু করুন"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"এই অ্যাপে ব্যাকগ্রাউন্ড অ্যাক্সেস করার সুবিধা চালু করতে কমপক্ষে একটি রিড পার্মিশন চালু করুন"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"এই অ্যাপে পুরনো ডেটা অ্যাক্সেস করার সুবিধা চালু করতে কমপক্ষে একটি রিড পার্মিশন চালু করুন"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect থেকে স্থায়ীভাবে ডেটা মুছবেন?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connect থেকে স্থায়ীভাবে বেছে নেওয়া ডেটা মুছে দেবেন?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"সব ডেটা মুছে দেওয়া হয়েছে"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> ডেটা মুছে দেওয়া হয়েছে"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g>টি আইটেম মুছে দেওয়া হয়েছে"</string>
 </resources>

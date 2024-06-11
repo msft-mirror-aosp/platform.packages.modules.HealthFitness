@@ -67,7 +67,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
      * helper
      */
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .addUniqueConstraints(List.of(EPOCH_DAYS_COLUMN_NAME, RECORD_TYPE_ID_COLUMN_NAME));
     }
@@ -146,9 +146,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
                 });
     }
 
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         return Arrays.asList(
                 new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT),
                 new Pair<>(EPOCH_DAYS_COLUMN_NAME, INTEGER_NOT_NULL),

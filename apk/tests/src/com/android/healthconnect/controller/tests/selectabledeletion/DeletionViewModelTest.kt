@@ -24,14 +24,19 @@ import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.verify
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
@@ -40,15 +45,24 @@ class DeletionViewModelTest {
 
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    private val testDispatcher = TestCoroutineDispatcher()
+
     private val deletePermissionTypesUseCase: DeletePermissionTypesUseCase =
-        Mockito.mock(DeletePermissionTypesUseCase::class.java)
+        mock(DeletePermissionTypesUseCase::class.java)
 
     private lateinit var viewModel: DeletionViewModel
 
     @Before
     fun setup() {
         hiltRule.inject()
+        Dispatchers.setMain(testDispatcher)
         viewModel = DeletionViewModel(deletePermissionTypesUseCase)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
@@ -82,6 +96,7 @@ class DeletionViewModelTest {
     fun delete_deletionInvokesCorrectly() = runTest {
         viewModel.setDeleteSet(setOf(HealthPermissionType.DISTANCE))
         viewModel.delete()
+        advanceUntilIdle()
 
         val expectedDeletionType =
             DeletionType.DeletionTypeHealthPermissionTypes(listOf(HealthPermissionType.DISTANCE))
