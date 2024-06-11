@@ -129,9 +129,8 @@ public final class AppInfoHelper extends DatabaseHelper {
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 

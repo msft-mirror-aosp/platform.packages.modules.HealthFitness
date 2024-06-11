@@ -215,6 +215,7 @@ constructor(
             shouldHideBackgroundReadPermission(permission) ||
             shouldHideSkinTemperaturePermissions(permission) ||
             shouldHidePlannedExercisePermissions(permission) ||
+            shouldHideMindfulnessSessionPermissions(permission) ||
             shouldHideHistoryReadPermission(permission) ||
             shouldHideMedicalPermission(permission)
     }
@@ -229,6 +230,11 @@ constructor(
         return (permission == HealthPermissions.READ_PLANNED_EXERCISE ||
             permission == HealthPermissions.WRITE_PLANNED_EXERCISE) &&
             !featureUtils.isPlannedExerciseEnabled()
+    }
+
+    private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
+        return permission == HealthPermissions.READ_MINDFULNESS_SESSION ||
+            permission == HealthPermissions.WRITE_MINDFULNESS_SESSION
     }
 
     private fun shouldHideSessionTypes(permission: String): Boolean {

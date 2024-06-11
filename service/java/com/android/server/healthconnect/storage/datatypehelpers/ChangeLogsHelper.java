@@ -90,9 +90,8 @@ public final class ChangeLogsHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .createIndexOn(RECORD_TYPE_COLUMN_NAME)
                 .createIndexOn(APP_ID_COLUMN_NAME);

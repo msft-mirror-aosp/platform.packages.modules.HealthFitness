@@ -65,9 +65,8 @@ public final class AccessLogsHelper extends DatabaseHelper {
 
     private AccessLogsHelper() {}
 
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
