@@ -2075,6 +2075,27 @@ public class HealthConnectManager {
     }
 
     /**
+     * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database.
+     *
+     * <p>The uniqueness is calculated comparing the combination of {@link
+     * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
+     * resource id extracted from the provided {@link MedicalResource} data. If there is no match,
+     * then a new {@link MedicalResource} is inserted, otherwise the existing one is updated.
+     *
+     * @hide
+     */
+    public void upsertMedicalResources(
+            @NonNull List<UpsertMedicalResourceRequest> requests,
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+        Objects.requireNonNull(requests);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
+    /**
      * Reads {@link MedicalResource}s based on a list of {@link MedicalIdFilter}s.
      *
      * <p>Number of resources returned by this API will depend based on below factors:

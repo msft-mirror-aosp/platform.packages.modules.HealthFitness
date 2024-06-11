@@ -151,16 +151,16 @@ final class DatabaseUpgradeHelper {
                                         && entry.getKey() < RECORD_TYPE_SKIN_TEMPERATURE)
                 .forEach(entry -> requests.add(entry.getValue().getCreateTableRequest()));
 
-        requests.add(DeviceInfoHelper.getInstance().getCreateTableRequest());
-        requests.add(AppInfoHelper.getInstance().getCreateTableRequest());
-        requests.add(ActivityDateHelper.getInstance().getCreateTableRequest());
-        requests.add(ChangeLogsHelper.getInstance().getCreateTableRequest());
-        requests.add(ChangeLogsRequestHelper.getInstance().getCreateTableRequest());
-        requests.add(HealthDataCategoryPriorityHelper.getInstance().getCreateTableRequest());
-        requests.add(PreferenceHelper.getInstance().getCreateTableRequest());
-        requests.add(AccessLogsHelper.getInstance().getCreateTableRequest());
-        requests.add(MigrationEntityHelper.getInstance().getCreateTableRequest());
-        requests.add(PriorityMigrationHelper.getInstance().getCreateTableRequest());
+        requests.add(DeviceInfoHelper.getCreateTableRequest());
+        requests.add(AppInfoHelper.getCreateTableRequest());
+        requests.add(ActivityDateHelper.getCreateTableRequest());
+        requests.add(ChangeLogsHelper.getCreateTableRequest());
+        requests.add(ChangeLogsRequestHelper.getCreateTableRequest());
+        requests.add(HealthDataCategoryPriorityHelper.getCreateTableRequest());
+        requests.add(PreferenceHelper.getCreateTableRequest());
+        requests.add(AccessLogsHelper.getCreateTableRequest());
+        requests.add(MigrationEntityHelper.getCreateTableRequest());
+        requests.add(PriorityMigrationHelper.getCreateTableRequest());
 
         return requests;
     }

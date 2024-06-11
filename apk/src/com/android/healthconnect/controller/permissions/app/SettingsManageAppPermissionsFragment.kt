@@ -152,6 +152,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
                         R.string.removed_additional_permissions_toast,
                         Toast.LENGTH_LONG)
                     .show()
+                viewModel.markLastReadShown()
             }
         }
 

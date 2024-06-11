@@ -36,6 +36,7 @@ import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 
+import java.time.Clock;
 import java.util.Objects;
 
 /**
@@ -100,7 +101,8 @@ public class HealthConnectDailyService extends JobService {
                         () -> {
                             boolean isExportSuccessful =
                                     ExportImportJobs.executePeriodicExportJob(
-                                            new ExportManager(getApplicationContext()));
+                                            new ExportManager(
+                                                    getApplicationContext(), Clock.systemUTC()));
                             // If the export is not successful, reschedule the job.
                             jobFinished(params, !isExportSuccessful);
                         });

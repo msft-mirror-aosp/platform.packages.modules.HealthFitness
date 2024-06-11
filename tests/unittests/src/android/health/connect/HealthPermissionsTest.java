@@ -94,6 +94,7 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_RESTING_HEART_RATE,
                     HealthPermissions.READ_SKIN_TEMPERATURE,
                     HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION,
+                    HealthPermissions.READ_MINDFULNESS_SESSION,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
@@ -132,7 +133,8 @@ public class HealthPermissionsTest {
                     HealthPermissions.WRITE_RESPIRATORY_RATE,
                     HealthPermissions.WRITE_RESTING_HEART_RATE,
                     HealthPermissions.WRITE_SKIN_TEMPERATURE,
-                    HealthPermissions.WRITE_MEDICAL_RESOURCES);
+                    HealthPermissions.WRITE_MEDICAL_RESOURCES,
+                    HealthPermissions.WRITE_MINDFULNESS_SESSION);
     private PackageManager mPackageManager;
     private Context mContext;
     @Mock private PackageInfo mPackageInfo1;

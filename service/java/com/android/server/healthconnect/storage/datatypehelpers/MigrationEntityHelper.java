@@ -61,9 +61,8 @@ public final class MigrationEntityHelper extends DatabaseHelper {
     }
 
     /** Returns a request to create a table for this helper. */
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 

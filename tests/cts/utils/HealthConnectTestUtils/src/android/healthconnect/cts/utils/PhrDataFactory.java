@@ -25,11 +25,14 @@ import android.health.connect.datatypes.MedicalResource;
 
 public class PhrDataFactory {
     public static final String DATA_SOURCE_ID = "nhs/123";
+    public static final long DATA_SOURCE_LONG_ID = 123L;
     public static final String DATA_SOURCE_PACKAGE_NAME = "com.example.app";
     public static final String DATA_SOURCE_FHIR_BASE_URI = "https://fhir.com/oauth/api/FHIR/R4/";
     public static final String DATA_SOURCE_DISPLAY_NAME = "Hospital X";
 
     public static final String DIFFERENT_DATA_SOURCE_ID = "nhs/456";
+
+    public static final long DIFFERENT_DATA_SOURCE_LONG_ID = 456L;
     public static final String DIFFERENT_DATA_SOURCE_PACKAGE_NAME = "com.other.app";
     public static final String DIFFERENT_DATA_SOURCE_BASE_URI =
             "https://fhir.com/oauth/api/FHIR/R5/";
