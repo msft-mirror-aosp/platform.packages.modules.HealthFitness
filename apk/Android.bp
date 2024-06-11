@@ -180,6 +180,7 @@ android_library {
         "guava",
         "hilt_android",
         "healthfitness-ui-statsd",
+        "healthfitness-aconfig-flags-helper",
     ],
     kotlincflags: ["-Xjvm-default=all"],
     apex_available: ["com.android.healthfitness"],

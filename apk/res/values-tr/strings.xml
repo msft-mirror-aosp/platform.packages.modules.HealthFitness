@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"Yedekle"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Veri kaynakları ve öncelik"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Birimleri ayarla"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"En son erişim"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Yakın zamanda hiçbir uygulama Health Connect\'e erişmedi"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Son erişimlerin hepsini göster"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"deri sıcaklığı"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Deri sıcaklığını oku"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Deri sıcaklığını yaz"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>” uygulamasına okuma izni ver"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"\"<xliff:g id="APP_NAME">%1$s</xliff:g>\" uygulamasına yazma izni ver"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"İptal"</string>
@@ -319,12 +337,17 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect\'in uygulama izinlerini kaldırmasının nedeni"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Health Connect, Google Play\'den kaldırılan veya askıya alınan uygulamaların izinlerini otomatik olarak kaldırır.\n\nİzinleri kaldırılan uygulamalar artık Health Connect\'te depolanan verilere erişemez. Bu uygulamalar daha önce yazılmış veriler içeriyorsa etkin olmayan uygulamalar listesinde görünür."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Anladım"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Ayarla"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Veriler dışa aktarılamadı"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> tarihli dışa aktarma işleminde bir sorun oluştu. Lütfen yeni bir programlanmış dışa aktarma işlemi ayarlayıp tekrar deneyin."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Sonraki dışa aktarma tarihi: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Yedekleme ve geri yükleme"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Son dışa aktarma tarihi: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Dışa aktarma ve içe aktarma"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Programlanmış dışa aktarma işlemi"</string>
     <string name="import_data" msgid="404502315533233094">"Verileri içe aktar"</string>
-    <string name="import_data_description" msgid="4040178599441724296">"Daha önce dışa aktarılmış bir dosyadaki verileri geri yükleyin"</string>
-    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma işlevi verilerinizi yeni bir telefona aktarabilmeniz için kaydetmenize olanak tanır"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"Daha önce dışa aktarılan bir dosyadaki verileri geri yükleyin"</string>
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Dışa aktarma özelliğiyle verilerinizi kaydederek yeni bir telefona aktarabilirsiniz"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Daha fazla bilgi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Açık"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Kapalı"</string>
@@ -335,23 +358,21 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Haftalık"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Aylık"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Dışa aktarılacağı hedefi seçin"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Şifrelemeyi etkinleştir"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Verilerin kaydedilmeden önce şifrelenmesi gerekir. Google veya Health Connect de dahil hiç kimse bu verilere erişemez."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Şifrelenmiş verilerinizi korumak için şifre oluşturun. Verilerinizi içe aktarıp geri yüklemek için bu şifreye ihtiyacınız olacak."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Şifre"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Şifreyi tekrar girin"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Şifreler eşleşmiyor"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Şifrenizi unutursanız ve telefonunuzu kaybederseniz Health Connect, kayıtlı verilerinizi kurtarmanıza yardımcı olamaz."</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Verilerinizi dışa aktarmak için lütfen bir depolama uygulaması seçin"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Şifreyi yazın"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect verilerinizi içe aktarabilmek için şifreleme şifreniz gerekir"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Health Connect verilerinizi içe aktarmak için şifreleme sürecinde kullandığınız şifre gerekir"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Şifreyi mi unuttunuz?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Şifre"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Hâlâ eski telefonunuzu kullanıyorsanız yeni bir şifreyle verilerinizi yeniden dışa aktarabilirsiniz"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Eski telefonunuzu kullanmaya devam ediyorsanız verilerinizi yeni bir şifreyle tekrar dışa aktarabilirsiniz"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Geri"</string>
     <string name="export_next_button" msgid="657930567137105172">"İleri"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"İptal"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Sonraki"</string>
-    <string name="import_source_location_title" msgid="4444467438013749461">"Şu konumdan içe aktarın:"</string>
+    <string name="import_source_location_title" msgid="4444467438013749461">"Şuradan içe aktar:"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Verilerinizi içe aktarmak için lütfen bir depolama uygulaması seçin"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Hesap seçin"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"İptal"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Bitti"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect\'i kullanmaya başlama"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect, sağlık ve fitness verilerinizi depolayarak telefonunuzdaki farklı uygulamaları senkronize etmek için basit bir yol sunar"</string>
     <string name="share_data" msgid="3481932156368883946">"Uygulamalarınızla veri paylaşın"</string>
@@ -361,10 +382,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Geri dön"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Başla"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Verileri sil"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Silme durumuna gir"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Silme durumundan çık"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Silinecek verileri seçin"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Sonraki"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Bu işlem, seçilen dönemde Health Connect\'e eklenmiş tüm verileri kalıcı olarak siler"</string>
@@ -924,14 +943,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Bu uygulamanın arka planda veya geçmiş verilere erişimini açmak için en az bir okuma iznini etkinleştirin"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Bu uygulamanın arka planda erişimini açmak için en az bir okuma iznini etkinleştirin"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Bu uygulamanın geçmiş verilere erişimini açmak için en az bir okuma iznini etkinleştirin"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connect\'ten tüm veriler kalıcı olarak silinsin mi?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Seçilen veriler Health Connect\'ten kalıcı olarak silinsin mi?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Tüm veriler silindi"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> veri silindi"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> öğe silindi"</string>
 </resources>

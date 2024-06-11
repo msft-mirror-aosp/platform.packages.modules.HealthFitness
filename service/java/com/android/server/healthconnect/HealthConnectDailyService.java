@@ -33,8 +33,10 @@ import android.health.connect.Constants;
 import android.util.Slog;
 
 import com.android.server.healthconnect.exportimport.ExportImportJobs;
+import com.android.server.healthconnect.exportimport.ExportManager;
 import com.android.server.healthconnect.migration.MigrationStateChangeJob;
 
+import java.time.Clock;
 import java.util.Objects;
 
 /**
@@ -97,8 +99,12 @@ public class HealthConnectDailyService extends JobService {
             case PERIODIC_EXPORT_JOB_NAME:
                 HealthConnectThreadScheduler.scheduleInternalTask(
                         () -> {
-                            ExportImportJobs.executePeriodicExportJob(getApplicationContext());
-                            jobFinished(params, false);
+                            boolean isExportSuccessful =
+                                    ExportImportJobs.executePeriodicExportJob(
+                                            new ExportManager(
+                                                    getApplicationContext(), Clock.systemUTC()));
+                            // If the export is not successful, reschedule the job.
+                            jobFinished(params, !isExportSuccessful);
                         });
                 return true;
             default:

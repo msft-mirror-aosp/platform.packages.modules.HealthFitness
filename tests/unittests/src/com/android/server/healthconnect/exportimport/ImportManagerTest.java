@@ -29,6 +29,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.net.Uri;
 
 import androidx.test.runner.AndroidJUnit4;
 
@@ -51,10 +52,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RunWith(AndroidJUnit4.class)
 public class ImportManagerTest {
@@ -96,10 +101,12 @@ public class ImportManagerTest {
         File originalDb = mTransactionManager.getDatabasePath();
         File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        File zipToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.zip");
+        assertThat(compress(dbToImport, zipToImport)).isTrue();
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -139,9 +146,12 @@ public class ImportManagerTest {
             importDb.execSQL("DROP TABLE " + stepsRecordTableName);
         }
 
+        File zipToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.zip");
+        assertThat(compress(dbToImport, zipToImport)).isTrue();
+
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -164,11 +174,30 @@ public class ImportManagerTest {
         File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
 
         File databaseDir =
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
                         .getDatabaseDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
+    }
+
+    private boolean compress(File file, File output) {
+        try {
+            ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(output));
+            outputStream.putNextEntry(new ZipEntry(file.getName()));
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = inputStream.read(bytes)) >= 0) {
+                outputStream.write(bytes, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+            file.delete();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

@@ -43,14 +43,14 @@ public class HealthConnectDatabase extends SQLiteOpenHelper {
     }
 
     public HealthConnectDatabase(@NonNull Context context, String databaseName) {
-        super(context, databaseName, null, DatabaseUpgradeHelper.DATABASE_VERSION);
+        super(context, databaseName, null, DatabaseUpgradeHelper.getDatabaseVersion());
         mContext = context;
     }
 
     @Override
     public void onCreate(@NonNull SQLiteDatabase db) {
         // We implement onCreate as a series of upgrades.
-        onUpgrade(db, 0, DatabaseUpgradeHelper.DATABASE_VERSION);
+        onUpgrade(db, 0, DatabaseUpgradeHelper.getDatabaseVersion());
     }
 
     @Override

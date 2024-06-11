@@ -26,15 +26,14 @@ import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.api.DeleteAppDataUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ALWAYS_ALLOW
-import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState.ASK_EVERY_TIME
 import com.android.healthconnect.controller.permissions.api.GrantHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeAllHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -72,12 +71,12 @@ constructor(
         private const val TAG = "AppPermissionViewModel"
     }
 
-    private val _appPermissions = MutableLiveData<List<DataTypePermission>>(emptyList())
-    val appPermissions: LiveData<List<DataTypePermission>>
+    private val _appPermissions = MutableLiveData<List<FitnessPermission>>(emptyList())
+    val appPermissions: LiveData<List<FitnessPermission>>
         get() = _appPermissions
 
-    private val _grantedPermissions = MutableLiveData<Set<DataTypePermission>>(emptySet())
-    val grantedPermissions: LiveData<Set<DataTypePermission>>
+    private val _grantedPermissions = MutableLiveData<Set<FitnessPermission>>(emptySet())
+    val grantedPermissions: LiveData<Set<FitnessPermission>>
         get() = _grantedPermissions
 
     val allAppPermissionsGranted =
@@ -135,7 +134,7 @@ constructor(
     val lastReadPermissionDisconnected: LiveData<Boolean>
         get() = _lastReadPermissionDisconnected
 
-    private var additionalPermissions: List<String> = emptyList()
+    private var grantedAdditionalPermissions: List<String> = emptyList()
 
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
@@ -156,15 +155,16 @@ constructor(
         viewModelScope.launch {
             permissionsList = loadAppPermissionsStatusUseCase.invoke(packageName)
             _appPermissions.postValue(
-                permissionsList.map { it.healthPermission }.filterIsInstance<DataTypePermission>())
+                permissionsList.map { it.healthPermission }.filterIsInstance<FitnessPermission>())
             _grantedPermissions.postValue(
                 permissionsList
                     .filter { it.isGranted }
                     .map { it.healthPermission }
-                    .filterIsInstance<DataTypePermission>()
+                    .filterIsInstance<FitnessPermission>()
                     .toSet())
-            additionalPermissions =
+            grantedAdditionalPermissions =
                 permissionsList
+                    .filter { it.isGranted }
                     .map { it.healthPermission }
                     .filterIsInstance<HealthPermission.AdditionalPermission>()
                     .map { it.additionalPermission }
@@ -183,11 +183,11 @@ constructor(
                 _appPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
-                        .filterIsInstance<DataTypePermission>())
+                        .filterIsInstance<FitnessPermission>())
                 _grantedPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
-                        .filterIsInstance<DataTypePermission>()
+                        .filterIsInstance<FitnessPermission>()
                         .toSet())
             }
             shouldLoadGrantedPermissions = false
@@ -200,16 +200,17 @@ constructor(
 
     fun updatePermission(
         packageName: String,
-        dataTypePermission: DataTypePermission,
+        dataTypePermission: FitnessPermission,
         grant: Boolean
     ): Boolean {
         try {
             if (grant) {
                 grantPermission(packageName, dataTypePermission)
             } else {
-                revokePermission(dataTypePermission, packageName)
                 if (shouldDisplayExerciseRouteDialog(packageName, dataTypePermission)) {
                     _showDisableExerciseRouteEvent.postValue(true)
+                } else {
+                    revokePermission(dataTypePermission, packageName)
                 }
             }
 
@@ -220,20 +221,20 @@ constructor(
         return false
     }
 
-    private fun grantPermission(packageName: String, dataTypePermission: DataTypePermission) {
+    private fun grantPermission(packageName: String, fitnessPermission: FitnessPermission) {
         val grantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
-        grantPermissionsStatusUseCase.invoke(packageName, dataTypePermission.toString())
-        grantedPermissions.add(dataTypePermission)
+        grantPermissionsStatusUseCase.invoke(packageName, fitnessPermission.toString())
+        grantedPermissions.add(fitnessPermission)
         _grantedPermissions.postValue(grantedPermissions)
     }
 
-    private fun revokePermission(dataTypePermission: DataTypePermission, packageName: String) {
+    private fun revokePermission(fitnessPermission: FitnessPermission, packageName: String) {
         val grantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
         val readPermissionsBeforeDisconnect =
             grantedPermissions.count { permission ->
                 permission.permissionsAccessType == PermissionsAccessType.READ
             }
-        grantedPermissions.remove(dataTypePermission)
+        grantedPermissions.remove(fitnessPermission)
         val readPermissionsAfterDisconnect =
             grantedPermissions.count { permission ->
                 permission.permissionsAccessType == PermissionsAccessType.READ
@@ -241,35 +242,18 @@ constructor(
         _grantedPermissions.postValue(grantedPermissions)
 
         val lastReadPermissionRevoked =
-            additionalPermissions.isNotEmpty() &&
+            grantedAdditionalPermissions.isNotEmpty() &&
                 (readPermissionsBeforeDisconnect > readPermissionsAfterDisconnect) &&
                 readPermissionsAfterDisconnect == 0
 
         if (lastReadPermissionRevoked) {
-            // If exercise routes is already "Ask every time", do not revoke again
-            additionalPermissions.forEach { permission ->
-                if (permission == READ_EXERCISE_ROUTES) {
-                    val isExerciseRoutePermissionAskEveryTime = runBlocking {
-                        when (val exerciseRouteState =
-                            loadExerciseRoutePermissionUseCase(packageName)) {
-                            is UseCaseResults.Success -> {
-                                exerciseRouteState.data.exerciseRoutePermissionState ==
-                                    ASK_EVERY_TIME
-                            }
-                            else -> false
-                        }
-                    }
-
-                    if (isExerciseRoutePermissionAskEveryTime) {
-                        return@forEach
-                    }
-                }
+            grantedAdditionalPermissions.forEach { permission ->
                 revokePermissionsStatusUseCase.invoke(packageName, permission)
             }
         }
 
         _lastReadPermissionDisconnected.postValue(lastReadPermissionRevoked)
-        revokePermissionsStatusUseCase.invoke(packageName, dataTypePermission.toString())
+        revokePermissionsStatusUseCase.invoke(packageName, fitnessPermission.toString())
     }
 
     fun markLastReadShown() {
@@ -278,21 +262,14 @@ constructor(
 
     private fun shouldDisplayExerciseRouteDialog(
         packageName: String,
-        dataTypePermission: DataTypePermission
+        fitnessPermission: FitnessPermission
     ): Boolean {
         if (!featureUtils.isExerciseRouteReadAllEnabled() ||
-            dataTypePermission.toString() != READ_EXERCISE) {
+            fitnessPermission.toString() != READ_EXERCISE) {
             return false
         }
 
-        return runBlocking {
-            when (val exerciseRouteState = loadExerciseRoutePermissionUseCase(packageName)) {
-                is UseCaseResults.Success -> {
-                    exerciseRouteState.data.exerciseRoutePermissionState == ALWAYS_ALLOW
-                }
-                else -> false
-            }
-        }
+        return isExerciseRoutePermissionAlwaysAllow(packageName)
     }
 
     fun grantAllPermissions(packageName: String): Boolean {
@@ -312,7 +289,20 @@ constructor(
 
     fun disableExerciseRoutePermission(packageName: String) {
         revokePermission(fromPermissionString(READ_EXERCISE), packageName)
-        revokePermissionsStatusUseCase(packageName, READ_EXERCISE_ROUTES)
+        // the revokePermission call will automatically revoke all additional permissions
+        // including Exercise Routes if the READ_EXERCISE permission is the last READ permission
+        if (isExerciseRoutePermissionAlwaysAllow(packageName)) {
+            revokePermissionsStatusUseCase(packageName, READ_EXERCISE_ROUTES)
+        }
+    }
+
+    private fun isExerciseRoutePermissionAlwaysAllow(packageName: String): Boolean = runBlocking {
+        when (val exerciseRouteState = loadExerciseRoutePermissionUseCase(packageName)) {
+            is UseCaseResults.Success -> {
+                exerciseRouteState.data.exerciseRoutePermissionState == ALWAYS_ALLOW
+            }
+            else -> false
+        }
     }
 
     fun revokeAllPermissions(packageName: String): Boolean {
@@ -358,8 +348,8 @@ constructor(
     }
 
     private fun isAllPermissionsGranted(
-        permissionsListLiveData: LiveData<List<DataTypePermission>>,
-        grantedPermissionsLiveData: LiveData<Set<DataTypePermission>>
+        permissionsListLiveData: LiveData<List<FitnessPermission>>,
+        grantedPermissionsLiveData: LiveData<Set<FitnessPermission>>
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()

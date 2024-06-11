@@ -53,6 +53,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.utils.RecordMapper;
 import android.util.ArrayMap;
 import android.util.Pair;
+import android.util.Slog;
 
 import androidx.annotation.Nullable;
 
@@ -569,6 +570,7 @@ public abstract class RecordHelper<T extends RecordInternal<?>> {
                 | IllegalAccessException
                 | NoSuchMethodException
                 | InvocationTargetException exception) {
+            Slog.e("HealthConnectRecordHelper", "Failed to read", exception);
             throw new IllegalArgumentException(exception);
         }
     }
