@@ -28,7 +28,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.datasources.api.LoadPotentialPriorityListUseCase
 import com.android.healthconnect.controller.permissions.api.GetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.permissiontypes.api.LoadPriorityListUseCase
@@ -118,26 +118,26 @@ class LoadPotentialPriorityListUseCaseTest {
     @Test
     @Ignore
     fun getAppsWithWritePermission_forActivity_returnsAppsForActivity() = runTest {
-        whenever(healthPermissionReader.getAppsWithDataTypePermissions())
+        whenever(healthPermissionReader.getAppsWithFitnessPermissions())
             .thenReturn(
                 listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(
                 listOf(
-                    DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
+                    FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_2))
             .thenReturn(
                 listOf(
-                    DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+                    FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_3))
             .thenReturn(
                 listOf(
-                    DataTypePermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
+                    FitnessPermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
                         .toString()))
 
         val result =
@@ -150,25 +150,25 @@ class LoadPotentialPriorityListUseCaseTest {
     @Test
     @Ignore
     fun getAppsWithWritePermission_forSleep_returnsAppsForSleep() = runTest {
-        whenever(healthPermissionReader.getAppsWithDataTypePermissions())
+        whenever(healthPermissionReader.getAppsWithFitnessPermissions())
             .thenReturn(
                 listOf(TEST_APP_PACKAGE_NAME, TEST_APP_PACKAGE_NAME_2, TEST_APP_PACKAGE_NAME_3))
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME))
             .thenReturn(
                 listOf(
-                    DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.READ)
+                    FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.READ)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_2))
             .thenReturn(
                 listOf(
-                    DataTypePermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
+                    FitnessPermission(HealthPermissionType.SLEEP, PermissionsAccessType.WRITE)
                         .toString()))
 
         whenever(healthPermissionManager.getGrantedHealthPermissions(TEST_APP_PACKAGE_NAME_3))
             .thenReturn(
                 listOf(
-                    DataTypePermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
+                    FitnessPermission(HealthPermissionType.HEART_RATE, PermissionsAccessType.READ)
                         .toString()))
 
         val result =

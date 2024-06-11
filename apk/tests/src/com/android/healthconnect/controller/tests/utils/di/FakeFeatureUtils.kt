@@ -19,6 +19,7 @@ class FakeFeatureUtils : FeatureUtils {
     private var isHistoryReadEnabled = false
     private var isSkinTemperatureEnabled = false
     private var isPlannedExerciseEnabled = false
+    private var isPersonalHealthRecordEnabled = false
 
     fun setIsSessionTypesEnabled(boolean: Boolean) {
         isSessionTypesEnabled = boolean
@@ -56,6 +57,10 @@ class FakeFeatureUtils : FeatureUtils {
         this.isPlannedExerciseEnabled = isPlannedExerciseEnabled
     }
 
+    fun setIsPersonalHealthRecordEnabled(isPersonalHealthRecordEnabled: Boolean) {
+        this.isPersonalHealthRecordEnabled = isPersonalHealthRecordEnabled
+    }
+
     override fun isNewAppPriorityEnabled(): Boolean {
         return isNewAppPriorityEnabled
     }
@@ -90,6 +95,10 @@ class FakeFeatureUtils : FeatureUtils {
 
     override fun isSkinTemperatureEnabled(): Boolean {
         return isSkinTemperatureEnabled
+    }
+
+    override fun isPersonalHealthRecordEnabled(): Boolean {
+        return isPersonalHealthRecordEnabled
     }
 }
 

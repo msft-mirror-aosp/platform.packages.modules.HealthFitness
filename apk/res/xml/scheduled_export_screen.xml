@@ -17,9 +17,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <com.android.healthconnect.controller.shared.preference.HealthMainSwitchPreference
         android:key="scheduled_export_control_preference"
-        android:title="@string/automatic_export_on" />
+        android:title="@string/automatic_export_on"
+        android:order="0"/>
     <PreferenceCategory
         android:key="choose_frequency"
-        android:title="@string/choose_frequency_category">
+        android:title="@string/choose_frequency_category"
+        android:order="2">
     </PreferenceCategory>
 </PreferenceScreen>

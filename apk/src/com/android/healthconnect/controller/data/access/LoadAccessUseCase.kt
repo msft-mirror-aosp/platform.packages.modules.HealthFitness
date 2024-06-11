@@ -16,7 +16,7 @@
 package com.android.healthconnect.controller.data.access
 
 import com.android.healthconnect.controller.permissions.api.IGetGrantedHealthPermissionsUseCase
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
@@ -45,8 +45,8 @@ constructor(
     ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> =
         withContext(dispatcher) {
             try {
-                val appsWithDataTypePermissions: List<String> =
-                    healthPermissionReader.getAppsWithDataTypePermissions()
+                val appsWithFitnessPermissions: List<String> =
+                    healthPermissionReader.getAppsWithFitnessPermissions()
                 val contributingApps: List<AppMetadata> =
                     loadPermissionTypeContributorAppsUseCase.invoke(permissionType)
                 val readAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
@@ -54,19 +54,18 @@ constructor(
                 val writeAppPackageNameSet: MutableSet<String> = mutableSetOf()
                 val inactiveAppMetadataSet: MutableSet<AppMetadata> = mutableSetOf()
 
-                appsWithDataTypePermissions.forEach {
+                appsWithFitnessPermissions.forEach {
                     val permissionsPerPackage: List<String> =
                         loadGrantedHealthPermissionsUseCase(it)
 
                     // Apps that can READ the given healthPermissionType.
                     if (permissionsPerPackage.contains(
-                        DataTypePermission(permissionType, PermissionsAccessType.READ)
-                            .toString())) {
+                        FitnessPermission(permissionType, PermissionsAccessType.READ).toString())) {
                         readAppMetadataSet.add(appInfoReader.getAppMetadata(it))
                     }
                     // Apps that can WRITE the given healthPermissionType.
                     if (permissionsPerPackage.contains(
-                        DataTypePermission(permissionType, PermissionsAccessType.WRITE)
+                        FitnessPermission(permissionType, PermissionsAccessType.WRITE)
                             .toString())) {
                         writeAppMetadataSet.add(appInfoReader.getAppMetadata(it))
                         writeAppPackageNameSet.add(it)

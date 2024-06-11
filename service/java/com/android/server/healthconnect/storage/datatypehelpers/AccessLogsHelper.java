@@ -66,7 +66,7 @@ public final class AccessLogsHelper extends DatabaseHelper {
     private AccessLogsHelper() {}
 
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
@@ -162,9 +162,8 @@ public final class AccessLogsHelper extends DatabaseHelper {
                                 .toEpochMilli());
     }
 
-    @Override
     @NonNull
-    public List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         List<Pair<String, String>> columnInfo = new ArrayList<>(NUM_COLS);
         columnInfo.add(new Pair<>(PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT));
         columnInfo.add(new Pair<>(APP_ID_COLUMN_NAME, INTEGER_NOT_NULL));

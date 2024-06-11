@@ -48,9 +48,11 @@ import com.android.healthconnect.controller.datasources.api.UpdatePriorityListUs
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.LoadExportSettingsUseCase
 import com.android.healthconnect.controller.exportimport.api.LoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.QueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.exportimport.api.UpdateExportSettingsUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.LoadDeclaredHealthPermissionUseCase
@@ -314,5 +316,12 @@ class UseCaseModule {
         healthDataExportManager: HealthDataExportManager
     ): ILoadScheduledExportStatusUseCase {
         return LoadScheduledExportStatusUseCase(healthDataExportManager)
+    }
+
+    @Provides
+    fun providesQueryDocumentProvidersUseCase(
+        healthDataExportManager: HealthDataExportManager
+    ): IQueryDocumentProvidersUseCase {
+        return QueryDocumentProvidersUseCase(healthDataExportManager)
     }
 }
