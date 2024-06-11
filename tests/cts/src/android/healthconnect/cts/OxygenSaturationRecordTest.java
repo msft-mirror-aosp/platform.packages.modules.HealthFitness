@@ -506,6 +506,8 @@ public class OxygenSaturationRecordTest {
         List<Record> insertedRecords =
                 TestUtils.insertRecords(
                         Collections.singletonList(getCompleteOxygenSaturationRecord()));
+        List<String> insertedIds =
+                insertedRecords.stream().map(Record::getMetadata).map(Metadata::getId).toList();
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -513,19 +515,18 @@ public class OxygenSaturationRecordTest {
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
-                .containsExactlyElementsIn(
-                        insertedRecords.stream()
-                                .map(Record::getMetadata)
-                                .map(Metadata::getId)
-                                .toList());
+                .containsExactlyElementsIn(insertedIds);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(OxygenSaturationRecord.class)
-                        .build());
+                List.of(RecordIdFilter.fromId(OxygenSaturationRecord.class, insertedIds.get(0))));
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(insertedRecords.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(insertedIds);
     }
 
     OxygenSaturationRecord getOxygenSaturationRecord_update(

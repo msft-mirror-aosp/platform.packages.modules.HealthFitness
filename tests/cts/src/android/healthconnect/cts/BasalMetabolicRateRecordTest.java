@@ -934,22 +934,26 @@ public class BasalMetabolicRateRecordTest {
                 TestUtils.insertRecords(
                         Collections.singletonList(getCompleteBasalMetabolicRateRecord()));
         response = TestUtils.getChangeLogs(changeLogsRequest);
+        List<String> insertedIds =
+                testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList();
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
                         response.getUpsertedRecords().stream()
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
-                .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+                .containsExactlyElementsIn(insertedIds);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BasalMetabolicRateRecord.class)
-                        .build());
+                List.of(RecordIdFilter.fromId(BasalMetabolicRateRecord.class, insertedIds.get(0))));
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(insertedIds);
     }
 
     private void readBasalMetabolicRateRecordUsingClientId(List<Record> insertedRecord)

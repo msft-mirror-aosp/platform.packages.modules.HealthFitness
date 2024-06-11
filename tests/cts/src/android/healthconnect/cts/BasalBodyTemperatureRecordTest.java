@@ -530,6 +530,8 @@ public class BasalBodyTemperatureRecordTest {
         List<Record> testRecord =
                 TestUtils.insertRecords(
                         Collections.singletonList(getCompleteBasalBodyTemperatureRecord()));
+        List<String> insertedIds =
+                testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList();
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -537,16 +539,19 @@ public class BasalBodyTemperatureRecordTest {
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
-                .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+                .containsExactlyElementsIn(insertedIds);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BasalBodyTemperatureRecord.class)
-                        .build());
+                List.of(
+                        RecordIdFilter.fromId(
+                                BasalBodyTemperatureRecord.class, insertedIds.get(0))));
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(insertedIds);
     }
 
     BasalBodyTemperatureRecord getBasalBodyTemperatureRecord_update(

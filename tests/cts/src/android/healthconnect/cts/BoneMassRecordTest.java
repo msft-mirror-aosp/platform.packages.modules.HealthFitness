@@ -470,6 +470,8 @@ public class BoneMassRecordTest {
 
         List<Record> testRecord =
                 TestUtils.insertRecords(Collections.singletonList(getCompleteBoneMassRecord()));
+        List<String> insertedIds =
+                testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList();
         response = TestUtils.getChangeLogs(changeLogsRequest);
         assertThat(response.getUpsertedRecords().size()).isEqualTo(1);
         assertThat(
@@ -477,16 +479,18 @@ public class BoneMassRecordTest {
                                 .map(Record::getMetadata)
                                 .map(Metadata::getId)
                                 .toList())
-                .containsExactlyElementsIn(
-                        testRecord.stream().map(Record::getMetadata).map(Metadata::getId).toList());
+                .containsExactlyElementsIn(insertedIds);
         assertThat(response.getDeletedLogs().size()).isEqualTo(0);
 
         TestUtils.verifyDeleteRecords(
-                new DeleteUsingFiltersRequest.Builder()
-                        .addRecordType(BoneMassRecord.class)
-                        .build());
+                List.of(RecordIdFilter.fromId(BoneMassRecord.class, insertedIds.get(0))));
         response = TestUtils.getChangeLogs(changeLogsRequest);
-        assertThat(response.getDeletedLogs()).isEmpty();
+        assertThat(response.getDeletedLogs()).hasSize(testRecord.size());
+        assertThat(
+                        response.getDeletedLogs().stream()
+                                .map(ChangeLogsResponse.DeletedLog::getDeletedRecordId)
+                                .toList())
+                .containsExactlyElementsIn(insertedIds);
     }
 
     BoneMassRecord getBoneMassRecord_update(Record record, String id, String clientRecordId) {
