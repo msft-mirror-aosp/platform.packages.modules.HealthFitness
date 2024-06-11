@@ -16,11 +16,16 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
+import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DIR_NAME;
+import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_ZIP_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
@@ -29,28 +34,31 @@ import android.net.Uri;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.server.healthconnect.HealthConnectUserContext;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
-import com.android.server.healthconnect.storage.ScheduledExportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
-import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 import com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils;
 
-import com.google.common.truth.Truth;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.zip.ZipInputStream;
 
 @RunWith(AndroidJUnit4.class)
 public class ExportManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private static final String REMOTE_EXPORT_DATABASE_DIR_NAME = "remote";
+    private static final String REMOTE_EXPORT_ZIP_FILE_NAME = "remote_file.zip";
     private static final String REMOTE_EXPORT_DATABASE_FILE_NAME = "remote_file.db";
 
     @Rule
@@ -67,8 +75,8 @@ public class ExportManagerTest {
     private TransactionManager mTransactionManager;
     private TransactionTestUtils mTransactionTestUtils;
     private ExportManager mExportManager;
-
-    private static final String TAG = "HealthConnectExportImport";
+    private DatabaseContext mExportedDbContext;
+    private Instant mTimeStamp;
 
     @Before
     public void setUp() throws Exception {
@@ -76,17 +84,26 @@ public class ExportManagerTest {
         mTransactionManager = mDatabaseTestRule.getTransactionManager();
         mTransactionTestUtils = new TransactionTestUtils(mContext, mTransactionManager);
         mTransactionTestUtils.insertApp(TEST_PACKAGE_NAME);
-        mExportManager = new ExportManager(mContext);
-        setupRemoteFile();
+
+        mTimeStamp = Instant.parse("2024-06-04T16:39:12Z");
+        Clock fakeClock = Clock.fixed(mTimeStamp, ZoneId.of("UTC"));
+
+        mExportManager = new ExportManager(mContext, fakeClock);
+
+        mExportedDbContext =
+                DatabaseContext.create(
+                        mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
+        configureExportUri();
     }
 
     @After
-    public void tearDown() {
-        DatabaseHelper.clearAllData(mTransactionManager);
+    public void tearDown() throws Exception {
+        SQLiteDatabase.deleteDatabase(
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
+        mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME).delete();
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_deletesAccessLogsTableContent() {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
@@ -94,18 +111,21 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "access_logs_table", 2);
 
-        mExportManager.runExport();
+        assertThat(mExportManager.runExport()).isTrue();
 
-        HealthConnectDatabase remoteExportHealthConnectDatabase =
-                new HealthConnectDatabase(
-                        DatabaseContext.create(
-                                mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser()),
-                        REMOTE_EXPORT_DATABASE_FILE_NAME);
-        assertTableSize(remoteExportHealthConnectDatabase, "access_logs_table", 0);
+        assertThat(
+                        decompress(
+                                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
+                                mExportedDbContext.getDatabasePath(
+                                        REMOTE_EXPORT_DATABASE_FILE_NAME)))
+                .isTrue();
+        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertTableSize(remoteExportHealthConnectDatabase, "access_logs_table", 0);
+        }
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_deletesChangeLogsTableContent() {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
@@ -113,62 +133,104 @@ public class ExportManagerTest {
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "change_logs_table", 2);
 
-        mExportManager.runExport();
+        assertThat(mExportManager.runExport()).isTrue();
 
-        HealthConnectDatabase remoteExportHealthConnectDatabase =
-                new HealthConnectDatabase(
-                        DatabaseContext.create(
-                                mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser()),
-                        REMOTE_EXPORT_DATABASE_FILE_NAME);
-        assertTableSize(remoteExportHealthConnectDatabase, "change_logs_table", 0);
+        assertThat(
+                        decompress(
+                                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
+                                mExportedDbContext.getDatabasePath(
+                                        REMOTE_EXPORT_DATABASE_FILE_NAME)))
+                .isTrue();
+        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertTableSize(remoteExportHealthConnectDatabase, "change_logs_table", 0);
+        }
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
-    public void runExport_makesLocalCopyOfDatabase() {
+    public void runExport_deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        mExportManager.runExport();
+        assertThat(mExportManager.runExport()).isTrue();
 
-        HealthConnectDatabase localExportHealthConnectDatabase =
-                new HealthConnectDatabase(
-                        DatabaseContext.create(
-                                mContext, LOCAL_EXPORT_DATABASE_DIR_NAME, mContext.getUser()),
-                        LOCAL_EXPORT_DATABASE_FILE_NAME);
-        assertTableSize(localExportHealthConnectDatabase, "steps_record_table", 1);
+        DatabaseContext databaseContext =
+                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
+                .isFalse();
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
 
     @Test
-    @Ignore("TODO(b/325599089): Fix with ScheduledExportSettingsStorage.configure triggering job")
     public void runExport_makesRemoteCopyOfDatabase() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
         assertTableSize(originalDatabase, "steps_record_table", 1);
 
-        mExportManager.runExport();
+        assertThat(mExportManager.runExport()).isTrue();
 
-        HealthConnectDatabase remoteExportHealthConnectDatabase =
-                new HealthConnectDatabase(
-                        DatabaseContext.create(
-                                mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser()),
-                        REMOTE_EXPORT_DATABASE_FILE_NAME);
-        assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);
+        assertThat(
+                        decompress(
+                                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
+                                mExportedDbContext.getDatabasePath(
+                                        REMOTE_EXPORT_DATABASE_FILE_NAME)))
+                .isTrue();
+        try (HealthConnectDatabase remoteExportHealthConnectDatabase =
+                new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
+            assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);
+        }
     }
 
-    private void setupRemoteFile() throws Exception {
-        DatabaseContext dbContext =
-                DatabaseContext.create(
-                        mContext, REMOTE_EXPORT_DATABASE_DIR_NAME, mContext.getUser());
-        File remoteDir = dbContext.getDatabaseDir();
-        remoteDir.mkdirs();
-        File remoteFile = new File(remoteDir, REMOTE_EXPORT_DATABASE_FILE_NAME);
-        remoteFile.createNewFile();
-        ScheduledExportSettingsStorage.configure(
-                ScheduledExportSettings.withUri(Uri.parse(remoteFile.toURI().toString())));
+    @Test
+    public void runExport_destinationUriDoesNotExist_exportFails() {
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
+        HealthConnectDatabase originalDatabase =
+                new HealthConnectDatabase(mContext, "healthconnect.db");
+        assertTableSize(originalDatabase, "steps_record_table", 1);
+
+        ExportImportSettingsStorage.setLastExportError(HealthConnectManager.DATA_EXPORT_ERROR_NONE);
+        // Set export location to inaccessible directory.
+        ExportImportSettingsStorage.configure(
+                ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
+
+        assertThat(mExportManager.runExport()).isFalse();
+        assertThat(ExportImportSettingsStorage.getScheduledExportStatus().getDataExportError())
+                .isEqualTo(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+    }
+
+    @Test
+    public void runExport_updatesLastSuccessfulExport_onSuccessOnly() {
+        mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
+        HealthConnectDatabase originalDatabase =
+                new HealthConnectDatabase(mContext, "healthconnect.db");
+        assertTableSize(originalDatabase, "steps_record_table", 1);
+
+        // running a successful export records a "last successful export"
+        assertThat(mExportManager.runExport()).isTrue();
+        Instant lastSuccessfulExport =
+                ExportImportSettingsStorage.getScheduledExportStatus()
+                        .getLastSuccessfulExportTime();
+        assertThat(lastSuccessfulExport).isEqualTo(Instant.parse("2024-06-04T16:39:12Z"));
+
+        // Export running at a later time with an error
+        mTimeStamp = Instant.parse("2024-12-12T16:39:12Z");
+        ExportImportSettingsStorage.configure(
+                ScheduledExportSettings.withUri(Uri.fromFile(new File("inaccessible"))));
+        assertThat(mExportManager.runExport()).isFalse();
+
+        // Last successful export should hold the previous timestamp as the last export failed
+        assertThat(lastSuccessfulExport).isEqualTo(Instant.parse("2024-06-04T16:39:12Z"));
+    }
+
+    private void configureExportUri() {
+        ExportImportSettingsStorage.configure(
+                ScheduledExportSettings.withUri(
+                        Uri.fromFile(
+                                (mExportedDbContext.getDatabasePath(
+                                        REMOTE_EXPORT_ZIP_FILE_NAME)))));
     }
 
     private void assertTableSize(HealthConnectDatabase database, String tableName, int tableRows) {
@@ -176,6 +238,26 @@ public class ExportManagerTest {
                 database.getWritableDatabase()
                         .rawQuery("SELECT count(*) FROM " + tableName + ";", null);
         cursor.moveToNext();
-        Truth.assertThat(cursor.getInt(0)).isEqualTo(tableRows);
+        assertThat(cursor.getInt(0)).isEqualTo(tableRows);
+    }
+
+    private boolean decompress(File zip, File output) {
+        try {
+            ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zip));
+            inputStream.getNextEntry();
+            FileOutputStream outputStream = new FileOutputStream(output);
+            int len;
+            byte[] buffer = new byte[1024];
+            while ((len = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, len);
+            }
+            outputStream.close();
+            inputStream.closeEntry();
+            inputStream.close();
+            zip.delete();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

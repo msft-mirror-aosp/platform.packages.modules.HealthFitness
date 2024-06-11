@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"Copia de seguridad"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioridad y fuentes de datos"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Establecer unidades"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"Acceso reciente"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Ninguna app accedió recientemente a Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Consultar los accesos recientes"</string>
@@ -258,6 +264,18 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura cutánea"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lee la temperatura cutánea"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escribe la temperatura cutánea"</string>
+    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <skip />
+    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <skip />
+    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <skip />
+    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
+    <skip />
+    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
+    <skip />
+    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Permite que \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tenga permiso de lectura"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir que \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tenga acceso de escritura"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Cancelar"</string>
@@ -319,7 +337,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"¿Por qué Health Connect les quita permisos a las apps?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Si una app está suspendida o ya no está disponible en Google Play, Health Connect le quita automáticamente los permisos.\n\nEsto significa que la app ya no podrá acceder a los datos almacenados en Health Connect. Si la app escribió datos, aparecerá en la lista de apps inactivas."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Entendido"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Configuración"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"No se pudieron exportar los datos"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Se produjo un error con la exportación del día <xliff:g id="DATE">%1$s</xliff:g>. Establece una nueva exportación programada y vuelve a intentarlo."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Próxima exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Copia de seguridad y restablecimiento"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Última exportación: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Importar y exportar"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Se programó la exportación"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
@@ -335,13 +358,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Semanalmente"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mensualmente"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Elige dónde quieres exportar los datos"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Activa la encriptación"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Es necesario encriptar los datos antes de guardarlos. Nadie podrá acceder a ellos, ni siquiera Google o Health Connect."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Crea una contraseña para proteger tus datos encriptados. La necesitarás para importar y restablecer los datos."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Contraseña"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Repetir contraseña"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Las contraseñas no coinciden"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Si olvidas la contraseña y pierdes el teléfono, Health Connect no podrá ayudarte a recuperar tus datos guardados."</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Elige una app de almacenamiento para exportar tus datos"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Escribe la contraseña"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"Para importar tus datos de Health Connect, se necesita tu contraseña de encriptación"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"¿Olvidaste la contraseña?"</string>
@@ -352,6 +369,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Cancelar"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Siguiente"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importar de"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Elige una app de almacenamiento para importar tus datos"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Elige una cuenta"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancelar"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Listo"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Empieza a usar Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect almacena tus datos de salud y actividad física, lo que te brinda una manera simple de sincronizar las diferentes apps en tu teléfono."</string>
     <string name="share_data" msgid="3481932156368883946">"Compartir datos con tus apps"</string>
@@ -361,10 +382,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Atrás"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Comenzar"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Borrar datos"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Ingresar a estado de eliminación"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Salir de estado de eliminación"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Elegir datos para borrar"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Siguiente"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Borra de forma permanente todos los datos que se agregan a Health Connect en el período elegido"</string>
@@ -924,14 +943,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano o de datos anteriores para esta app"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano para esta app"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Habilita al menos un permiso de lectura para activar el acceso de datos anteriores para esta app"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"¿Quieres borrar de forma permanente todos los datos de Health Connect?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"¿Quieres borrar de forma permanente los datos seleccionados de Health Connect?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Se borraron todos los datos"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Se borraron los datos de <xliff:g id="PERMISSION_TYPE">%s</xliff:g>"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> elementos borrados"</string>
 </resources>

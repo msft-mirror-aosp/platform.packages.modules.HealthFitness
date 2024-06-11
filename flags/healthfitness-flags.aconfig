@@ -23,3 +23,10 @@ flag {
     description: "Flag for adding new export/import feature."
     bug: "318484778"
 }
+
+flag {
+    name: "mindfulness"
+    namespace: "healthfitness"
+    description: "Enables mindfulness session data type."
+    bug: "341704006"
+}

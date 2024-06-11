@@ -23,7 +23,8 @@ android:orientation="vertical">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -34,12 +35,53 @@ android:orientation="vertical">
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/phr_read_immunizations_button"
+            android:id="@+id/phr_create_data_source_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:minWidth="250dp"
-            android:text="@string/phr_options_read_immunizations" />
+            android:text="@string/phr_options_create_data_source" />
+
+        <Button
+            android:id="@+id/phr_insert_immunization_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_insert_immunization" />
+
+        <EditText
+            android:id="@+id/phr_immunization_id_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/phr_options_resource_id_placeholder"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/phr_read_by_id_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_read_by_id" />
+
+        <Button
+            android:id="@+id/phr_request_read_immunization_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_request_immunization" />
+
+        <Button
+            android:id="@+id/phr_request_read_and_write_medical_data_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minWidth="250dp"
+            android:text="@string/phr_options_request_medical" />
 
         <Button
             android:id="@+id/phr_seed_fhir_jsons_button"

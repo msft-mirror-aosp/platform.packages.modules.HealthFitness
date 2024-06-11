@@ -25,7 +25,7 @@ import android.health.connect.HealthDataCategory.NUTRITION
 import android.health.connect.HealthDataCategory.SLEEP
 import android.health.connect.HealthDataCategory.VITALS
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.HEALTH_DATA_CATEGORIES
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
@@ -58,13 +58,14 @@ class HealthDataCategoryExtensionsTest {
     fun allHealthPermission_haveParentCategory() {
         val allPermissions =
             healthPermissionReader.getHealthPermissions().filterNot { perm ->
-                healthPermissionReader.isAdditionalPermission(perm) || healthPermissionReader.isMedicalPermission(perm)
+                healthPermissionReader.isAdditionalPermission(perm) ||
+                    healthPermissionReader.isMedicalPermission(perm)
             }
         for (permissionString in allPermissions) {
-            val dataTypePermission = DataTypePermission.fromPermissionString(permissionString)
+            val fitnessPermission = FitnessPermission.fromPermissionString(permissionString)
             assertThat(
                     HEALTH_DATA_CATEGORIES.any {
-                        it.healthPermissionTypes().contains(dataTypePermission.healthPermissionType)
+                        it.healthPermissionTypes().contains(fitnessPermission.healthPermissionType)
                     })
                 .isEqualTo(true)
         }
