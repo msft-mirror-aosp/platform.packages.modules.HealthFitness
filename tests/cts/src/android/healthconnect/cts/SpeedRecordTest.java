@@ -408,18 +408,17 @@ public class SpeedRecordTest {
     }
 
     private void readSpeedRecordUsingIds(List<Record> recordList) throws InterruptedException {
-        List<Record> insertedRecords = TestUtils.insertRecords(recordList);
         ReadRecordsRequestUsingIds.Builder<SpeedRecord> request =
                 new ReadRecordsRequestUsingIds.Builder<>(SpeedRecord.class);
-        for (Record record : insertedRecords) {
+        for (Record record : recordList) {
             request.addId(record.getMetadata().getId());
         }
         ReadRecordsRequestUsingIds requestUsingIds = request.build();
         assertThat(requestUsingIds.getRecordType()).isEqualTo(SpeedRecord.class);
         assertThat(requestUsingIds.getRecordIdFilters()).isNotNull();
         List<SpeedRecord> result = TestUtils.readRecords(requestUsingIds);
-        assertThat(result).hasSize(insertedRecords.size());
-        assertThat(result.containsAll(insertedRecords)).isTrue();
+        assertThat(result).hasSize(recordList.size());
+        assertThat(result.containsAll(recordList)).isTrue();
     }
 
     @Test(expected = IllegalArgumentException.class)
