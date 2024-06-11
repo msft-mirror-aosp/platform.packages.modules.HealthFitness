@@ -29,6 +29,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.internal.datatypes.RecordInternal;
+import android.net.Uri;
 
 import androidx.test.runner.AndroidJUnit4;
 
@@ -99,7 +100,7 @@ public class ImportManagerTest {
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -141,7 +142,7 @@ public class ImportManagerTest {
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -164,7 +165,7 @@ public class ImportManagerTest {
         File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-        mImportManager.runImport(dbToImport.toPath(), mContext.getUser());
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
 
         File databaseDir =
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())

@@ -278,6 +278,13 @@
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
+    <!-- Read permissions for wellness -->
+    <permission
+        android:name="android.permission.health.READ_MINDFULNESS_SESSION"
+        android:label="@string/mindfulness_session_read_content_description"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
     <!-- Write permissions -->
     <!-- Write permissions for activities -->
     <permission
@@ -516,6 +523,13 @@
     <!-- Write permissions for personal health records -->
     <permission
         android:name="android.permission.health.WRITE_MEDICAL_RESOURCES"
+        android:protectionLevel="dangerous"
+        android:permissionGroup="android.permission-group.HEALTH" />
+
+    <!-- Write permissions for wellness -->
+    <permission
+        android:name="android.permission.health.WRITE_MINDFULNESS_SESSION"
+        android:label="@string/mindfulness_session_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 </manifest>

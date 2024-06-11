@@ -187,6 +187,7 @@ public class PriorityRecordsAggregator {
         if (HealthConnectDeviceConfigManager.getInitialisedInstance()
                         .isAggregationSourceControlsEnabled()
                 && priority == Integer.MIN_VALUE) {
+            Slog.d(TAG, "App out of priority list, ignoring data " + data);
             return null;
         }
 
@@ -194,6 +195,7 @@ public class PriorityRecordsAggregator {
         // solution
         if (data.getStartTime() > data.getEndTime()) {
             // skip records with start time > end time to keep the algorithm functional
+            Slog.w(TAG, "Problematic data point, skip");
             return null;
         }
 
@@ -206,6 +208,7 @@ public class PriorityRecordsAggregator {
     AggregationRecordData readNewData(Cursor cursor) {
         AggregationRecordData data = createAggregationRecordData();
         data.populateAggregationData(cursor, mUseLocalTime, mAppIdToPriority);
+        Slog.d(TAG, "Reading data " + data + " useLocalTime = " + mUseLocalTime);
         return data;
     }
 
@@ -224,19 +227,21 @@ public class PriorityRecordsAggregator {
     private AggregationRecordData createAggregationRecordData() {
         return switch (mAggregationType) {
             case STEPS_RECORD_COUNT_TOTAL,
-                    ACTIVE_CALORIES_BURNED_RECORD_ACTIVE_CALORIES_TOTAL,
-                    DISTANCE_RECORD_DISTANCE_TOTAL,
-                    ELEVATION_RECORD_ELEVATION_GAINED_TOTAL,
-                    FLOORS_CLIMBED_RECORD_FLOORS_CLIMBED_TOTAL,
-                    WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL -> new ValueColumnAggregationData(
-                    mExtraParams.getColumnToAggregateName(),
-                    mExtraParams.getColumnToAggregateType());
-            case SLEEP_SESSION_DURATION_TOTAL,
-                    EXERCISE_SESSION_DURATION_TOTAL -> new SessionDurationAggregationData(
-                    mExtraParams.getExcludeIntervalStartColumnName(),
-                    mExtraParams.getExcludeIntervalEndColumnName());
-            default -> throw new UnsupportedOperationException(
-                    "Priority aggregation do not support type: " + mAggregationType);
+                            ACTIVE_CALORIES_BURNED_RECORD_ACTIVE_CALORIES_TOTAL,
+                            DISTANCE_RECORD_DISTANCE_TOTAL,
+                            ELEVATION_RECORD_ELEVATION_GAINED_TOTAL,
+                            FLOORS_CLIMBED_RECORD_FLOORS_CLIMBED_TOTAL,
+                            WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL ->
+                    new ValueColumnAggregationData(
+                            mExtraParams.getColumnToAggregateName(),
+                            mExtraParams.getColumnToAggregateType());
+            case SLEEP_SESSION_DURATION_TOTAL, EXERCISE_SESSION_DURATION_TOTAL ->
+                    new SessionDurationAggregationData(
+                            mExtraParams.getExcludeIntervalStartColumnName(),
+                            mExtraParams.getExcludeIntervalEndColumnName());
+            default ->
+                    throw new UnsupportedOperationException(
+                            "Priority aggregation do not support type: " + mAggregationType);
         };
     }
 
@@ -272,9 +277,7 @@ public class PriorityRecordsAggregator {
             mGroupToAggregationResult.put(mCurrentGroup, 0.0d);
         }
 
-        if (Constants.DEBUG) {
-            Slog.d(TAG, "Update result with: " + mOpenIntervals.last());
-        }
+        Slog.d(TAG, "Update result with: " + mOpenIntervals.last());
 
         mGroupToAggregationResult.put(
                 mCurrentGroup,

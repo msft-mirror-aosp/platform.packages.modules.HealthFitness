@@ -16,8 +16,8 @@
 
 package com.android.server.healthconnect.storage;
 
-import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DATABASE_VERSION;
 import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.DB_VERSION_UUID_BLOB;
+import static com.android.server.healthconnect.storage.DatabaseUpgradeHelper.getDatabaseVersion;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -57,7 +57,9 @@ public class DatabaseUpgradeHelperTest {
     public void onUpgradeCalledMultipleTimes_eachOneIsIdempotent() {
         // The DB_VERSION_UUID_BLOB upgrade is a special case, and is not idempotent.
         // We are testing from the version above that.
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, DB_VERSION_UUID_BLOB, DATABASE_VERSION);
-        DatabaseUpgradeHelper.onUpgrade(mSQLiteDatabase, DB_VERSION_UUID_BLOB, DATABASE_VERSION);
+        DatabaseUpgradeHelper.onUpgrade(
+                mSQLiteDatabase, DB_VERSION_UUID_BLOB, getDatabaseVersion());
+        DatabaseUpgradeHelper.onUpgrade(
+                mSQLiteDatabase, DB_VERSION_UUID_BLOB, getDatabaseVersion());
     }
 }

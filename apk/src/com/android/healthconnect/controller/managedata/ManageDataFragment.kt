@@ -55,7 +55,11 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
-        setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
+        if (Flags.exportImport()) {
+            setPreferencesFromResource(R.xml.new_manage_data_screen, rootKey)
+        } else {
+            setPreferencesFromResource(R.xml.manage_data_screen, rootKey)
+        }
 
         mAutoDeletePreference?.logName = ManageDataElement.AUTO_DELETE_BUTTON
         mAutoDeletePreference?.setOnPreferenceClickListener {
@@ -90,8 +94,6 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
                 findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
                 true
             }
-        } else {
-            preferenceScreen.removePreferenceRecursively(BACKUP_AND_RESTORE_PREFERENCE_KEY)
         }
     }
 
