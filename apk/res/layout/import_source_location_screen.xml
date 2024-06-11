@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2024 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,40 +13,37 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/import_source_location_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fillViewport="true"
     android:paddingHorizontal="@dimen/spacing_large">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <include layout="@layout/widget_page_heading_with_icon"/>
-
-        <!-- b/325917287 add UI to select export destination here. -->
         <LinearLayout
-            android:id="@+id/import_source_locations"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginVertical="@dimen/spacing_large"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!-- b/325917287 temporary solution for the e2e prototype. Remove once we use proper storage UI APIs. -->
-            <Button
-                android:id="@+id/open_import_source_location"
-                android:layout_width="wrap_content"
+
+            <include layout="@layout/widget_page_heading_with_icon" />
+
+            <LinearLayout
+                android:id="@+id/import_document_providers"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/button_size"
-                android:text="Select backup file to restore"
-                style="@style/Widget.HealthConnect.DialogButton.Full" />
+                android:layout_marginVertical="@dimen/spacing_large"
+                android:orientation="vertical" />
+
         </LinearLayout>
 
-        <include layout="@layout/widget_export_import_navigation_buttons"/>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-</ScrollView>
+    <include layout="@layout/widget_export_import_navigation_buttons" />
+
+</LinearLayout>

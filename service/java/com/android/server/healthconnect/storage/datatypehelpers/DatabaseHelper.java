@@ -17,13 +17,11 @@
 package com.android.server.healthconnect.storage.datatypehelpers;
 
 import android.annotation.NonNull;
-import android.util.Pair;
 
+import com.android.server.healthconnect.migration.PriorityMigrationHelper;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,22 +31,33 @@ import java.util.Set;
  */
 public abstract class DatabaseHelper {
 
-    private static Set<DatabaseHelper> sDatabaseHelpers = new HashSet<>();
-
-    protected DatabaseHelper() {
-        sDatabaseHelpers.add(this);
+    private static Set<DatabaseHelper> getDatabaseHelpers() {
+        return Set.of(
+                DeviceInfoHelper.getInstance(),
+                AppInfoHelper.getInstance(),
+                ActivityDateHelper.getInstance(),
+                ChangeLogsHelper.getInstance(),
+                ChangeLogsRequestHelper.getInstance(),
+                HealthDataCategoryPriorityHelper.getInstance(),
+                PreferenceHelper.getInstance(),
+                AccessLogsHelper.getInstance(),
+                MigrationEntityHelper.getInstance(),
+                PriorityMigrationHelper.getInstance());
     }
 
-    /** Deletes all entries from the database for the helper class and clears the cache. */
+    /**
+     * Deletes all entries from the database for the helper class and clears the cache. This
+     * function is only used for testing, do not use in production.
+     */
     public static void clearAllData(@NonNull TransactionManager transactionManager) {
-        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
+        for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
             databaseHelper.clearData(transactionManager);
         }
         clearAllCache();
     }
 
     public static void clearAllCache() {
-        for (DatabaseHelper databaseHelper : sDatabaseHelpers) {
+        for (DatabaseHelper databaseHelper : getDatabaseHelpers()) {
             databaseHelper.clearCache();
         }
     }
@@ -60,6 +69,4 @@ public abstract class DatabaseHelper {
     protected void clearCache() {}
 
     protected abstract String getMainTableName();
-
-    protected abstract List<Pair<String, String>> getColumnInfo();
 }

@@ -72,7 +72,7 @@ public class DeviceInfoHelper extends DatabaseHelper {
      * helper
      */
     @NonNull
-    public final CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
@@ -199,7 +199,7 @@ public class DeviceInfoHelper extends DatabaseHelper {
      * <p>PLEASE DON'T USE THIS METHOD TO ADD NEW COLUMNS
      */
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         ArrayList<Pair<String, String>> columnInfo = new ArrayList<>();
         columnInfo.add(new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY));
         columnInfo.add(new Pair<>(MANUFACTURER_COLUMN_NAME, TEXT_NULL));

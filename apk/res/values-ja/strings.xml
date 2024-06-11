@@ -37,6 +37,12 @@
     <string name="backup_title" msgid="211503191266235085">"バックアップ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"データソースと優先度"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ユニットを設定"</string>
+    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
+    <skip />
+    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
+    <skip />
+    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
+    <skip />
     <string name="recent_access_header" msgid="7623497371790225888">"最近のアクセス"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"ヘルスコネクトに最近アクセスしたアプリはありません"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"最近のアクセスをすべて表示"</string>
@@ -258,6 +264,12 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"皮膚温"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"皮膚温を読み取る"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"皮膚温を書き込む"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"すべての医療データ"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"すべての医療データ"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"すべての医療データの書き込み"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"予防接種データ"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"予防接種データ"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"予防接種データの読み取り"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」に読み取りを許可する"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」に書き込みを許可する"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"キャンセル"</string>
@@ -319,7 +331,12 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"ヘルスコネクトによりアプリの権限が削除される理由"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"アプリが Google Play での公開が停止された場合や Google Play から削除された場合、ヘルスコネクトにより、そのアプリの権限が自動的に削除されます。\n\nそのため、そのアプリはヘルスコネクトに保存されたデータにアクセスできなくなります。そのアプリで以前に書き込まれたデータがある場合は、無効なアプリのリストに表示されます。"</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"設定"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"データをエクスポートできませんでした"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"エラーにより、<xliff:g id="DATE">%1$s</xliff:g>のデータをエクスポートできませんでした。新しいエクスポート スケジュールを設定し、もう一度お試しください。"</string>
+    <string name="next_export_time" msgid="3138247220014510213">"次回のエクスポート: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"バックアップと復元"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"前回のエクスポート: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"エクスポートとインポート"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"スケジュール設定されたエクスポート"</string>
     <string name="import_data" msgid="404502315533233094">"データをインポート"</string>
@@ -335,13 +352,7 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"毎週"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"毎月"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"エクスポート先の選択"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"暗号化を有効にする"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"データを保存するには先に暗号化する必要があります。これにより、Google やヘルスコネクトを含め、他のユーザーはデータにアクセスできなくなります。"</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"暗号化されたデータを保護するためにパスワードを作成してください。データのインポートや復元には、このパスワードが必要になります。"</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"パスワード"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"もう一度パスワードを入力"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"パスワードが一致しません"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"パスワードを忘れたり、スマートフォンを紛失したりした場合、ヘルスコネクトでは保存されたデータを復元できなくなります。"</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"データをエクスポートするストレージ アプリを選択してください"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"パスワードの入力"</string>
     <string name="import_decryption_description" msgid="202259030890690376">"ヘルスコネクトのデータをインポートするには、暗号化パスワードが必要です"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"パスワードを忘れた場合"</string>
@@ -352,6 +363,10 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"キャンセル"</string>
     <string name="import_next_button" msgid="5706322508691854289">"次へ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"インポート元の選択"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"データをインポートするストレージ アプリを選択してください"</string>
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"アカウントの選択"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"キャンセル"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"完了"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"ヘルスコネクトを使ってみる"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"ヘルスコネクトを利用すると、健康状態やフィットネスのデータを保存し、スマートフォン上のさまざまなアプリを簡単に同期することができます"</string>
     <string name="share_data" msgid="3481932156368883946">"アプリとデータを共有する"</string>
@@ -361,10 +376,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"戻る"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"使ってみる"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"データを削除します"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"削除を開始"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"削除を終了"</string>
     <string name="time_range_title" msgid="6831605283322600165">"削除するデータの選択"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"次へ"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"指定した期間にヘルスコネクトに追加されたすべてのデータを完全に削除します"</string>
@@ -924,14 +937,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"このアプリによるバックグラウンドでのアクセスまたは過去のデータのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"このアプリによるバックグラウンドでのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"このアプリによる過去のデータのアクセスを有効にするには、少なくとも 1 つの読み取り権限を付与してください"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"ヘルスコネクトからデータを完全に削除しますか？"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"選択したデータをヘルスコネクトから完全に削除しますか？"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"すべてのデータを削除しました"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> のデータを削除しました"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> 件のアイテムを削除しました。"</string>
 </resources>

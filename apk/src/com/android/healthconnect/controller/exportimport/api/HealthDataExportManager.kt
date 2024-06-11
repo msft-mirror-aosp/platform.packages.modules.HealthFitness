@@ -17,6 +17,7 @@
 package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.HealthConnectException
+import android.health.connect.exportimport.ExportImportDocumentProvider
 import android.health.connect.exportimport.ScheduledExportSettings
 import android.health.connect.exportimport.ScheduledExportStatus
 import android.os.OutcomeReceiver
@@ -31,5 +32,10 @@ interface HealthDataExportManager {
     fun getScheduledExportStatus(
         executor: Executor,
         outcomeReceiver: OutcomeReceiver<ScheduledExportStatus, HealthConnectException>
+    )
+
+    fun queryDocumentProviders(
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<List<ExportImportDocumentProvider>, HealthConnectException>
     )
 }

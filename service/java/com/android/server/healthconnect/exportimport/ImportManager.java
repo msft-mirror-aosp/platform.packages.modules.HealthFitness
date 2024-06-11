@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.util.Slog;
 
@@ -31,11 +32,9 @@ import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.zip.ZipInputStream;
 
 /**
  * Manages import related tasks.
@@ -61,18 +60,30 @@ public final class ImportManager {
     }
 
     /** Reads and merges the backup data from a local file. */
-    public synchronized void runImport(Path pathToImport, UserHandle userHandle) {
+    public synchronized void runImport(UserHandle userHandle, Uri file) {
         Slog.i(TAG, "Import started");
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
 
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
         importDbFile.mkdirs();
+        importDbFile.delete();
         try {
-            Path destinationPath = FileSystems.getDefault().getPath(importDbFile.getAbsolutePath());
-            Files.copy(pathToImport, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException | SecurityException e) {
-            Slog.e(TAG, "Failed to get copy to destination: " + importDbFile.getName(), e);
+            File fileToImport = new File(file.getPath());
+            ZipInputStream inputStream = new ZipInputStream(new FileInputStream(fileToImport));
+            inputStream.getNextEntry();
+            FileOutputStream outputStream = new FileOutputStream(importDbFile);
+            int len;
+            byte[] buffer = new byte[1024];
+            while ((len = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, len);
+            }
+            outputStream.close();
+            inputStream.closeEntry();
+            inputStream.close();
+            Slog.i(TAG, "Import file unzipped: " + importDbFile.getAbsolutePath());
+        } catch (Exception e) {
+            Slog.e(TAG, "Failed to get copy to destination: " + importDbFile.getAbsolutePath(), e);
             importDbFile.delete();
             return;
         }
