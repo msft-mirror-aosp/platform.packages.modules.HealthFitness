@@ -38,7 +38,7 @@ import android.annotation.Nullable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.health.connect.HealthDataCategory;
-import android.health.connect.MedicalIdFilter;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.RecordIdFilter;
 import android.health.connect.internal.datatypes.InstantRecordInternal;
 import android.health.connect.internal.datatypes.IntervalRecordInternal;
@@ -60,6 +60,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An util class for HC storage
@@ -111,6 +112,29 @@ public final class StorageUtils {
     }
 
     /**
+     * Returns a UUID for the given triple {@code resourceId}, {@code resourceType} and {@code
+     * dataSourceId}.
+     */
+    public static UUID generateMedicalResourceUUID(
+            @NonNull String resourceId,
+            @NonNull String resourceType,
+            @NonNull String dataSourceId) {
+        final byte[] resourceIdBytes = resourceId.getBytes();
+        final byte[] resourceTypeBytes = resourceType.getBytes();
+        final byte[] dataSourceIdBytes = dataSourceId.getBytes();
+        return getUUID(resourceIdBytes, resourceTypeBytes, dataSourceIdBytes);
+    }
+
+    private static UUID getUUID(byte[]... byteArrays) {
+        int total = Stream.of(byteArrays).mapToInt(arr -> arr.length).sum();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(total);
+        for (byte[] byteArray : byteArrays) {
+            byteBuffer.put(byteArray);
+        }
+        return UUID.nameUUIDFromBytes(byteBuffer.array());
+    }
+
+    /**
      * Sets {@link UUID} for the given {@code medicalResourceInternal}. Since the rest of the fields
      * in {@link MedicalResourceInternal} are not yet created, the UUID is randomly generated.
      */
@@ -159,11 +183,12 @@ public final class StorageUtils {
         recordInternal.setUuid(uuid);
     }
 
-    /** Returns a UUID for the given {@link MedicalIdFilter}. */
-    public static UUID getUUIDFor(@NonNull MedicalIdFilter medicalIdFilter) {
-        // TODO(b/338195583): generate uuid based on medical_data_source_id, resource_type and
-        // resource_id.
-        return UUID.fromString(medicalIdFilter.getId());
+    /** Returns a UUID for the given {@link MedicalResourceId}. */
+    public static UUID getUUIDFor(@NonNull MedicalResourceId medicalResourceId) {
+        return generateMedicalResourceUUID(
+                medicalResourceId.getFhirResourceId(),
+                medicalResourceId.getFhirResourceType(),
+                medicalResourceId.getDataSourceId());
     }
 
     /**

@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Back-up"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Gegevensbronnen en prioriteit"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Eenheden instellen"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Voorkeuren"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Gegevens beheren"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Gegevens exporteren en importeren"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Recente toegang"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Er zijn geen apps die recent toegang tot Health Connect hebben gehad"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Alle recente toegangsacties bekijken"</string>
@@ -270,6 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaccinatie"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaccinatie"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Vaccinatie lezen"</string>
+    <!-- no translation found for mindfulness_session_uppercase_label (4281454716961590565) -->
+    <skip />
+    <!-- no translation found for mindfulness_session_lowercase_label (9188604207357309240) -->
+    <skip />
+    <!-- no translation found for mindfulness_session_read_content_description (1818030288301670841) -->
+    <skip />
+    <!-- no translation found for mindfulness_session_write_content_description (1719084784177758050) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"<xliff:g id="APP_NAME">%1$s</xliff:g> toestaan te lezen"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"<xliff:g id="APP_NAME">%1$s</xliff:g> toestaan te schrijven"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annuleren"</string>
@@ -341,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Geplande export"</string>
     <string name="import_data" msgid="404502315533233094">"Gegevens importeren"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Herstel gegevens uit een eerder geëxporteerd bestand"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Met de functie Exporteren kun je je gegevens opslaan zodat je die kunt overzetten naar een nieuwe telefoon"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Meer informatie"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Aan"</string>

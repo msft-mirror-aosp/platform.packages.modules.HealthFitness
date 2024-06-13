@@ -67,9 +67,11 @@ import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
+import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
+import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
@@ -1978,6 +1980,12 @@ public class HealthConnectManager {
         return records;
     }
 
+    private static <RES, ERR extends Throwable> void returnResult(
+            Executor executor, @Nullable RES result, OutcomeReceiver<RES, ERR> callback) {
+        Binder.clearCallingIdentity();
+        executor.execute(() -> callback.onResult(result));
+    }
+
     private void returnError(
             Executor executor,
             HealthConnectExceptionParcel exception,
@@ -2127,6 +2135,7 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if {@code ids} is empty or its size is more than 5000.
      */
+    // (TODO: b/343455447): Replace MedicalIdFilter to use MedicalResourceId.
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
             @NonNull List<MedicalIdFilter> ids,
@@ -2136,11 +2145,33 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
+        if (ids.isEmpty()) {
+            returnResult(executor, List.of(), callback);
+            return;
+        }
+
         if (ids.size() >= MAXIMUM_PAGE_SIZE) {
             throw new IllegalArgumentException("Maximum allowed pageSize is " + MAXIMUM_PAGE_SIZE);
         }
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.readMedicalResources(
+                    mContext.getAttributionSource(),
+                    new MedicalIdFiltersParcel(ids),
+                    new IReadMedicalResourcesResponseCallback.Stub() {
+                        @Override
+                        public void onResult(ReadMedicalResourcesResponse parcel) {
+                            returnResult(executor, parcel.getMedicalResources(), callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**
@@ -2278,7 +2309,7 @@ public class HealthConnectManager {
         Objects.requireNonNull(callback);
 
         if (ids.isEmpty()) {
-            callback.onResult(List.of());
+            returnResult(executor, List.of(), callback);
             return;
         }
 

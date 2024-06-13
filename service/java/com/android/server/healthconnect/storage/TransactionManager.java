@@ -38,8 +38,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.PageTokenWrapper;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.UserHandle;
@@ -109,6 +110,53 @@ public final class TransactionManager {
         mHealthConnectDatabase =
                 mUserHandleToDatabaseMap.get(healthConnectUserContext.getCurrentUserHandle());
         mUserHandle = healthConnectUserContext.getCurrentUserHandle();
+    }
+
+    /**
+     * Upserts (insert/update) a list of {@link MedicalResource}s created based on the given list of
+     * {@link MedicalResourceInternal}s into the HealthConnect database.
+     *
+     * @param medicalResourceInternals a list of {@link MedicalResourceInternal}.
+     * @return List of {@link MedicalResource}s that were upserted into the database, in the same
+     *     order as their associated {@link MedicalResourceInternal}s.
+     */
+    public List<MedicalResource> upsertMedicalResources(
+            @NonNull List<MedicalResourceInternal> medicalResourceInternals)
+            throws SQLiteException {
+        if (Constants.DEBUG) {
+            Slog.d(
+                    TAG,
+                    "Upserting "
+                            + medicalResourceInternals.size()
+                            + " "
+                            + MedicalResourceInternal.class.getSimpleName()
+                            + "(s).");
+        }
+
+        // TODO(b/337018927): Add support for change logs and access logs.
+        List<MedicalResource> upsertedMedicalResources = new ArrayList<>();
+        SQLiteDatabase db = getWritableDb();
+        db.beginTransaction();
+
+        try {
+            for (MedicalResourceInternal medicalResourceInternal : medicalResourceInternals) {
+                UUID uuid =
+                        StorageUtils.generateMedicalResourceUUID(
+                                medicalResourceInternal.getFhirResourceId(),
+                                medicalResourceInternal.getFhirResourceType(),
+                                medicalResourceInternal.getDataSourceId());
+                UpsertTableRequest upsertTableRequest =
+                        MedicalResourceHelper.getUpsertTableRequest(uuid, medicalResourceInternal);
+                insertOrReplaceRecord(db, upsertTableRequest);
+                upsertedMedicalResources.add(
+                        MedicalResourceHelper.buildMedicalResource(uuid, medicalResourceInternal));
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+
+        return upsertedMedicalResources;
     }
 
     /**
@@ -318,21 +366,20 @@ public final class TransactionManager {
     }
 
     /**
-     * Reads the {@code MedicalResourceInternal} stored in the HealthConnect database.
+     * Reads the {@link MedicalResource}s stored in the HealthConnect database.
      *
-     * @param medicalIdFiltersParcel a {code MedicalIdFiltersParcel}.
-     * @return List of {@code MedicalResourceInternal}s read from medical_resource table based on
-     *     ids.
+     * @param medicalResourceIds a {@link MedicalResourceId}.
+     * @return List of {@link MedicalResource}s read from medical_resource table based on ids.
      */
-    public List<MedicalResourceInternal> readMedicalResourcesByIds(
-            @NonNull MedicalIdFiltersParcel medicalIdFiltersParcel) throws SQLiteException {
-        List<MedicalResourceInternal> medicalResourceInternals;
-        MedicalResourceHelper helper = new MedicalResourceHelper();
-        ReadTableRequest readTableRequest = helper.getReadTableRequest(medicalIdFiltersParcel);
+    public List<MedicalResource> readMedicalResourcesByIds(
+            @NonNull List<MedicalResourceId> medicalResourceIds) throws SQLiteException {
+        List<MedicalResource> medicalResources;
+        ReadTableRequest readTableRequest =
+                MedicalResourceHelper.getReadTableRequest(medicalResourceIds);
         try (Cursor cursor = read(readTableRequest)) {
-            medicalResourceInternals = helper.getMedicalResourceInternals(cursor);
+            medicalResources = MedicalResourceHelper.getMedicalResources(cursor);
         }
-        return medicalResourceInternals;
+        return medicalResources;
     }
 
     /**
@@ -809,7 +856,7 @@ public final class TransactionManager {
             try (Cursor cursor = db.rawQuery(request.getReadRequest().getReadCommand(), null)) {
                 if (!cursor.moveToFirst()) {
                     throw new HealthConnectException(
-                            ERROR_INTERNAL, "Conflict found, but couldn't read the entry.");
+                            ERROR_INTERNAL, "Conflict found, but couldn't read the entry.", e);
                 }
 
                 long updateResult = updateEntriesIfRequired(db, request, cursor);

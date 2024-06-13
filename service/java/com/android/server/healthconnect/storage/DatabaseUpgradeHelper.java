@@ -118,7 +118,7 @@ final class DatabaseUpgradeHelper {
         if (oldVersion < DB_VERSION_UNDER_DEVELOPMENT
                 && DB_VERSION_UNDER_DEVELOPMENT <= newVersion) {
             if (Flags.personalHealthRecordDatabase()) {
-                new MedicalResourceHelper().onInitialUpgrade(db);
+                MedicalResourceHelper.onInitialUpgrade(db);
             }
         }
     }
