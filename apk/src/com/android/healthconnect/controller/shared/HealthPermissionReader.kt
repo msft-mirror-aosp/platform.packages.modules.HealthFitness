@@ -68,8 +68,8 @@ constructor(
 
         private val medicalPermissions =
             setOf(
-                HealthPermissions.WRITE_MEDICAL_RESOURCES,
-                HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION)
+                HealthPermissions.WRITE_MEDICAL_DATA,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION)
     }
 
     /**

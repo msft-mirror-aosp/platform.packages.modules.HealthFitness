@@ -103,7 +103,7 @@ public class ExportManager {
             }
 
             try {
-                deleteLogTablesContent(LOCAL_EXPORT_DATABASE_FILE_NAME);
+                deleteLogTablesContent();
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to prepare local file for export", e);
                 ExportImportSettingsStorage.setLastExportError(
@@ -177,16 +177,15 @@ public class ExportManager {
     }
 
     // TODO(b/325599879): Double check if we need to vacuum the database after clearing the tables.
-    private void deleteLogTablesContent(String dbName) throws IOException {
+    private void deleteLogTablesContent() {
+        // Throwing a exception when calling this method implies that it was not possible to
+        // create a HC database from the file and, therefore, most probably the database was
+        // corrupted during the file copy.
         try (HealthConnectDatabase exportDatabase =
-                new HealthConnectDatabase(mDatabaseContext, dbName)) {
+                new HealthConnectDatabase(mDatabaseContext, LOCAL_EXPORT_DATABASE_FILE_NAME)) {
             for (String tableName : TABLES_TO_CLEAR) {
                 exportDatabase.getWritableDatabase().execSQL("DELETE FROM " + tableName + ";");
             }
-        } catch (Exception e) {
-            // This exception is not passed up the stack for error handling, because it has no
-            // user visible effect other than the data being larger.
-            Slog.e(TAG, "Unable to drop log tables for export database.");
         }
         Slog.i(TAG, "Drop log tables completed.");
     }

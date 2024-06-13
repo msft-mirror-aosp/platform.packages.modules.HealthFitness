@@ -2245,9 +2245,8 @@ public class HealthConnectManager {
      * <p>The following rules apply to {@link MedicalDataSource} creation.
      *
      * <ul>
-     *   <li>Only apps that have the
-     *       android.health.connect.HealthPermissions#WRITE_MEDICAL_RESOURCES are allowed to create
-     *       data sources.
+     *   <li>Only apps that have the android.health.connect.HealthPermissions#WRITE_MEDICAL_DATA are
+     *       allowed to create data sources.
      *   <li>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
      *       all medical data sources created by an app. The FHIR base uri cannot be updated after
      *       creating the data source.

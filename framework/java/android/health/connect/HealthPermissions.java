@@ -779,17 +779,16 @@ public final class HealthPermissions {
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String READ_MEDICAL_RESOURCES_IMMUNIZATION =
-            "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION";
+    public static final String READ_MEDICAL_DATA_IMMUNIZATION =
+            "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
 
     /**
-     * Allows an application to write the user's medical resources.
+     * Allows an application to write the user's medical data.
      *
      * <p>Protection level: dangerous.
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
-    public static final String WRITE_MEDICAL_RESOURCES =
-            "android.permission.health.WRITE_MEDICAL_RESOURCES";
+    public static final String WRITE_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA";
 
     private static final Set<String> sWritePermissionsSet =
             new ArraySet<>(
@@ -929,9 +928,13 @@ public final class HealthPermissions {
      * @hide
      */
     public static Set<String> getAllMedicalPermissions() {
+        if (!personalHealthRecord()) {
+            throw new UnsupportedOperationException("getAllMedicalPermissions is not supported");
+        }
+
         populateReadMedicalPermissionsToMedicalPermissionCategoryMap();
         Set<String> permissions = new HashSet<>(sMedicalCategoryToReadPermissionMap.values());
-        permissions.add(WRITE_MEDICAL_RESOURCES);
+        permissions.add(WRITE_MEDICAL_DATA);
         return permissions;
     }
 
@@ -1226,6 +1229,6 @@ public final class HealthPermissions {
             return;
         }
         // Populate permission category to read permission map
-        sMedicalCategoryToReadPermissionMap.put(IMMUNIZATION, READ_MEDICAL_RESOURCES_IMMUNIZATION);
+        sMedicalCategoryToReadPermissionMap.put(IMMUNIZATION, READ_MEDICAL_DATA_IMMUNIZATION);
     }
 }

@@ -158,8 +158,8 @@ object Constants {
 
     val ADDITIONAL_PERMISSIONS = arrayOf(READ_HEALTH_DATA_IN_BACKGROUND, READ_HEALTH_DATA_HISTORY)
 
-    const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"
-    const val WRITE_ALL_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_RESOURCES"
+    const val READ_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"
+    const val WRITE_ALL_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA"
     val MEDICAL_PERMISSIONS =
         arrayOf(
             WRITE_ALL_MEDICAL_DATA,

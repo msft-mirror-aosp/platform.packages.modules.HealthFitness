@@ -18,8 +18,8 @@ package android.health.connect;
 
 import static android.health.connect.HealthPermissions.HEALTH_PERMISSION_GROUP;
 import static android.health.connect.HealthPermissions.READ_EXERCISE_ROUTE;
-import static android.health.connect.HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION;
-import static android.health.connect.HealthPermissions.WRITE_MEDICAL_RESOURCES;
+import static android.health.connect.HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION;
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 
 import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
@@ -100,8 +100,8 @@ public class HealthPermissionsTest {
                     HealthPermissions.READ_RESPIRATORY_RATE,
                     HealthPermissions.READ_RESTING_HEART_RATE,
                     HealthPermissions.READ_SKIN_TEMPERATURE,
-                    HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION,
                     HealthPermissions.READ_MINDFULNESS_SESSION,
+                    HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION,
                     HealthPermissions.WRITE_ACTIVE_CALORIES_BURNED,
                     HealthPermissions.WRITE_DISTANCE,
                     HealthPermissions.WRITE_ELEVATION_GAINED,
@@ -140,8 +140,9 @@ public class HealthPermissionsTest {
                     HealthPermissions.WRITE_RESPIRATORY_RATE,
                     HealthPermissions.WRITE_RESTING_HEART_RATE,
                     HealthPermissions.WRITE_SKIN_TEMPERATURE,
-                    HealthPermissions.WRITE_MEDICAL_RESOURCES,
-                    HealthPermissions.WRITE_MINDFULNESS_SESSION);
+                    HealthPermissions.WRITE_MINDFULNESS_SESSION,
+                    HealthPermissions.WRITE_MEDICAL_DATA);
+
     private PackageManager mPackageManager;
     private Context mContext;
     @Mock private PackageInfo mPackageInfo1;
@@ -275,7 +276,7 @@ public class HealthPermissionsTest {
     public void testGetMedicalReadPermission_givenCategory_returnsPermission() {
         String readPermission =
                 HealthPermissions.getMedicalReadPermission(MedicalPermissionCategory.IMMUNIZATION);
-        assertThat(readPermission).isEqualTo(READ_MEDICAL_RESOURCES_IMMUNIZATION);
+        assertThat(readPermission).isEqualTo(READ_MEDICAL_DATA_IMMUNIZATION);
     }
 
     @Test(expected = NullPointerException.class)
@@ -288,8 +289,7 @@ public class HealthPermissionsTest {
     @EnableFlags(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalPermissions_returnsValidPermissions() {
         Set<String> permissions = HealthPermissions.getAllMedicalPermissions();
-        assertThat(permissions)
-                .containsAtLeast(WRITE_MEDICAL_RESOURCES, READ_MEDICAL_RESOURCES_IMMUNIZATION);
+        assertThat(permissions).containsAtLeast(WRITE_MEDICAL_DATA, READ_MEDICAL_DATA_IMMUNIZATION);
     }
 
     private PermissionInfo[] getHealthPermissionInfos() throws Exception {

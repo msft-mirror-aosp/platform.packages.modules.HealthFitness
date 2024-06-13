@@ -16,7 +16,7 @@
 
 package com.android.server.healthconnect.permission;
 
-import static android.health.connect.HealthPermissions.WRITE_MEDICAL_RESOURCES;
+import static android.health.connect.HealthPermissions.WRITE_MEDICAL_DATA;
 import static android.health.connect.HealthPermissions.getMedicalReadPermission;
 import static android.health.connect.internal.datatypes.utils.MedicalResourceTypePermissionCategoryMapper.getMedicalPermissionCategory;
 import static android.permission.PermissionManager.PERMISSION_GRANTED;
@@ -49,7 +49,7 @@ public class MedicalDataPermissionEnforcer {
      */
     public void enforceWriteMedicalResourcePermission(AttributionSource attributionSource) {
         enforceMedicalResourcePermission(
-                WRITE_MEDICAL_RESOURCES, attributionSource, /* isReadPermission= */ false);
+                WRITE_MEDICAL_DATA, attributionSource, /* isReadPermission= */ false);
     }
 
     /**
@@ -70,7 +70,7 @@ public class MedicalDataPermissionEnforcer {
             return false;
         }
 
-        if (isPermissionGranted(WRITE_MEDICAL_RESOURCES, attributionSource)) {
+        if (isPermissionGranted(WRITE_MEDICAL_DATA, attributionSource)) {
             // Apps are always allowed to read self data if they have insert permission.
             return true;
         }
