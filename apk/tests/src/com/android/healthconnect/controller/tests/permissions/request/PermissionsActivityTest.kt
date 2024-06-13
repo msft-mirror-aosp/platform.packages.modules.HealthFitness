@@ -244,7 +244,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun intentSkipsHiddenDataTypePermissions() {
+    fun intentSkipsHiddenFitnessPermissions() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(false)
         val permissions =
             arrayOf(READ_EXERCISE, READ_SLEEP, READ_SKIN_TEMPERATURE, WRITE_ACTIVE_CALORIES_BURNED)
@@ -316,7 +316,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun intentDisplaysDataTypePermissions() {
+    fun intentDisplaysFitnessPermissions() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
 
         launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -408,7 +408,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun requestDataTypePermissions_alreadyGrantedRestDenied_sendsResultOk() {
+    fun requestFitnessPermissions_alreadyGrantedRestDenied_sendsResultOk() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
         (fakeFeatureUtils as FakeFeatureUtils).setIsSkinTemperatureEnabled(true)
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
@@ -464,6 +464,66 @@ class PermissionsActivityTest {
     }
 
     @Test
+    fun requestOneAdditionalPermission_clickOnDontAllow_deniesPermission() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY))
+
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onView(withText("Allow $TEST_APP_NAME to access data in the background?"))
+            .check(matches(isDisplayed()))
+
+        scenario.onActivity { activity: PermissionsActivity ->
+            activity.findViewById<Button>(R.id.dont_allow).callOnClick()
+        }
+
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.result.resultData
+
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        val expectedResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_DENIED)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(expectedResults)
+    }
+
+    @Test
+    fun requestOneAdditionalPermission_clickOnAllow_grantsPermission() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+        val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
+        (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
+            TEST_APP_PACKAGE_NAME, listOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY))
+
+        val startActivityIntent = getPermissionScreenIntent(permissions)
+
+        val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
+
+        onView(withText("Allow $TEST_APP_NAME to access data in the background?"))
+            .check(matches(isDisplayed()))
+
+        scenario.onActivity { activity: PermissionsActivity ->
+            activity.findViewById<Button>(R.id.allow).callOnClick()
+        }
+
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
+        val returnedIntent = scenario.result.resultData
+
+        assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
+            .isEqualTo(permissions)
+        val expectedResults = intArrayOf(PERMISSION_GRANTED, PERMISSION_GRANTED)
+        assertThat(returnedIntent.getIntArrayExtra(EXTRA_REQUEST_PERMISSIONS_RESULTS))
+            .isEqualTo(expectedResults)
+    }
+
+    @Test
     fun whenReadPermissionsNotAlreadyGranted_requestAdditionalPermissions_sendsResultCancelled() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsBackgroundReadEnabled(true)
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
@@ -486,7 +546,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun grantOneDataTypePermission_sendsResultOk() {
+    fun grantOneFitnessPermission_sendsResultOk() {
         val startActivityIntent = getPermissionScreenIntent(fitnessPermissions)
 
         val scenario = launchActivityForResult<PermissionsActivity>(startActivityIntent)
@@ -684,7 +744,7 @@ class PermissionsActivityTest {
     }
 
     @Test
-    fun clickOnCancel_deniesAllDataTypePermissions_finishesActivity() {
+    fun clickOnCancel_deniesAllFitnessPermissions_finishesActivity() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsHistoryReadEnabled(true)
         val permissions = arrayOf(READ_EXERCISE, READ_SLEEP, READ_HEALTH_DATA_HISTORY)
         val startActivityIntent = getPermissionScreenIntent(permissions)

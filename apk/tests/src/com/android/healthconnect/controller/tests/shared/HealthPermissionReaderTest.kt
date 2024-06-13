@@ -8,7 +8,7 @@ import android.health.connect.HealthPermissions.WRITE_PLANNED_EXERCISE
 import android.health.connect.HealthPermissions.WRITE_SKIN_TEMPERATURE
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.permissions.data.HealthPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.MedicalPermissionType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.tests.utils.OLD_PERMISSIONS_TEST_APP_PACKAGE_NAME
@@ -214,7 +214,7 @@ class HealthPermissionReaderTest {
         assertThat(permissionReader.isMedicalPermission(perm.toString())).isFalse()
     }
 
-    private fun String.toHealthPermission(): DataTypePermission {
-        return DataTypePermission.fromPermissionString(this)
+    private fun String.toHealthPermission(): FitnessPermission {
+        return FitnessPermission.fromPermissionString(this)
     }
 }

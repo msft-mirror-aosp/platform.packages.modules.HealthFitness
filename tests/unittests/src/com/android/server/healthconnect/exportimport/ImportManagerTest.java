@@ -97,10 +97,12 @@ public class ImportManagerTest {
         File originalDb = mTransactionManager.getDatabasePath();
         File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        File zipToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.zip");
+        Compressor.compress(dbToImport, zipToImport);
 
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));
@@ -140,9 +142,12 @@ public class ImportManagerTest {
             importDb.execSQL("DROP TABLE " + stepsRecordTableName);
         }
 
+        File zipToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.zip");
+        Compressor.compress(dbToImport, zipToImport);
+
         DatabaseHelper.clearAllData(mTransactionManager);
 
-        mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
 
         List<UUID> stepsUuids = ImmutableList.of(UUID.fromString(uuids.get(0)));
         List<UUID> bloodPressureUuids = ImmutableList.of(UUID.fromString(uuids.get(1)));

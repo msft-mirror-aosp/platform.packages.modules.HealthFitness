@@ -74,6 +74,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false">
         </activity>
 
@@ -109,11 +110,13 @@
 
         <activity
             android:name=".data.DataManagementActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false">
         </activity>
 
         <activity
             android:name=".permissions.shared.SettingsActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="false">
         </activity>
 
@@ -121,6 +124,7 @@
             android:name=".permissions.request.PermissionsActivity"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:permission="android.permission.GRANT_RUNTIME_PERMISSIONS">
             <intent-filter android:priority="1">
                 <action android:name="android.health.connect.action.REQUEST_HEALTH_PERMISSIONS" />

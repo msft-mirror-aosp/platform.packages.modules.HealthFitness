@@ -17,6 +17,7 @@
 package healthconnect.storage;
 
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -112,10 +113,8 @@ public class AutoDeleteServiceTest {
 
     @Mock private PreferenceHelper mPreferenceHelper;
     @Mock private TransactionManager mTransactionManager;
-    @Mock private RecordHelperProvider mRecordHelperProvider;
 
     @Mock private AppInfoHelper mAppInfoHelper;
-    @Mock private ActivityDateHelper mActivityDateHelper;
     @Mock private HealthDataCategoryPriorityHelper mHealthDataCategoryPriorityHelper;
     @Mock Context mContext;
 
@@ -135,7 +134,6 @@ public class AutoDeleteServiceTest {
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
-        when(ActivityDateHelper.getInstance()).thenReturn(mActivityDateHelper);
         when(mPreferenceHelper.getPreference(AUTO_DELETE_DURATION_RECORDS_KEY)).thenReturn(null);
         when(HealthDataCategoryPriorityHelper.getInstance())
                 .thenReturn(mHealthDataCategoryPriorityHelper);
@@ -150,8 +148,8 @@ public class AutoDeleteServiceTest {
                                         checkTableNames_getPreferenceReturnNull(
                                                 deleteTableRequestsList)));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
-        verify(mActivityDateHelper).reSyncForAllRecords();
         verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
+        ExtendedMockito.verify(ActivityDateHelper::reSyncForAllRecords, times(1));
     }
 
     @Test
@@ -159,7 +157,6 @@ public class AutoDeleteServiceTest {
         when(PreferenceHelper.getInstance()).thenReturn(mPreferenceHelper);
         when(TransactionManager.getInitialisedInstance()).thenReturn(mTransactionManager);
         when(AppInfoHelper.getInstance()).thenReturn(mAppInfoHelper);
-        when(ActivityDateHelper.getInstance()).thenReturn(mActivityDateHelper);
         when(HealthDataCategoryPriorityHelper.getInstance())
                 .thenReturn(mHealthDataCategoryPriorityHelper);
 
@@ -182,8 +179,8 @@ public class AutoDeleteServiceTest {
                                         checkTableNames_getPreferenceReturnNonNull(
                                                 request.getDeleteTableRequests())));
         verify(mAppInfoHelper).syncAppInfoRecordTypesUsed();
-        verify(mActivityDateHelper).reSyncForAllRecords();
         verify(mHealthDataCategoryPriorityHelper).reSyncHealthDataPriorityTable(mContext);
+        ExtendedMockito.verify(ActivityDateHelper::reSyncForAllRecords, times(1));
     }
 
     private boolean checkTableNames_getPreferenceReturnNull(List<DeleteTableRequest> list) {
@@ -345,8 +342,7 @@ public class AutoDeleteServiceTest {
     Set<String> getTableNamesForDeletingStaleAccessLogsEntries() {
         Set<String> tableNames = new HashSet<>();
 
-        tableNames.add(
-                AccessLogsHelper.getInstance().getDeleteRequestForAutoDelete().getTableName());
+        tableNames.add(AccessLogsHelper.getDeleteRequestForAutoDelete().getTableName());
 
         return tableNames;
     }

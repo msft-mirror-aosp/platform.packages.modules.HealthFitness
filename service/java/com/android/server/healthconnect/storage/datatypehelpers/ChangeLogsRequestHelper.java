@@ -75,9 +75,8 @@ public final class ChangeLogsRequestHelper extends DatabaseHelper {
         return TABLE_NAME;
     }
 
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo());
     }
 
