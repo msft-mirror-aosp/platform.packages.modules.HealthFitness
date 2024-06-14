@@ -113,9 +113,8 @@ public class AutoDeleteService {
             TransactionManager.getInitialisedInstance()
                     .deleteWithoutChangeLogs(
                             List.of(
-                                    ChangeLogsHelper.getInstance().getDeleteRequestForAutoDelete(),
-                                    ChangeLogsRequestHelper.getInstance()
-                                            .getDeleteRequestForAutoDelete()));
+                                    ChangeLogsHelper.getDeleteRequestForAutoDelete(),
+                                    ChangeLogsRequestHelper.getDeleteRequestForAutoDelete()));
         } catch (Exception exception) {
             Slog.e(TAG, "Auto delete for Change logs failed", exception);
             // Don't rethrow as that will crash system_server

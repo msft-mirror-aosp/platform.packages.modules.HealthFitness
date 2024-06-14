@@ -16,6 +16,10 @@
 
 package com.android.server.healthconnect.exportimport;
 
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_NONE;
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH;
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE;
+
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ImportManager.IMPORT_DATABASE_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createBloodPressureRecord;
@@ -36,6 +40,7 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.server.healthconnect.HealthConnectDeviceConfigManager;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.TestUtils;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
@@ -46,12 +51,15 @@ import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -61,6 +69,7 @@ import java.util.UUID;
 public class ImportManagerTest {
 
     private static final String TEST_PACKAGE_NAME = "package.name";
+    private static final String TEST_DIRECTORY_NAME = "test";
 
     @Rule
     public final HealthConnectDatabaseTestRule mDatabaseTestRule =
@@ -86,6 +95,20 @@ public class ImportManagerTest {
         mImportManager = new ImportManager(mContext);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        DatabaseHelper.clearAllData(mTransactionManager);
+
+        File testDir = mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE);
+        File[] allContents = testDir.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                file.delete();
+            }
+        }
+        testDir.delete();
+    }
+
     @Test
     public void copiesAllData() throws Exception {
         List<String> uuids =
@@ -95,9 +118,11 @@ public class ImportManagerTest {
                         createBloodPressureRecord(234, 120.0, 80.0));
 
         File originalDb = mTransactionManager.getDatabasePath();
-        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        File dbToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        File zipToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.zip");
+        File zipToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.zip");
         Compressor.compress(dbToImport, zipToImport);
 
         DatabaseHelper.clearAllData(mTransactionManager);
@@ -118,6 +143,8 @@ public class ImportManagerTest {
         assertThat(records).hasSize(2);
         assertThat(records.get(0).getUuid()).isEqualTo(stepsUuids.get(0));
         assertThat(records.get(1).getUuid()).isEqualTo(bloodPressureUuids.get(0));
+        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+                .isEqualTo(DATA_IMPORT_ERROR_NONE);
     }
 
     @Test
@@ -129,7 +156,8 @@ public class ImportManagerTest {
                         createBloodPressureRecord(234, 120.0, 80.0));
 
         File originalDb = mTransactionManager.getDatabasePath();
-        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        File dbToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         // Delete steps record table in import db.
@@ -142,7 +170,8 @@ public class ImportManagerTest {
             importDb.execSQL("DROP TABLE " + stepsRecordTableName);
         }
 
-        File zipToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.zip");
+        File zipToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.zip");
         Compressor.compress(dbToImport, zipToImport);
 
         DatabaseHelper.clearAllData(mTransactionManager);
@@ -167,7 +196,8 @@ public class ImportManagerTest {
     @Test
     public void deletesTheDatabase() throws Exception {
         File originalDb = mTransactionManager.getDatabasePath();
-        File dbToImport = new File(mContext.getDir("test", Context.MODE_PRIVATE), "export.db");
+        File dbToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.db");
         Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         mImportManager.runImport(mContext.getUser(), Uri.fromFile(dbToImport));
@@ -176,5 +206,49 @@ public class ImportManagerTest {
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, mContext.getUser())
                         .getDatabaseDir();
         assertThat(new File(databaseDir, IMPORT_DATABASE_FILE_NAME).exists()).isFalse();
+    }
+
+    @Test
+    public void runImport_importNotADatabase_setsWrongFileError() throws Exception {
+        File textFileToImport =
+                createTextFile(
+                        mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.txt");
+        File zipToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.zip");
+        Compressor.compress(textFileToImport, zipToImport);
+
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+                .isEqualTo(DATA_IMPORT_ERROR_WRONG_FILE);
+    }
+
+    @Test
+    public void runImport_versionMismatch_setsVersionMismatchError() throws Exception {
+        File originalDb = mTransactionManager.getDatabasePath();
+        File dbToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.db");
+        Files.copy(originalDb.toPath(), dbToImport.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try (SQLiteDatabase sqlDbToImport =
+                SQLiteDatabase.openDatabase(
+                        dbToImport, new SQLiteDatabase.OpenParams.Builder().build())) {
+            sqlDbToImport.setVersion(100);
+        }
+        File zipToImport =
+                new File(mContext.getDir(TEST_DIRECTORY_NAME, Context.MODE_PRIVATE), "export.zip");
+        Compressor.compress(dbToImport, zipToImport);
+
+        mImportManager.runImport(mContext.getUser(), Uri.fromFile(zipToImport));
+
+        assertThat(ExportImportSettingsStorage.getImportStatus().getDataImportError())
+                .isEqualTo(DATA_IMPORT_ERROR_VERSION_MISMATCH);
+    }
+
+    private static File createTextFile(File dir, String fileName) throws IOException {
+        File file = new File(dir, fileName);
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write("Contents of file " + fileName);
+        fileWriter.close();
+        return file;
     }
 }

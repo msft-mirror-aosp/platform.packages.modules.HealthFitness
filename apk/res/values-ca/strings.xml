@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Còpia de seguretat"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Fonts de dades i prioritat"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Defineix les unitats"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferències"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Gestiona les dades"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Exporta i importa les dades"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Accés recent"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Cap aplicació ha accedit a Salut connectada recentment"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Mostra tots els accessos recents"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura de la pell"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Llegir la temperatura de la pell"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escriure la temperatura de la pell"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Totes les dades mèdiques"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"totes les dades mèdiques"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Escriure totes les dades mèdiques"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunització"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunització"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Llegir la immunització"</string>
+    <!-- no translation found for mindfulness_session_uppercase_label (4281454716961590565) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_session_lowercase_label (9188604207357309240) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_session_read_content_description (1818030288301670841) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_session_write_content_description (1719084784177758050) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> llegeixi"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permet que <xliff:g id="APP_NAME">%1$s</xliff:g> escrigui"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Exportació programada"</string>
     <string name="import_data" msgid="404502315533233094">"Importa les dades"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restaura les dades d\'un fitxer exportat anteriorment"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"L\'exportació et permet desar les dades perquè puguis transferir-les a un telèfon nou"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Més informació"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activada"</string>
