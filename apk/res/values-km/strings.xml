@@ -267,13 +267,13 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"ការចាក់ថ្នាំបង្ការ"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"ការចាក់ថ្នាំបង្ការ"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"អានអំពីការចាក់ថ្នាំបង្ការ"</string>
-    <!-- no translation found for mindfulness_session_uppercase_label (4281454716961590565) -->
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for mindfulness_session_lowercase_label (9188604207357309240) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for mindfulness_session_read_content_description (1818030288301670841) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for mindfulness_session_write_content_description (1719084784177758050) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"អនុញ្ញាតឱ្យ “<xliff:g id="APP_NAME">%1$s</xliff:g>” អាន"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"អនុញ្ញាតឱ្យ “<xliff:g id="APP_NAME">%1$s</xliff:g>” សរសេរ"</string>
@@ -375,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"បន្ទាប់"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"នាំចូល​ពី"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"សូមជ្រើសរើសកម្មវិធីផ្ទុក ដើម្បីនាំចូលទិន្នន័យរបស់អ្នក"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"ជ្រើសរើសគណនី"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"បោះបង់"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"រួចរាល់"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"ចាប់ផ្ដើមជាមួយ Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect រក្សាទុក​ទិន្នន័យសុខភាព និងសម្បទា​របស់អ្នក ដោយផ្តល់ឱ្យ​អ្នកនូវ​វិធីសាមញ្ញ​ក្នុងការធ្វើសមកាលកម្ម​កម្មវិធីផ្សេងៗ​នៅលើទូរសព្ទ​របស់អ្នក"</string>
     <string name="share_data" msgid="3481932156368883946">"ចែករំលែកទិន្នន័យជាមួយកម្មវិធីរបស់អ្នក"</string>
