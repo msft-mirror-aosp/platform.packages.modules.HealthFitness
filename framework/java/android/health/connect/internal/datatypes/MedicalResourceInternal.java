@@ -16,6 +16,7 @@
 
 package android.health.connect.internal.datatypes;
 
+
 import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
@@ -37,6 +38,8 @@ public final class MedicalResourceInternal {
     @MedicalResourceType private int mType;
     @NonNull private String mDataSourceId = "";
     @NonNull private String mData = "";
+    @NonNull private String mFhirResourceType = "";
+    @NonNull private String mFhirResourceId = "";
 
     /** Returns the unique identifier of this data. */
     @Nullable
@@ -90,6 +93,34 @@ public final class MedicalResourceInternal {
     public MedicalResourceInternal setData(@NonNull String data) {
         requireNonNull(data);
         mData = data;
+        return this;
+    }
+
+    /** Returns the FHIR resource type extracted from the FHIR JSON. */
+    @NonNull
+    public String getFhirResourceType() {
+        return mFhirResourceType;
+    }
+
+    /** Returns this object with the FHIR resource type. */
+    @NonNull
+    public MedicalResourceInternal setFhirResourceType(@NonNull String fhirResourceType) {
+        requireNonNull(fhirResourceType);
+        mFhirResourceType = fhirResourceType;
+        return this;
+    }
+
+    /** Returns the FHIR resource id extracted from the FHIR JSON. */
+    @NonNull
+    public String getFhirResourceId() {
+        return mFhirResourceId;
+    }
+
+    /** Returns this object with the FHIR resource id. */
+    @NonNull
+    public MedicalResourceInternal setFhirResourceId(@NonNull String fhirResourceId) {
+        requireNonNull(fhirResourceId);
+        mFhirResourceId = fhirResourceId;
         return this;
     }
 

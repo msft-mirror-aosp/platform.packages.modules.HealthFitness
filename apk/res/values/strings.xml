@@ -362,6 +362,13 @@
     <string name="immunization_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunization</string>
     <!--endregion-->
 
+    <!-- region Wellness -->
+    <string name="mindfulness_uppercase_label" description="Uppercase label used to show user's mindfulness session data [CHAR_LIMIT=50]">Mindfulness</string>
+    <string name="mindfulness_lowercase_label" description="Lowercase label used to show user's mindfulness session data [CHAR_LIMIT=50]">mindfulness</string>
+    <string name="mindfulness_read_content_description" description="Content description for switch that enables permissions for reading user's mindfulness session data [CHAR_LIMIT=NONE]">Read mindfulness</string>
+    <string name="mindfulness_write_content_description" description="Content description for switch that enables permissions for writing user's mindfulness session data [CHAR_LIMIT=NONE]">Write mindfulness</string>
+    <!--endregion-->
+
     <!-- region Permissions -->
     <string name="read_permission_category" description="Title for read permission category in the app permission screen">Allow &#8220;<xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>&#8221; to read</string>
     <string name="write_permission_category" description="Title for write permission category in the app permission screen">Allow &#8220;<xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>&#8221; to write</string>
@@ -447,6 +454,9 @@
     <string name="scheduled_export" description="Menu item where users can click to configure scheduled data export. [CHAR_LIMIT=40]">Scheduled export</string>
     <string name="import_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Import data</string>
     <string name="import_data_description" description="Description about the function of the 'restore data' preference. [CHAR_LIMIT=NONE]">Restore data from a previously exported file</string>
+    <string name="import_wrong_file_error_banner_button" description="Button of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Choose file</string>
+    <string name="import_wrong_file_error_banner_title" description="Title of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Couldn\'t restore data</string>
+    <string name="import_wrong_file_error_banner_summary" description="Summary of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
     <string name="backup_and_restore_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">Export lets you save your data so you can transfer it to a new phone</string>
     <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">Learn more</string>
 
@@ -478,9 +488,12 @@
     <string name="import_source_location_title" description="Title of the 'Import from' screen where the use chooses the location where their backup is saved. [CHAR_LIMIT=40]">Import from</string>
     <string name="import_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to import their data from. [CHAR_LIMIT=NONE]">Please choose a storage app to import your data</string>
 
+    <string name="export_import_tap_to_choose_account" description="Label of text indicating that the user needs to select an account to export data to or import data from. [CHAR_LIMIT=NONE]">Tap to select an account</string>
     <string name="export_import_choose_account_title" description="Title of a dialog where users select the account to export data to or import data from. [CHAR_LIMIT=40]">Choose an account</string>
     <string name="export_import_choose_account_cancel_button" description="Text on a button that cancels the user picking an account to export data to or import data from. [CHAR_LIMIT=40]">Cancel</string>
     <string name="export_import_choose_account_done_button" description="Text on a button that confirms the account for the user to export data to or import data from. [CHAR_LIMIT=40]">Done</string>
+    <string name="export_import_install_apps_text" description="Text informing the user to install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">For more options, install cloud storage apps to see them here</string>
+    <string name="export_import_go_to_play_store_text" description="Link text taking the user to the Play Store so they can install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">Go to the Play Store</string>
     <!--endregion-->
 
     <!--region Onboarding -->
@@ -1046,6 +1059,7 @@
     <string name="playstore_collection_url" description="Play Store collection URL to navigate to when button is clicked [CHAR_LIMIT=NONE]" translatable="false">https://play.google.com/store/apps/collection/promotion_all__health_connect</string>
     <string name="playstore_package_name" description="Android package name for the Play Store app [CHAR_LIMIT=NONE]" translatable="false">com.android.vending</string>
     <string name="playstore_manage_apps_url" description="Play Store Manage Apps and Devices screen to navigate to when button is clicked [CHAR_LIMIT=NONE]" translatable="false">https://play.google.com/apps</string>
+    <string name="playstore_url" description="Play Store to navigate to when button is clicked [CHAR_LIMIT=NONE]" translatable="false">https://play.google.com</string>
     <!--endregion-->
 
     <!-- region Auto-delete -->
