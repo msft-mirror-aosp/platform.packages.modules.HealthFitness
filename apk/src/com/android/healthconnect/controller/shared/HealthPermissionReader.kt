@@ -233,8 +233,8 @@ constructor(
     }
 
     private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
-        return permission == HealthPermissions.READ_MINDFULNESS_SESSION ||
-            permission == HealthPermissions.WRITE_MINDFULNESS_SESSION
+        return permission == HealthPermissions.READ_MINDFULNESS ||
+            permission == HealthPermissions.WRITE_MINDFULNESS
     }
 
     private fun shouldHideSessionTypes(permission: String): Boolean {

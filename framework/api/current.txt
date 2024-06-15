@@ -114,7 +114,7 @@ package android.health.connect {
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
-    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS_SESSION = "android.permission.health.READ_MINDFULNESS_SESSION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS = "android.permission.health.READ_MINDFULNESS";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
@@ -154,7 +154,7 @@ package android.health.connect {
     field public static final String WRITE_LEAN_BODY_MASS = "android.permission.health.WRITE_LEAN_BODY_MASS";
     field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA";
     field public static final String WRITE_MENSTRUATION = "android.permission.health.WRITE_MENSTRUATION";
-    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS_SESSION = "android.permission.health.WRITE_MINDFULNESS_SESSION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS = "android.permission.health.WRITE_MINDFULNESS";
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";

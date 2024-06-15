@@ -280,8 +280,8 @@
 
     <!-- Read permissions for wellness -->
     <permission
-        android:name="android.permission.health.READ_MINDFULNESS_SESSION"
-        android:label="@string/mindfulness_session_read_content_description"
+        android:name="android.permission.health.READ_MINDFULNESS"
+        android:label="@string/mindfulness_read_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 
@@ -528,8 +528,8 @@
 
     <!-- Write permissions for wellness -->
     <permission
-        android:name="android.permission.health.WRITE_MINDFULNESS_SESSION"
-        android:label="@string/mindfulness_session_write_content_description"
+        android:name="android.permission.health.WRITE_MINDFULNESS"
+        android:label="@string/mindfulness_write_content_description"
         android:protectionLevel="dangerous"
         android:permissionGroup="android.permission-group.HEALTH" />
 </manifest>
