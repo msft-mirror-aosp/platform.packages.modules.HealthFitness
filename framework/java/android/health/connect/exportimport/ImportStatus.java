@@ -36,20 +36,18 @@ import java.lang.annotation.RetentionPolicy;
 public final class ImportStatus implements Parcelable {
 
     /**
-     * Unknown error during the last data import.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_IMPORT_ERROR_UNKNOWN = 0;
-
-    /**
      * No error during the last data import.
      *
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_IMPORT_ERROR_NONE = 1;
+    public static final int DATA_IMPORT_ERROR_NONE = 0;
+
+    /**
+     * Unknown error during the last data import.
+     *
+     * @hide
+     */
+    public static final int DATA_IMPORT_ERROR_UNKNOWN = 1;
 
     /**
      * Indicates that the last import failed because the user picked a file that was not exported by
@@ -57,7 +55,6 @@ public final class ImportStatus implements Parcelable {
      *
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     public static final int DATA_IMPORT_ERROR_WRONG_FILE = 2;
 
     /**
@@ -66,14 +63,13 @@ public final class ImportStatus implements Parcelable {
      *
      * @hide
      */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
     public static final int DATA_IMPORT_ERROR_VERSION_MISMATCH = 3;
 
     /** @hide */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
-        DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_NONE,
+        DATA_IMPORT_ERROR_UNKNOWN,
         DATA_IMPORT_ERROR_WRONG_FILE,
         DATA_IMPORT_ERROR_VERSION_MISMATCH
     })

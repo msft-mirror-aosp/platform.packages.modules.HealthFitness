@@ -29,8 +29,6 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UNKNOWN;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
-import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
 
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_USER_ID;
@@ -90,7 +88,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -153,19 +150,6 @@ public final class BackupRestore {
     @VisibleForTesting static final String DATA_MERGING_RETRY_KEY = "data_merging_retry_key";
     private static final String DATA_MERGING_RETRY_CANCELLED_KEY =
             "data_merging_retry_cancelled_key";
-
-    /*
-     * Record types in this list will always be migrated such that the ordering here is respected.
-     * When adding a new priority override, group the types that need to migrated together within
-     * their own list. This makes the logical separate clear and also reduces storage usage during
-     * migration, as we delete the original records
-     */
-    private static final List<List<Integer>> RECORD_TYPE_MIGRATION_ORDERING_OVERRIDES =
-            List.of(
-                    // Training plans must be migrated before exercise sessions. Exercise sessions
-                    // may contain a reference to a training plan, so the training plan needs to
-                    // exist so that the foreign key constraints are not violated.
-                    List.of(RECORD_TYPE_PLANNED_EXERCISE_SESSION, RECORD_TYPE_EXERCISE_SESSION));
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({

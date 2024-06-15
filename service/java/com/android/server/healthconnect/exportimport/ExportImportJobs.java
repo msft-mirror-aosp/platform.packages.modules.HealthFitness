@@ -84,7 +84,6 @@ public class ExportImportJobs {
             // reschedule.
             return true;
         }
-
         return exportManager.runExport();
 
         // TODO(b/325599089): Cancel job if flag is off.

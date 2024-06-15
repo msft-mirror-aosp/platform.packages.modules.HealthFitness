@@ -16,27 +16,28 @@
 
 package com.android.server.healthconnect.exportimport;
 
-
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_NONE;
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_UNKNOWN;
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_VERSION_MISMATCH;
+import static android.health.connect.exportimport.ImportStatus.DATA_IMPORT_ERROR_WRONG_FILE;
 
 import static java.util.Objects.requireNonNull;
 
 import android.annotation.NonNull;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.UserHandle;
 import android.util.Slog;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.server.healthconnect.storage.ExportImportSettingsStorage;
 import com.android.server.healthconnect.storage.HealthConnectDatabase;
 import com.android.server.healthconnect.storage.TransactionManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.io.FileNotFoundException;
 
 /**
  * Manages import related tasks.
@@ -63,37 +64,58 @@ public final class ImportManager {
 
     /** Reads and merges the backup data from a local file. */
     public synchronized void runImport(UserHandle userHandle, Uri file) {
-        Slog.i(TAG, "Import started");
+        Slog.i(TAG, "Import started.");
+        ExportImportSettingsStorage.setImportOngoing(true);
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
-
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
-        importDbFile.mkdirs();
+
         try {
-            Path filePath = FileSystems.getDefault().getPath(file.getPath());
-            Path destinationPath = FileSystems.getDefault().getPath(importDbFile.getAbsolutePath());
-            Files.copy(filePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException | SecurityException e) {
-            Slog.e(TAG, "Failed to get copy to destination: " + importDbFile.getName(), e);
-            importDbFile.delete();
-            return;
+            try {
+                Compressor.decompress(new File(file.getPath()), importDbFile);
+                Slog.i(TAG, "Import file unzipped: " + importDbFile.getAbsolutePath());
+            } catch (Exception e) {
+                Slog.e(
+                        TAG,
+                        "Failed to get copy to destination: " + importDbFile.getAbsolutePath(),
+                        e);
+                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_UNKNOWN);
+                return;
+            }
+
+            try {
+                if (canMerge(importDbFile)) {
+                    HealthConnectDatabase stagedDatabase =
+                            new HealthConnectDatabase(dbContext, IMPORT_DATABASE_FILE_NAME);
+                    mDatabaseMerger.merge(stagedDatabase);
+                }
+            } catch (SQLiteException e) {
+                Slog.i(TAG, "Import failed, not a database: " + e);
+                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_WRONG_FILE);
+                return;
+            } catch (IllegalStateException e) {
+                Slog.i(TAG, "Import failed: " + e);
+                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_VERSION_MISMATCH);
+                return;
+            } catch (Exception e) {
+                Slog.i(TAG, "Import failed: " + e);
+                ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_UNKNOWN);
+                return;
+            }
+
+            ExportImportSettingsStorage.setLastImportError(DATA_IMPORT_ERROR_NONE);
+            Slog.i(TAG, "Import completed");
+        } finally {
+            // Delete the staged db as we are done merging.
+            Slog.i(TAG, "Deleting staged db after merging");
+            SQLiteDatabase.deleteDatabase(importDbFile);
+
+            ExportImportSettingsStorage.setImportOngoing(false);
         }
-
-        if (canMerge(importDbFile)) {
-            HealthConnectDatabase stagedDatabase =
-                    new HealthConnectDatabase(dbContext, IMPORT_DATABASE_FILE_NAME);
-            mDatabaseMerger.merge(stagedDatabase);
-        }
-
-        // Delete the staged db as we are done merging.
-        Slog.i(TAG, "Deleting staged db after merging");
-        dbContext.deleteDatabase(IMPORT_DATABASE_FILE_NAME);
-        importDbFile.delete();
-
-        Slog.i(TAG, "Import completed");
     }
 
-    private boolean canMerge(File importDbFile) {
+    private boolean canMerge(File importDbFile)
+            throws FileNotFoundException, IllegalStateException, SQLiteException {
         int currentDbVersion = TransactionManager.getInitialisedInstance().getDatabaseVersion();
         if (importDbFile.exists()) {
             try (SQLiteDatabase importDb =
@@ -107,16 +129,14 @@ public final class ImportManager {
                                 + ", staged version = "
                                 + stagedDbVersion);
                 if (currentDbVersion < stagedDbVersion) {
-                    Slog.i(TAG, "Module needs upgrade for merging to version " + stagedDbVersion);
-                    return false;
+                    throw new IllegalStateException("Module needs upgrade for merging to version.");
                 }
             }
         } else {
-            Slog.i(TAG, "No database file found to merge.");
-            return false;
+            throw new FileNotFoundException("No database file found to merge.");
         }
 
-        Slog.i(TAG, "Starting the data merge.");
+        Slog.i(TAG, "File can be merged.");
         return true;
     }
 }
