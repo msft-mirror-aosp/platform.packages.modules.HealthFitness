@@ -267,13 +267,13 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"நோய்த்தடுப்பூசி"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"நோய்த்தடுப்பூசி"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"நோய்த்தடுப்பூசி தொடர்பான தரவைப் படிக்க அனுமதிக்கும்"</string>
-    <!-- no translation found for mindfulness_session_uppercase_label (4281454716961590565) -->
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for mindfulness_session_lowercase_label (9188604207357309240) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for mindfulness_session_read_content_description (1818030288301670841) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for mindfulness_session_write_content_description (1719084784177758050) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"படிக்க “<xliff:g id="APP_NAME">%1$s</xliff:g>” ஆப்ஸை அனுமதிக்கவும்"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"எழுத “<xliff:g id="APP_NAME">%1$s</xliff:g>” ஆப்ஸை அனுமதிக்கவும்"</string>
@@ -338,7 +338,7 @@
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"சரி"</string>
     <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"அமையுங்கள்"</string>
     <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"தரவைப் பதிவிறக்க முடியவில்லை"</string>
-    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> தேதிக்கான பதிவிறக்கத்தில் சிக்கல் ஏற்பட்டுள்ளது. திட்டமிடப்பட்ட புதிய பதிவிறக்கத்தை அமைத்து மீண்டும் முயலவும்."</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> தேதிக்கான பதிவிறக்கத்தில் சிக்கல் ஏற்பட்டுள்ளது. ஒரு புதிய திட்டமிடப்பட்ட பதிவிறக்கத்தை அமைத்து மீண்டும் முயலவும்."</string>
     <string name="next_export_time" msgid="3138247220014510213">"அடுத்த பதிவிறக்கம்: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"காப்புப் பிரதி மற்றும் மீட்டெடுத்தல்"</string>
     <string name="last_export_time" msgid="9205875050823594041">"கடைசியாகப் பதிவிறக்கம் செய்தது: <xliff:g id="DATE">%1$s</xliff:g>"</string>
@@ -375,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"அடுத்து"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"இங்கிருந்து பதிவிறக்கு"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"உங்கள் தரவைப் பதிவேற்றுவதற்கான சேமிப்பக ஆப்ஸைத் தேர்ந்தெடுக்கவும்"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"கணக்கைத் தேர்வுசெய்யுங்கள்"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ரத்துசெய்"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"முடிந்தது"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
     <string name="share_data" msgid="3481932156368883946">"ஆப்ஸுடன் தரவைப் பகிர்தல்"</string>

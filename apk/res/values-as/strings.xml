@@ -267,13 +267,13 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"প্ৰতিষেধক"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"প্ৰতিষেধক"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"প্ৰতিষেধক প্ৰদান সম্পৰ্কীয় তথ্য পঢ়ক"</string>
-    <!-- no translation found for mindfulness_session_uppercase_label (4281454716961590565) -->
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for mindfulness_session_lowercase_label (9188604207357309240) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for mindfulness_session_read_content_description (1818030288301670841) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for mindfulness_session_write_content_description (1719084784177758050) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”ক পঢ়িবলৈ দিয়ক"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”ক লিখিবলৈ দিয়ক"</string>
@@ -375,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"পৰৱৰ্তী"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ইয়াৰ পৰা আমদানি কৰক"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"আপোনাৰ ডেটা আমদানি কৰিবলৈ অনুগ্ৰহ কৰি এটা ষ্ট’ৰেজ এপ্‌ বাছনি কৰক"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"এটা একাউণ্ট বাছনি কৰক"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"বাতিল কৰক"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"কৰা হ’ল"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ব্যৱহাৰ কৰা আৰম্ভ কৰক"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connectএ আপোনাৰ স্বাস্থ্য আৰু শৰীৰচৰ্চা সম্পৰ্কীয় ডেটা ষ্ট’ৰ কৰি আপোনাক আপোনাৰ ফ’নত থকা বিভিন্ন এপ্‌সমূহ ছিংক কৰাৰ সহজ উপায় প্ৰদান কৰে"</string>
     <string name="share_data" msgid="3481932156368883946">"আপোনাৰ এপ্‌সমূহৰ সৈতে ডেটা শ্বেয়াৰ কৰক"</string>
