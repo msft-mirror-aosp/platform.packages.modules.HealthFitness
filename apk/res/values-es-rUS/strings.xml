@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Copia de seguridad"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Prioridad y fuentes de datos"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Establecer unidades"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Preferencias"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Administrar datos"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Importa y exporta datos"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Acceso reciente"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Ninguna app accedió recientemente a Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Consultar los accesos recientes"</string>
@@ -93,10 +90,10 @@
     <string name="background_read_request_title" msgid="8492898140120977977">"¿Permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a los datos en segundo plano?"</string>
     <string name="background_read_description" msgid="3203594555849969283">"Permitir que esta app acceda a los datos de Health Connect cuando la app no está en uso"</string>
     <string name="background_read_request_description" msgid="1664402237648709581">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect cuando la app no está en uso."</string>
-    <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos antiguos"</string>
+    <string name="historic_access_title" msgid="3584594624937737030">"Acceso a datos anteriores"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"¿Quieres permitir que <xliff:g id="APP_NAME">%1$s</xliff:g> acceda a datos antiguos?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Permitir que esta app acceda a los datos de Health Connect agregados antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permite que esta app acceda a todos los datos anteriores de Health Connect"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Permitir que esta app acceda a todos los datos anteriores de Health Connect"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Si estás de acuerdo, esta app podrá acceder a los datos de Health Connect que se agregaron antes del <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Si estás de acuerdo, esta app podrá acceder a todos los datos anteriores de Health Connect."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Calorías activas quemadas"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"temperatura cutánea"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lee la temperatura cutánea"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Escribe la temperatura cutánea"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Todos los datos médicos"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"todos los datos médicos"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Escribir todos los datos médicos"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vacunación"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"vacunación"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Leer la vacunación"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Permite que \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tenga permiso de lectura"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Permitir que \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tenga acceso de escritura"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Se programó la exportación"</string>
     <string name="import_data" msgid="404502315533233094">"Importar datos"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restablece datos desde un archivo exportado anteriormente"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"La exportación te permite guardar tus datos para poder transferirlos a un teléfono nuevo"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Más información"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activada"</string>
@@ -370,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Siguiente"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importar de"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Elige una app de almacenamiento para importar tus datos"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Elige una cuenta"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Cancelar"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Listo"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Empieza a usar Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect almacena tus datos de salud y actividad física, lo que te brinda una manera simple de sincronizar las diferentes apps en tu teléfono."</string>
     <string name="share_data" msgid="3481932156368883946">"Compartir datos con tus apps"</string>
@@ -940,7 +951,7 @@
     <string name="tab_access" msgid="7818197975407243701">"Acceso"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"¿Permitir acceso adicional en <xliff:g id="APP_NAME">%1$s</xliff:g>?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> también quiere acceder a estos parámetros de configuración de Health Connect"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano o de datos anteriores para esta app"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano o a datos anteriores para esta app"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Habilita al menos un permiso de lectura para activar el acceso en segundo plano para esta app"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Habilita al menos un permiso de lectura para activar el acceso de datos anteriores para esta app"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"¿Quieres borrar de forma permanente todos los datos de Health Connect?"</string>

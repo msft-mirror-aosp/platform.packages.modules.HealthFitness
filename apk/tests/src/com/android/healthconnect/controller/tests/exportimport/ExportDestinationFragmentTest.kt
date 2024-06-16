@@ -54,7 +54,10 @@ import com.android.healthconnect.controller.exportimport.ExportDestinationFragme
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.HealthDataExportManager
 import com.android.healthconnect.controller.service.HealthDataExportManagerModule
+import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -74,7 +77,7 @@ import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.times
 
 @HiltAndroidTest
-@UninstallModules(HealthDataExportManagerModule::class)
+@UninstallModules(DeviceInfoUtilsModule::class, HealthDataExportManagerModule::class)
 class ExportDestinationFragmentTest {
     companion object {
         private val TEST_DOCUMENT_PROVIDER_1_TITLE = "Document provider 1"
@@ -115,6 +118,7 @@ class ExportDestinationFragmentTest {
     @BindValue
     val healthDataExportManager: HealthDataExportManager =
         Mockito.mock(HealthDataExportManager::class.java)
+    @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -391,9 +395,7 @@ class ExportDestinationFragmentTest {
             .configureScheduledExport(
                 ScheduledExportSettings.withUriAndPeriodInDays(
                     TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI,
-                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays
-                )
-            )
+                    ExportFrequency.EXPORT_FREQUENCY_NEVER.periodInDays))
     }
 
     @Test
@@ -593,6 +595,373 @@ class ExportDestinationFragmentTest {
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
+    }
+
+    @Test
+    fun exportDestinationFragment_noProviders_nextButtonNotEnabled() {
+        doAnswer(prepareAnswer(listOf()))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withId(R.id.export_import_next_button)).check(matches(isNotEnabled()))
+    }
+
+    @Test
+    fun exportDestinationFragment_noProvidersAndPlayStoreNotAvailable_showsInstallAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        doAnswer(prepareAnswer(listOf()))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_noProvidersAndPlayStoreNotAvailable_doesNotShowPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        doAnswer(prepareAnswer(listOf()))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text))
+            .check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun exportDestinationFragment_noProvidersAndPlayStoreAvailable_showsInstallAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        doAnswer(prepareAnswer(listOf()))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_noProvidersAndPlayStoreAvailable_showsPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        doAnswer(prepareAnswer(listOf()))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_noProvidersAndPlayStoreAvailable_goToPlayStoreClicked_launchesPlayStore() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        doAnswer(prepareAnswer(listOf()))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.export_nav_graph)
+            navHostController.setCurrentDestination(R.id.exportDestinationFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withId(R.id.export_import_go_to_play_store)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.play_store_activity)
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProvider_noRadioButton() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withId(R.id.item_document_provider_radio_button)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderSingleAccount_showsAccountSummary() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderSingleAccount_showsAccountSummary_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderMultipleAccounts_showsTapToSelectAccount() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_tap_to_choose_account)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderMultipleAccountsClicked_showsAccountPicker() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+
+        onView(withText("Choose an account")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText("Done")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderMultipleAccountsClickedAndAccountChosen_updatesSummary() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE))
+            .check(
+                matches(
+                    hasDescendant(
+                        allOf(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY), isDisplayed()))))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderMultipleAccountsClickedAndAccountChosen_nextButtonClicked_startsDocumentsUi() {
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY),
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
+        onView(withText(TEST_DOCUMENT_PROVIDER_1_ROOT_2_SUMMARY))
+            .inRoot(isDialog())
+            .perform(click())
+        onView(withText("Done")).inRoot(isDialog()).perform(click())
+        onView(withText("Next")).perform(click())
+
+        intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
+        intended(hasType("application/zip"))
+        intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderAndPlayStoreNotAvailable_showsInstallAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderAndPlayStoreNotAvailable_doesNotShowPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(false)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text))
+            .check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderAndPlayStoreAvailable_showsInstallAppsText() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_install_apps_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderAndPlayStoreAvailable_showsPlayStoreButton() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        onView(withText(R.string.export_import_go_to_play_store_text)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_singleProviderAndPlayStoreAvailable_goToPlayStoreClicked_launchesPlayStore() {
+        (deviceInfoUtils as FakeDeviceInfoUtils).setPlayStoreAvailability(true)
+
+        val documentProviders =
+            listOf(
+                ExportImportDocumentProvider(
+                    TEST_DOCUMENT_PROVIDER_1_TITLE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_SUMMARY,
+                    TEST_DOCUMENT_PROVIDER_1_ICON_RESOURCE,
+                    TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI,
+                    TEST_DOCUMENT_PROVIDER_1_AUTHORITY))
+        doAnswer(prepareAnswer(documentProviders))
+            .`when`(healthDataExportManager)
+            .queryDocumentProviders(any(), any())
+        launchFragment<ExportDestinationFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.export_nav_graph)
+            navHostController.setCurrentDestination(R.id.exportDestinationFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withId(R.id.export_import_go_to_play_store)).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.play_store_activity)
     }
 
     private fun prepareAnswer(

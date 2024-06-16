@@ -109,6 +109,9 @@ class AdditionalPermissionsFragment : Hilt_AdditionalPermissionsFragment() {
 
         getAllowButton().setOnClickListener {
             logger.logInteraction(allowButtonName)
+            if (permissionList.size == 1) {
+                viewModel.updateAdditionalPermissions(true)
+            }
             viewModel.requestAdditionalPermissions(getPackageNameExtra())
             handlePermissionResults(viewModel.getPermissionGrants())
         }

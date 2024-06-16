@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Backup"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Mga data source at priyoridad"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Itakda ang mga unit"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Mga Preference"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Pamahalaan ang data"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Mag-export at mag-import ng data"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Kamakailang na-access"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Walang app na kamakailangang nag-access ng Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Tingnan lahat ng kamakailang access"</string>
@@ -270,6 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunization"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunization"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"I-read ang immunization"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Payagang mag-read ang “<xliff:g id="APP_NAME">%1$s</xliff:g>”"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Payagang mag-write ang “<xliff:g id="APP_NAME">%1$s</xliff:g>”"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Kanselahin"</string>
@@ -341,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Nakaiskedyul na pag-export"</string>
     <string name="import_data" msgid="404502315533233094">"I-import ang data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"I-restore ang data mula sa dati nang na-export na file"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Binibigyang-daan ka ng pag-export na ma-save ang iyong data para mailipat mo ito sa bagong telepono"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Matuto pa"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Naka-on"</string>
@@ -364,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Susunod"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Mag-import mula sa"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Pumili ng storage app para ma-import ang iyong data"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Pumili ng account"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Kanselahin"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Tapos na"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Magsimula sa Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Sino-store ng Health Connect ang iyong data ng kalusugan at fitness, na nagbibigay sa iyo ng simpleng paraan para i-sync ang iba\'t ibang app sa telepono mo"</string>
     <string name="share_data" msgid="3481932156368883946">"Magbahagi ng data sa iyong mga app"</string>

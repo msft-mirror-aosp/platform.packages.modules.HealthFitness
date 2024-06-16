@@ -17,6 +17,7 @@
 package com.android.healthconnect.controller.tests.backuprestore
 
 import android.content.Context
+import android.health.connect.exportimport.ImportStatus.*
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
@@ -34,6 +35,9 @@ import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportUiState
+import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -57,6 +61,7 @@ class BackupAndRestoreSettingsFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
+    // TODO: b/330484311 - Replace the mock with a fake.
     @BindValue
     val exportSettingsViewModel: ExportSettingsViewModel =
         Mockito.mock(ExportSettingsViewModel::class.java)
@@ -64,6 +69,10 @@ class BackupAndRestoreSettingsFragmentTest {
     @BindValue
     val exportStatusViewModel: ExportStatusViewModel =
         Mockito.mock(ExportStatusViewModel::class.java)
+
+    @BindValue
+    val importStatusViewModel: ImportStatusViewModel =
+        Mockito.mock(ImportStatusViewModel::class.java)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -74,6 +83,14 @@ class BackupAndRestoreSettingsFragmentTest {
         context = InstrumentationRegistry.getInstrumentation().context
         navHostController = TestNavHostController(context)
 
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        /** isImportOngoing= */
+                        false)))
+        }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
                 ScheduledExportUiStatus.WithData(
@@ -200,5 +217,51 @@ class BackupAndRestoreSettingsFragmentTest {
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("On • Monthly")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsWrongFileError_showsImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
+                        /** isImportOngoing= */
+                        false)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Choose file")).check(matches(isDisplayed()))
+        onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "The file you selected isn't compatible for restore. Make sure to select the correct exported file."))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsNotWrongFileError_doesNotShowImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN,
+                        /** isImportOngoing= */
+                        false)))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Choose file")).check(doesNotExist())
+        onView(withText("Couldn't restore data")).check(doesNotExist())
+        onView(
+                withText(
+                    "The file you selected isn't compatible for restore. Make sure to select the correct exported file."))
+            .check(doesNotExist())
     }
 }
