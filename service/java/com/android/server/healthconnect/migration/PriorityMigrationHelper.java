@@ -129,9 +129,8 @@ public final class PriorityMigrationHelper extends DatabaseHelper {
     }
 
     /** Returns a requests for creating pre-migration priority table. */
-    @Override
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(PRE_MIGRATION_TABLE_NAME, getColumnInfo());
     }
 

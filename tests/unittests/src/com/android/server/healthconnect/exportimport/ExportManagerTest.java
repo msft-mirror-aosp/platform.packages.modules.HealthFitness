@@ -16,8 +16,9 @@
 
 package com.android.server.healthconnect.exportimport;
 
-import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_DIR_NAME;
 import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DATABASE_FILE_NAME;
+import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_DIR_NAME;
+import static com.android.server.healthconnect.exportimport.ExportManager.LOCAL_EXPORT_ZIP_FILE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.TransactionTestUtils.createStepsRecord;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -54,6 +55,7 @@ import java.time.ZoneId;
 public class ExportManagerTest {
     private static final String TEST_PACKAGE_NAME = "package.name";
     private static final String REMOTE_EXPORT_DATABASE_DIR_NAME = "remote";
+    private static final String REMOTE_EXPORT_ZIP_FILE_NAME = "remote_file.zip";
     private static final String REMOTE_EXPORT_DATABASE_FILE_NAME = "remote_file.db";
 
     @Rule
@@ -95,10 +97,11 @@ public class ExportManagerTest {
     public void tearDown() throws Exception {
         SQLiteDatabase.deleteDatabase(
                 mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
+        mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME).delete();
     }
 
     @Test
-    public void runExport_deletesAccessLogsTableContent() {
+    public void runExport_deletesAccessLogsTableContent() throws Exception {
         mTransactionTestUtils.insertAccessLog();
         mTransactionTestUtils.insertAccessLog();
         HealthConnectDatabase originalDatabase =
@@ -107,6 +110,9 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport()).isTrue();
 
+        Compressor.decompress(
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "access_logs_table", 0);
@@ -114,7 +120,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_deletesChangeLogsTableContent() {
+    public void runExport_deletesChangeLogsTableContent() throws Exception {
         mTransactionTestUtils.insertChangeLog();
         mTransactionTestUtils.insertChangeLog();
         HealthConnectDatabase originalDatabase =
@@ -123,6 +129,9 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport()).isTrue();
 
+        Compressor.decompress(
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "change_logs_table", 0);
@@ -130,7 +139,7 @@ public class ExportManagerTest {
     }
 
     @Test
-    public void runExport_deletesLocalCopyOfDatabase() {
+    public void runExport_deletesLocalCopies() {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
@@ -138,18 +147,15 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport()).isTrue();
 
-        assertThat(
-                        DatabaseContext.create(
-                                        mContext,
-                                        LOCAL_EXPORT_DATABASE_DIR_NAME,
-                                        mContext.getUser())
-                                .getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME)
-                                .exists())
+        DatabaseContext databaseContext =
+                DatabaseContext.create(mContext, LOCAL_EXPORT_DIR_NAME, mContext.getUser());
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_DATABASE_FILE_NAME).exists())
                 .isFalse();
+        assertThat(databaseContext.getDatabasePath(LOCAL_EXPORT_ZIP_FILE_NAME).exists()).isFalse();
     }
 
     @Test
-    public void runExport_makesRemoteCopyOfDatabase() {
+    public void runExport_makesRemoteCopyOfDatabase() throws Exception {
         mTransactionTestUtils.insertRecords(TEST_PACKAGE_NAME, createStepsRecord(123, 456, 7));
         HealthConnectDatabase originalDatabase =
                 new HealthConnectDatabase(mContext, "healthconnect.db");
@@ -157,6 +163,9 @@ public class ExportManagerTest {
 
         assertThat(mExportManager.runExport()).isTrue();
 
+        Compressor.decompress(
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);
@@ -209,7 +218,7 @@ public class ExportManagerTest {
                 ScheduledExportSettings.withUri(
                         Uri.fromFile(
                                 (mExportedDbContext.getDatabasePath(
-                                        REMOTE_EXPORT_DATABASE_FILE_NAME)))));
+                                        REMOTE_EXPORT_ZIP_FILE_NAME)))));
     }
 
     private void assertTableSize(HealthConnectDatabase database, String tableName, int tableRows) {

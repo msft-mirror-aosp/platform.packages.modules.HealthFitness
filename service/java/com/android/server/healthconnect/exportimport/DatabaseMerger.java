@@ -17,7 +17,7 @@
 package com.android.server.healthconnect.exportimport;
 
 import static android.health.connect.Constants.DEFAULT_LONG;
-import static android.health.connect.Constants.DEFAULT_PAGE_SIZE;
+import static android.health.connect.Constants.MAXIMUM_PAGE_SIZE;
 import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_EXERCISE_SESSION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_PLANNED_EXERCISE_SESSION;
@@ -247,7 +247,7 @@ public final class DatabaseMerger {
             RecordHelper<?> recordHelper) {
         ReadRecordsRequestUsingFilters<T> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
-                        .setPageSize(2000)
+                        .setPageSize(MAXIMUM_PAGE_SIZE)
                         .setPageToken(requestToken.encode())
                         .build();
 
@@ -275,7 +275,7 @@ public final class DatabaseMerger {
             Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
-                            readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
+                            readTransactionRequest.getPageSize().orElse(MAXIMUM_PAGE_SIZE),
                             requireNonNull(readTransactionRequest.getPageToken()),
                             stagedPackageNamesByAppIds);
             recordInternalList = readResult.first;

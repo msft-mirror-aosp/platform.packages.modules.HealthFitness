@@ -94,12 +94,12 @@ class HealthPermissionTest {
 
     @Test
     fun fromPermissionString_returnsCorrectMedicalPermission() {
-        assertThat(fromPermissionString("android.permission.health.WRITE_MEDICAL_RESOURCES"))
+        assertThat(fromPermissionString("android.permission.health.WRITE_MEDICAL_DATA"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA))
 
         assertThat(
                 fromPermissionString(
-                    "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION"))
+                    "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION"))
             .isEqualTo(MedicalPermission(MedicalPermissionType.IMMUNIZATION))
     }
 
