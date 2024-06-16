@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"پشتیبان‌گیری"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"منابع داده و اولویت"</string>
     <string name="set_units_title" msgid="2657822539603758029">"تنظیم واحدها"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"اولویت‌ها"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"مدیریت داده‌ها"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"صادر کردن و وارد کردن داده‌ها"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"دسترسی اخیر"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"هیچ برنامه‌ای اخیراً به Health Connect دسترسی نداشته است"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"دیدن همه دسترسی‌های اخیر"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"دمای پوست"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"خواندن دمای پوست"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"نوشتن دمای پوست"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"همه داده‌های پزشکی"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"همه داده‌های پزشکی"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"نوشتن همه داده‌های پزشکی"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"ایمن‌سازی"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ایمن‌سازی"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"خواندن وضعیت ایمن‌سازی"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"اجازه دادن به «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای خواندن"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"اجازه دادن به «<xliff:g id="APP_NAME">%1$s</xliff:g>» برای نوشتن"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"صادر کردن زمان‌بندی‌شده"</string>
     <string name="import_data" msgid="404502315533233094">"وارد کردن داده"</string>
     <string name="import_data_description" msgid="4040178599441724296">"بازیابی داده از فایل قبلاً صادرشده"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"صادر کردن به شما امکان می‌دهد داده‌هایتان را ذخیره کنید تا بتوانید آن‌ها را به تلفن جدیدی منتقل کنید"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"بیشتر بدانید"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"روشن"</string>
@@ -370,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"بعدی"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"وارد کردن از"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"لطفاً برای وارد کردن داده‌هایتان برنامه ذخیره‌سازی انتخاب کنید"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"حسابی انتخاب کنید"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"لغو کردن"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"تمام"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"شروع کار با Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‫Health Connect داده‌های سلامتی و تناسب اندام شما را ذخیره می‌کند و روشی ساده برای همگام‌سازی برنامه‌های مختلف تلفن دراختیارتان می‌گذارد"</string>
     <string name="share_data" msgid="3481932156368883946">"هم‌رسانی داده‌ها با برنامه‌ها"</string>

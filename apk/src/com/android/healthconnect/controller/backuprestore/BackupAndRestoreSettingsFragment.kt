@@ -28,12 +28,18 @@ import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportSettings
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.ExportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportStatusViewModel
+import com.android.healthconnect.controller.exportimport.api.ImportUiState
+import com.android.healthconnect.controller.exportimport.api.ImportUiStatus
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiStatus
+import com.android.healthconnect.controller.shared.preference.BannerPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
+import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,10 +53,14 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
         const val IMPORT_DATA_PREFERENCE_KEY = "import_data"
         const val EXPORT_IMPORT_SETTINGS_CATEGORY_PREFERENCE_KEY = "settings_category"
+        const val IMPORT_ERROR_BANNER_KEY = "import_error_banner"
+        const val IMPORT_ERROR_BANNER_ORDER = 0
+        const val PREVIOUS_EXPORT_STATUS_ORDER = 2
     }
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
     private val exportStatusViewModel: ExportStatusViewModel by viewModels()
+    private val importStatusViewModel: ImportStatusViewModel by viewModels()
 
     private val scheduledExportPreference: HealthPreference? by lazy {
         preferenceScreen.findPreference(SCHEDULED_EXPORT_PREFERENCE_KEY)
@@ -94,6 +104,17 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        importStatusViewModel.storedImportStatus.observe(viewLifecycleOwner) { importUiStatus ->
+            when (importUiStatus) {
+                is ImportUiStatus.WithData -> {
+                    maybeShowImportErrorBanner(importUiStatus.importUiState)
+                }
+                else -> {
+                    // Do nothing.
+                }
+            }
+        }
 
         exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
             scheduledExportUiStatus ->
@@ -164,7 +185,32 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
                     R.string.last_export_time,
                     dateFormatter.formatLongDate(lastSuccessfulExportTime))
             settingsCategory?.addPreference(
-                ExportStatusPreference(requireContext(), lastExportTime).also { it.order = 1 })
+                ExportStatusPreference(requireContext(), lastExportTime).also {
+                    it.order = PREVIOUS_EXPORT_STATUS_ORDER
+                })
+        }
+    }
+
+    private fun maybeShowImportErrorBanner(importUiState: ImportUiState) {
+        if (importUiState.dataImportError ==
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE) {
+            preferenceScreen.addPreference(
+                BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+                    it.setPrimaryButton(
+                        getString(R.string.import_wrong_file_error_banner_button),
+                        ErrorPageElement.UNKNOWN_ELEMENT)
+                    it.title = getString(R.string.import_wrong_file_error_banner_title)
+                    it.key = IMPORT_ERROR_BANNER_KEY
+                    it.summary = getString(R.string.import_wrong_file_error_banner_summary)
+                    it.icon =
+                        AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+                    it.setPrimaryButtonOnClickListener {
+                        findNavController()
+                            .navigate(
+                                R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+                    }
+                    it.order = IMPORT_ERROR_BANNER_ORDER
+                })
         }
     }
 }

@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"બૅકઅપ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ડેટા સૉર્સ અને પ્રાધાન્યતા"</string>
     <string name="set_units_title" msgid="2657822539603758029">"એકમો સેટ કરો"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"પસંદગીઓ"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"ડેટા મેનેજ કરો"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"ડેટાની નિકાસ અને આયાત કરો"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"તાજેતરનો ઍક્સેસ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"કોઈ ઍપ દ્વારા તાજેતરમાં Health Connectનો ઍક્સેસ કરવામાં આવ્યો નથી"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"હાલના બધા ઍક્સેસ જુઓ"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ત્વચાનું તાપમાન"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"ત્વચાના તાપમાનનો ડેટા વાંચો"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"ત્વચાના તાપમાનનો ડેટા લખો"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"બધો મેડિકલ ડેટા"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"બધો મેડિકલ ડેટા"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"બધો મેડિકલ ડેટા લખો"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"ચેપી રોગથી મુક્તિ"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ચેપી રોગથી મુક્તિ"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"ચેપી રોગથી મુક્તિનો ડેટા વાંચો"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”ને વાંચવાની મંજૂરી આપો"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"“<xliff:g id="APP_NAME">%1$s</xliff:g>”ને લખવાની મંજૂરી આપો"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"શેડ્યૂલ કરેલી નિકાસ"</string>
     <string name="import_data" msgid="404502315533233094">"ડેટા આયાત કરો"</string>
     <string name="import_data_description" msgid="4040178599441724296">"અગાઉ નિકાસ કરવામાં આવેલી કોઈ ફાઇલમાંથી ડેટા રિસ્ટોર કરો"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"નિકાસની સુવિધા તમને તમારો ડેટા સાચવવાની સવલત આપે છે, જેથી તમે તેને કોઈ નવા ફોનમાં ટ્રાન્સફર કરી શકો"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"વધુ જાણો"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ચાલુ છે"</string>
@@ -370,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"આગળ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"આમાંથી આયાત કરો"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"તમારા ડેટાની આયાત કરવા માટે કૃપા કરીને સ્ટોરેજ ઍપ પસંદ કરો"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"કોઈ એકાઉન્ટ પસંદ કરો"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"રદ કરો"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"થઈ ગયું"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect સાથે શરુ કરો"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect તમારો આરોગ્ય અને ફિટનેસ સંબંધિત ડેટા સ્ટોર કરે છે, જેનાથી તમે તમારા ફોન પર વિવિધ ઍપ સરળ રીતે સિંક કરી શકો છો"</string>
     <string name="share_data" msgid="3481932156368883946">"તમારી ઍપ સાથે ડેટા શેર કરો"</string>

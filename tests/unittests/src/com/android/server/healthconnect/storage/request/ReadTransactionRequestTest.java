@@ -20,11 +20,9 @@ import static com.android.server.healthconnect.storage.datatypehelpers.Transacti
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.health.connect.MedicalIdFilter;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 
@@ -104,21 +102,6 @@ public class ReadTransactionRequestTest {
                                 RecordTypeIdentifier.RECORD_TYPE_BLOOD_PRESSURE, ramdonUuids));
 
         assertThat(request.getReadRequests()).hasSize(2);
-        assertThat(request.getPageToken()).isNull();
-        assertThat(request.getPageSize()).isEqualTo(Optional.empty());
-    }
-
-    @Test
-    public void testReadTransactionUsingMedicalId_correctReadRequests() {
-        MedicalIdFiltersParcel parcel =
-                new MedicalIdFiltersParcel(
-                        List.of(
-                                MedicalIdFilter.fromId(UUID.randomUUID().toString()),
-                                MedicalIdFilter.fromId(UUID.randomUUID().toString())));
-
-        ReadTransactionRequest request = getReadTransactionRequest(parcel);
-
-        assertThat(request.getReadRequests()).hasSize(1);
         assertThat(request.getPageToken()).isNull();
         assertThat(request.getPageSize()).isEqualTo(Optional.empty());
     }

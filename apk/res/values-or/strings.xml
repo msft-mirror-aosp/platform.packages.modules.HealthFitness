@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"ବେକଅପ ନିଅନ୍ତୁ"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"ଡାଟା ସୋର୍ସ ଏବଂ ପ୍ରାଥମିକତା"</string>
     <string name="set_units_title" msgid="2657822539603758029">"ୟୁନିଟ ସେଟ କରନ୍ତୁ"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"ପସନ୍ଦଗୁଡ଼ିକ"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"ଡାଟାକୁ ପରିଚାଳନା କରନ୍ତୁ"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"ଡାଟା ଏକ୍ସପୋର୍ଟ ଓ ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"ବର୍ତ୍ତମାନର ଆକ୍ସେସ"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"କୌଣସି ଆପ୍ସ ବର୍ତ୍ତମାନ Health Connectକୁ ଆକ୍ସେସ କରିନାହିଁ"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"ବର୍ତ୍ତମାନର ସମସ୍ତ ଆକ୍ସେସ ଦେଖନ୍ତୁ"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"ସ୍କିନ ତାପମାତ୍ରା"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"ସ୍କିନ ତାପମାତ୍ରା ପଢ଼ନ୍ତୁ"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"ସ୍କିନ ତାପମାତ୍ରା ଲେଖନ୍ତୁ"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"ସମସ୍ତ ମେଡିକାଲ ଡାଟା"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"ସମସ୍ତ ମେଡିକାଲ ଡାଟା"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"ସମସ୍ତ ମେଡିକାଲ ଡାଟା ଲେଖନ୍ତୁ"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"ଟୀକାକରଣ"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ଟୀକାକରଣ"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"ଟୀକାକରଣ ପଢ଼ନ୍ତୁ"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"ପଢ଼ିବା ପାଇଁ “<xliff:g id="APP_NAME">%1$s</xliff:g>”କୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"ଲେଖିବା ପାଇଁ “<xliff:g id="APP_NAME">%1$s</xliff:g>”କୁ ଅନୁମତି ଦିଅନ୍ତୁ"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"ସିଡୁଲ କରାଯାଇଥିବା ଏକ୍ସପୋର୍ଟ"</string>
     <string name="import_data" msgid="404502315533233094">"ଡାଟା ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
     <string name="import_data_description" msgid="4040178599441724296">"ପୂର୍ବରୁ ଏକ୍ସପୋର୍ଟ କରାଯାଇଥିବା ଏକ ଫାଇଲରୁ ଡାଟା ରିଷ୍ଟୋର କରେ"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"ଏକ୍ସପୋର୍ଟ ଆପଣଙ୍କୁ ଆପଣଙ୍କ ଡାଟା ସେଭ କରିବାକୁ ଦିଏ ଯାହା ଫଳରେ ଆପଣ ଏହାକୁ ଏକ ନୂଆ ଫୋନକୁ ଟ୍ରାନ୍ସଫର କରିପାରିବେ"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ଅଧିକ ଜାଣନ୍ତୁ"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"ଚାଲୁ ଅଛି"</string>
@@ -370,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"ପରବର୍ତ୍ତୀ"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"ଏଠାରୁ ଇମ୍ପୋର୍ଟ କରନ୍ତୁ"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"ଆପଣଙ୍କ ଡାଟା ଇମ୍ପୋର୍ଟ କରିବାକୁ ଦୟାକରି ଏକ ଷ୍ଟୋରେଜ ଆପ ବାଛନ୍ତୁ"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"ଏକ ଆକାଉଣ୍ଟ ବାଛନ୍ତୁ"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ବାତିଲ କରନ୍ତୁ"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"ହୋଇଗଲା"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ସହ ଆରମ୍ଭ କରନ୍ତୁ"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ଏବଂ ଫିଟନେସ ଡାଟାକୁ ଷ୍ଟୋର କରେ, ଆପଣଙ୍କ ଫୋନରେ ବିଭିନ୍ନ ଆପ୍ସ ସିଙ୍କ କରିବାକୁ ଆପଣଙ୍କୁ ଏକ ସହଜ ଉପାୟ ଦେଇଥାଏ"</string>
     <string name="share_data" msgid="3481932156368883946">"ଆପଣଙ୍କ ଆପ୍ସ ସହ ଡାଟା ସେୟାର କରନ୍ତୁ"</string>
