@@ -267,6 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‏‎‎‎‏‎‏‏‏‎‎‎‏‏‏‎‏‎‏‎‏‏‏‏‎‏‎‏‏‎‏‎‏‏‎‏‎‏‎‏‏‎‎‎‏‎‎‏‎‎‎‏‏‎‎‎‏‎‎‎Immunization‎‏‎‎‏‎"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‏‏‎‎‏‏‎‏‏‏‎‎‎‎‎‎‎‎‏‎‎‏‎‏‎‎‏‎‎‎‏‎‏‏‎‏‎‎‏‎‏‎‎‏‏‎‎‎‏‎‎‎‎‎‎‎‎‎‏‏‏‎immunization‎‏‎‎‏‎"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‎‏‎‎‎‎‏‏‎‎‏‎‎‏‏‎‎‏‎‏‏‎‏‏‎‏‎‏‎‏‏‏‎‏‏‏‏‏‎‏‏‏‎‏‏‏‏‏‏‏‏‎‏‏‏‏‎‏‎‏‏‎Read immunization‎‏‎‎‏‎"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‏‎‎‏‏‎‏‎‎‏‎‏‏‏‎‏‏‏‏‎‏‏‏‎‎‏‏‎‏‎‏‏‎‎‏‎‎‏‏‎‏‏‏‏‏‎‏‏‏‎‎‏‎‎‏‎‏‏‎‎‎‎Allow “‎‏‎‎‏‏‎<xliff:g id="APP_NAME">%1$s</xliff:g>‎‏‎‎‏‏‏‎” to read‎‏‎‎‏‎"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‏‎‏‎‎‏‏‏‎‏‎‏‎‎‏‏‎‎‎‏‎‎‏‏‎‎‎‏‎‏‎‎‏‏‏‏‏‏‎‎‏‎‏‏‏‎‎‎‎‎‏‏‏‏‎‏‏‏‏‎Allow “‎‏‎‎‏‏‎<xliff:g id="APP_NAME">%1$s</xliff:g>‎‏‎‎‏‏‏‎” to write‎‏‎‎‏‎"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‏‎‎‎‏‏‎‎‏‏‏‎‎‏‏‎‏‎‏‏‎‎‏‏‏‎‎‏‏‎‎‏‏‎‎‎‏‏‏‎‏‎‎‎‏‏‎‎‎‏‏‎‎‎‎‏‎‎‎‏‎Cancel‎‏‎‎‏‎"</string>
@@ -338,6 +346,9 @@
     <string name="scheduled_export" msgid="8737660963687364370">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‏‏‎‎‏‎‏‎‎‎‎‏‎‎‏‏‎‏‎‎‎‎‏‎‏‏‎‏‎‎‎‏‏‎‏‎‎‎‏‏‎‎‎‎‏‏‏‏‏‎‏‏‏‎‎‎‏‎‎‏‎‎Scheduled export‎‏‎‎‏‎"</string>
     <string name="import_data" msgid="404502315533233094">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‎‏‏‏‎‏‏‎‎‏‏‏‎‏‎‎‎‏‎‏‎‎‏‎‏‏‎‏‏‎‎‏‏‏‏‏‎‎‎‎‏‎‏‏‏‎‎‏‏‎‏‎‏‏‏‏‎‎‎‏‏‎‎Import data‎‏‎‎‏‎"</string>
     <string name="import_data_description" msgid="4040178599441724296">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‏‏‎‎‎‎‎‎‏‎‎‎‏‏‎‎‏‏‎‎‏‎‎‎‎‎‏‏‏‏‏‎‎‏‎‎‎‏‏‎‏‏‎‏‏‏‏‏‏‎‎‏‏‏‎‎‎‏‎‎‎‎Restore data from a previously exported file‎‏‎‎‏‎"</string>
+    <string name="import_wrong_file_error_banner_button" msgid="1518043363477255045">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‏‎‏‎‎‎‏‎‎‎‏‎‎‏‎‏‏‎‎‎‏‏‎‎‏‎‏‎‏‏‎‏‎‎‏‏‎‏‏‎‎‏‏‎‏‏‏‎‎‏‏‏‎‎‎‎‏‎‏‎Choose file‎‏‎‎‏‎"</string>
+    <string name="import_wrong_file_error_banner_title" msgid="1841182157722596266">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‏‎‎‏‏‎‎‎‏‏‎‏‎‎‏‏‎‎‎‏‎‏‏‎‏‎‏‎‏‏‎‏‏‏‎‏‏‏‎‏‎‏‏‏‏‎‏‏‎‎‏‏‏‎‏‎‏‎‏‎‎Couldn\'t restore data‎‏‎‎‏‎"</string>
+    <string name="import_wrong_file_error_banner_summary" msgid="4857514343099050126">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‎‏‏‎‏‏‎‏‎‎‏‎‏‎‏‏‎‏‏‏‎‎‎‏‏‏‏‎‎‎‎‏‏‏‏‏‏‎‎‏‎‎‎‏‎‏‎‏‎‎‎‏‎‎‎‏‏‏‎‎The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.‎‏‎‎‏‎"</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‎‏‏‎‏‎‏‏‏‏‏‎‏‏‎‏‏‎‎‏‏‏‏‎‏‏‎‎‎‎‏‎‏‏‏‎‏‏‏‎‎‏‏‎‎‎‎‎‎‏‎‏‎‎‎‎‏‎‏‎Export lets you save your data so you can transfer it to a new phone‎‏‎‎‏‎"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‏‎‎‎‏‎‏‎‏‏‎‏‏‎‏‎‏‏‏‏‏‎‎‏‏‎‏‏‏‏‏‏‏‎‏‎‏‏‎‏‎‏‎‎‎‏‎‏‏‏‎‎‎‏‎‎‎‏‎‎‏‎Learn more‎‏‎‎‏‎"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‎‎‎‎‏‏‎‎‎‎‏‎‏‏‏‎‎‏‏‏‏‎‎‎‏‏‏‎‏‏‏‎‎‎‎‎‏‎‏‎‏‎‏‎‏‏‏‏‏‏‏‏‎‏‏‏‏‎‏‏‎On‎‏‎‎‏‎"</string>
@@ -361,9 +372,12 @@
     <string name="import_next_button" msgid="5706322508691854289">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‏‏‏‏‎‎‏‏‎‎‎‎‏‏‏‎‏‏‏‎‎‎‎‏‎‏‏‎‏‎‎‏‏‎‎‎‎‏‏‎‎‏‎‎‏‏‎‏‎‎‏‏‏‏‎‏‎‎‎‏‎Next‎‏‎‎‏‎"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‏‏‏‎‏‏‎‏‎‏‏‎‏‏‏‏‎‏‎‏‏‏‎‎‏‎‏‏‎‎‏‎‎‏‎‏‎‏‎‎‏‏‎‎‏‏‎‎‏‏‎‎‎‏‏‎‏‎‏‎‏‎Import from‎‏‎‎‏‎"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‎‏‏‏‎‏‎‎‎‏‎‏‎‏‎‎‏‎‏‏‏‎‏‎‏‏‎‏‎‏‏‏‎‏‏‏‏‎‎‎‎‏‎‎‎‏‏‎‎‎‏‏‏‎‎‎‏‏‏‎Please choose a storage app to import your data‎‏‎‎‏‎"</string>
+    <string name="export_import_tap_to_choose_account" msgid="5016799636886709580">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‏‎‏‏‎‎‏‏‏‏‏‎‏‎‎‎‎‎‎‏‎‏‏‎‎‎‎‏‎‎‎‏‎‎‏‏‏‏‏‎‎‎‎‏‏‏‎‎‏‎‏‎‏‎‎‏‏‎‎‎Tap to select an account‎‏‎‎‏‎"</string>
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‏‏‎‏‎‎‎‎‏‏‏‏‏‎‎‎‏‎‎‎‏‎‏‎‏‏‏‏‎‏‎‎‎‎‎‎‎‎‎‎‎‏‏‏‏‎‏‏‎‎‏‎‎‎‎‎‎‎‎‎Choose an account‎‏‎‎‏‎"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‏‏‏‎‏‎‏‎‏‏‏‏‎‎‎‏‎‏‎‎‏‎‎‏‏‏‎‎‎‎‏‏‏‎‎‎‏‏‏‎‎‎‏‎‏‎‎‎‏‏‏‏‏‎‏‏‎‏‏‏‎Cancel‎‏‎‎‏‎"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‏‎‏‎‏‎‏‎‎‎‏‎‏‏‎‎‎‎‎‏‏‏‏‏‏‎‎‎‎‎‏‎‎‎‏‎‎‎‎‎‎‏‎‎‏‏‎‎‎‏‎‏‎‎‏‏‏‎‏‎‏‎Done‎‏‎‎‏‎"</string>
+    <string name="export_import_install_apps_text" msgid="5026922993254770904">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‏‎‏‏‏‎‎‎‎‏‏‎‎‏‏‎‏‏‏‏‏‎‏‎‏‎‎‎‎‎‏‏‏‏‎‎‎‏‏‎‎‎‏‏‎‏‎‏‎‎‎‏‏‎‏‏‎‎‎‎For more options, install cloud storage apps to see them here‎‏‎‎‏‎"</string>
+    <string name="export_import_go_to_play_store_text" msgid="3210733429377429794">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‎‏‏‎‎‏‎‎‎‏‏‏‎‏‏‎‏‎‎‎‏‎‎‎‎‏‎‏‎‏‏‏‏‎‏‏‎‏‎‎‎‎‎‏‏‎‏‏‏‎‎‎‏‎‎‏‎‎‎‏‎‎Go to the Play Store‎‏‎‎‏‎"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‏‎‏‏‎‏‎‏‎‏‎‏‎‎‎‎‎‏‎‎‎‏‎‎‎‎‏‎‏‎‏‎‏‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‏‏‎‎‏‎‎‏‏‏‎‎‎Get started with Health Connect‎‏‎‎‏‎"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‎‏‏‏‎‏‎‎‎‎‎‏‏‎‏‎‏‎‏‎‎‎‏‏‏‏‎‎‎‎‏‏‎‎‎‏‏‎‏‏‏‏‏‏‏‎‎‏‎‎‏‏‎‎‏‏‎‎‏‎Health Connect stores your health and fitness data, giving you a simple way to sync the different apps on your phone‎‏‎‎‏‎"</string>
     <string name="share_data" msgid="3481932156368883946">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‏‎‎‎‎‎‏‎‏‎‎‏‎‎‏‎‎‏‏‏‎‏‏‎‏‏‎‎‏‎‎‏‎‎‎‎‎‎‏‏‎‎‎‎‎‏‎‎‏‎‎‎‎‏‏‏‎‏‎‏‎‎Share data with your apps‎‏‎‎‏‎"</string>

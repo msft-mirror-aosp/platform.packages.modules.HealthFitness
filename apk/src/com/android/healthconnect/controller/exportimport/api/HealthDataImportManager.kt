@@ -16,9 +16,16 @@
 
 package com.android.healthconnect.controller.exportimport.api
 
-/** Data class that holds result from export use cases. */
-sealed class ExportUseCaseResult<out T> {
-    data class Success<T>(var data: T) : ExportUseCaseResult<T>()
+import android.health.connect.HealthConnectException
+import android.health.connect.exportimport.ImportStatus
+import android.os.OutcomeReceiver
+import java.util.concurrent.Executor
 
-    data class Failed(val exception: Exception) : ExportUseCaseResult<Nothing>()
+/** Wrapper for HealthConnectManager import apis. */
+interface HealthDataImportManager {
+
+    fun getImportStatus(
+        executor: Executor,
+        outcomeReceiver: OutcomeReceiver<ImportStatus, HealthConnectException>
+    )
 }

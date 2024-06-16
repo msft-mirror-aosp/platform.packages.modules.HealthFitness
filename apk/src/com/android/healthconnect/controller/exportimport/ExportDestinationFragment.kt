@@ -22,6 +22,8 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
@@ -35,7 +37,10 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.isLocalFile
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.settingslib.widget.LinkTextView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Export destination fragment for Health Connect. */
 @AndroidEntryPoint(Fragment::class)
@@ -47,12 +52,16 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
 
     private val viewModel: ExportSettingsViewModel by activityViewModels()
 
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.export_destination_screen, container, false)
+        val footerView = view.findViewById<View>(R.id.export_import_footer)
+        val playStoreView = view.findViewById<LinkTextView>(R.id.export_import_go_to_play_store)
         val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
 
@@ -64,6 +73,13 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
 
         nextButton.text = getString(R.string.export_next_button)
         nextButton.setEnabled(false)
+
+        if (deviceInfoUtils.isPlayStoreAvailable(requireContext())) {
+            playStoreView?.setVisibility(VISIBLE)
+            playStoreView?.setOnClickListener {
+                findNavController().navigate(R.id.action_exportDestinationFragment_to_playStore)
+            }
+        }
 
         val documentProvidersViewBinder = DocumentProvidersViewBinder()
         val documentProvidersList = view.findViewById<ViewGroup>(R.id.export_document_providers)
@@ -80,7 +96,6 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                     Toast.makeText(activity, R.string.default_error, Toast.LENGTH_LONG).show()
                 }
                 is DocumentProviders.WithData -> {
-                    // TODO: b/339189778 - Handle no document providers.
                     documentProvidersViewBinder.bindDocumentProvidersView(
                         providers.providers, documentProvidersList, inflater) { root ->
                             nextButton.setOnClickListener {
@@ -95,6 +110,12 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                             }
                             nextButton.setEnabled(true)
                         }
+
+                    if (providers.providers.size > 1) {
+                        footerView.setVisibility(GONE)
+                    } else {
+                        footerView.setVisibility(VISIBLE)
+                    }
                 }
             }
         }

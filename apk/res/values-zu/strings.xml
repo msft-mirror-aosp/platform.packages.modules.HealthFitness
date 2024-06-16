@@ -37,12 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Yenza isipele"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Imithombo yedatha kanye nokubalulekile"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Setha amayunithi"</string>
-    <!-- no translation found for manage_data_preferences_category_title (1183110821140344472) -->
-    <skip />
-    <!-- no translation found for manage_data_category_title (6328886061582616519) -->
-    <skip />
-    <!-- no translation found for backup_and_restore_settings_summary (4345972157089493077) -->
-    <skip />
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Okuncamelayo"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Phatha idatha"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Thumela uphinde ungenise idatha"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Ukufinyelela kwakamuva"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Awekho ama-app asanda kufinyelela ku-Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Bona konke ukufinyelela kwakamuva"</string>
@@ -264,17 +261,19 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"izinga lokushisa lesikhumba"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Funda izinga lokushisa lesikhumba"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Bhala izinga lokushisa lesikhumba"</string>
-    <!-- no translation found for all_medical_data_uppercase_label (8415418677595814587) -->
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Yonke idatha yezokwelashwa"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"yonke idatha yezokwelashwa"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Bhala yonke idatha yezokwelashwa"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Ukugoma"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"ukugoma"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Funda ngokugoma"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
     <skip />
-    <!-- no translation found for all_medical_data_lowercase_label (7173275705446657735) -->
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
     <skip />
-    <!-- no translation found for all_medical_data_content_description (6103488863059447886) -->
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
     <skip />
-    <!-- no translation found for immunization_uppercase_label (1467176749064014020) -->
-    <skip />
-    <!-- no translation found for immunization_lowercase_label (6464922369026887687) -->
-    <skip />
-    <!-- no translation found for immunization_content_description (2910674919337229803) -->
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
     <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Vumela i-“<xliff:g id="APP_NAME">%1$s</xliff:g>” ukuba ifunde"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Vumela i-“<xliff:g id="APP_NAME">%1$s</xliff:g>” ukuba ibhale"</string>
@@ -347,6 +346,12 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Ukuthunyelwa okushejuliwe"</string>
     <string name="import_data" msgid="404502315533233094">"Ngenisa idatha"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Buyisela idatha esuka efayeleni elithunyelwe ngaphambilini"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Ukuthumela kukuvumela ukuthi ulondoloze idatha yakho ukuze ukwazi ukuyidlulisela efonini entsha"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Funda kabanzi"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Kuvuliwe"</string>
@@ -370,9 +375,15 @@
     <string name="import_next_button" msgid="5706322508691854289">"Okulandelayo"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Ngenisa ukusuka"</string>
     <string name="import_invalid_storage" msgid="4873640088459948487">"Sicela ukhethe i-app yesitoreji ukuze ungenise idatha yakho"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
     <string name="export_import_choose_account_title" msgid="1047021319012735232">"Khetha i-akhawunti"</string>
     <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Khansela"</string>
     <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Kwenziwe"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Qalisa nge-Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"I-Health Connect igcina ngokuvikelekile idatha yakho yezempilo nokufaneleka, okukunikeza indlela elula yokuvumelanisa ama-app ahlukile efonini yakho"</string>
     <string name="share_data" msgid="3481932156368883946">"Yabelana ngedatha nama-app akho"</string>

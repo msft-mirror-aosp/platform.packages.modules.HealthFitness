@@ -39,7 +39,9 @@ import android.os.Parcel;
 import org.junit.Test;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.TimeZone;
 import java.util.UUID;
 
 public class MindfulSessionRecordInternalTest {
@@ -281,6 +283,7 @@ public class MindfulSessionRecordInternalTest {
 
     @Test
     public void mindfulnessSessionRecord_toInternalRecord_optionalFieldsNotSet() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")));
         Metadata metadata = new Metadata.Builder().build();
         MindfulnessSessionRecord externalRecord =
                 new MindfulnessSessionRecord.Builder(
