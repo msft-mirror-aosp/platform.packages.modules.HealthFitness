@@ -38,7 +38,6 @@ constructor(
         get() = _storedScheduledExportStatus
 
     init {
-
         loadScheduledExportStatus()
     }
 

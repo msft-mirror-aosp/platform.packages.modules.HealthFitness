@@ -113,7 +113,7 @@ public final class MedicalResourceHelper {
         return new CreateTableRequest(MEDICAL_RESOURCE_TABLE_NAME, getColumnInfo());
     }
 
-    /** Creates the Medical Resource related tables. */
+    /** Creates the medical_resource table. */
     public static void onInitialUpgrade(@NonNull SQLiteDatabase db) {
         createTable(db, getCreateTableRequest());
     }

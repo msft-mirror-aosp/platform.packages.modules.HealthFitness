@@ -68,6 +68,13 @@ public final class ExportImportSettingsStorage {
             PreferenceHelper.getInstance()
                     .insertOrReplacePreference(
                             EXPORT_URI_PREFERENCE_KEY, settings.getUri().toString());
+            String lastExportError =
+                    PreferenceHelper.getInstance().getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+            if (lastExportError != null
+                    && lastExportError.equals(
+                            String.valueOf(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS))) {
+                PreferenceHelper.getInstance().removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
+            }
         }
 
         if (settings.getPeriodInDays() != DEFAULT_INT) {

@@ -458,21 +458,22 @@
     <string name="import_wrong_file_error_banner_title" description="Title of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Couldn\'t restore data</string>
     <string name="import_wrong_file_error_banner_summary" description="Summary of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
     <string name="backup_and_restore_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">Export lets you save your data so you can transfer it to a new phone</string>
-    <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">Learn more</string>
+    <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">About backup and restore</string>
 
     <string name="automatic_export_status" translatable="false" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is. [CHAR_LIMIT=NONE]">%s • %s</string>
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
 
-    <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Choose frequency</string>
+    <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Change frequency</string>
+    <string name="scheduled_export_settings_footer_text" description="Text displayed to warn users that the previous exported data will not be removed if they turn off the export.">If you turn off scheduled export, this won\'t delete previously exported data from where it was saved</string>
 
-    <string name="choose_frequency" description="Title of the 'choose frequency' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Choose frequency</string>
-    <string name="choose_frequency_description" description="Description of the data export frequency. [CHAR_LIMIT=NONE]">Choose to save data once, or set it to save automatically at regular times.</string>
+    <string name="choose_frequency" description="Title of the 'set up scheduled export' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Set up scheduled export</string>
+    <string name="choose_frequency_description" description="Description of the data export frequency. [CHAR_LIMIT=NONE]">Choose how frequently to export your data</string>
     <string name="frequency_daily" description="Label used to show that the automatic export frequency is set as daily. [CHAR_LIMIT=40]">Daily</string>
     <string name="frequency_weekly" description="Label used to show that the automatic export frequency is set as weekly. [CHAR_LIMIT=40]">Weekly</string>
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
 
-    <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to export</string>
+    <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to save scheduled export</string>
     <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a storage app to export your data</string>
 
     <string name="import_decryption_title" description="Title of the 'Type password' screen where the user enters their password to decrypt the imported backup. [CHAR_LIMIT=40]">Type password</string>

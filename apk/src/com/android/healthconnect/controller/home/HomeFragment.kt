@@ -248,8 +248,11 @@ class HomeFragment : Hilt_HomeFragment() {
         when (scheduledExportUiState.dataExportError) {
             ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS -> {
                 scheduledExportUiState.lastSuccessfulExportTime?.let {
-                    preferenceScreen.addPreference(
-                        getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
+                    if (preferenceScreen.findPreference<Preference>(
+                        EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY) == null) {
+                        preferenceScreen.addPreference(
+                            getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
+                    }
                 }
             }
             else -> {

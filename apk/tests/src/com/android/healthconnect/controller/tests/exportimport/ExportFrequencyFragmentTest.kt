@@ -74,11 +74,8 @@ class ExportFrequencyFragmentTest {
 
         onView(withId(R.id.export_frequency_header_repeat_icon)).check(matches(isDisplayed()))
 
-        onView(withText("Choose frequency")).check(matches(isDisplayed()))
-        onView(
-                withText(
-                    "Choose to save data once, or set it to save automatically at regular times."))
-            .check(matches(isDisplayed()))
+        onView(withText("Set up scheduled export")).check(matches(isDisplayed()))
+        onView(withText("Choose how frequently to export your data")).check(matches(isDisplayed()))
 
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
