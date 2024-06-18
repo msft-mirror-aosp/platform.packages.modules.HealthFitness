@@ -21,6 +21,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.ExportStatusPreference
@@ -179,7 +180,9 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private fun maybeShowPreviousExportStatus(scheduledExportUiState: ScheduledExportUiState) {
         val lastSuccessfulExportTime = scheduledExportUiState.lastSuccessfulExportTime
-        if (lastSuccessfulExportTime != null) {
+        if (lastSuccessfulExportTime != null &&
+            settingsCategory?.findPreference<Preference>(
+                ExportStatusPreference.EXPORT_STATUS_PREFERENCE) == null) {
             val lastExportTime =
                 getString(
                     R.string.last_export_time,
@@ -193,7 +196,8 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
 
     private fun maybeShowImportErrorBanner(importUiState: ImportUiState) {
         if (importUiState.dataImportError ==
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE) {
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE &&
+            preferenceScreen.findPreference<Preference>(IMPORT_ERROR_BANNER_KEY) == null) {
             preferenceScreen.addPreference(
                 BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
                     it.setPrimaryButton(

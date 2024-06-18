@@ -16,46 +16,109 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_DISPLAY_NAME;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_PACKAGE_NAME;
+
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.DISPLAY_NAME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.FHIR_BASE_URI_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.MEDICAL_DATA_SOURCE_TABLE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.APP_INFO_ID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper.PACKAGE_NAME_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
+import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.content.ContentValues;
+import android.health.connect.CreateMedicalDataSourceRequest;
+import android.health.connect.datatypes.MedicalDataSource;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Pair;
 
+import com.android.healthfitness.flags.Flags;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.UpsertTableRequest;
+import com.android.server.healthconnect.storage.utils.StorageUtils;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class MedicalDataSourceHelperTest {
-    private final MedicalDataSourceHelper mMedicalDataSourceHelper = new MedicalDataSourceHelper();
+    private final HealthConnectDatabaseTestRule mHealthConnectDatabaseTestRule =
+            new HealthConnectDatabaseTestRule();
+
+    // See b/344587256 for more context.
+    @Rule
+    public TestRule chain =
+            RuleChain.outerRule(new SetFlagsRule()).around(mHealthConnectDatabaseTestRule);
 
     @Test
     public void getCreateTableRequest_correctResult() {
         List<Pair<String, String>> columnInfo =
                 List.of(
                         Pair.create(PRIMARY_COLUMN_NAME, PRIMARY),
-                        Pair.create(APP_INFO_ID_COLUMN_NAME, INTEGER),
+                        Pair.create(PACKAGE_NAME_COLUMN_NAME, TEXT_NOT_NULL),
                         Pair.create(DISPLAY_NAME_COLUMN_NAME, TEXT_NOT_NULL),
-                        Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL));
+                        Pair.create(FHIR_BASE_URI_COLUMN_NAME, TEXT_NOT_NULL),
+                        Pair.create(UUID_COLUMN_NAME, BLOB_UNIQUE_NON_NULL));
         CreateTableRequest expected =
-                new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, columnInfo)
-                        .addForeignKey(
-                                AppInfoHelper.TABLE_NAME,
-                                Collections.singletonList(APP_INFO_ID_COLUMN_NAME),
-                                Collections.singletonList(PRIMARY_COLUMN_NAME));
+                new CreateTableRequest(MEDICAL_DATA_SOURCE_TABLE_NAME, columnInfo);
 
-        CreateTableRequest result = mMedicalDataSourceHelper.getCreateTableRequest();
+        CreateTableRequest result = MedicalDataSourceHelper.getCreateTableRequest();
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    public void getUpsertTableRequest_correctResult() {
+        CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+        UUID uuid = UUID.randomUUID();
+
+        UpsertTableRequest upsertRequest =
+                MedicalDataSourceHelper.getUpsertTableRequest(
+                        uuid, createMedicalDataSourceRequest, DATA_SOURCE_PACKAGE_NAME);
+        ContentValues contentValues = upsertRequest.getContentValues();
+
+        assertThat(upsertRequest.getTable()).isEqualTo(MEDICAL_DATA_SOURCE_TABLE_NAME);
+        assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
+        assertThat(contentValues.size()).isEqualTo(4);
+        assertThat(contentValues.get(FHIR_BASE_URI_COLUMN_NAME))
+                .isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+        assertThat(contentValues.get(DISPLAY_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
+        assertThat(contentValues.get(UUID_COLUMN_NAME))
+                .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
+        assertThat(contentValues.get(PACKAGE_NAME_COLUMN_NAME)).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
+    public void createMedicalDataSource_success() {
+        CreateMedicalDataSourceRequest createMedicalDataSourceRequest =
+                new CreateMedicalDataSourceRequest.Builder(
+                                DATA_SOURCE_FHIR_BASE_URI, DATA_SOURCE_DISPLAY_NAME)
+                        .build();
+
+        MedicalDataSource result =
+                MedicalDataSourceHelper.createMedicalDataSource(
+                        createMedicalDataSourceRequest, DATA_SOURCE_PACKAGE_NAME);
+
+        // TODO(b/344781394): Test the whole flow by reading the MedicalDataSource out when
+        // getMedicalDataSources is checked in and use equality between the inserted
+        // MedicalDataSource and the read MedicalDataSource object instead.
+        assertThat(result.getDisplayName()).isEqualTo(DATA_SOURCE_DISPLAY_NAME);
+        assertThat(result.getFhirBaseUri()).isEqualTo(DATA_SOURCE_FHIR_BASE_URI);
+        assertThat(result.getPackageName()).isEqualTo(DATA_SOURCE_PACKAGE_NAME);
     }
 }
