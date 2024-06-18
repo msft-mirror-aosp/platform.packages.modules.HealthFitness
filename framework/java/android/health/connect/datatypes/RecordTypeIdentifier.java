@@ -16,6 +16,8 @@
 
 package android.health.connect.datatypes;
 
+import static com.android.healthfitness.flags.Flags.FLAG_MINDFULNESS;
+
 import android.annotation.FlaggedApi;
 import android.annotation.IntDef;
 import android.annotation.SystemApi;
@@ -362,6 +364,16 @@ public final class RecordTypeIdentifier {
     public static final int RECORD_TYPE_PLANNED_EXERCISE_SESSION = 40;
 
     /**
+     * Record type to capture mindfulness sessions.
+     *
+     * <p>Each record represents a time interval for a mindfulness session and its type.
+     *
+     * @see MindfulnessSessionRecord
+     */
+    @FlaggedApi(FLAG_MINDFULNESS)
+    public static final int RECORD_TYPE_MINDFULNESS_SESSION = 41;
+
+    /**
      * Valid set of values for this IntDef. Update this set when add new type or deprecate existing
      * type.
      *
@@ -409,7 +421,8 @@ public final class RecordTypeIdentifier {
                     RECORD_TYPE_MENSTRUATION_PERIOD,
                     RECORD_TYPE_INTERMENSTRUAL_BLEEDING,
                     RECORD_TYPE_SLEEP_SESSION,
-                    RECORD_TYPE_SKIN_TEMPERATURE);
+                    RECORD_TYPE_SKIN_TEMPERATURE,
+                    RECORD_TYPE_MINDFULNESS_SESSION);
 
     private RecordTypeIdentifier() {}
 
@@ -455,7 +468,8 @@ public final class RecordTypeIdentifier {
         RECORD_TYPE_INTERMENSTRUAL_BLEEDING,
         RECORD_TYPE_SLEEP_SESSION,
         RECORD_TYPE_SKIN_TEMPERATURE,
-        RECORD_TYPE_PLANNED_EXERCISE_SESSION
+        RECORD_TYPE_PLANNED_EXERCISE_SESSION,
+        RECORD_TYPE_MINDFULNESS_SESSION
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface RecordType {}

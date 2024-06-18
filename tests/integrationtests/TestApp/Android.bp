@@ -22,7 +22,7 @@ filegroup {
         "src/**/*.java",
     ],
     visibility: [
-        "//packages/modules/HealthFitness:__subpackages__"
+        "//packages/modules/HealthFitness:__subpackages__",
     ],
 }
 
@@ -63,7 +63,8 @@ android_test_helper_app {
     ],
     manifest: "AndroidManifest_NoPermsUsageIntent.xml",
     sdk_version: "system_current",
-
+    min_sdk_version: "34",
+    target_sdk_version: "34",
 }
 
 android_test_helper_app {
@@ -83,4 +84,6 @@ android_test_helper_app {
     ],
     manifest: "AndroidManifest_sharedUser.xml",
     sdk_version: "system_current",
+    min_sdk_version: "34",
+    target_sdk_version: "34",
 }

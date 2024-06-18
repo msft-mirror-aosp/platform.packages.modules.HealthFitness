@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_importSourceLocationFragment_to_importDecryptionFragment"
             app:destination="@id/importDecryptionFragment" />
+        <action
+            android:id="@+id/action_importSourceLocationFragment_to_playStore"
+            app:destination="@id/play_store_activity" />
     </fragment>
 
     <fragment
@@ -31,4 +34,11 @@
         android:name="com.android.healthconnect.controller.exportimport.ImportDecryptionFragment"
         android:label="@string/import_decryption_title">
     </fragment>
+
+    <activity
+        android:id="@+id/play_store_activity"
+        app:action="android.intent.action.VIEW"
+        android:label="@string/playstore_app_title"
+        app:data="@string/playstore_url"
+        app:targetPackage="@string/playstore_package_name" />
 </navigation>

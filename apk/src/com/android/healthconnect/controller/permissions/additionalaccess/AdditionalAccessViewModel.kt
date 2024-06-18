@@ -144,7 +144,7 @@ constructor(
 
     private fun isDataTypeReadPermission(permission: String): Boolean {
         val healthPermission = HealthPermission.fromPermissionString(permission)
-        return ((healthPermission is HealthPermission.DataTypePermission) &&
+        return ((healthPermission is HealthPermission.FitnessPermission) &&
             healthPermission.permissionsAccessType == PermissionsAccessType.READ)
     }
 

@@ -23,7 +23,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.preference.PreferenceViewHolder
 import com.android.healthconnect.controller.R
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.preference.HealthPreference
 
@@ -54,7 +54,9 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
 
         checkBox?.isChecked = this.isChecked
 
-        checkBox?.contentDescription = context.getString(DataTypePermissionStrings.fromPermissionType(healthPermissionType).uppercaseLabel)
+        checkBox?.contentDescription =
+            context.getString(
+                FitnessPermissionStrings.fromPermissionType(healthPermissionType).uppercaseLabel)
 
         checkBox?.setOnClickListener(checkboxButtonListener)
 
@@ -102,7 +104,7 @@ class DeletionPermissionTypesPreference constructor(context: Context) : HealthPr
     /** Display or hide checkbox */
     fun showCheckbox(isShowCheckbox: Boolean) {
         setShowCheckbox(isShowCheckbox)
-        widgetFrame?.visibility = if(isShowCheckbox) VISIBLE else GONE
+        widgetFrame?.visibility = if (isShowCheckbox) VISIBLE else GONE
         widgetFrame?.tag = if (isShowCheckbox) "checkbox" else ""
     }
 

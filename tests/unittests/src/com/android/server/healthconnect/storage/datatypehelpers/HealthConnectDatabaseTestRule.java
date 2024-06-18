@@ -53,17 +53,18 @@ public class HealthConnectDatabaseTestRule extends ExternalResource {
         mContext =
                 new HealthConnectUserContext(
                         InstrumentationRegistry.getInstrumentation().getContext(), TEST_USER);
-        mTransactionManager = TransactionManager.getInstance(mContext);
         File mockDataDirectory = mContext.getDir("mock_data", Context.MODE_PRIVATE);
         when(Environment.getDataDirectory()).thenReturn(mockDataDirectory);
+        TransactionManager.cleanUpForTest();
+        mTransactionManager = TransactionManager.getInstance(mContext);
     }
 
     @Override
     public void after() {
         try {
             DatabaseHelper.clearAllData(mTransactionManager);
+            TransactionManager.cleanUpForTest();
         } finally {
-            TransactionManager.clearInstance();
             mStaticMockSession.finishMocking();
         }
     }
