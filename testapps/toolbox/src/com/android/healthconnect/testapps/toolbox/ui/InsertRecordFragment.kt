@@ -147,8 +147,8 @@ class InsertRecordFragment : Fragment() {
         mFieldNameToFieldInput = HashMap()
         mRecordFields = permissionType.recordClass?.java?.declaredFields as Array<Field>
         mRecordClass = permissionType.recordClass
-        view.findViewById<TextView>(R.id.title).setText(permissionType.title)
-        mLinearLayout = view.findViewById(R.id.record_input_linear_layout)
+        view.requireViewById<TextView>(R.id.title).setText(permissionType.title)
+        mLinearLayout = view.requireViewById(R.id.record_input_linear_layout)
 
         when (mRecordClass.java.superclass) {
             IntervalRecord::class.java -> {
@@ -333,7 +333,7 @@ class InsertRecordFragment : Fragment() {
     }
 
     private fun setupInsertDataButton(view: View) {
-        val buttonView = view.findViewById<Button>(R.id.insert_record)
+        val buttonView = view.requireViewById<Button>(R.id.insert_record)
 
         buttonView.setOnClickListener {
             try {
@@ -381,7 +381,7 @@ class InsertRecordFragment : Fragment() {
     }
 
     private fun setupUpdateDataButton(view: View) {
-        val buttonView = view.findViewById<Button>(R.id.update_record)
+        val buttonView = view.requireViewById<Button>(R.id.update_record)
 
         buttonView.setOnClickListener { setupUpdateRecordUuidInputDialog() }
     }

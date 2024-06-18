@@ -20,11 +20,10 @@ import static android.health.connect.Constants.DEFAULT_INT;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
-import com.android.server.healthconnect.storage.utils.PageTokenUtil;
-import com.android.server.healthconnect.storage.utils.PageTokenWrapper;
 import com.android.server.healthconnect.storage.utils.RecordHelperProvider;
 
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -55,7 +55,8 @@ public class ReadTransactionRequest {
             ReadRecordsRequestParcel request,
             long startDateAccessMillis,
             boolean enforceSelfRead,
-            Map<String, Boolean> extraPermsState) {
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         RecordHelper<?> recordHelper =
                 RecordHelperProvider.getInstance().getRecordHelper(request.getRecordType());
         mReadTableRequests =
@@ -65,9 +66,10 @@ public class ReadTransactionRequest {
                                 callingPackageName,
                                 enforceSelfRead,
                                 startDateAccessMillis,
-                                extraPermsState));
+                                grantedExtraReadPermissions,
+                                isInForeground));
         if (request.getRecordIdFiltersParcel() == null) {
-            mPageToken = PageTokenUtil.decode(request.getPageToken(), request.isAscending());
+            mPageToken = PageTokenWrapper.from(request.getPageToken(), request.isAscending());
             mPageSize = request.getPageSize();
         } else {
             mPageSize = DEFAULT_INT;
@@ -78,8 +80,9 @@ public class ReadTransactionRequest {
     public ReadTransactionRequest(
             String packageName,
             Map<Integer, List<UUID>> recordTypeToUuids,
-            long startDateAccess,
-            Map<String, Boolean> extraPermsState) {
+            long startDateAccessMillis,
+            Set<String> grantedExtraReadPermissions,
+            boolean isInForeground) {
         mReadTableRequests = new ArrayList<>();
         recordTypeToUuids.forEach(
                 (recordType, uuids) ->
@@ -89,8 +92,9 @@ public class ReadTransactionRequest {
                                         .getReadTableRequest(
                                                 packageName,
                                                 uuids,
-                                                startDateAccess,
-                                                extraPermsState)));
+                                                startDateAccessMillis,
+                                                grantedExtraReadPermissions,
+                                                isInForeground)));
         mPageSize = DEFAULT_INT;
         mPageToken = null;
     }

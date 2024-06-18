@@ -73,11 +73,15 @@
         <!--  Migration -->
         <item name="moreSpaceNeededIcon">@drawable/ic_storage</item>
         <item name="updateNeededIcon">@drawable/ic_system_security_update</item>
+        <item name="settingsAlertIcon">@drawable/ic_settings_alert</item>
 
         <!-- Data sources & priority -->
         <item name="addIcon">@drawable/ic_add</item>
         <item name="editIcon">@drawable/ic_edit</item>
         <item name="closeIcon">@drawable/ic_close</item>
+
+        <!-- Export -->
+        <item name="repeatIcon">@drawable/ic_repeat</item>
 
         <!-- END REGION -->
 
@@ -135,6 +139,10 @@
         <item name="largeListItemPaddingBottom">@dimen/spacing_normal</item>
         <item name="listItemMinHeight">@dimen/list_item_min_height</item>
         <item name="recentAccessTimelineDividerHeight">@dimen/timeline_divider_height</item>
+        <!-- END REGION -->
+
+        <!-- Popup Menu -->
+        <item name="android:itemBackground">@color/settingslib_dialog_background</item>
         <!-- END REGION -->
     </style>
 

@@ -16,7 +16,8 @@
 
 package android.healthconnect.cts;
 
-import static android.healthconnect.cts.utils.TestUtils.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.DataFactory.getTestRecords;
+import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -26,6 +27,7 @@ import android.health.connect.ApplicationInfoResponse;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.datatypes.AppInfo;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.platform.test.annotations.AppModeFull;
@@ -36,6 +38,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,6 +54,11 @@ public class GetApplicationInfoTest {
     private static final String TAG = "GetApplicationInfoTest";
     private static final UiAutomation sUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     /** TODO(b/257796081): Cleanup the database after each test. */
     @Test
@@ -108,7 +116,7 @@ public class GetApplicationInfoTest {
     public void testGetApplicationInfo() throws InterruptedException {
         Context context = ApplicationProvider.getApplicationContext();
         CountDownLatch latch = new CountDownLatch(1);
-        TestUtils.insertRecords(TestUtils.getTestRecords());
+        TestUtils.insertRecords(getTestRecords());
         sUiAutomation.adoptShellPermissionIdentity(MANAGE_HEALTH_DATA);
 
         try {

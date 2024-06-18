@@ -53,6 +53,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RespiratoryRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RestingHeartRateRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SexualActivityRecordHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.SkinTemperatureRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SleepSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.SpeedRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.StepsCadenceRecordHelper;
@@ -71,7 +72,7 @@ import java.util.Map;
  * @hide
  */
 public final class RecordHelperProvider {
-    @SuppressWarnings("NullAway.Init")
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile RecordHelperProvider sRecordHelperProvider;
 
     private final Map<Integer, RecordHelper<?>> mRecordIDToHelperMap;
@@ -145,6 +146,9 @@ public final class RecordHelperProvider {
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_RESTING_HEART_RATE,
                 new RestingHeartRateRecordHelper());
+        recordIDToHelperMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE,
+                new SkinTemperatureRecordHelper());
         recordIDToHelperMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_OXYGEN_SATURATION,
                 new OxygenSaturationRecordHelper());

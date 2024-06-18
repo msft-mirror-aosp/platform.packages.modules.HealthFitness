@@ -84,6 +84,9 @@ import static android.health.connect.datatypes.NutritionRecord.ZINC_TOTAL;
 import static android.health.connect.datatypes.PowerRecord.POWER_AVG;
 import static android.health.connect.datatypes.PowerRecord.POWER_MAX;
 import static android.health.connect.datatypes.PowerRecord.POWER_MIN;
+import static android.health.connect.datatypes.SkinTemperatureRecord.SKIN_TEMPERATURE_DELTA_AVG;
+import static android.health.connect.datatypes.SkinTemperatureRecord.SKIN_TEMPERATURE_DELTA_MAX;
+import static android.health.connect.datatypes.SkinTemperatureRecord.SKIN_TEMPERATURE_DELTA_MIN;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_AVG;
 import static android.health.connect.datatypes.SpeedRecord.SPEED_MAX;
@@ -107,6 +110,7 @@ import android.health.connect.datatypes.units.Length;
 import android.health.connect.datatypes.units.Mass;
 import android.health.connect.datatypes.units.Power;
 import android.health.connect.datatypes.units.Pressure;
+import android.health.connect.datatypes.units.TemperatureDelta;
 import android.health.connect.datatypes.units.Velocity;
 import android.health.connect.datatypes.units.Volume;
 import android.os.Parcel;
@@ -123,7 +127,9 @@ import java.util.Map;
  * @hide
  */
 public final class AggregationTypeIdMapper {
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile AggregationTypeIdMapper sAggregationTypeIdMapper;
+
     private final Map<Integer, AggregationResultCreator> mIdToAggregateResult;
     private final Map<Integer, AggregationType<?>> mIdDataAggregationTypeMap;
     private final Map<AggregationType<?>, Integer> mDataAggregationTypeIdMap;
@@ -156,6 +162,11 @@ public final class AggregationTypeIdMapper {
                         STEPS_CADENCE_RATE_AVG,
                         STEPS_CADENCE_RATE_MIN));
         addPowerIdsToAggregateResultMap(Arrays.asList(POWER_MIN, POWER_MAX, POWER_AVG));
+        addTemperatureDeltaIdsToAggregateResultMap(
+                Arrays.asList(
+                        SKIN_TEMPERATURE_DELTA_AVG,
+                        SKIN_TEMPERATURE_DELTA_MIN,
+                        SKIN_TEMPERATURE_DELTA_MAX));
         addEnergyIdsToAggregateResultMap(
                 Arrays.asList(
                         ACTIVE_CALORIES_TOTAL,
@@ -236,18 +247,21 @@ public final class AggregationTypeIdMapper {
         return sAggregationTypeIdMapper;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public AggregateResult<?> getAggregateResultFor(
             @AggregationType.AggregationTypeIdentifier.Id int id, @NonNull Parcel parcel) {
         return mIdToAggregateResult.get(id).getAggregateResult(parcel);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     public AggregationType<?> getAggregationTypeFor(
             @AggregationType.AggregationTypeIdentifier.Id int id) {
         return mIdDataAggregationTypeMap.get(id);
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @NonNull
     @AggregationType.AggregationTypeIdentifier.Id
     public int getIdFor(AggregationType<?> aggregationType) {
@@ -272,6 +286,11 @@ public final class AggregationTypeIdMapper {
     @NonNull
     private AggregateResult<Power> getPowerResult(double result) {
         return new AggregateResult<>(Power.fromWatts(result));
+    }
+
+    @NonNull
+    private AggregateResult<TemperatureDelta> getTemperatureDeltaResult(double result) {
+        return new AggregateResult<>(TemperatureDelta.fromCelsius(result));
     }
 
     @NonNull
@@ -335,6 +354,16 @@ public final class AggregationTypeIdMapper {
             mIdToAggregateResult.put(
                     aggregationType.getAggregationTypeIdentifier(),
                     result -> getPowerResult(result.readDouble()));
+            populateIdDataAggregationType(aggregationType);
+        }
+    }
+
+    private void addTemperatureDeltaIdsToAggregateResultMap(
+            @NonNull List<AggregationType<?>> aggregationTypeList) {
+        for (AggregationType<?> aggregationType : aggregationTypeList) {
+            mIdToAggregateResult.put(
+                    aggregationType.getAggregationTypeIdentifier(),
+                    result -> getTemperatureDeltaResult(result.readDouble()));
             populateIdDataAggregationType(aggregationType);
         }
     }

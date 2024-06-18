@@ -22,7 +22,7 @@ import static android.health.connect.HealthDataCategory.CYCLE_TRACKING;
 import static android.health.connect.HealthDataCategory.NUTRITION;
 import static android.health.connect.HealthDataCategory.SLEEP;
 import static android.health.connect.HealthDataCategory.VITALS;
-import static android.healthconnect.cts.utils.TestUtils.MANAGE_HEALTH_DATA;
+import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
 import static android.healthconnect.cts.utils.TestUtils.getPriority;
 import static android.healthconnect.cts.utils.TestUtils.getPriorityWithManageHealthDataPermission;
 import static android.healthconnect.cts.utils.TestUtils.updatePriority;
@@ -33,6 +33,7 @@ import static com.google.common.truth.Truth.assertThat;
 import android.app.UiAutomation;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectException;
+import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 
 import androidx.test.InstrumentationRegistry;
@@ -41,6 +42,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,6 +60,11 @@ public class HealthPermissionCategoryPriorityTests {
 
     public static final String PACKAGE_NAME = "android.healthconnect.cts";
     public static final String OTHER_PACKAGE_NAME = "";
+
+    @Rule
+    public AssumptionCheckerRule mSupportedHardwareRule =
+            new AssumptionCheckerRule(
+                    TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
 
     @Before
     public void setUp() {

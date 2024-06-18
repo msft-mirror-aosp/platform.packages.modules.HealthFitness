@@ -16,7 +16,6 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static com.android.server.healthconnect.storage.HealthConnectDatabase.DB_VERSION_GENERATED_LOCAL_TIME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.INTEGER;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorInt;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorLong;
@@ -82,17 +81,15 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
     }
 
     @Override
-    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void applyGeneratedLocalTimeUpgrade(@NonNull SQLiteDatabase db) {
         try {
-            if (oldVersion < DB_VERSION_GENERATED_LOCAL_TIME) {
-                db.execSQL(
-                        AlterTableRequest.getAlterTableCommandToAddGeneratedColumn(
-                                getMainTableName(),
-                                new CreateTableRequest.GeneratedColumnInfo(
-                                        LOCAL_DATE_TIME_COLUMN_NAME,
-                                        INTEGER,
-                                        LOCAL_DATE_TIME_EXPRESSION)));
-            }
+            db.execSQL(
+                    AlterTableRequest.getAlterTableCommandToAddGeneratedColumn(
+                            getMainTableName(),
+                            new CreateTableRequest.GeneratedColumnInfo(
+                                    LOCAL_DATE_TIME_COLUMN_NAME,
+                                    INTEGER,
+                                    LOCAL_DATE_TIME_EXPRESSION)));
         } catch (SQLException sqlException) {
             // Ignore this means the field exists. This is possible via module rollback followed by
             // an upgrade
@@ -150,7 +147,7 @@ public abstract class InstantRecordHelper<T extends InstantRecordInternal<?>>
         return ZONE_OFFSET_COLUMN_NAME;
     }
 
-    @SuppressWarnings("NullAway")
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     final ZoneOffset getZoneOffset(Cursor cursor) {
         ZoneOffset zoneOffset = null;
         if (cursor.getCount() > 0 && cursor.getColumnIndex(ZONE_OFFSET_COLUMN_NAME) != -1) {

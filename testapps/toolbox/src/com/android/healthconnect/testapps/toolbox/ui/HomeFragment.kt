@@ -21,10 +21,8 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DEFAULT
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED
 import android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
-import android.health.connect.HealthPermissions
-import android.health.connect.datatypes.ExerciseSessionRecord
-import android.health.connect.datatypes.ExerciseSessionType
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,35 +37,29 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.ALL_PERMISSIONS
-import com.android.healthconnect.testapps.toolbox.PerformanceTesting
+import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
 import com.android.healthconnect.testapps.toolbox.R
-import com.android.healthconnect.testapps.toolbox.data.ExerciseRoutesTestData.Companion.WARSAW_ROUTE
-import com.android.healthconnect.testapps.toolbox.data.ExerciseRoutesTestData.Companion.generateExerciseRouteFromLocations
 import com.android.healthconnect.testapps.toolbox.seed.SeedData
-import com.android.healthconnect.testapps.toolbox.utils.GeneralUtils
 import com.android.healthconnect.testapps.toolbox.viewmodels.PerformanceTestingViewModel
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-import kotlinx.coroutines.runBlocking
 
 /** Home fragment for Health Connect Toolbox. */
 class HomeFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     private lateinit var mRequestPermissionLauncher: ActivityResultLauncher<Array<String>>
-    private lateinit var mRequestRoutePermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var mNavigationController: NavController
+    private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
+
     private val manager by lazy {
         requireContext().getSystemService(HealthConnectManager::class.java)
     }
-    private val performanceTestingViewModel: PerformanceTestingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,15 +70,6 @@ class HomeFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
                 permissionMap: Map<String, Boolean> ->
                 requestPermissionResultHandler(permissionMap)
-            }
-        mRequestRoutePermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                permissionMap: Map<String, Boolean> ->
-                val granted: Boolean = !permissionMap.values.contains(false)
-
-                if (granted) {
-                    readRoute()
-                }
             }
     }
 
@@ -114,34 +97,34 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val performanceTesting = PerformanceTesting(performanceTestingViewModel)
+        val performanceTesting = PerformanceTestingFragment()
         childFragmentManager
             .beginTransaction()
             .add(performanceTesting, "PERFORMANCE_TESTING_FRAGMENT")
             .commit()
-        view.findViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
             launchHealthConnect()
         }
-        view.findViewById<Button>(R.id.request_permissions_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.request_permissions_button).setOnClickListener {
             requestPermissions()
         }
-        view.findViewById<Button>(R.id.request_route_permissions_button).setOnClickListener {
-            requestRoutesPermissions()
+        view.requireViewById<Button>(R.id.request_route_button).setOnClickListener {
+            goToRequestRoute()
         }
-        view.findViewById<Button>(R.id.insert_update_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.insert_update_data_button).setOnClickListener {
             goToCategoryListPage()
         }
-        view.findViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
             seedDataButtonPressed()
         }
-        view.findViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
             performanceTestingViewModel.beginReadingData()
         }
-        view.findViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
             performanceTestingViewModel.beginInsertingData(false)
         }
 
-        view.findViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
+        view.requireViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
             togglePermissionIntentFilter()
         }
 
@@ -210,45 +193,8 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    private fun requestRoutesPermissions() {
-        if (!(isPermissionGranted(HealthPermissions.WRITE_EXERCISE_ROUTE) &&
-            isPermissionGranted(HealthPermissions.WRITE_EXERCISE))) {
-            mRequestRoutePermissionLauncher.launch(
-                arrayOf(HealthPermissions.WRITE_EXERCISE_ROUTE, HealthPermissions.WRITE_EXERCISE))
-            return
-        }
-        readRoute()
-    }
-
-    private fun isPermissionGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(requireContext(), permission) ==
-            PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun readRoute() {
-        // insert a route data
-        val start = Instant.now().truncatedTo(ChronoUnit.DAYS)
-        val end = start.plusSeconds(100_000)
-        val route =
-            ExerciseSessionRecord.Builder(
-                    GeneralUtils.getMetaData(requireContext()),
-                    start,
-                    end,
-                    ExerciseSessionType.EXERCISE_SESSION_TYPE_RUNNING)
-                .setRoute(generateExerciseRouteFromLocations(WARSAW_ROUTE, start.toEpochMilli()))
-                .build()
-        runBlocking {
-            val result = GeneralUtils.insertRecords(listOf(route), manager)
-            if (result.isNotEmpty()) {
-                val record = result.first()
-                val intent =
-                    Intent(HealthConnectManager.ACTION_REQUEST_EXERCISE_ROUTE).apply {
-                        putExtra(HealthConnectManager.EXTRA_SESSION_ID, record.metadata.id)
-                        putExtra(Intent.EXTRA_PACKAGE_NAME, requireContext().packageName)
-                    }
-                startActivityForResult(intent, 1)
-            }
-        }
+    private fun goToRequestRoute() {
+        mNavigationController.navigate(R.id.action_homeFragment_to_routeRequest)
     }
 
     private fun goToCategoryListPage() {

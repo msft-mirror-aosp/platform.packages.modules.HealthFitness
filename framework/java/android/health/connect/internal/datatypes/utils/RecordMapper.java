@@ -49,6 +49,7 @@ import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.RespiratoryRateRecord;
 import android.health.connect.datatypes.RestingHeartRateRecord;
 import android.health.connect.datatypes.SexualActivityRecord;
+import android.health.connect.datatypes.SkinTemperatureRecord;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.SpeedRecord;
 import android.health.connect.datatypes.StepsCadenceRecord;
@@ -88,6 +89,7 @@ import android.health.connect.internal.datatypes.RecordInternal;
 import android.health.connect.internal.datatypes.RespiratoryRateRecordInternal;
 import android.health.connect.internal.datatypes.RestingHeartRateRecordInternal;
 import android.health.connect.internal.datatypes.SexualActivityRecordInternal;
+import android.health.connect.internal.datatypes.SkinTemperatureRecordInternal;
 import android.health.connect.internal.datatypes.SleepSessionRecordInternal;
 import android.health.connect.internal.datatypes.SpeedRecordInternal;
 import android.health.connect.internal.datatypes.StepsCadenceRecordInternal;
@@ -103,7 +105,10 @@ import java.util.Map;
 /** @hide */
 public final class RecordMapper {
     private static final int NUM_ENTRIES = 35;
+
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static volatile RecordMapper sRecordMapper;
+
     private final Map<Integer, Class<? extends RecordInternal<?>>>
             mRecordIdToInternalRecordClassMap;
     private final Map<Integer, Class<? extends Record>> mRecordIdToExternalRecordClassMap;
@@ -209,6 +214,9 @@ public final class RecordMapper {
                 ExerciseSessionRecordInternal.class);
         mRecordIdToInternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, SleepSessionRecordInternal.class);
+        mRecordIdToInternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE,
+                SkinTemperatureRecordInternal.class);
 
         mRecordIdToExternalRecordClassMap = new ArrayMap<>(NUM_ENTRIES);
         mRecordIdToExternalRecordClassMap.put(
@@ -277,6 +285,8 @@ public final class RecordMapper {
                 RecordTypeIdentifier.RECORD_TYPE_SEXUAL_ACTIVITY, SexualActivityRecord.class);
         mRecordIdToExternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_SLEEP_SESSION, SleepSessionRecord.class);
+        mRecordIdToExternalRecordClassMap.put(
+                RecordTypeIdentifier.RECORD_TYPE_SKIN_TEMPERATURE, SkinTemperatureRecord.class);
 
         mRecordIdToExternalRecordClassMap.put(
                 RecordTypeIdentifier.RECORD_TYPE_RESPIRATORY_RATE, RespiratoryRateRecord.class);
@@ -325,6 +335,7 @@ public final class RecordMapper {
         return mRecordIdToExternalRecordClassMap;
     }
 
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @RecordTypeIdentifier.RecordType
     public int getRecordType(Class<? extends Record> recordClass) {
         return mExternalRecordClassToRecordIdMap.get(recordClass);
