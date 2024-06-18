@@ -22,21 +22,26 @@ import static org.mockito.Mockito.when;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.platform.test.annotations.EnableFlags;
+import android.platform.test.flag.junit.SetFlagsRule;
 
 import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.android.healthfitness.flags.Flags;
 
 import com.google.common.truth.Truth;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class HealthConnectDatabaseTest {
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     // This number can only increase, as we are not allowed to make changes that remove tables or
     // columns
-    private static final int NUM_OF_TABLES = 63;
-
+    private static final int NUM_OF_TABLES = 65;
     @Mock Context mContext;
     private HealthConnectDatabase mHealthConnectDatabase;
     private SQLiteDatabase mSQLiteDatabase;
@@ -54,6 +59,7 @@ public class HealthConnectDatabaseTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE)
     public void testCreateTable() {
         Truth.assertThat(mHealthConnectDatabase).isNotNull();
         Truth.assertThat(mSQLiteDatabase).isNotNull();

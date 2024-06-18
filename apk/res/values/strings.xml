@@ -39,6 +39,9 @@
     <string name="backup_title" description="Label for a button that takes the user to backup settings. [CHAR_LIMIT=40]">Backup</string>
     <string name="data_sources_and_priority_title" description="Label for a button that takes the user to app priority settings. [CHAR_LIMIT=40]">Data sources and priority</string>
     <string name="set_units_title" description="Label for a button that takes the user to unit settings. [CHAR_LIMIT=40]">Set units</string>
+    <string name="manage_data_preferences_category_title" description="Label for the grouped preference settings for managing data. [CHAR_LIMIT=40]">Preferences</string>
+    <string name="manage_data_category_title" description="Label for the category for managing data. [CHAR_LIMIT=40]">Manage data</string>
+    <string name="backup_and_restore_settings_summary" description="Summary for the backup and restore setting preference. [CHAR_LIMIT=NONE]">Export and import data</string>
 
     <!-- endregion -->
 
@@ -348,6 +351,22 @@
     <string name="skin_temperature_read_content_description" description="Content description for switch that enables permissions for reading the user's skin temperature data [CHAR_LIMIT=NONE]">Read skin temperature</string>
     <string name="skin_temperature_write_content_description" description="Content description for switch that enables permissions for writing the user's skin temperature data [CHAR_LIMIT=NONE]">Write skin temperature</string>
     <!--endregion-->
+
+    <!-- region Medical data types -->
+    <string name="all_medical_data_uppercase_label" description="Uppercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">All medical data</string>
+    <string name="all_medical_data_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">all medical data</string>
+    <string name="all_medical_data_content_description" description="Content description for switch that enables permissions for writing the user's medical data [CHAR_LIMIT=NONE]">Write all medical data</string>
+
+    <string name="immunization_uppercase_label" description="Uppercase label used to show the user's immunization data [CHAR_LIMIT=50]">Immunization</string>
+    <string name="immunization_lowercase_label" description="Lowercase label used to show the user's active calories burned data [CHAR_LIMIT=50]">immunization</string>
+    <string name="immunization_content_description" description="Content description for switch that enables permissions for reading the user's immunization data [CHAR_LIMIT=NONE]">Read immunization</string>
+    <!--endregion-->
+
+    <!-- region Wellness -->
+    <string name="mindfulness_uppercase_label" description="Uppercase label used to show user's mindfulness session data [CHAR_LIMIT=50]">Mindfulness</string>
+    <string name="mindfulness_lowercase_label" description="Lowercase label used to show user's mindfulness session data [CHAR_LIMIT=50]">mindfulness</string>
+    <string name="mindfulness_read_content_description" description="Content description for switch that enables permissions for reading user's mindfulness session data [CHAR_LIMIT=NONE]">Read mindfulness</string>
+    <string name="mindfulness_write_content_description" description="Content description for switch that enables permissions for writing user's mindfulness session data [CHAR_LIMIT=NONE]">Write mindfulness</string>
     <!--endregion-->
 
     <!-- region Permissions -->
@@ -424,35 +443,38 @@
     <!--endregion-->
 
     <!--region Backup and Restore -->
+    <string name="export_file_access_error_banner_button" description="Button of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=50]">Set up</string>
+    <string name="export_file_access_error_banner_title" description="Title of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=50]">Couldn\'t export data</string>
+    <string name="export_file_access_error_banner_summary" description="Summary of banner prompting the user to set up the scheduled export again due to the lost file access. [CHAR LIMIT=NONE]">There was a problem with the export for <xliff:g example="May 21" id="date">%1$s</xliff:g>. Please set up a new scheduled export and try again.</string>
+    <string name="next_export_time" description="Text to shown when the next export will be [CHAR LIMIT=40]">Next export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
+
     <string name="backup_and_restore_settings_screen_title" description="Title of the 'backup and restore' screen where users can set up configurations to export and import Health Connect data. [CHAR_LIMIT=40]">Backup and restore</string>
+    <string name="last_export_time" description="Text to show when the last successful export was [CHAR LIMIT=40]">Last export: <xliff:g example="May 21" id="date">%1$s</xliff:g></string>
     <string name="export_and_import_title" descrption="Title of the settings section where users can change their data export and import settings. [CHAR_LIMIT=50]">Export and import</string>
     <string name="scheduled_export" description="Menu item where users can click to configure scheduled data export. [CHAR_LIMIT=40]">Scheduled export</string>
     <string name="import_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Import data</string>
     <string name="import_data_description" description="Description about the function of the 'restore data' preference. [CHAR_LIMIT=NONE]">Restore data from a previously exported file</string>
+    <string name="import_wrong_file_error_banner_button" description="Button of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Choose file</string>
+    <string name="import_wrong_file_error_banner_title" description="Title of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Couldn\'t restore data</string>
+    <string name="import_wrong_file_error_banner_summary" description="Summary of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
     <string name="backup_and_restore_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">Export lets you save your data so you can transfer it to a new phone</string>
-    <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">Learn more</string>
+    <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">About backup and restore</string>
 
     <string name="automatic_export_status" translatable="false" description="Label to indicate whether the automatic export is enabled or not and if enabled, what the export frequency is. [CHAR_LIMIT=NONE]">%s • %s</string>
     <string name="automatic_export_on" description="Text indicates the state of the automatic export is on. [CHAR_LIMIT=40]">On</string>
     <string name="automatic_export_off" description="Text indicates the state of the automatic export is off. [CHAR_LIMIT=40]">Off</string>
 
-    <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Choose frequency</string>
+    <string name="choose_frequency_category" description="Category name to indicate that customers can update the scheduled export frequency below. [CHAR_LIMIT=40]">Change frequency</string>
+    <string name="scheduled_export_settings_footer_text" description="Text displayed to warn users that the previous exported data will not be removed if they turn off the export.">If you turn off scheduled export, this won\'t delete previously exported data from where it was saved</string>
 
-    <string name="choose_frequency" description="Title of the 'choose frequency' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Choose frequency</string>
-    <string name="choose_frequency_description" description="Description of the data export frequency. [CHAR_LIMIT=NONE]">Choose to save data once, or set it to save automatically at regular times.</string>
+    <string name="choose_frequency" description="Title of the 'set up scheduled export' screen where users can select the data saving frequency. [CHAR_LIMIT=40]">Set up scheduled export</string>
+    <string name="choose_frequency_description" description="Description of the data export frequency. [CHAR_LIMIT=NONE]">Choose how frequently to export your data</string>
     <string name="frequency_daily" description="Label used to show that the automatic export frequency is set as daily. [CHAR_LIMIT=40]">Daily</string>
     <string name="frequency_weekly" description="Label used to show that the automatic export frequency is set as weekly. [CHAR_LIMIT=40]">Weekly</string>
     <string name="frequency_monthly" description="Label used to show that the automatic export frequency is set as monthly. [CHAR_LIMIT=40]">Monthly</string>
 
-    <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to export</string>
-
-    <string name="export_encryption_title" description="Title of the 'turn on encryption' screen where users can set up their passwords for data encryption. [CHAR_LIMIT=40]">Turn on encryption</string>
-    <string name="export_encryption_safety_description" description="The safety description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Data needs to be encrypted before it is saved. No one, not even Google or Health&#160;Connect, will be able to access it.</string>
-    <string name="export_encryption_instruction_description" description="The instruction description of the 'turn on encryption' screen. [CHAR_LIMIT=NONE]">Create a password to protect your encrypted data. You will need this password to import and restore your data.</string>
-    <string name="export_password_hint" description="Placeholder text on the input field which reminds users to enter their password here. [CHAR_LIMIT=50]">Password</string>
-    <string name="export_repeat_password_hint" description="Placeholder text on the input field which reminds users to repeat their password here. [CHAR_LIMIT=50]">Repeat password</string>
-    <string name="export_passwords_mismatch_error" description="Text shown to the users that indicates the entered password and the repeated password do not match. [CHAR_LIMIT=NONE]">Passwords don\'t match</string>
-    <string name="export_encryption_warning" description="Description to warn users the importance to remember their passwords. [CHAR_LIMIT=NONE]">If you forget your password and lose your phone, Health&#160;Connect cannot help you recover your saved data.</string>
+    <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to save scheduled export</string>
+    <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a storage app to export your data</string>
 
     <string name="import_decryption_title" description="Title of the 'Type password' screen where the user enters their password to decrypt the imported backup. [CHAR_LIMIT=40]">Type password</string>
     <string name="import_decryption_description" description="Description about the password required for backup decryption. [CHAR_LIMIT=NONE]">Your encryption password is needed to import your Health&#160;Connect data</string>
@@ -465,6 +487,14 @@
     <string name="import_cancel_button" description="Text on a button that navigates back to the backup and restore home page. [CHAR_LIMIT=40]">Cancel</string>
     <string name="import_next_button" descrption="Text on a button that navigates to the next screen of the data restoration flow. [CHAR_LIMIT=40]">Next</string>
     <string name="import_source_location_title" description="Title of the 'Import from' screen where the use chooses the location where their backup is saved. [CHAR_LIMIT=40]">Import from</string>
+    <string name="import_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to import their data from. [CHAR_LIMIT=NONE]">Please choose a storage app to import your data</string>
+
+    <string name="export_import_tap_to_choose_account" description="Label of text indicating that the user needs to select an account to export data to or import data from. [CHAR_LIMIT=NONE]">Tap to select an account</string>
+    <string name="export_import_choose_account_title" description="Title of a dialog where users select the account to export data to or import data from. [CHAR_LIMIT=40]">Choose an account</string>
+    <string name="export_import_choose_account_cancel_button" description="Text on a button that cancels the user picking an account to export data to or import data from. [CHAR_LIMIT=40]">Cancel</string>
+    <string name="export_import_choose_account_done_button" description="Text on a button that confirms the account for the user to export data to or import data from. [CHAR_LIMIT=40]">Done</string>
+    <string name="export_import_install_apps_text" description="Text informing the user to install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">For more options, install cloud storage apps to see them here</string>
+    <string name="export_import_go_to_play_store_text" description="Link text taking the user to the Play Store so they can install cloud storage apps to export data to or import data from. [CHAR_LIMIT=NONE]">Go to the Play Store</string>
     <!--endregion-->
 
     <!--region Onboarding -->
@@ -1030,6 +1060,7 @@
     <string name="playstore_collection_url" description="Play Store collection URL to navigate to when button is clicked [CHAR_LIMIT=NONE]" translatable="false">https://play.google.com/store/apps/collection/promotion_all__health_connect</string>
     <string name="playstore_package_name" description="Android package name for the Play Store app [CHAR_LIMIT=NONE]" translatable="false">com.android.vending</string>
     <string name="playstore_manage_apps_url" description="Play Store Manage Apps and Devices screen to navigate to when button is clicked [CHAR_LIMIT=NONE]" translatable="false">https://play.google.com/apps</string>
+    <string name="playstore_url" description="Play Store to navigate to when button is clicked [CHAR_LIMIT=NONE]" translatable="false">https://play.google.com</string>
     <!--endregion-->
 
     <!-- region Auto-delete -->
@@ -1265,9 +1296,9 @@
     <!-- region Additional Access -->
     <string name="request_additional_permissions_header_title" description="Title for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]">Allow additional access for <xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g>?</string>
     <string name="request_additional_permissions_description" description="Description for screen to give additional permissions to an app. [CHAR_LIMIT=NONE]"><xliff:g example="Run Tracker" id="app_name">%1$s</xliff:g> also wants to access these Health&#160;Connect settings</string>
-    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
-    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
-    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read data type permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
+    <string name="additional_access_combined_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background or past data access for this app</string>
+    <string name="additional_access_background_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on background access for this app</string>
+    <string name="additional_access_history_footer" description="Footer of screen to manage additional permissions for an app when no read fitness permissions are granted [CHAR_LIMIT=NONE]">Enable at least one read permission in order to turn on past data access for this app</string>
     <!--  endregion -->
 
     <!-- region Delete dialogs -->

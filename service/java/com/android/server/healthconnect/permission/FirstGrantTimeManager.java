@@ -41,6 +41,7 @@ import java.io.File;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -50,7 +51,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @hide
  */
-public class FirstGrantTimeManager implements PackageManager.OnPermissionsChangedListener {
+public final class FirstGrantTimeManager implements PackageManager.OnPermissionsChangedListener {
     private static final String TAG = "HealthFirstGrantTimeMan";
     private static final int CURRENT_VERSION = 1;
 
@@ -86,11 +87,17 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         mPackageManager.addOnPermissionsChangeListener(this);
     }
 
-    /** Get the date when the first health permission was granted. */
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
-    @Nullable
-    public Instant getFirstGrantTime(@NonNull String packageName, @NonNull UserHandle user)
-            throws IllegalArgumentException {
+    /**
+     * Gets the {@link Instant} when the first health permission was granted for a given {@code
+     * packageName} by a given {@code user}. Returns {@link Optional#empty} if there's no health
+     * permission granted for the package by the user.
+     *
+     * <p>This method also initiates first grant time to the current time if there's any permission
+     * granted but there's no grant time recorded. This mitigates the case where some health
+     * permissions got granted/revoked without onPermissionsChanged callback.
+     */
+    public Optional<Instant> getFirstGrantTime(
+            @NonNull String packageName, @NonNull UserHandle user) throws IllegalArgumentException {
 
         Integer uid = mPackageInfoHelper.getPackageUid(packageName, user, getUserContext(user));
         if (uid == null) {
@@ -103,15 +110,15 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         }
         initAndValidateUserStateIfNeedLocked(user);
 
-        Instant grantTimeDate = getGrantTimeReadLocked(uid);
-        if (grantTimeDate == null) {
-            // Check and update the state in case health permission has been granted before
-            // onPermissionsChanged callback was propagated.
-            updateFirstGrantTimesFromPermissionState(uid, true);
-            grantTimeDate = getGrantTimeReadLocked(uid);
+        Optional<Instant> firstGrantTime = getGrantTimeReadLocked(uid);
+        if (firstGrantTime.isPresent()) {
+            return firstGrantTime;
         }
 
-        return grantTimeDate;
+        // Check and update the state in case health permission has been granted before
+        // onPermissionsChanged callback was propagated.
+        updateFirstGrantTimesFromPermissionState(uid, true);
+        return getGrantTimeReadLocked(uid);
     }
 
     /** Sets the provided first grant time for the given {@code packageName}. */
@@ -208,7 +215,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                     mPackageInfoHelper.hasGrantedHealthPermissions(
                             packageNames, user, getUserContext(user));
 
-            boolean grantTimeRecorded = (getGrantTimeReadLocked(uid) != null);
+            boolean grantTimeRecorded = getGrantTimeReadLocked(uid).isPresent();
             if (grantTimeRecorded != anyHealthPermissionGranted) {
                 if (grantTimeRecorded) {
                     // An app doesn't have health permissions anymore, reset its grant time.
@@ -293,7 +300,7 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
         initAndValidateUserStateIfNeedLocked(userHandle);
 
-        if (getGrantTimeReadLocked(removedPackageUid) != null) {
+        if (getGrantTimeReadLocked(removedPackageUid).isPresent()) {
             mGrantTimeLock.writeLock().lock();
             try {
                 mUidToGrantTimeCache.remove(removedPackageUid);
@@ -307,9 +314,8 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
         }
     }
 
-    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     @GuardedBy("mGrantTimeLock")
-    private Instant getGrantTimeReadLocked(Integer uid) {
+    private Optional<Instant> getGrantTimeReadLocked(Integer uid) {
         mGrantTimeLock.readLock().lock();
         try {
             return mUidToGrantTimeCache.get(uid);
@@ -347,21 +353,21 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
 
         Instant stagedTime = null;
         for (String packageName : mPackageInfoHelper.getPackageNamesForUid(uid)) {
-            if (stagedTime == null) {
-                stagedTime = backupState.getPackageGrantTimes().get(packageName);
+            stagedTime = backupState.getPackageGrantTimes().get(packageName);
+            if (stagedTime != null) {
+                break;
             }
         }
 
         if (stagedTime == null) {
             return false;
         }
-        if (mUidToGrantTimeCache.containsKey(uid)
-                && mUidToGrantTimeCache.get(uid).isBefore(stagedTime)) {
+        Optional<Instant> firstGrantTime = mUidToGrantTimeCache.get(uid);
+        if (firstGrantTime.isPresent() && firstGrantTime.get().isBefore(stagedTime)) {
             Log.w(
                     TAG,
                     "Backup grant time is later than currently stored grant time, "
-                            + "skip restoring grant time for"
-                            + " uid "
+                            + "skip restoring grant time for uid "
                             + uid);
             return false;
         }
@@ -605,16 +611,9 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
             return mUidToGrantTime.remove(uid);
         }
 
-        @Nullable
-        Instant get(Integer uid) {
-            return mUidToGrantTime.get(uid);
-        }
-
-        boolean containsKey(@Nullable Integer uid) {
-            if (uid == null) {
-                return false;
-            }
-            return mUidToGrantTime.containsKey(uid);
+        Optional<Instant> get(Integer uid) {
+            Instant cachedGrantTime = mUidToGrantTime.get(uid);
+            return cachedGrantTime == null ? Optional.empty() : Optional.of(cachedGrantTime);
         }
 
         @Nullable
@@ -645,10 +644,12 @@ public class FirstGrantTimeManager implements PackageManager.OnPermissionsChange
                 if (sharedUserName != null) {
                     sharedUserToGrantTime.put(sharedUserName, time);
                 } else {
-                    String packageName = mPackageInfoHelper.getPackageNameFromUid(uid);
-                    if (packageName != null) {
-                        packageNameToGrantTime.put(packageName, time);
-                    }
+                    mPackageInfoHelper
+                            .getPackageNameFromUid(uid)
+                            .ifPresent(
+                                    packageName -> {
+                                        packageNameToGrantTime.put(packageName, time);
+                                    });
                 }
             }
 

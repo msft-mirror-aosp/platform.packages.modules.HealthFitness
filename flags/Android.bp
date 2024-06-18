@@ -56,3 +56,21 @@ java_aconfig_library {
         "//packages/modules/HealthFitness:__subpackages__",
     ],
 }
+
+java_library {
+    name: "healthfitness-aconfig-flags-helper",
+    sdk_version: "module_current",
+    min_sdk_version: "34",
+    srcs: [
+        "src/**/*.java",
+    ],
+    static_libs: [
+        "healthfitness-aconfig-flags-lib",
+    ],
+    apex_available: [
+        "com.android.healthfitness",
+    ],
+    visibility: [
+        "//packages/modules/HealthFitness:__subpackages__",
+    ],
+}

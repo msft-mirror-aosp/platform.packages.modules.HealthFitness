@@ -28,10 +28,10 @@ sealed class HealthPermission {
                 HealthPermissions.READ_HEALTH_DATA_HISTORY)
 
         /** Permissions that are grouped separately to general health data types */
-        private val medicalPermissions = setOf(
-            HealthPermissions.WRITE_MEDICAL_RESOURCES,
-            HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION
-        )
+        private val medicalPermissions =
+            setOf(
+                HealthPermissions.WRITE_MEDICAL_DATA,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION)
 
         fun fromPermissionString(permission: String): HealthPermission {
             return if (permission in additionalPermissions) {
@@ -39,13 +39,13 @@ sealed class HealthPermission {
             } else if (permission in medicalPermissions) {
                 MedicalPermission.fromPermissionString(permission)
             } else {
-                DataTypePermission.fromPermissionString(permission)
+                FitnessPermission.fromPermissionString(permission)
             }
         }
     }
 
     /** Pair of {@link HealthPermissionType} and {@link PermissionsAccessType}. */
-    data class DataTypePermission(
+    data class FitnessPermission(
         val healthPermissionType: HealthPermissionType,
         val permissionsAccessType: PermissionsAccessType
     ) : HealthPermission() {
@@ -53,18 +53,18 @@ sealed class HealthPermission {
             private const val READ_PERMISSION_PREFIX = "android.permission.health.READ_"
             private const val WRITE_PERMISSION_PREFIX = "android.permission.health.WRITE_"
 
-            fun fromPermissionString(permission: String): DataTypePermission {
+            fun fromPermissionString(permission: String): FitnessPermission {
                 return if (permission.startsWith(READ_PERMISSION_PREFIX)) {
                     val type =
                         getHealthPermissionType(permission.substring(READ_PERMISSION_PREFIX.length))
-                    DataTypePermission(type, PermissionsAccessType.READ)
+                    FitnessPermission(type, PermissionsAccessType.READ)
                 } else if (permission.startsWith(WRITE_PERMISSION_PREFIX)) {
                     val type =
                         getHealthPermissionType(
                             permission.substring(WRITE_PERMISSION_PREFIX.length))
-                    DataTypePermission(type, PermissionsAccessType.WRITE)
+                    FitnessPermission(type, PermissionsAccessType.WRITE)
                 } else {
-                    throw IllegalArgumentException("Permission not supported! $permission")
+                    throw IllegalArgumentException("Fitness permission not supported! $permission")
                 }
             }
 
@@ -110,17 +110,38 @@ sealed class HealthPermission {
             this.additionalPermission == HealthPermissions.READ_HEALTH_DATA_HISTORY
     }
 
-    /**
-     * TODO(b/339227142): Develop MedicalPermission class
-     */
-    data class MedicalPermission(val medicalPermission: String): HealthPermission() {
+    data class MedicalPermission(val medicalPermissionType: MedicalPermissionType) :
+        HealthPermission() {
         companion object {
-            fun fromPermissionString(permission: String): MedicalPermission =
-                MedicalPermission(permission)
+            private const val WRITE_MEDICAL_DATA =
+                "android.permission.health.WRITE_MEDICAL_DATA"
+            private const val READ_MEDICAL_DATA_PREFIX =
+                "android.permission.health.READ_MEDICAL_DATA_"
+
+            fun fromPermissionString(permission: String): MedicalPermission {
+                return if (permission == WRITE_MEDICAL_DATA) {
+                    MedicalPermission(MedicalPermissionType.ALL_MEDICAL_DATA)
+                } else if (permission.startsWith(READ_MEDICAL_DATA_PREFIX)) {
+                    val medicalType =
+                        getHealthPermissionType(
+                            permission.substring(READ_MEDICAL_DATA_PREFIX.length))
+                    MedicalPermission(medicalType)
+                } else {
+                    throw IllegalArgumentException(" Medical permission not supported! $permission")
+                }
+            }
+
+            private fun getHealthPermissionType(value: String): MedicalPermissionType {
+                return MedicalPermissionType.valueOf(value)
+            }
         }
 
         override fun toString(): String {
-            return medicalPermission
+            return if (medicalPermissionType == MedicalPermissionType.ALL_MEDICAL_DATA) {
+                WRITE_MEDICAL_DATA
+            } else {
+                "$READ_MEDICAL_DATA_PREFIX${medicalPermissionType.name}"
+            }
         }
     }
 }

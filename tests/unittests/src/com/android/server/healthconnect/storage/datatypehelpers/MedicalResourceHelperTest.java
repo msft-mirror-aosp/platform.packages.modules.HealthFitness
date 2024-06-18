@@ -16,79 +16,88 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
-import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_UNKNOWN;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DIFFERENT_DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_ALLERGY;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceId;
+import static android.healthconnect.cts.utils.PhrDataFactory.getFhirResourceType;
 
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_DATA_COLUMN_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
-import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.RESOURCE_TYPE_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.DATA_SOURCE_ID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_DATA_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.FHIR_RESOURCE_TYPE_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper.MEDICAL_RESOURCE_TABLE_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.generateMedicalResourceUUID;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.getHexString;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import android.content.ContentValues;
-import android.health.connect.MedicalIdFilter;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.internal.datatypes.MedicalResourceInternal;
 
 import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
 
-import org.junit.Before;
+import org.json.JSONException;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.UUID;
 
 public class MedicalResourceHelperTest {
-    private static final UUID MEDICAL_RESOURCE_ID =
-            UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee");
-    private static final String DATA_SOURCE_ID = "nhs/123";
-    private static final String FHIR_DATA = "{\"resourceType\" : \"Immunization\"}";
-    private MedicalResourceHelper mMedicalResourceHelper;
-
-    @Before
-    public void setup() {
-        mMedicalResourceHelper = MedicalResourceHelper.getInstance();
-    }
 
     @Test
-    public void getUpsertTableRequest_correctResult() {
+    public void getUpsertTableRequest_correctResult() throws JSONException {
+        String fhirResourceId = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
+        String fhirResourceType = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
         MedicalResourceInternal medicalResourceInternal =
                 new MedicalResourceInternal()
-                        .setDataSourceId(DATA_SOURCE_ID)
-                        .setType(MEDICAL_RESOURCE_TYPE_UNKNOWN)
-                        .setData(FHIR_DATA)
-                        .setUuid(MEDICAL_RESOURCE_ID);
+                        .setFhirResourceId(fhirResourceId)
+                        .setFhirResourceType(fhirResourceType)
+                        .setData(FHIR_DATA_IMMUNIZATION)
+                        .setDataSourceId(DATA_SOURCE_ID);
+        UUID uuid = generateMedicalResourceUUID(fhirResourceId, fhirResourceType, DATA_SOURCE_ID);
 
         UpsertTableRequest upsertRequest =
-                mMedicalResourceHelper.getUpsertTableRequest(medicalResourceInternal);
+                MedicalResourceHelper.getUpsertTableRequest(uuid, medicalResourceInternal);
         ContentValues contentValues = upsertRequest.getContentValues();
 
         assertThat(upsertRequest.getTable()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(upsertRequest.getUniqueColumnsCount()).isEqualTo(1);
-        assertThat(contentValues.size()).isEqualTo(4);
-        assertThat(contentValues.get(RESOURCE_TYPE_COLUMN_NAME))
-                .isEqualTo(MEDICAL_RESOURCE_TYPE_UNKNOWN);
-        assertThat(contentValues.get(DATA_SOURCE_ID_COLUMN_NAME)).isEqualTo(DATA_SOURCE_ID);
-        assertThat(contentValues.get(FHIR_DATA_COLUMN_NAME)).isEqualTo(FHIR_DATA);
+        assertThat(contentValues.size()).isEqualTo(5);
+        assertThat(contentValues.get(FHIR_RESOURCE_TYPE_COLUMN_NAME))
+                .isEqualTo(MedicalResourceHelper.getFhirResourceTypeInt(fhirResourceType));
+        assertThat(contentValues.get(DATA_SOURCE_ID_COLUMN_NAME))
+                .isEqualTo(Long.parseLong(DATA_SOURCE_ID));
+        assertThat(contentValues.get(FHIR_DATA_COLUMN_NAME)).isEqualTo(FHIR_DATA_IMMUNIZATION);
         assertThat(contentValues.get(UUID_COLUMN_NAME))
-                .isEqualTo(StorageUtils.convertUUIDToBytes(MEDICAL_RESOURCE_ID));
+                .isEqualTo(StorageUtils.convertUUIDToBytes(uuid));
     }
 
     @Test
-    public void getReadTableRequest_usingMedicalIdFilter_correctQuery() {
-        UUID uuid1 = UUID.randomUUID();
-        UUID uuid2 = UUID.randomUUID();
-        ReadTableRequest readRequest =
-                mMedicalResourceHelper.getReadTableRequest(
-                        new MedicalIdFiltersParcel(
-                                List.of(
-                                        MedicalIdFilter.fromId(uuid1.toString()),
-                                        MedicalIdFilter.fromId(uuid2.toString()))));
+    public void getReadTableRequest_usingMedicalResourceId_correctQuery() throws JSONException {
+        String fhirResourceId1 = getFhirResourceId(FHIR_DATA_IMMUNIZATION);
+        String fhirResourceType1 = getFhirResourceType(FHIR_DATA_IMMUNIZATION);
+        String fhirResourceId2 = getFhirResourceId(FHIR_DATA_ALLERGY);
+        String fhirResourceType2 = getFhirResourceType(FHIR_DATA_ALLERGY);
+        MedicalResourceId medicalResourceId1 =
+                new MedicalResourceId(DATA_SOURCE_ID, fhirResourceType1, fhirResourceId1);
+        MedicalResourceId medicalResourceId2 =
+                new MedicalResourceId(DIFFERENT_DATA_SOURCE_ID, fhirResourceType2, fhirResourceId2);
+        List<MedicalResourceId> medicalResourceIds =
+                List.of(medicalResourceId1, medicalResourceId2);
+        UUID uuid1 =
+                generateMedicalResourceUUID(fhirResourceId1, fhirResourceType1, DATA_SOURCE_ID);
+        UUID uuid2 =
+                generateMedicalResourceUUID(
+                        fhirResourceId2, fhirResourceType2, DIFFERENT_DATA_SOURCE_ID);
         List<String> hexValues = List.of(getHexString(uuid1), getHexString(uuid2));
+
+        ReadTableRequest readRequest =
+                MedicalResourceHelper.getReadTableRequest(medicalResourceIds);
 
         assertThat(readRequest.getTableName()).isEqualTo(MEDICAL_RESOURCE_TABLE_NAME);
         assertThat(readRequest.getReadCommand())

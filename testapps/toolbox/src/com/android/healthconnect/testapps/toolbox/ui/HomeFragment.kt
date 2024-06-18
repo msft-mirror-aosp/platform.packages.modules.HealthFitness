@@ -38,6 +38,7 @@ import androidx.navigation.fragment.findNavController
 import com.android.healthconnect.testapps.toolbox.Constants.ADDITIONAL_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.DATA_TYPE_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.HEALTH_PERMISSIONS
+import com.android.healthconnect.testapps.toolbox.Constants.MEDICAL_PERMISSIONS
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_HISTORY
 import com.android.healthconnect.testapps.toolbox.Constants.READ_HEALTH_DATA_IN_BACKGROUND
 import com.android.healthconnect.testapps.toolbox.PerformanceTestingFragment
@@ -106,28 +107,28 @@ class HomeFragment : Fragment() {
             .beginTransaction()
             .add(performanceTesting, "PERFORMANCE_TESTING_FRAGMENT")
             .commit()
-        view.findViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
             launchHealthConnect()
         }
-        view.findViewById<Button>(R.id.request_data_type_permissions_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.request_data_type_permissions_button).setOnClickListener {
             requestDataTypePermissions()
         }
-        view.findViewById<Button>(R.id.request_route_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.request_route_button).setOnClickListener {
             goToRequestRoute()
         }
-        view.findViewById<Button>(R.id.insert_update_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.insert_update_data_button).setOnClickListener {
             goToCategoryListPage()
         }
-        view.findViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
             seedDataButtonPressed()
         }
-        view.findViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
             performanceTestingViewModel.beginReadingData()
         }
-        view.findViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
+        view.requireViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
             performanceTestingViewModel.beginInsertingData(false)
         }
-        view.findViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
+        view.requireViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
             togglePermissionIntentFilter()
         }
         view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {
@@ -185,7 +186,16 @@ class HomeFragment : Fragment() {
             PackageManager.PERMISSION_GRANTED
     }
 
-    private fun isHealthPermissionMissing(): Boolean {
+    private fun isMedicalPermissionMissing(): Boolean {
+        for (permission in MEDICAL_PERMISSIONS) {
+            if (!isPermissionGranted(permission)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isDataTypePermissionMissing(): Boolean {
         for (permission in DATA_TYPE_PERMISSIONS) {
             if (!isPermissionGranted(permission)) {
                 return true
@@ -224,22 +234,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestHealthPermissions() {
-        if (!isHealthPermissionMissing()) {
-            // all health granted, just need to request additional
-            requestAdditionalPermissions()
-            return
-        } else if (!isAdditionalPermissionMissing()) {
-            // all additional granted, just need to request health
-            requestDataTypePermissions()
-            return
-        } else {
-            mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
-            return
-        }
+        mRequestPermissionLauncher.launch(HEALTH_PERMISSIONS)
+        return
     }
 
     private fun requestDataTypePermissions() {
-        if (isHealthPermissionMissing()) {
+        if (isDataTypePermissionMissing()) {
             mRequestPermissionLauncher.launch(DATA_TYPE_PERMISSIONS)
             return
         }

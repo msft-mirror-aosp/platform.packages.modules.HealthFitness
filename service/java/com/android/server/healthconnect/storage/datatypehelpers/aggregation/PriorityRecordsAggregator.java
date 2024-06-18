@@ -56,7 +56,7 @@ public class PriorityRecordsAggregator {
     private final Map<Integer, ZoneOffset> mGroupToFirstZoneOffset;
     private final int mNumberOfGroups;
     private int mCurrentGroup = -1;
-    private long mLatestPopulatedStart = -1;
+    private long mLatestPopulatedStart = Long.MIN_VALUE;
     @AggregationType.AggregationTypeIdentifier private final int mAggregationType;
 
     private final TreeSet<AggregationTimestamp> mTimestampsBuffer;
@@ -224,19 +224,21 @@ public class PriorityRecordsAggregator {
     private AggregationRecordData createAggregationRecordData() {
         return switch (mAggregationType) {
             case STEPS_RECORD_COUNT_TOTAL,
-                    ACTIVE_CALORIES_BURNED_RECORD_ACTIVE_CALORIES_TOTAL,
-                    DISTANCE_RECORD_DISTANCE_TOTAL,
-                    ELEVATION_RECORD_ELEVATION_GAINED_TOTAL,
-                    FLOORS_CLIMBED_RECORD_FLOORS_CLIMBED_TOTAL,
-                    WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL -> new ValueColumnAggregationData(
-                    mExtraParams.getColumnToAggregateName(),
-                    mExtraParams.getColumnToAggregateType());
-            case SLEEP_SESSION_DURATION_TOTAL,
-                    EXERCISE_SESSION_DURATION_TOTAL -> new SessionDurationAggregationData(
-                    mExtraParams.getExcludeIntervalStartColumnName(),
-                    mExtraParams.getExcludeIntervalEndColumnName());
-            default -> throw new UnsupportedOperationException(
-                    "Priority aggregation do not support type: " + mAggregationType);
+                            ACTIVE_CALORIES_BURNED_RECORD_ACTIVE_CALORIES_TOTAL,
+                            DISTANCE_RECORD_DISTANCE_TOTAL,
+                            ELEVATION_RECORD_ELEVATION_GAINED_TOTAL,
+                            FLOORS_CLIMBED_RECORD_FLOORS_CLIMBED_TOTAL,
+                            WHEEL_CHAIR_PUSHES_RECORD_COUNT_TOTAL ->
+                    new ValueColumnAggregationData(
+                            mExtraParams.getColumnToAggregateName(),
+                            mExtraParams.getColumnToAggregateType());
+            case SLEEP_SESSION_DURATION_TOTAL, EXERCISE_SESSION_DURATION_TOTAL ->
+                    new SessionDurationAggregationData(
+                            mExtraParams.getExcludeIntervalStartColumnName(),
+                            mExtraParams.getExcludeIntervalEndColumnName());
+            default ->
+                    throw new UnsupportedOperationException(
+                            "Priority aggregation do not support type: " + mAggregationType);
         };
     }
 

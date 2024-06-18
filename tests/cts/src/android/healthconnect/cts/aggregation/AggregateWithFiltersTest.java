@@ -398,11 +398,13 @@ public class AggregateWithFiltersTest {
         LocalDateTime endLocalTime = filterEndTime.atOffset(dataZone).toLocalDateTime();
         insertRecords(
                 List.of(
-                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochMilli(456)),
+                        // fully in range
+                        getStepsRecord(123, Instant.EPOCH, Instant.ofEpochSecond(456)),
+                        // partially in range (29/30)
                         getStepsRecord(
-                                2000,
-                                filterEndTime.minusMillis(1000),
-                                filterEndTime.plusMillis(1000))));
+                                30000,
+                                filterEndTime.minus(29, HOURS),
+                                filterEndTime.plus(1, HOURS))));
 
         AggregateRecordsRequest<Long> requestWithInstantFilter =
                 new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(filterEndTime))
@@ -410,7 +412,7 @@ public class AggregateWithFiltersTest {
                         .build();
         AggregateRecordsResponse<Long> aggregateResponse =
                 getAggregateResponse(requestWithInstantFilter);
-        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(1123);
+        assertThat(aggregateResponse.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
 
         AggregateRecordsRequest<Long> requestWithLocalFilter =
                 new AggregateRecordsRequest.Builder<Long>(getOpenStartTimeFilter(endLocalTime))
@@ -418,7 +420,7 @@ public class AggregateWithFiltersTest {
                         .build();
         AggregateRecordsResponse<Long> aggregateResponse2 =
                 getAggregateResponse(requestWithLocalFilter);
-        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(1123);
+        assertThat(aggregateResponse2.get(STEPS_COUNT_TOTAL)).isEqualTo(29123);
     }
 
     @Test

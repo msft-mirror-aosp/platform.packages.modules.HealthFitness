@@ -57,17 +57,12 @@ public final class ActivityDateHelper extends DatabaseHelper {
     private static final String EPOCH_DAYS_COLUMN_NAME = "epoch_days";
     private static final String RECORD_TYPE_ID_COLUMN_NAME = "record_type_id";
 
-    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
-    private static volatile ActivityDateHelper sActivityDateHelper;
-
-    private ActivityDateHelper() {}
-
     /**
      * Returns a requests representing the tables that should be created corresponding to this
      * helper
      */
     @NonNull
-    public CreateTableRequest getCreateTableRequest() {
+    public static CreateTableRequest getCreateTableRequest() {
         return new CreateTableRequest(TABLE_NAME, getColumnInfo())
                 .addUniqueConstraints(List.of(EPOCH_DAYS_COLUMN_NAME, RECORD_TYPE_ID_COLUMN_NAME));
     }
@@ -79,7 +74,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
 
     /** Insert a new activity dates for the given records */
     @NonNull
-    public void insertRecordDate(@NonNull List<RecordInternal<?>> recordInternals) {
+    public static void insertRecordDate(@NonNull List<RecordInternal<?>> recordInternals) {
         Objects.requireNonNull(recordInternals);
 
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
@@ -93,7 +88,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
 
     /** Returns a list of all dates with database writes for the given record types */
     @NonNull
-    public List<LocalDate> getActivityDates(@NonNull List<Class<? extends Record>> recordTypes) {
+    public static List<LocalDate> getActivityDates(
+            @NonNull List<Class<? extends Record>> recordTypes) {
         RecordMapper recordMapper = RecordMapper.getInstance();
         List<Integer> recordTypeIds =
                 recordTypes.stream().map(recordMapper::getRecordType).collect(Collectors.toList());
@@ -108,7 +104,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
                         .setDistinctClause(true));
     }
 
-    public void reSyncForAllRecords() {
+    /** Updates the activity dates cache for all records */
+    public static void reSyncForAllRecords() {
         List<Integer> recordTypeIds =
                 RecordMapper.getInstance().getRecordIdToExternalRecordClassMap().keySet().stream()
                         .toList();
@@ -116,7 +113,8 @@ public final class ActivityDateHelper extends DatabaseHelper {
         reSyncByRecordTypeIds(recordTypeIds);
     }
 
-    public void reSyncByRecordTypeIds(List<Integer> recordTypeIds) {
+    /** Updates the activity dates cache for the given record IDs */
+    public static void reSyncByRecordTypeIds(List<Integer> recordTypeIds) {
         List<UpsertTableRequest> upsertTableRequests = new ArrayList<>();
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
 
@@ -146,16 +144,15 @@ public final class ActivityDateHelper extends DatabaseHelper {
                 });
     }
 
-    @Override
     @NonNull
-    protected List<Pair<String, String>> getColumnInfo() {
+    private static List<Pair<String, String>> getColumnInfo() {
         return Arrays.asList(
                 new Pair<>(RecordHelper.PRIMARY_COLUMN_NAME, PRIMARY_AUTOINCREMENT),
                 new Pair<>(EPOCH_DAYS_COLUMN_NAME, INTEGER_NOT_NULL),
                 new Pair<>(RECORD_TYPE_ID_COLUMN_NAME, INTEGER_NOT_NULL));
     }
 
-    private HashMap<Integer, List<Long>> fetchUpdatedDates(
+    private static HashMap<Integer, List<Long>> fetchUpdatedDates(
             List<Integer> recordTypeIds, TransactionManager transactionManager) {
 
         ReadTableRequest request;
@@ -181,7 +178,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
     }
 
     @NonNull
-    private ContentValues getContentValues(int recordTypeId, long epochDays) {
+    private static ContentValues getContentValues(int recordTypeId, long epochDays) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(EPOCH_DAYS_COLUMN_NAME, epochDays);
         contentValues.put(RECORD_TYPE_ID_COLUMN_NAME, recordTypeId);
@@ -195,7 +192,7 @@ public final class ActivityDateHelper extends DatabaseHelper {
      * @param request a read request.
      * @return Cursor from table based on ids.
      */
-    private List<LocalDate> readDates(@NonNull ReadTableRequest request) {
+    private static List<LocalDate> readDates(@NonNull ReadTableRequest request) {
         final TransactionManager transactionManager = TransactionManager.getInitialisedInstance();
         try (Cursor cursor = transactionManager.read(request)) {
             List<LocalDate> dates = new ArrayList<>();
@@ -207,22 +204,13 @@ public final class ActivityDateHelper extends DatabaseHelper {
         }
     }
 
-    /** Returns an instance of this class */
-    public static synchronized ActivityDateHelper getInstance() {
-        if (sActivityDateHelper == null) {
-            sActivityDateHelper = new ActivityDateHelper();
-        }
-
-        return sActivityDateHelper;
-    }
-
     /** Creates UpsertTableRequest to insert into activity_date_table table. */
-    public UpsertTableRequest getUpsertTableRequest(int recordTypeId, long epochDays) {
+    public static UpsertTableRequest getUpsertTableRequest(int recordTypeId, long epochDays) {
         return new UpsertTableRequest(TABLE_NAME, getContentValues(recordTypeId, epochDays));
     }
 
     /** Creates UpsertTableRequest to insert into activity_date_table table from recordInternal. */
-    public UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
+    public static UpsertTableRequest getUpsertTableRequest(RecordInternal<?> recordInternal) {
         return getUpsertTableRequest(
                 recordInternal.getRecordType(),
                 ChronoUnit.DAYS.between(LocalDate.EPOCH, recordInternal.getLocalDate()));

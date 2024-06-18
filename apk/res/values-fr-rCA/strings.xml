@@ -37,6 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"Sauvegarde"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Source de données et priorité"</string>
     <string name="set_units_title" msgid="2657822539603758029">"Configurer les unités"</string>
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"Préférences"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"Gérer les données"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"Exporter et importer les données"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Accès récents"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Aucune application n\'a accédé à Connexion santé dernièrement"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Afficher les accès récents"</string>
@@ -258,6 +261,20 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"température cutanée"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lire la température cutanée"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Écrire la température cutanée"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"Toutes les données médicales"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"toutes les données médicales"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"Écrire toutes les données médicales"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"Immunisation"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"immunisation"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"Lire les données d\'immunisation"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"Autoriser la lecture des données par « <xliff:g id="APP_NAME">%1$s</xliff:g> »"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Autoriser l\'écriture des données par « <xliff:g id="APP_NAME">%1$s</xliff:g> »"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annuler"</string>
@@ -319,11 +336,22 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Pourquoi Connexion santé retire les autorisations des applications"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Lorsqu\'une application est suspendue ou retirée de Google Play, Connexion santé retire automatiquement ses autorisations.\n\nCela signifie que l\'application ne peut plus accéder aux données stockées dans Connexion santé. Si cette application a déjà écrit des données, elle apparaît dans la liste des applications inactives."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"OK"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"Configurer"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"Impossible d\'exporter les données"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"Un problème est survenu lors de l\'exportation pour le <xliff:g id="DATE">%1$s</xliff:g>. Veuillez configurer une nouvelle exportation programmée et réessayez."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"Prochaine exportation : <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"Sauvegarder et restaurer"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"Dernière exportation : <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"Exporter et importer"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"Exportation programmée"</string>
     <string name="import_data" msgid="404502315533233094">"Importer les données"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Restaurez les données provenant d\'un fichier précédemment exporté"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <skip />
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"L\'exportation vous permet d\'enregistrer vos données afin que vous puissiez les transférer vers un nouveau téléphone"</string>
     <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"En savoir plus"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"Activée"</string>
@@ -335,15 +363,9 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"Chaque semaine"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Chaque mois"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"Choisir où exporter les données"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"Activer le chiffrement"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"Les données doivent être chiffrées avant d\'être enregistrées. Personne, pas même Google ou Connexion santé, ne pourra y accéder."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"Créez un mot de passe pour protéger vos données chiffrées. Vous aurez besoin de ce mot de passe pour importer et restaurer vos données."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"Mot de passe"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"Répéter le mot de passe"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"Les mots de passe ne correspondent pas"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"Si vous oubliez votre mot de passe et perdez votre téléphone, Connexion santé ne peut pas vous aider à récupérer vos données enregistrées."</string>
+    <string name="export_invalid_storage" msgid="3945266169513895950">"Veuillez choisir une appli de stockage pour exporter vos données"</string>
     <string name="import_decryption_title" msgid="396608799208392844">"Entrer le mot de passe"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Votre mot de passe de chiffrement est nécessaire pour importer vos données Connexion santé"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"Votre mot de passe chiffré est nécessaire pour importer vos données Connexion santé"</string>
     <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Mot de passe oublié?"</string>
     <string name="import_password_hint" msgid="5158553589723883063">"Mot de passe"</string>
     <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Si vous avez toujours votre ancien téléphone, vous pouvez exporter vos données à nouveau à l\'aide d\'un nouveau mot de passe"</string>
@@ -352,6 +374,16 @@
     <string name="import_cancel_button" msgid="2191598074422096715">"Annuler"</string>
     <string name="import_next_button" msgid="5706322508691854289">"Suivant"</string>
     <string name="import_source_location_title" msgid="4444467438013749461">"Importer à partir de"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"Veuillez choisir une appli de stockage pour importer vos données"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"Sélectionner un compte"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"Annuler"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"Terminé"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
+    <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Premiers pas avec Connexion santé"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Connexion santé stocke vos données de santé et d\'activité physique, et vous offre un moyen simple de synchroniser les différentes applications de votre téléphone"</string>
     <string name="share_data" msgid="3481932156368883946">"Partager des données avec vos applications"</string>
@@ -361,10 +393,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"Retour"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"Faire vos premiers pas"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"Supprimer les données"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"Entrer en mode Suppression"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"Quitter le mode Suppression"</string>
     <string name="time_range_title" msgid="6831605283322600165">"Choisissez les données à supprimer"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"Suivant"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"Toutes les données ajoutées à Connexion santé au cours de la période sélectionnée seront définitivement supprimées"</string>
@@ -924,14 +954,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"Activez au moins une autorisation de lecture afin de permettre l\'accès en arrière-plan ou aux données antérieures pour cette application"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"Activez au moins une autorisation de lecture afin de permettre l\'accès en arrière-plan pour cette application"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"Activez au moins une autorisation de lecture afin de permettre l\'accès aux données antérieures pour cette application"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Supprimer définitivement toutes les données de Connexion santé?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Supprimer définitivement les données sélectionnées de Connexion santé?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"Toutes les données ont été supprimées"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"Données de type <xliff:g id="PERMISSION_TYPE">%s</xliff:g> supprimées"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> éléments supprimés"</string>
 </resources>

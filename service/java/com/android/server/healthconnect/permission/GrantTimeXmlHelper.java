@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @hide
  */
-public class GrantTimeXmlHelper {
+public final class GrantTimeXmlHelper {
     private static final String TAG = "GrantTimeSerializer";
     private static final String TAG_FIRST_GRANT_TIMES = "first-grant-times";
     private static final String TAG_PACKAGE = "package";
@@ -52,7 +52,8 @@ public class GrantTimeXmlHelper {
     private static final String ATTRIBUTE_FIRST_GRANT_TIME = "first-grant-time";
     private static final String ATTRIBUTE_VERSION = "version";
 
-    /** Serializes the grant times into the passed file.
+    /**
+     * Serializes the grant times into the passed file.
      *
      * @param userGrantTimeState the grant times to be serialized.
      * @param file the file into which the serialized data should be written.

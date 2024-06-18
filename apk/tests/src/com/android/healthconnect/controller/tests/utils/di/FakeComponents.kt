@@ -15,12 +15,10 @@
  */
 package com.android.healthconnect.controller.tests.utils.di
 
-import android.health.connect.HealthConnectManager
 import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
 import android.health.connect.exportimport.ScheduledExportSettings
-import android.health.connect.exportimport.ScheduledExportStatus
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -38,12 +36,17 @@ import com.android.healthconnect.controller.datasources.api.ILoadPotentialPriori
 import com.android.healthconnect.controller.datasources.api.ILoadPriorityEntriesUseCase
 import com.android.healthconnect.controller.datasources.api.ISleepSessionHelper
 import com.android.healthconnect.controller.datasources.api.IUpdatePriorityListUseCase
+import com.android.healthconnect.controller.exportimport.api.DocumentProvider
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency
 import com.android.healthconnect.controller.exportimport.api.ExportFrequency.EXPORT_FREQUENCY_NEVER
-import com.android.healthconnect.controller.exportimport.api.ExportUseCaseResult
+import com.android.healthconnect.controller.exportimport.api.ExportImportUseCaseResult
 import com.android.healthconnect.controller.exportimport.api.ILoadExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.ILoadImportStatusUseCase
 import com.android.healthconnect.controller.exportimport.api.ILoadScheduledExportStatusUseCase
+import com.android.healthconnect.controller.exportimport.api.IQueryDocumentProvidersUseCase
 import com.android.healthconnect.controller.exportimport.api.IUpdateExportSettingsUseCase
+import com.android.healthconnect.controller.exportimport.api.ImportUiState
+import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiState
 import com.android.healthconnect.controller.permissions.additionalaccess.ExerciseRouteState
 import com.android.healthconnect.controller.permissions.additionalaccess.ILoadExerciseRoutePermissionUseCase
 import com.android.healthconnect.controller.permissions.additionalaccess.PermissionUiState
@@ -441,8 +444,8 @@ class FakeQueryRecentAccessLogsUseCase : IQueryRecentAccessLogsUseCase {
 class FakeLoadExportSettingsUseCase : ILoadExportSettingsUseCase {
     private var exportFrequency = EXPORT_FREQUENCY_NEVER
 
-    override suspend fun invoke(): ExportUseCaseResult<ExportFrequency> {
-        return ExportUseCaseResult.Success(exportFrequency)
+    override suspend fun invoke(): ExportImportUseCaseResult<ExportFrequency> {
+        return ExportImportUseCaseResult.Success(exportFrequency)
     }
 
     fun updateExportFrequency(frequency: ExportFrequency) {
@@ -458,9 +461,11 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
     var mostRecentSettings: ScheduledExportSettings =
         ScheduledExportSettings.withPeriodInDays(EXPORT_FREQUENCY_NEVER.periodInDays)
 
-    override suspend fun invoke(settings: ScheduledExportSettings): ExportUseCaseResult<Unit> {
+    override suspend fun invoke(
+        settings: ScheduledExportSettings
+    ): ExportImportUseCaseResult<Unit> {
         mostRecentSettings = settings
-        return ExportUseCaseResult.Success(Unit)
+        return ExportImportUseCaseResult.Success(Unit)
     }
 
     fun reset() {
@@ -470,19 +475,38 @@ class FakeUpdateExportSettingsUseCase : IUpdateExportSettingsUseCase {
 }
 
 class FakeLoadScheduledExportStatusUseCase : ILoadScheduledExportStatusUseCase {
-    private var exportStatus: ScheduledExportStatus =
-            ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+    private var exportState: ScheduledExportUiState =
+        ScheduledExportUiState(
+            null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
 
     fun reset() {
-        exportStatus = ScheduledExportStatus(null, HealthConnectManager.DATA_EXPORT_ERROR_NONE, 0)
+        exportState =
+            ScheduledExportUiState(
+                null, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 0)
     }
 
-    fun updateExportStatus(exportStatus: ScheduledExportStatus) {
-        this.exportStatus = exportStatus
+    fun updateExportStatus(exportState: ScheduledExportUiState) {
+        this.exportState = exportState
     }
 
-    override suspend fun invoke(): ExportUseCaseResult<ScheduledExportStatus> {
-        return ExportUseCaseResult.Success(exportStatus)
+    override suspend fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState> {
+        return ExportImportUseCaseResult.Success(exportState)
+    }
+}
+
+class FakeQueryDocumentProvidersUseCase : IQueryDocumentProvidersUseCase {
+    private var documentProviders: List<DocumentProvider> = listOf()
+
+    fun reset() {
+        documentProviders = listOf()
+    }
+
+    fun updateDocumentProviders(documentProviders: List<DocumentProvider>) {
+        this.documentProviders = documentProviders
+    }
+
+    override suspend fun invoke(): ExportImportUseCaseResult<List<DocumentProvider>> {
+        return ExportImportUseCaseResult.Success(documentProviders)
     }
 }
 
@@ -503,5 +527,29 @@ class FakeLoadExerciseRoute : ILoadExerciseRoutePermissionUseCase {
 
     override suspend fun invoke(input: String): UseCaseResults<ExerciseRouteState> {
         return UseCaseResults.Success(this.state)
+    }
+}
+
+class FakeLoadImportStatusUseCase : ILoadImportStatusUseCase {
+    private var importState: ImportUiState =
+        ImportUiState(
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+            /** isImportOngoing= */
+            false)
+
+    fun reset() {
+        importState =
+            ImportUiState(
+                ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                /** isImportOngoing= */
+                false)
+    }
+
+    fun updateExportStatus(importState: ImportUiState) {
+        this.importState = importState
+    }
+
+    override suspend fun invoke(): ExportImportUseCaseResult<ImportUiState> {
+        return ExportImportUseCaseResult.Success(importState)
     }
 }
