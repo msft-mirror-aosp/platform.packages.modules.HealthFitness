@@ -37,6 +37,9 @@
     <string name="backup_title" msgid="211503191266235085">"காப்புப் பிரதி எடு"</string>
     <string name="data_sources_and_priority_title" msgid="2360222350913604558">"தரவு மூலங்களும் முன்னுரிமையும்"</string>
     <string name="set_units_title" msgid="2657822539603758029">"அலகுகளை அமை"</string>
+    <string name="manage_data_preferences_category_title" msgid="1183110821140344472">"விருப்பத்தேர்வுகள்"</string>
+    <string name="manage_data_category_title" msgid="6328886061582616519">"தரவை நிர்வகித்தல்"</string>
+    <string name="backup_and_restore_settings_summary" msgid="4345972157089493077">"தரவைப் பதிவேற்றுதல் மற்றும் பதிவிறக்குதல்"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"சமீபத்திய அணுகல்"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"சமீபத்தில் Health Connect ஆப்ஸை எந்த ஆப்ஸும் அணுகவில்லை"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"சமீபத்திய அணுகல்கள் அனைத்தையும் காட்டு"</string>
@@ -258,6 +261,20 @@
     <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"தோல் வெப்பநிலை"</string>
     <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"தோல் வெப்பநிலையைப் படி"</string>
     <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"தோல் வெப்பநிலையை எழுது"</string>
+    <string name="all_medical_data_uppercase_label" msgid="8415418677595814587">"அனைத்து மருத்துவத் தரவு"</string>
+    <string name="all_medical_data_lowercase_label" msgid="7173275705446657735">"அனைத்து மருத்துவத் தரவு"</string>
+    <string name="all_medical_data_content_description" msgid="6103488863059447886">"அனைத்து மருத்துவத் தரவையும் எழுத அனுமதிக்கும்"</string>
+    <string name="immunization_uppercase_label" msgid="1467176749064014020">"நோய்த்தடுப்பூசி"</string>
+    <string name="immunization_lowercase_label" msgid="6464922369026887687">"நோய்த்தடுப்பூசி"</string>
+    <string name="immunization_content_description" msgid="2910674919337229803">"நோய்த்தடுப்பூசி தொடர்பான தரவைப் படிக்க அனுமதிக்கும்"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"படிக்க “<xliff:g id="APP_NAME">%1$s</xliff:g>” ஆப்ஸை அனுமதிக்கவும்"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"எழுத “<xliff:g id="APP_NAME">%1$s</xliff:g>” ஆப்ஸை அனுமதிக்கவும்"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"ரத்துசெய்"</string>
@@ -319,17 +336,24 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Health Connect ஏன் ஆப்ஸ் அனுமதிகளை அகற்றுகிறது?"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Google Playயில் இருந்து ஓர் ஆப்ஸ் இடைநிறுத்தப்பட்டாலோ அகற்றப்பட்டாலோ அதன் அனுமதிகளை Health Connect தானாக அகற்றிவிடும்.\n\nஅதாவது Health Connectடில் சேமிக்கப்பட்டிருக்கும் தரவை அந்த ஆப்ஸால் அணுக முடியாது. ஏற்கெனவே இந்த ஆப்ஸில் ஏதேனும் தரவு பதிவாகியிருந்தால், இது செயலற்ற ஆப்ஸ் பட்டியலில் காட்டப்படும்."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"சரி"</string>
+    <string name="export_file_access_error_banner_button" msgid="6336949702329425932">"அமையுங்கள்"</string>
+    <string name="export_file_access_error_banner_title" msgid="8290988049467813322">"தரவைப் பதிவிறக்க முடியவில்லை"</string>
+    <string name="export_file_access_error_banner_summary" msgid="1226999878868505503">"<xliff:g id="DATE">%1$s</xliff:g> தேதிக்கான பதிவிறக்கத்தில் சிக்கல் ஏற்பட்டுள்ளது. ஒரு புதிய திட்டமிடப்பட்ட பதிவிறக்கத்தை அமைத்து மீண்டும் முயலவும்."</string>
+    <string name="next_export_time" msgid="3138247220014510213">"அடுத்த பதிவிறக்கம்: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="backup_and_restore_settings_screen_title" msgid="5391086732955348809">"காப்புப் பிரதி மற்றும் மீட்டெடுத்தல்"</string>
+    <string name="last_export_time" msgid="9205875050823594041">"கடைசியாகப் பதிவிறக்கம் செய்தது: <xliff:g id="DATE">%1$s</xliff:g>"</string>
     <string name="export_and_import_title" msgid="3241901922222465397">"ஏற்றுதல் மற்றும் இறக்குதல்"</string>
     <string name="scheduled_export" msgid="8737660963687364370">"திட்டமிடப்பட்ட பதிவேற்றம்"</string>
-    <!-- no translation found for import_data (404502315533233094) -->
+    <string name="import_data" msgid="404502315533233094">"தரவைப் பதிவிறக்குதல்"</string>
+    <string name="import_data_description" msgid="4040178599441724296">"ஏற்கெனவே பதிவேற்றப்பட்ட ஃபைலில் இருந்து தரவை மீட்டெடுக்கலாம்"</string>
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
     <skip />
-    <!-- no translation found for import_data_description (4040178599441724296) -->
+    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
-    <!-- no translation found for backup_and_restore_footer_body_text (4854718727539851909) -->
+    <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
-    <!-- no translation found for backup_and_restore_footer_link_text (5862384033902147721) -->
-    <skip />
+    <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"பதிவேற்றுதல் அம்சம் உங்கள் தரவைச் சேமிக்க அனுமதிக்கிறது. எனவே நீங்கள் அதைப் புதிய மொபைலுக்கு மாற்றலாம்."</string>
+    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"மேலும் அறிக"</string>
     <string name="automatic_export_on" msgid="6972389773963624315">"இயக்கப்பட்டுள்ளது"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"முடக்கப்பட்டுள்ளது"</string>
     <string name="choose_frequency_category" msgid="2230821549715237663">"கால இடைவெளியைத் தேர்வுசெய்யுங்கள்"</string>
@@ -339,28 +363,26 @@
     <string name="frequency_weekly" msgid="7302587625019573393">"வாரந்தோறும்"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"மாதந்தோறும்"</string>
     <string name="export_destination_title" msgid="1434632545224158402">"பதிவேற்ற வேண்டிய திரையைத் தேர்வுசெய்யவா?"</string>
-    <string name="export_encryption_title" msgid="8910343790595514359">"என்க்ரிப்ஷனை இயக்குதல்"</string>
-    <string name="export_encryption_safety_description" msgid="7873719607220791312">"தரவு சேமிக்கப்படுவதற்கு முன்பு என்க்ரிப்ஷன் செய்யப்பட்டிருக்க வேண்டும். Google, Health Connect உட்பட யாராலும் அதை அணுக முடியாது."</string>
-    <string name="export_encryption_instruction_description" msgid="1479999086015040099">"என்க்ரிப்ஷன் செய்யப்பட்ட உங்கள் தரவைப் பாதுகாக்க கடவுச்சொல்லை உருவாக்கவும். உங்கள் தரவை பதிவிறக்குவதற்கும் மீட்டெடுப்பதற்கும் இந்தக் கடவுச்சொல் உங்களுக்குத் தேவைப்படும்."</string>
-    <string name="export_password_hint" msgid="7095895042846772342">"கடவுச்சொல்"</string>
-    <string name="export_repeat_password_hint" msgid="6928833895602183194">"கடவுச்சொல்லை மீண்டும் டைப் செய்யவும்"</string>
-    <string name="export_passwords_mismatch_error" msgid="7705585397593119283">"கடவுச்சொற்கள் பொருந்தவில்லை"</string>
-    <string name="export_encryption_warning" msgid="664340221905199521">"உங்கள் கடவுச்சொல்லை மறந்துவிட்டாலோ மொபைலைத் தொலைத்துவிட்டாலோ, சேமிக்கப்பட்ட உங்கள் தரவை மீட்டெடுக்க Health Connect உதவாது."</string>
-    <!-- no translation found for import_decryption_title (396608799208392844) -->
-    <skip />
-    <!-- no translation found for import_decryption_description (202259030890690376) -->
-    <skip />
-    <!-- no translation found for import_decryption_forgotten_password_link_text (2320323034848292225) -->
-    <skip />
-    <!-- no translation found for import_password_hint (5158553589723883063) -->
-    <skip />
-    <!-- no translation found for import_decrypt_footer_body_text (1891722629872724009) -->
-    <skip />
+    <string name="export_invalid_storage" msgid="3945266169513895950">"உங்கள் தரவைப் பதிவிறக்குவதற்கான சேமிப்பக ஆப்ஸைத் தேர்ந்தெடுக்கவும்"</string>
+    <string name="import_decryption_title" msgid="396608799208392844">"கடவுச்சொல்லை டைப் செய்யுங்கள்"</string>
+    <string name="import_decryption_description" msgid="202259030890690376">"உங்கள் Health Connect தரவைப் பதிவிறக்க என்க்ரிப்ட் செய்யப்பட்ட கடவுச்சொல் தேவை"</string>
+    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"கடவுச்சொல்லை மறந்துவிட்டீர்களா?"</string>
+    <string name="import_password_hint" msgid="5158553589723883063">"கடவுச்சொல்"</string>
+    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"உங்களிடம் இன்னும் பழைய மொபைல் இருந்தால், புதிய கடவுச்சொல்லைப் பயன்படுத்தி உங்கள் தரவை மீண்டும் பதிவேற்றலாம்"</string>
     <string name="export_back_button" msgid="3550795479165524982">"பின்செல்"</string>
     <string name="export_next_button" msgid="657930567137105172">"அடுத்து"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ரத்துசெய்"</string>
     <string name="import_next_button" msgid="5706322508691854289">"அடுத்து"</string>
-    <!-- no translation found for import_source_location_title (4444467438013749461) -->
+    <string name="import_source_location_title" msgid="4444467438013749461">"இங்கிருந்து பதிவிறக்கு"</string>
+    <string name="import_invalid_storage" msgid="4873640088459948487">"உங்கள் தரவைப் பதிவேற்றுவதற்கான சேமிப்பக ஆப்ஸைத் தேர்ந்தெடுக்கவும்"</string>
+    <!-- no translation found for export_import_tap_to_choose_account (5016799636886709580) -->
+    <skip />
+    <string name="export_import_choose_account_title" msgid="1047021319012735232">"கணக்கைத் தேர்வுசெய்யுங்கள்"</string>
+    <string name="export_import_choose_account_cancel_button" msgid="7975616126298263479">"ரத்துசெய்"</string>
+    <string name="export_import_choose_account_done_button" msgid="8450305343787469429">"முடிந்தது"</string>
+    <!-- no translation found for export_import_install_apps_text (5026922993254770904) -->
+    <skip />
+    <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Health Connect ஆப்ஸைப் பயன்படுத்தத் தொடங்குங்கள்"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ஆப்ஸ் உங்கள் ஆரோக்கியம் மற்றும் உடற்பயிற்சி தொடர்பான தரவைச் சேமிக்கிறது. இந்த ஆப்ஸ் மூலம் மொபைலிலுள்ள வெவ்வேறு ஆப்ஸை நீங்கள் எளிதாக ஒத்திசைக்கலாம்."</string>
@@ -371,10 +393,8 @@
     <string name="onboarding_go_back_button_text" msgid="5020083846511184625">"பின்செல்"</string>
     <string name="onboarding_get_started_button_text" msgid="2348061971090731336">"தொடங்குக"</string>
     <string name="delete_button_content_description" msgid="9125115327455379618">"தரவை நீக்கும்"</string>
-    <!-- no translation found for enter_deletion_button_content_description (416336747251264118) -->
-    <skip />
-    <!-- no translation found for exit_deletion_button_content_description (6579227028841619158) -->
-    <skip />
+    <string name="enter_deletion_button_content_description" msgid="416336747251264118">"நீக்குதலைத் தொடரும்"</string>
+    <string name="exit_deletion_button_content_description" msgid="6579227028841619158">"நீக்குதலை ரத்துசெய்யும்"</string>
     <string name="time_range_title" msgid="6831605283322600165">"நீக்குவதற்குத் தரவைத் தேர்வுசெய்யுங்கள்"</string>
     <string name="time_range_next_button" msgid="5849096934896557888">"அடுத்து"</string>
     <string name="time_range_message_all" msgid="7280888587242744729">"தேர்வுசெய்யப்பட்ட காலகட்டத்தில் Health Connectடில் சேர்க்கப்பட்ட அனைத்துத் தரவையும் இது நிரந்தரமாக நீக்கும்"</string>
@@ -934,14 +954,9 @@
     <string name="additional_access_combined_footer" msgid="5967785355544362840">"இந்த ஆப்ஸுக்கான பின்புல அல்லது கடந்தகாலத் தரவு அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"இந்த ஆப்ஸுக்கான பின்புல அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"இந்த ஆப்ஸுக்கான கடந்தகாலத் தரவு அணுகலை இயக்க, குறைந்தபட்சம் \'படிப்பதற்கான அனுமதி\' ஒன்றை இயக்கவும்"</string>
-    <!-- no translation found for all_data_selected_deletion_confirmation_dialog (8480788219767858637) -->
-    <skip />
-    <!-- no translation found for some_data_selected_deletion_confirmation_dialog (8053452143397916044) -->
-    <skip />
-    <!-- no translation found for all_data_selected_deletion_confirmation_toast (4053974969132498842) -->
-    <skip />
-    <!-- no translation found for one_data_type_deletion_confirmation_toast (7773896019111767141) -->
-    <skip />
-    <!-- no translation found for multiple_data_types_deletion_confirmation_toast (8500329390797706450) -->
-    <skip />
+    <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connectடில் இருந்து அனைத்துத் தரவையும் நிரந்தரமாக நீக்கவா?"</string>
+    <string name="some_data_selected_deletion_confirmation_dialog" msgid="8053452143397916044">"Health Connectடில் இருந்து தேர்ந்தெடுக்கப்பட்ட தரவை நிரந்தரமாக நீக்கவா?"</string>
+    <string name="all_data_selected_deletion_confirmation_toast" msgid="4053974969132498842">"அனைத்துத் தரவும் நீக்கப்பட்டது"</string>
+    <string name="one_data_type_deletion_confirmation_toast" msgid="7773896019111767141">"<xliff:g id="PERMISSION_TYPE">%s</xliff:g> தரவு நீக்கப்பட்டது"</string>
+    <string name="multiple_data_types_deletion_confirmation_toast" msgid="8500329390797706450">"<xliff:g id="NUMBER_PERMISSION_TYPES">%s</xliff:g> அனுமதி வகைகள் நீக்கப்பட்டன"</string>
 </resources>

@@ -27,6 +27,7 @@ import android.os.UserManager;
 import android.util.Slog;
 
 import com.android.server.SystemService;
+import com.android.server.healthconnect.exportimport.ExportImportJobs;
 import com.android.server.healthconnect.migration.MigrationBroadcastScheduler;
 import com.android.server.healthconnect.migration.MigrationCleaner;
 import com.android.server.healthconnect.migration.MigrationStateManager;
@@ -41,7 +42,6 @@ import com.android.server.healthconnect.permission.HealthPermissionIntentAppsTra
 import com.android.server.healthconnect.permission.PermissionPackageChangesOrchestrator;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PreferenceHelper;
 
 import java.util.Objects;
@@ -96,10 +96,7 @@ public class HealthConnectManagerService extends SystemService {
                 MigrationStateManager.initializeInstance(mCurrentForegroundUser.getIdentifier());
         migrationStateManager.setMigrationBroadcastScheduler(mMigrationBroadcastScheduler);
         final MigrationCleaner migrationCleaner =
-                new MigrationCleaner(
-                        mTransactionManager,
-                        MigrationEntityHelper.getInstance(),
-                        PriorityMigrationHelper.getInstance());
+                new MigrationCleaner(mTransactionManager, PriorityMigrationHelper.getInstance());
         mMigrationNotificationSender = new MigrationNotificationSender(context);
         mMigrationUiStateManager =
                 new MigrationUiStateManager(
@@ -199,7 +196,7 @@ public class HealthConnectManagerService extends SystemService {
                         HealthConnectDailyJobs.schedule(
                                 mContext, mCurrentForegroundUser.getIdentifier());
                     } catch (Exception e) {
-                        Slog.e(TAG, "Failed to scheduled Health Connect daily service.", e);
+                        Slog.e(TAG, "Failed to schedule Health Connect daily service.", e);
                     }
                 });
 
@@ -227,6 +224,16 @@ public class HealthConnectManagerService extends SystemService {
                         PreferenceHelper.getInstance().initializePreferences();
                     } catch (Exception e) {
                         Slog.e(TAG, "Failed to initialize preferences cache", e);
+                    }
+                });
+
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    try {
+                        ExportImportJobs.schedulePeriodicExportJob(
+                                mContext, mCurrentForegroundUser.getIdentifier());
+                    } catch (Exception e) {
+                        Slog.e(TAG, "Failed to schedule periodic export job.", e);
                     }
                 });
     }
