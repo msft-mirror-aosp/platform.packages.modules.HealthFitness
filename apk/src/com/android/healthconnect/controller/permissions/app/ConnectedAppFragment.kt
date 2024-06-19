@@ -146,10 +146,10 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
         appPermissionViewModel.loadPermissionsForPackage(packageName)
 
-        appPermissionViewModel.appPermissions.observe(viewLifecycleOwner) { permissions ->
+        appPermissionViewModel.fitnessPermissions.observe(viewLifecycleOwner) { permissions ->
             updatePermissions(permissions)
         }
-        appPermissionViewModel.grantedPermissions.observe(viewLifecycleOwner) { granted ->
+        appPermissionViewModel.grantedFitnessPermissions.observe(viewLifecycleOwner) { granted ->
             permissionMap.forEach { (healthPermission, switchPreference) ->
                 switchPreference.isChecked = healthPermission in granted
             }
@@ -170,7 +170,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
             if (isReloadNeeded) appPermissionViewModel.loadPermissionsForPackage(packageName)
         }
 
-        appPermissionViewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->
+        appPermissionViewModel.revokeAllHealthPermissionsState.observe(viewLifecycleOwner) { state
+            ->
             when (state) {
                 is RevokeAllState.Loading -> {
                     showLoadingDialog()
@@ -193,7 +194,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         }
 
         childFragmentManager.setFragmentResultListener(DISCONNECT_ALL_EVENT, this) { _, bundle ->
-            val permissionsUpdated = appPermissionViewModel.revokeAllPermissions(packageName)
+            val permissionsUpdated = appPermissionViewModel.revokeAllHealthPermissions(packageName)
             if (!permissionsUpdated) {
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
             }
@@ -275,7 +276,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
     private val onSwitchChangeListener = OnCheckedChangeListener { buttonView, isChecked ->
         if (isChecked) {
-            val permissionsUpdated = appPermissionViewModel.grantAllPermissions(packageName)
+            val permissionsUpdated = appPermissionViewModel.grantAllFitnessPermissions(packageName)
             if (!permissionsUpdated) {
                 buttonView.isChecked = false
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
@@ -287,8 +288,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
     private fun setupAllowAllPreference() {
         allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
-        appPermissionViewModel.allAppPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted
-            ->
+        appPermissionViewModel.allFitnessPermissionsGranted.observe(viewLifecycleOwner) {
+            isAllGranted ->
             allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
             allowAllPreference.isChecked = isAllGranted
             allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
@@ -352,7 +353,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
     }
 
     private fun setupFooter() {
-        appPermissionViewModel.atLeastOnePermissionGranted.observe(viewLifecycleOwner) {
+        appPermissionViewModel.atLeastOneFitnessPermissionGranted.observe(viewLifecycleOwner) {
             isAtLeastOneGranted ->
             updateFooter(isAtLeastOneGranted)
         }
