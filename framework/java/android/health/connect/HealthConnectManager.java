@@ -66,6 +66,7 @@ import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
@@ -2266,7 +2267,24 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.createMedicalDataSource(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IMedicalDataSourceResponseCallback.Stub() {
+                        @Override
+                        public void onResult(MedicalDataSource dataSource) {
+                            returnResult(executor, dataSource, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**

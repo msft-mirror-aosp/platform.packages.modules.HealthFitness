@@ -59,6 +59,7 @@ import com.android.healthconnect.controller.permissions.shared.DisconnectDialogF
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.DISCONNECT_CANCELED_EVENT
 import com.android.healthconnect.controller.permissions.shared.DisconnectDialogFragment.Companion.KEY_DELETE_DATA
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.fromHealthPermissionType
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.icon
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -80,9 +81,12 @@ import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/** Fragment for connected app screen. */
+/**
+ * Fragment for a screen that shows the permissions for an app that has medical permissions but no
+ * fitness permissions.
+ */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
-class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
+class FitnessAppFragment : Hilt_FitnessAppFragment() {
 
     companion object {
         private const val PERMISSION_HEADER = "manage_app_permission_header"
@@ -106,6 +110,8 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
 
     private var packageName: String = ""
     private var appName: String = ""
+    private var showManageAppSection: Boolean = true
+
     private val appPermissionViewModel: AppPermissionViewModel by activityViewModels()
     private val deletionViewModel: DeletionViewModel by activityViewModels()
     private val additionalAccessViewModel: AdditionalAccessViewModel by activityViewModels()
@@ -142,6 +148,9 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
         if (requireArguments().containsKey(EXTRA_APP_NAME) &&
             requireArguments().getString(EXTRA_APP_NAME) != null) {
             appName = requireArguments().getString(EXTRA_APP_NAME)!!
+        }
+        if (requireArguments().containsKey(SHOW_MANAGE_APP_SECTION)) {
+            showManageAppSection = requireArguments().getBoolean(SHOW_MANAGE_APP_SECTION)
         }
 
         appPermissionViewModel.loadPermissionsForPackage(packageName)
@@ -227,7 +236,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                     it.setOnPreferenceClickListener {
                         findNavController()
                             .navigate(
-                                R.id.action_connectedApp_to_appData,
+                                R.id.action_fitnessApp_to_appData,
                                 bundleOf(
                                     EXTRA_PACKAGE_NAME to packageName, EXTRA_APP_NAME to appName))
                         true
@@ -258,7 +267,7 @@ class ConnectedAppFragment : Hilt_ConnectedAppFragment() {
                             val extras = bundleOf(EXTRA_PACKAGE_NAME to packageName)
                             findNavController()
                                 .navigate(
-                                    R.id.action_connectedAppFragment_to_additionalAccessFragment,
+                                    R.id.action_fitnessAppFragment_to_additionalAccessFragment,
                                     extras)
                             true
                         }

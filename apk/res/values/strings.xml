@@ -454,9 +454,13 @@
     <string name="scheduled_export" description="Menu item where users can click to configure scheduled data export. [CHAR_LIMIT=40]">Scheduled export</string>
     <string name="import_data" description="Menu item where users can click to import their data. [CHAR_LIMIT=40]">Import data</string>
     <string name="import_data_description" description="Description about the function of the 'restore data' preference. [CHAR_LIMIT=NONE]">Restore data from a previously exported file</string>
+    <string name="import_error_banner_title" description="Title of banner prompting the user that a previous data import failed. [CHAR LIMIT=50]">Couldn\'t restore data</string>
     <string name="import_wrong_file_error_banner_button" description="Button of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Choose file</string>
-    <string name="import_wrong_file_error_banner_title" description="Title of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=50]">Couldn\'t restore data</string>
     <string name="import_wrong_file_error_banner_summary" description="Summary of banner prompting the user to set up the import again due to the wrong file error. [CHAR LIMIT=NONE]">The file you selected isn\'t compatible for restore. Make sure to select the correct exported file.</string>
+    <string name="import_version_mismatch_error_banner_button" description="Button of banner prompting the user to update the mainline module due to the version mismatch error. [CHAR LIMIT=50]">Update now</string>
+    <string name="import_version_mismatch_error_banner_summary" description="Summary of banner prompting the user to update the mainline module due to the version mismatch error. [CHAR LIMIT=NONE]">Update your system so that Health&#160;Connect can restore your data, then try again.</string>
+    <string name="import_other_error_banner_button" description="Button of banner prompting the user to try the import again due to certain error. [CHAR LIMIT=50]">Try again</string>
+    <string name="import_other_error_banner_summary" description="Summary of banner prompting the user to try the import again due to certain error. [CHAR LIMIT=NONE]">There was a problem with restoring data from your export.</string>
     <string name="backup_and_restore_footer_body_text" description="Text displayed in page footer explaining the purpose of the export feature. [CHAR_LIMIT=NONE]">Export lets you save your data so you can transfer it to a new phone</string>
     <string name="backup_and_restore_footer_link_text" description="Link text displayed in the footer to allow the user to navigate to further information about the export feature. [CHAR_LIMIT=40]">About backup and restore</string>
 

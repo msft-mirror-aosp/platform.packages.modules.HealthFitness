@@ -76,8 +76,7 @@ class HomeFragment : Hilt_HomeFragment() {
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
-        private const val EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY =
-            "export_file_access_error_banner"
+        private const val EXPORT_ERROR_BANNER_PREFERENCE_KEY = "export_error_banner"
         private const val HOME_FRAGMENT_BANNER_ORDER = 1
 
         @JvmStatic fun newInstance() = HomeFragment()
@@ -245,18 +244,14 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
-        when (scheduledExportUiState.dataExportError) {
-            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS -> {
-                scheduledExportUiState.lastSuccessfulExportTime?.let {
-                    if (preferenceScreen.findPreference<Preference>(
-                        EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY) == null) {
-                        preferenceScreen.addPreference(
-                            getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
-                    }
+        if (scheduledExportUiState.dataExportError !=
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE) {
+            scheduledExportUiState.lastSuccessfulExportTime?.let {
+                if (preferenceScreen.findPreference<Preference>(
+                    EXPORT_ERROR_BANNER_PREFERENCE_KEY) == null) {
+                    preferenceScreen.addPreference(
+                        getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
                 }
-            }
-            else -> {
-                // Do nothing yet.
             }
         }
     }
@@ -271,7 +266,7 @@ class HomeFragment : Hilt_HomeFragment() {
                 getString(R.string.export_file_access_error_banner_button),
                 ErrorPageElement.UNKNOWN_ELEMENT)
             it.title = getString(R.string.export_file_access_error_banner_title)
-            it.key = EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY
+            it.key = EXPORT_ERROR_BANNER_PREFERENCE_KEY
             it.summary =
                 getString(
                     R.string.export_file_access_error_banner_summary,
@@ -360,7 +355,7 @@ class HomeFragment : Hilt_HomeFragment() {
                             newPreference.setOnPreferenceClickListener {
                                 findNavController()
                                     .navigate(
-                                        R.id.action_homeFragment_to_connectedAppFragment,
+                                        R.id.action_homeFragment_to_fitnessAppFragment,
                                         bundleOf(
                                             Intent.EXTRA_PACKAGE_NAME to
                                                 recentApp.metadata.packageName,

@@ -70,9 +70,7 @@ public final class ExportImportSettingsStorage {
                             EXPORT_URI_PREFERENCE_KEY, settings.getUri().toString());
             String lastExportError =
                     PreferenceHelper.getInstance().getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY);
-            if (lastExportError != null
-                    && lastExportError.equals(
-                            String.valueOf(HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS))) {
+            if (lastExportError != null) {
                 PreferenceHelper.getInstance().removeKey(LAST_EXPORT_ERROR_PREFERENCE_KEY);
             }
         }

@@ -46,6 +46,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.FetchDataOriginsPriorityOrderResponse;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
@@ -79,6 +80,7 @@ import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
@@ -97,6 +99,7 @@ import android.health.connect.changelog.ChangeLogsResponse;
 import android.health.connect.changelog.ChangeLogsResponse.DeletedLog;
 import android.health.connect.datatypes.AppInfo;
 import android.health.connect.datatypes.DataOrigin;
+import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Record;
 import android.health.connect.exportimport.ExportImportDocumentProvider;
@@ -157,6 +160,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
@@ -2204,6 +2208,98 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                 });
     }
 
+    /** Service implementation of {@link HealthConnectManager#createMedicalDataSource} */
+    @Override
+    public void createMedicalDataSource(
+            @NonNull AttributionSource attributionSource,
+            @NonNull CreateMedicalDataSourceRequest request,
+            @NonNull IMedicalDataSourceResponseCallback callback) {
+        if (!personalHealthRecord()) {
+            HealthConnectException unsupportedException =
+                    new HealthConnectException(
+                            ERROR_UNSUPPORTED_OPERATION,
+                            "Creating MedicalDataSource is not supported.");
+            Slog.e(TAG, "HealthConnectException: ", unsupportedException);
+            tryAndThrowException(
+                    callback, unsupportedException, unsupportedException.getErrorCode());
+            return;
+        }
+
+        checkParamsNonNull(attributionSource, request, callback);
+
+        int uid = Binder.getCallingUid();
+        int pid = Binder.getCallingPid();
+        UserHandle userHandle = Binder.getCallingUserHandle();
+        boolean holdsDataManagementPermission = hasDataManagementPermission(uid, pid);
+        String packageName = attributionSource.getPackageName();
+        HealthConnectServiceLogger.Builder logger =
+                new HealthConnectServiceLogger.Builder(holdsDataManagementPermission, INSERT_DATA)
+                        .setPackageName(packageName);
+
+        HealthConnectThreadScheduler.schedule(
+                mContext,
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        verifyPackageNameFromUid(uid, attributionSource);
+
+                        if (holdsDataManagementPermission) {
+                            throw new SecurityException(
+                                    "Apps with android.permission.MANAGE_HEALTH_DATA permission are"
+                                            + " not allowed to insert data");
+                        }
+                        enforceMemoryRateLimit(
+                                List.of(request.getDataSize()), request.getDataSize());
+                        throwExceptionIfDataSyncInProgress();
+                        boolean isInForeground = mAppOpsManagerLocal.isUidInForeground(uid);
+                        tryAcquireApiCallQuota(
+                                uid,
+                                QuotaCategory.QUOTA_CATEGORY_WRITE,
+                                isInForeground,
+                                logger,
+                                request.getDataSize());
+
+                        // TODO(b/344902130) - Enforce WRITE_MEDICAL_RESOURCE permissions.
+
+                        // TODO(b/344560623) - Add character limits to CreateMedicalDataSource
+                        // displayName and fhirBaseUri values and enforce limit of 20 sources per
+                        // app.
+
+                        // TODO(b/344560623) - Enforce uniqueness constraint on fhir base uri.
+                        MedicalDataSource dataSource =
+                                MedicalDataSourceHelper.createMedicalDataSource(
+                                        request, packageName);
+
+                        tryAndReturnResult(callback, dataSource, logger);
+                    } catch (SQLiteException sqLiteException) {
+                        logger.setHealthDataServiceApiStatusError(HealthConnectException.ERROR_IO);
+                        Slog.e(TAG, "SQLiteException: ", sqLiteException);
+                        tryAndThrowException(
+                                callback, sqLiteException, HealthConnectException.ERROR_IO);
+                    } catch (SecurityException securityException) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_SECURITY);
+                        Slog.e(TAG, "SecurityException: ", securityException);
+                        tryAndThrowException(callback, securityException, ERROR_SECURITY);
+                    } catch (HealthConnectException healthConnectException) {
+                        logger.setHealthDataServiceApiStatusError(
+                                healthConnectException.getErrorCode());
+                        Slog.e(TAG, "HealthConnectException: ", healthConnectException);
+                        tryAndThrowException(
+                                callback,
+                                healthConnectException,
+                                healthConnectException.getErrorCode());
+                    } catch (Exception e) {
+                        logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+                        Slog.e(TAG, "Exception: ", e);
+                        tryAndThrowException(callback, e, ERROR_INTERNAL);
+                    } finally {
+                        logger.build().log();
+                    }
+                },
+                uid,
+                holdsDataManagementPermission);
+    }
+
     @Override
     public void readMedicalResources(
             @NonNull AttributionSource attributionSource,
@@ -2617,6 +2713,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         }
     }
 
+    private static void tryAndReturnResult(
+            IMedicalDataSourceResponseCallback callback,
+            MedicalDataSource medicalDataSource,
+            HealthConnectServiceLogger.Builder logger) {
+        try {
+            callback.onResult(medicalDataSource);
+            logger.setHealthDataServiceApiStatusSuccess();
+        } catch (RemoteException e) {
+            Slog.e(TAG, "Remote call failed when returning MedicalDataSource response", e);
+            logger.setHealthDataServiceApiStatusError(ERROR_INTERNAL);
+        }
+    }
+
     private static void tryAndThrowException(
             @NonNull IInsertRecordsResponseCallback callback,
             @NonNull Exception exception,
@@ -2822,6 +2931,19 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                             new HealthConnectException(errorCode, exception.toString())));
         } catch (RemoteException e) {
             Log.e(TAG, "Unable to send ReadMedicalResourcesResponse to the callback", e);
+        }
+    }
+
+    private static void tryAndThrowException(
+            @NonNull IMedicalDataSourceResponseCallback callback,
+            @NonNull Exception exception,
+            @MigrationException.ErrorCode int errorCode) {
+        try {
+            callback.onError(
+                    new HealthConnectExceptionParcel(
+                            new HealthConnectException(errorCode, exception.toString())));
+        } catch (RemoteException e) {
+            Log.e(TAG, "Unable to send result to the callback for MedicalDataSource", e);
         }
     }
 

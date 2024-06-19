@@ -192,11 +192,11 @@ class HomeFragmentTest {
     }
 
     @Test
-    fun recentAccessApp_navigatesToConnectedAppFragment() {
+    fun recentAccessApp_navigatesToFitnessAppFragment() {
         setupFragmentForNavigation()
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.connectedAppFragment)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test
@@ -653,7 +653,7 @@ class HomeFragmentTest {
 
     @Test
     @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
-    fun whenExportImportFlagIsEnabled_errorIsNotLostFileAccess_exportFileAccessErrorBannerIsNotShown() {
+    fun whenExportImportFlagIsEnabled_noError_exportFileAccessErrorBannerIsNotShown() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -668,7 +668,7 @@ class HomeFragmentTest {
                 ScheduledExportUiStatus.WithData(
                     ScheduledExportUiState(
                         NOW,
-                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         TEST_EXPORT_FREQUENCY_IN_DAYS)))
         }
 
@@ -711,7 +711,40 @@ class HomeFragmentTest {
 
     @Test
     @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
-    fun whenExportImportFlagIsEnabled_withValidErrorTypeAndDate_showsExportFileAccessErrorBanner() {
+    fun whenExportImportFlagIsEnabled_withUnknownErrorAndDate_showsExportErrorBanner() {
+        whenever(recentAccessViewModel.recentAccessApps).then {
+            MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
+        }
+        whenever(homeFragmentViewModel.connectedApps).then {
+            MutableLiveData(
+                listOf(
+                    ConnectedAppMetadata(TEST_APP, ConnectedAppStatus.ALLOWED),
+                    ConnectedAppMetadata(TEST_APP_2, ConnectedAppStatus.ALLOWED)))
+        }
+        whenever(exportStatusViewModel.storedScheduledExportStatus).then {
+            MutableLiveData(
+                ScheduledExportUiStatus.WithData(
+                    ScheduledExportUiState(
+                        NOW,
+                        ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_UNKNOWN,
+                        TEST_EXPORT_FREQUENCY_IN_DAYS)))
+        }
+        launchFragment<HomeFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Couldn't export data")).check(matches(isDisplayed()))
+        onView(withText("Set up")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "There was a problem with the export for October 21, 2022. Please set up a new scheduled export and try again."))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
+    fun whenExportImportFlagIsEnabled_withLostFileAccessErrorAndDate_showsExportErrorBanner() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }
@@ -744,7 +777,7 @@ class HomeFragmentTest {
 
     @Test
     @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
-    fun whenExportImportFlagIsEnabled_withValidErrorTypeAndDate_showsExportFileAccessErrorBanner_clicksSetupAndNavigatesToExportFlow() {
+    fun whenExportImportFlagIsEnabled_withValidErrorTypeAndDate_showsExportErrorBanner_clicksSetupAndNavigatesToExportFlow() {
         whenever(recentAccessViewModel.recentAccessApps).then {
             MutableLiveData<RecentAccessState>(RecentAccessState.WithData(emptyList()))
         }

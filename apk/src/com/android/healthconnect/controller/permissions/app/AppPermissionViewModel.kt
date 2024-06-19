@@ -49,7 +49,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-/** View model for {@link ConnectedAppFragment} and {SettingsManageAppPermissionsFragment} . */
+/** View model for {@link FitnessAppFragment} and {SettingsManageAppPermissionsFragment} . */
 @HiltViewModel
 class AppPermissionViewModel
 @Inject
