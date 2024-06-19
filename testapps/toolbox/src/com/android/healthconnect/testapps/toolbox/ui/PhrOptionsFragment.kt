@@ -160,12 +160,10 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
     private suspend fun readMedicalResourcesById(ids: List<String>): List<MedicalResource> {
         Log.d("READ_MEDICAL_RESOURCES", "Reading resource with ids ${ids.toString()}")
-        // TODO(b/343455447): Update the fake empty list here to use the real
-        // inserted MedicalResourceIds.
         val resources =
             suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
                 healthConnectManager.readMedicalResources(
-                    listOf(),
+                    ids.map(MedicalIdFilter::fromId),
                     Runnable::run,
                     continuation.asOutcomeReceiver())
             }

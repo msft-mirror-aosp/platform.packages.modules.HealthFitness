@@ -62,15 +62,15 @@ class ListInputField(context: Context, fieldName: String, inputFieldType: Parame
 
     init {
         inflate(context, R.layout.fragment_list_input_view, this)
-        requireViewById<TextView>(R.id.field_name).text = fieldName
-        mLinearLayout = requireViewById(R.id.list_input_linear_layout)
+        findViewById<TextView>(R.id.field_name).text = fieldName
+        mLinearLayout = findViewById(R.id.list_input_linear_layout)
         mDataTypeClass = inputFieldType.actualTypeArguments[0]
         mRowsData = ArrayList()
         setupAddRowButtonListener()
     }
 
     private fun setupAddRowButtonListener() {
-        val buttonView = requireViewById<FloatingActionButton>(R.id.add_row)
+        val buttonView = findViewById<FloatingActionButton>(R.id.add_row)
 
         buttonView.setOnClickListener { addRow() }
     }

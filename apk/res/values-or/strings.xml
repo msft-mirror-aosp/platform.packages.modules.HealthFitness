@@ -951,7 +951,7 @@
     <string name="tab_access" msgid="7818197975407243701">"ଆକ୍ସେସ କରନ୍ତୁ"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"<xliff:g id="APP_NAME">%1$s</xliff:g> ପାଇଁ ଅତିରିକ୍ତ ଆକ୍ସେସକୁ ଅନୁମତି ଦେବେ?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ମଧ୍ୟ ଏହି Health Connect ସେଟିଂସକୁ ଆକ୍ସେସ କରିବାକୁ ଚାହେଁ"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"ଏହି ଆପ ପାଇଁ ବେକଗ୍ରାଉଣ୍ଡ କିମ୍ବା ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"ଏହି ଆପ ପାଇଁ ପୃଷ୍ଠପଟ କିମ୍ବା ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"ଏହି ଆପ ପାଇଁ ପୃଷ୍ଠପଟ ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"ଏହି ଆପ ପାଇଁ ପୂର୍ବର ଡାଟା ଆକ୍ସେସ ଚାଲୁ କରିବା ପାଇଁ ଅତି କମରେ ଗୋଟିଏ ପଢ଼ିବାର ଅନୁମତିକୁ ସକ୍ଷମ କରନ୍ତୁ"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"Health Connectରୁ ସମସ୍ତ ଡାଟାକୁ ସ୍ଥାୟୀ ଭାବେ ଡିଲିଟ କରିବେ?"</string>

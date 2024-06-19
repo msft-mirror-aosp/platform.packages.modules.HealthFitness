@@ -71,6 +71,7 @@ import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
+import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
@@ -2103,10 +2104,7 @@ public class HealthConnectManager {
     }
 
     /**
-     * Reads {@link MedicalResource}s based on a list of {@link MedicalResourceId}s.
-     *
-     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
-     * ids}.
+     * Reads {@link MedicalResource}s based on a list of {@link MedicalIdFilter}s.
      *
      * <p>Number of resources returned by this API will depend based on below factors:
      *
@@ -2137,9 +2135,10 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if {@code ids} is empty or its size is more than 5000.
      */
+    // (TODO: b/343455447): Replace MedicalIdFilter to use MedicalResourceId.
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
-            @NonNull List<MedicalResourceId> ids,
+            @NonNull List<MedicalIdFilter> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
         Objects.requireNonNull(ids);
@@ -2158,7 +2157,7 @@ public class HealthConnectManager {
         try {
             mService.readMedicalResources(
                     mContext.getAttributionSource(),
-                    ids,
+                    new MedicalIdFiltersParcel(ids),
                     new IReadMedicalResourcesResponseCallback.Stub() {
                         @Override
                         public void onResult(ReadMedicalResourcesResponse parcel) {

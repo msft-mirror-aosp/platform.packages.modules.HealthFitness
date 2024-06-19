@@ -49,7 +49,7 @@ class DataTypeListFragment : Fragment() {
 
         mDataSet = category.healthPermissionTypes
 
-        val recyclerView: RecyclerView = view.requireViewById(R.id.list_recycler_view)
+        val recyclerView: RecyclerView = view.findViewById(R.id.list_recycler_view)
         recyclerView.adapter =
             TextViewListAdapter(mDataSet) { viewHolder: TextViewListViewHolder, position: Int ->
                 onBindViewHolderCallback(viewHolder, position)

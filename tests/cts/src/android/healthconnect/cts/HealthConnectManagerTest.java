@@ -34,10 +34,8 @@ import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
-import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.MEDICAL_RESOURCE_ID;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
-import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
 import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
@@ -71,7 +69,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.MedicalResourceId;
+import android.health.connect.MedicalIdFilter;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
@@ -1956,13 +1954,9 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testReadMedicalResources_byIds_exceedsMaxPageSize_throws() {
-        List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        List<MedicalIdFilter> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
         for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
-            ids.add(
-                    new MedicalResourceId(
-                            Integer.toString(i),
-                            FHIR_RESOURCE_TYPE_IMMUNIZATION,
-                            FHIR_RESOURCE_ID_IMMUNIZATION));
+            ids.add(MedicalIdFilter.fromId(Integer.toString(i)));
         }
 
         assertThrows(IllegalArgumentException.class, () -> readMedicalResourcesByIds(ids));
@@ -1972,7 +1966,7 @@ public class HealthConnectManagerTest {
     @Test
     @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
     public void testReadMedicalResources_byIds_returnsEmptyList() throws InterruptedException {
-        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
+        List<MedicalIdFilter> ids = List.of(MedicalIdFilter.fromId(MEDICAL_RESOURCE_ID));
         List<MedicalResource> medicalResources = readMedicalResourcesByIds(ids);
 
         assertThat(medicalResources).isEmpty();

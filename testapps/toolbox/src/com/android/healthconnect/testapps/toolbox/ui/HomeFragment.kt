@@ -107,28 +107,28 @@ class HomeFragment : Fragment() {
             .beginTransaction()
             .add(performanceTesting, "PERFORMANCE_TESTING_FRAGMENT")
             .commit()
-        view.requireViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
+        view.findViewById<Button>(R.id.launch_health_connect_button).setOnClickListener {
             launchHealthConnect()
         }
-        view.requireViewById<Button>(R.id.request_data_type_permissions_button).setOnClickListener {
+        view.findViewById<Button>(R.id.request_data_type_permissions_button).setOnClickListener {
             requestDataTypePermissions()
         }
-        view.requireViewById<Button>(R.id.request_route_button).setOnClickListener {
+        view.findViewById<Button>(R.id.request_route_button).setOnClickListener {
             goToRequestRoute()
         }
-        view.requireViewById<Button>(R.id.insert_update_data_button).setOnClickListener {
+        view.findViewById<Button>(R.id.insert_update_data_button).setOnClickListener {
             goToCategoryListPage()
         }
-        view.requireViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
+        view.findViewById<Button>(R.id.seed_random_data_button).setOnClickListener {
             seedDataButtonPressed()
         }
-        view.requireViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
+        view.findViewById<Button>(R.id.seed_performance_read_data_button).setOnClickListener {
             performanceTestingViewModel.beginReadingData()
         }
-        view.requireViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
+        view.findViewById<Button>(R.id.seed_performance_insert_data_button).setOnClickListener {
             performanceTestingViewModel.beginInsertingData(false)
         }
-        view.requireViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
+        view.findViewById<Button>(R.id.toggle_permission_intent_filter).setOnClickListener {
             togglePermissionIntentFilter()
         }
         view.requireViewById<Button>(R.id.read_data_in_background_button).setOnClickListener {

@@ -44,6 +44,6 @@ class TextViewListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val textView: TextView
 
     init {
-        textView = view.requireViewById(R.id.list_item_textview)
+        textView = view.findViewById(R.id.list_item_textview)
     }
 }

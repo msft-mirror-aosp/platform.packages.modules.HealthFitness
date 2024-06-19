@@ -75,7 +75,6 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
 import android.health.connect.MedicalIdFilter;
-import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.ReadRecordsRequest;
@@ -1255,7 +1254,7 @@ public final class TestUtils {
      * Helper function to read medical resources from the DB by a list of {@link MedicalIdFilter},
      * using HealthConnectManager.
      */
-    public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)
+    public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalIdFilter> ids)
             throws InterruptedException {
         HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()

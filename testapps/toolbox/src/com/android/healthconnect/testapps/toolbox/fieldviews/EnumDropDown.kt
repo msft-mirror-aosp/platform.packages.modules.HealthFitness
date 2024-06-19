@@ -39,14 +39,14 @@ class EnumDropDown(
         inflate(context, R.layout.fragment_dropdown, this)
         mDropdownValues = enumFieldsWithValues.getAllFieldNames()
         mEnumFieldsWithValues = enumFieldsWithValues
-        val spinnerTitle = requireViewById<TextView>(R.id.title)
+        val spinnerTitle = findViewById<TextView>(R.id.title)
         spinnerTitle.text = title
         setupSpinner()
     }
 
     private fun setupSpinner() {
         val autoCompleteTextView =
-            requireViewById<AutoCompleteTextView>(R.id.enum_auto_complete_textview)
+            findViewById<AutoCompleteTextView>(R.id.enum_auto_complete_textview)
         val dataAdapter: ArrayAdapter<Any> =
             ArrayAdapter<Any>(context, R.layout.simple_spinner_item, mDropdownValues)
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

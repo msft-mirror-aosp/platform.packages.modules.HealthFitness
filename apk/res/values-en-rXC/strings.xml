@@ -267,10 +267,14 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‏‎‎‎‏‎‏‏‏‎‎‎‏‏‏‎‏‎‏‎‏‏‏‏‎‏‎‏‏‎‏‎‏‏‎‏‎‏‎‏‏‎‎‎‏‎‎‏‎‎‎‏‏‎‎‎‏‎‎‎Immunization‎‏‎‎‏‎"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‏‏‎‎‏‏‎‏‏‏‎‎‎‎‎‎‎‎‏‎‎‏‎‏‎‎‏‎‎‎‏‎‏‏‎‏‎‎‏‎‏‎‎‏‏‎‎‎‏‎‎‎‎‎‎‎‎‎‏‏‏‎immunization‎‏‎‎‏‎"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‎‏‎‏‎‎‎‎‏‏‎‎‏‎‎‏‏‎‎‏‎‏‏‎‏‏‎‏‎‏‎‏‏‏‎‏‏‏‏‏‎‏‏‏‎‏‏‏‏‏‏‏‏‎‏‏‏‏‎‏‎‏‏‎Read immunization‎‏‎‎‏‎"</string>
-    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‏‎‏‎‏‎‎‏‎‎‎‎‎‎‎‎‏‎‎‎‎‏‎‏‎‏‎‎‎‎‏‏‏‏‎‏‎‏‎‏‏‎‎‏‏‏‏‏‎‎‎‏‏‎‎‏‎‎‎‎‎Mindfulness‎‏‎‎‏‎"</string>
-    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‎‎‏‏‏‏‏‏‏‎‎‏‏‎‎‎‎‎‎‎‎‏‏‏‏‎‎‏‎‎‎‏‎‏‏‎‏‏‎‎‏‏‏‎‎‎‏‏‎‎‎‎‎‏‏‎‎‏‏‏‎‎mindfulness‎‏‎‎‏‎"</string>
-    <string name="mindfulness_read_content_description" msgid="739187536826062524">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‎‏‎‏‎‎‏‎‎‎‎‏‎‎‎‎‏‏‏‏‏‎‎‏‎‎‏‎‏‏‏‏‏‏‎‏‎‏‏‏‎‏‎‎‏‏‏‎‏‎‏‏‎‏‎‏‏‏‏‎‎‎Read mindfulness‎‏‎‎‏‎"</string>
-    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‏‎‏‏‎‏‏‏‏‏‏‎‏‏‏‎‏‎‎‏‏‏‏‏‎‎‎‎‏‏‎‏‎‎‏‏‏‎‎‏‎‏‏‎‎‎‎‏‏‎‏‎‏‏‎‎‎‏‎‏‎‏‎Write mindfulness‎‏‎‎‏‎"</string>
+    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
+    <skip />
+    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
+    <skip />
+    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
+    <skip />
+    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
+    <skip />
     <string name="read_permission_category" msgid="6002099618259628632">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‏‏‏‎‏‎‎‏‏‎‏‎‎‏‎‏‏‏‎‏‏‏‏‎‏‏‏‎‎‏‏‎‏‎‏‏‎‎‏‎‎‏‏‎‏‏‏‏‏‎‏‏‏‎‎‏‎‎‏‎‏‏‎‎‎‎Allow “‎‏‎‎‏‏‎<xliff:g id="APP_NAME">%1$s</xliff:g>‎‏‎‎‏‏‏‎” to read‎‏‎‎‏‎"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‎‏‎‏‎‎‏‏‏‎‏‎‏‎‎‏‏‎‎‎‏‎‎‏‏‎‎‎‏‎‏‎‎‏‏‏‏‏‏‎‎‏‎‏‏‏‎‎‎‎‎‏‏‏‏‎‏‏‏‏‎Allow “‎‏‎‎‏‏‎<xliff:g id="APP_NAME">%1$s</xliff:g>‎‏‎‎‏‏‏‎” to write‎‏‎‎‏‎"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"‎‏‎‎‎‎‎‏‎‏‏‏‎‎‎‏‎‏‏‎‎‎‏‏‎‎‏‏‏‏‏‎‏‏‏‎‎‎‏‏‎‎‏‏‏‎‎‏‏‎‏‎‏‏‎‎‏‏‏‎‎‏‏‎‎‏‏‎‎‎‏‏‏‎‏‎‎‎‏‏‎‎‎‏‏‎‎‎‎‏‎‎‎‏‎Cancel‎‏‎‎‏‎"</string>

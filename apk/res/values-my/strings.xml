@@ -59,8 +59,8 @@
     <string name="sleep_category_lowercase" msgid="842609634386839011">"အိပ်စက်ခြင်း"</string>
     <string name="vitals_category_uppercase" msgid="8982333138032938623">"အဓိကကိုယ်တွင်းအင်္ဂါအခြေအနေ"</string>
     <string name="vitals_category_lowercase" msgid="4664457787866407963">"အဓိကကိုယ်တွင်းအင်္ဂါအခြေအနေ"</string>
-    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"ရာသီလာခြင်းမှတ်တမ်း"</string>
-    <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ရာသီလာခြင်းမှတ်တမ်း"</string>
+    <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"ရာသီသွေးဆင်းမှု မှတ်တမ်း"</string>
+    <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"ရာသီသွေးဆင်းမှု မှတ်တမ်း"</string>
     <string name="nutrition_category_uppercase" msgid="6665096097987741036">"အာဟာရ"</string>
     <string name="nutrition_category_lowercase" msgid="7804134941649488990">"အာဟာရ"</string>
     <string name="browse_data_category" msgid="4813955610391357638">"ဒေတာကြည့်ရှုခြင်း"</string>
