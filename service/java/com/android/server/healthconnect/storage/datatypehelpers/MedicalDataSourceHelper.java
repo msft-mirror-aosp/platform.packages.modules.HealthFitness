@@ -16,16 +16,23 @@
 
 package com.android.server.healthconnect.storage.datatypehelpers;
 
+import static android.health.connect.Constants.MAXIMUM_ALLOWED_CURSOR_COUNT;
+
 import static com.android.server.healthconnect.storage.HealthConnectDatabase.createTable;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.PRIMARY_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.datatypehelpers.RecordHelper.UUID_COLUMN_NAME;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.BLOB_UNIQUE_NON_NULL;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.PRIMARY;
 import static com.android.server.healthconnect.storage.utils.StorageUtils.TEXT_NOT_NULL;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorString;
+import static com.android.server.healthconnect.storage.utils.StorageUtils.getCursorUUID;
+import static com.android.server.healthconnect.storage.utils.WhereClauses.LogicalOperator.AND;
 
 import android.annotation.NonNull;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.util.Pair;
@@ -33,9 +40,12 @@ import android.util.Pair;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.storage.TransactionManager;
 import com.android.server.healthconnect.storage.request.CreateTableRequest;
+import com.android.server.healthconnect.storage.request.ReadTableRequest;
 import com.android.server.healthconnect.storage.request.UpsertTableRequest;
 import com.android.server.healthconnect.storage.utils.StorageUtils;
+import com.android.server.healthconnect.storage.utils.WhereClauses;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -83,6 +93,52 @@ public class MedicalDataSourceHelper {
         createTable(db, getCreateTableRequest());
     }
 
+    /** Creates {@link ReadTableRequest} for the given list of {@code ids}. */
+    @NonNull
+    public static ReadTableRequest getReadTableRequest(@NonNull List<String> ids) {
+        return new ReadTableRequest(getMainTableName())
+                .setWhereClause(getReadTableWhereClause(ids));
+    }
+
+    @NonNull
+    private static WhereClauses getReadTableWhereClause(@NonNull List<String> ids) {
+        List<UUID> uuids = ids.stream().map(UUID::fromString).toList();
+        return new WhereClauses(AND)
+                .addWhereInClauseWithoutQuotes(
+                        UUID_COLUMN_NAME, StorageUtils.getListOfHexStrings(uuids));
+    }
+
+    /**
+     * Returns List of {@link MedicalDataSource}s from the cursor. If the cursor contains more than
+     * {@link MAXIMUM_ALLOWED_CURSOR_COUNT} data sources, it throws {@link
+     * IllegalArgumentException}.
+     */
+    @NonNull
+    private static List<MedicalDataSource> getMedicalDataSources(@NonNull Cursor cursor) {
+        if (cursor.getCount() > MAXIMUM_ALLOWED_CURSOR_COUNT) {
+            throw new IllegalArgumentException(
+                    "Too many data sources in the cursor. Max allowed: "
+                            + MAXIMUM_ALLOWED_CURSOR_COUNT);
+        }
+        List<MedicalDataSource> medicalDataSources = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                medicalDataSources.add(getMedicalDataSource(cursor));
+            } while (cursor.moveToNext());
+        }
+        return medicalDataSources;
+    }
+
+    @NonNull
+    private static MedicalDataSource getMedicalDataSource(@NonNull Cursor cursor) {
+        return new MedicalDataSource.Builder(
+                        /* id= */ getCursorUUID(cursor, UUID_COLUMN_NAME).toString(),
+                        /* packageName= */ getCursorString(cursor, PACKAGE_NAME_COLUMN_NAME),
+                        /* fhirBaseUri= */ getCursorString(cursor, FHIR_BASE_URI_COLUMN_NAME),
+                        /* displayName= */ getCursorString(cursor, DISPLAY_NAME_COLUMN_NAME))
+                .build();
+    }
+
     /**
      * Inserts the {@link MedicalDataSource} created from the given {@link
      * CreateMedicalDataSourceRequest} and {@code packageName} into the HealthConnect database.
@@ -101,6 +157,22 @@ public class MedicalDataSourceHelper {
                 getUpsertTableRequest(dataSourceUuid, request, packageName);
         TransactionManager.getInitialisedInstance().insert(upsertTableRequest);
         return buildMedicalDataSource(dataSourceUuid, request, packageName);
+    }
+
+    /**
+     * Reads the {@link MedicalDataSource}s stored in the HealthConnect database using the given
+     * list of {@code ids}.
+     *
+     * @param ids a list of {@link MedicalDataSource} ids.
+     * @return List of {@link MedicalDataSource}s read from medical_data_source table based on ids.
+     */
+    @NonNull
+    public static List<MedicalDataSource> getMedicalDataSources(@NonNull List<String> ids)
+            throws SQLiteException {
+        ReadTableRequest readTableRequest = getReadTableRequest(ids);
+        try (Cursor cursor = TransactionManager.getInitialisedInstance().read(readTableRequest)) {
+            return getMedicalDataSources(cursor);
+        }
     }
 
     /**

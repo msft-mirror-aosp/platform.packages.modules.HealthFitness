@@ -53,6 +53,7 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthConnectManager.DataDownloadState;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadMedicalResourcesResponse;
 import android.health.connect.RecordTypeInfoResponse;
@@ -83,7 +84,6 @@ import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
@@ -2207,7 +2207,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     @Override
     public void readMedicalResources(
             @NonNull AttributionSource attributionSource,
-            @NonNull MedicalIdFiltersParcel medicalIdFiltersParcel,
+            @NonNull List<MedicalResourceId> medicalResourceIds,
             @NonNull IReadMedicalResourcesResponseCallback callback) {
         if (!personalHealthRecord()) {
             HealthConnectException unsupportedException =
@@ -2220,7 +2220,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
             return;
         }
 
-        checkParamsNonNull(attributionSource, medicalIdFiltersParcel, callback);
+        checkParamsNonNull(attributionSource, medicalResourceIds, callback);
 
         final int uid = Binder.getCallingUid();
         final int pid = Binder.getCallingPid();
@@ -2270,10 +2270,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
                         }
 
                         // TODO(b/340204629): Pass extra fields to DB to perform permission check.
-                        // TODO(b/343455447): Update the fake empty list here to use the real
-                        // MedicalResourceId from input when API is updated.
                         List<MedicalResource> medicalResources =
-                                mTransactionManager.readMedicalResourcesByIds(List.of());
+                                mTransactionManager.readMedicalResourcesByIds(medicalResourceIds);
                         logger.setNumberOfRecords(medicalResources.size());
 
                         // TODO(b/343921816): Creates access log.
