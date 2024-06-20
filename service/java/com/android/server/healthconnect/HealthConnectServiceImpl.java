@@ -2165,11 +2165,20 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
     @Override
     public void runImport(@NonNull UserHandle user, @NonNull Uri file) {
-        try {
-            mImportManager.runImport(user, file);
-        } catch (Exception e) {
-            Slog.e(TAG, "Import failed", e);
-        }
+        final int uid = Binder.getCallingUid();
+        final int pid = Binder.getCallingPid();
+        final UserHandle userHandle = Binder.getCallingUserHandle();
+        HealthConnectThreadScheduler.scheduleInternalTask(
+                () -> {
+                    try {
+                        enforceIsForegroundUser(userHandle);
+                        mContext.enforcePermission(MANAGE_HEALTH_DATA_PERMISSION, pid, uid, null);
+                        mImportManager.runImport(userHandle, file);
+                    } catch (Exception exception) {
+                        throw new HealthConnectException(
+                                HealthConnectException.ERROR_IO, exception.toString());
+                    }
+                });
     }
 
     /** Queries the document providers available to be used for export/import. */

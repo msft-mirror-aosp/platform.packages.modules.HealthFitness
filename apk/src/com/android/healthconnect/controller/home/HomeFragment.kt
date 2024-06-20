@@ -59,7 +59,7 @@ import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -181,7 +181,7 @@ class HomeFragment : Hilt_HomeFragment() {
             }
         }
 
-        if (Flags.exportImport()) {
+        if (exportImport()) {
             exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
                 scheduledExportUiStatus ->
                 when (scheduledExportUiStatus) {
