@@ -61,9 +61,11 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import java.io.File
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.startsWith
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -353,7 +355,7 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
-    fun importSourceLocationFragment_chooseFile_navigatesToImportSourceDecryptionFragment() {
+    fun importSourceLocationFragment_chooseFile_navigatesToImportConfirmationDialogFragment() {
         val documentProviders =
             listOf(
                 ExportImportDocumentProvider(
@@ -376,16 +378,21 @@ class ImportSourceLocationFragmentTest {
             navHostController.setCurrentDestination(R.id.importSourceLocationFragment)
             Navigation.setViewNavController(this.requireView(), navHostController)
         }
+
+        val testFile = File.createTempFile("testFile", ".zip")
+
         intending(hasAction(Intent.ACTION_OPEN_DOCUMENT))
-            .respondWith(
-                ActivityResult(
-                    RESULT_OK, Intent().setData(TEST_DOCUMENT_PROVIDER_1_ROOT_1_DOCUMENT_URI)))
+            .respondWith(ActivityResult(RESULT_OK, Intent().setData(Uri.fromFile(testFile))))
 
         onView(documentProviderWithTitle(TEST_DOCUMENT_PROVIDER_1_TITLE)).perform(click())
         onView(withId(R.id.export_import_next_button)).perform(click())
 
-        assertThat(navHostController.currentDestination?.id)
-            .isEqualTo(R.id.importDecryptionFragment)
+        onView(withText("Import this file?")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withId(R.id.dialog_custom_message))
+            .inRoot(isDialog())
+            .check(matches(withText(startsWith(testFile.name))))
+        onView(withText("Cancel")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("Import")).inRoot(isDialog()).check(matches(isDisplayed()))
     }
 
     @Test

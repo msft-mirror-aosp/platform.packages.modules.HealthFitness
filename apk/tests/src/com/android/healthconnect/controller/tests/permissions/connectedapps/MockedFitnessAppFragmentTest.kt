@@ -30,7 +30,7 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.android.healthconnect.controller.permissions.api.HealthPermissionManager
-import com.android.healthconnect.controller.permissions.app.ConnectedAppFragment
+import com.android.healthconnect.controller.permissions.app.FitnessAppFragment
 import com.android.healthconnect.controller.service.HealthPermissionManagerModule
 import com.android.healthconnect.controller.shared.Constants
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
@@ -57,7 +57,7 @@ import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 @UninstallModules(HealthPermissionManagerModule::class)
-class MockedConnectedAppFragmentTest {
+class MockedFitnessAppFragmentTest {
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
     @Inject lateinit var fakeFeatureUtils: FeatureUtils
@@ -87,7 +87,7 @@ class MockedConnectedAppFragmentTest {
                     HealthPermissions.READ_EXERCISE_ROUTES,
                     HealthPermissions.READ_HEALTH_DATA_HISTORY))
 
-        launchFragment<ConnectedAppFragment>(
+        launchFragment<FitnessAppFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 Constants.EXTRA_APP_NAME to TEST_APP_NAME))
@@ -140,7 +140,7 @@ class MockedConnectedAppFragmentTest {
                 null
             }
 
-        launchFragment<ConnectedAppFragment>(
+        launchFragment<FitnessAppFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 Constants.EXTRA_APP_NAME to TEST_APP_NAME))
@@ -183,7 +183,7 @@ class MockedConnectedAppFragmentTest {
                     HealthPermissions.READ_EXERCISE_ROUTES to FLAG_PERMISSION_USER_SET,
                     HealthPermissions.READ_EXERCISE to FLAG_PERMISSION_USER_SET))
 
-        launchFragment<ConnectedAppFragment>(
+        launchFragment<FitnessAppFragment>(
             bundleOf(
                 Intent.EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME,
                 Constants.EXTRA_APP_NAME to TEST_APP_NAME))

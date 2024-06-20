@@ -34,6 +34,7 @@ import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissi
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission.Companion.fromPermissionString
+import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.service.IoDispatcher
 import com.android.healthconnect.controller.shared.HealthPermissionReader
@@ -48,7 +49,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-/** View model for {@link ConnectedAppFragment} and {SettingsManageAppPermissionsFragment} . */
+/** View model for {@link FitnessAppFragment} and {SettingsManageAppPermissionsFragment} . */
 @HiltViewModel
 class AppPermissionViewModel
 @Inject
@@ -71,27 +72,56 @@ constructor(
         private const val TAG = "AppPermissionViewModel"
     }
 
-    private val _appPermissions = MutableLiveData<List<FitnessPermission>>(emptyList())
-    val appPermissions: LiveData<List<FitnessPermission>>
-        get() = _appPermissions
+    private val _fitnessPermissions = MutableLiveData<List<FitnessPermission>>(emptyList())
+    val fitnessPermissions: LiveData<List<FitnessPermission>>
+        get() = _fitnessPermissions
 
-    private val _grantedPermissions = MutableLiveData<Set<FitnessPermission>>(emptySet())
-    val grantedPermissions: LiveData<Set<FitnessPermission>>
-        get() = _grantedPermissions
+    private val _grantedFitnessPermissions = MutableLiveData<Set<FitnessPermission>>(emptySet())
+    val grantedFitnessPermissions: LiveData<Set<FitnessPermission>>
+        get() = _grantedFitnessPermissions
 
-    val allAppPermissionsGranted =
+    val allFitnessPermissionsGranted =
         MediatorLiveData(false).apply {
-            addSource(_appPermissions) {
-                postValue(isAllPermissionsGranted(appPermissions, grantedPermissions))
+            addSource(_fitnessPermissions) {
+                postValue(
+                    isAllFitnessPermissionsGranted(fitnessPermissions, grantedFitnessPermissions))
             }
-            addSource(_grantedPermissions) {
-                postValue(isAllPermissionsGranted(appPermissions, grantedPermissions))
+            addSource(_grantedFitnessPermissions) {
+                postValue(
+                    isAllFitnessPermissionsGranted(fitnessPermissions, grantedFitnessPermissions))
             }
         }
 
-    val atLeastOnePermissionGranted =
+    val atLeastOneFitnessPermissionGranted =
         MediatorLiveData(false).apply {
-            addSource(_grantedPermissions) { grantedPermissions ->
+            addSource(_grantedFitnessPermissions) { grantedPermissions ->
+                postValue(grantedPermissions.isNotEmpty())
+            }
+        }
+
+    private val _medicalPermissions = MutableLiveData<List<MedicalPermission>>(emptyList())
+    val medicalPermissions: LiveData<List<MedicalPermission>>
+        get() = _medicalPermissions
+
+    private val _grantedMedicalPermissions = MutableLiveData<Set<MedicalPermission>>(emptySet())
+    val grantedMedicalPermissions: LiveData<Set<MedicalPermission>>
+        get() = _grantedMedicalPermissions
+
+    val allMedicalPermissionsGranted =
+        MediatorLiveData(false).apply {
+            addSource(_fitnessPermissions) {
+                postValue(
+                    isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions))
+            }
+            addSource(_grantedFitnessPermissions) {
+                postValue(
+                    isAllMedicalPermissionsGranted(medicalPermissions, grantedMedicalPermissions))
+            }
+        }
+
+    val atLeastOneMedicalPermissionGranted =
+        MediatorLiveData(false).apply {
+            addSource(_grantedMedicalPermissions) { grantedPermissions ->
                 postValue(grantedPermissions.isNotEmpty())
             }
         }
@@ -100,12 +130,12 @@ constructor(
     val appInfo: LiveData<AppMetadata>
         get() = _appInfo
 
-    private val _revokeAllPermissionsState =
+    private val _revokeAllHealthPermissionsState =
         MutableLiveData<RevokeAllState>(RevokeAllState.NotStarted)
-    val revokeAllPermissionsState: LiveData<RevokeAllState>
-        get() = _revokeAllPermissionsState
+    val revokeAllHealthPermissionsState: LiveData<RevokeAllState>
+        get() = _revokeAllHealthPermissionsState
 
-    private var permissionsList: List<HealthPermissionStatus> = listOf()
+    private var healthPermissionsList: List<HealthPermissionStatus> = listOf()
 
     /**
      * Flag to prevent {@link SettingManageAppPermissionsFragment} from reloading the granted
@@ -138,8 +168,10 @@ constructor(
 
     fun loadPermissionsForPackage(packageName: String) {
         // clear app permissions
-        _appPermissions.postValue(emptyList())
-        _grantedPermissions.postValue(emptySet())
+        _fitnessPermissions.postValue(emptyList())
+        _grantedFitnessPermissions.postValue(emptySet())
+        _medicalPermissions.postValue(emptyList())
+        _grantedMedicalPermissions.postValue(emptySet())
 
         viewModelScope.launch { _appInfo.postValue(appInfoReader.getAppMetadata(packageName)) }
         if (isPackageSupported(packageName)) {
@@ -153,17 +185,29 @@ constructor(
 
     private fun loadAllPermissions(packageName: String) {
         viewModelScope.launch {
-            permissionsList = loadAppPermissionsStatusUseCase.invoke(packageName)
-            _appPermissions.postValue(
-                permissionsList.map { it.healthPermission }.filterIsInstance<FitnessPermission>())
-            _grantedPermissions.postValue(
-                permissionsList
+            healthPermissionsList = loadAppPermissionsStatusUseCase.invoke(packageName)
+            _fitnessPermissions.postValue(
+                healthPermissionsList
+                    .map { it.healthPermission }
+                    .filterIsInstance<FitnessPermission>())
+            _grantedFitnessPermissions.postValue(
+                healthPermissionsList
                     .filter { it.isGranted }
                     .map { it.healthPermission }
                     .filterIsInstance<FitnessPermission>()
                     .toSet())
+            _medicalPermissions.postValue(
+                healthPermissionsList
+                    .map { it.healthPermission }
+                    .filterIsInstance<MedicalPermission>())
+            _grantedMedicalPermissions.postValue(
+                healthPermissionsList
+                    .filter { it.isGranted }
+                    .map { it.healthPermission }
+                    .filterIsInstance<MedicalPermission>()
+                    .toSet())
             grantedAdditionalPermissions =
-                permissionsList
+                healthPermissionsList
                     .filter { it.isGranted }
                     .map { it.healthPermission }
                     .filterIsInstance<HealthPermission.AdditionalPermission>()
@@ -177,17 +221,26 @@ constructor(
             viewModelScope.launch {
                 val grantedPermissions =
                     loadAppPermissionsStatusUseCase.invoke(packageName).filter { it.isGranted }
-                permissionsList = grantedPermissions
+                healthPermissionsList = grantedPermissions
 
                 // Only show app permissions that are granted
-                _appPermissions.postValue(
+                _fitnessPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
                         .filterIsInstance<FitnessPermission>())
-                _grantedPermissions.postValue(
+                _grantedFitnessPermissions.postValue(
                     grantedPermissions
                         .map { it.healthPermission }
                         .filterIsInstance<FitnessPermission>()
+                        .toSet())
+                _medicalPermissions.postValue(
+                    grantedPermissions
+                        .map { it.healthPermission }
+                        .filterIsInstance<MedicalPermission>())
+                _grantedMedicalPermissions.postValue(
+                    grantedPermissions
+                        .map { it.healthPermission }
+                        .filterIsInstance<MedicalPermission>()
                         .toSet())
             }
             shouldLoadGrantedPermissions = false
@@ -200,36 +253,62 @@ constructor(
 
     fun updatePermission(
         packageName: String,
-        dataTypePermission: FitnessPermission,
+        fitnessPermission: FitnessPermission,
         grant: Boolean
     ): Boolean {
         try {
             if (grant) {
-                grantPermission(packageName, dataTypePermission)
+                grantPermission(packageName, fitnessPermission)
             } else {
-                if (shouldDisplayExerciseRouteDialog(packageName, dataTypePermission)) {
+                if (shouldDisplayExerciseRouteDialog(packageName, fitnessPermission)) {
                     _showDisableExerciseRouteEvent.postValue(true)
                 } else {
-                    revokePermission(dataTypePermission, packageName)
+                    revokePermission(fitnessPermission, packageName)
                 }
             }
 
             return true
         } catch (ex: Exception) {
-            Log.e(TAG, "Failed to update permissions!", ex)
+            Log.e(TAG, "Failed to update fitness permission!", ex)
+        }
+        return false
+    }
+
+    fun updatePermission(
+        packageName: String,
+        medicalPermission: MedicalPermission,
+        grant: Boolean
+    ): Boolean {
+        try {
+            if (grant) {
+                grantPermission(packageName, medicalPermission)
+            } else {
+                revokePermission(medicalPermission, packageName)
+            }
+
+            return true
+        } catch (ex: Exception) {
+            Log.e(TAG, "Failed to update medical permission!", ex)
         }
         return false
     }
 
     private fun grantPermission(packageName: String, fitnessPermission: FitnessPermission) {
-        val grantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
+        val grantedPermissions = _grantedFitnessPermissions.value.orEmpty().toMutableSet()
         grantPermissionsStatusUseCase.invoke(packageName, fitnessPermission.toString())
         grantedPermissions.add(fitnessPermission)
-        _grantedPermissions.postValue(grantedPermissions)
+        _grantedFitnessPermissions.postValue(grantedPermissions)
+    }
+
+    private fun grantPermission(packageName: String, medicalPermission: MedicalPermission) {
+        val grantedPermissions = _grantedMedicalPermissions.value.orEmpty().toMutableSet()
+        grantPermissionsStatusUseCase.invoke(packageName, medicalPermission.toString())
+        grantedPermissions.add(medicalPermission)
+        _grantedMedicalPermissions.postValue(grantedPermissions)
     }
 
     private fun revokePermission(fitnessPermission: FitnessPermission, packageName: String) {
-        val grantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
+        val grantedPermissions = _grantedFitnessPermissions.value.orEmpty().toMutableSet()
         val readPermissionsBeforeDisconnect =
             grantedPermissions.count { permission ->
                 permission.permissionsAccessType == PermissionsAccessType.READ
@@ -239,7 +318,7 @@ constructor(
             grantedPermissions.count { permission ->
                 permission.permissionsAccessType == PermissionsAccessType.READ
             }
-        _grantedPermissions.postValue(grantedPermissions)
+        _grantedFitnessPermissions.postValue(grantedPermissions)
 
         val lastReadPermissionRevoked =
             grantedAdditionalPermissions.isNotEmpty() &&
@@ -254,6 +333,13 @@ constructor(
 
         _lastReadPermissionDisconnected.postValue(lastReadPermissionRevoked)
         revokePermissionsStatusUseCase.invoke(packageName, fitnessPermission.toString())
+    }
+
+    private fun revokePermission(medicalPermission: MedicalPermission, packageName: String) {
+        val grantedPermissions = _grantedMedicalPermissions.value.orEmpty().toMutableSet()
+        grantedPermissions.remove(medicalPermission)
+        _grantedMedicalPermissions.postValue(grantedPermissions)
+        revokePermissionsStatusUseCase.invoke(packageName, medicalPermission.toString())
     }
 
     fun markLastReadShown() {
@@ -272,17 +358,34 @@ constructor(
         return isExerciseRoutePermissionAlwaysAllow(packageName)
     }
 
-    fun grantAllPermissions(packageName: String): Boolean {
+    fun grantAllFitnessPermissions(packageName: String): Boolean {
         try {
-            _appPermissions.value?.forEach {
+            _fitnessPermissions.value?.forEach {
                 grantPermissionsStatusUseCase.invoke(packageName, it.toString())
             }
-            val grantedPermissions = _grantedPermissions.value.orEmpty().toMutableSet()
-            grantedPermissions.addAll(_appPermissions.value.orEmpty())
-            _grantedPermissions.postValue(grantedPermissions)
+            val grantedFitnessPermissions =
+                _grantedFitnessPermissions.value.orEmpty().toMutableSet()
+            grantedFitnessPermissions.addAll(_fitnessPermissions.value.orEmpty())
+            _grantedFitnessPermissions.postValue(grantedFitnessPermissions)
             return true
         } catch (ex: Exception) {
-            Log.e(TAG, "Failed to update permissions!", ex)
+            Log.e(TAG, "Failed to update fitness permissions!", ex)
+        }
+        return false
+    }
+
+    fun grantAllMedicalPermissions(packageName: String): Boolean {
+        try {
+            _medicalPermissions.value?.forEach {
+                grantPermissionsStatusUseCase.invoke(packageName, it.toString())
+            }
+            val grantedMedicalPermissions =
+                _grantedMedicalPermissions.value.orEmpty().toMutableSet()
+            grantedMedicalPermissions.addAll(_medicalPermissions.value.orEmpty())
+            _grantedMedicalPermissions.postValue(grantedMedicalPermissions)
+            return true
+        } catch (ex: Exception) {
+            Log.e(TAG, "Failed to update medical permissions!", ex)
         }
         return false
     }
@@ -305,18 +408,21 @@ constructor(
         }
     }
 
-    fun revokeAllPermissions(packageName: String): Boolean {
+    // TODO(b/343142873): Update the behavior.
+    fun revokeAllHealthPermissions(packageName: String): Boolean {
         // TODO (b/325729045) if there is an error within the coroutine scope
         // it will not be caught by this statement in tests. Consider using LiveData instead
         try {
             viewModelScope.launch(ioDispatcher) {
-                _revokeAllPermissionsState.postValue(RevokeAllState.Loading)
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Loading)
                 revokeAllHealthPermissionsUseCase.invoke(packageName)
                 if (isPackageSupported(packageName)) {
                     loadPermissionsForPackage(packageName)
                 }
-                _revokeAllPermissionsState.postValue(RevokeAllState.Updated)
-                _grantedPermissions.postValue(emptySet())
+                _revokeAllHealthPermissionsState.postValue(RevokeAllState.Updated)
+                _grantedFitnessPermissions.postValue(emptySet())
+                _grantedMedicalPermissions.postValue(emptySet())
+                grantedAdditionalPermissions
             }
             return true
         } catch (ex: Exception) {
@@ -347,9 +453,22 @@ constructor(
             .isNotEmpty()
     }
 
-    private fun isAllPermissionsGranted(
+    private fun isAllFitnessPermissionsGranted(
         permissionsListLiveData: LiveData<List<FitnessPermission>>,
         grantedPermissionsLiveData: LiveData<Set<FitnessPermission>>
+    ): Boolean {
+        val permissionsList = permissionsListLiveData.value.orEmpty()
+        val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()
+        return if (permissionsList.isEmpty() || grantedPermissions.isEmpty()) {
+            false
+        } else {
+            permissionsList.size == grantedPermissions.size
+        }
+    }
+
+    private fun isAllMedicalPermissionsGranted(
+        permissionsListLiveData: LiveData<List<MedicalPermission>>,
+        grantedPermissionsLiveData: LiveData<Set<MedicalPermission>>
     ): Boolean {
         val permissionsList = permissionsListLiveData.value.orEmpty()
         val grantedPermissions = grantedPermissionsLiveData.value.orEmpty()

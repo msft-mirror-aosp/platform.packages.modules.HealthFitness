@@ -15,7 +15,6 @@
  */
 package com.android.healthconnect.controller.tests.permissions.connectedapps
 
-import android.content.Intent
 import android.content.Context
 import android.health.connect.HealthConnectManager
 import android.os.Bundle
@@ -57,7 +56,6 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
-import com.android.healthconnect.controller.utils.AppStoreUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
 import com.android.healthconnect.controller.utils.NavigationUtils
@@ -124,7 +122,7 @@ class ConnectedAppsFragmentTest {
         setupFragmentForNavigation()
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.connectedAppFragment)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
     }
 
     @Test

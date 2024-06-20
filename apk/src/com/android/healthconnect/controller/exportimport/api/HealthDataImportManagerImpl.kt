@@ -19,6 +19,7 @@ package com.android.healthconnect.controller.exportimport.api
 import android.health.connect.HealthConnectException
 import android.health.connect.HealthConnectManager
 import android.health.connect.exportimport.ImportStatus
+import android.net.Uri
 import android.os.OutcomeReceiver
 import java.util.concurrent.Executor
 import javax.inject.Inject
@@ -32,5 +33,9 @@ class HealthDataImportManagerImpl @Inject constructor(private val manager: Healt
         outcomeReceiver: OutcomeReceiver<ImportStatus, HealthConnectException>
     ) {
         return manager.getImportStatus(executor, outcomeReceiver)
+    }
+
+    override fun runImport(uri: Uri) {
+        return manager.runImport(uri)
     }
 }

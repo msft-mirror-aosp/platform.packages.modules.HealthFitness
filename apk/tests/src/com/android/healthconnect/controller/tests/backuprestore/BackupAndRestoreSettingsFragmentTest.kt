@@ -89,7 +89,8 @@ class BackupAndRestoreSettingsFragmentTest {
                     ImportUiState(
                         ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
                         /** isImportOngoing= */
-                        false)))
+                        false,
+                    )))
         }
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
             MutableLiveData(
@@ -98,7 +99,8 @@ class BackupAndRestoreSettingsFragmentTest {
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
                         /** periodInDays= */
-                        0)))
+                        0,
+                    )))
         }
     }
 
@@ -110,7 +112,8 @@ class BackupAndRestoreSettingsFragmentTest {
                     ScheduledExportUiState(
                         NOW,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS)))
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                    )))
         }
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_WEEKLY))
@@ -140,11 +143,28 @@ class BackupAndRestoreSettingsFragmentTest {
                     ScheduledExportUiState(
                         null,
                         ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE,
-                        TEST_EXPORT_PERIOD_IN_DAYS)))
+                        TEST_EXPORT_PERIOD_IN_DAYS,
+                    )))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
         onView(withText("Last export: October 20, 2022")).check(doesNotExist())
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_clicksImportData_navigatesToImportFlowActivity() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle()) {
+            navHostController.setGraph(R.navigation.nav_graph)
+            navHostController.setCurrentDestination(R.id.backupAndRestoreSettingsFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText("Import data")).perform(click())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.importFlowActivity)
     }
 
     @Test
@@ -220,7 +240,7 @@ class BackupAndRestoreSettingsFragmentTest {
     }
 
     @Test
-    fun backupAndRestoreSettingsFragment_whenImportErrorIsWrongFileError_showsImportErrorBanner() {
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsWrongFile_showsImportErrorBanner() {
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
         }
@@ -230,7 +250,8 @@ class BackupAndRestoreSettingsFragmentTest {
                     ImportUiState(
                         ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE,
                         /** isImportOngoing= */
-                        false)))
+                        false,
+                    )))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
@@ -243,7 +264,31 @@ class BackupAndRestoreSettingsFragmentTest {
     }
 
     @Test
-    fun backupAndRestoreSettingsFragment_whenImportErrorIsNotWrongFileError_doesNotShowImportErrorBanner() {
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsVersionMismatch_showsImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        onView(withText("Update now")).check(matches(isDisplayed()))
+        onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "Update your system so that Health\u00A0Connect can restore your data, then try again."))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsUnknown_showsImportErrorBanner() {
         whenever(exportSettingsViewModel.storedExportSettings).then {
             MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
         }
@@ -253,15 +298,33 @@ class BackupAndRestoreSettingsFragmentTest {
                     ImportUiState(
                         ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN,
                         /** isImportOngoing= */
-                        false)))
+                        false,
+                    )))
         }
         launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
 
-        onView(withText("Choose file")).check(doesNotExist())
+        onView(withText("Try again")).check(matches(isDisplayed()))
+        onView(withText("Couldn't restore data")).check(matches(isDisplayed()))
+        onView(withText("There was a problem with restoring data from your export."))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_whenImportErrorIsNone_doesNotShowImportErrorBanner() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_NEVER))
+        }
+        whenever(importStatusViewModel.storedImportStatus).then {
+            MutableLiveData(
+                ImportUiStatus.WithData(
+                    ImportUiState(
+                        ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE,
+                        /** isImportOngoing= */
+                        false,
+                    )))
+        }
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
         onView(withText("Couldn't restore data")).check(doesNotExist())
-        onView(
-                withText(
-                    "The file you selected isn't compatible for restore. Make sure to select the correct exported file."))
-            .check(doesNotExist())
     }
 }

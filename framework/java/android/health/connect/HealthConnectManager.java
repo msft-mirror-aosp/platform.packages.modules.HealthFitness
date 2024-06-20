@@ -66,12 +66,12 @@ import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
 import android.health.connect.aidl.ReadRecordsResponseParcel;
 import android.health.connect.aidl.RecordIdFiltersParcel;
 import android.health.connect.aidl.RecordTypeInfoResponseParcel;
@@ -2104,7 +2104,10 @@ public class HealthConnectManager {
     }
 
     /**
-     * Reads {@link MedicalResource}s based on a list of {@link MedicalIdFilter}s.
+     * Reads {@link MedicalResource}s based on a list of {@link MedicalResourceId}s.
+     *
+     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
+     * ids}.
      *
      * <p>Number of resources returned by this API will depend based on below factors:
      *
@@ -2135,10 +2138,9 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if {@code ids} is empty or its size is more than 5000.
      */
-    // (TODO: b/343455447): Replace MedicalIdFilter to use MedicalResourceId.
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
-            @NonNull List<MedicalIdFilter> ids,
+            @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
         Objects.requireNonNull(ids);
@@ -2157,7 +2159,7 @@ public class HealthConnectManager {
         try {
             mService.readMedicalResources(
                     mContext.getAttributionSource(),
-                    new MedicalIdFiltersParcel(ids),
+                    ids,
                     new IReadMedicalResourcesResponseCallback.Stub() {
                         @Override
                         public void onResult(ReadMedicalResourcesResponse parcel) {
@@ -2265,7 +2267,24 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.createMedicalDataSource(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IMedicalDataSourceResponseCallback.Stub() {
+                        @Override
+                        public void onResult(MedicalDataSource dataSource) {
+                            returnResult(executor, dataSource, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**

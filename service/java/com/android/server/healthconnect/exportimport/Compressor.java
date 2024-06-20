@@ -17,6 +17,9 @@
 package com.android.server.healthconnect.exportimport;
 
 import android.annotation.NonNull;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
 import android.util.Slog;
 
 import java.io.File;
@@ -56,20 +59,24 @@ class Compressor {
     }
 
     /** Decompresses the zip file */
-    static void decompress(@NonNull File zip, @NonNull File destination) throws IOException {
+    static void decompress(
+            @NonNull Uri file, @NonNull File destination, @NonNull Context userContext)
+            throws IOException {
         try {
             destination.mkdirs();
             destination.delete();
-            ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zip));
-            inputStream.getNextEntry();
+            ContentResolver contentResolver = userContext.getContentResolver();
+            ZipInputStream zipInputStream =
+                    new ZipInputStream(contentResolver.openInputStream(file));
+            zipInputStream.getNextEntry();
             FileOutputStream outputStream = new FileOutputStream(destination);
             byte[] buffer = new byte[1024];
             int length;
-            while ((length = inputStream.read(buffer)) > 0) {
+            while ((length = zipInputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
-            inputStream.closeEntry();
-            inputStream.close();
+            zipInputStream.closeEntry();
+            zipInputStream.close();
             outputStream.close();
             Slog.i(TAG, "File unzipped: " + destination.getAbsolutePath());
         } catch (Exception e) {

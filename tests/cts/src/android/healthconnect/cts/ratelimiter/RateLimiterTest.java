@@ -20,12 +20,17 @@ import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.healthconnect.cts.utils.DataFactory.buildDevice;
 import static android.healthconnect.cts.utils.DataFactory.getCompleteStepsRecord;
 import static android.healthconnect.cts.utils.DataFactory.getUpdatedStepsRecord;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_FHIR_BASE_URI;
+
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static org.hamcrest.CoreMatchers.containsString;
 
 import android.app.UiAutomation;
 import android.content.Context;
 import android.health.connect.AggregateRecordsRequest;
+import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.DeleteUsingFiltersRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.ReadRecordsRequestUsingFilters;
@@ -41,8 +46,10 @@ import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.StepsRecord;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
+import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
 import android.provider.DeviceConfig;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -116,10 +123,21 @@ public class RateLimiterTest {
 
     @Test
     @ApiTest(apis = {"android.health.connect#insertRecords"})
-    public void testTryAcquireApiCallQuota_writeLimitExceeded() throws InterruptedException {
+    public void testTryAcquireApiCallQuota_insertRecords_writeLimitExceeded()
+            throws InterruptedException {
         exception.expect(HealthConnectException.class);
         exception.expectMessage(containsString("API call quota exceeded"));
-        exceedWriteQuota();
+        exceedWriteQuotaWithInsertRecords();
+    }
+
+    @Test
+    @ApiTest(apis = {"android.health.connect#createMedicalDataSource"})
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testTryAcquireApiCallQuota_createMedicalDataSource_writeLimitExceeded()
+            throws InterruptedException {
+        exception.expect(HealthConnectException.class);
+        exception.expectMessage(containsString("API call quota exceeded"));
+        exceedWriteQuotaWithCreateMedicalDataSource();
     }
 
     @Test
@@ -192,12 +210,9 @@ public class RateLimiterTest {
         }
     }
 
-    private void exceedWriteQuota() throws InterruptedException {
-        Instant startTime = Instant.now();
-        tryAcquireCallQuotaNTimesForWrite(MAX_FOREGROUND_WRITE_CALL_15M);
-        Instant endTime = Instant.now();
-        float quotaAcquired =
-                getQuotaAcquired(startTime, endTime, WINDOW_15M, MAX_FOREGROUND_WRITE_CALL_15M);
+    private void exceedWriteQuotaWithInsertRecords() throws InterruptedException {
+        float quotaAcquired = acquireCallQuotaForWrite();
+
         List<Record> testRecord = List.of(getCompleteStepsRecord());
 
         while (quotaAcquired > 1) {
@@ -210,6 +225,37 @@ public class RateLimiterTest {
 
             tryWriteWithBuffer--;
         }
+    }
+
+    private void exceedWriteQuotaWithCreateMedicalDataSource() throws InterruptedException {
+        float quotaAcquired = acquireCallQuotaForWrite();
+
+        CreateMedicalDataSourceRequest.Builder request =
+                PhrDataFactory.getCreateMedicalDataSourceRequestBuilder();
+        int count = 0;
+
+        while (quotaAcquired > 1) {
+            count++;
+            // Append request count to the fhir base uri to avoid duplicates.
+            request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
+            TestUtils.createMedicalDataSource(request.build());
+            quotaAcquired--;
+        }
+        int tryWriteWithBuffer = 20;
+        while (tryWriteWithBuffer > 0) {
+            count++;
+            request.setFhirBaseUri(DATA_SOURCE_FHIR_BASE_URI + count);
+            TestUtils.createMedicalDataSource(request.build());
+
+            tryWriteWithBuffer--;
+        }
+    }
+
+    private float acquireCallQuotaForWrite() throws InterruptedException {
+        Instant startTime = Instant.now();
+        tryAcquireCallQuotaNTimesForWrite(MAX_FOREGROUND_WRITE_CALL_15M);
+        Instant endTime = Instant.now();
+        return getQuotaAcquired(startTime, endTime, WINDOW_15M, MAX_FOREGROUND_WRITE_CALL_15M);
     }
 
     private void exceedReadQuota() throws InterruptedException {

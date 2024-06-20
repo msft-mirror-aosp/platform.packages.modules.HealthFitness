@@ -107,7 +107,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
     private val dateFormatter by lazy { LocalDateTimeFormatter(requireContext()) }
     private val onSwitchChangeListener = OnCheckedChangeListener { switchView, isChecked ->
         if (isChecked) {
-            val permissionsUpdated = viewModel.grantAllPermissions(packageName)
+            val permissionsUpdated = viewModel.grantAllFitnessPermissions(packageName)
             if (!permissionsUpdated) {
                 switchView.isChecked = false
                 Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT).show()
@@ -137,10 +137,10 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
         viewModel.loadPermissionsForPackage(packageName)
         additionalAccessViewModel.loadAdditionalAccessPreferences(packageName)
 
-        viewModel.appPermissions.observe(viewLifecycleOwner) { permissions ->
+        viewModel.fitnessPermissions.observe(viewLifecycleOwner) { permissions ->
             updatePermissions(permissions)
         }
-        viewModel.grantedPermissions.observe(viewLifecycleOwner) { granted ->
+        viewModel.grantedFitnessPermissions.observe(viewLifecycleOwner) { granted ->
             permissionMap.forEach { (healthPermission, switchPreference) ->
                 switchPreference.isChecked = healthPermission in granted
             }
@@ -156,7 +156,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
             }
         }
 
-        viewModel.revokeAllPermissionsState.observe(viewLifecycleOwner) { state ->
+        viewModel.revokeAllHealthPermissionsState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is RevokeAllState.Loading -> {
                     showLoadingDialog()
@@ -195,7 +195,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
         childFragmentManager.setFragmentResultListener(
             DisconnectDialogFragment.DISCONNECT_ALL_EVENT, this) { _, bundle ->
-                if (!viewModel.revokeAllPermissions(packageName)) {
+                if (!viewModel.revokeAllHealthPermissions(packageName)) {
                     Toast.makeText(requireContext(), R.string.default_error, Toast.LENGTH_SHORT)
                         .show()
                 }
@@ -225,8 +225,8 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private fun setupFooter(appName: String) {
         if (viewModel.isPackageSupported(packageName)) {
-            viewModel.atLeastOnePermissionGranted.observe(viewLifecycleOwner) { isAtLeastOneGranted
-                ->
+            viewModel.atLeastOneFitnessPermissionGranted.observe(viewLifecycleOwner) {
+                isAtLeastOneGranted ->
                 updateFooter(isAtLeastOneGranted, appName)
             }
         } else {
@@ -260,7 +260,7 @@ class SettingsManageAppPermissionsFragment : Hilt_SettingsManageAppPermissionsFr
 
     private fun setupAllowAllPreference() {
         allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
-        viewModel.allAppPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted ->
+        viewModel.allFitnessPermissionsGranted.observe(viewLifecycleOwner) { isAllGranted ->
             allowAllPreference.removeOnSwitchChangeListener(onSwitchChangeListener)
             allowAllPreference.isChecked = isAllGranted
             allowAllPreference.addOnSwitchChangeListener(onSwitchChangeListener)
