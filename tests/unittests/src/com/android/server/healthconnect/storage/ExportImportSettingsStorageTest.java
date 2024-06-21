@@ -87,13 +87,13 @@ public final class ExportImportSettingsStorageTest {
     }
 
     @Test
-    public void testConfigure_uri_doesNotRemoveOtherExportError() {
+    public void testConfigure_uri_removeUnknownError() {
         ExportImportSettingsStorage.setLastExportError(
                 HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
         ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
 
         assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
-                .isEqualTo(String.valueOf(HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN));
+                .isEqualTo(null);
     }
 
     @Test

@@ -131,8 +131,12 @@ class ImportSourceLocationFragment : Hilt_ImportSourceLocationFragment() {
                 Toast.makeText(activity, R.string.import_invalid_storage, Toast.LENGTH_LONG).show()
             } else {
                 // TODO: b/339189778 - Add test when import API is done.
-                findNavController()
-                    .navigate(R.id.action_importSourceLocationFragment_to_importDecryptionFragment)
+                val bundle = Bundle()
+                bundle.putString(
+                    ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY, fileUri.toString())
+                val dialogFragment = ImportConfirmationDialogFragment()
+                dialogFragment.arguments = bundle
+                dialogFragment.show(childFragmentManager, ImportConfirmationDialogFragment.TAG)
             }
         }
     }

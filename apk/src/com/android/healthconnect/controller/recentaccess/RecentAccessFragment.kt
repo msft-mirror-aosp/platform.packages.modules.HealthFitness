@@ -93,8 +93,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
         fab = contentParent.findViewById(R.id.extended_fab)
         fab.isVisible = true
 
-        recyclerView = rootView?.findViewById(
-            androidx.preference.R.id.recycler_view)
+        recyclerView = rootView?.findViewById(androidx.preference.R.id.recycler_view)
         val bottomPadding =
             resources.getDimensionPixelSize(R.dimen.recent_access_fab_bottom_padding)
         recyclerView?.setPadding(0, 0, 0, bottomPadding)
@@ -177,8 +176,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                                     R.id.recentAccessFragment) {
                                     findNavController()
                                         .navigate(
-                                            R.id
-                                                .action_recentAccessFragment_to_connectedAppFragment,
+                                            R.id.action_recentAccessFragment_to_fitnessAppFragment,
                                             bundleOf(
                                                 Intent.EXTRA_PACKAGE_NAME to
                                                     recentApp.metadata.packageName,
