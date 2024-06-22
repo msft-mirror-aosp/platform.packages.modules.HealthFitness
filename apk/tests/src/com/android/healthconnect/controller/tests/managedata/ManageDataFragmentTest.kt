@@ -92,6 +92,21 @@ class ManageDataFragmentTest {
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_EXPORT_IMPORT)
+    fun manageDataFragmentLogging_exportImportFlagOn_impressionsLogged() {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
+        launchFragment<ManageDataFragment>(Bundle())
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.MANAGE_DATA_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(ManageDataElement.AUTO_DELETE_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(ManageDataElement.DATA_SOURCES_AND_PRIORITY_BUTTON)
+        verify(healthConnectLogger).logImpression(ManageDataElement.SET_UNITS_BUTTON)
+        verify(healthConnectLogger).logImpression(ManageDataElement.BACKUP_AND_RESTORE_BUTTON)
+    }
+
+    @Test
     fun manageDataFragment_isDisplayed_newAppPriorityFlagOn() {
         (fakeFeatureUtils as FakeFeatureUtils).setIsNewAppPriorityEnabled(true)
         launchFragment<ManageDataFragment>(Bundle())
@@ -194,5 +209,6 @@ class ManageDataFragmentTest {
         onView(withText("Backup and restore")).perform(click())
         assertThat(navHostController.currentDestination?.id)
             .isEqualTo(R.id.backupAndRestoreSettingsFragment)
+        verify(healthConnectLogger).logInteraction(ManageDataElement.BACKUP_AND_RESTORE_BUTTON)
     }
 }

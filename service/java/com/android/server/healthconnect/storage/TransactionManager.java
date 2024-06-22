@@ -112,6 +112,9 @@ public final class TransactionManager {
         mUserHandle = healthConnectUserContext.getCurrentUserHandle();
     }
 
+    // TODO(b/347193220): move all the medical resource related methods from transaction manager to
+    // their
+    // specific helpers.
     /**
      * Upserts (insert/update) a list of {@link MedicalResource}s created based on the given list of
      * {@link MedicalResourceInternal}s into the HealthConnect database.

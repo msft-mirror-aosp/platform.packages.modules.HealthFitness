@@ -57,7 +57,7 @@
     <string name="body_measurements_category_lowercase" msgid="2259696274629666992">"शरीर की माप से जुड़ी जानकारी"</string>
     <string name="sleep_category_uppercase" msgid="3422452674899706786">"नींद"</string>
     <string name="sleep_category_lowercase" msgid="842609634386839011">"नींद से जुड़ी जानकारी"</string>
-    <string name="vitals_category_uppercase" msgid="8982333138032938623">"ज़रूरी जानकारी"</string>
+    <string name="vitals_category_uppercase" msgid="8982333138032938623">"बीपी, धड़कन की दर वगैरह का डेटा"</string>
     <string name="vitals_category_lowercase" msgid="4664457787866407963">"ज़रूरी जानकारी"</string>
     <string name="cycle_tracking_category_uppercase" msgid="4723200714782660489">"पीरियड साइकल का डेटा"</string>
     <string name="cycle_tracking_category_lowercase" msgid="5245446435975317209">"पीरियड साइकल का डेटा"</string>
@@ -854,7 +854,7 @@
     <string name="request_route_allow_all" msgid="314830698958736916">"सभी रूट का ऐक्सेस दें"</string>
     <string name="request_route_dont_allow" msgid="1186236234664957228">"ऐक्सेस न दें"</string>
     <string name="route_permissions_always_allow" msgid="1383816362804293137">"हमेशा इस्तेमाल करने की अनुमति दें"</string>
-    <string name="route_permissions_label" msgid="6293377940884373190">"कसरत के रूट ऐक्सेस करने की अनुमति दें"</string>
+    <string name="route_permissions_label" msgid="6293377940884373190">"कसरत के रूट ऐक्सेस करने की अनुमति"</string>
     <string name="route_permissions_summary" msgid="704859311037374130">"<xliff:g id="APP_NAME">%1$s</xliff:g> को रूट ऐक्सेस करने की अनुमति दें"</string>
     <string name="route_permissions_ask" msgid="3927020960754781917">"हर बार पूछें"</string>
     <string name="route_permissions_deny" msgid="4955644777239169593">"अनुमति न दें"</string>
@@ -951,7 +951,7 @@
     <string name="tab_access" msgid="7818197975407243701">"ऐक्सेस"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"क्या <xliff:g id="APP_NAME">%1$s</xliff:g> को अन्य ऐक्सेस देने हैं?"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> को Health Connect की इन सेटिंग का भी ऐक्सेस चाहिए"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"इस ऐप्लिकेशन में बैकग्राउंड या पहले से मौजूद डेटा ऐक्सेस करने की सुविधा चालू करने के लिए, पढ़ने की कम से कम एक अनुमति दें"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"डेटा ऐक्सेस करने से जुड़ी कम से कम कोई एक अनुमति दें, ताकि यह ऐप्लिकेशन बैकग्राउंड में या पहले से मौजूद डेटा ऐक्सेस कर सके"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"इस ऐप्लिकेशन में बैकग्राउंड ऐक्सेस करने की सुविधा चालू करने के लिए, पढ़ने की कम से कम एक अनुमति दें"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"इस ऐप्लिकेशन में पहले से मौजूद डेटा ऐक्सेस करने की सुविधा चालू करने के लिए, पढ़ने की कम से कम एक अनुमति दें"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"क्या आपको Health Connect से, हमेशा के लिए सारा डेटा मिटाना है?"</string>

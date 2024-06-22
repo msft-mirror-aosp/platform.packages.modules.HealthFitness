@@ -91,7 +91,6 @@
         <item name="importDataIcon">@drawable/ic_import_data</item>
 
         <item name="warningIcon">@drawable/ic_warning</item>
-        <item name="passwordIcon">@drawable/ic_password</item>
         <item name="infoIcon">@drawable/ic_info</item>
 
         <!-- END REGION -->
@@ -131,9 +130,6 @@
         <item name="permissionGrantButtonList">@style/PermissionGrantButtonListMaterial3</item>
         <item name="permissionGrantButtonTop">@style/PermissionGrantButtonTop</item>
         <item name="permissionGrantButtonBottom">@style/PermissionGrantButtonBottom</item>
-
-        <!-- EditText -->
-        <item name="editTextPasswordTheme">@style/Widget.HealthConnect.EditText.Password</item>
 
         <!-- Dialogs -->
         <item name="alertDialogTheme">@style/Theme.HealthConnect.Dialog.Alert</item>
