@@ -151,6 +151,9 @@ class HomeFragment : Hilt_HomeFragment() {
         super.onResume()
         recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
         homeFragmentViewModel.loadConnectedApps()
+        if (exportImport()) {
+            exportStatusViewModel.loadScheduledExportStatus()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -244,14 +247,15 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
+        if (preferenceScreen.findPreference<Preference>(EXPORT_ERROR_BANNER_PREFERENCE_KEY) !=
+            null) {
+            preferenceScreen.removePreferenceRecursively(EXPORT_ERROR_BANNER_PREFERENCE_KEY)
+        }
         if (scheduledExportUiState.dataExportError !=
             ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE) {
             scheduledExportUiState.lastSuccessfulExportTime?.let {
-                if (preferenceScreen.findPreference<Preference>(
-                    EXPORT_ERROR_BANNER_PREFERENCE_KEY) == null) {
-                    preferenceScreen.addPreference(
-                        getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
-                }
+                preferenceScreen.addPreference(
+                    getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
             }
         }
     }

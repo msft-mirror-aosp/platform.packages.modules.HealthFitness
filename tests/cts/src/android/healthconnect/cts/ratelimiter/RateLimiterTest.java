@@ -50,6 +50,8 @@ import android.healthconnect.cts.utils.PhrDataFactory;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
 import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.provider.DeviceConfig;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -84,6 +86,9 @@ public class RateLimiterTest {
     public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
     private final UiAutomation mUiAutomation =
             InstrumentationRegistry.getInstrumentation().getUiAutomation();
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Rule public ExpectedException exception = ExpectedException.none();
 

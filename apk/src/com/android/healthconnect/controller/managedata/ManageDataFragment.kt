@@ -89,7 +89,7 @@ class ManageDataFragment : Hilt_ManageDataFragment() {
         }
 
         if (exportImport()) {
-            // TODO: b/325917291 - Add proper log name for the backup and restore button.
+            backupAndRestorePreference?.logName = ManageDataElement.BACKUP_AND_RESTORE_BUTTON
             backupAndRestorePreference?.setOnPreferenceClickListener {
                 findNavController().navigate(R.id.action_manageData_to_backupAndRestore)
                 true

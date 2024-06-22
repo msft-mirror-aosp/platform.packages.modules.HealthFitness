@@ -43,14 +43,20 @@ import com.android.healthconnect.controller.exportimport.api.ScheduledExportUiSt
 import com.android.healthconnect.controller.tests.utils.NOW
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class BackupAndRestoreSettingsFragmentTest {
@@ -73,6 +79,8 @@ class BackupAndRestoreSettingsFragmentTest {
     @BindValue
     val importStatusViewModel: ImportStatusViewModel =
         Mockito.mock(ImportStatusViewModel::class.java)
+
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -104,6 +112,11 @@ class BackupAndRestoreSettingsFragmentTest {
         }
     }
 
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
+    }
+
     @Test
     fun backupAndRestoreSettingsFragmentInit_showsFragmentCorrectly() {
         whenever(exportStatusViewModel.storedScheduledExportStatus).then {
@@ -130,6 +143,19 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Export lets you save your data so you can transfer it to a new phone"))
             .check(matches(isDisplayed()))
         onView(withText("About backup and restore")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backupAndRestoreSettingsFragment_impressionsLogged() {
+        whenever(exportSettingsViewModel.storedExportSettings).then {
+            MutableLiveData(ExportSettings.WithData(ExportFrequency.EXPORT_FREQUENCY_DAILY))
+        }
+
+        launchFragment<BackupAndRestoreSettingsFragment>(Bundle())
+
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON)
+        verify(healthConnectLogger).logImpression(BackupAndRestoreElement.RESTORE_DATA_BUTTON)
     }
 
     @Test
@@ -165,6 +191,7 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Import data")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.importFlowActivity)
+        verify(healthConnectLogger).logInteraction(BackupAndRestoreElement.RESTORE_DATA_BUTTON)
     }
 
     @Test
@@ -181,6 +208,7 @@ class BackupAndRestoreSettingsFragmentTest {
         onView(withText("Scheduled export")).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportSetupActivity)
+        verify(healthConnectLogger).logInteraction(BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON)
     }
 
     @Test
