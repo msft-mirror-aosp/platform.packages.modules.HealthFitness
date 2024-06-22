@@ -30,6 +30,7 @@ import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.exportimport.api.ImportFlowViewModel
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.logging.ImportConfirmationDialogElement
 import dagger.hilt.android.AndroidEntryPoint
 
 /** Fragment to get the user to confirm that they have selected the right import file. */
@@ -46,13 +47,16 @@ class ImportConfirmationDialogFragment : Hilt_ImportConfirmationDialogFragment()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val importFileUriString = arguments?.getString(IMPORT_FILE_URI_KEY) ?: ""
         val importFileName = getFileName(importFileUriString)
+        // TODO: b/325917283 - Add proper logging for this container
         return AlertDialogBuilder(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT)
             .setIcon(R.attr.importIcon)
             .setTitle(R.string.import_confirmation_dialog_title)
             .setMessage(importFileName)
             .setPositiveButton(
                 R.string.import_confirmation_dialog_import_button,
-                ErrorPageElement.UNKNOWN_ELEMENT) { _: DialogInterface, _: Int ->
+                ImportConfirmationDialogElement.IMPORT_CONFIRMATION_DONE_BUTTON) {
+                    _: DialogInterface,
+                    _: Int ->
                     Slog.i(TAG, "positive button clicked")
                     Slog.i(TAG, importFileUriString)
                     viewModel.triggerImportOfSelectedFile(Uri.parse(importFileUriString))
@@ -60,7 +64,9 @@ class ImportConfirmationDialogFragment : Hilt_ImportConfirmationDialogFragment()
                 }
             .setNeutralButton(
                 R.string.import_confirmation_dialog_cancel_button,
-                ErrorPageElement.UNKNOWN_ELEMENT) { _: DialogInterface, _: Int ->
+                ImportConfirmationDialogElement.IMPORT_CONFIRMATION_CANCEL_BUTTON) {
+                    _: DialogInterface,
+                    _: Int ->
                     Slog.i(TAG, "neutral button clicked")
                 }
             .create()

@@ -35,6 +35,8 @@ import com.android.healthconnect.controller.exportimport.api.HealthDataImportMan
 import com.android.healthconnect.controller.service.HealthDataImportManagerModule
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthDataImportManager
 import com.android.healthconnect.controller.tests.utils.launchDialog
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ImportConfirmationDialogElement
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -46,6 +48,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @UninstallModules(HealthDataImportManagerModule::class)
 @HiltAndroidTest
@@ -62,6 +67,7 @@ class ImportConfirmationDialogFragmentTest {
     @get:Rule val hiltRule = HiltAndroidRule(this)
 
     @BindValue val healthDataImportManager: HealthDataImportManager = FakeHealthDataImportManager()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -74,6 +80,7 @@ class ImportConfirmationDialogFragmentTest {
     @After
     fun tearDown() {
         importFile.delete()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -114,5 +121,23 @@ class ImportConfirmationDialogFragmentTest {
 
         assertThat((healthDataImportManager as FakeHealthDataImportManager).getImportFileUri())
             .isEqualTo(importFileUri)
+        verify(healthConnectLogger)
+            .logInteraction(ImportConfirmationDialogElement.IMPORT_CONFIRMATION_DONE_BUTTON)
+    }
+
+    @Test
+    fun importConfirmationDialogFragment_cancelButtonClicked_interactionLogged() {
+        val importFileUri: Uri = Uri.fromFile(importFile)
+        launchDialog<ImportConfirmationDialogFragment>(
+            bundleOf(
+                ImportConfirmationDialogFragment.IMPORT_FILE_URI_KEY to importFileUri.toString()))
+
+        val dialogCancelButton =
+            onView(withText(R.string.import_confirmation_dialog_cancel_button)).inRoot(isDialog())
+        dialogCancelButton.check(matches(isDisplayed()))
+        dialogCancelButton.perform(click())
+
+        verify(healthConnectLogger)
+            .logInteraction(ImportConfirmationDialogElement.IMPORT_CONFIRMATION_CANCEL_BUTTON)
     }
 }
