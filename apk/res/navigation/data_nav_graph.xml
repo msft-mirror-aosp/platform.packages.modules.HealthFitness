@@ -107,9 +107,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/connectedAppFragment"
+        android:id="@+id/fitnessAppFragment"
         android:label="@string/app_access_title"
-        android:name="com.android.healthconnect.controller.permissions.app.ConnectedAppFragment">
+        android:name="com.android.healthconnect.controller.permissions.app.FitnessAppFragment">
         <argument
             android:name="android.intent.extra.PACKAGE_NAME"
             app:argType="string" />

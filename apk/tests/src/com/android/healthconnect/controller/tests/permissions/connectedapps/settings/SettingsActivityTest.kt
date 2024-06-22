@@ -77,20 +77,20 @@ class SettingsActivityTest {
         hiltRule.inject()
         (permissionManager as FakeHealthPermissionManager).setGrantedPermissionsForTest(
             TEST_APP_PACKAGE_NAME, listOf())
-        whenever(viewModel.grantedPermissions).then {
+        whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData<Set<FitnessPermission>>(emptySet())
         }
         showOnboarding(context, false)
 
         // Needed for the fragment
-        whenever(viewModel.revokeAllPermissionsState).then {
+        whenever(viewModel.revokeAllHealthPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
         whenever(viewModel.showDisableExerciseRouteEvent)
             .thenReturn(MediatorLiveData(AppPermissionViewModel.DisableExerciseRouteDialogEvent()))
 
-        whenever(viewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
-        whenever(viewModel.atLeastOnePermissionGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MediatorLiveData(false) }
+        whenever(viewModel.atLeastOneFitnessPermissionGranted).then { MediatorLiveData(false) }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(viewModel.loadAccessDate(Mockito.anyString())).thenReturn(accessDate)
 
@@ -105,10 +105,12 @@ class SettingsActivityTest {
             FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
             FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
-        whenever(viewModel.appPermissions).then {
+        whenever(viewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(viewModel.grantedPermissions).then { MutableLiveData(setOf(writePermission)) }
+        whenever(viewModel.grantedFitnessPermissions).then {
+            MutableLiveData(setOf(writePermission))
+        }
         whenever(viewModel.lastReadPermissionDisconnected).then { MutableLiveData(false) }
     }
 

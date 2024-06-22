@@ -334,7 +334,6 @@ constructor(
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
 
         anyReadPermissionsGranted =
-            // TODO(): Decision whether background read should apply to medical permission too.
             grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }

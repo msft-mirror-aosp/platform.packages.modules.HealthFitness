@@ -24,7 +24,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
 
-
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectDailyService;
 import com.android.server.healthconnect.storage.ExportImportSettingsStorage;

@@ -42,6 +42,7 @@ import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFr
 import com.android.healthconnect.controller.permissions.shared.HelpAndFeedbackFragment.Companion.FEEDBACK_INTENT_RESULT_CODE
 import com.android.healthconnect.controller.shared.Constants.APP_UPDATE_NEEDED_BANNER_SEEN
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
+import com.android.healthconnect.controller.shared.Constants.SHOW_MANAGE_APP_SECTION
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.app.ConnectedAppStatus.ALLOWED
@@ -329,10 +330,11 @@ class ConnectedAppsFragment : Hilt_ConnectedAppsFragment() {
     private fun navigateToAppInfoScreen(app: ConnectedAppMetadata) {
         findNavController()
             .navigate(
-                R.id.action_connectedApps_to_connectedApp,
+                R.id.action_connectedApps_to_fitnessApp,
                 bundleOf(
                     EXTRA_PACKAGE_NAME to app.appMetadata.packageName,
-                    EXTRA_APP_NAME to app.appMetadata.appName))
+                    EXTRA_APP_NAME to app.appMetadata.appName,
+                    SHOW_MANAGE_APP_SECTION to true))
     }
 
     private fun getNoAppsPreference(@StringRes res: Int): Preference {

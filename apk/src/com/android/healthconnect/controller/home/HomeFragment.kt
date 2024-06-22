@@ -59,7 +59,7 @@ import com.android.healthconnect.controller.utils.logging.ErrorPageElement
 import com.android.healthconnect.controller.utils.logging.HomePageElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import com.android.healthconnect.controller.utils.logging.PageName
-import com.android.healthfitness.flags.Flags
+import com.android.healthfitness.flags.Flags.exportImport
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -76,8 +76,7 @@ class HomeFragment : Hilt_HomeFragment() {
         private const val MIGRATION_BANNER_PREFERENCE_KEY = "migration_banner"
         private const val DATA_RESTORE_BANNER_PREFERENCE_KEY = "data_restore_banner"
         private const val MANAGE_DATA_PREFERENCE_KEY = "manage_data"
-        private const val EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY =
-            "export_file_access_error_banner"
+        private const val EXPORT_ERROR_BANNER_PREFERENCE_KEY = "export_error_banner"
         private const val HOME_FRAGMENT_BANNER_ORDER = 1
 
         @JvmStatic fun newInstance() = HomeFragment()
@@ -152,6 +151,9 @@ class HomeFragment : Hilt_HomeFragment() {
         super.onResume()
         recentAccessViewModel.loadRecentAccessApps(maxNumEntries = 3)
         homeFragmentViewModel.loadConnectedApps()
+        if (exportImport()) {
+            exportStatusViewModel.loadScheduledExportStatus()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -182,7 +184,7 @@ class HomeFragment : Hilt_HomeFragment() {
             }
         }
 
-        if (Flags.exportImport()) {
+        if (exportImport()) {
             exportStatusViewModel.storedScheduledExportStatus.observe(viewLifecycleOwner) {
                 scheduledExportUiStatus ->
                 when (scheduledExportUiStatus) {
@@ -245,15 +247,15 @@ class HomeFragment : Hilt_HomeFragment() {
     }
 
     private fun maybeShowExportErrorBanner(scheduledExportUiState: ScheduledExportUiState) {
-        when (scheduledExportUiState.dataExportError) {
-            ScheduledExportUiState.DataExportError.DATA_EXPORT_LOST_FILE_ACCESS -> {
-                scheduledExportUiState.lastSuccessfulExportTime?.let {
-                    preferenceScreen.addPreference(
-                        getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
-                }
-            }
-            else -> {
-                // Do nothing yet.
+        if (preferenceScreen.findPreference<Preference>(EXPORT_ERROR_BANNER_PREFERENCE_KEY) !=
+            null) {
+            preferenceScreen.removePreferenceRecursively(EXPORT_ERROR_BANNER_PREFERENCE_KEY)
+        }
+        if (scheduledExportUiState.dataExportError !=
+            ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE) {
+            scheduledExportUiState.lastSuccessfulExportTime?.let {
+                preferenceScreen.addPreference(
+                    getExportFileAccessErrorBanner(it, scheduledExportUiState.periodInDays))
             }
         }
     }
@@ -268,7 +270,7 @@ class HomeFragment : Hilt_HomeFragment() {
                 getString(R.string.export_file_access_error_banner_button),
                 ErrorPageElement.UNKNOWN_ELEMENT)
             it.title = getString(R.string.export_file_access_error_banner_title)
-            it.key = EXPORT_FILE_ACCESS_ERROR_BANNER_PREFERENCE_KEY
+            it.key = EXPORT_ERROR_BANNER_PREFERENCE_KEY
             it.summary =
                 getString(
                     R.string.export_file_access_error_banner_summary,
@@ -357,7 +359,7 @@ class HomeFragment : Hilt_HomeFragment() {
                             newPreference.setOnPreferenceClickListener {
                                 findNavController()
                                     .navigate(
-                                        R.id.action_homeFragment_to_connectedAppFragment,
+                                        R.id.action_homeFragment_to_fitnessAppFragment,
                                         bundleOf(
                                             Intent.EXTRA_PACKAGE_NAME to
                                                 recentApp.metadata.packageName,
