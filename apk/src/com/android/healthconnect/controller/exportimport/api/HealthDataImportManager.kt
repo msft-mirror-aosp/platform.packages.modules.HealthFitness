@@ -18,6 +18,7 @@ package com.android.healthconnect.controller.exportimport.api
 
 import android.health.connect.HealthConnectException
 import android.health.connect.exportimport.ImportStatus
+import android.net.Uri
 import android.os.OutcomeReceiver
 import java.util.concurrent.Executor
 
@@ -28,4 +29,6 @@ interface HealthDataImportManager {
         executor: Executor,
         outcomeReceiver: OutcomeReceiver<ImportStatus, HealthConnectException>
     )
+
+    fun runImport(uri: Uri) {}
 }
