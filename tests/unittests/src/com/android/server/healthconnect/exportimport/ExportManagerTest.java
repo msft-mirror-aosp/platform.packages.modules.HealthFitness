@@ -111,8 +111,9 @@ public class ExportManagerTest {
         assertThat(mExportManager.runExport()).isTrue();
 
         Compressor.decompress(
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
+                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
+                mContext);
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "access_logs_table", 0);
@@ -130,8 +131,9 @@ public class ExportManagerTest {
         assertThat(mExportManager.runExport()).isTrue();
 
         Compressor.decompress(
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
+                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
+                mContext);
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "change_logs_table", 0);
@@ -164,8 +166,9 @@ public class ExportManagerTest {
         assertThat(mExportManager.runExport()).isTrue();
 
         Compressor.decompress(
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME),
-                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME));
+                Uri.fromFile(mExportedDbContext.getDatabasePath(REMOTE_EXPORT_ZIP_FILE_NAME)),
+                mExportedDbContext.getDatabasePath(REMOTE_EXPORT_DATABASE_FILE_NAME),
+                mContext);
         try (HealthConnectDatabase remoteExportHealthConnectDatabase =
                 new HealthConnectDatabase(mExportedDbContext, REMOTE_EXPORT_DATABASE_FILE_NAME)) {
             assertTableSize(remoteExportHealthConnectDatabase, "steps_record_table", 1);

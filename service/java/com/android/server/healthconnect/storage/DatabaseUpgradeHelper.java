@@ -37,6 +37,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsReques
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ExerciseSessionRecordHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MigrationEntityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.PlannedExerciseSessionRecordHelper;
@@ -60,6 +61,8 @@ final class DatabaseUpgradeHelper {
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS = 12;
     // No schema changes between version 12 and 13. See ag/26747988 for more details.
     public static final int DB_VERSION_PLANNED_EXERCISE_SESSIONS_FLAG_RELEASE = 13;
+
+    // TODO(b/346981687): increment db version for PHR, once done with development.
 
     /**
      * A shared DB version to guard all schema changes of under development features in HC.
@@ -118,6 +121,7 @@ final class DatabaseUpgradeHelper {
         if (oldVersion < DB_VERSION_UNDER_DEVELOPMENT
                 && DB_VERSION_UNDER_DEVELOPMENT <= newVersion) {
             if (Flags.personalHealthRecordDatabase()) {
+                MedicalDataSourceHelper.onInitialUpgrade(db);
                 MedicalResourceHelper.onInitialUpgrade(db);
             }
         }

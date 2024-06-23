@@ -26,7 +26,7 @@ import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.datatypes.RecordTypeIdentifier;
 import android.health.connect.datatypes.StepsRecord;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.server.healthconnect.storage.datatypehelpers.HealthConnectDatabaseTestRule;
 

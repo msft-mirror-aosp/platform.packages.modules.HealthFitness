@@ -58,6 +58,8 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.logging.ExportDestinationElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -74,7 +76,10 @@ import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 @UninstallModules(DeviceInfoUtilsModule::class, HealthDataExportManagerModule::class)
@@ -119,6 +124,7 @@ class ExportDestinationFragmentTest {
     val healthDataExportManager: HealthDataExportManager =
         Mockito.mock(HealthDataExportManager::class.java)
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -138,6 +144,7 @@ class ExportDestinationFragmentTest {
     @After
     fun tearDown() {
         Intents.release()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -145,10 +152,21 @@ class ExportDestinationFragmentTest {
         launchFragment<ExportDestinationFragment>(Bundle())
 
         onView(withId(R.id.export_destination_header_upload_icon)).check(matches(isDisplayed()))
-        onView(withText("Choose where to export")).check(matches(isDisplayed()))
+        onView(withText("Choose where to save scheduled export")).check(matches(isDisplayed()))
 
         onView(withText("Back")).check(matches(isDisplayed()))
         onView(withText("Next")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun exportDestinationFragment_impressionsLogged() {
+        launchFragment<ExportDestinationFragment>(Bundle())
+
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(ExportDestinationElement.EXPORT_DESTINATION_BACK_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
     }
 
     @Test
@@ -163,6 +181,8 @@ class ExportDestinationFragmentTest {
         onView(withId(R.id.export_import_cancel_button)).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.exportFrequencyFragment)
+        verify(healthConnectLogger)
+            .logInteraction(ExportDestinationElement.EXPORT_DESTINATION_BACK_BUTTON)
     }
 
     @Test
@@ -361,6 +381,8 @@ class ExportDestinationFragmentTest {
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+        verify(healthConnectLogger)
+            .logInteraction(ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
     }
 
     @Test

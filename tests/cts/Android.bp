@@ -177,6 +177,7 @@ android_test {
         "modules-utils-build",
         "testng",
         "cts-healthconnect-utils",
+        "healthfitness-aconfig-flags-lib",
     ],
     min_sdk_version: "34",
     sdk_version: "test_current",
