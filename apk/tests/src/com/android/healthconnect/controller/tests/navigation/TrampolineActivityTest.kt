@@ -142,17 +142,21 @@ class TrampolineActivityTest {
                 appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
                     TEST_APP_PACKAGE_NAME))
             .then { true }
-        whenever(appPermissionViewModel.appPermissions).then {
+        whenever(appPermissionViewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(appPermissionViewModel.grantedPermissions).then {
+        whenever(appPermissionViewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(writePermission))
         }
-        whenever(appPermissionViewModel.revokeAllPermissionsState).then {
+        whenever(appPermissionViewModel.revokeAllHealthPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
-        whenever(appPermissionViewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
-        whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
+        whenever(appPermissionViewModel.allFitnessPermissionsGranted).then {
+            MediatorLiveData(false)
+        }
+        whenever(appPermissionViewModel.atLeastOneFitnessPermissionGranted).then {
+            MediatorLiveData(true)
+        }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {

@@ -42,6 +42,12 @@ public class PhrDataFactory {
     public static final String MEDICAL_RESOURCE_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     public static final String FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
+
+    public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
+            "{\"resourceType\" : \"Immunization\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
+            "{\"id\" : \"Immunization1\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
     public static final String FHIR_RESOURCE_TYPE_IMMUNIZATION = "Immunization";
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
