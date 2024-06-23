@@ -56,6 +56,8 @@ import com.android.healthconnect.controller.tests.utils.di.FakeDeviceInfoUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsModule
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.ImportSourceLocationElement
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -74,6 +76,9 @@ import org.mockito.Mockito
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 @UninstallModules(DeviceInfoUtilsModule::class, HealthDataExportManagerModule::class)
@@ -118,6 +123,7 @@ class ImportSourceLocationFragmentTest {
     val healthDataExportManager: HealthDataExportManager =
         Mockito.mock(HealthDataExportManager::class.java)
     @BindValue val deviceInfoUtils: DeviceInfoUtils = FakeDeviceInfoUtils()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var context: Context
@@ -137,6 +143,7 @@ class ImportSourceLocationFragmentTest {
     @After
     fun tearDown() {
         Intents.release()
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -150,10 +157,24 @@ class ImportSourceLocationFragmentTest {
     }
 
     @Test
+    fun importSourceLocationFragment_impressionsLogged() {
+        launchFragment<ImportSourceLocationFragment>(Bundle())
+
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger)
+            .logImpression(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
+        verify(healthConnectLogger)
+            .logImpression(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_CANCEL_BUTTON)
+    }
+
+    @Test
     fun importSourceLocationFragment_cancelButton_isClickable() {
         launchFragment<ImportSourceLocationFragment>(Bundle())
 
         onView(withId(R.id.export_import_cancel_button)).check(matches(isClickable()))
+        onView(withId(R.id.export_import_cancel_button)).perform(click())
+        verify(healthConnectLogger)
+            .logInteraction(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_CANCEL_BUTTON)
     }
 
     @Test
@@ -352,6 +373,8 @@ class ImportSourceLocationFragmentTest {
         intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+        verify(healthConnectLogger)
+            .logInteraction(ImportSourceLocationElement.IMPORT_SOURCE_LOCATION_NEXT_BUTTON)
     }
 
     @Test

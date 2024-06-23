@@ -23,6 +23,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.preference.PreferenceCategory
+import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -451,6 +452,7 @@ class FitnessAppFragmentTest {
         launchFragment<FitnessAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
 
+        onIdle()
         onView(
                 withText(
                     "To manage other Android permissions this app can " +
@@ -478,6 +480,7 @@ class FitnessAppFragmentTest {
         launchFragment<FitnessAppFragment>(
             bundleOf(EXTRA_PACKAGE_NAME to TEST_APP_PACKAGE_NAME, EXTRA_APP_NAME to TEST_APP_NAME))
 
+        onIdle()
         onView(
                 withText(
                     "To manage other Android permissions this app can " +
