@@ -25,7 +25,7 @@
     <string name="all_categories_title" msgid="1446410643217937926">"Allir flokkar"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Sjá alla flokka"</string>
     <string name="no_data" msgid="1906986019249068659">"Engin gögn"</string>
-    <string name="connected_apps_title" msgid="279942692804743223">"Heimildir forrits"</string>
+    <string name="connected_apps_title" msgid="279942692804743223">"Heimildir forrita"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Stjórna forritum og heimildum"</string>
     <string name="connected_apps_button_subtitle" msgid="8855528937028500370">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> af <xliff:g id="NUM_POSSIBLE_APPS">%2$s</xliff:g> forritum eru með aðgang"</string>
     <string name="connected_apps_all_apps_connected_subtitle" msgid="3432698291862059492">"<xliff:g id="NUM_APPS_CONNECTED">%1$s</xliff:g> forrit eru með aðgang"</string>
@@ -45,6 +45,7 @@
     <string name="write_data_access_label" msgid="7955988316773000250">"Skrifa: %s"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Stjórna heimildum"</string>
+    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Tími: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Hreyfing"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"hreyfing"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Líkamsmælingar"</string>
@@ -74,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Þessi gögn innihalda upplýsingar á borð við hreyfingartíma, tegund æfinga, umferðir, endurtekningar, lotur eða sundtök"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Þessi gögn innihalda upplýsingar á borð við svefnstig og svefnlotur"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Sjá allar færslur"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"breyta"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Eyða þessum gögnum"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Heilsutenging"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"opna heilsugögn"</string>
@@ -94,7 +96,11 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"æfingaleið"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Skrifa æfingaleið"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Lesa æfingaleið"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Lesa allar æfingaleiðir"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Lesa æfingaleiðir"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Æfingaáætlanir"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"æfingaáætlanir"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Lesa æfingaáætlanir"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Skrifa æfingaáætlanir"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Vegalengd"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"vegalengd"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Lesa vegalengd"</string>
@@ -239,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"hjartsláttur í hvíld"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Lesa hjartslátt í hvíld"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Skrifa hjartslátt í hvíld"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Hitastig húðar"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"hitastig húðar"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Lesa hitastig húðar"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Skrifa hitastig húðar"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Leyfa „<xliff:g id="APP_NAME">%1$s</xliff:g>“ að lesa"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Leyfa „<xliff:g id="APP_NAME">%1$s</xliff:g>“ að skrifa"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Hætta við"</string>
@@ -262,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Stjórnaðu því hvaða forrit fá aðgang að gögnum sem eru vistuð í Heilsutengingu. Ýttu á forrit til að sjá gögnin sem það les eða skrifar."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Aðgangur leyfður"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Aðgangur ekki leyfður"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Þörf á uppfærslu"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Stillingar og hjálp"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Loka á aðgang allra forrita"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Má lesa"</string>
@@ -284,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Opnað síðasta sólarhringinn"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Aðgangur forrita"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Engin samhæf forrit eru uppsett eins og stendur"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Aukinn aðgangur"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Fjarlægðar heimildir forrits"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Heilsutenging fjarlægði heimildir fyrir <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Heilsutenging fjarlægði heimildir fyrir <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -293,6 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Ástæða þess að Heilsutenging fjarlægir heimildir forrita"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ef Google Play fjarlægir eða lokar tímabundið á forrit fjarlægir Heilsutenging sjálfkrafa heimildir þess.\n\nÞað þýðir að forritið getur ekki nálgast gögn sem eru vistuð í Heilsutengingu. Ef viðkomandi forrit hefur skrifað gögn áður birtist það á listanum yfir óvirk forrit."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Ég skil"</string>
+    <string name="export_settings_screen_title" msgid="887671826359158339">"Vista gögn"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Vistaðu Heilsutengingargögn og -heimildir þannig að þú getir flutt þau inn ef þú skiptir yfir í nýjan síma. Þú getur valið hvar á að geyma þessi gögn áður en þú vistar."</string>
+    <string name="setup_button" msgid="1407942598553043961">"Setja upp"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Stillingar"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Vista sjálfkrafa"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Velja tíðni"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Veldu til að vista gögn einu sinni eða stilltu til að vista sjálfkrafa með vissu millibili."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Daglega"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Vikulega"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Mánaðarlega"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Til baka"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Áfram"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Byrjaðu að nota Heilsutengingu"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Heilsutenging varðveitir heilsu- og hreystigögnin þín og gefur þér kost á að samstilla ýmis forrit í símanum á einfaldan hátt"</string>
     <string name="share_data" msgid="3481932156368883946">"Deildu gögnum með forritum"</string>
@@ -346,8 +370,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Eyðir gögnum Heilsutengingar"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Eyðir gögnum Heilsutengingar"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Gagnaeyðing"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Eyða gagnaskráningu"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Eyða færslu"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Eyða færslunni „<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>“"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Eyða færslunni „<xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>“"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Alls: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 V}one{# V}other{# V}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 vatt}one{# vatt}other{# vött}}"</string>
@@ -658,7 +682,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 prósent}one{# prósent}other{# prósent}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Hætta við"</string>
     <string name="units_title" msgid="6504086463237869339">"Mælieiningar"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Stilla mælieiningar"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Vegalengd"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Hæð"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Þyngd"</string>
@@ -709,10 +732,13 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Færa niður"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Færa efst"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Færa neðst"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Hnappur til að draga og endurraða <xliff:g id="SELECTED_APP">%s</xliff:g> á forgangslista"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"Hnappur til að fjarlægja <xliff:g id="SELECTED_APP">%s</xliff:g> af forgangslista"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Ýttu tvisvar og dragðu til að endurraða"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"hreysti, vellíðan"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"heimildir"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"heilsutenging, heilsugögn, heilsuflokkar, aðgangur að gögnum, hreyfing, líkamsmælingar, skráning tíðahrings, næring, svefn, lífsmörk"</string>
-    <string name="search_breadcrumbs_permissions" msgid="2667471090347475796">"Heilsutenging &gt; Heimildir forrits"</string>
+    <string name="search_breadcrumbs_permissions" msgid="2667471090347475796">"Heilsutenging &gt; Heimildir forrita"</string>
     <string name="search_breadcrumbs_data" msgid="6635428480372024040">"Heilsutenging &gt; Gögn og aðgangur"</string>
     <string name="search_connected_apps" msgid="8180770761876928851">"Leita að forritum"</string>
     <string name="no_results" msgid="4007426147286897998">"Engar niðurstöður"</string>
@@ -725,6 +751,20 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Aðeins forrit sem þú veitir aðgang að æfingaleiðunum þínum"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Hvernig stjórna ég aðgangi?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Þú getur stjórnað aðgangi forrita að æfingaleiðum í stillingum Heilsutengingar"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Leyfa þessa leið"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Leyfa allar leiðir"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Ekki leyfa"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Alltaf leyfa"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Deiling æfingaleiðar"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Stjórnaðu aðgangi forritsins að æfingaleiðum í tengdum forritum"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Spyrja í hvert skipti"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Ekki leyfa"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Virkja báðar gagnagerðir?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Gera báðar gagnagerðir óvirkar?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> þarf lesaðgang að æfingum svo hægt sé að virkja æfingaleiðir"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> krefst aðgangs að æfingum svo hægt sé að virkja æfingaleiðir"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Já"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Nei"</string>
     <string name="back_button" msgid="780519527385993407">"Til baka"</string>
     <string name="loading" msgid="2526615755685950317">"Hleður…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Samþætting í gangi"</string>
@@ -760,9 +800,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Halda samþættingu Heilsutengingar áfram"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"Ljúktu þessu innan <xliff:g id="TIME_NEEDED">%1$s</xliff:g> til að halda gögnunum þínum."</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Uppfærslu forrits krafist"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"Uppfæra þarf <xliff:g id="APP_NAME">%1$s</xliff:g> svo forritið geti haldið áfram að virka með Heilsutengingu"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Uppfæra þarf tiltekin forrit svo þau geti haldið áfram að virka með Heilsutengingu"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Þú þarft að uppfæra <xliff:g id="APP_NAME">%1$s</xliff:g> til að geta haldið áfram að samstilla við Heilsutengingu"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Þú þarft að uppfæra einhver forrit til að geta haldið áfram að samstilla við Heilsutengingu"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Leita að uppfærslum"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Nánar"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Samþætting Heilsutengingar"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Nú geturðu samþætt Heilsutengingu og Android-kerfið. Ef þú veitir <xliff:g id="APP_NAME">%1$s</xliff:g> aðgang núna virka sumir eiginleikar hugsanlega ekki fyrr en samþættingu er lokið."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Nú geturðu samþætt Heilsutengingu og Android-kerfið. Ef þú veitir forritum aðgang núna virka sumir eiginleikar hugsanlega ekki fyrr en samþættingu er lokið."</string>
@@ -782,6 +823,13 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Nýjungar"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Nú geturðu opnað Heilsutengingu beint úr stillingunum. Þú getur fjarlægt forrit Heilsutengingar hvenær sem er til að losa geymslurými."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Ég skil"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Endurheimt í gangi"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Heilsutenging er að endurheimta gögn og heimildir. Það gæti tekið smástund."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Endurheimt Heilsutengingar í gangi"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Ég skil"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Uppfærslu er krafist"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Uppfærðu kerfi símans áður en þú heldur áfram að endurheimta gögn"</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Uppfæra núna"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Gagnasamtölur"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Upprunaforrit"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Bættu upprunaforritum á listann til að sýna hvernig gagnasamtölur breytast. Þegar forrit er fjarlægt af listanum er það ekki lengur tekið með í samtölum en hefur samt sem áður áfram skrifheimildir."</string>

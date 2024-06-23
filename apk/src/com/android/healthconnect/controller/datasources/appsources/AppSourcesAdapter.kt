@@ -135,6 +135,8 @@ class AppSourcesAdapter(
         itemView: View,
         private val onItemDragStartedListener: ItemTouchHelper?
     ) : RecyclerView.ViewHolder(itemView) {
+        private val EDIT_MODE_TAG = "edit_mode"
+        private val DRAG_MODE_TAG = "drag_mode"
         private val appPositionView: TextView
         private val appNameView: TextView
         private val appSourceSummary: TextView
@@ -155,6 +157,8 @@ class AppSourcesAdapter(
             val positionString: String = NumberFormat.getIntegerInstance().format(appPosition + 1)
             appPositionView.text = positionString
             appNameView.text = appMetadata.appName
+            actionIconBackground.contentDescription =
+                context.getString(R.string.reorder_button_content_description, appNameView.text)
 
             if (appUtils.isDefaultApp(context, appMetadata.packageName)) {
                 appSourceSummary.visibility = View.VISIBLE
@@ -177,6 +181,9 @@ class AppSourcesAdapter(
             actionView.visibility = View.VISIBLE
             actionIconBackground.background =
                 AttributeResolver.getDrawable(itemView.context, R.attr.closeIcon)
+            actionIconBackground.contentDescription =
+                context.getString(R.string.remove_button_content_description, appNameView.text)
+            actionIconBackground.tag = EDIT_MODE_TAG
             actionView.setOnTouchListener(null)
             actionView.setOnClickListener {
                 logger.logInteraction(DataSourcesElement.REMOVE_APP_SOURCE_BUTTON)
@@ -209,6 +216,7 @@ class AppSourcesAdapter(
             } else {
                 actionIconBackground.background =
                     AttributeResolver.getDrawable(itemView.context, R.attr.priorityItemDragIcon)
+                actionIconBackground.tag = DRAG_MODE_TAG
                 actionView.setOnClickListener(null)
                 actionView.setOnTouchListener { _, event ->
                     logger.logInteraction(DataSourcesElement.REORDER_APP_SOURCE_BUTTON)

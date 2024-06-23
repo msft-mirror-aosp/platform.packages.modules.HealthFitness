@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 class ConnectedAppsViewModel
 @Inject
 constructor(
-    private val loadHealthPermissionApps: LoadHealthPermissionApps,
+    private val loadHealthPermissionApps: ILoadHealthPermissionApps,
     private val searchHealthPermissionApps: SearchHealthPermissionApps,
     private val revokeAllHealthPermissionsUseCase: RevokeAllHealthPermissionsUseCase,
     @IoDispatcher val ioDispatcher: CoroutineDispatcher

@@ -20,11 +20,13 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
@@ -50,7 +52,9 @@ import com.android.healthconnect.controller.tests.utils.atPosition
 import com.android.healthconnect.controller.tests.utils.di.FakeAppUtils
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.tests.utils.toggleAnimation
 import com.android.healthconnect.controller.tests.utils.whenever
+import com.android.healthconnect.controller.utils.logging.DataSourcesElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
@@ -62,6 +66,7 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -71,6 +76,7 @@ import org.mockito.Mockito
 import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @UninstallModules(AppUtilsModule::class)
@@ -82,7 +88,7 @@ class DataSourcesFragmentTest {
     @BindValue
     val dataSourcesViewModel: DataSourcesViewModel = Mockito.mock(DataSourcesViewModel::class.java)
     @BindValue val appUtils: AppUtils = FakeAppUtils()
-    @BindValue val healthConnectLogger: HealthConnectLogger = mock<HealthConnectLogger>()
+    @BindValue val healthConnectLogger: HealthConnectLogger = mock()
 
     @Before
     fun setup() {
@@ -91,12 +97,58 @@ class DataSourcesFragmentTest {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
         hiltRule.inject()
         whenever(dataSourcesViewModel.getCurrentSelection()).then { HealthDataCategory.ACTIVITY }
+        toggleAnimation(false)
     }
 
     @After
     fun tearDown() {
         (appUtils as FakeAppUtils).reset()
         reset(healthConnectLogger)
+        toggleAnimation(true)
+    }
+
+    @Test
+    fun dataSourcesFragmentLogging_impressionsLogged() {
+        whenever(dataSourcesViewModel.dataSourcesAndAggregationsInfo).then {
+            MutableLiveData(
+                DataSourcesAndAggregationsInfo(
+                    priorityListState =
+                        PriorityListState.WithData(true, listOf(TEST_APP, TEST_APP_2)),
+                    potentialAppSourcesState =
+                        PotentialAppSourcesState.WithData(true, listOf(TEST_APP_3)),
+                    aggregationCardsState =
+                        AggregationCardsState.WithData(
+                            true,
+                            listOf(
+                                AggregationCardInfo(
+                                    HealthPermissionType.STEPS,
+                                    FormattedEntry.FormattedAggregation(
+                                        "1234 steps", "1234 steps", "TestApp"),
+                                    Instant.parse("2022-10-19T07:06:05.432Z"))))))
+        }
+
+        whenever(dataSourcesViewModel.getEditedPriorityList())
+            .thenReturn(listOf(TEST_APP, TEST_APP_2))
+        whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
+            MutableLiveData(
+                AggregationCardsState.WithData(
+                    true,
+                    listOf(
+                        AggregationCardInfo(
+                            HealthPermissionType.STEPS,
+                            FormattedEntry.FormattedAggregation(
+                                "1234 steps", "1234 steps", "TestApp"),
+                            Instant.parse("2022-10-19T07:06:05.432Z")))))
+        }
+        launchFragment<DataSourcesFragment>(bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
+
+        onIdle()
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.DATA_SOURCES_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(DataSourcesElement.DATA_TOTALS_CARD)
+        verify(healthConnectLogger).logImpression(DataSourcesElement.DATA_TYPE_SPINNER)
+        verify(healthConnectLogger, times(2)).logImpression(DataSourcesElement.APP_SOURCE_BUTTON)
+        verify(healthConnectLogger).logImpression(DataSourcesElement.ADD_AN_APP_BUTTON)
     }
 
     @Test
@@ -610,5 +662,121 @@ class DataSourcesFragmentTest {
         onIdle()
 
         onView(withId(R.id.error_view)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun triggerEditMode_changesActionItems() {
+        whenever(dataSourcesViewModel.dataSourcesAndAggregationsInfo).then {
+            MutableLiveData(
+                DataSourcesAndAggregationsInfo(
+                    priorityListState =
+                        PriorityListState.WithData(true, listOf(TEST_APP, TEST_APP_2)),
+                    potentialAppSourcesState = PotentialAppSourcesState.WithData(true, listOf()),
+                    aggregationCardsState = AggregationCardsState.WithData(true, listOf())))
+        }
+        whenever(dataSourcesViewModel.getEditedPriorityList()).then { listOf(TEST_APP, TEST_APP_2) }
+        whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
+            MutableLiveData(AggregationCardsState.WithData(true, listOf()))
+        }
+        (appUtils as FakeAppUtils).setDefaultApp(TEST_APP_PACKAGE_NAME)
+        val scenario =
+            launchFragment<DataSourcesFragment>(
+                bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
+        onIdle()
+
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as DataSourcesFragment).editPriorityList()
+        }
+
+        onView(withId(R.id.linear_layout_recycle_view))
+            .check(
+                matches(
+                    atPosition(
+                        0,
+                        allOf(
+                            hasDescendant(withText("1")),
+                            hasDescendant(withText(TEST_APP_NAME)),
+                            hasDescendant(withTagValue(`is`("edit_mode")))))))
+
+        onView(withId(R.id.linear_layout_recycle_view))
+            .check(
+                matches(
+                    atPosition(
+                        1,
+                        allOf(
+                            hasDescendant(withText("2")),
+                            hasDescendant(withText(TEST_APP_NAME_2)),
+                            hasDescendant(withTagValue(`is`("edit_mode")))))))
+    }
+
+    @Test
+    fun triggerEditMode_whenChangingCategory_resetsToDrag() {
+        whenever(dataSourcesViewModel.dataSourcesAndAggregationsInfo).then {
+            MutableLiveData(
+                DataSourcesAndAggregationsInfo(
+                    priorityListState =
+                        PriorityListState.WithData(true, listOf(TEST_APP, TEST_APP_2)),
+                    potentialAppSourcesState = PotentialAppSourcesState.WithData(true, listOf()),
+                    aggregationCardsState = AggregationCardsState.WithData(true, listOf())))
+        }
+        whenever(dataSourcesViewModel.getEditedPriorityList()).then { listOf(TEST_APP, TEST_APP_2) }
+        whenever(dataSourcesViewModel.updatedAggregationCardsData).then {
+            MutableLiveData(AggregationCardsState.WithData(true, listOf()))
+        }
+
+        (appUtils as FakeAppUtils).setDefaultApp(TEST_APP_PACKAGE_NAME)
+        val scenario =
+            launchFragment<DataSourcesFragment>(
+                bundleOf(CATEGORY_KEY to HealthDataCategory.ACTIVITY))
+        onIdle()
+
+        scenario.onActivity { activity ->
+            val fragment = activity.supportFragmentManager.findFragmentByTag("")
+            (fragment as DataSourcesFragment).editPriorityList()
+        }
+
+        onView(withId(R.id.linear_layout_recycle_view))
+            .check(
+                matches(
+                    atPosition(
+                        0,
+                        allOf(
+                            hasDescendant(withText("1")),
+                            hasDescendant(withText(TEST_APP_NAME)),
+                            hasDescendant(withTagValue(`is`("edit_mode")))))))
+
+        onView(withId(R.id.linear_layout_recycle_view))
+            .check(
+                matches(
+                    atPosition(
+                        1,
+                        allOf(
+                            hasDescendant(withText("2")),
+                            hasDescendant(withText(TEST_APP_NAME_2)),
+                            hasDescendant(withTagValue(`is`("edit_mode")))))))
+
+        onView(withId(com.android.settingslib.widget.spinner.R.id.spinner)).perform(click())
+        onView(withText("Sleep")).perform(click())
+
+        onView(withId(R.id.linear_layout_recycle_view))
+            .check(
+                matches(
+                    atPosition(
+                        0,
+                        allOf(
+                            hasDescendant(withText("1")),
+                            hasDescendant(withText(TEST_APP_NAME)),
+                            hasDescendant(withTagValue(`is`("drag_mode")))))))
+
+        onView(withId(R.id.linear_layout_recycle_view))
+            .check(
+                matches(
+                    atPosition(
+                        1,
+                        allOf(
+                            hasDescendant(withText("2")),
+                            hasDescendant(withText(TEST_APP_NAME_2)),
+                            hasDescendant(withTagValue(`is`("drag_mode")))))))
     }
 }

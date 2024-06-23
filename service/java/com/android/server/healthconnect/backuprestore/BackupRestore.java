@@ -31,6 +31,7 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_RETRY;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STATE_UNKNOWN;
+import static android.health.connect.PageTokenWrapper.EMPTY_PAGE_TOKEN;
 
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_JOB_NAME_KEY;
 import static com.android.server.healthconnect.backuprestore.BackupRestore.BackupRestoreJobService.EXTRA_USER_ID;
@@ -54,6 +55,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.health.connect.HealthConnectDataState;
 import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager.DataDownloadState;
+import android.health.connect.PageTokenWrapper;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.datatypes.Record;
@@ -150,7 +152,13 @@ public final class BackupRestore {
     @VisibleForTesting
     static final long DATA_MERGING_TIMEOUT_INTERVAL_MILLIS = 5 * DateUtils.DAY_IN_MILLIS;
 
-    private static final long DATA_MERGING_RETRY_DELAY_MILLIS = 12 * DateUtils.HOUR_IN_MILLIS;
+    @VisibleForTesting
+    static final long DATA_MERGING_RETRY_DELAY_MILLIS = 12 * DateUtils.HOUR_IN_MILLIS;
+
+    // Used in #setOverrideDeadline to set a minimum window of 24 hours. See b/311402873,
+    // b/319721118
+    @VisibleForTesting
+    static final long MINIMUM_LATENCY_WINDOW_MILLIS = 24 * DateUtils.HOUR_IN_MILLIS;
 
     @VisibleForTesting static final String DATA_DOWNLOAD_TIMEOUT_KEY = "data_download_timeout_key";
 
@@ -210,7 +218,7 @@ public final class BackupRestore {
 
     private volatile UserHandle mCurrentForegroundUser;
 
-    @SuppressWarnings("NullAway.Init")
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     public BackupRestore(
             FirstGrantTimeManager firstGrantTimeManager,
             MigrationStateManager migrationStateManager,
@@ -358,7 +366,7 @@ public final class BackupRestore {
         var backupFilesByFileNames = getBackupFilesByFileNames(userHandle);
         pfdsByFileName.forEach(
                 (fileName, pfd) -> {
-                    @SuppressWarnings("NullAway")
+                    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
                     Path sourceFilePath = backupFilesByFileNames.get(fileName).toPath();
                     try (FileOutputStream outputStream =
                             new FileOutputStream(pfd.getFileDescriptor())) {
@@ -399,7 +407,7 @@ public final class BackupRestore {
     }
 
     /** Deletes all the staged data and resets all the states. */
-    @SuppressWarnings("NullAway")
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public void deleteAndResetEverything(@NonNull UserHandle userHandle) {
         // Don't delete anything while we are in the process of merging staged data.
         synchronized (mMergingLock) {
@@ -717,8 +725,8 @@ public final class BackupRestore {
 
         // We might be here because the device rebooted or the user switched. If a timer was already
         // going on then we want to continue that timer.
-        long timeout =
-                getRemainingTimeout(
+        long timeoutMillis =
+                getRemainingTimeoutMillis(
                         DATA_DOWNLOAD_TIMEOUT_KEY,
                         DATA_DOWNLOAD_TIMEOUT_CANCELLED_KEY,
                         DATA_DOWNLOAD_TIMEOUT_INTERVAL_MILLIS);
@@ -732,9 +740,11 @@ public final class BackupRestore {
                                 BackupRestoreJobService.BACKUP_RESTORE_JOB_ID + userId,
                                 new ComponentName(mContext, BackupRestoreJobService.class))
                         .setExtras(extras)
-                        .setMinimumLatency(timeout)
-                        .setOverrideDeadline(timeout << 1);
-        Slog.i(TAG, "Scheduling download state timeout job with period: " + timeout);
+                        .setMinimumLatency(timeoutMillis)
+                        .setOverrideDeadline(timeoutMillis + MINIMUM_LATENCY_WINDOW_MILLIS);
+        Slog.i(
+                TAG,
+                "Scheduling download state timeout job with period: " + timeoutMillis + " millis");
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
@@ -774,8 +784,8 @@ public final class BackupRestore {
 
         // We might be here because the device rebooted or the user switched. If a timer was already
         // going on then we want to continue that timer.
-        long timeout =
-                getRemainingTimeout(
+        long timeoutMillis =
+                getRemainingTimeoutMillis(
                         DATA_STAGING_TIMEOUT_KEY,
                         DATA_STAGING_TIMEOUT_CANCELLED_KEY,
                         DATA_STAGING_TIMEOUT_INTERVAL_MILLIS);
@@ -789,9 +799,9 @@ public final class BackupRestore {
                                 BackupRestoreJobService.BACKUP_RESTORE_JOB_ID + userId,
                                 new ComponentName(mContext, BackupRestoreJobService.class))
                         .setExtras(extras)
-                        .setMinimumLatency(timeout)
-                        .setOverrideDeadline(timeout << 1);
-        Slog.i(TAG, "Scheduling staging timeout job with period: " + timeout);
+                        .setMinimumLatency(timeoutMillis)
+                        .setOverrideDeadline(timeoutMillis + MINIMUM_LATENCY_WINDOW_MILLIS);
+        Slog.i(TAG, "Scheduling staging timeout job with period: " + timeoutMillis + " millis");
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
@@ -830,8 +840,8 @@ public final class BackupRestore {
 
         // We might be here because the device rebooted or the user switched. If a timer was already
         // going on then we want to continue that timer.
-        long timeout =
-                getRemainingTimeout(
+        long timeoutMillis =
+                getRemainingTimeoutMillis(
                         DATA_MERGING_TIMEOUT_KEY,
                         DATA_MERGING_TIMEOUT_CANCELLED_KEY,
                         DATA_MERGING_TIMEOUT_INTERVAL_MILLIS);
@@ -845,9 +855,9 @@ public final class BackupRestore {
                                 BackupRestoreJobService.BACKUP_RESTORE_JOB_ID + userId,
                                 new ComponentName(mContext, BackupRestoreJobService.class))
                         .setExtras(extras)
-                        .setMinimumLatency(timeout)
-                        .setOverrideDeadline(timeout << 1);
-        Slog.i(TAG, "Scheduling merging timeout job with period: " + timeout);
+                        .setMinimumLatency(timeoutMillis)
+                        .setOverrideDeadline(timeoutMillis + MINIMUM_LATENCY_WINDOW_MILLIS);
+        Slog.i(TAG, "Scheduling merging timeout job with period: " + timeoutMillis + " millis");
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
@@ -889,8 +899,8 @@ public final class BackupRestore {
 
         // We might be here because the device rebooted or the user switched. If a timer was already
         // going on then we want to continue that timer.
-        long timeout =
-                getRemainingTimeout(
+        long timeoutMillis =
+                getRemainingTimeoutMillis(
                         DATA_MERGING_RETRY_KEY,
                         DATA_MERGING_RETRY_CANCELLED_KEY,
                         DATA_MERGING_RETRY_DELAY_MILLIS);
@@ -899,9 +909,9 @@ public final class BackupRestore {
                                 BackupRestoreJobService.BACKUP_RESTORE_JOB_ID + userId,
                                 new ComponentName(mContext, BackupRestoreJobService.class))
                         .setExtras(extras)
-                        .setMinimumLatency(timeout)
-                        .setOverrideDeadline(timeout << 1);
-        Slog.i(TAG, "Scheduling retry merging job with period: " + timeout);
+                        .setMinimumLatency(timeoutMillis)
+                        .setOverrideDeadline(timeoutMillis + MINIMUM_LATENCY_WINDOW_MILLIS);
+        Slog.i(TAG, "Scheduling retry merging job with period: " + timeoutMillis + " millis");
         BackupRestoreJobService.schedule(mContext, jobInfoBuilder.build(), this);
 
         // Set the start time
@@ -939,7 +949,7 @@ public final class BackupRestore {
         });
     }
 
-    private long getRemainingTimeout(
+    private long getRemainingTimeoutMillis(
             String startTimeKey, String cancelledTimeKey, long stdTimeout) {
         String startTimeStr = PreferenceHelper.getInstance().getPreference(startTimeKey);
         if (startTimeStr == null || startTimeStr.trim().isEmpty()) {
@@ -991,7 +1001,7 @@ public final class BackupRestore {
                 mCurrentForegroundUser, userGrantTimeState);
     }
 
-    @SuppressWarnings("NullAway")
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     private void mergeDatabase() {
         synchronized (mMergingLock) {
             if (!mStagedDbContext.getDatabasePath(STAGED_DATABASE_NAME).exists()) {
@@ -1029,7 +1039,7 @@ public final class BackupRestore {
                 RecordHelperProvider.getInstance().getRecordHelper(recordType);
         // Read all the records of the given type from the staged db and insert them into the
         // existing healthconnect db.
-        long token = DEFAULT_LONG;
+        PageTokenWrapper token = EMPTY_PAGE_TOKEN;
         do {
             var recordsToMergeAndToken = getRecordsToMerge(recordTypeClass, token, recordHelper);
             if (recordsToMergeAndToken.first.isEmpty()) {
@@ -1051,14 +1061,14 @@ public final class BackupRestore {
                     .insertAll(upsertTransactionRequest.getUpsertRequests());
 
             token = recordsToMergeAndToken.second;
-        } while (token != DEFAULT_LONG);
+        } while (!token.isEmpty());
 
         // Once all the records of this type have been merged we can delete the table.
 
         // Passing -1 for startTime and endTime as we don't want to have time based filtering in the
         // final query.
         Slog.d(TAG, "Deleting table for: " + recordTypeClass);
-        @SuppressWarnings("NullAway")
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         DeleteTableRequest deleteTableRequest =
                 recordHelper.getDeleteTableRequest(
                         null /* packageFilters */,
@@ -1068,36 +1078,36 @@ public final class BackupRestore {
         getStagedDatabase().getWritableDatabase().execSQL(deleteTableRequest.getDeleteCommand());
     }
 
-    private <T extends Record> Pair<List<RecordInternal<?>>, Long> getRecordsToMerge(
-            Class<T> recordTypeClass, long requestToken, RecordHelper<?> recordHelper) {
+    private <T extends Record> Pair<List<RecordInternal<?>>, PageTokenWrapper> getRecordsToMerge(
+            Class<T> recordTypeClass, PageTokenWrapper requestToken, RecordHelper<?> recordHelper) {
         ReadRecordsRequestUsingFilters<T> readRecordsRequest =
                 new ReadRecordsRequestUsingFilters.Builder<>(recordTypeClass)
                         .setPageSize(2000)
-                        .setPageToken(requestToken)
+                        .setPageToken(requestToken.encode())
                         .build();
 
-        Map<String, Boolean> extraReadPermsMapping = new ArrayMap<>();
-        List<String> extraReadPerms = recordHelper.getExtraReadPermissions();
-        for (var extraReadPerm : extraReadPerms) {
-            extraReadPermsMapping.put(extraReadPerm, true);
-        }
+        Set<String> grantedExtraReadPermissions =
+                Set.copyOf(recordHelper.getExtraReadPermissions());
 
         // Working with startDateAccess of -1 as we don't want to have time based filtering in the
         // query.
-        @SuppressWarnings("NullAway")
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         ReadTransactionRequest readTransactionRequest =
                 new ReadTransactionRequest(
                         null,
                         readRecordsRequest.toReadRecordsRequestParcel(),
-                        DEFAULT_LONG /* startDateAccessMillis */,
-                        false,
-                        extraReadPermsMapping);
+                        // Avoid time based filtering.
+                        /* startDateAccessMillis= */ DEFAULT_LONG,
+                        /* enforceSelfRead= */ false,
+                        grantedExtraReadPermissions,
+                        // Make sure foreground only types get included in the response.
+                        /* isInForeground= */ true);
 
         List<RecordInternal<?>> recordInternalList;
-        long token;
+        PageTokenWrapper token;
         ReadTableRequest readTableRequest = readTransactionRequest.getReadRequests().get(0);
         try (Cursor cursor = read(readTableRequest)) {
-            Pair<List<RecordInternal<?>>, Long> readResult =
+            Pair<List<RecordInternal<?>>, PageTokenWrapper> readResult =
                     recordHelper.getNextInternalRecordsPageAndToken(
                             cursor,
                             readTransactionRequest.getPageSize().orElse(DEFAULT_PAGE_SIZE),
@@ -1209,7 +1219,7 @@ public final class BackupRestore {
         public static final String EXTRA_JOB_NAME_KEY = "job_name";
         private static final int BACKUP_RESTORE_JOB_ID = 1000;
 
-        @SuppressWarnings("NullAway.Init")
+        @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
         static volatile BackupRestore sBackupRestore;
 
         @Override

@@ -18,6 +18,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
+import androidx.annotation.VisibleForTesting
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -57,6 +58,7 @@ class DataSourcesFragment :
     Hilt_DataSourcesFragment(), AppSourcesAdapter.OnAppRemovedFromPriorityListListener {
 
     companion object {
+        private const val DATA_TYPE_SPINNER_PREFERENCE_GROUP = "data_type_spinner_group"
         private const val DATA_TOTALS_PREFERENCE_GROUP = "data_totals_group"
         private const val DATA_TOTALS_PREFERENCE_KEY = "data_totals_preference"
         private const val APP_SOURCES_PREFERENCE_GROUP = "app_sources_group"
@@ -65,6 +67,7 @@ class DataSourcesFragment :
         private const val NON_EMPTY_FOOTER_PREFERENCE_KEY = "data_sources_footer"
         private const val EMPTY_STATE_HEADER_PREFERENCE_KEY = "empty_state_header"
         private const val EMPTY_STATE_FOOTER_PREFERENCE_KEY = "empty_state_footer"
+        private const val IS_EDIT_MODE = "is_edit_mode"
 
         private val dataSourcesCategories =
             arrayListOf(HealthDataCategory.ACTIVITY, HealthDataCategory.SLEEP)
@@ -76,12 +79,17 @@ class DataSourcesFragment :
 
     @Inject lateinit var logger: HealthConnectLogger
     @Inject lateinit var appUtils: AppUtils
+    private var isEditMode = false
 
     private val dataSourcesViewModel: DataSourcesViewModel by activityViewModels()
     private lateinit var spinnerPreference: SettingsSpinnerPreference
     private lateinit var dataSourcesCategoriesStrings: List<String>
     private var currentCategorySelection: @HealthDataCategoryInt Int = HealthDataCategory.ACTIVITY
     @Inject lateinit var timeSource: TimeSource
+
+    private val dataTypeSpinnerPreferenceGroup: PreferenceGroup? by lazy {
+        preferenceScreen.findPreference(DATA_TYPE_SPINNER_PREFERENCE_GROUP)
+    }
 
     private val dataTotalsPreferenceGroup: PreferenceGroup? by lazy {
         preferenceScreen.findPreference(DATA_TOTALS_PREFERENCE_GROUP)
@@ -133,8 +141,19 @@ class DataSourcesFragment :
         setupSpinnerPreference()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(IS_EDIT_MODE, isEditMode)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.let { bundle ->
+            val savedIsEditMode = bundle.getBoolean(IS_EDIT_MODE, false)
+            isEditMode = savedIsEditMode
+        }
+
         setLoading(true)
         val currentStringSelection = spinnerPreference.selectedItem
         currentCategorySelection =
@@ -163,7 +182,7 @@ class DataSourcesFragment :
                 if (priorityList.isEmpty() && potentialAppSources.isEmpty()) {
                     addEmptyState()
                 } else {
-                    updateMenu(priorityList.size > 1 && !dataSourcesViewModel.isEditMode)
+                    updateMenu(priorityList.size > 1 && !isEditMode)
                     updateAppSourcesSection(priorityList, potentialAppSources)
                     updateDataTotalsSection(cardInfos)
                 }
@@ -199,8 +218,9 @@ class DataSourcesFragment :
         }
     }
 
-    private fun editPriorityList() {
-        dataSourcesViewModel.isEditMode = true
+    @VisibleForTesting
+    fun editPriorityList() {
+        isEditMode = true
         updateMenu(shouldShowEditButton = false)
         appSourcesPreferenceGroup?.removePreferenceRecursively(ADD_AN_APP_PREFERENCE_KEY)
         val appSourcesPreference =
@@ -214,7 +234,7 @@ class DataSourcesFragment :
             ?.toggleEditMode(false)
         updateMenu(dataSourcesViewModel.getEditedPriorityList().size > 1)
         updateAddApp(dataSourcesViewModel.getEditedPotentialAppSources().isNotEmpty())
-        dataSourcesViewModel.isEditMode = false
+        isEditMode = false
     }
 
     /** Updates the priority list preference. */
@@ -236,10 +256,10 @@ class DataSourcesFragment :
                     this)
                 .also {
                     it.key = APP_SOURCES_PREFERENCE_KEY
-                    it.setEditMode(dataSourcesViewModel.isEditMode)
+                    it.setEditMode(isEditMode)
                 })
 
-        updateAddApp(potentialAppSources.isNotEmpty() && !dataSourcesViewModel.isEditMode)
+        updateAddApp(potentialAppSources.isNotEmpty() && !isEditMode)
         nonEmptyFooterPreference?.isVisible = true
     }
 
@@ -378,6 +398,7 @@ class DataSourcesFragment :
 
                     val currentCategory = dataSourcesCategories[position]
                     currentCategorySelection = dataSourcesCategories[position]
+                    exitEditMode()
 
                     // Reload the data sources information when a new category has been selected
                     dataSourcesViewModel.loadData(currentCategory)
@@ -390,7 +411,8 @@ class DataSourcesFragment :
         spinnerPreference.setSelection(
             dataSourcesCategories.indexOf(dataSourcesViewModel.getCurrentSelection()))
 
-        preferenceScreen.addPreference(spinnerPreference)
+        dataTypeSpinnerPreferenceGroup?.isVisible = true
+        dataTypeSpinnerPreferenceGroup?.addPreference(spinnerPreference)
         logger.logImpression(DataSourcesElement.DATA_TYPE_SPINNER)
     }
 }

@@ -44,6 +44,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class HealthConnectDeviceConfigManager implements DeviceConfig.OnPropertiesChangedListener {
     private static Set<String> sFlagsToTrack = new ArraySet<>();
     private static final String EXERCISE_ROUTE_FEATURE_FLAG = "exercise_routes_enable";
+    private static final String EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG =
+            "exercise_routes_read_all_enable";
     public static final String ENABLE_RATE_LIMITER_FLAG = "enable_rate_limiter";
     private static final String MAX_READ_REQUESTS_PER_24H_FOREGROUND_FLAG =
             "max_read_requests_per_24h_foreground";
@@ -118,12 +120,15 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     @VisibleForTesting
     public static final String BACKGROUND_READ_FEATURE_FLAG = "background_read_enable";
 
+    @VisibleForTesting public static final String HISTORY_READ_FEATURE_FLAG = "history_read_enable";
+
     @VisibleForTesting
     public static final String ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG =
             "aggregation_source_controls_enable";
 
     private static final boolean SESSION_DATATYPE_DEFAULT_FLAG_VALUE = true;
     private static final boolean EXERCISE_ROUTE_DEFAULT_FLAG_VALUE = true;
+    private static final boolean EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE = true;
     public static final boolean ENABLE_RATE_LIMITER_DEFAULT_FLAG_VALUE = true;
     public static final int QUOTA_BUCKET_READS_PER_15M_FOREGROUND_DEFAULT_FLAG_VALUE = 2000;
     public static final int QUOTA_BUCKET_READS_PER_24H_FOREGROUND_DEFAULT_FLAG_VALUE = 16000;
@@ -168,11 +173,12 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     public static final boolean ENABLE_MIGRATION_NOTIFICATIONS_DEFAULT_FLAG_VALUE = true;
 
     @VisibleForTesting public static final boolean BACKGROUND_READ_DEFAULT_FLAG_VALUE = false;
+    @VisibleForTesting public static final boolean HISTORY_READ_DEFAULT_FLAG_VALUE = false;
 
     @VisibleForTesting
     public static final boolean ENABLE_AGGREGATION_SOURCE_CONTROLS_DEFAULT_FLAG_VALUE = true;
 
-    @SuppressWarnings("NullAway.Init")
+    @SuppressWarnings("NullAway.Init") // TODO(b/317029272): fix this suppression
     private static HealthConnectDeviceConfigManager sDeviceConfigManager;
 
     private final ReentrantReadWriteLock mLock = new ReentrantReadWriteLock();
@@ -184,6 +190,13 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     HEALTH_FITNESS_NAMESPACE,
                     EXERCISE_ROUTE_FEATURE_FLAG,
                     EXERCISE_ROUTE_DEFAULT_FLAG_VALUE);
+
+    @GuardedBy("mLock")
+    private boolean mExerciseRoutesReadAllEnabled =
+            DeviceConfig.getBoolean(
+                    HEALTH_FITNESS_NAMESPACE,
+                    EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG,
+                    EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
     private boolean mSessionDatatypeEnabled =
@@ -284,6 +297,13 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                     BACKGROUND_READ_DEFAULT_FLAG_VALUE);
 
     @GuardedBy("mLock")
+    private boolean mHistoryReadFeatureEnabled =
+            DeviceConfig.getBoolean(
+                    HEALTH_FITNESS_NAMESPACE,
+                    HISTORY_READ_FEATURE_FLAG,
+                    HISTORY_READ_DEFAULT_FLAG_VALUE);
+
+    @GuardedBy("mLock")
     private boolean mAggregationSourceControlsEnabled = true;
 
     @NonNull
@@ -308,6 +328,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
     /** Adds flags that need to be updated if their values are changed on the server. */
     private static void addFlagsToTrack() {
         sFlagsToTrack.add(EXERCISE_ROUTE_FEATURE_FLAG);
+        sFlagsToTrack.add(EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG);
         sFlagsToTrack.add(SESSION_DATATYPE_FEATURE_FLAG);
         sFlagsToTrack.add(ENABLE_RATE_LIMITER_FLAG);
         sFlagsToTrack.add(COUNT_MIGRATION_STATE_IN_PROGRESS_FLAG);
@@ -323,6 +344,7 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         sFlagsToTrack.add(ENABLE_COMPLETE_STATE_CHANGE_JOBS_FLAG);
         sFlagsToTrack.add(ENABLE_MIGRATION_NOTIFICATIONS_FLAG);
         sFlagsToTrack.add(BACKGROUND_READ_FEATURE_FLAG);
+        sFlagsToTrack.add(HISTORY_READ_FEATURE_FLAG);
         sFlagsToTrack.add(ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG);
     }
 
@@ -331,6 +353,16 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         mLock.readLock().lock();
         try {
             return mExerciseRouteEnabled;
+        } finally {
+            mLock.readLock().unlock();
+        }
+    }
+
+    /** Returns true if READ_EXERCISE_ROUTES permission is effective. */
+    public boolean isExerciseRoutesReadAllFeatureEnabled() {
+        mLock.readLock().lock();
+        try {
+            return mExerciseRoutesReadAllEnabled;
         } finally {
             mLock.readLock().unlock();
         }
@@ -495,6 +527,16 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
         }
     }
 
+    /** Returns whether full history reading is enabled or not. */
+    public boolean isHistoryReadFeatureEnabled() {
+        mLock.readLock().lock();
+        try {
+            return mHistoryReadFeatureEnabled;
+        } finally {
+            mLock.readLock().unlock();
+        }
+    }
+
     /** Returns whether the new aggregation source control feature is enabled or not. */
     public boolean isAggregationSourceControlsEnabled() {
         mLock.readLock().lock();
@@ -610,6 +652,12 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                         EXERCISE_ROUTE_FEATURE_FLAG,
                                         EXERCISE_ROUTE_DEFAULT_FLAG_VALUE);
                         break;
+                    case EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG:
+                        mExerciseRoutesReadAllEnabled =
+                                properties.getBoolean(
+                                        EXERCISE_ROUTES_READ_ALL_FEATURE_FLAG,
+                                        EXERCISE_ROUTES_READ_ALL_DEFAULT_FLAG_VALUE);
+                        break;
                     case SESSION_DATATYPE_FEATURE_FLAG:
                         mSessionDatatypeEnabled =
                                 properties.getBoolean(
@@ -700,6 +748,11 @@ public class HealthConnectDeviceConfigManager implements DeviceConfig.OnProperti
                                 properties.getBoolean(
                                         BACKGROUND_READ_FEATURE_FLAG,
                                         BACKGROUND_READ_DEFAULT_FLAG_VALUE);
+                        break;
+                    case HISTORY_READ_FEATURE_FLAG:
+                        mHistoryReadFeatureEnabled =
+                                properties.getBoolean(
+                                        HISTORY_READ_FEATURE_FLAG, HISTORY_READ_DEFAULT_FLAG_VALUE);
                         break;
                     case ENABLE_AGGREGATION_SOURCE_CONTROLS_FLAG:
                         mAggregationSourceControlsEnabled = true;

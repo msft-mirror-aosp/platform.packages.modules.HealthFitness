@@ -47,9 +47,8 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alertDialogBuilder =
-            AlertDialogBuilder(this)
-                .setLogName(
-                    DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
+            AlertDialogBuilder(
+                    this, DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CONTAINER)
                 .setTitle(buildTitle())
                 .setIcon(R.attr.deleteIcon)
                 .setMessage(buildMessage())
@@ -62,7 +61,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                     }
 
         if (viewModel.showTimeRangeDialogFragment) {
-            alertDialogBuilder.setNegativeButton(
+            alertDialogBuilder.setNeutralButton(
                 R.string.confirming_question_go_back_button,
                 DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_GO_BACK_BUTTON) {
                     _,
@@ -70,7 +69,7 @@ class DeletionConfirmationDialogFragment : Hilt_DeletionConfirmationDialogFragme
                     setFragmentResult(GO_BACK_EVENT, Bundle())
                 }
         } else {
-            alertDialogBuilder.setNegativeButton(
+            alertDialogBuilder.setNeutralButton(
                 android.R.string.cancel,
                 DeletionDialogConfirmationElement.DELETION_DIALOG_CONFIRMATION_CANCEL_BUTTON) { _, _
                     ->

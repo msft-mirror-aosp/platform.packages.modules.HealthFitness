@@ -55,6 +55,7 @@
     <uses-permission android:name="android.permission.health.WRITE_OXYGEN_SATURATION"/>
     <uses-permission android:name="android.permission.health.WRITE_RESPIRATORY_RATE"/>
     <uses-permission android:name="android.permission.health.WRITE_RESTING_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.WRITE_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.WRITE_NUTRITION"/>
     <uses-permission android:name="android.permission.health.WRITE_TOTAL_CALORIES_BURNED"/>
 
@@ -68,6 +69,7 @@
     <uses-permission android:name="android.permission.health.READ_WHEELCHAIR_PUSHES"/>
     <uses-permission android:name="android.permission.health.READ_DISTANCE"/>
     <uses-permission android:name="android.permission.health.READ_EXERCISE"/>
+    <uses-permission android:name="android.permission.health.READ_EXERCISE_ROUTES"/>
     <uses-permission android:name="android.permission.health.READ_VO2_MAX"/>
     <uses-permission android:name="android.permission.health.READ_POWER"/>
     <uses-permission android:name="android.permission.health.READ_SPEED"/>
@@ -91,12 +93,13 @@
     <uses-permission android:name="android.permission.health.READ_OXYGEN_SATURATION"/>
     <uses-permission android:name="android.permission.health.READ_RESPIRATORY_RATE"/>
     <uses-permission android:name="android.permission.health.READ_RESTING_HEART_RATE"/>
+    <uses-permission android:name="android.permission.health.READ_SKIN_TEMPERATURE"/>
     <uses-permission android:name="android.permission.health.READ_NUTRITION"/>
     <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
 
 
     <application android:label="CtsHealthConnectTestAppAWithNormalReadWritePermission">
-        <activity android:name="android.healthconnect.cts.testhelper.HealthConnectTestHelper"
+        <activity android:name="android.healthconnect.cts.testhelper.TestAppActivity"
                   android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -107,5 +110,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="android.healthconnect.cts.utils.ProxyActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.healthconnect.cts.ACTION_START_ACTIVITY_FOR_RESULT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="android.healthconnect.cts.testhelper.TestAppReceiver"
+            android:exported="true"/>
     </application>
 </manifest>

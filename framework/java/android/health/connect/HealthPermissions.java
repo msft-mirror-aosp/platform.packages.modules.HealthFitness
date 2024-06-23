@@ -41,10 +41,12 @@ import static android.health.connect.HealthPermissionCategory.MENSTRUATION;
 import static android.health.connect.HealthPermissionCategory.NUTRITION;
 import static android.health.connect.HealthPermissionCategory.OVULATION_TEST;
 import static android.health.connect.HealthPermissionCategory.OXYGEN_SATURATION;
+import static android.health.connect.HealthPermissionCategory.PLANNED_EXERCISE;
 import static android.health.connect.HealthPermissionCategory.POWER;
 import static android.health.connect.HealthPermissionCategory.RESPIRATORY_RATE;
 import static android.health.connect.HealthPermissionCategory.RESTING_HEART_RATE;
 import static android.health.connect.HealthPermissionCategory.SEXUAL_ACTIVITY;
+import static android.health.connect.HealthPermissionCategory.SKIN_TEMPERATURE;
 import static android.health.connect.HealthPermissionCategory.SLEEP;
 import static android.health.connect.HealthPermissionCategory.SPEED;
 import static android.health.connect.HealthPermissionCategory.STEPS;
@@ -53,6 +55,7 @@ import static android.health.connect.HealthPermissionCategory.VO2_MAX;
 import static android.health.connect.HealthPermissionCategory.WEIGHT;
 import static android.health.connect.HealthPermissionCategory.WHEELCHAIR_PUSHES;
 
+import android.annotation.FlaggedApi;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SystemApi;
@@ -137,6 +140,18 @@ public final class HealthPermissions {
             "android.permission.health.READ_HEALTH_DATA_IN_BACKGROUND";
 
     /**
+     * Allows an application to read the entire history of health data (of any type).
+     *
+     * <p>Protection level: dangerous.
+     *
+     * @hide
+     */
+    // TODO (b/325434006): Specify a label for the permission in HealthPermissionsManifest.xml when
+    // exposing this constant. Also search for 325434006 and remove workarounds.
+    public static final String READ_HEALTH_DATA_HISTORY =
+            "android.permission.health.READ_HEALTH_DATA_HISTORY";
+
+    /**
      * Allows an application to read the user's active calories burned data.
      *
      * <p>Protection level: dangerous.
@@ -179,12 +194,20 @@ public final class HealthPermissions {
             "android.permission.health.READ_EXERCISE_ROUTE";
 
     /**
-     * Allows an application to read any {@link ExerciseRoute}.
+     * Allows an application to read {@link ExerciseRoute}.
      *
-     * @hide
+     * <p>This permission can only be granted manually by a user in Health Connect settings or in
+     * the route request activity which can be launched using {@link ACTION_REQUEST_EXERCISE_ROUTE}.
+     * Attempts to request the permission by applications will be ignored.
+     *
+     * <p>Applications should check if the permission has been granted before reading {@link
+     * ExerciseRoute}.
+     *
+     * <p>Protection level: dangerous.
      */
-    public static final String READ_EXERCISE_ROUTES_ALL =
-            "android.permission.health.READ_EXERCISE_ROUTES_ALL";
+    @FlaggedApi("com.android.healthconnect.flags.read_exercise_routes_all_enabled")
+    public static final String READ_EXERCISE_ROUTES =
+            "android.permission.health.READ_EXERCISE_ROUTES";
 
     /**
      * Allows an application to read the user's floors climbed data.
@@ -419,6 +442,24 @@ public final class HealthPermissions {
      */
     public static final String READ_RESTING_HEART_RATE =
             "android.permission.health.READ_RESTING_HEART_RATE";
+
+    /**
+     * Allows an application to read the user's skin temperature data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
+    public static final String READ_SKIN_TEMPERATURE =
+            "android.permission.health.READ_SKIN_TEMPERATURE";
+
+    /**
+     * Allows an application to read the user's training plan data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final String READ_PLANNED_EXERCISE =
+            "android.permission.health.READ_PLANNED_EXERCISE";
 
     /**
      * Allows an application to write the user's calories burned data.
@@ -694,6 +735,24 @@ public final class HealthPermissions {
     public static final String WRITE_RESTING_HEART_RATE =
             "android.permission.health.WRITE_RESTING_HEART_RATE";
 
+    /**
+     * Allows an application to write the user's skin temperature data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.skin_temperature")
+    public static final String WRITE_SKIN_TEMPERATURE =
+            "android.permission.health.WRITE_SKIN_TEMPERATURE";
+
+    /**
+     * Allows an application to write the user's training plan data.
+     *
+     * <p>Protection level: dangerous.
+     */
+    @FlaggedApi("com.android.healthconnect.flags.training_plans")
+    public static final String WRITE_PLANNED_EXERCISE =
+            "android.permission.health.WRITE_PLANNED_EXERCISE";
+
     private static final Set<String> sWritePermissionsSet =
             new ArraySet<>(
                     Set.of(
@@ -731,7 +790,9 @@ public final class HealthPermissions {
                             WRITE_HEART_RATE_VARIABILITY,
                             WRITE_OXYGEN_SATURATION,
                             WRITE_RESPIRATORY_RATE,
-                            WRITE_RESTING_HEART_RATE));
+                            WRITE_RESTING_HEART_RATE,
+                            WRITE_SKIN_TEMPERATURE,
+                            WRITE_PLANNED_EXERCISE));
 
     private static final Map<String, Integer> sWriteHealthPermissionToHealthDataCategoryMap =
             new ArrayMap<>();
@@ -783,6 +844,7 @@ public final class HealthPermissions {
     }
 
     /** @hide */
+    @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
     public static String getHealthReadPermission(
             @HealthPermissionCategory.Type int permissionCategory) {
         if (sHealthCategoryToReadPermissionMap.isEmpty()) {
@@ -897,6 +959,8 @@ public final class HealthPermissions {
         sHealthCategoryToWritePermissionMap.put(OXYGEN_SATURATION, WRITE_OXYGEN_SATURATION);
         sHealthCategoryToWritePermissionMap.put(RESPIRATORY_RATE, WRITE_RESPIRATORY_RATE);
         sHealthCategoryToWritePermissionMap.put(RESTING_HEART_RATE, WRITE_RESTING_HEART_RATE);
+        sHealthCategoryToWritePermissionMap.put(SKIN_TEMPERATURE, WRITE_SKIN_TEMPERATURE);
+        sHealthCategoryToWritePermissionMap.put(PLANNED_EXERCISE, WRITE_PLANNED_EXERCISE);
 
         // Populate permission category to read permission map
         sHealthCategoryToReadPermissionMap.put(ACTIVE_CALORIES_BURNED, READ_ACTIVE_CALORIES_BURNED);
@@ -935,6 +999,8 @@ public final class HealthPermissions {
         sHealthCategoryToReadPermissionMap.put(OXYGEN_SATURATION, READ_OXYGEN_SATURATION);
         sHealthCategoryToReadPermissionMap.put(RESPIRATORY_RATE, READ_RESPIRATORY_RATE);
         sHealthCategoryToReadPermissionMap.put(RESTING_HEART_RATE, READ_RESTING_HEART_RATE);
+        sHealthCategoryToReadPermissionMap.put(SKIN_TEMPERATURE, READ_SKIN_TEMPERATURE);
+        sHealthCategoryToReadPermissionMap.put(PLANNED_EXERCISE, READ_PLANNED_EXERCISE);
     }
 
     private static synchronized void populateWriteHealthPermissionToHealthDataCategoryMap() {
@@ -951,6 +1017,8 @@ public final class HealthPermissions {
                 WRITE_ELEVATION_GAINED, HealthDataCategory.ACTIVITY);
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_EXERCISE, HealthDataCategory.ACTIVITY);
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_PLANNED_EXERCISE, HealthDataCategory.ACTIVITY);
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_FLOORS_CLIMBED, HealthDataCategory.ACTIVITY);
         sWriteHealthPermissionToHealthDataCategoryMap.put(WRITE_STEPS, HealthDataCategory.ACTIVITY);
@@ -998,6 +1066,8 @@ public final class HealthPermissions {
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_BASAL_BODY_TEMPERATURE, HealthDataCategory.VITALS);
         sWriteHealthPermissionToHealthDataCategoryMap.put(
+                WRITE_SKIN_TEMPERATURE, HealthDataCategory.VITALS);
+        sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_BLOOD_GLUCOSE, HealthDataCategory.VITALS);
         sWriteHealthPermissionToHealthDataCategoryMap.put(
                 WRITE_BLOOD_PRESSURE, HealthDataCategory.VITALS);
@@ -1021,6 +1091,7 @@ public final class HealthPermissions {
                     WRITE_DISTANCE,
                     WRITE_ELEVATION_GAINED,
                     WRITE_EXERCISE,
+                    WRITE_PLANNED_EXERCISE,
                     WRITE_FLOORS_CLIMBED,
                     WRITE_STEPS,
                     WRITE_TOTAL_CALORIES_BURNED,

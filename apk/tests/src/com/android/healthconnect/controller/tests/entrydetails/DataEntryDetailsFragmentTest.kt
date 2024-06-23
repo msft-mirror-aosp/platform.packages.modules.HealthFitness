@@ -57,6 +57,9 @@ import com.android.healthconnect.controller.shared.DataType
 import com.android.healthconnect.controller.tests.utils.TestData.WARSAW_ROUTE
 import com.android.healthconnect.controller.tests.utils.launchFragment
 import com.android.healthconnect.controller.tests.utils.setLocale
+import com.android.healthconnect.controller.utils.logging.DataEntriesElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -64,11 +67,15 @@ import java.time.ZoneId
 import java.util.Locale
 import java.util.TimeZone
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.atLeast
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 
 @HiltAndroidTest
 class DataEntryDetailsFragmentTest {
@@ -77,6 +84,7 @@ class DataEntryDetailsFragmentTest {
     @BindValue
     val viewModel: DataEntryDetailsViewModel = mock(DataEntryDetailsViewModel::class.java)
     private lateinit var context: Context
+    @BindValue val healthConnectLogger: HealthConnectLogger = org.mockito.kotlin.mock()
 
     @Before
     fun setup() {
@@ -84,6 +92,11 @@ class DataEntryDetailsFragmentTest {
         context = InstrumentationRegistry.getInstrumentation().context
         context.setLocale(Locale.UK)
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")))
+    }
+
+    @After
+    fun tearDown() {
+        reset(healthConnectLogger)
     }
 
     @Test
@@ -142,6 +155,10 @@ class DataEntryDetailsFragmentTest {
         onView(withText("07:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("12 hour sleeping")).check(matches(isDisplayed()))
         onView(withText("notes")).check(matches(isDisplayed()))
+
+        verify(healthConnectLogger, atLeast(1)).setPageId(PageName.ENTRY_DETAILS_PAGE)
+        verify(healthConnectLogger).logPageImpression()
+        verify(healthConnectLogger).logImpression(DataEntriesElement.SLEEP_SESSION_ENTRY_BUTTON)
     }
 
     @Test
@@ -172,6 +189,7 @@ class DataEntryDetailsFragmentTest {
 
         onView(withText("07:06 - 8:06 • TEST_APP_NAME")).check(matches(isDisplayed()))
         onView(withText("100 bpm")).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(DataEntriesElement.DATA_ENTRY_VIEW)
     }
 
     @Test
@@ -184,6 +202,8 @@ class DataEntryDetailsFragmentTest {
 
         onView(withText("12 hour running")).check(matches(isDisplayed()))
         onView(withId(R.id.map_view)).check(matches(isDisplayed()))
+        verify(healthConnectLogger).logImpression(DataEntriesElement.EXERCISE_SESSION_ENTRY_BUTTON)
+        verify(healthConnectLogger).logImpression(DataEntriesElement.EXERCISE_SESSION_MAP_VIEW)
     }
 
     @Test

@@ -15,17 +15,14 @@
  */
 package com.android.healthconnect.controller
 
-import android.app.Activity
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.activity.viewModels
 import androidx.navigation.findNavController
 import com.android.healthconnect.controller.migration.MigrationActivity.Companion.maybeRedirectToMigrationActivity
 import com.android.healthconnect.controller.migration.MigrationViewModel
 import com.android.healthconnect.controller.navigation.DestinationChangedListener
-import com.android.healthconnect.controller.onboarding.OnboardingActivity
-import com.android.healthconnect.controller.onboarding.OnboardingActivity.Companion.shouldRedirectToOnboardingActivity
-import com.android.healthconnect.controller.utils.activity.EmbeddingUtils.maybeRedirectIntoTwoPaneSettings
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import com.android.settingslib.collapsingtoolbar.CollapsingToolbarBaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,26 +36,14 @@ class MainActivity : Hilt_MainActivity() {
 
     private val migrationViewModel: MigrationViewModel by viewModels()
 
-    private val openOnboardingActivity =
-        registerForActivityResult(StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_CANCELED) {
-                finish()
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
+        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
         setContentView(R.layout.activity_main)
 
         setTitle(R.string.app_label)
-
-        if (maybeRedirectIntoTwoPaneSettings(this)) {
-            return
-        }
-
-        if (savedInstanceState == null && shouldRedirectToOnboardingActivity(this)) {
-            openOnboardingActivity.launch(OnboardingActivity.createIntent(this))
-        }
 
         val currentMigrationState = migrationViewModel.getCurrentMigrationUiState()
 

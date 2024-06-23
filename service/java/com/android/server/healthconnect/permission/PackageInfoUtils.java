@@ -29,6 +29,8 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.internal.annotations.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +44,7 @@ import java.util.Set;
 public class PackageInfoUtils {
     private static final String TAG = "HealthConnectPackageInfoUtils";
 
-    @SuppressWarnings("NullAway.Init")
-    private static volatile PackageInfoUtils sPackageInfoUtils;
+    @Nullable private static volatile PackageInfoUtils sPackageInfoUtils;
 
     /**
      * Store PackageManager for each user. Keys are users, values are PackageManagers which get from
@@ -60,6 +61,17 @@ public class PackageInfoUtils {
         }
 
         return sPackageInfoUtils;
+    }
+
+    /**
+     * Set an instance of {@link PackageInfoUtils} for testing purposes, such as a mock.
+     *
+     * <p>Passing {@code null} as {@code instance} would result in the actual implementation of
+     * {@link PackageInfoUtils}.
+     */
+    @VisibleForTesting
+    public static synchronized void setInstanceForTest(@Nullable PackageInfoUtils instance) {
+        sPackageInfoUtils = instance;
     }
 
     @NonNull
@@ -94,6 +106,7 @@ public class PackageInfoUtils {
     }
 
     @SuppressWarnings("NullAway")
+    // TODO(b/317029272): fix this suppression
     boolean hasGrantedHealthPermissions(
             @NonNull String[] packageNames, @NonNull UserHandle user, @NonNull Context context) {
         for (String packageName : packageNames) {
@@ -153,7 +166,7 @@ public class PackageInfoUtils {
 
     @Nullable
     String getSharedUserNameFromUid(int uid, Context context) {
-        @SuppressWarnings("NullAway")
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         String[] packages =
                 mUsersPackageManager
                         .get(UserHandle.getUserHandleForUid(uid))
@@ -185,7 +198,7 @@ public class PackageInfoUtils {
 
     @Nullable
     String[] getPackageNamesForUid(int uid) {
-        @SuppressWarnings("NullAway")
+        @SuppressWarnings("NullAway") // TODO(b/317029272): fix this suppression
         String[] packages =
                 mUsersPackageManager
                         .get(UserHandle.getUserHandleForUid(uid))

@@ -23,7 +23,7 @@
     <string name="home_subtitle" msgid="1750033322147357163">"Управувајте со податоците за здравјето и фитнесот на вашиот телефон и контролирајте кои апликации може да пристапуваат до нив"</string>
     <string name="data_title" msgid="4456619761533380816">"Податоци и пристап"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Сите категории"</string>
-    <string name="see_all_categories" msgid="5599882403901010434">"Прикажи ги сите категории"</string>
+    <string name="see_all_categories" msgid="5599882403901010434">"Преглед на сите категории"</string>
     <string name="no_data" msgid="1906986019249068659">"Нема податоци"</string>
     <string name="connected_apps_title" msgid="279942692804743223">"Дозволи за апликации"</string>
     <string name="connected_apps_subtitle" msgid="8464462995533399175">"Управувајте со апликациите и дозволите"</string>
@@ -33,8 +33,8 @@
     <string name="connected_apps_button_no_permissions_subtitle" msgid="1651994862419752908">"Нема"</string>
     <string name="entry_details_title" msgid="590184849040247850">"Детали на записот"</string>
     <string name="backup_title" msgid="211503191266235085">"Бекап"</string>
-    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Приоритет и извори на податоци"</string>
-    <string name="set_units_title" msgid="2657822539603758029">"Поставете единици"</string>
+    <string name="data_sources_and_priority_title" msgid="2360222350913604558">"Извори на податоци и приоритет"</string>
+    <string name="set_units_title" msgid="2657822539603758029">"Поставете мерни единици"</string>
     <string name="recent_access_header" msgid="7623497371790225888">"Најнов пристап"</string>
     <string name="no_recent_access" msgid="4724297929902441784">"Нема апликации што неодамна пристапиле до Health Connect"</string>
     <string name="show_recent_access_entries_button_title" msgid="3483460066767350419">"Погледнете ги сите најнови пристапи"</string>
@@ -45,6 +45,7 @@
     <string name="write_data_access_label" msgid="7955988316773000250">"Запишување: %s"</string>
     <string name="data_type_separator" msgid="1299848322898210658">", "</string>
     <string name="manage_permissions" msgid="8394221950712608160">"Управувајте со дозволите"</string>
+    <string name="recent_access_time_content_descritption" msgid="1709675393952226273">"Време: %s"</string>
     <string name="activity_category_uppercase" msgid="136628843341377088">"Активност"</string>
     <string name="activity_category_lowercase" msgid="3007220578865400601">"активност"</string>
     <string name="body_measurements_category_uppercase" msgid="422923782603313038">"Телесни мерења"</string>
@@ -74,6 +75,7 @@
     <string name="data_access_exercise_description" msgid="6868583522699443570">"Податоциве вклучуваат информации како активно време, тип на вежба, кругови, серии, сесии или потези на пливање"</string>
     <string name="data_access_sleep_description" msgid="74293126050011153">"Податоциве вклучуваат информации како фази и сесии на спиење"</string>
     <string name="all_entries_button" msgid="5109091107239135235">"Видете ги сите записи"</string>
+    <string name="selected_date_view_action_description" msgid="6237240886988225664">"променување"</string>
     <string name="delete_permission_type_data_button" msgid="2270819954943391797">"Избришете ги податоците"</string>
     <string name="permgrouplab_health" msgid="468961137496587966">"Health Connect"</string>
     <string name="permgroupdesc_health" msgid="252080476917407273">"пристапување до податоците за здравјето"</string>
@@ -94,13 +96,17 @@
     <string name="exercise_route_lowercase_label" msgid="1691912731748211252">"маршрута на вежбање"</string>
     <string name="exercise_route_write_content_description" msgid="257809942953352611">"Запиши маршрута на вежбање"</string>
     <string name="exercise_route_read_content_description" msgid="8394028537674463440">"Читај ја маршрутата на вежбање"</string>
-    <string name="exercise_routes_all_read_content_description" msgid="5799035808926978381">"Читање на сите маршрути за вежбање"</string>
+    <string name="exercise_routes_read_content_description" msgid="9001690141308870706">"Читање маршрути за вежбање"</string>
+    <string name="planned_exercise_uppercase_label" msgid="3315909901236811375">"Планови за вежбање"</string>
+    <string name="planned_exercise_lowercase_label" msgid="7642993032791009809">"планови за вежбање"</string>
+    <string name="planned_exercise_read_content_description" msgid="3240286968325192534">"Читање на плановите за вежбање"</string>
+    <string name="planned_exercise_write_content_description" msgid="8146488636094126823">"Пишување планови за вежбање"</string>
     <string name="distance_uppercase_label" msgid="1420705424462077174">"Растојание"</string>
     <string name="distance_lowercase_label" msgid="2287154001209381379">"растојание"</string>
     <string name="distance_read_content_description" msgid="8787235642020285789">"Читање растојание"</string>
     <string name="distance_write_content_description" msgid="494549494589487562">"Запишување растојание"</string>
-    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Достигната надморска висина"</string>
-    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"достигната надморска висина"</string>
+    <string name="elevation_gained_uppercase_label" msgid="7708101940695442377">"Достигната височина"</string>
+    <string name="elevation_gained_lowercase_label" msgid="7532517182346738562">"достигната височина"</string>
     <string name="elevation_gained_read_content_description" msgid="6018756385903843355">"Читање достигната надморска висина"</string>
     <string name="elevation_gained_write_content_description" msgid="6790199544670231367">"Запишување достигната надморска висина"</string>
     <string name="floors_climbed_uppercase_label" msgid="3754372357767832441">"Искачени катови"</string>
@@ -123,8 +129,8 @@
     <string name="total_calories_burned_lowercase_label" msgid="3185370725975873922">"вкупно потрошени калории"</string>
     <string name="total_calories_burned_read_content_description" msgid="1569722345910293531">"Читање вкупно потрошени калории"</string>
     <string name="total_calories_burned_write_content_description" msgid="2727752180681851608">"Запишување вкупно потрошени калории"</string>
-    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Макс. VO2"</string>
-    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"Макс. VO2"</string>
+    <string name="vo2_max_uppercase_label" msgid="6614391499711390476">"Максимална потрошувачка на кислород"</string>
+    <string name="vo2_max_lowercase_label" msgid="824972630000900033">"максимална потрошувачка на кислород"</string>
     <string name="vo2_max_read_content_description" msgid="8132626885797169882">"Читање макс. VO2"</string>
     <string name="vo2_max_write_content_description" msgid="4783300275788728546">"Запишување макс. VO2"</string>
     <string name="wheelchair_pushes_uppercase_label" msgid="5582991294340226965">"Туркања на инвалидска количка"</string>
@@ -139,8 +145,8 @@
     <string name="body_fat_lowercase_label" msgid="4090686510477176498">"телесни масти"</string>
     <string name="body_fat_read_content_description" msgid="801664410906939146">"Читање телесни масти"</string>
     <string name="body_fat_write_content_description" msgid="4863558071904720577">"Запишување телесни масти"</string>
-    <string name="body_water_mass_uppercase_label" msgid="7839393299147916863">"Маса на вода во тело"</string>
-    <string name="body_water_mass_lowercase_label" msgid="9196249948631920955">"маса на вода во тело"</string>
+    <string name="body_water_mass_uppercase_label" msgid="7839393299147916863">"Маса на вода во телото"</string>
+    <string name="body_water_mass_lowercase_label" msgid="9196249948631920955">"маса на вода во телото"</string>
     <string name="body_water_mass_read_content_description" msgid="1468266374858854184">"Читање маса на вода во тело"</string>
     <string name="body_water_mass_write_content_description" msgid="8485284654932647383">"Запишување маса на вода во тело"</string>
     <string name="bone_mass_uppercase_label" msgid="6815438946872228501">"Коскена маса"</string>
@@ -227,8 +233,8 @@
     <string name="heart_rate_variability_lowercase_label" msgid="2332638559415663836">"променливост на пулсот"</string>
     <string name="heart_rate_variability_read_content_description" msgid="5812707457872629556">"Читање податоци за променливоста на пулсот"</string>
     <string name="heart_rate_variability_write_content_description" msgid="3628171603035566114">"Запишување податоци за променливоста на пулсот"</string>
-    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Кислородна сатурација"</string>
-    <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"кислородна сатурација"</string>
+    <string name="oxygen_saturation_uppercase_label" msgid="1396254185616418355">"Заситеност со кислород"</string>
+    <string name="oxygen_saturation_lowercase_label" msgid="7264179897533866327">"заситеност со кислород"</string>
     <string name="oxygen_saturation_read_content_description" msgid="4756434113425028212">"Читање кислородна сатурација"</string>
     <string name="oxygen_saturation_write_content_description" msgid="7189901097196830875">"Запишување кислородна сатурација"</string>
     <string name="respiratory_rate_uppercase_label" msgid="4609498171205294389">"Респираторна стапка"</string>
@@ -239,6 +245,10 @@
     <string name="resting_heart_rate_lowercase_label" msgid="4533866739695973169">"пулс во мирување"</string>
     <string name="resting_heart_rate_read_content_description" msgid="1068160055773401020">"Читање пулс во мирување"</string>
     <string name="resting_heart_rate_write_content_description" msgid="8848198128082739995">"Запишување пулс во мирување"</string>
+    <string name="skin_temperature_uppercase_label" msgid="4880306019368461268">"Температура на кожата"</string>
+    <string name="skin_temperature_lowercase_label" msgid="7456421703641980581">"температура на кожата"</string>
+    <string name="skin_temperature_read_content_description" msgid="1896127631429717621">"Читање на температурата на кожата"</string>
+    <string name="skin_temperature_write_content_description" msgid="6448587289116206085">"Запишување на температурата на кожата"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Дозволете „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да чита"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Дозволете „<xliff:g id="APP_NAME">%1$s</xliff:g>“ да пишува"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Откажи"</string>
@@ -262,6 +272,7 @@
     <string name="connected_apps_text" msgid="1177626440966855831">"Контролирајте кои апликации може да пристапуваат до податоците складирани во Health Connect. Допрете апликација за да ги прегледате податоците што може да ги чита или запишува."</string>
     <string name="connected_apps_section_title" msgid="2415288099612126258">"Со дозвола за пристап"</string>
     <string name="not_connected_apps_section_title" msgid="452718769894103039">"Без дозвола за пристап"</string>
+    <string name="needs_updating_apps_section_title" msgid="8561510523049921199">"Треба да се ажурира"</string>
     <string name="settings_and_help_header" msgid="5749710693017621168">"Поставки и помош"</string>
     <string name="disconnect_all_apps" msgid="748945115977534726">"Отстрани го пристапот за сите апликации"</string>
     <string name="manage_permissions_read_header" msgid="2031153753057983683">"Дозволено да чита"</string>
@@ -273,7 +284,7 @@
     <string name="permissions_disconnect_all_dialog_disconnect" msgid="2134136493310257746">"Отстрани ги сите"</string>
     <string name="manage_permissions_manage_app_header" msgid="6356348062088358761">"Управувајте со апликацијата"</string>
     <string name="see_app_data" msgid="3951030076195119476">"Прикажи податоци од апликацијата"</string>
-    <string name="delete_app_data" msgid="6890357774873859952">"Избриши ги податоците од апликација"</string>
+    <string name="delete_app_data" msgid="6890357774873859952">"Избриши ги податоците од апликацијата"</string>
     <string name="inactive_apps_section_title" msgid="7492812973696378690">"Неактивни апликации"</string>
     <string name="inactive_apps_section_message" msgid="2610789262055974739">"Апликацииве веќе немаат пристап, но уште имаат зачувани податоци во Health Connect"</string>
     <string name="manage_permissions_time_frame" msgid="1299483940842401923">"<xliff:g id="APP_NAME">%1$s</xliff:g> може да чита податоци додадени по <xliff:g id="DATA_ACCESS_DATE">%2$s</xliff:g>"</string>
@@ -284,6 +295,7 @@
     <string name="app_perms_content_provider_24h" msgid="5977152673988158889">"Пристапено во минатите 24 часа"</string>
     <string name="app_access_title" msgid="7137018424885371763">"Пристап на апликацијата"</string>
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Во моментов немате инсталирано компатибилни апликации"</string>
+    <string name="additional_access_label" msgid="4645249249222528341">"Дополнителен пристап"</string>
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Отстранети дозволи за апликации"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect ги отстрани дозволите за <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect ги отстрани дозволите за <xliff:g id="APP_DATA_0">%1$s</xliff:g> и <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -293,6 +305,18 @@
     <string name="denied_apps_dialog_title" msgid="7470227827315635099">"Зошто Health Connect отстранува дозволи за апликации"</string>
     <string name="denied_apps_dialog_message" msgid="7876664965504466099">"Ако некоја апликација е суспендирана или отстранета од Google Play, Health Connect автоматски ги отстранува нејзините дозволи.\n\nОва значи дека апликацијата веќе нема да може да пристапува до податоците зачувани во Health Connect. Ако оваа апликација има претходно запишани податоци, таа се појавува во списокот со неактивни апликации."</string>
     <string name="denied_apps_dialog_got_it_button" msgid="4698003516923683959">"Сфатив"</string>
+    <string name="export_settings_screen_title" msgid="887671826359158339">"Зачувување податоци"</string>
+    <string name="export_settings_screen_description" msgid="5477618165331360989">"Зачувајте ги податоците и дозволите на Health Connect за да може да ги увезете ако се префрлите на нов телефон. Пред да зачувате, може да изберете каде да се складираат податоциве."</string>
+    <string name="setup_button" msgid="1407942598553043961">"Поставете"</string>
+    <string name="export_settings_header" msgid="2435738153550683355">"Поставки"</string>
+    <string name="auto_save" msgid="7146497593975616076">"Автоматско зачувување"</string>
+    <string name="choose_frequency" msgid="1077467424225083246">"Изберете фреквенција"</string>
+    <string name="choose_frequency_description" msgid="752601326653048254">"Изберете да ги зачувате податоците еднаш или поставете да се зачувуваат автоматски редовно."</string>
+    <string name="frequency_daily" msgid="3596412357416125727">"Дневно"</string>
+    <string name="frequency_weekly" msgid="7302587625019573393">"Седмично"</string>
+    <string name="frequency_monthly" msgid="729674398053825938">"Месечно"</string>
+    <string name="export_back_button" msgid="3550795479165524982">"Назад"</string>
+    <string name="export_next_button" msgid="657930567137105172">"Следно"</string>
     <string name="onboarding_title" msgid="8550656211291180188">"Започнете со Health Connect"</string>
     <string name="onboarding_description" msgid="4873129122057931161">"Health Connect ги складира податоците за вашето здравје и фитнес, давајќи ви едноставен начин да ги синхронизирате различните апликации на вашиот телефон"</string>
     <string name="share_data" msgid="3481932156368883946">"Споделувајте податоци со вашите апликации"</string>
@@ -346,8 +370,8 @@
     <string name="delete_data_notification_title" msgid="7740230240986343347">"Се бришат податоците на Health Connect"</string>
     <string name="delete_data_notification_ticker_text" msgid="2604051567679235822">"Се бришат податоците на Health Connect"</string>
     <string name="delete_data_notification_channel_name" msgid="4499713830012802095">"Бришење податоци"</string>
-    <string name="data_point_action_content_description" msgid="7872439279343967754">"Бришење внес на податоци"</string>
-    <string name="delete_data_point" msgid="4234569507133768630">"Избриши го записот"</string>
+    <string name="data_point_action_content_description" msgid="6881048311770784455">"Бришење внес на податоци <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
+    <string name="delete_data_point" msgid="1004049578454616738">"Избриши го внесот на податоци <xliff:g id="ENTRY_TO_DELETE">%s</xliff:g>"</string>
     <string name="aggregation_total" msgid="5641333638662325184">"Вкупно: <xliff:g id="TOTAL_VALUE">%s</xliff:g>"</string>
     <string name="watt_format" msgid="8500953817369623803">"{value,plural, =1{1 W}one{# W}other{# W}}"</string>
     <string name="watt_format_long" msgid="7107446926499116109">"{value,plural, =1{1 ват}one{# ват}other{# вати}}"</string>
@@ -658,7 +682,6 @@
     <string name="percent_long" msgid="2201022757867534235">"{value,plural, =1{1 процент}one{# процент}other{# проценти}}"</string>
     <string name="units_cancel" msgid="5947097690625771995">"Откажи"</string>
     <string name="units_title" msgid="6504086463237869339">"Мерни единици"</string>
-    <string name="set_units_label" msgid="6566059089772896105">"Поставете мерни единици"</string>
     <string name="distance_unit_title" msgid="4696952932438418209">"Растојание"</string>
     <string name="height_unit_title" msgid="5461594609577078049">"Висина"</string>
     <string name="weight_unit_title" msgid="7405186541678939987">"Тежина"</string>
@@ -670,7 +693,7 @@
     <string name="height_unit_feet_label" msgid="3311723678628261399">"Стапки и инчи"</string>
     <string name="weight_unit_pound_label" msgid="8210663393844989211">"Фунти"</string>
     <string name="weight_unit_kilogram_label" msgid="6623938920860887238">"Килограми"</string>
-    <string name="weight_unit_stone_label" msgid="3063787243474847180">"Стони"</string>
+    <string name="weight_unit_stone_label" msgid="3063787243474847180">"Стоуни"</string>
     <string name="energy_unit_calorie_label" msgid="3412965811470957296">"Калории"</string>
     <string name="energy_unit_kilojoule_label" msgid="6481196724083455110">"Килоџули"</string>
     <string name="temperature_unit_celsius_label" msgid="4698347100553808449">"Целзиус"</string>
@@ -684,17 +707,17 @@
     <string name="see_all_compatible_apps" msgid="6791146164535475726">"Видете ги сите компатибилни апликации"</string>
     <string name="see_all_compatible_apps_description" msgid="2092325337403254491">"Најдете апликации на Google Play"</string>
     <string name="send_feedback" msgid="7756927746070096780">"Испратете повратни информации"</string>
-    <string name="send_feedback_description" msgid="2887207112856240778">"Кажете ни со кои апликации за здравје и фитнес сакате да работите со Health Connect"</string>
+    <string name="send_feedback_description" msgid="2887207112856240778">"Кажете ни кои апликации за здравје и фитнес сакате да функционираат со Health Connect"</string>
     <string name="playstore_app_title" msgid="4138464328693481809">"Play Store"</string>
     <string name="auto_delete_button" msgid="8536451792268513619">"Автоматско бришење"</string>
     <string name="auto_delete_title" msgid="8761742828224207826">"Автоматско бришење"</string>
-    <string name="auto_delete_header" msgid="4258649705159293715">"Контролирајте колку долго податоците се складираат во Health Connect така што ќе закажете да се избришат после определено време"</string>
+    <string name="auto_delete_header" msgid="4258649705159293715">"Контролирајте колку време да се чуваат податоците во Health Connect така што ќе закажете да се избришат по одредено време"</string>
     <string name="auto_delete_learn_more" msgid="7416469042791307994">"Дознајте повеќе за автоматското бришење"</string>
     <string name="auto_delete_section" msgid="7732381000331475082">"Автоматско бришење на податоците"</string>
     <string name="range_after_x_months" msgid="3340127072680117121">"{count,plural, =1{По # месец}one{По # месец}other{По # месеци}}"</string>
     <string name="range_never" msgid="4429478261788361233">"Никогаш"</string>
     <string name="range_off" msgid="8178520557618184215">"Исклучено"</string>
-    <string name="auto_delete_rationale" msgid="5255442126521464878">"Кога ќе ги промените поставкиве, Health Connect ги брише постојните податоци согласно вашите нови поставки"</string>
+    <string name="auto_delete_rationale" msgid="5255442126521464878">"Кога ќе ги промените поставкиве, Health Connect ги брише постојните податоци согласно со вашите нови поставки"</string>
     <string name="confirming_question_x_months" msgid="8204363800605282103">"{count,plural, =1{Да се постави автоматско бришење на податоците по # месец?}one{Да се постави автоматско бришење на податоците по # месец?}other{Да се постави автоматско бришење на податоците по # месеци?}}"</string>
     <string name="confirming_message_x_months" msgid="4798474593741471977">"{count,plural, =1{Health Connect автоматски ќе ги избрише новите податоци по # месец. Ако го поставите ова, ќе се избришат и постојните податоци постари од # месец.}one{Health Connect автоматски ќе ги избрише новите податоци по # месец. Ако го поставите ова, ќе се избришат и постојните податоци постари од # месец.}other{Health Connect автоматски ќе ги избрише новите податоци по # месеци. Ако го поставите ова, ќе се избришат и постојните податоци постари од # месеци.}}"</string>
     <string name="set_auto_delete_button" msgid="268450418318199197">"Постави автоматско бришење"</string>
@@ -709,6 +732,9 @@
     <string name="action_drag_label_move_down" msgid="3448000958912947588">"Премести надолу"</string>
     <string name="action_drag_label_move_top" msgid="5114033774108663548">"Премести најгоре"</string>
     <string name="action_drag_label_move_bottom" msgid="3117764196696569512">"Премести најдолу"</string>
+    <string name="reorder_button_content_description" msgid="2685032520710743533">"Копче за повлекување и прераспоредување на <xliff:g id="SELECTED_APP">%s</xliff:g> во приоритетната листа"</string>
+    <string name="remove_button_content_description" msgid="6170490900032612048">"Копче за отстранување на <xliff:g id="SELECTED_APP">%s</xliff:g> од приоритетната листа"</string>
+    <string name="reorder_button_action_description" msgid="5197462036756192214">"Допрете двапати и повлечете за да прераспоредите"</string>
     <string name="search_keywords_home" msgid="5386515593026555327">"фитнес, велнес"</string>
     <string name="search_keywords_permissions" msgid="7821010295153350533">"дозволи"</string>
     <string name="search_keywords_data" msgid="5359602744325490523">"health connect, податоци за здравјето, здравствени категории, пристап до податоци, активност, телесни мерења, следење на циклусот, исхрана, спиење, витални функции"</string>
@@ -725,6 +751,20 @@
     <string name="request_route_info_who_can_see_data_summary" msgid="2439434359808367150">"Само апликациите на кои им дозволувате пристап до вашите маршрути за вежбање"</string>
     <string name="request_route_info_access_management_title" msgid="3222594923675464852">"Како да управувам со пристапот?"</string>
     <string name="request_route_info_access_management_summary" msgid="2606548838292829495">"Може да управувате со пристапот на апликацијата до маршрутите за вежбање во поставките на Health Connect"</string>
+    <string name="request_route_allow" msgid="4427372851821847274">"Дозволи ја маршутава"</string>
+    <string name="request_route_allow_all" msgid="314830698958736916">"Дозволи ги сите маршути"</string>
+    <string name="request_route_dont_allow" msgid="1186236234664957228">"Не дозволувај"</string>
+    <string name="route_permissions_always_allow" msgid="1383816362804293137">"Секогаш дозволувај"</string>
+    <string name="route_permissions_label" msgid="5201501195020295860">"Споделување на маршрутата за вежбање"</string>
+    <string name="route_permissions_summary" msgid="4670908225783213910">"Контролирајте го пристапот на апликацијава до маршрутите за вежбање од поврзаните апликации"</string>
+    <string name="route_permissions_ask" msgid="3927020960754781917">"Секогаш прашувај"</string>
+    <string name="route_permissions_deny" msgid="4263802925221258853">"Не дозволувај"</string>
+    <string name="exercise_permission_dialog_enable_title" msgid="4310997044811843391">"Да се овозможат двата типа податоци?"</string>
+    <string name="exercise_permission_dialog_disable_title" msgid="1011777519918396883">"Да се оневозможат двата типа податоци?"</string>
+    <string name="exercise_permission_dialog_enabled_summary" msgid="3404390796688813585">"<xliff:g id="APP_NAME">%1$s</xliff:g> бара пристап за читање до вежбање за да се овозможат маршрутите за вежбање"</string>
+    <string name="exercise_permission_dialog_disable_summary" msgid="397599718182778347">"<xliff:g id="APP_NAME">%1$s</xliff:g> бара пристап до вежбање за да се овозможат маршрутите за вежбање"</string>
+    <string name="exercise_permission_dialog_positive_button" msgid="4545939654888655556">"Да"</string>
+    <string name="exercise_permission_dialog_negative_button" msgid="7433304732406274998">"Не"</string>
     <string name="back_button" msgid="780519527385993407">"Назад"</string>
     <string name="loading" msgid="2526615755685950317">"Се вчитува…"</string>
     <string name="migration_in_progress_screen_title" msgid="6564515269988205874">"Интеграцијата е во тек"</string>
@@ -760,9 +800,10 @@
     <string name="resume_migration_notification_title" msgid="8859575633668908327">"Продолжете со интеграција со Health Connect"</string>
     <string name="resume_migration_notification_content" msgid="46172108837648715">"За да ги зачувате вашите податоци, завршете го ова за <xliff:g id="TIME_NEEDED">%1$s</xliff:g>"</string>
     <string name="app_update_needed_banner_title" msgid="4724335956851853802">"Потребно е ажурирање на апликацијата"</string>
-    <string name="app_update_needed_banner_description_single" msgid="2229935331303234217">"<xliff:g id="APP_NAME">%1$s</xliff:g> треба да се ажурира за да продолжи да функционира со Health Connect"</string>
-    <string name="app_update_needed_banner_description_multiple" msgid="1523113182062764912">"Некои апликации треба да се ажурираат за да продолжат да функционираат со Health Connect"</string>
+    <string name="app_update_needed_banner_description_single" msgid="1114809360264027362">"Апликацијата <xliff:g id="APP_NAME">%1$s</xliff:g> треба да се ажурира за да продолжи да се синхронизира со Health Connect"</string>
+    <string name="app_update_needed_banner_description_multiple" msgid="4660700626698013764">"Некои апликации треба да се ажурираат за да продолжат да се синхронизираат со Health Connect"</string>
     <string name="app_update_needed_banner_button" msgid="8223115764065649627">"Проверете дали има ажурирања"</string>
+    <string name="app_update_needed_banner_learn_more_button" msgid="7269232067819258160">"Дознајте повеќе"</string>
     <string name="migration_pending_permissions_dialog_title" msgid="6019552841791757048">"Интеграција на Health Connect"</string>
     <string name="migration_pending_permissions_dialog_content" msgid="6350115816948005466">"Health Connect е подготвена да се интегрира со системот со Android. Ако сега дадете пристап на <xliff:g id="APP_NAME">%1$s</xliff:g>, некои функции може да не функционираат додека не заврши интеграцијата."</string>
     <string name="migration_pending_permissions_dialog_content_apps" msgid="6417173899016940664">"Health Connect е подготвена да се интегрира со системот со Android. Ако сега дадете пристап на апликациите, некои функции може да не функционираат додека не заврши интеграцијата."</string>
@@ -782,11 +823,18 @@
     <string name="migration_whats_new_dialog_title" msgid="2349465358457105228">"Што има ново"</string>
     <string name="migration_whats_new_dialog_content" msgid="1271560399054864488">"Сега може да пристапите до Health Connect директно од вашите поставки. Деинсталирајте ја апликацијата Health Connect во секое време за да ослободите простор за складирање."</string>
     <string name="migration_whats_new_dialog_button" msgid="642575552457587805">"Сфатив"</string>
+    <string name="data_restore_in_progress_screen_title" msgid="2516161353003274764">"Враќање во тек"</string>
+    <string name="data_restore_in_progress_content" msgid="2684897189974069361">"Health Connect ги враќа податоците и дозволите. Може да биде потребно некое време за да се заврши тоа."</string>
+    <string name="data_restore_in_progress_dialog_title" msgid="9097805833675345598">"Враќањето преку Health Connect е во тек"</string>
+    <string name="data_restore_in_progress_dialog_button" msgid="2096525382430589845">"Сфатив"</string>
+    <string name="data_restore_pending_banner_title" msgid="6792157138348551175">"Потребно е ажурирање"</string>
+    <string name="data_restore_pending_banner_content" msgid="7631240781262092142">"Пред да продолжите со враќањето на податоците, ажурирајте го телефонскиот систем."</string>
+    <string name="data_restore_pending_banner_button" msgid="2150345659341456815">"Ажурирај сега"</string>
     <string name="data_totals_header" msgid="8316977153276216025">"Вкупни податоци"</string>
     <string name="app_sources_header" msgid="6343062519512947665">"Извори за апликацијата"</string>
     <string name="data_sources_footer" msgid="6414387142919741183">"Додајте извори за апликацијата во списокот за да видите како може да се променат вкупните податоци. Ако ја отстраните апликацијата од списоков, веќе нема да придонесува во вкупните податоци, но сѐ уште ќе има дозволи за пишување."</string>
-    <string name="data_sources_empty_state" msgid="1899652759274805556">"Нема извори на апликации"</string>
-    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Откако ќе дадете дозволи за апликацијата да пишува податоци за <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, изворите ќе се прикажат тука."</string>
+    <string name="data_sources_empty_state" msgid="1899652759274805556">"Нема апликации"</string>
+    <string name="data_sources_empty_state_footer" msgid="8933950342291569638">"Откако ќе им дозволите на апликациите да запишуваат податоци за <xliff:g id="CATEGORY_NAME">%1$s</xliff:g>, изворите ќе се прикажат тука."</string>
     <string name="data_sources_help_link" msgid="7740264923634947915">"Како функционираат изворите и приоритизацијата"</string>
     <string name="data_sources_add_app" msgid="319926596123692514">"Додајте апликација"</string>
     <string name="edit_data_sources" msgid="79641360876849547">"Изменување на изворите на апликации"</string>

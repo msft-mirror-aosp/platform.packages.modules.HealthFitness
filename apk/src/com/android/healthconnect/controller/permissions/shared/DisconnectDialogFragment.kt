@@ -15,7 +15,9 @@ package com.android.healthconnect.controller.permissions.shared
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.CheckBox
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -23,6 +25,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.logging.DisconnectAppDialogElement
 import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,6 +64,16 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         body.findViewById<TextView>(R.id.dialog_message).apply {
             text = getString(R.string.permissions_disconnect_dialog_message, appName)
         }
+        body.findViewById<TextView>(R.id.dialog_title).apply {
+            text = getString(R.string.permissions_disconnect_dialog_title)
+        }
+        val iconView = body.findViewById(R.id.dialog_icon) as ImageView
+        val iconDrawable =
+            AttributeResolver.getNullableDrawable(body.context, R.attr.disconnectIcon)
+        iconDrawable?.let {
+            iconView.setImageDrawable(it)
+            iconView.visibility = View.VISIBLE
+        }
         val checkBox =
             body.findViewById<CheckBox>(R.id.dialog_checkbox).apply {
                 text = getString(R.string.permissions_disconnect_dialog_checkbox, appName)
@@ -71,12 +84,9 @@ class DisconnectDialogFragment constructor() : Hilt_DisconnectDialogFragment() {
         }
 
         val dialog =
-            AlertDialogBuilder(this)
-                .setLogName(DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
-                .setCustomIcon(R.attr.disconnectIcon)
-                .setCustomTitle(R.string.permissions_disconnect_dialog_title)
+            AlertDialogBuilder(this, DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CONTAINER)
                 .setView(body)
-                .setNegativeButton(
+                .setNeutralButton(
                     android.R.string.cancel,
                     DisconnectAppDialogElement.DISCONNECT_APP_DIALOG_CANCEL_BUTTON) { _, _ ->
                         setFragmentResult(DISCONNECT_CANCELED_EVENT, bundleOf())
