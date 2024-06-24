@@ -161,6 +161,7 @@ import com.android.server.healthconnect.storage.datatypehelpers.DatabaseHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.DeviceInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.HealthDataCategoryPriorityHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.MedicalDataSourceHelper;
+import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTransactionRequest;
 import com.android.server.healthconnect.storage.request.DeleteTransactionRequest;
@@ -220,6 +221,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
     private final RecordMapper mRecordMapper;
     private final AggregationTypeIdMapper mAggregationTypeIdMapper;
     private final DeviceInfoHelper mDeviceInfoHelper;
+    private final MedicalResourceHelper mMedicalResourceHelper;
 
     private volatile UserHandle mCurrentForegroundUser;
 
@@ -255,6 +257,7 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
         mRecordMapper = RecordMapper.getInstance();
         mAggregationTypeIdMapper = AggregationTypeIdMapper.getInstance();
         mDeviceInfoHelper = DeviceInfoHelper.getInstance();
+        mMedicalResourceHelper = new MedicalResourceHelper(mTransactionManager);
     }
 
     public void onUserSwitching(UserHandle currentForegroundUser) {
@@ -2376,7 +2379,8 @@ final class HealthConnectServiceImpl extends IHealthConnectService.Stub {
 
                         // TODO(b/340204629): Pass extra fields to DB to perform permission check.
                         List<MedicalResource> medicalResources =
-                                mTransactionManager.readMedicalResourcesByIds(medicalResourceIds);
+                                mMedicalResourceHelper.readMedicalResourcesByIds(
+                                        medicalResourceIds);
                         logger.setNumberOfRecords(medicalResources.size());
 
                         // TODO(b/343921816): Creates access log.

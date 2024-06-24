@@ -8,6 +8,8 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.COMBINED_PERMISSIONS
+import com.android.healthconnect.controller.shared.app.AppPermissionsType.FITNESS_PERMISSIONS_ONLY
 import com.android.healthconnect.controller.shared.usecase.UseCaseResults
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_2
@@ -15,8 +17,10 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME_2
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
+import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeGetGrantedHealthPermissionsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeLoadPermissionTypeContributorAppsUseCase
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -42,6 +46,7 @@ class LoadAccessUseCaseTest {
 
     @Inject lateinit var appInfoReader: AppInfoReader
     @Inject lateinit var healthPermissionReader: HealthPermissionReader
+    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     @Before
     fun setup() {
@@ -77,14 +82,41 @@ class LoadAccessUseCaseTest {
 
         assertThat(actual[AppAccessState.Write]).isNotNull()
         assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Write]!![0].packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
-        assertThat(actual[AppAccessState.Write]!![0].appName).isEqualTo(TEST_APP_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType).isEqualTo(FITNESS_PERMISSIONS_ONLY)
         assertThat(actual[AppAccessState.Read]).isNotNull()
         assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
         assertThat(actual[AppAccessState.Inactive]).isNotNull()
         assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(1)
-        assertThat(actual[AppAccessState.Inactive]!![0].packageName)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName)
             .isEqualTo(TEST_APP_PACKAGE_NAME_2)
-        assertThat(actual[AppAccessState.Inactive]!![0].appName).isEqualTo(TEST_APP_NAME_2)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME_2)
+    }
+
+    @Test
+    fun invoke_medicalPermissionsEnabled_returnsCorrectApps() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+
+        fakeLoadPermissionTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
+        val writeSteps =
+            FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
+        fakeFakeGetGrantedHealthPermissionsUseCase.updateData(
+            TEST_APP_PACKAGE_NAME, listOf(writeSteps))
+
+        val actual = (useCase.invoke(HealthPermissionType.STEPS) as UseCaseResults.Success).data
+
+        assertThat(actual[AppAccessState.Write]).isNotNull()
+        assertThat(actual[AppAccessState.Write]!!.size).isEqualTo(1)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.packageName).isEqualTo(TEST_APP_PACKAGE_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME)
+        assertThat(actual[AppAccessState.Write]!![0].appPermissionsType).isEqualTo(COMBINED_PERMISSIONS)
+        assertThat(actual[AppAccessState.Read]).isNotNull()
+        assertThat(actual[AppAccessState.Read]!!.size).isEqualTo(0)
+        assertThat(actual[AppAccessState.Inactive]).isNotNull()
+        assertThat(actual[AppAccessState.Inactive]!!.size).isEqualTo(1)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.packageName)
+            .isEqualTo(TEST_APP_PACKAGE_NAME_2)
+        assertThat(actual[AppAccessState.Inactive]!![0].appMetadata.appName).isEqualTo(TEST_APP_NAME_2)
     }
 }

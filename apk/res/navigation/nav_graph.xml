@@ -18,7 +18,9 @@
     android:id="@+id/home_nav_graph"
     app:startDestination="@id/homeFragment">
 
-    <include app:graph="@navigation/connected_app_nav_graph"/>
+    <include app:graph="@navigation/fitness_app_nav_graph"/>
+    <include app:graph="@navigation/medical_app_nav_graph"/>
+    <include app:graph="@navigation/combined_permissions_nav_graph"/>
 
     <fragment
         android:id="@+id/recentAccessFragment"
@@ -26,7 +28,14 @@
         android:label="@string/recent_access_header">
         <action
             android:id="@+id/action_recentAccessFragment_to_fitnessAppFragment"
-            app:destination="@id/connected_app_nav_graph" />
+            app:destination="@id/fitness_app_nav_graph" />
+        <action
+            android:id="@+id/action_recentAccessFragment_to_medicalAppFragment"
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_recentAccessFragment_to_combinedPermissionsFragment"
+            app:destination="@id/combined_permissions_nav_graph" />
+
         <action
             android:id="@+id/action_recentAccessFragment_to_connectedAppsFragment"
             app:destination="@+id/connectedAppsFragment" />
@@ -38,7 +47,13 @@
         android:label="@string/app_label">
         <action
             android:id="@+id/action_homeFragment_to_fitnessAppFragment"
-            app:destination="@id/connected_app_nav_graph" />
+            app:destination="@id/fitness_app_nav_graph" />
+        <action
+            android:id="@+id/action_homeFragment_to_medicalAppFragment"
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_homeFragment_to_combinedPermissionsFragment"
+            app:destination="@id/combined_permissions_nav_graph" />
         <action
             android:id="@+id/action_homeFragment_to_healthDataCategoriesFragment"
             app:destination="@id/data_activity" />
@@ -105,10 +120,13 @@
             app:destination="@id/helpAndFeedbackFragment" />
         <action
             android:id="@+id/action_connectedApps_to_fitnessApp"
-            app:destination="@id/connected_app_nav_graph" />
+            app:destination="@id/fitness_app_nav_graph" />
         <action
             android:id="@+id/action_connectedApps_to_medicalApp"
-            app:destination="@id/connected_app_nav_graph" />
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_connectedApps_to_combinedPermissions"
+            app:destination="@id/combined_permissions_nav_graph" />
         <action
             android:id="@+id/action_connectedApps_to_searchApps"
             app:destination="@id/searchConnectedApps" />
@@ -126,8 +144,14 @@
         android:id="@+id/searchConnectedApps"
         android:name="com.android.healthconnect.controller.permissions.connectedapps.searchapps.SearchAppsFragment">
         <action
-            android:id="@+id/action_searchApps_to_connectedApp"
-            app:destination="@id/connected_app_nav_graph" />
+            android:id="@+id/action_searchApps_to_fitnessApp"
+            app:destination="@id/fitness_app_nav_graph" />
+        <action
+            android:id="@+id/action_searchApps_to_medicalApp"
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_searchApps_to_combinedPermissions"
+            app:destination="@id/combined_permissions_nav_graph" />
     </fragment>
 
     <fragment

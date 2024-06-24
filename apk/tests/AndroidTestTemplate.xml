@@ -31,6 +31,7 @@
     <option name="test-file-name" value="HealthConnectUITestApp2.apk"/>
     <option name="test-file-name" value="UnsupportedTestApp.apk"/>
     <option name="test-file-name" value="OldPermissionsTestApp.apk"/>
+    <option name="test-file-name" value="MedicalPermissionsTestApp.apk"/>
   </target_preparer>
   <test class="com.android.tradefed.testtype.AndroidJUnitTest">
     <option name="runner" value="com.android.healthconnect.controller.tests.HiltTestRunner"/>

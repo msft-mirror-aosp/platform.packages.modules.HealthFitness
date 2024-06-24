@@ -34,11 +34,13 @@ import com.android.healthconnect.controller.data.access.AccessFragment
 import com.android.healthconnect.controller.data.access.AccessViewModel
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState.WithData
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.tests.utils.TEST_APP
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.launchFragment
@@ -92,7 +94,7 @@ class AccessFragmentTest {
     fun dataAccessFragment_readSection_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppMetadata("package1", "appName1", null)),
+                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
@@ -116,8 +118,8 @@ class AccessFragmentTest {
     fun dataAccessFragment_readAndWriteSections_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppMetadata("package1", "appName1", null)),
-                AppAccessState.Write to listOf(AppMetadata("package1", "appName1", null)),
+                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
@@ -142,7 +144,7 @@ class AccessFragmentTest {
             mapOf(
                 AppAccessState.Read to emptyList(),
                 AppAccessState.Write to emptyList(),
-                AppAccessState.Inactive to listOf(AppMetadata("package1", "appName1", null)))
+                AppAccessState.Inactive to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))))
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessViewModel.AccessScreenState>(WithData(map))
         }
@@ -189,10 +191,10 @@ class AccessFragmentTest {
     }
 
     @Test
-    fun whenAppNameClicked_navigatesToConnectedApp() {
+    fun whenAppNameClicked_navigatesToFitnessApp() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(TEST_APP),
+                AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP)),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
 
@@ -209,6 +211,53 @@ class AccessFragmentTest {
         onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
         onView(withText(TEST_APP_NAME)).perform(click())
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.fitnessAppFragment)
+    }
+
+    @Test
+    fun whenAppNameClicked_navigatesToMedicalApp() {
+        val map =
+            mapOf(
+                AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP, AppPermissionsType.MEDICAL_PERMISSIONS_ONLY)),
+                AppAccessState.Write to emptyList(),
+                AppAccessState.Inactive to emptyList())
+
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(map))
+        }
+
+        launchFragment<AccessFragment>(distanceBundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph_new_ia)
+            navHostController.setCurrentDestination(R.id.entriesAndAccessFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.medicalAppFragment)
+    }
+
+
+    @Test
+    fun whenAppNameClicked_navigatesToCombinedPermissions() {
+        val map =
+            mapOf(
+                AppAccessState.Read to listOf(AppAccessMetadata(TEST_APP, AppPermissionsType.COMBINED_PERMISSIONS)),
+                AppAccessState.Write to emptyList(),
+                AppAccessState.Inactive to emptyList())
+
+        whenever(viewModel.appMetadataMap).then {
+            MutableLiveData<AccessScreenState>(WithData(map))
+        }
+
+        launchFragment<AccessFragment>(distanceBundle()) {
+            navHostController.setGraph(R.navigation.data_nav_graph_new_ia)
+            navHostController.setCurrentDestination(R.id.entriesAndAccessFragment)
+            Navigation.setViewNavController(this.requireView(), navHostController)
+        }
+
+        onView(withText(TEST_APP_NAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_APP_NAME)).perform(click())
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.combinedPermissionsFragment)
     }
 
     private fun distanceBundle(): Bundle {

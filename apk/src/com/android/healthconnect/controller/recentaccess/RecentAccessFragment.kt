@@ -174,6 +174,7 @@ class RecentAccessFragment : Hilt_RecentAccessFragment() {
                             it.setOnPreferenceClickListener {
                                 if (findNavController().currentDestination?.id ==
                                     R.id.recentAccessFragment) {
+                                    //TODO(b/344884897): Add navigation to medical and combined permission screens.
                                     findNavController()
                                         .navigate(
                                             R.id.action_recentAccessFragment_to_fitnessAppFragment,

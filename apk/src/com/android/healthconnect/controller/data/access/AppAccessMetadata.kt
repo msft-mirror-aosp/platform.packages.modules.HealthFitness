@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,12 @@
  *
  *
  */
+package com.android.healthconnect.controller.data.access
 
-package com.android.healthconnect.controller.shared.app
+import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 
-import java.time.Instant
-
-data class ConnectedAppMetadata(
+data class AppAccessMetadata(
     val appMetadata: AppMetadata,
-    val status: ConnectedAppStatus,
-    val permissionsType: AppPermissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY,
-    val healthUsageLastAccess: Instant? = null
+    val appPermissionsType: AppPermissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY,
 )
-
-enum class ConnectedAppStatus {
-    ALLOWED,
-    DENIED,
-    INACTIVE,
-    NEEDS_UPDATE
-}
