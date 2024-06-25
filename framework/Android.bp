@@ -81,4 +81,7 @@ java_sdk_library {
             "-XepOpt:NullAway:AnnotatedPackages=android.health.connect",
         ],
     },
+    lint: {
+        baseline_filename: "lint-baseline.xml",
+    },
 }
