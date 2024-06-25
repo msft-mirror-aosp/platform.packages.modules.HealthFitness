@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.health.connect.aidl.IHealthConnectService;
-import android.health.connect.datatypes.MedicalResource;
 import android.os.OutcomeReceiver;
 import android.os.RemoteException;
 
@@ -94,20 +93,6 @@ public class HealthConnectManagerTest {
         assertThrows(
                 RuntimeException.class,
                 () -> healthConnectManager.getGrantedHealthPermissions("com.foo.bar"));
-    }
-
-    @Test
-    public void testHealthConnectManager_upsertMedicalResources_throws() throws Exception {
-        Context context = ApplicationProvider.getApplicationContext();
-        HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
-        Executor executor = MoreExecutors.directExecutor();
-        OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback = result -> {};
-
-        assertThrows(
-                UnsupportedOperationException.class,
-                () ->
-                        healthConnectManager.upsertMedicalResources(
-                                ImmutableList.of(), executor, callback));
     }
 
     @Test

@@ -271,7 +271,7 @@ class HomeFragmentTest {
 
         onView(
                 withText(
-                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+                    "Manage the health and fitness data on your device, and control which apps can access it"))
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("None")).check(matches(isDisplayed()))
@@ -333,7 +333,7 @@ class HomeFragmentTest {
 
         onView(
                 withText(
-                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+                    "Manage the health and fitness data on your device, and control which apps can access it"))
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
@@ -358,7 +358,7 @@ class HomeFragmentTest {
 
         onView(
                 withText(
-                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+                    "Manage the health and fitness data on your device, and control which apps can access it"))
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 app has access")).check(matches(isDisplayed()))
@@ -382,7 +382,7 @@ class HomeFragmentTest {
 
         onView(
                 withText(
-                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+                    "Manage the health and fitness data on your device, and control which apps can access it"))
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("1 of 2 apps has access")).check(matches(isDisplayed()))
@@ -406,7 +406,7 @@ class HomeFragmentTest {
 
         onView(
                 withText(
-                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+                    "Manage the health and fitness data on your device, and control which apps can access it"))
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
@@ -434,7 +434,7 @@ class HomeFragmentTest {
 
         onView(
                 withText(
-                    "Manage the health and fitness data on your phone, and control which apps can access it"))
+                    "Manage the health and fitness data on your device, and control which apps can access it"))
             .check(matches(isDisplayed()))
         onView(withText("App permissions")).check(matches(isDisplayed()))
         onView(withText("2 apps have access")).check(matches(isDisplayed()))
