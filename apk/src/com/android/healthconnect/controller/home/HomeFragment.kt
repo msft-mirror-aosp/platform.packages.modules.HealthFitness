@@ -357,6 +357,7 @@ class HomeFragment : Hilt_HomeFragment() {
                         newPreference ->
                         if (!recentApp.isInactive) {
                             newPreference.setOnPreferenceClickListener {
+                                //TODO(b/344884897): Add navigation to medical and combined permission screens.
                                 findNavController()
                                     .navigate(
                                         R.id.action_homeFragment_to_fitnessAppFragment,

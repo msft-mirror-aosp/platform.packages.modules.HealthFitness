@@ -20,6 +20,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 
@@ -113,6 +114,12 @@ public class PhrDataFactory {
      */
     public static MedicalResource getMedicalResource() {
         return getMedicalResourceBuilder().build();
+    }
+
+    /** Creates and returns a {@link UpsertMedicalResourceRequest} with default arguments. */
+    public static UpsertMedicalResourceRequest getUpsertMedicalResourceRequest() {
+        return new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                .build();
     }
 
     /**

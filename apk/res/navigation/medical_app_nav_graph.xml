@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2022 The Android Open Source Project
+  Copyright (C) 2024 The Android Open Source Project
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,23 +15,8 @@
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/connected_app_nav_graph"
-    app:startDestination="@id/fitnessAppFragment">
-
-    <fragment
-        android:id="@+id/fitnessAppFragment"
-        android:label="@string/app_access_title"
-        android:name="com.android.healthconnect.controller.permissions.app.FitnessAppFragment">
-        <argument
-            android:name="android.intent.extra.PACKAGE_NAME"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_fitnessApp_to_appData"
-            app:destination="@id/appDataFragment" />
-        <action
-            android:id="@+id/action_fitnessAppFragment_to_additionalAccessFragment"
-            app:destination="@id/additionalAccessFragment" />
-    </fragment>
+    android:id="@+id/medical_app_nav_graph"
+    app:startDestination="@id/medicalAppFragment">
 
     <fragment
         android:id="@+id/medicalAppFragment"

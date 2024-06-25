@@ -24,6 +24,8 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthPermissions.MANAGE_HEALTH_DATA_PERMISSION;
 import static android.health.connect.ratelimiter.RateLimiter.QuotaCategory.QUOTA_CATEGORY_WRITE;
 import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.DATA_SOURCE_LONG_ID;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_DATA_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
@@ -61,10 +63,12 @@ import android.content.pm.ResolveInfo;
 import android.database.sqlite.SQLiteException;
 import android.health.connect.HealthConnectException;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.HealthConnectExceptionParcel;
 import android.health.connect.aidl.IDataStagingFinishedCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.exportimport.ScheduledExportSettings;
@@ -169,6 +173,7 @@ public class HealthConnectServiceImplTest {
                     "getImportStatus",
                     "runImport",
                     "createMedicalDataSource",
+                    "upsertMedicalResources",
                     "readMedicalResources");
 
     /** Health connect service APIs that do not block calls when data sync is in progress. */
@@ -563,6 +568,24 @@ public class HealthConnectServiceImplTest {
                 mMedicalDataSourceCallback);
 
         verify(mMedicalDataSourceCallback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
+        assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
+                .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
+    }
+
+    @Test
+    @DisableFlags(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_flagOff_throws() throws Exception {
+        IMedicalResourcesResponseCallback callback = mock(IMedicalResourcesResponseCallback.class);
+
+        mHealthConnectService.upsertMedicalResources(
+                mAttributionSource,
+                List.of(
+                        new UpsertMedicalResourceRequest.Builder(
+                                        DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                                .build()),
+                callback);
+
+        verify(callback, timeout(5000).times(1)).onError(mErrorCaptor.capture());
         assertThat(mErrorCaptor.getValue().getHealthConnectException().getErrorCode())
                 .isEqualTo(ERROR_UNSUPPORTED_OPERATION);
     }

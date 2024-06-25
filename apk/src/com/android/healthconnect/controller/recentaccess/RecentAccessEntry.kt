@@ -27,4 +27,5 @@ data class RecentAccessEntry(
     var isInactive: Boolean = false,
     var dataTypesWritten: MutableSet<Int> = mutableSetOf(),
     var dataTypesRead: MutableSet<Int> = mutableSetOf()
+    //TODO(b/344884897): Add AppPermissionsType.
 )
