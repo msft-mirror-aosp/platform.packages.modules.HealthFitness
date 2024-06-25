@@ -41,7 +41,7 @@ class LoadAccessUseCaseTest {
     private lateinit var useCase: ILoadAccessUseCase
     private val fakeLoadPermissionTypeContributorAppsUseCase =
         FakeLoadPermissionTypeContributorAppsUseCase()
-    private val fakeFakeGetGrantedHealthPermissionsUseCase =
+    private val fakeGetGrantedHealthPermissionsUseCase =
         FakeGetGrantedHealthPermissionsUseCase()
 
     @Inject lateinit var appInfoReader: AppInfoReader
@@ -55,7 +55,7 @@ class LoadAccessUseCaseTest {
         useCase =
             LoadAccessUseCase(
                 fakeLoadPermissionTypeContributorAppsUseCase,
-                fakeFakeGetGrantedHealthPermissionsUseCase,
+                fakeGetGrantedHealthPermissionsUseCase,
                 healthPermissionReader,
                 appInfoReader,
                 Dispatchers.Main)
@@ -75,7 +75,7 @@ class LoadAccessUseCaseTest {
         fakeLoadPermissionTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
             FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
-        fakeFakeGetGrantedHealthPermissionsUseCase.updateData(
+        fakeGetGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
         val actual = (useCase.invoke(HealthPermissionType.STEPS) as UseCaseResults.Success).data
@@ -101,7 +101,7 @@ class LoadAccessUseCaseTest {
         fakeLoadPermissionTypeContributorAppsUseCase.updateList(listOf(TEST_APP, TEST_APP_2))
         val writeSteps =
             FitnessPermission(HealthPermissionType.STEPS, PermissionsAccessType.WRITE).toString()
-        fakeFakeGetGrantedHealthPermissionsUseCase.updateData(
+        fakeGetGrantedHealthPermissionsUseCase.updateData(
             TEST_APP_PACKAGE_NAME, listOf(writeSteps))
 
         val actual = (useCase.invoke(HealthPermissionType.STEPS) as UseCaseResults.Success).data

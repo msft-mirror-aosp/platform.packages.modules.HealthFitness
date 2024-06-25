@@ -86,6 +86,7 @@ import android.health.connect.RecordIdFilter;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
 import android.health.connect.UpdateDataOriginPriorityOrderRequest;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.accesslog.AccessLog;
 import android.health.connect.changelog.ChangeLogTokenRequest;
 import android.health.connect.changelog.ChangeLogTokenResponse;
@@ -1248,6 +1249,18 @@ public final class TestUtils {
         HealthConnectReceiver<List<MedicalDataSource>> receiver = new HealthConnectReceiver<>();
         getHealthConnectManager()
                 .getMedicalDataSources(ids, Executors.newSingleThreadExecutor(), receiver);
+        return receiver.getResponse();
+    }
+
+    /**
+     * Helper function to upsert medical resources into the DB by a list of {@link
+     * UpsertMedicalResourceRequest}s, using HealthConnectManager.
+     */
+    public static List<MedicalResource> upsertMedicalResources(
+            List<UpsertMedicalResourceRequest> requests) throws InterruptedException {
+        HealthConnectReceiver<List<MedicalResource>> receiver = new HealthConnectReceiver<>();
+        getHealthConnectManager()
+                .upsertMedicalResources(requests, Executors.newSingleThreadExecutor(), receiver);
         return receiver.getResponse();
     }
 

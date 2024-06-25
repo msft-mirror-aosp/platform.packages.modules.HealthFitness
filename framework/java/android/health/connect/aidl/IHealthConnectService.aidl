@@ -2,6 +2,7 @@ package android.health.connect.aidl;
 
 import android.content.AttributionSource;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.aidl.ActivityDatesRequestParcel;
 import android.health.connect.aidl.AggregateDataRequestParcel;
 import android.health.connect.aidl.IAggregateRecordsResponseCallback;
@@ -28,6 +29,7 @@ import android.health.connect.aidl.RecordsParcel;
 import android.health.connect.aidl.UpdatePriorityRequestParcel;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IActivityDatesResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.ReadRecordsRequestParcel;
@@ -398,6 +400,19 @@ interface IHealthConnectService {
             in AttributionSource attributionSource,
             in CreateMedicalDataSourceRequest request,
             in IMedicalDataSourceResponseCallback callback);
+
+    /**
+     * Upserts {@link MedicalResource}s in HealthConnect based on a list of {@link
+     * UpsertMedicalResourceRequest}s.
+     *
+     * @param attributionSource attribution source for the data.
+     * @param requests A list of upsert requests.
+     * @param callback Callback to receive result of performing this operation.
+     */
+    void upsertMedicalResources(
+        in AttributionSource attributionSource,
+        in List<UpsertMedicalResourceRequest> requests,
+        in IMedicalResourcesResponseCallback callback);
 
     /**
      * Reads from the HealthConnect database.
