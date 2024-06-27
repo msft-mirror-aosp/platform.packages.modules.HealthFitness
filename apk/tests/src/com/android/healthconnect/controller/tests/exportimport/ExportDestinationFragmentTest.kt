@@ -115,6 +115,8 @@ class ExportDestinationFragmentTest {
             Uri.parse("content://com.android.externalstorage.documents/document")
         private val DOWNLOADS_DOCUMENT_URI =
             Uri.parse("content://com.android.providers.downloads.documents/document")
+
+        private const val DEFAULT_FILE_NAME = "Health Connect.zip"
     }
 
     @get:Rule val hiltRule = HiltAndroidRule(this)
@@ -381,6 +383,7 @@ class ExportDestinationFragmentTest {
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+        intended(hasExtra(Intent.EXTRA_TITLE, DEFAULT_FILE_NAME))
         verify(healthConnectLogger)
             .logInteraction(ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
     }
@@ -617,6 +620,7 @@ class ExportDestinationFragmentTest {
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
+        intended(hasExtra(Intent.EXTRA_TITLE, DEFAULT_FILE_NAME))
     }
 
     @Test
@@ -752,6 +756,7 @@ class ExportDestinationFragmentTest {
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_1_URI))
+        intended(hasExtra(Intent.EXTRA_TITLE, DEFAULT_FILE_NAME))
     }
 
     @Test
@@ -877,6 +882,7 @@ class ExportDestinationFragmentTest {
         intended(hasAction(Intent.ACTION_CREATE_DOCUMENT))
         intended(hasType("application/zip"))
         intended(hasExtra(DocumentsContract.EXTRA_INITIAL_URI, TEST_DOCUMENT_PROVIDER_1_ROOT_2_URI))
+        intended(hasExtra(Intent.EXTRA_TITLE, DEFAULT_FILE_NAME))
     }
 
     @Test

@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"จัดการสิทธิ์ของแอปในการเข้าถึงข้อมูลสุขภาพ"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"สิทธิ์และข้อมูล"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"จัดการข้อมูลสุขภาพและการออกกำลังกายในโทรศัพท์ และควบคุมว่าแอปใดบ้างที่เข้าถึงข้อมูลได้"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"ข้อมูลและการเข้าถึง"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"หมวดหมู่ทั้งหมด"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"ดูหมวดหมู่ทั้งหมด"</string>
@@ -323,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"ตอนนี้คุณยังไม่ได้ติดตั้งแอปที่เข้ากันได้"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"การเข้าถึงเพิ่มเติม"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"นำสิทธิ์เพิ่มเติมสำหรับแอปนี้ออกแล้ว"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"สิทธิ์ของแอปที่ถูกนำออก"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA">%s</xliff:g> ออกแล้ว"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect นำสิทธิ์สำหรับ <xliff:g id="APP_DATA_0">%1$s</xliff:g> และ <xliff:g id="APP_DATA_TWO">%2$s</xliff:g> ออกแล้ว"</string>
@@ -342,29 +349,45 @@
     <string name="scheduled_export" msgid="8737660963687364370">"การส่งออกที่กำหนดเวลาไว้"</string>
     <string name="import_data" msgid="404502315533233094">"นำเข้าข้อมูล"</string>
     <string name="import_data_description" msgid="4040178599441724296">"กู้คืนข้อมูลจากไฟล์ที่ส่งออกก่อนหน้านี้"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <!-- no translation found for import_error_banner_title (1480977889067027790) -->
     <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <!-- no translation found for import_version_mismatch_error_banner_button (4761716140032809817) -->
+    <skip />
+    <!-- no translation found for import_version_mismatch_error_banner_summary (6165550114170534795) -->
+    <skip />
+    <!-- no translation found for import_other_error_banner_button (8006947649520909176) -->
+    <skip />
+    <!-- no translation found for import_other_error_banner_summary (4378957063605649197) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"การส่งออกช่วยให้คุณบันทึกข้อมูลเพื่อโอนไปยังโทรศัพท์เครื่องใหม่ได้"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"ดูข้อมูลเพิ่มเติม"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"เปิด"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"ปิด"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"เลือกความถี่"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"เลือกความถี่"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"เลือกเพื่อบันทึกข้อมูลครั้งเดียว หรือตั้งค่าให้บันทึกโดยอัตโนมัติเป็นประจำเมื่อถึงเวลาที่ระบุ"</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"ทุกวัน"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"ทุกสัปดาห์"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"ทุกเดือน"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"เลือกปลายทางการส่งออก"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
     <string name="export_invalid_storage" msgid="3945266169513895950">"โปรดเลือกแอปพื้นที่เก็บข้อมูลเพื่อส่งออกข้อมูล"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"พิมพ์รหัสผ่าน"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"ต้องใช้รหัสผ่านของการเข้ารหัสเพื่อนำเข้าข้อมูล Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"ลืมรหัสผ่านใช่ไหม"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"รหัสผ่าน"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"หากยังมีโทรศัพท์เครื่องเก่าอยู่ คุณสามารถส่งออกข้อมูลอีกครั้งด้วยรหัสผ่านใหม่ได้"</string>
+    <!-- no translation found for import_confirmation_dialog_title (1218478436676890997) -->
+    <skip />
+    <!-- no translation found for import_confirmation_dialog_cancel_button (4323351978842360895) -->
+    <skip />
+    <!-- no translation found for import_confirmation_dialog_import_button (7090219024758375606) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"กลับ"</string>
     <string name="export_next_button" msgid="657930567137105172">"ถัดไป"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"ยกเลิก"</string>
@@ -381,7 +404,8 @@
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"เริ่มต้นใช้งาน Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect จะจัดเก็บข้อมูลสุขภาพและการออกกำลังกาย และให้คุณซิงค์แอปต่างๆ ในโทรศัพท์ได้โดยง่าย"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"แชร์ข้อมูลกับแอปต่างๆ"</string>
     <string name="share_data_description" msgid="2919871301634375092">"เลือกข้อมูลที่แต่ละแอปจะอ่านหรือเขียนลงใน Health Connect ได้"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"จัดการการตั้งค่าและความเป็นส่วนตัว"</string>
@@ -947,7 +971,7 @@
     <string name="tab_access" msgid="7818197975407243701">"การเข้าถึง"</string>
     <string name="request_additional_permissions_header_title" msgid="948421892753976588">"อนุญาตการเข้าถึงเพิ่มเติมสำหรับ <xliff:g id="APP_NAME">%1$s</xliff:g> ใช่ไหม"</string>
     <string name="request_additional_permissions_description" msgid="4179425089090269042">"<xliff:g id="APP_NAME">%1$s</xliff:g> ต้องการเข้าถึงการตั้งค่า Health Connect เหล่านี้ด้วย"</string>
-    <string name="additional_access_combined_footer" msgid="5967785355544362840">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเล่นขณะล็อกหน้าจอหรือการเข้าถึงข้อมูลในอดีตสำหรับแอปนี้"</string>
+    <string name="additional_access_combined_footer" msgid="5967785355544362840">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเข้าถึงข้อมูลในอดีตหรือในเบื้องหลังสำหรับแอปนี้"</string>
     <string name="additional_access_background_footer" msgid="1638739578431818525">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเข้าถึงเมื่ออยู่เบื้องหลังสำหรับแอปนี้"</string>
     <string name="additional_access_history_footer" msgid="5326814559930548467">"เปิดใช้สิทธิ์อ่านอย่างน้อย 1 รายการเพื่อเปิดใช้การเข้าถึงข้อมูลในอดีตสำหรับแอปนี้"</string>
     <string name="all_data_selected_deletion_confirmation_dialog" msgid="8480788219767858637">"ลบข้อมูลทั้งหมดออกจาก Health Connect อย่างถาวรใช่ไหม"</string>

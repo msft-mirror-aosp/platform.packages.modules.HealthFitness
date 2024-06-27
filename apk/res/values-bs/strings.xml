@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Upravljajte pristupom aplikacije zdravstvenim podacima"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Odobrenja i podaci"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Upravljajte podacima o zdravlju i fitnesu na telefonu i kontrolirajte koje aplikacije im mogu pristupiti"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Podaci i pristup"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Sve kategorije"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Prikaz svih kategorija"</string>
@@ -267,14 +268,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizacija"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizacija"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čitanje podataka o imunizaciji"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Usredotočena svjesnost"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"usredotočena svjesnost"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čitanje podataka o usredotočenoj svjesnosti"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Zapisivanje podataka o usredotočenoj svjesnosti"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Dozvoli aplikaciji \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" čitanje"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Dozvoli aplikaciji \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" zapisivanje"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Otkaži"</string>
@@ -327,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Trenutno nemate instaliranu nijednu kompatibilnu aplikaciju"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatni pristup"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Uklonjena su dodatna odobrenja za ovu aplikaciju"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odobrenja za aplikaciju su uklonjena"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect je uklonio odobrenja za aplikaciju <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect je uklonio odobrenja za aplikacije <xliff:g id="APP_DATA_0">%1$s</xliff:g> i <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,29 +349,37 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Zakazani izvoz"</string>
     <string name="import_data" msgid="404502315533233094">"Uvezite podatke"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Vratite podatke iz prethodno izvezenog fajla"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Nije bilo moguće vratiti podatke"</string>
     <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Ažuriraj sada"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Ažurirajte sustav kako bi Health Connect mogao vratiti vaše podatke, a zatim pokušajte ponovno."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Pokušaj ponovno"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Došlo je do problema prilikom vraćanja podataka iz vašeg uvoza."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Izvoz vam omogućava da sačuvate podatke da ih možete prenijeti na novi telefon"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Saznajte više"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Uključeno"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Isključeno"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Odaberite učestalost"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Odaberite učestalost"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Odaberite da sačuvate podatke jedanput ili postavite da se automatski pohranjuju u redovnim intervalima."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Dnevno"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Sedmično"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Mjesečno"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Odaberite lokaciju za izvoz"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
     <string name="export_invalid_storage" msgid="3945266169513895950">"Da izvezete podatke, odaberite aplikaciju za pohranu"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Upišite lozinku"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Da uvezete podatke Health Connecta, potrebna je lozinka za šifriranje"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Zaboravili ste lozinku?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Lozinka"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ako još uvijek imate stari telefon, možete ponovo izvesti podatke s novom lozinkom"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Želite li uvesti ovu datoteku?"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Odustani"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Uvezi"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Nazad"</string>
     <string name="export_next_button" msgid="657930567137105172">"Naprijed"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Otkaži"</string>
@@ -385,7 +396,8 @@
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Počnite koristiti Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect pohranjuje vaše podatke o zdravlju i fitnesu i pruža vam jednostavan način da sinhronizirate različite aplikacije na telefonu"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Dijelite podatke sa svojim aplikacijama"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Odaberite podatke koje svaka aplikacija može čitati ili zapisivati u Health Connectu"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Upravljajte postavkama i privatnošću"</string>

@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Dáta o zdraví"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Správa prístupu aplikácie k údajom o zdraví"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Povolenia a údaje"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Spravujte údaje o zdraví a kondícii vo svojom telefóne a ovládajte, ktoré aplikácie k nim majú mať prístup"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Údaje a prístup"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Všetky kategórie"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Zobraziť všetky kategórie"</string>
@@ -93,7 +94,7 @@
     <string name="historic_access_title" msgid="3584594624937737030">"Prístup k minulým údajom"</string>
     <string name="historic_access_request_title" msgid="4645920231853414742">"Chcete aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> povoliť prístup k minulým údajom?"</string>
     <string name="historic_access_description" msgid="2616669701088141765">"Povoliť tejto aplikácii prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>"</string>
-    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povolenie prístupu tejto aplikácie k všetkým minulým údajom Dát o zdraví"</string>
+    <string name="historic_access_description_fallback" msgid="3361696143557784403">"Povoliť tejto aplikácii prístup k všetkým minulým údajom Dát o zdraví"</string>
     <string name="historic_access_request_description" msgid="136335743939253358">"Ak ho povolíte, táto aplikácia bude mať prístup k údajom Dát o zdraví pridaným pred <xliff:g id="DATA_ACCESS_DATE">%1$s</xliff:g>."</string>
     <string name="historic_access_request_description_fallback" msgid="8519401358044984479">"Ak ho povolíte, táto aplikácia bude mať prístup k všetkým minulým údajom Dát o zdraví."</string>
     <string name="active_calories_burned_uppercase_label" msgid="6231684842932528272">"Kalórie spálené počas aktivity"</string>
@@ -267,14 +268,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Imunizácia"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"imunizácia"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Čítať imunizáciu"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Bdelá pozornosť"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"bdelá pozornosť"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Čítať údaje bdelej pozornosti"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Zapisovať údaje bdelej pozornosti"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Povolenie aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> čítať"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Povolenie aplikácii <xliff:g id="APP_NAME">%1$s</xliff:g> zapisovať"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Zrušiť"</string>
@@ -327,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Momentálne nemáte nainštalované žiadne kompatibilné aplikácie"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Dodatočný prístup"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Tejto aplikácii boli odstránené ďalšie povolenia"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Odstránené povolenia aplikácií"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Dáta o zdraví odstránili povolenia pre aplikáciu <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Dáta o zdraví odstránili povolenia pre aplikácie <xliff:g id="APP_DATA_0">%1$s</xliff:g> a <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,29 +349,37 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Naplánovaný export"</string>
     <string name="import_data" msgid="404502315533233094">"Importovať údaje"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Obnovte údaje zo súboru exportovaného v minulosti"</string>
+    <string name="import_error_banner_title" msgid="1480977889067027790">"Údaje sa nepodarilo obnoviť"</string>
     <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
-    <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <string name="import_version_mismatch_error_banner_button" msgid="4761716140032809817">"Aktualizovať"</string>
+    <string name="import_version_mismatch_error_banner_summary" msgid="6165550114170534795">"Aktualizujte si systém, aby Dáta o zdraví mohli obnoviť vaše údaje. Potom to skúste znova."</string>
+    <string name="import_other_error_banner_button" msgid="8006947649520909176">"Skúsiť znova"</string>
+    <string name="import_other_error_banner_summary" msgid="4378957063605649197">"Vyskytol sa problém s obnovením údajov z exportu."</string>
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Export vám umožňuje uložiť si údaje, aby ste ich mohli preniesť do nového telefónu"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Ďalšie informácie"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Zapnuté"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Vypnuté"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Výber frekvencie"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Výber frekvencie"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Vyberte, či chcete údaje uložiť raz, alebo nastavte, aby sa pravidelne automaticky ukladali."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Každý deň"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Každý týždeň"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Každý mesiac"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Vyberte, kam chcete exportovať"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
     <string name="export_invalid_storage" msgid="3945266169513895950">"Vyberte aplikáciu s priestorom, do ktorej sa majú exportovať údaje"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Zadajte heslo"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Ak chcete importovať údaje do Dát o zdraví, potrebujete heslo šifrovania"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Zabudli ste heslo?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Heslo"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Ak máte stále starý telefón, môžete znova exportovať údaje pomocou nového hesla"</string>
+    <string name="import_confirmation_dialog_title" msgid="1218478436676890997">"Chcete importovať tento súbor?"</string>
+    <string name="import_confirmation_dialog_cancel_button" msgid="4323351978842360895">"Zrušiť"</string>
+    <string name="import_confirmation_dialog_import_button" msgid="7090219024758375606">"Importovať"</string>
     <string name="export_back_button" msgid="3550795479165524982">"Späť"</string>
     <string name="export_next_button" msgid="657930567137105172">"Ďalej"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Zrušiť"</string>
@@ -385,7 +396,8 @@
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Začíname s Dátami o zdraví"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Dáta o zdraví uchovávajú vaše údaje o zdraví a kondícii a umožňujú vám jednoducho synchronizovať rôzne aplikácie v telefóne"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Zdieľanie údajov s aplikáciami"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Vyberte, ktoré údaje budú môcť jednotlivé aplikácie v Dátach o zdraví čítať alebo zapisovať"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Správa nastavení a ochrany súkromia"</string>

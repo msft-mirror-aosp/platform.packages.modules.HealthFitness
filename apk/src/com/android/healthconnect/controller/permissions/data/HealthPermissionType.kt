@@ -68,6 +68,9 @@ enum class HealthPermissionType(val category: Int) {
     RESPIRATORY_RATE(HealthPermissionCategory.RESPIRATORY_RATE),
     RESTING_HEART_RATE(HealthPermissionCategory.RESTING_HEART_RATE),
     SKIN_TEMPERATURE(HealthPermissionCategory.SKIN_TEMPERATURE),
+
+    // WELLNESS
+    MINDFULNESS(HealthPermissionCategory.MINDFULNESS),
 }
 
 fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissionType {
@@ -121,6 +124,7 @@ fun fromHealthPermissionCategory(healthPermissionCategory: Int): HealthPermissio
         HealthPermissionCategory.RESPIRATORY_RATE -> HealthPermissionType.RESPIRATORY_RATE
         HealthPermissionCategory.RESTING_HEART_RATE -> HealthPermissionType.RESTING_HEART_RATE
         HealthPermissionCategory.SKIN_TEMPERATURE -> HealthPermissionType.SKIN_TEMPERATURE
+        HealthPermissionCategory.MINDFULNESS -> HealthPermissionType.MINDFULNESS
         else -> throw IllegalArgumentException("PermissionType is not supported.")
     }
 }

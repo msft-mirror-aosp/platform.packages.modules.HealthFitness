@@ -306,4 +306,12 @@ private val PERMISSION_TYPE_STRINGS: ImmutableMap<HealthPermissionType, FitnessP
                 R.string.planned_exercise_read_content_description,
                 R.string.planned_exercise_write_content_description,
             ))
+        .put(
+            HealthPermissionType.MINDFULNESS,
+            FitnessPermissionStrings(
+                R.string.mindfulness_uppercase_label,
+                R.string.mindfulness_lowercase_label,
+                R.string.mindfulness_read_content_description,
+                R.string.mindfulness_write_content_description,
+            ))
         .buildOrThrow()

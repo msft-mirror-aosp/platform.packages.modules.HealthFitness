@@ -483,6 +483,7 @@
 
     <string name="export_destination_title" description="Title of the export destination screen where users can select which cloud storage service to store their exported data. [CHAR_LIMIT=40]">Choose where to save scheduled export</string>
     <string name="export_invalid_storage" description="Message shown to the user when they pick a local storage app instead of a cloud storage app to export their data to. [CHAR_LIMIT=NONE]">Please choose a storage app to export your data</string>
+    <string name="export_default_file_name" description="File name of exported Health Connect data. Note: Health Connect is the brand. [CHAR_LIMIT=40]">Health Connect</string>
 
     <string name="import_confirmation_dialog_title" description="Title displayed on dialog asking user to confirm their choice of file for import. [CHAR_LIMIT=NONE]">Import this file?</string>
     <string name="import_confirmation_dialog_cancel_button" description="Text on a button that cancels the file import process if the user chooses not to import the selected file. [CHAR_LIMIT=40]">Cancel</string>
