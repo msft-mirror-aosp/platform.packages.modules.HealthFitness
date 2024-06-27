@@ -21,7 +21,9 @@
     android:id="@+id/permissions_nav_graph"
     app:startDestination="@id/healthDataCategoriesFragment">
 
-    <include app:graph="@navigation/connected_app_nav_graph"/>
+    <include app:graph="@navigation/fitness_app_nav_graph"/>
+    <include app:graph="@navigation/medical_app_nav_graph"/>
+    <include app:graph="@navigation/combined_permissions_nav_graph"/>
 
     <fragment
         android:id="@+id/healthDataCategoriesFragment"
@@ -85,8 +87,14 @@
             android:id="@+id/action_healthDataAccess_to_dataEntries"
             app:destination="@id/dataEntriesFragment" />
         <action
-            android:id="@+id/action_healthDataAccessFragment_to_appAccess"
-            app:destination="@id/connected_app_nav_graph" />
+            android:id="@+id/action_healthDataAccessFragment_to_fitnessApp"
+            app:destination="@id/fitness_app_nav_graph" />
+        <action
+            android:id="@+id/action_healthDataAccessFragment_to_medicalApp"
+            app:destination="@id/medical_app_nav_graph" />
+        <action
+            android:id="@+id/action_healthDataAccessFragment_to_combinedPermissions"
+            app:destination="@id/combined_permissions_nav_graph" />
         <action
             android:id="@+id/action_healthDataAccessFragment_to_unitsFragment"
             app:destination="@+id/unitFragment" />
@@ -107,9 +115,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/connectedAppFragment"
+        android:id="@+id/fitnessAppFragment"
         android:label="@string/app_access_title"
-        android:name="com.android.healthconnect.controller.permissions.app.ConnectedAppFragment">
+        android:name="com.android.healthconnect.controller.permissions.app.FitnessAppFragment">
         <argument
             android:name="android.intent.extra.PACKAGE_NAME"
             app:argType="string" />

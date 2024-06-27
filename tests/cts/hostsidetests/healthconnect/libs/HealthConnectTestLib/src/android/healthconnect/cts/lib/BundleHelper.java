@@ -61,7 +61,7 @@ import java.util.stream.IntStream;
 /** Converters from/to bundles for HC request, response, and record types. */
 public final class BundleHelper {
     private static final String TAG = "TestApp-BundleHelper";
-    private static final String PREFIX = "android.healthconnect.cts.";
+    static final String PREFIX = "android.healthconnect.cts.";
     public static final String QUERY_TYPE = PREFIX + "QUERY_TYPE";
     public static final String INSERT_RECORDS_QUERY = PREFIX + "INSERT_RECORDS_QUERY";
     public static final String READ_RECORDS_QUERY = PREFIX + "READ_RECORDS_QUERY";
@@ -417,7 +417,12 @@ public final class BundleHelper {
 
         Bundle values;
 
-        if (record instanceof BasalMetabolicRateRecord basalMetabolicRateRecord) {
+        RecordFactory<? extends Record> recordFactory =
+                RecordFactory.forDataType(record.getClass());
+
+        if (recordFactory != null) {
+            values = recordFactory.getValuesBundle(record);
+        } else if (record instanceof BasalMetabolicRateRecord basalMetabolicRateRecord) {
             values = getBasalMetabolicRateRecordValues(basalMetabolicRateRecord);
         } else if (record instanceof ExerciseSessionRecord exerciseSessionRecord) {
             values = getExerciseSessionRecordValues(exerciseSessionRecord);
@@ -471,7 +476,13 @@ public final class BundleHelper {
 
         Bundle values = bundle.getBundle(VALUES);
 
-        if (Objects.equals(recordClassName, BasalMetabolicRateRecord.class.getName())) {
+        Class<? extends Record> recordClass = recordClassForName(recordClassName);
+        RecordFactory<? extends Record> recordFactory = RecordFactory.forDataType(recordClass);
+
+        if (recordFactory != null) {
+            return recordFactory.newRecordFromValuesBundle(
+                    metadata, startTime, endTime, startZoneOffset, endZoneOffset, values);
+        } else if (Objects.equals(recordClassName, BasalMetabolicRateRecord.class.getName())) {
             return createBasalMetabolicRateRecord(metadata, startTime, startZoneOffset, values);
         } else if (Objects.equals(recordClassName, ExerciseSessionRecord.class.getName())) {
             return createExerciseSessionRecord(

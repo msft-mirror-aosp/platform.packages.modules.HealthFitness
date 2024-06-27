@@ -22,6 +22,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.Mockito.when;
 
+import android.health.connect.HealthConnectManager;
 import android.health.connect.exportimport.ImportStatus;
 import android.health.connect.exportimport.ScheduledExportSettings;
 import android.net.Uri;
@@ -42,6 +43,7 @@ public final class ExportImportSettingsStorageTest {
     private static final String EXPORT_URI_PREFERENCE_KEY = "export_uri_key";
     private static final String EXPORT_PERIOD_PREFERENCE_KEY = "export_period_key";
     private static final String IMPORT_ONGOING_PREFERENCE_KEY = "import_ongoing_key";
+    private static final String LAST_EXPORT_ERROR_PREFERENCE_KEY = "last_export_error_key";
     private static final String LAST_IMPORT_ERROR_PREFERENCE_KEY = "last_import_error_key";
     private static final String TEST_URI = "content://com.android.server.healthconnect/testuri";
 
@@ -72,6 +74,26 @@ public final class ExportImportSettingsStorageTest {
 
         assertThat(mFakePreferenceHelper.getPreference(EXPORT_PERIOD_PREFERENCE_KEY))
                 .isEqualTo(String.valueOf(7));
+    }
+
+    @Test
+    public void testConfigure_uri_removeExportLostFileAccessError() {
+        ExportImportSettingsStorage.setLastExportError(
+                HealthConnectManager.DATA_EXPORT_LOST_FILE_ACCESS);
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
+                .isEqualTo(null);
+    }
+
+    @Test
+    public void testConfigure_uri_removeUnknownError() {
+        ExportImportSettingsStorage.setLastExportError(
+                HealthConnectManager.DATA_EXPORT_ERROR_UNKNOWN);
+        ExportImportSettingsStorage.configure(ScheduledExportSettings.withUri(Uri.parse(TEST_URI)));
+
+        assertThat(mFakePreferenceHelper.getPreference(LAST_EXPORT_ERROR_PREFERENCE_KEY))
+                .isEqualTo(null);
     }
 
     @Test

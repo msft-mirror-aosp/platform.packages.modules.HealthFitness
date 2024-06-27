@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
@@ -33,15 +34,18 @@ import com.android.healthconnect.controller.shared.Constants.MODULE_UPDATE_NEEDE
 import com.android.healthconnect.controller.shared.Constants.USER_ACTIVITY_TRACKER
 import com.android.healthconnect.controller.shared.Constants.WHATS_NEW_DIALOG_SEEN
 import com.android.healthconnect.controller.shared.dialog.AlertDialogBuilder
+import com.android.healthconnect.controller.utils.DeviceInfoUtils
 import com.android.healthconnect.controller.utils.logging.DataRestoreElement
 import com.android.healthconnect.controller.utils.logging.MigrationElement
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /** Activity in charge of coordinating migration navigation, fragments and dialogs. */
 @AndroidEntryPoint(FragmentActivity::class)
 class MigrationActivity : Hilt_MigrationActivity() {
 
     companion object {
+        private const val TAG = "MigrationActivity"
         const val MIGRATION_ACTIVITY_INTENT = "android.health.connect.action.MIGRATION"
 
         fun maybeRedirectToMigrationActivity(
@@ -226,10 +230,21 @@ class MigrationActivity : Hilt_MigrationActivity() {
         }
     }
 
+    @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // This flag ensures a non system app cannot show an overlay on Health Connect. b/313425281
-        window.addSystemFlags(WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+        window.addSystemFlags(
+            WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS)
+
+        // Handles unsupported devices and user profiles.
+        if (!deviceInfoUtils.isHealthConnectAvailable(this)) {
+            Log.e(TAG, "Health connect is not available for this user or hardware, finishing!")
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_migration)
     }
 
@@ -247,5 +262,4 @@ class MigrationActivity : Hilt_MigrationActivity() {
         }
         return true
     }
-
 }

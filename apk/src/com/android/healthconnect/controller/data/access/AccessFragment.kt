@@ -29,10 +29,12 @@ import com.android.healthconnect.controller.deletion.DeletionConstants.DELETION_
 import com.android.healthconnect.controller.deletion.DeletionConstants.START_DELETION_EVENT
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.permissions.connectedapps.HealthAppPreference
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.shared.Constants.EXTRA_APP_NAME
 import com.android.healthconnect.controller.shared.app.AppMetadata
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
+import com.android.healthconnect.controller.shared.app.ConnectedAppMetadata
 import com.android.healthconnect.controller.shared.inactiveapp.InactiveAppPreference
 import com.android.healthconnect.controller.shared.preference.HealthPreferenceFragment
 import com.android.healthconnect.controller.utils.logging.DataAccessElement
@@ -137,7 +139,7 @@ class AccessFragment : Hilt_AccessFragment() {
         }
     }
 
-    private fun updateDataAccess(appMetadataMap: Map<AppAccessState, List<AppMetadata>>) {
+    private fun updateDataAccess(appMetadataMap: Map<AppAccessState, List<AppAccessMetadata>>) {
         mCanReadSection?.removeAll()
         mCanWriteSection?.removeAll()
         mInactiveSection?.removeAll()
@@ -147,8 +149,8 @@ class AccessFragment : Hilt_AccessFragment() {
                 mCanReadSection?.isVisible = false
             } else {
                 mCanReadSection?.isVisible = true
-                appMetadataMap[AppAccessState.Read]!!.forEach { _appMetadata ->
-                    mCanReadSection?.addPreference(createAppPreference(_appMetadata))
+                appMetadataMap[AppAccessState.Read]!!.forEach { appAccessMetadata ->
+                    mCanReadSection?.addPreference(createAppPreference(appAccessMetadata))
                 }
             }
         }
@@ -157,8 +159,8 @@ class AccessFragment : Hilt_AccessFragment() {
                 mCanWriteSection?.isVisible = false
             } else {
                 mCanWriteSection?.isVisible = true
-                appMetadataMap[AppAccessState.Write]!!.forEach { _appMetadata ->
-                    mCanWriteSection?.addPreference(createAppPreference(_appMetadata))
+                appMetadataMap[AppAccessState.Write]!!.forEach { appAccessMetadata ->
+                    mCanWriteSection?.addPreference(createAppPreference(appAccessMetadata))
                 }
             }
         }
@@ -174,17 +176,18 @@ class AccessFragment : Hilt_AccessFragment() {
                                 R.string.inactive_apps_message,
                                 getString(fromPermissionType(permissionType).lowercaseLabel))
                     })
-                appMetadataMap[AppAccessState.Inactive]?.forEach { _appMetadata ->
+                appMetadataMap[AppAccessState.Inactive]?.forEach { appAccessMetadata ->
+                    val appMetadata = appAccessMetadata.appMetadata
                     mInactiveSection?.addPreference(
                         InactiveAppPreference(requireContext()).also {
-                            it.title = _appMetadata.appName
-                            it.icon = _appMetadata.icon
+                            it.title = appMetadata.appName
+                            it.icon = appMetadata.icon
                             it.logName = DataAccessElement.DATA_ACCESS_INACTIVE_APP_BUTTON
                             it.setOnDeleteButtonClickListener {
                                 // TODO(b/291249677): Update when new deletion flows are ready.
                                 val deletionType =
                                     DeletionType.DeletionTypeAppData(
-                                        _appMetadata.packageName, _appMetadata.appName)
+                                        appMetadata.packageName, appMetadata.appName)
                                 childFragmentManager.setFragmentResult(
                                     START_DELETION_EVENT, bundleOf(DELETION_TYPE to deletionType))
                             }
@@ -194,18 +197,29 @@ class AccessFragment : Hilt_AccessFragment() {
         }
     }
 
-    private fun createAppPreference(appMetadata: AppMetadata): HealthAppPreference {
-        return HealthAppPreference(requireContext(), appMetadata).also {
+    private fun createAppPreference(appAccessMetadata: AppAccessMetadata): HealthAppPreference {
+        return HealthAppPreference(requireContext(), appAccessMetadata.appMetadata).also {
             it.logName = DataAccessElement.DATA_ACCESS_APP_BUTTON
             it.setOnPreferenceClickListener {
-                findNavController()
-                    .navigate(
-                        R.id.action_entriesAndAccessFragment_to_appAccess,
-                        bundleOf(
-                            EXTRA_PACKAGE_NAME to appMetadata.packageName,
-                            EXTRA_APP_NAME to appMetadata.appName))
+               navigateToAppInfoScreen(appAccessMetadata)
                 true
             }
         }
+    }
+
+    private fun navigateToAppInfoScreen(appAccessMetadata: AppAccessMetadata) {
+        val appPermissionsType = appAccessMetadata.appPermissionsType
+        val navigationId =
+            when (appPermissionsType) {
+                AppPermissionsType.FITNESS_PERMISSIONS_ONLY -> R.id.action_entriesAndAccessFragment_to_fitnessApp
+                AppPermissionsType.MEDICAL_PERMISSIONS_ONLY -> R.id.action_entriesAndAccessFragment_to_medicalApp
+                AppPermissionsType.COMBINED_PERMISSIONS -> R.id.action_entriesAndAccessFragment_to_combinedPermissions
+            }
+        findNavController()
+            .navigate(
+                navigationId,
+                bundleOf(
+                    EXTRA_PACKAGE_NAME to appAccessMetadata.appMetadata.packageName,
+                    EXTRA_APP_NAME to appAccessMetadata.appMetadata.appName))
     }
 }
