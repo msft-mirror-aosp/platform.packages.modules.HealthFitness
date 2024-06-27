@@ -39,8 +39,6 @@ import android.database.sqlite.SQLiteException;
 import android.health.connect.Constants;
 import android.health.connect.HealthConnectException;
 import android.health.connect.PageTokenWrapper;
-import android.health.connect.aidl.MedicalIdFiltersParcel;
-import android.health.connect.internal.datatypes.MedicalResourceInternal;
 import android.health.connect.internal.datatypes.RecordInternal;
 import android.os.UserHandle;
 import android.util.Pair;
@@ -51,7 +49,6 @@ import androidx.annotation.VisibleForTesting;
 import com.android.server.healthconnect.HealthConnectUserContext;
 import com.android.server.healthconnect.storage.datatypehelpers.AppInfoHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.ChangeLogsHelper;
-import com.android.server.healthconnect.storage.datatypehelpers.MedicalResourceHelper;
 import com.android.server.healthconnect.storage.datatypehelpers.RecordHelper;
 import com.android.server.healthconnect.storage.request.AggregateTableRequest;
 import com.android.server.healthconnect.storage.request.DeleteTableRequest;
@@ -315,24 +312,6 @@ public final class TransactionManager {
                                 aggregateTableRequest.getCommandToFetchAggregateMetadata(), null)) {
             aggregateTableRequest.onResultsFetched(cursor, metaDataCursor);
         }
-    }
-
-    /**
-     * Reads the {@code MedicalResourceInternal} stored in the HealthConnect database.
-     *
-     * @param medicalIdFiltersParcel a {code MedicalIdFiltersParcel}.
-     * @return List of {@code MedicalResourceInternal}s read from medical_resource table based on
-     *     ids.
-     */
-    public List<MedicalResourceInternal> readMedicalResourcesByIds(
-            @NonNull MedicalIdFiltersParcel medicalIdFiltersParcel) throws SQLiteException {
-        List<MedicalResourceInternal> medicalResourceInternals;
-        MedicalResourceHelper helper = new MedicalResourceHelper();
-        ReadTableRequest readTableRequest = helper.getReadTableRequest(medicalIdFiltersParcel);
-        try (Cursor cursor = read(readTableRequest)) {
-            medicalResourceInternals = helper.getMedicalResourceInternals(cursor);
-        }
-        return medicalResourceInternals;
     }
 
     /**
@@ -809,7 +788,7 @@ public final class TransactionManager {
             try (Cursor cursor = db.rawQuery(request.getReadRequest().getReadCommand(), null)) {
                 if (!cursor.moveToFirst()) {
                     throw new HealthConnectException(
-                            ERROR_INTERNAL, "Conflict found, but couldn't read the entry.");
+                            ERROR_INTERNAL, "Conflict found, but couldn't read the entry.", e);
                 }
 
                 long updateResult = updateEntriesIfRequired(db, request, cursor);

@@ -57,7 +57,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.migration.api.MigrationRestoreState.MigrationUiState
 import com.android.healthconnect.controller.navigation.TrampolineActivity
 import com.android.healthconnect.controller.permissions.app.AppPermissionViewModel
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
 import com.android.healthconnect.controller.tests.utils.NOW
@@ -134,25 +134,29 @@ class TrampolineActivityTest {
                         NOW, ScheduledExportUiState.DataExportError.DATA_EXPORT_ERROR_NONE, 1)))
         }
         val writePermission =
-            DataTypePermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
+            FitnessPermission(HealthPermissionType.EXERCISE, PermissionsAccessType.WRITE)
         val readPermission =
-            DataTypePermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
+            FitnessPermission(HealthPermissionType.DISTANCE, PermissionsAccessType.READ)
         whenever(appPermissionViewModel.appInfo).then { MutableLiveData(TEST_APP) }
         whenever(
                 appPermissionViewModel.shouldNavigateToAppPermissionsFragment(
                     TEST_APP_PACKAGE_NAME))
             .then { true }
-        whenever(appPermissionViewModel.appPermissions).then {
+        whenever(appPermissionViewModel.fitnessPermissions).then {
             MutableLiveData(listOf(writePermission, readPermission))
         }
-        whenever(appPermissionViewModel.grantedPermissions).then {
+        whenever(appPermissionViewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(writePermission))
         }
-        whenever(appPermissionViewModel.revokeAllPermissionsState).then {
+        whenever(appPermissionViewModel.revokeAllHealthPermissionsState).then {
             MutableLiveData(AppPermissionViewModel.RevokeAllState.NotStarted)
         }
-        whenever(appPermissionViewModel.allAppPermissionsGranted).then { MediatorLiveData(false) }
-        whenever(appPermissionViewModel.atLeastOnePermissionGranted).then { MediatorLiveData(true) }
+        whenever(appPermissionViewModel.allFitnessPermissionsGranted).then {
+            MediatorLiveData(false)
+        }
+        whenever(appPermissionViewModel.atLeastOneFitnessPermissionGranted).then {
+            MediatorLiveData(true)
+        }
         val accessDate = Instant.parse("2022-10-20T18:40:13.00Z")
         whenever(appPermissionViewModel.loadAccessDate(anyString())).thenReturn(accessDate)
         whenever(appPermissionViewModel.lastReadPermissionDisconnected).then {

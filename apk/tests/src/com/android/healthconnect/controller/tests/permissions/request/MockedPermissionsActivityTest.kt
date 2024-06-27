@@ -56,7 +56,7 @@ import com.android.healthconnect.controller.migration.api.MigrationRestoreState.
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.Companion.fromPermissionString
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.request.AdditionalPermissionsInfo
 import com.android.healthconnect.controller.permissions.request.PermissionsActivity
@@ -116,10 +116,10 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(READ_HEART_RATE),
                 fromPermissionString(WRITE_DISTANCE),
                 fromPermissionString(WRITE_EXERCISE))
-        whenever(viewModel.grantedDataTypePermissions).then {
+        whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(permissionsList.toSet())
         }
-        whenever(viewModel.allDataTypePermissionsGranted).then { MutableLiveData(true) }
+        whenever(viewModel.allFitnessPermissionsGranted).then { MutableLiveData(true) }
         whenever(viewModel.appMetadata).then {
             MutableLiveData(
                 AppMetadata(
@@ -152,14 +152,14 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    fun requestWithDataTypePermissions_sendsResultOk() {
+    fun requestWithFitnessPermissions_sendsResultOk() {
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
 
         whenever(viewModel.isHistoryAccessGranted()).thenReturn(false)
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
         whenever(viewModel.getPermissionGrants()).then {
@@ -308,11 +308,11 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    fun requestWithAdditionalPermissions_dataTypePermissionsGranted_onRotate_showsCorrectFragment() {
+    fun requestWithAdditionalPermissions_fitnessPermissionsGranted_onRotate_showsCorrectFragment() {
         val permissions = arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
 
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
-        whenever(viewModel.isDataTypePermissionRequestConcluded()).thenReturn(true)
+        whenever(viewModel.isFitnessPermissionRequestConcluded()).thenReturn(true)
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
@@ -370,15 +370,13 @@ class MockedPermissionsActivityTest {
                 READ_HEALTH_DATA_HISTORY,
                 READ_HEALTH_DATA_IN_BACKGROUND)
         val healthPermissionsList = permissions.toPermissionsList()
-        val dataTypePermissionsList = healthPermissionsList.filterIsInstance<DataTypePermission>()
+        val fitnessPermissionsList = healthPermissionsList.filterIsInstance<FitnessPermission>()
         val additionalPermissionsList =
             healthPermissionsList.filterIsInstance<AdditionalPermission>()
 
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
         whenever(viewModel.healthPermissionsList).then { MutableLiveData(healthPermissionsList) }
-        whenever(viewModel.dataTypePermissionsList).then {
-            MutableLiveData(dataTypePermissionsList)
-        }
+        whenever(viewModel.fitnessPermissionsList).then { MutableLiveData(fitnessPermissionsList) }
         whenever(viewModel.additionalPermissionsList).then {
             MutableLiveData(additionalPermissionsList)
         }
@@ -451,15 +449,13 @@ class MockedPermissionsActivityTest {
                 READ_HEALTH_DATA_HISTORY,
                 READ_HEALTH_DATA_IN_BACKGROUND)
         val healthPermissionsList = permissions.toPermissionsList()
-        val dataTypePermissionsList = healthPermissionsList.filterIsInstance<DataTypePermission>()
+        val fitnessPermissionsList = healthPermissionsList.filterIsInstance<FitnessPermission>()
         val additionalPermissionsList =
             healthPermissionsList.filterIsInstance<AdditionalPermission>()
 
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
         whenever(viewModel.healthPermissionsList).then { MutableLiveData(healthPermissionsList) }
-        whenever(viewModel.dataTypePermissionsList).then {
-            MutableLiveData(dataTypePermissionsList)
-        }
+        whenever(viewModel.fitnessPermissionsList).then { MutableLiveData(fitnessPermissionsList) }
         whenever(viewModel.additionalPermissionsList).then {
             MutableLiveData(additionalPermissionsList)
         }
@@ -519,7 +515,7 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    fun requestWithCombinedPermissions_dataTypePermissionsAlreadyGranted_showsAdditionalPermissions() {
+    fun requestWithCombinedPermissions_fitnessPermissionsAlreadyGranted_showsAdditionalPermissions() {
         val permissions =
             arrayOf(
                 READ_STEPS,
@@ -531,15 +527,13 @@ class MockedPermissionsActivityTest {
         val notGrantedPermissions =
             arrayOf(READ_HEALTH_DATA_HISTORY, READ_HEALTH_DATA_IN_BACKGROUND)
         val healthPermissionsList = notGrantedPermissions.toPermissionsList()
-        val dataTypePermissionsList = healthPermissionsList.filterIsInstance<DataTypePermission>()
+        val fitnessPermissionsList = healthPermissionsList.filterIsInstance<FitnessPermission>()
         val additionalPermissionsList =
             healthPermissionsList.filterIsInstance<AdditionalPermission>()
 
         whenever(viewModel.isAnyReadPermissionGranted()).thenReturn(true)
         whenever(viewModel.healthPermissionsList).then { MutableLiveData(healthPermissionsList) }
-        whenever(viewModel.dataTypePermissionsList).then {
-            MutableLiveData(dataTypePermissionsList)
-        }
+        whenever(viewModel.fitnessPermissionsList).then { MutableLiveData(fitnessPermissionsList) }
         whenever(viewModel.additionalPermissionsList).then {
             MutableLiveData(additionalPermissionsList)
         }
@@ -587,12 +581,12 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    fun sendsOkResult_requestWithDataTypePermissionsSomeDenied() {
+    fun sendsOkResult_requestWithFitnessPermissionsSomeDenied() {
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
         whenever(viewModel.getPermissionGrants()).then {
@@ -624,12 +618,12 @@ class MockedPermissionsActivityTest {
     }
 
     @Test
-    fun sendsOkResult_requestWithNoDataTypePermissionsGranted() {
+    fun sendsOkResult_requestWithNoFitnessPermissionsGranted() {
         val permissions = arrayOf(READ_STEPS, READ_HEART_RATE, WRITE_DISTANCE, WRITE_EXERCISE)
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
         whenever(viewModel.getPermissionGrants()).then {
@@ -650,7 +644,7 @@ class MockedPermissionsActivityTest {
             activity.findViewById<Button>(R.id.dont_allow).callOnClick()
         }
 
-        verify(viewModel).updateDataTypePermissions(false)
+        verify(viewModel).updateFitnessPermissions(false)
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_OK)
         val returnedIntent = scenario.result.resultData
         assertThat(returnedIntent.getStringArrayExtra(EXTRA_REQUEST_PERMISSIONS_NAMES))
@@ -668,7 +662,7 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
         whenever(viewModel.getPermissionGrants()).then {
@@ -713,8 +707,8 @@ class MockedPermissionsActivityTest {
                 fromPermissionString(WRITE_DISTANCE) to PermissionState.GRANTED,
                 fromPermissionString(WRITE_EXERCISE) to PermissionState.GRANTED)
         }
-        whenever(viewModel.dataTypePermissionsList).then {
-            MutableLiveData<List<DataTypePermission>>(emptyList())
+        whenever(viewModel.fitnessPermissionsList).then {
+            MutableLiveData<List<FitnessPermission>>(emptyList())
         }
 
         val startActivityIntent = getPermissionScreenIntent(permissions)
@@ -751,10 +745,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.grantedDataTypePermissions).then {
+        whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(fromPermissionString(READ_STEPS)))
         }
 
@@ -808,10 +802,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.grantedDataTypePermissions).then {
+        whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(fromPermissionString(READ_STEPS)))
         }
 
@@ -865,10 +859,10 @@ class MockedPermissionsActivityTest {
         whenever(viewModel.healthPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.dataTypePermissionsList).then {
+        whenever(viewModel.fitnessPermissionsList).then {
             MutableLiveData(permissions.toPermissionsList())
         }
-        whenever(viewModel.grantedDataTypePermissions).then {
+        whenever(viewModel.grantedFitnessPermissions).then {
             MutableLiveData(setOf(fromPermissionString(READ_STEPS)))
         }
 

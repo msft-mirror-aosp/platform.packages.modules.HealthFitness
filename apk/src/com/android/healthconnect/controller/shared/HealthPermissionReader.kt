@@ -24,6 +24,7 @@ import android.content.pm.PackageManager.ResolveInfoFlags
 import android.health.connect.HealthConnectManager
 import android.health.connect.HealthPermissions
 import com.android.healthconnect.controller.permissions.data.HealthPermission
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.annotations.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -68,8 +69,8 @@ constructor(
 
         private val medicalPermissions =
             setOf(
-                HealthPermissions.WRITE_MEDICAL_RESOURCES,
-                HealthPermissions.READ_MEDICAL_RESOURCES_IMMUNIZATION)
+                HealthPermissions.WRITE_MEDICAL_DATA,
+                HealthPermissions.READ_MEDICAL_DATA_IMMUNIZATION)
     }
 
     /**
@@ -91,7 +92,7 @@ constructor(
         }
     }
 
-    fun getAppsWithDataTypePermissions(): List<String> {
+    fun getAppsWithFitnessPermissions(): List<String> {
         return try {
             val appsWithDeclaredIntent =
                 context.packageManager
@@ -102,7 +103,7 @@ constructor(
 
             appsWithDeclaredIntent.filter {
                 getValidHealthPermissions(it)
-                    .filterIsInstance<HealthPermission.DataTypePermission>()
+                    .filterIsInstance<HealthPermission.FitnessPermission>()
                     .isNotEmpty()
             }
         } catch (e: Exception) {
@@ -157,6 +158,23 @@ constructor(
         }
     }
 
+    fun getAppPermissionsType(packageName: String) : AppPermissionsType {
+        val permissions = getValidHealthPermissions(packageName)
+        val hasAtLeastOneFitnessPermission = permissions.firstOrNull { it is HealthPermission.FitnessPermission} != null
+        val hasAtLeastOneMedicalPermission = permissions.firstOrNull { it is HealthPermission.MedicalPermission} != null
+
+        return if (hasAtLeastOneFitnessPermission && hasAtLeastOneMedicalPermission) {
+            AppPermissionsType.COMBINED_PERMISSIONS
+        } else if (hasAtLeastOneFitnessPermission) {
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+        } else if (hasAtLeastOneMedicalPermission) {
+            AppPermissionsType.MEDICAL_PERMISSIONS_ONLY
+        } else {
+            // All Fitness, Medical and Combined screens handle the empty state so any of those can be returned here.
+            AppPermissionsType.FITNESS_PERMISSIONS_ONLY
+        }
+    }
+
     fun getAdditionalPermissions(packageName: String): List<String> {
         return getDeclaredHealthPermissions(packageName).filter { perm ->
             isAdditionalPermission(perm) && !shouldHidePermission(perm)
@@ -206,7 +224,7 @@ constructor(
         return medicalPermissions.contains(permission)
     }
 
-    fun isDataTypePermission(permission: String): Boolean {
+    fun isFitnessPermission(permission: String): Boolean {
         return !isAdditionalPermission(permission) && !isMedicalPermission(permission)
     }
 
@@ -215,6 +233,7 @@ constructor(
             shouldHideBackgroundReadPermission(permission) ||
             shouldHideSkinTemperaturePermissions(permission) ||
             shouldHidePlannedExercisePermissions(permission) ||
+            shouldHideMindfulnessSessionPermissions(permission) ||
             shouldHideHistoryReadPermission(permission) ||
             shouldHideMedicalPermission(permission)
     }
@@ -229,6 +248,11 @@ constructor(
         return (permission == HealthPermissions.READ_PLANNED_EXERCISE ||
             permission == HealthPermissions.WRITE_PLANNED_EXERCISE) &&
             !featureUtils.isPlannedExerciseEnabled()
+    }
+
+    private fun shouldHideMindfulnessSessionPermissions(permission: String): Boolean {
+        return permission == HealthPermissions.READ_MINDFULNESS ||
+            permission == HealthPermissions.WRITE_MINDFULNESS
     }
 
     private fun shouldHideSessionTypes(permission: String): Boolean {

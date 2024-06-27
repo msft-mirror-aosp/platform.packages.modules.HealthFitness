@@ -100,7 +100,6 @@ public class HealthConnectManagerTest {
         Context context = ApplicationProvider.getApplicationContext();
         HealthConnectManager healthConnectManager = newHealthConnectManager(context, mService);
         Executor executor = MoreExecutors.directExecutor();
-
         OutcomeReceiver<Void, HealthConnectException> callback =
                 new OutcomeReceiver<>() {
                     @Override

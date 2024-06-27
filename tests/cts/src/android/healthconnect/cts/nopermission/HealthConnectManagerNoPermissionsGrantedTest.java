@@ -28,6 +28,7 @@ import static android.health.connect.datatypes.HeartRateRecord.BPM_MAX;
 import static android.health.connect.datatypes.SleepSessionRecord.SLEEP_DURATION_TOTAL;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
 import static android.health.connect.datatypes.TotalCaloriesBurnedRecord.ENERGY_TOTAL;
+import static android.healthconnect.cts.lib.RecordFactory.newEmptyMetadataWithClientId;
 import static android.healthconnect.cts.utils.DataFactory.NOW;
 import static android.healthconnect.cts.utils.DataFactory.buildExerciseSession;
 import static android.healthconnect.cts.utils.DataFactory.buildSleepSession;
@@ -45,9 +46,12 @@ import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGrou
 import static android.healthconnect.cts.utils.TestUtils.getAggregateResponseGroupByPeriod;
 import static android.healthconnect.cts.utils.TestUtils.getChangeLogToken;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.readRecords;
 import static android.healthconnect.cts.utils.TestUtils.updateRecords;
 import static android.healthconnect.cts.utils.TestUtils.verifyDeleteRecords;
+
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -56,6 +60,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import android.health.connect.AggregateRecordsRequest;
 import android.health.connect.HealthConnectException;
 import android.health.connect.LocalTimeRangeFilter;
+import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadRecordsRequestUsingFilters;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.TimeInstantRangeFilter;
@@ -70,10 +75,14 @@ import android.health.connect.datatypes.Record;
 import android.health.connect.datatypes.SleepSessionRecord;
 import android.health.connect.datatypes.StepsRecord;
 import android.health.connect.datatypes.TotalCaloriesBurnedRecord;
+import android.healthconnect.cts.lib.MindfulnessSessionRecordFactory;
 import android.healthconnect.cts.lib.TestAppProxy;
 import android.healthconnect.cts.utils.AssumptionCheckerRule;
 import android.healthconnect.cts.utils.TestUtils;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.Pair;
 
 import androidx.test.runner.AndroidJUnit4;
@@ -98,11 +107,16 @@ import java.util.List;
 public class HealthConnectManagerNoPermissionsGrantedTest {
     private static final TestAppProxy APP_A_WITH_READ_WRITE_PERMS =
             TestAppProxy.forPackageName("android.healthconnect.cts.testapp.readWritePerms.A");
+    private static final MindfulnessSessionRecordFactory MINDFULNESS_SESSION_RECORD_FACTORY =
+            new MindfulnessSessionRecordFactory();
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
             new AssumptionCheckerRule(
                     TestUtils::isHardwareSupported, "Tests should run on supported hardware only.");
+
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
 
     @Test
     public void testInsert_noPermissions_expectError() throws InterruptedException {
@@ -370,6 +384,22 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
         }
     }
 
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_noPermission_expectError() throws InterruptedException {
+        try {
+            readMedicalResourcesByIds(List.of(new MedicalResourceId("123", "observation", "456")));
+            Assert.fail(
+                    "Read medical resources by ids must be not allowed without right HC PHR "
+                            + "permission");
+        } catch (HealthConnectException healthConnectException) {
+            assertThat(healthConnectException.getErrorCode())
+                    .isEqualTo(HealthConnectException.ERROR_SECURITY);
+            assertThat(healthConnectException.getMessage())
+                    .contains("Caller doesn't have permission to read or write medical data");
+        }
+    }
+
     private static List<Record> getTestRecords() {
         return Arrays.asList(
                 getStepsRecord(),
@@ -377,6 +407,10 @@ public class HealthConnectManagerNoPermissionsGrantedTest {
                 buildSleepSession(),
                 getDistanceRecordWithNonEmptyId(),
                 getTotalCaloriesBurnedRecord("client_id"),
-                buildExerciseSession());
+                buildExerciseSession(),
+                MINDFULNESS_SESSION_RECORD_FACTORY.newEmptyRecord(
+                        newEmptyMetadataWithClientId("mindfulness-client-id"),
+                        NOW.minus(Duration.ofMinutes(20)),
+                        NOW.minus(Duration.ofMinutes(10))));
     }
 }
