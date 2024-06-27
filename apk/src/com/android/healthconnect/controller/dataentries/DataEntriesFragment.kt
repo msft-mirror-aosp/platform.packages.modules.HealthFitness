@@ -51,7 +51,7 @@ import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
 import com.android.healthconnect.controller.deletion.DeletionViewModel
 import com.android.healthconnect.controller.entrydetails.DataEntryDetailsFragment
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings.Companion.fromPermissionType
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings.Companion.fromPermissionType
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.permissiontypes.HealthPermissionTypesFragment.Companion.PERMISSION_TYPE_KEY
 import com.android.healthconnect.controller.shared.DataType

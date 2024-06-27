@@ -32,6 +32,7 @@ import android.os.Parcelable;
 public final class CreateMedicalDataSourceRequest implements Parcelable {
     @NonNull private final String mFhirBaseUri;
     @NonNull private final String mDisplayName;
+    private long mDataSize;
 
     @NonNull
     public static final Creator<CreateMedicalDataSourceRequest> CREATOR =
@@ -60,6 +61,8 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
 
     private CreateMedicalDataSourceRequest(@NonNull Parcel in) {
         requireNonNull(in);
+        mDataSize = in.dataSize();
+
         mFhirBaseUri = requireNonNull(in.readString());
         mDisplayName = requireNonNull(in.readString());
     }
@@ -74,6 +77,15 @@ public final class CreateMedicalDataSourceRequest implements Parcelable {
     @NonNull
     public String getDisplayName() {
         return mDisplayName;
+    }
+
+    /**
+     * Returns the size of the parcel when the class was created from Parcel.
+     *
+     * @hide
+     */
+    public long getDataSize() {
+        return mDataSize;
     }
 
     @Override

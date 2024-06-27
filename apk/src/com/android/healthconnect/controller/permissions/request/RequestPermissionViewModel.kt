@@ -33,7 +33,7 @@ import com.android.healthconnect.controller.permissions.api.LoadAccessDateUseCas
 import com.android.healthconnect.controller.permissions.api.RevokeHealthPermissionUseCase
 import com.android.healthconnect.controller.permissions.data.HealthPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.AdditionalPermission
-import com.android.healthconnect.controller.permissions.data.HealthPermission.DataTypePermission
+import com.android.healthconnect.controller.permissions.data.HealthPermission.FitnessPermission
 import com.android.healthconnect.controller.permissions.data.HealthPermission.MedicalPermission
 import com.android.healthconnect.controller.permissions.data.PermissionState
 import com.android.healthconnect.controller.permissions.data.PermissionsAccessType
@@ -66,10 +66,10 @@ constructor(
     val appMetadata: LiveData<AppMetadata>
         get() = _appMetaData
 
-    /** List of grantable [DataTypePermission]s */
-    private val _dataTypePermissionsList = MutableLiveData<List<DataTypePermission>>()
-    val dataTypePermissionsList: LiveData<List<DataTypePermission>>
-        get() = _dataTypePermissionsList
+    /** List of grantable [FitnessPermission]s */
+    private val _fitnessPermissionsList = MutableLiveData<List<FitnessPermission>>()
+    val fitnessPermissionsList: LiveData<List<FitnessPermission>>
+        get() = _fitnessPermissionsList
 
     /** List of grantable [MedicalPermission]s */
     private val _medicalPermissionsList = MutableLiveData<List<MedicalPermission>>()
@@ -86,12 +86,12 @@ constructor(
     val healthPermissionsList: LiveData<List<HealthPermission>>
         get() = _healthPermissionsList
 
-    /** [DataTypePermission]s that have been granted locally via a toggle, but not yet requested */
-    private val _grantedDataTypePermissions = MutableLiveData<Set<DataTypePermission>>(emptySet())
-    val grantedDataTypePermissions: LiveData<Set<DataTypePermission>>
-        get() = _grantedDataTypePermissions
+    /** [FitnessPermission]s that have been granted locally via a toggle, but not yet requested */
+    private val _grantedFitnessPermissions = MutableLiveData<Set<FitnessPermission>>(emptySet())
+    val grantedFitnessPermissions: LiveData<Set<FitnessPermission>>
+        get() = _grantedFitnessPermissions
 
-    /** [DataTypePermission]s that have been granted locally via a toggle, but not yet requested */
+    /** [FitnessPermission]s that have been granted locally via a toggle, but not yet requested */
     private val _grantedMedicalPermissions = MutableLiveData<Set<MedicalPermission>>(emptySet())
     val grantedMedicalPermissions: LiveData<Set<MedicalPermission>>
         get() = _grantedMedicalPermissions
@@ -105,19 +105,19 @@ constructor(
         get() = _grantedAdditionalPermissions
 
     /** Used to control the enabled state of the Allow all switch */
-    private val _allDataTypePermissionsGranted =
+    private val _allFitnessPermissionsGranted =
         MediatorLiveData(false).apply {
-            addSource(_dataTypePermissionsList) {
+            addSource(_fitnessPermissionsList) {
                 postValue(
-                    areAllPermissionsGranted(dataTypePermissionsList, grantedDataTypePermissions))
+                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions))
             }
-            addSource(_grantedDataTypePermissions) {
+            addSource(_grantedFitnessPermissions) {
                 postValue(
-                    areAllPermissionsGranted(dataTypePermissionsList, grantedDataTypePermissions))
+                    areAllPermissionsGranted(fitnessPermissionsList, grantedFitnessPermissions))
             }
         }
-    val allDataTypePermissionsGranted: LiveData<Boolean>
-        get() = _allDataTypePermissionsGranted
+    val allFitnessPermissionsGranted: LiveData<Boolean>
+        get() = _allFitnessPermissionsGranted
 
     /** Used to control the enabled state of the Allow all switch */
     private val _allMedicalPermissionsGranted =
@@ -126,7 +126,7 @@ constructor(
                 postValue(
                     areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions))
             }
-            addSource(_grantedDataTypePermissions) {
+            addSource(_grantedFitnessPermissions) {
                 postValue(
                     areAllPermissionsGranted(medicalPermissionsList, grantedMedicalPermissions))
             }
@@ -163,12 +163,12 @@ constructor(
     private var grants: MutableMap<HealthPermission, PermissionState> = mutableMapOf()
 
     /** Indicates whether the fitness data type request has been concluded. */
-    private var dataTypePermissionsConcluded = false
+    private var fitnessPermissionsConcluded = false
 
-    fun isDataTypePermissionRequestConcluded(): Boolean = dataTypePermissionsConcluded
+    fun isFitnessPermissionRequestConcluded(): Boolean = fitnessPermissionsConcluded
 
-    fun setDataTypePermissionRequestConcluded(boolean: Boolean) {
-        dataTypePermissionsConcluded = boolean
+    fun setFitnessPermissionRequestConcluded(boolean: Boolean) {
+        fitnessPermissionsConcluded = boolean
     }
 
     /** Indicates whether the medical data type request has been concluded. */
@@ -187,7 +187,7 @@ constructor(
 
     fun isAnyReadPermissionGranted(): Boolean = anyReadPermissionsGranted
 
-    /** Whether to modify the historic access text on the [DataTypePermissionsFragment] */
+    /** Whether to modify the historic access text on the [FitnessPermissionsFragment] */
     private var historyAccessGranted: Boolean = false
 
     fun isHistoryAccessGranted(): Boolean = historyAccessGranted
@@ -201,15 +201,16 @@ constructor(
 
     /** Whether the user has enabled this permission in the Permission Request screen. */
     fun isPermissionLocallyGranted(permission: HealthPermission): Boolean {
-        return if (permission is DataTypePermission) {
-            _grantedDataTypePermissions.value.orEmpty().contains(permission)
-        } else if (permission is MedicalPermission) {
-            _grantedMedicalPermissions.value.orEmpty().contains(permission)
-        } else {
-            // when only one additional permission, there's no locally granted state, so by
-            // default it is true
-            _grantedAdditionalPermissions.value.orEmpty().contains(permission) ||
-                _additionalPermissionsList.value.orEmpty().size == 1
+        return when (permission) {
+            is FitnessPermission -> {
+                _grantedFitnessPermissions.value.orEmpty().contains(permission)
+            }
+            is MedicalPermission -> {
+                _grantedMedicalPermissions.value.orEmpty().contains(permission)
+            }
+            else -> {
+                _grantedAdditionalPermissions.value.orEmpty().contains(permission)
+            }
         }
     }
 
@@ -223,8 +224,8 @@ constructor(
 
     /** Mark a permission as locally granted */
     fun updateHealthPermission(permission: HealthPermission, grant: Boolean) {
-        if (permission is DataTypePermission) {
-            updateDataTypePermission(permission, grant)
+        if (permission is FitnessPermission) {
+            updateFitnessPermission(permission, grant)
         } else if (permission is MedicalPermission) {
             updateMedicalPermission(permission, grant)
         } else if (permission is AdditionalPermission) {
@@ -232,12 +233,12 @@ constructor(
         }
     }
 
-    /** Mark all [DataTypePermission]s as locally granted */
-    fun updateDataTypePermissions(grant: Boolean) {
+    /** Mark all [FitnessPermission]s as locally granted */
+    fun updateFitnessPermissions(grant: Boolean) {
         if (grant) {
-            _grantedDataTypePermissions.setValue(_dataTypePermissionsList.value.orEmpty().toSet())
+            _grantedFitnessPermissions.setValue(_fitnessPermissionsList.value.orEmpty().toSet())
         } else {
-            _grantedDataTypePermissions.setValue(emptySet())
+            _grantedFitnessPermissions.setValue(emptySet())
         }
     }
 
@@ -259,10 +260,10 @@ constructor(
         }
     }
 
-    /** Grants/Revokes all the [DataTypePermission]s sent by the caller. */
-    fun requestDataTypePermissions(packageName: String) {
+    /** Grants/Revokes all the [FitnessPermission]s sent by the caller. */
+    fun requestFitnessPermissions(packageName: String) {
         requestedPermissions
-            .filterKeys { it is DataTypePermission }
+            .filterKeys { it is FitnessPermission }
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
@@ -281,6 +282,7 @@ constructor(
     fun requestAdditionalPermissions(packageName: String) {
         requestedPermissions
             .filterKeys { it is AdditionalPermission }
+            .filterKeys { it != AdditionalPermission.READ_EXERCISE_ROUTES }
             .forEach { (permission, permissionState) ->
                 internalGrantOrRevokePermission(packageName, permission, permissionState)
             }
@@ -320,7 +322,7 @@ constructor(
 
     private fun isDataTypeReadPermission(permission: String): Boolean {
         val healthPermission = HealthPermission.fromPermissionString(permission)
-        return ((healthPermission is DataTypePermission) &&
+        return ((healthPermission is FitnessPermission) &&
             healthPermission.permissionsAccessType == PermissionsAccessType.READ)
     }
 
@@ -332,7 +334,6 @@ constructor(
         val grantedPermissions = getGrantedHealthPermissionsUseCase.invoke(packageName)
 
         anyReadPermissionsGranted =
-            // TODO(): Decision whether background read should apply to medical permission too.
             grantedPermissions.any { permission -> isDataTypeReadPermission(permission) }
         historyAccessGranted =
             grantedPermissions.any { permission -> isHistoryReadPermission(permission) }
@@ -362,9 +363,9 @@ constructor(
         val dataTypeNotGrantedPermissions =
             filteredPermissions
                 .filter { permission ->
-                    healthPermissionReader.isDataTypePermission(permission.toString())
+                    healthPermissionReader.isFitnessPermission(permission.toString())
                 }
-                .map { permission -> permission as DataTypePermission }
+                .map { permission -> permission as FitnessPermission }
 
         val medicalNotGrantedPermissions =
             filteredPermissions
@@ -383,7 +384,7 @@ constructor(
                 }
                 .map { permission -> permission as AdditionalPermission }
 
-        _dataTypePermissionsList.value = dataTypeNotGrantedPermissions
+        _fitnessPermissionsList.value = dataTypeNotGrantedPermissions
         _medicalPermissionsList.value = medicalNotGrantedPermissions
         _additionalPermissionsList.value = additionalNotGrantedPermissions
         _healthPermissionsList.value =
@@ -405,15 +406,15 @@ constructor(
         }
     }
 
-    private fun updateDataTypePermission(permission: DataTypePermission, grant: Boolean) {
-        val updatedGrantedPermissions = _grantedDataTypePermissions.value.orEmpty().toMutableSet()
+    private fun updateFitnessPermission(permission: FitnessPermission, grant: Boolean) {
+        val updatedGrantedPermissions = _grantedFitnessPermissions.value.orEmpty().toMutableSet()
 
         if (grant) {
             updatedGrantedPermissions.add(permission)
         } else {
             updatedGrantedPermissions.remove(permission)
         }
-        _grantedDataTypePermissions.postValue(updatedGrantedPermissions)
+        _grantedFitnessPermissions.postValue(updatedGrantedPermissions)
     }
 
     private fun updateMedicalPermission(permission: MedicalPermission, grant: Boolean) {

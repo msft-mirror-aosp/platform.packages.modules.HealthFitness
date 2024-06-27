@@ -42,12 +42,16 @@ import java.util.Set;
 public final class AggregationType<T> {
     /** @hide */
     public static final int MAX = 0;
+
     /** @hide */
     public static final int MIN = 1;
+
     /** @hide */
     public static final int AVG = 2;
+
     /** @hide */
     public static final int SUM = 3;
+
     /** @hide */
     public static final int COUNT = 4;
 
@@ -55,6 +59,7 @@ public final class AggregationType<T> {
     @AggregateOperationType private final int mType;
     private final List<Integer> mApplicableRecordTypes;
     private final Class<T> mClass;
+
     /** @hide */
     AggregationType(
             @AggregationTypeIdentifier.Id int id,
@@ -206,6 +211,7 @@ public final class AggregationType<T> {
         int SKIN_TEMPERATURE_RECORD_DELTA_AVG = 84;
         int SKIN_TEMPERATURE_RECORD_DELTA_MIN = 85;
         int SKIN_TEMPERATURE_RECORD_DELTA_MAX = 86;
+        int MINDFULNESS_SESSION_DURATION_TOTAL = 87;
 
         /**
          * Valid set of values for this IntDef. Update this set when add new type or deprecate
@@ -301,7 +307,8 @@ public final class AggregationType<T> {
                         STEPS_CADENCE_RECORD_RATE_MAX,
                         SKIN_TEMPERATURE_RECORD_DELTA_AVG,
                         SKIN_TEMPERATURE_RECORD_DELTA_MIN,
-                        SKIN_TEMPERATURE_RECORD_DELTA_MAX);
+                        SKIN_TEMPERATURE_RECORD_DELTA_MAX,
+                        MINDFULNESS_SESSION_DURATION_TOTAL);
 
         /** @hide */
         @IntDef({
@@ -391,7 +398,8 @@ public final class AggregationType<T> {
             STEPS_CADENCE_RECORD_RATE_MAX,
             SKIN_TEMPERATURE_RECORD_DELTA_AVG,
             SKIN_TEMPERATURE_RECORD_DELTA_MIN,
-            SKIN_TEMPERATURE_RECORD_DELTA_MAX
+            SKIN_TEMPERATURE_RECORD_DELTA_MAX,
+            MINDFULNESS_SESSION_DURATION_TOTAL
         })
         @Retention(RetentionPolicy.SOURCE)
         @interface Id {}

@@ -38,6 +38,7 @@ import android.health.connect.datatypes.IntermenstrualBleedingRecord
 import android.health.connect.datatypes.LeanBodyMassRecord
 import android.health.connect.datatypes.MenstruationFlowRecord
 import android.health.connect.datatypes.MenstruationPeriodRecord
+import android.health.connect.datatypes.MindfulnessSessionRecord
 import android.health.connect.datatypes.NutritionRecord
 import android.health.connect.datatypes.OvulationTestRecord
 import android.health.connect.datatypes.OxygenSaturationRecord
@@ -78,6 +79,7 @@ import com.android.healthconnect.controller.permissions.data.HealthPermissionTyp
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.INTERMENSTRUAL_BLEEDING
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.LEAN_BODY_MASS
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.MENSTRUATION
+import com.android.healthconnect.controller.permissions.data.HealthPermissionType.MINDFULNESS
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.NUTRITION
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.OVULATION_TEST
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType.OXYGEN_SATURATION
@@ -136,7 +138,9 @@ object HealthPermissionToDatatypeMapper {
             INTERMENSTRUAL_BLEEDING to listOf(IntermenstrualBleedingRecord::class.java),
             HEART_RATE_VARIABILITY to listOf(HeartRateVariabilityRmssdRecord::class.java),
             SKIN_TEMPERATURE to listOf(SkinTemperatureRecord::class.java),
-            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java))
+            PLANNED_EXERCISE to listOf(PlannedExerciseSessionRecord::class.java),
+            MINDFULNESS to listOf(MindfulnessSessionRecord::class.java),
+            )
 
     fun getDataTypes(permissionType: HealthPermissionType): List<Class<out Record>> {
         return map[permissionType].orEmpty()

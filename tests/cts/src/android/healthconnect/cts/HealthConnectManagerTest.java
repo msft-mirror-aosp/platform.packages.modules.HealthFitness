@@ -26,19 +26,28 @@ import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_COMPLETE
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_FAILED;
 import static android.health.connect.HealthConnectManager.DATA_DOWNLOAD_STARTED;
 import static android.health.connect.HealthConnectManager.isHealthPermission;
+import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_TYPE_IMMUNIZATION;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_HEART_RATE;
 import static android.health.connect.datatypes.RecordTypeIdentifier.RECORD_TYPE_STEPS;
 import static android.health.connect.datatypes.StepsRecord.STEPS_COUNT_TOTAL;
+import static android.healthconnect.cts.utils.DataFactory.MAXIMUM_PAGE_SIZE;
 import static android.healthconnect.cts.utils.DataFactory.getRecordsAndIdentifiers;
 import static android.healthconnect.cts.utils.PermissionHelper.MANAGE_HEALTH_DATA;
-import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_ID_IMMUNIZATION;
+import static android.healthconnect.cts.utils.PhrDataFactory.FHIR_RESOURCE_TYPE_IMMUNIZATION;
 import static android.healthconnect.cts.utils.PhrDataFactory.getCreateMedicalDataSourceRequest;
+import static android.healthconnect.cts.utils.PhrDataFactory.getMedicalResourceId;
+import static android.healthconnect.cts.utils.TestUtils.createMedicalDataSource;
 import static android.healthconnect.cts.utils.TestUtils.getMedicalDataSourcesByIds;
 import static android.healthconnect.cts.utils.TestUtils.getRecordById;
 import static android.healthconnect.cts.utils.TestUtils.insertRecords;
+import static android.healthconnect.cts.utils.TestUtils.readMedicalResourcesByIds;
+import static android.healthconnect.cts.utils.TestUtils.upsertMedicalResources;
 
 import static com.android.compatibility.common.util.SystemUtil.runWithShellPermissionIdentity;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD;
+import static com.android.healthfitness.flags.Flags.FLAG_PERSONAL_HEALTH_RECORD_DATABASE;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -63,7 +72,8 @@ import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthDataCategory;
 import android.health.connect.HealthPermissions;
 import android.health.connect.LocalTimeRangeFilter;
-import android.health.connect.MedicalIdFilter;
+import android.health.connect.MedicalResourceId;
+import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadRecordsRequestUsingIds;
 import android.health.connect.RecordTypeInfoResponse;
 import android.health.connect.TimeInstantRangeFilter;
@@ -76,6 +86,7 @@ import android.health.connect.datatypes.ExerciseSessionRecord;
 import android.health.connect.datatypes.HeartRateRecord;
 import android.health.connect.datatypes.HydrationRecord;
 import android.health.connect.datatypes.MedicalDataSource;
+import android.health.connect.datatypes.MedicalResource;
 import android.health.connect.datatypes.Metadata;
 import android.health.connect.datatypes.NutritionRecord;
 import android.health.connect.datatypes.Record;
@@ -90,6 +101,9 @@ import android.healthconnect.cts.utils.TestUtils;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
 import android.platform.test.annotations.AppModeFull;
+import android.platform.test.annotations.RequiresFlagsEnabled;
+import android.platform.test.flag.junit.CheckFlagsRule;
+import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 import android.util.ArrayMap;
 import android.util.Log;
 
@@ -130,10 +144,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @AppModeFull(reason = "HealthConnectManager is not accessible to instant apps")
 @RunWith(AndroidJUnit4.class)
 public class HealthConnectManagerTest {
+    @Rule
+    public final CheckFlagsRule mCheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule();
+
     private static final String TAG = "HealthConnectManagerTest";
     private static final String APP_PACKAGE_NAME = "android.healthconnect.cts";
-
-    private static final int MAXIMUM_PAGE_SIZE = 5000;
 
     @Rule
     public AssumptionCheckerRule mSupportedHardwareRule =
@@ -143,6 +158,7 @@ public class HealthConnectManagerTest {
     @Before
     public void before() throws InterruptedException {
         deleteAllRecords();
+        // TODO(b/348158309) Clean up PHR data here when delete APIs are implemented.
         TestUtils.deleteAllStagedRemoteData();
     }
 
@@ -1725,6 +1741,31 @@ public class HealthConnectManagerTest {
     }
 
     @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_migrationInProgress_apiBlocked()
+            throws InterruptedException {
+        runWithShellPermissionIdentity(
+                () -> {
+                    TestUtils.startMigration();
+                    assertThat(TestUtils.getHealthConnectDataMigrationState())
+                            .isEqualTo(HealthConnectDataState.MIGRATION_STATE_IN_PROGRESS);
+                },
+                Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+
+        HealthConnectException exception =
+                assertThrows(
+                        HealthConnectException.class,
+                        () ->
+                                TestUtils.createMedicalDataSource(
+                                        getCreateMedicalDataSourceRequest()));
+        assertThat(exception.getErrorCode())
+                .isEqualTo(HealthConnectException.ERROR_DATA_SYNC_IN_PROGRESS);
+
+        runWithShellPermissionIdentity(
+                TestUtils::finishMigration, Manifest.permission.MIGRATE_HEALTH_CONNECT_DATA);
+    }
+
+    @Test
     public void testGetRecordTypeInfo_InsertRecords_correctContributingPackages() throws Exception {
         // Insert a set of test records for StepRecords, ExerciseSessionRecord, HeartRateRecord,
         // BasalMetabolicRateRecord.
@@ -1908,13 +1949,21 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testCreateMedicalDataSource_throws() throws InterruptedException {
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testCreateMedicalDataSource_succeeds() throws InterruptedException {
         CreateMedicalDataSourceRequest request = getCreateMedicalDataSourceRequest();
 
-        assertThrows(UnsupportedOperationException.class, () -> createMedicalDataSource(request));
+        MedicalDataSource responseDataSource = createMedicalDataSource(request);
+
+        assertThat(responseDataSource).isInstanceOf(MedicalDataSource.class);
+        assertThat(responseDataSource.getId()).isNotEmpty();
+        assertThat(responseDataSource.getFhirBaseUri()).isEqualTo(request.getFhirBaseUri());
+        assertThat(responseDataSource.getDisplayName()).isEqualTo(request.getDisplayName());
+        assertThat(responseDataSource.getPackageName()).isEqualTo(APP_PACKAGE_NAME);
     }
 
     @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
     public void testGetMedicalDataSources_emptyIds_returnsEmptyList() throws InterruptedException {
         List<MedicalDataSource> medicalDataSources = getMedicalDataSourcesByIds(List.of());
 
@@ -1922,30 +1971,64 @@ public class HealthConnectManagerTest {
     }
 
     @Test
-    public void testGetMedicalDataSources_byIdthrows() {
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testGetMedicalDataSources_byId_throws() {
         List<String> ids = List.of("1");
 
         assertThrows(UnsupportedOperationException.class, () -> getMedicalDataSourcesByIds(ids));
     }
 
+    // TODO(b/343923754): Add more upsert/readMedicalResources tests once deleteAll can be called.
     @Test
-    public void testReadMedicalResources_byIds_exceedsMaxPageSize_throws() {
-        List<MedicalIdFilter> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
-        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
-            ids.add(MedicalIdFilter.fromId(Integer.toString(i)));
-        }
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testUpsertMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
+        List<MedicalResource> medicalResources = upsertMedicalResources(List.of());
 
-        assertThrows(
-                IllegalArgumentException.class, () -> TestUtils.readMedicalResourcesByIds(ids));
+        assertThat(medicalResources).isEmpty();
     }
 
     @Test
-    public void testReadMedicalResources_byIds_throws() {
-        List<MedicalIdFilter> ids = Arrays.asList(MedicalIdFilter.fromId("medical_resource_id"));
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_emptyIds_returnsEmptyList() throws InterruptedException {
+        List<MedicalResource> medicalResources = readMedicalResourcesByIds(List.of());
+
+        assertThat(medicalResources).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_byIds_exceedsMaxPageSize_throws() {
+        List<MedicalResourceId> ids = new ArrayList<>(MAXIMUM_PAGE_SIZE + 1);
+        for (int i = 0; i < MAXIMUM_PAGE_SIZE + 1; i++) {
+            ids.add(
+                    new MedicalResourceId(
+                            Integer.toString(i),
+                            FHIR_RESOURCE_TYPE_IMMUNIZATION,
+                            FHIR_RESOURCE_ID_IMMUNIZATION));
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> readMedicalResourcesByIds(ids));
+    }
+
+    @Test
+    @RequiresFlagsEnabled({FLAG_PERSONAL_HEALTH_RECORD, FLAG_PERSONAL_HEALTH_RECORD_DATABASE})
+    public void testReadMedicalResources_byIds_noData_returnsEmptyList()
+            throws InterruptedException {
+        List<MedicalResourceId> ids = List.of(getMedicalResourceId());
+        List<MedicalResource> medicalResources = readMedicalResourcesByIds(ids);
+
+        assertThat(medicalResources).isEmpty();
+    }
+
+    @Test
+    @RequiresFlagsEnabled(FLAG_PERSONAL_HEALTH_RECORD)
+    public void testReadMedicalResources_byRequest_throws() {
+        ReadMedicalResourcesRequest request =
+                new ReadMedicalResourcesRequest.Builder(MEDICAL_RESOURCE_TYPE_IMMUNIZATION).build();
 
         assertThrows(
                 UnsupportedOperationException.class,
-                () -> TestUtils.readMedicalResourcesByIds(ids));
+                () -> TestUtils.readMedicalResourcesByRequest(request));
     }
 
     private boolean isEmptyContributingPackagesForAll(

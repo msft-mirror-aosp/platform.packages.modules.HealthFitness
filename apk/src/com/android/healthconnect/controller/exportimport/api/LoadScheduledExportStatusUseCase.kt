@@ -62,17 +62,17 @@ constructor(
             scheduledExportStatus.periodInDays)
     }
 
-    override suspend operator fun invoke(): ExportUseCaseResult<ScheduledExportUiState> =
+    override suspend operator fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState> =
         withContext(dispatcher) {
             try {
-                ExportUseCaseResult.Success(execute())
+                ExportImportUseCaseResult.Success(execute())
             } catch (exception: Exception) {
-                ExportUseCaseResult.Failed(exception)
+                ExportImportUseCaseResult.Failed(exception)
             }
         }
 }
 
 interface ILoadScheduledExportStatusUseCase {
     /** Returns the stored scheduled export status. */
-    suspend fun invoke(): ExportUseCaseResult<ScheduledExportUiState>
+    suspend fun invoke(): ExportImportUseCaseResult<ScheduledExportUiState>
 }

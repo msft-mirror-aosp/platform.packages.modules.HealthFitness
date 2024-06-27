@@ -66,7 +66,10 @@ import android.health.connect.aidl.IGetHealthConnectMigrationUiStateCallback;
 import android.health.connect.aidl.IGetPriorityResponseCallback;
 import android.health.connect.aidl.IHealthConnectService;
 import android.health.connect.aidl.IInsertRecordsResponseCallback;
+import android.health.connect.aidl.IMedicalDataSourceResponseCallback;
+import android.health.connect.aidl.IMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IMigrationCallback;
+import android.health.connect.aidl.IReadMedicalResourcesResponseCallback;
 import android.health.connect.aidl.IReadRecordsResponseCallback;
 import android.health.connect.aidl.IRecordTypeInfoResponseCallback;
 import android.health.connect.aidl.InsertRecordsResponseParcel;
@@ -99,6 +102,7 @@ import android.health.connect.migration.MigrationEntityParcel;
 import android.health.connect.migration.MigrationException;
 import android.health.connect.restore.StageRemoteDataException;
 import android.health.connect.restore.StageRemoteDataRequest;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.OutcomeReceiver;
 import android.os.ParcelFileDescriptor;
@@ -313,20 +317,20 @@ public class HealthConnectManager {
     @SystemApi public static final int DATA_DOWNLOAD_COMPLETE = 4;
 
     /**
-     * Unknown error during the last data export.
-     *
-     * @hide
-     */
-    @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_UNKNOWN = 0;
-
-    /**
      * No error during the last data export.
      *
      * @hide
      */
     @FlaggedApi(FLAG_EXPORT_IMPORT)
-    public static final int DATA_EXPORT_ERROR_NONE = 1;
+    public static final int DATA_EXPORT_ERROR_NONE = 0;
+
+    /**
+     * Unknown error during the last data export.
+     *
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    public static final int DATA_EXPORT_ERROR_UNKNOWN = 1;
 
     /**
      * Indicates that the last export failed because we lost access to the export file location.
@@ -1851,6 +1855,24 @@ public class HealthConnectManager {
     }
 
     /**
+     * Queries the status of a data import.
+     *
+     * @throws RuntimeException for internal errors
+     * @hide
+     */
+    @FlaggedApi(FLAG_EXPORT_IMPORT)
+    @WorkerThread
+    @RequiresPermission(MANAGE_HEALTH_DATA_PERMISSION)
+    public void runImport(@NonNull Uri file) {
+        Objects.requireNonNull(file);
+        try {
+            mService.runImport(mContext.getUser(), file);
+        } catch (RemoteException e) {
+            e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Returns currently set period between scheduled exports for this user.
      *
      * <p>If you are calling this function for the first time after a user unlock, this might take
@@ -1959,6 +1981,12 @@ public class HealthConnectManager {
         return records;
     }
 
+    private static <RES, ERR extends Throwable> void returnResult(
+            Executor executor, @Nullable RES result, OutcomeReceiver<RES, ERR> callback) {
+        Binder.clearCallingIdentity();
+        executor.execute(() -> callback.onResult(result));
+    }
+
     private void returnError(
             Executor executor,
             HealthConnectExceptionParcel exception,
@@ -2056,7 +2084,55 @@ public class HealthConnectManager {
     }
 
     /**
-     * Reads {@link MedicalResource}s based on a list of {@link MedicalIdFilter}s.
+     * Inserts or updates a list of {@link MedicalResource}s into the HealthConnect database.
+     *
+     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
+     * requests}.
+     *
+     * <p>The uniqueness is calculated comparing the combination of {@link
+     * UpsertMedicalResourceRequest#getDataSourceId() data source id}, FHIR resource type and FHIR
+     * resource id extracted from the provided {@link MedicalResource} data. If there is no match,
+     * then a new {@link MedicalResource} is inserted, otherwise the existing one is updated.
+     */
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
+    public void upsertMedicalResources(
+            @NonNull List<UpsertMedicalResourceRequest> requests,
+            @NonNull @CallbackExecutor Executor executor,
+            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+        Objects.requireNonNull(requests);
+        Objects.requireNonNull(executor);
+        Objects.requireNonNull(callback);
+
+        if (requests.isEmpty()) {
+            returnResult(executor, List.of(), callback);
+            return;
+        }
+
+        try {
+            mService.upsertMedicalResources(
+                    mContext.getAttributionSource(),
+                    requests,
+                    new IMedicalResourcesResponseCallback.Stub() {
+                        @Override
+                        public void onResult(List<MedicalResource> medicalResources) {
+                            returnResult(executor, medicalResources, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Reads {@link MedicalResource}s based on a list of {@link MedicalResourceId}s.
+     *
+     * <p>The returned list of {@link MedicalResource}s will be in the same order as the {@code
+     * ids}.
      *
      * <p>Number of resources returned by this API will depend based on below factors:
      *
@@ -2089,18 +2165,40 @@ public class HealthConnectManager {
      */
     @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
-            @NonNull List<MedicalIdFilter> ids,
+            @NonNull List<MedicalResourceId> ids,
             @NonNull Executor executor,
             @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
         Objects.requireNonNull(ids);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
+        if (ids.isEmpty()) {
+            returnResult(executor, List.of(), callback);
+            return;
+        }
+
         if (ids.size() >= MAXIMUM_PAGE_SIZE) {
             throw new IllegalArgumentException("Maximum allowed pageSize is " + MAXIMUM_PAGE_SIZE);
         }
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.readMedicalResources(
+                    mContext.getAttributionSource(),
+                    ids,
+                    new IReadMedicalResourcesResponseCallback.Stub() {
+                        @Override
+                        public void onResult(ReadMedicalResourcesResponse parcel) {
+                            returnResult(executor, parcel.getMedicalResources(), callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**
@@ -2131,13 +2229,14 @@ public class HealthConnectManager {
      * @param callback Callback to receive result of performing this operation.
      * @throws IllegalArgumentException if request page size set is less than 1 or more than 5000 in
      *     {@link ReadMedicalResourcesRequest}.
-     * @hide
      */
-    // TODO(b/340569771): Make this flagged Api and add CTS tests.
+    @FlaggedApi(FLAG_PERSONAL_HEALTH_RECORD)
     public void readMedicalResources(
             @NonNull ReadMedicalResourcesRequest request,
             @NonNull Executor executor,
-            @NonNull OutcomeReceiver<List<MedicalResource>, HealthConnectException> callback) {
+            @NonNull
+                    OutcomeReceiver<ReadMedicalResourcesResponse, HealthConnectException>
+                            callback) {
         Objects.requireNonNull(request);
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
@@ -2173,9 +2272,8 @@ public class HealthConnectManager {
      * <p>The following rules apply to {@link MedicalDataSource} creation.
      *
      * <ul>
-     *   <li>Only apps that have the
-     *       android.health.connect.HealthPermissions#WRITE_MEDICAL_RESOURCES are allowed to create
-     *       data sources.
+     *   <li>Only apps that have the android.health.connect.HealthPermissions#WRITE_MEDICAL_DATA are
+     *       allowed to create data sources.
      *   <li>The {@link CreateMedicalDataSourceRequest.Builder#setFhirBaseUri} must be unique across
      *       all medical data sources created by an app. The FHIR base uri cannot be updated after
      *       creating the data source.
@@ -2194,7 +2292,24 @@ public class HealthConnectManager {
         Objects.requireNonNull(executor);
         Objects.requireNonNull(callback);
 
-        throw new UnsupportedOperationException("Not implemented");
+        try {
+            mService.createMedicalDataSource(
+                    mContext.getAttributionSource(),
+                    request,
+                    new IMedicalDataSourceResponseCallback.Stub() {
+                        @Override
+                        public void onResult(MedicalDataSource dataSource) {
+                            returnResult(executor, dataSource, callback);
+                        }
+
+                        @Override
+                        public void onError(HealthConnectExceptionParcel exception) {
+                            returnError(executor, exception, callback);
+                        }
+                    });
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
     }
 
     /**
@@ -2237,7 +2352,7 @@ public class HealthConnectManager {
         Objects.requireNonNull(callback);
 
         if (ids.isEmpty()) {
-            callback.onResult(List.of());
+            returnResult(executor, List.of(), callback);
             return;
         }
 
