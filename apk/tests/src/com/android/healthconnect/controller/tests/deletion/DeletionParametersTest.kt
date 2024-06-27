@@ -6,11 +6,10 @@ import com.android.healthconnect.controller.deletion.ChosenRange
 import com.android.healthconnect.controller.deletion.DeletionParameters
 import com.android.healthconnect.controller.deletion.DeletionState
 import com.android.healthconnect.controller.deletion.DeletionType
-import com.android.healthconnect.controller.permissions.data.DataTypePermissionStrings
+import com.android.healthconnect.controller.permissions.data.FitnessPermissionStrings
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
 import com.android.healthconnect.controller.tests.utils.TEST_APP_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
-import java.lang.IllegalStateException
 import java.time.Duration
 import java.time.Instant
 import junit.framework.Assert.assertTrue
@@ -119,7 +118,7 @@ class DeletionParametersTest {
 
         assertTrue(
             deletionParameters.getPermissionTypeLabel() ==
-                DataTypePermissionStrings.fromPermissionType(
+                FitnessPermissionStrings.fromPermissionType(
                         HealthPermissionType.ACTIVE_CALORIES_BURNED)
                     .lowercaseLabel)
     }

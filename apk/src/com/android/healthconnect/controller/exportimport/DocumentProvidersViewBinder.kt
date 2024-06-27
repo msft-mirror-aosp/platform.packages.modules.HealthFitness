@@ -67,15 +67,27 @@ class DocumentProvidersViewBinder {
                 summaryView.setText(root.summary)
                 summaryView.setVisibility(VISIBLE)
 
-                documentProviderView.setOnClickListener {
-                    uncheckRadioButtons(documentProvidersView)
-                    radioButtonView.setChecked(true)
+                if (documentProviders.size == 1) {
+                    radioButtonView.setVisibility(GONE)
 
                     onSelectionChanged(root)
+                } else {
+                    documentProviderView.setOnClickListener {
+                        uncheckRadioButtons(documentProvidersView)
+                        radioButtonView.setChecked(true)
+
+                        onSelectionChanged(root)
+                    }
                 }
             } else {
-                summaryView.setText("")
-                summaryView.setVisibility(GONE)
+                if (documentProviders.size == 1) {
+                    radioButtonView.setVisibility(GONE)
+
+                    summaryView.setText(R.string.export_import_tap_to_choose_account)
+                } else {
+                    summaryView.setText("")
+                    summaryView.setVisibility(GONE)
+                }
 
                 documentProviderView.setOnClickListener {
                     showChooseAccountDialog(inflater, documentProvider.roots) { root ->

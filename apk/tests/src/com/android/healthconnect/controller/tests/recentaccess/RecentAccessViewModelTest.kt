@@ -25,7 +25,9 @@ import com.android.healthconnect.controller.recentaccess.RecentAccessEntry
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel
 import com.android.healthconnect.controller.recentaccess.RecentAccessViewModel.RecentAccessState
 import com.android.healthconnect.controller.shared.HealthDataCategoryExtensions.uppercaseTitle
+import com.android.healthconnect.controller.shared.HealthPermissionReader
 import com.android.healthconnect.controller.shared.app.AppInfoReader
+import com.android.healthconnect.controller.shared.app.AppPermissionsType
 import com.android.healthconnect.controller.shared.dataTypeToCategory
 import com.android.healthconnect.controller.tests.utils.InstantTaskExecutorRule
 import com.android.healthconnect.controller.tests.utils.MIDNIGHT
@@ -36,8 +38,10 @@ import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME
 import com.android.healthconnect.controller.tests.utils.TEST_APP_PACKAGE_NAME_2
 import com.android.healthconnect.controller.tests.utils.TestObserver
 import com.android.healthconnect.controller.tests.utils.TestTimeSource
+import com.android.healthconnect.controller.tests.utils.di.FakeFeatureUtils
 import com.android.healthconnect.controller.tests.utils.di.FakeHealthPermissionAppsUseCase
 import com.android.healthconnect.controller.tests.utils.di.FakeRecentAccessUseCase
+import com.android.healthconnect.controller.utils.FeatureUtils
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -66,6 +70,8 @@ class RecentAccessViewModelTest {
     private val testDispatcher = TestCoroutineDispatcher()
 
     @Inject lateinit var appInfoReader: AppInfoReader
+    @Inject lateinit var healthPermissionReader: HealthPermissionReader
+    @Inject lateinit var fakeFeatureUtils: FeatureUtils
 
     private val timeSource = TestTimeSource
     private val fakeRecentAccessUseCase = FakeRecentAccessUseCase()
@@ -78,7 +84,7 @@ class RecentAccessViewModelTest {
         Dispatchers.setMain(testDispatcher)
         viewModel =
             RecentAccessViewModel(
-                appInfoReader, fakeHealthPermissionAppsUseCase, fakeRecentAccessUseCase, timeSource)
+                appInfoReader, healthPermissionReader, fakeHealthPermissionAppsUseCase, fakeRecentAccessUseCase, timeSource)
     }
 
     @After
@@ -472,7 +478,63 @@ class RecentAccessViewModelTest {
                         mutableSetOf(
                             dataTypeToCategory(StepsRecord::class.java).uppercaseTitle(),
                             dataTypeToCategory(BasalMetabolicRateRecord::class.java)
-                                .uppercaseTitle())))
+                                .uppercaseTitle()),
+                    appPermissionsType = AppPermissionsType.FITNESS_PERMISSIONS_ONLY))
+        assertRecentAccessEquality(actual, expected)
+    }
+
+    @Test
+    fun loadRecentAccessApps_medicalPermissionsEnabled_returnsCorrectAppPermissionsType() = runTest {
+        (fakeFeatureUtils as FakeFeatureUtils).setIsPersonalHealthRecordEnabled(true)
+
+        val packageName = TEST_APP_PACKAGE_NAME
+
+        val time1 = MIDNIGHT.plusSeconds(60)
+        val time2 = MIDNIGHT
+        val time3 = MIDNIGHT.minusSeconds(60)
+
+        val accessLogs =
+            listOf(
+                AccessLog(
+                    packageName,
+                    listOf(RecordTypeIdentifier.RECORD_TYPE_STEPS),
+                    time1.toEpochMilli(),
+                    Constants.READ),
+                AccessLog(
+                    packageName,
+                    listOf(RecordTypeIdentifier.RECORD_TYPE_BASAL_METABOLIC_RATE),
+                    time2.toEpochMilli(),
+                    Constants.READ),
+                AccessLog(
+                    packageName,
+                    listOf(RecordTypeIdentifier.RECORD_TYPE_STEPS),
+                    time3.toEpochMilli(),
+                    Constants.UPSERT))
+                .sortedByDescending { it.accessTime }
+
+        fakeRecentAccessUseCase.updateList(accessLogs)
+        val testObserver = TestObserver<RecentAccessState>()
+        viewModel.recentAccessApps.observeForever(testObserver)
+        viewModel.loadRecentAccessApps()
+        advanceUntilIdle()
+
+        val actual = testObserver.getLastValue()
+        val expected =
+            listOf(
+                RecentAccessEntry(
+                    metadata = TEST_APP,
+                    instantTime = time3,
+                    isToday = false,
+                    dataTypesWritten =
+                    mutableSetOf(
+                        dataTypeToCategory(StepsRecord::class.java).uppercaseTitle(),
+                    ),
+                    dataTypesRead =
+                    mutableSetOf(
+                        dataTypeToCategory(StepsRecord::class.java).uppercaseTitle(),
+                        dataTypeToCategory(BasalMetabolicRateRecord::class.java)
+                            .uppercaseTitle()),
+                    appPermissionsType = AppPermissionsType.MEDICAL_PERMISSIONS_ONLY))
         assertRecentAccessEquality(actual, expected)
     }
 

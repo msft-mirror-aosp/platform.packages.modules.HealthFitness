@@ -86,6 +86,7 @@ package android.health.connect {
     field public static final int SLEEP = 5; // 0x5
     field public static final int UNKNOWN = 0; // 0x0
     field public static final int VITALS = 6; // 0x6
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final int WELLNESS = 7; // 0x7
   }
 
   public class HealthPermissionCategory {
@@ -110,6 +111,7 @@ package android.health.connect {
     field public static final int INTERMENSTRUAL_BLEEDING = 38; // 0x26
     field public static final int LEAN_BODY_MASS = 15; // 0xf
     field public static final int MENSTRUATION = 20; // 0x14
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final int MINDFULNESS = 41; // 0x29
     field public static final int NUTRITION = 24; // 0x18
     field public static final int OVULATION_TEST = 21; // 0x15
     field public static final int OXYGEN_SATURATION = 31; // 0x1f
@@ -205,6 +207,7 @@ package android.health.connect.datatypes {
     field public static final int RECORD_TYPE_LEAN_BODY_MASS = 27; // 0x1b
     field public static final int RECORD_TYPE_MENSTRUATION_FLOW = 21; // 0x15
     field public static final int RECORD_TYPE_MENSTRUATION_PERIOD = 10; // 0xa
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final int RECORD_TYPE_MINDFULNESS_SESSION = 41; // 0x29
     field public static final int RECORD_TYPE_NUTRITION = 8; // 0x8
     field public static final int RECORD_TYPE_OVULATION_TEST = 30; // 0x1e
     field public static final int RECORD_TYPE_OXYGEN_SATURATION = 22; // 0x16

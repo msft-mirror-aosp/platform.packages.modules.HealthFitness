@@ -94,12 +94,15 @@ class ScheduledExportFragmentTest {
         launchFragment<ScheduledExportFragment>(Bundle())
 
         onView(withText("On")).check(matches(isDisplayed()))
-        onView(withText("Choose frequency")).check(matches(isDisplayed()))
+        onView(withText("Change frequency")).check(matches(isDisplayed()))
         onView(withText("Daily")).check(matches(isDisplayed()))
         onView(withText("Weekly")).check(matches(isDisplayed()))
         onView(withText("Monthly")).check(matches(isDisplayed()))
-
         onView(withText("Next export: October 21, 2022")).check(matches(isDisplayed()))
+        onView(
+                withText(
+                    "If you turn off scheduled export, this won't delete previously exported data from where it was saved"))
+            .check(matches(isDisplayed()))
     }
 
     @Test
@@ -171,6 +174,24 @@ class ScheduledExportFragmentTest {
         onView(withText("Daily")).check(doesNotExist())
         onView(withText("Weekly")).check(doesNotExist())
         onView(withText("Monthly")).check(doesNotExist())
+    }
+
+    @Test
+    fun scheduledExportFragment_turnsOffControl_doesNotShowExportStatus() {
+        doAnswer(
+                prepareAnswer(
+                    ScheduledExportStatus(
+                        NOW,
+                        HealthConnectManager.DATA_EXPORT_ERROR_NONE,
+                        TEST_EXPORT_PERIOD_IN_DAYS)))
+            .`when`(healthDataExportManager)
+            .getScheduledExportStatus(any(), any())
+        launchFragment<ScheduledExportFragment>(Bundle())
+
+        onView(withText("On")).perform(click())
+
+        onView(withText("Off")).check(matches(isDisplayed()))
+        onView(withText("Next export: October 21, 2022")).check(doesNotExist())
     }
 
     @Test

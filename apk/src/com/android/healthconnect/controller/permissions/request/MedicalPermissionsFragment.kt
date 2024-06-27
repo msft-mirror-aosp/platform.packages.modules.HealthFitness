@@ -127,15 +127,15 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
         viewModel.healthPermissionsList.observe(viewLifecycleOwner) { allPermissions ->
             val medicalPermissions =
                 allPermissions.filterIsInstance<HealthPermission.MedicalPermission>()
-            val dataTypePermissions =
-                allPermissions.filterIsInstance<HealthPermission.DataTypePermission>()
+            val fitnessPermissions =
+                allPermissions.filterIsInstance<HealthPermission.FitnessPermission>()
             val additionalPermissions =
                 allPermissions.filterIsInstance<HealthPermission.AdditionalPermission>()
 
             updateDataList(medicalPermissions)
             setupAllowAll()
 
-            setupAllowButton(dataTypePermissions.isNotEmpty(), additionalPermissions.isNotEmpty())
+            setupAllowButton(fitnessPermissions.isNotEmpty(), additionalPermissions.isNotEmpty())
             setupDontAllowButton()
         }
     }
@@ -165,7 +165,7 @@ class MedicalPermissionsFragment : Hilt_MedicalPermissionsFragment() {
                     requireActivity()
                         .supportFragmentManager
                         .beginTransaction()
-                        .replace(R.id.permission_content, DataTypePermissionsFragment())
+                        .replace(R.id.permission_content, FitnessPermissionsFragment())
                         .commit()
                 } else {
                     requireActivity()

@@ -37,19 +37,19 @@ constructor(
     /** Updates the stored export settings. */
     override suspend operator fun invoke(
         settings: ScheduledExportSettings
-    ): ExportUseCaseResult<Unit> =
+    ): ExportImportUseCaseResult<Unit> =
         withContext(Dispatchers.IO) {
             try {
                 healthDataExportManager.configureScheduledExport(settings)
-                ExportUseCaseResult.Success(Unit)
+                ExportImportUseCaseResult.Success(Unit)
             } catch (ex: HealthConnectException) {
                 Log.e(TAG, "Failed to update export settings ", ex)
-                ExportUseCaseResult.Failed(ex)
+                ExportImportUseCaseResult.Failed(ex)
             }
         }
 }
 
 interface IUpdateExportSettingsUseCase {
     /** Updates the stored export settings. */
-    suspend fun invoke(settings: ScheduledExportSettings): ExportUseCaseResult<Unit>
+    suspend fun invoke(settings: ScheduledExportSettings): ExportImportUseCaseResult<Unit>
 }

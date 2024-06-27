@@ -77,9 +77,11 @@ package android.health.connect {
     method public void getChangeLogs(@NonNull android.health.connect.changelog.ChangeLogsRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.changelog.ChangeLogsResponse,android.health.connect.HealthConnectException>);
     method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void getMedicalDataSources(@NonNull java.util.List<java.lang.String>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalDataSource>,android.health.connect.HealthConnectException>);
     method public void insertRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.InsertRecordsResponse,android.health.connect.HealthConnectException>);
-    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull java.util.List<android.health.connect.MedicalIdFilter>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull java.util.List<android.health.connect.MedicalResourceId>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void readMedicalResources(@NonNull android.health.connect.ReadMedicalResourcesRequest, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadMedicalResourcesResponse,android.health.connect.HealthConnectException>);
     method public <T extends android.health.connect.datatypes.Record> void readRecords(@NonNull android.health.connect.ReadRecordsRequest<T>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<android.health.connect.ReadRecordsResponse<T>,android.health.connect.HealthConnectException>);
     method public void updateRecords(@NonNull java.util.List<android.health.connect.datatypes.Record>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.lang.Void,android.health.connect.HealthConnectException>);
+    method @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public void upsertMedicalResources(@NonNull java.util.List<android.health.connect.UpsertMedicalResourceRequest>, @NonNull java.util.concurrent.Executor, @NonNull android.os.OutcomeReceiver<java.util.List<android.health.connect.datatypes.MedicalResource>,android.health.connect.HealthConnectException>);
     field public static final String ACTION_MANAGE_HEALTH_PERMISSIONS = "android.health.connect.action.MANAGE_HEALTH_PERMISSIONS";
     field public static final String ACTION_REQUEST_EXERCISE_ROUTE = "android.health.connect.action.REQUEST_EXERCISE_ROUTE";
     field public static final String CATEGORY_HEALTH_PERMISSIONS = "android.intent.category.HEALTH_PERMISSIONS";
@@ -111,8 +113,9 @@ package android.health.connect {
     field public static final String READ_HYDRATION = "android.permission.health.READ_HYDRATION";
     field public static final String READ_INTERMENSTRUAL_BLEEDING = "android.permission.health.READ_INTERMENSTRUAL_BLEEDING";
     field public static final String READ_LEAN_BODY_MASS = "android.permission.health.READ_LEAN_BODY_MASS";
-    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_RESOURCES_IMMUNIZATION = "android.permission.health.READ_MEDICAL_RESOURCES_IMMUNIZATION";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String READ_MEDICAL_DATA_IMMUNIZATION = "android.permission.health.READ_MEDICAL_DATA_IMMUNIZATION";
     field public static final String READ_MENSTRUATION = "android.permission.health.READ_MENSTRUATION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String READ_MINDFULNESS = "android.permission.health.READ_MINDFULNESS";
     field public static final String READ_NUTRITION = "android.permission.health.READ_NUTRITION";
     field public static final String READ_OVULATION_TEST = "android.permission.health.READ_OVULATION_TEST";
     field public static final String READ_OXYGEN_SATURATION = "android.permission.health.READ_OXYGEN_SATURATION";
@@ -150,8 +153,9 @@ package android.health.connect {
     field public static final String WRITE_HYDRATION = "android.permission.health.WRITE_HYDRATION";
     field public static final String WRITE_INTERMENSTRUAL_BLEEDING = "android.permission.health.WRITE_INTERMENSTRUAL_BLEEDING";
     field public static final String WRITE_LEAN_BODY_MASS = "android.permission.health.WRITE_LEAN_BODY_MASS";
-    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_RESOURCES = "android.permission.health.WRITE_MEDICAL_RESOURCES";
+    field @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public static final String WRITE_MEDICAL_DATA = "android.permission.health.WRITE_MEDICAL_DATA";
     field public static final String WRITE_MENSTRUATION = "android.permission.health.WRITE_MENSTRUATION";
+    field @FlaggedApi("com.android.healthfitness.flags.mindfulness") public static final String WRITE_MINDFULNESS = "android.permission.health.WRITE_MINDFULNESS";
     field public static final String WRITE_NUTRITION = "android.permission.health.WRITE_NUTRITION";
     field public static final String WRITE_OVULATION_TEST = "android.permission.health.WRITE_OVULATION_TEST";
     field public static final String WRITE_OXYGEN_SATURATION = "android.permission.health.WRITE_OXYGEN_SATURATION";
@@ -200,6 +204,25 @@ package android.health.connect {
     method @NonNull public String getFhirResourceType();
     method public void writeToParcel(@NonNull android.os.Parcel, int);
     field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.MedicalResourceId> CREATOR;
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method public int getMedicalResourceType();
+    method @IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) public int getPageSize();
+    method public long getPageToken();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.ReadMedicalResourcesRequest> CREATOR;
+  }
+
+  public static final class ReadMedicalResourcesRequest.Builder {
+    ctor public ReadMedicalResourcesRequest.Builder(int);
+    ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest.Builder);
+    ctor public ReadMedicalResourcesRequest.Builder(@NonNull android.health.connect.ReadMedicalResourcesRequest);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest build();
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setMedicalResourceType(int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageSize(@IntRange(from=android.health.connect.Constants.MINIMUM_PAGE_SIZE, to=android.health.connect.Constants.MAXIMUM_PAGE_SIZE) int);
+    method @NonNull public android.health.connect.ReadMedicalResourcesRequest.Builder setPageToken(long);
   }
 
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class ReadMedicalResourcesResponse implements android.os.Parcelable {
@@ -270,6 +293,23 @@ package android.health.connect {
   }
 
   public interface TimeRangeFilter {
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class UpsertMedicalResourceRequest implements android.os.Parcelable {
+    method public int describeContents();
+    method @NonNull public String getData();
+    method public long getDataSourceId();
+    method public void writeToParcel(@NonNull android.os.Parcel, int);
+    field @NonNull public static final android.os.Parcelable.Creator<android.health.connect.UpsertMedicalResourceRequest> CREATOR;
+  }
+
+  public static final class UpsertMedicalResourceRequest.Builder {
+    ctor public UpsertMedicalResourceRequest.Builder(long, @NonNull String);
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull android.health.connect.UpsertMedicalResourceRequest.Builder);
+    ctor public UpsertMedicalResourceRequest.Builder(@NonNull android.health.connect.UpsertMedicalResourceRequest);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest build();
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setData(@NonNull String);
+    method @NonNull public android.health.connect.UpsertMedicalResourceRequest.Builder setDataSourceId(long);
   }
 
 }
@@ -1141,6 +1181,31 @@ package android.health.connect.datatypes {
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setId(@NonNull String);
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setLastModifiedTime(@NonNull java.time.Instant);
     method @NonNull public android.health.connect.datatypes.Metadata.Builder setRecordingMethod(int);
+  }
+
+  @FlaggedApi("com.android.healthfitness.flags.mindfulness") public final class MindfulnessSessionRecord extends android.health.connect.datatypes.IntervalRecord {
+    method public int getMindfulnessSessionType();
+    method @Nullable public CharSequence getNotes();
+    method @Nullable public CharSequence getTitle();
+    field @NonNull public static final android.health.connect.datatypes.AggregationType<java.lang.Long> MINDFULNESS_DURATION_TOTAL;
+    field public static final int MINDFULNESS_SESSION_TYPE_BREATHING = 3; // 0x3
+    field public static final int MINDFULNESS_SESSION_TYPE_MEDITATION = 1; // 0x1
+    field public static final int MINDFULNESS_SESSION_TYPE_MOVEMENT = 5; // 0x5
+    field public static final int MINDFULNESS_SESSION_TYPE_MUSIC = 4; // 0x4
+    field public static final int MINDFULNESS_SESSION_TYPE_UNGUIDED = 6; // 0x6
+    field public static final int MINDFULNESS_SESSION_TYPE_UNKNOWN = 0; // 0x0
+    field public static final int MINDFULNESS_SESSION_TYPE_YOGA = 2; // 0x2
+  }
+
+  public static final class MindfulnessSessionRecord.Builder {
+    ctor public MindfulnessSessionRecord.Builder(@NonNull android.health.connect.datatypes.Metadata, @NonNull java.time.Instant, @NonNull java.time.Instant, int);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord build();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder clearEndZoneOffset();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder clearStartZoneOffset();
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setEndZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setNotes(@Nullable CharSequence);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setStartZoneOffset(@NonNull java.time.ZoneOffset);
+    method @NonNull public android.health.connect.datatypes.MindfulnessSessionRecord.Builder setTitle(@Nullable CharSequence);
   }
 
   public final class NutritionRecord extends android.health.connect.datatypes.IntervalRecord {

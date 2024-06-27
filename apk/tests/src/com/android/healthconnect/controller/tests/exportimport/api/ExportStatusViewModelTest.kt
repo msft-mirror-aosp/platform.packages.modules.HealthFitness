@@ -38,6 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 class ExportStatusViewModelTest {
     companion object {
         private const val TEST_EXPORT_FREQUENCY_IN_DAYS = 7
