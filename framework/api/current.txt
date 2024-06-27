@@ -191,11 +191,6 @@ package android.health.connect {
     method @NonNull public android.health.connect.LocalTimeRangeFilter.Builder setStartTime(@Nullable java.time.LocalDateTime);
   }
 
-  @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalIdFilter {
-    method @NonNull public static android.health.connect.MedicalIdFilter fromId(@NonNull String);
-    method @NonNull public String getId();
-  }
-
   @FlaggedApi("com.android.healthfitness.flags.personal_health_record") public final class MedicalResourceId implements android.os.Parcelable {
     ctor public MedicalResourceId(@NonNull String, @NonNull String, @NonNull String);
     method public int describeContents();

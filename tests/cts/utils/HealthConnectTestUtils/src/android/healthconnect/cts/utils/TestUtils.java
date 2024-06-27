@@ -74,7 +74,6 @@ import android.health.connect.HealthConnectException;
 import android.health.connect.HealthConnectManager;
 import android.health.connect.HealthPermissionCategory;
 import android.health.connect.InsertRecordsResponse;
-import android.health.connect.MedicalIdFilter;
 import android.health.connect.MedicalResourceId;
 import android.health.connect.ReadMedicalResourcesRequest;
 import android.health.connect.ReadMedicalResourcesResponse;
@@ -1265,7 +1264,7 @@ public final class TestUtils {
     }
 
     /**
-     * Helper function to read medical resources from the DB by a list of {@link MedicalIdFilter},
+     * Helper function to read medical resources from the DB by a list of {@link MedicalResourceId},
      * using HealthConnectManager.
      */
     public static List<MedicalResource> readMedicalResourcesByIds(List<MedicalResourceId> ids)

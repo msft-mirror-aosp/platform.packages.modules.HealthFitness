@@ -20,7 +20,8 @@
     <string name="app_label" msgid="4768580772453324183">"Health Connect"</string>
     <string name="health_connect_summary" msgid="6401520186678972547">"Administrer appadgang til sundhedsdata"</string>
     <string name="permissions_and_data_header" msgid="4406105506837487805">"Tilladelser og data"</string>
-    <string name="home_subtitle" msgid="1750033322147357163">"Administrer sundheds- og træningsdata på din telefon, og bestem, hvilke apps der skal have adgang til dem"</string>
+    <!-- no translation found for home_subtitle (2154213430054477787) -->
+    <skip />
     <string name="data_title" msgid="4456619761533380816">"Data og adgang"</string>
     <string name="all_categories_title" msgid="1446410643217937926">"Alle kategorier"</string>
     <string name="see_all_categories" msgid="5599882403901010434">"Se alle kategorier"</string>
@@ -267,14 +268,10 @@
     <string name="immunization_uppercase_label" msgid="1467176749064014020">"Vaccinationer"</string>
     <string name="immunization_lowercase_label" msgid="6464922369026887687">"vaccinationer"</string>
     <string name="immunization_content_description" msgid="2910674919337229803">"Læse vaccinationer"</string>
-    <!-- no translation found for mindfulness_uppercase_label (7678646522566275472) -->
-    <skip />
-    <!-- no translation found for mindfulness_lowercase_label (5184488636180881614) -->
-    <skip />
-    <!-- no translation found for mindfulness_read_content_description (739187536826062524) -->
-    <skip />
-    <!-- no translation found for mindfulness_write_content_description (7925112426563398421) -->
-    <skip />
+    <string name="mindfulness_uppercase_label" msgid="7678646522566275472">"Mindfulness"</string>
+    <string name="mindfulness_lowercase_label" msgid="5184488636180881614">"mindfulness"</string>
+    <string name="mindfulness_read_content_description" msgid="739187536826062524">"Læs data om mindfulness"</string>
+    <string name="mindfulness_write_content_description" msgid="7925112426563398421">"Skriv data om mindfulness"</string>
     <string name="read_permission_category" msgid="6002099618259628632">"Giv \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tilladelse til at læse"</string>
     <string name="write_permission_category" msgid="1529702804865008111">"Giv \"<xliff:g id="APP_NAME">%1$s</xliff:g>\" tilladelse til at skrive"</string>
     <string name="request_permissions_cancel" msgid="1787483997235365393">"Annuller"</string>
@@ -327,6 +324,12 @@
     <string name="connected_apps_empty_list_section_title" msgid="6821215432694207342">"Du har i øjeblikket ikke installeret nogen kompatible apps"</string>
     <string name="additional_access_label" msgid="4645249249222528341">"Yderligere adgang"</string>
     <string name="removed_additional_permissions_toast" msgid="3443687215509477284">"Yderligere tilladelser for denne app er fjernet"</string>
+    <!-- no translation found for permissions_header (6519976063360071569) -->
+    <skip />
+    <!-- no translation found for manage_fitness_permissions (1001729292172461314) -->
+    <skip />
+    <!-- no translation found for manage_medical_permissions (7658181359096889932) -->
+    <skip />
     <string name="denied_apps_banner_title" msgid="1997745063608657965">"Apptilladelser blev fjernet"</string>
     <string name="denied_apps_banner_message_one_app" msgid="17659513485678315">"Health Connect fjernede tilladelser for <xliff:g id="APP_DATA">%s</xliff:g>"</string>
     <string name="denied_apps_banner_message_two_apps" msgid="1147216810892373640">"Health Connect fjernede tilladelser for <xliff:g id="APP_DATA_0">%1$s</xliff:g> og <xliff:g id="APP_DATA_TWO">%2$s</xliff:g>"</string>
@@ -346,29 +349,45 @@
     <string name="scheduled_export" msgid="8737660963687364370">"Planlagt eksport"</string>
     <string name="import_data" msgid="404502315533233094">"Importér data"</string>
     <string name="import_data_description" msgid="4040178599441724296">"Gendan data fra en tidligere eksporteret fil"</string>
-    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
+    <!-- no translation found for import_error_banner_title (1480977889067027790) -->
     <skip />
-    <!-- no translation found for import_wrong_file_error_banner_title (1841182157722596266) -->
+    <!-- no translation found for import_wrong_file_error_banner_button (1518043363477255045) -->
     <skip />
     <!-- no translation found for import_wrong_file_error_banner_summary (4857514343099050126) -->
     <skip />
+    <!-- no translation found for import_version_mismatch_error_banner_button (4761716140032809817) -->
+    <skip />
+    <!-- no translation found for import_version_mismatch_error_banner_summary (6165550114170534795) -->
+    <skip />
+    <!-- no translation found for import_other_error_banner_button (8006947649520909176) -->
+    <skip />
+    <!-- no translation found for import_other_error_banner_summary (4378957063605649197) -->
+    <skip />
     <string name="backup_and_restore_footer_body_text" msgid="4854718727539851909">"Med eksporter kan du gemme dine data, så du kan overføre dem til en ny telefon"</string>
-    <string name="backup_and_restore_footer_link_text" msgid="5862384033902147721">"Få flere oplysninger"</string>
+    <!-- no translation found for backup_and_restore_footer_link_text (9075133737244288876) -->
+    <skip />
     <string name="automatic_export_on" msgid="6972389773963624315">"Til"</string>
     <string name="automatic_export_off" msgid="3270255845008880841">"Fra"</string>
-    <string name="choose_frequency_category" msgid="2230821549715237663">"Vælg hyppighed"</string>
-    <string name="choose_frequency" msgid="1077467424225083246">"Vælg hyppighed"</string>
-    <string name="choose_frequency_description" msgid="752601326653048254">"Vælg at gemme dine data én gang, eller konfigurer indstillingen til at gemme dataene automatisk med en angivet hyppighed."</string>
+    <!-- no translation found for choose_frequency_category (9094154407387676553) -->
+    <skip />
+    <!-- no translation found for scheduled_export_settings_footer_text (8488483803782086291) -->
+    <skip />
+    <!-- no translation found for choose_frequency (8119085390857180221) -->
+    <skip />
+    <!-- no translation found for choose_frequency_description (7698155810053504157) -->
+    <skip />
     <string name="frequency_daily" msgid="3596412357416125727">"Dagligt"</string>
     <string name="frequency_weekly" msgid="7302587625019573393">"Ugentligt"</string>
     <string name="frequency_monthly" msgid="729674398053825938">"Månedligt"</string>
-    <string name="export_destination_title" msgid="1434632545224158402">"Vælg, hvor du vil eksportere disse data"</string>
+    <!-- no translation found for export_destination_title (8352929396306002479) -->
+    <skip />
     <string name="export_invalid_storage" msgid="3945266169513895950">"Vælg en lagringsapp til at eksportere dine data"</string>
-    <string name="import_decryption_title" msgid="396608799208392844">"Skriv adgangskoden"</string>
-    <string name="import_decryption_description" msgid="202259030890690376">"Din adgangskode til kryptering skal importeres til dine data for Health Connect"</string>
-    <string name="import_decryption_forgotten_password_link_text" msgid="2320323034848292225">"Har du glemt adgangskoden?"</string>
-    <string name="import_password_hint" msgid="5158553589723883063">"Adgangskode"</string>
-    <string name="import_decrypt_footer_body_text" msgid="1891722629872724009">"Hvis du stadig har din gamle telefon, kan du eksportere dine data igen ved hjælp af en ny adgangskode"</string>
+    <!-- no translation found for import_confirmation_dialog_title (1218478436676890997) -->
+    <skip />
+    <!-- no translation found for import_confirmation_dialog_cancel_button (4323351978842360895) -->
+    <skip />
+    <!-- no translation found for import_confirmation_dialog_import_button (7090219024758375606) -->
+    <skip />
     <string name="export_back_button" msgid="3550795479165524982">"Tilbage"</string>
     <string name="export_next_button" msgid="657930567137105172">"Næste"</string>
     <string name="import_cancel_button" msgid="2191598074422096715">"Annuller"</string>
@@ -385,7 +404,8 @@
     <!-- no translation found for export_import_go_to_play_store_text (3210733429377429794) -->
     <skip />
     <string name="onboarding_title" msgid="8550656211291180188">"Kom godt i gang med Health Connect"</string>
-    <string name="onboarding_description" msgid="4873129122057931161">"Health Connect opbevarer dine sundheds- og motionsdata, så du nemt kan synkronisere de forskellige apps på din telefon"</string>
+    <!-- no translation found for onboarding_description (3479157507808350452) -->
+    <skip />
     <string name="share_data" msgid="3481932156368883946">"Del data med dine apps"</string>
     <string name="share_data_description" msgid="2919871301634375092">"Vælg, hvilke data appen skal kunne læse eller skrive til Health Connect"</string>
     <string name="manage_your_settings" msgid="7391184508015127137">"Administrer indstillinger og privatliv"</string>
