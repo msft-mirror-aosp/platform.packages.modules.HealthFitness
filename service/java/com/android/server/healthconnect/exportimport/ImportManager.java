@@ -66,13 +66,14 @@ public final class ImportManager {
     public synchronized void runImport(UserHandle userHandle, Uri file) {
         Slog.i(TAG, "Import started.");
         ExportImportSettingsStorage.setImportOngoing(true);
+        Context userContext = mContext.createContextAsUser(userHandle, 0);
         DatabaseContext dbContext =
                 DatabaseContext.create(mContext, IMPORT_DATABASE_DIR_NAME, userHandle);
         File importDbFile = dbContext.getDatabasePath(IMPORT_DATABASE_FILE_NAME);
 
         try {
             try {
-                Compressor.decompress(new File(file.getPath()), importDbFile);
+                Compressor.decompress(file, importDbFile, userContext);
                 Slog.i(TAG, "Import file unzipped: " + importDbFile.getAbsolutePath());
             } catch (Exception e) {
                 Slog.e(

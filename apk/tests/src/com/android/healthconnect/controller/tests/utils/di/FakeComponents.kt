@@ -19,6 +19,7 @@ import android.health.connect.HealthDataCategory
 import android.health.connect.accesslog.AccessLog
 import android.health.connect.datatypes.Record
 import android.health.connect.exportimport.ScheduledExportSettings
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.data.access.ILoadAccessUseCase
 import com.android.healthconnect.controller.data.access.ILoadPermissionTypeContributorAppsUseCase
@@ -323,15 +324,15 @@ class FakeUpdatePriorityListUseCase : IUpdatePriorityListUseCase {
 
 class FakeLoadAccessUseCase : ILoadAccessUseCase {
 
-    private var appDataMap: Map<AppAccessState, List<AppMetadata>> = mutableMapOf()
+    private var appDataMap: Map<AppAccessState, List<AppAccessMetadata>> = mutableMapOf()
 
     override suspend fun invoke(
         permissionType: HealthPermissionType
-    ): UseCaseResults<Map<AppAccessState, List<AppMetadata>>> {
+    ): UseCaseResults<Map<AppAccessState, List<AppAccessMetadata>>> {
         return UseCaseResults.Success(appDataMap)
     }
 
-    fun updateMap(map: Map<AppAccessState, List<AppMetadata>>) {
+    fun updateMap(map: Map<AppAccessState, List<AppAccessMetadata>>) {
         appDataMap = map
     }
 

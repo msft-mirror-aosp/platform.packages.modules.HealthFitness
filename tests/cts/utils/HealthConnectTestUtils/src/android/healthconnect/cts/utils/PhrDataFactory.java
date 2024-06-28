@@ -20,6 +20,7 @@ import static android.health.connect.datatypes.MedicalResource.MEDICAL_RESOURCE_
 
 import android.health.connect.CreateMedicalDataSourceRequest;
 import android.health.connect.MedicalResourceId;
+import android.health.connect.UpsertMedicalResourceRequest;
 import android.health.connect.datatypes.MedicalDataSource;
 import android.health.connect.datatypes.MedicalResource;
 
@@ -42,6 +43,12 @@ public class PhrDataFactory {
     public static final String MEDICAL_RESOURCE_ID = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     public static final String FHIR_DATA_IMMUNIZATION =
             "{\"resourceType\" : \"Immunization\", \"id\" : \"Immunization1\"}";
+
+    public static final String FHIR_DATA_IMMUNIZATION_ID_NOT_EXISTS =
+            "{\"resourceType\" : \"Immunization\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_RESOURCE_TYPE_NOT_EXISTS =
+            "{\"id\" : \"Immunization1\"}";
+    public static final String FHIR_DATA_IMMUNIZATION_FIELD_MISSING_INVALID = "{\"id\" : }";
     public static final String FHIR_RESOURCE_TYPE_IMMUNIZATION = "Immunization";
     public static final String FHIR_RESOURCE_ID_IMMUNIZATION = "Immunization1";
 
@@ -107,6 +114,12 @@ public class PhrDataFactory {
      */
     public static MedicalResource getMedicalResource() {
         return getMedicalResourceBuilder().build();
+    }
+
+    /** Creates and returns a {@link UpsertMedicalResourceRequest} with default arguments. */
+    public static UpsertMedicalResourceRequest getUpsertMedicalResourceRequest() {
+        return new UpsertMedicalResourceRequest.Builder(DATA_SOURCE_LONG_ID, FHIR_DATA_IMMUNIZATION)
+                .build();
     }
 
     /**

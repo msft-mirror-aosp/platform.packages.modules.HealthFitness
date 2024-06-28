@@ -19,7 +19,8 @@ package com.android.healthconnect.testapps.toolbox.ui
 import android.content.Context
 import android.health.connect.CreateMedicalDataSourceRequest
 import android.health.connect.HealthConnectManager
-import android.health.connect.MedicalIdFilter
+import android.health.connect.MedicalResourceId
+import android.health.connect.UpsertMedicalResourceRequest
 import android.health.connect.datatypes.MedicalDataSource
 import android.health.connect.datatypes.MedicalResource
 import android.os.Bundle
@@ -132,11 +133,29 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
 
     private suspend fun insertImmunization(view: View): String {
         val immunizationResource = loadJSONFromAsset(requireContext(), "immunization_1.json")
+        if (immunizationResource == null) {
+            return "No Immunization resource to insert"
+        }
         Log.d("INSERT_MEDICAL_RESOURCE", "Writing immunization ${immunizationResource}")
-        // TODO(b/343375877) Replace this with call to HC after insert API is implemented
-        val insertedResourceId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+        val insertedResources = upsertMedicalResources(
+            listOf(
+                UpsertMedicalResourceRequest.Builder(1, immunizationResource).build()))
+        val insertedResourceId = "1,Immunization,immunization_1"
         view.findViewById<EditText>(R.id.phr_immunization_id_text).setText(insertedResourceId)
-        return insertedResourceId
+        return insertedResources.joinToString(separator = "\n", transform = MedicalResource::toString)
+    }
+
+    private suspend fun upsertMedicalResources(requests: List<UpsertMedicalResourceRequest>): List<MedicalResource> {
+        Log.d("UPSERT_MEDICAL_RESOURCES", "Writing ${requests.size} resources")
+        val resources =
+            suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
+                healthConnectManager.upsertMedicalResources(
+                    requests,
+                    Runnable::run,
+                    continuation.asOutcomeReceiver())
+            }
+        Log.d("UPSERT_MEDICAL_RESOURCES", "Wrote ${resources.size} resources")
+        return resources
     }
 
     private suspend fun createMedicalDataSource(displayName: String, fhirBaseUri: String): String {
@@ -152,20 +171,24 @@ class PhrOptionsFragment : Fragment(R.layout.fragment_phr_options) {
     }
 
     private suspend fun readMedicalResourceForIdFromTextbox(view: View): String {
-        val resourceId =
+        val insertedResourceId =
             view.findViewById<EditText>(R.id.phr_immunization_id_text).getText().toString()
-        return readMedicalResourcesById(listOf(resourceId))
+        val idParts = insertedResourceId.split(',').toList()
+        if (idParts.size != 3) {
+            return "Invalid ID from inserted MedicalResource: ${insertedResourceId}"
+        }
+        val (dataSourceId, fhirResourceType, fhirResourceId) = idParts
+        return readMedicalResourcesByIds(listOf(
+            MedicalResourceId(dataSourceId, fhirResourceType, fhirResourceId)))
             .joinToString(separator = "\n", transform = MedicalResource::toString)
     }
 
-    private suspend fun readMedicalResourcesById(ids: List<String>): List<MedicalResource> {
+    private suspend fun readMedicalResourcesByIds(ids: List<MedicalResourceId>): List<MedicalResource> {
         Log.d("READ_MEDICAL_RESOURCES", "Reading resource with ids ${ids.toString()}")
-        // TODO(b/343455447): Update the fake empty list here to use the real
-        // inserted MedicalResourceIds.
         val resources =
             suspendCancellableCoroutine<List<MedicalResource>> { continuation ->
                 healthConnectManager.readMedicalResources(
-                    listOf(),
+                    ids,
                     Runnable::run,
                     continuation.asOutcomeReceiver())
             }

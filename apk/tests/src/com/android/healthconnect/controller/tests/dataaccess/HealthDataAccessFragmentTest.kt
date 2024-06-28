@@ -17,6 +17,7 @@ package com.android.healthconnect.controller.tests.dataaccess
 
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -24,10 +25,12 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.healthconnect.controller.R
 import com.android.healthconnect.controller.data.access.AccessViewModel
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState
 import com.android.healthconnect.controller.data.access.AccessViewModel.AccessScreenState.WithData
+import com.android.healthconnect.controller.data.access.AppAccessMetadata
 import com.android.healthconnect.controller.data.access.AppAccessState
 import com.android.healthconnect.controller.dataaccess.HealthDataAccessFragment
 import com.android.healthconnect.controller.permissions.data.HealthPermissionType
@@ -94,7 +97,7 @@ class HealthDataAccessFragmentTest {
     fun dataAccessFragment_readSection_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppMetadata("package1", "appName1", null)),
+                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Write to emptyList(),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
@@ -118,8 +121,8 @@ class HealthDataAccessFragmentTest {
     fun dataAccessFragment_readAndWriteSections_isDisplayed() {
         val map =
             mapOf(
-                AppAccessState.Read to listOf(AppMetadata("package1", "appName1", null)),
-                AppAccessState.Write to listOf(AppMetadata("package1", "appName1", null)),
+                AppAccessState.Read to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
+                AppAccessState.Write to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))),
                 AppAccessState.Inactive to emptyList())
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
@@ -151,7 +154,7 @@ class HealthDataAccessFragmentTest {
             mapOf(
                 AppAccessState.Read to emptyList(),
                 AppAccessState.Write to emptyList(),
-                AppAccessState.Inactive to listOf(AppMetadata("package1", "appName1", null)))
+                AppAccessState.Inactive to listOf(AppAccessMetadata(AppMetadata("package1", "appName1", null))))
         whenever(viewModel.appMetadataMap).then {
             MutableLiveData<AccessScreenState>(WithData(map))
         }

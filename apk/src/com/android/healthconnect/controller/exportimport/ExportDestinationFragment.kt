@@ -38,6 +38,9 @@ import com.android.healthconnect.controller.exportimport.api.DocumentProviders
 import com.android.healthconnect.controller.exportimport.api.ExportSettingsViewModel
 import com.android.healthconnect.controller.exportimport.api.isLocalFile
 import com.android.healthconnect.controller.utils.DeviceInfoUtils
+import com.android.healthconnect.controller.utils.logging.ExportDestinationElement
+import com.android.healthconnect.controller.utils.logging.HealthConnectLogger
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.settingslib.widget.LinkTextView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -45,7 +48,6 @@ import javax.inject.Inject
 /** Export destination fragment for Health Connect. */
 @AndroidEntryPoint(Fragment::class)
 class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
-
     private val contract = ActivityResultContracts.StartActivityForResult()
     private val saveResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(contract, ::onSave)
@@ -53,20 +55,26 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
     private val viewModel: ExportSettingsViewModel by activityViewModels()
 
     @Inject lateinit var deviceInfoUtils: DeviceInfoUtils
+    @Inject lateinit var logger: HealthConnectLogger
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        logger.setPageId(PageName.EXPORT_DESTINATION_PAGE)
         val view = inflater.inflate(R.layout.export_destination_screen, container, false)
         val footerView = view.findViewById<View>(R.id.export_import_footer)
         val playStoreView = view.findViewById<LinkTextView>(R.id.export_import_go_to_play_store)
         val backButton = view.findViewById<Button>(R.id.export_import_cancel_button)
         val nextButton = view.findViewById<Button>(R.id.export_import_next_button)
 
+        logger.logImpression(ExportDestinationElement.EXPORT_DESTINATION_BACK_BUTTON)
+        logger.logImpression(ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
+
         backButton?.text = getString(R.string.export_back_button)
         backButton?.setOnClickListener {
+            logger.logInteraction(ExportDestinationElement.EXPORT_DESTINATION_BACK_BUTTON)
             findNavController()
                 .navigate(R.id.action_exportDestinationFragment_to_exportFrequencyFragment)
         }
@@ -99,6 +107,8 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                     documentProvidersViewBinder.bindDocumentProvidersView(
                         providers.providers, documentProvidersList, inflater) { root ->
                             nextButton.setOnClickListener {
+                                logger.logInteraction(
+                                    ExportDestinationElement.EXPORT_DESTINATION_NEXT_BUTTON)
                                 saveResultLauncher.launch(
                                     Intent(Intent.ACTION_CREATE_DOCUMENT)
                                         .addFlags(
@@ -106,7 +116,8 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                                         .setType("application/zip")
                                         .addCategory(Intent.CATEGORY_OPENABLE)
-                                        .putExtra(DocumentsContract.EXTRA_INITIAL_URI, root.uri))
+                                        .putExtra(DocumentsContract.EXTRA_INITIAL_URI, root.uri)
+                                        .putExtra(Intent.EXTRA_TITLE, getDefaultFileName()))
                             }
                             nextButton.setEnabled(true)
                         }
@@ -123,6 +134,11 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        logger.logPageImpression()
+    }
+
     private fun onSave(result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
             val fileUri = result.data?.data ?: return
@@ -133,5 +149,9 @@ class ExportDestinationFragment : Hilt_ExportDestinationFragment() {
                 requireActivity().finish()
             }
         }
+    }
+
+    private fun getDefaultFileName(): String {
+        return getString(R.string.export_default_file_name) + ".zip";
     }
 }

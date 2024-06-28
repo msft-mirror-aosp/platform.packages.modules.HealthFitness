@@ -40,7 +40,9 @@ import com.android.healthconnect.controller.shared.preference.HealthPreferenceFr
 import com.android.healthconnect.controller.utils.AttributeResolver
 import com.android.healthconnect.controller.utils.DeviceInfoUtilsImpl
 import com.android.healthconnect.controller.utils.LocalDateTimeFormatter
+import com.android.healthconnect.controller.utils.logging.BackupAndRestoreElement
 import com.android.healthconnect.controller.utils.logging.ErrorPageElement
+import com.android.healthconnect.controller.utils.logging.PageName
 import com.android.healthconnect.controller.utils.pref
 import com.android.settingslib.widget.FooterPreference
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +50,6 @@ import dagger.hilt.android.AndroidEntryPoint
 /** Fragment displaying backup and restore settings. */
 @AndroidEntryPoint(HealthPreferenceFragment::class)
 class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment() {
-    // TODO: b/330169060 - Add proper logging for the backup and restore settings fragment.
 
     companion object {
         const val SCHEDULED_EXPORT_PREFERENCE_KEY = "scheduled_export"
@@ -57,6 +58,10 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
         const val IMPORT_ERROR_BANNER_KEY = "import_error_banner"
         const val IMPORT_ERROR_BANNER_ORDER = 0
         const val PREVIOUS_EXPORT_STATUS_ORDER = 2
+    }
+
+    init {
+        this.setPageName(PageName.BACKUP_AND_RESTORE_PAGE)
     }
 
     private val exportSettingsViewModel: ExportSettingsViewModel by viewModels()
@@ -90,12 +95,14 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
             DeviceInfoUtilsImpl().openHCGetStartedLink(requireActivity())
         }
 
+        scheduledExportPreference?.logName = BackupAndRestoreElement.SCHEDULED_EXPORT_BUTTON
         scheduledExportPreference?.setOnPreferenceClickListener {
             findNavController()
                 .navigate(R.id.action_backupAndRestoreSettingsFragment_to_exportSetupActivity)
             true
         }
 
+        importDataPreference?.logName = BackupAndRestoreElement.RESTORE_DATA_BUTTON
         importDataPreference?.setOnPreferenceClickListener {
             findNavController()
                 .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
@@ -162,6 +169,7 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     override fun onResume() {
         super.onResume()
         exportSettingsViewModel.loadExportSettings()
+        importStatusViewModel.loadImportStatus()
     }
 
     private fun buildSummary(frequency: ExportFrequency): String {
@@ -195,26 +203,78 @@ class BackupAndRestoreSettingsFragment : Hilt_BackupAndRestoreSettingsFragment()
     }
 
     private fun maybeShowImportErrorBanner(importUiState: ImportUiState) {
-        if (importUiState.dataImportError ==
-            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE &&
-            preferenceScreen.findPreference<Preference>(IMPORT_ERROR_BANNER_KEY) == null) {
-            preferenceScreen.addPreference(
-                BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
-                    it.setPrimaryButton(
-                        getString(R.string.import_wrong_file_error_banner_button),
-                        ErrorPageElement.UNKNOWN_ELEMENT)
-                    it.title = getString(R.string.import_wrong_file_error_banner_title)
-                    it.key = IMPORT_ERROR_BANNER_KEY
-                    it.summary = getString(R.string.import_wrong_file_error_banner_summary)
-                    it.icon =
-                        AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
-                    it.setPrimaryButtonOnClickListener {
-                        findNavController()
-                            .navigate(
-                                R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
-                    }
-                    it.order = IMPORT_ERROR_BANNER_ORDER
-                })
+        val importErrorBanner = preferenceScreen.findPreference<Preference>(IMPORT_ERROR_BANNER_KEY)
+        if (importErrorBanner != null) {
+            preferenceScreen.removePreferenceRecursively(IMPORT_ERROR_BANNER_KEY)
+        }
+        // TODO: b/330169060 - Add proper logging all error banners.
+        when (importUiState.dataImportError) {
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_WRONG_FILE -> {
+                preferenceScreen.addPreference(getImportWrongFileErrorBanner())
+            }
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_VERSION_MISMATCH -> {
+                preferenceScreen.addPreference(getImportVersionMismatchErrorBanner())
+            }
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_UNKNOWN -> {
+                preferenceScreen.addPreference(getImportOtherErrorBanner())
+            }
+            ImportUiState.DataImportError.DATA_IMPORT_ERROR_NONE -> {
+                // Do nothing.
+            }
+        }
+    }
+
+    private fun getImportWrongFileErrorBanner(): BannerPreference {
+        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+            it.setPrimaryButton(
+                getString(R.string.import_wrong_file_error_banner_button),
+                ErrorPageElement.UNKNOWN_ELEMENT,
+            )
+            it.title = getString(R.string.import_error_banner_title)
+            it.key = IMPORT_ERROR_BANNER_KEY
+            it.summary = getString(R.string.import_wrong_file_error_banner_summary)
+            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+            it.setPrimaryButtonOnClickListener {
+                findNavController()
+                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+            }
+            it.order = IMPORT_ERROR_BANNER_ORDER
+        }
+    }
+
+    private fun getImportVersionMismatchErrorBanner(): BannerPreference {
+        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+            it.setPrimaryButton(
+                getString(R.string.import_version_mismatch_error_banner_button),
+                ErrorPageElement.UNKNOWN_ELEMENT,
+            )
+            it.title = getString(R.string.import_error_banner_title)
+            it.key = IMPORT_ERROR_BANNER_KEY
+            it.summary = getString(R.string.import_version_mismatch_error_banner_summary)
+            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+            it.setPrimaryButtonOnClickListener {
+                findNavController()
+                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_systemUpdateActivity)
+            }
+            it.order = IMPORT_ERROR_BANNER_ORDER
+        }
+    }
+
+    private fun getImportOtherErrorBanner(): BannerPreference {
+        return BannerPreference(requireContext(), ErrorPageElement.UNKNOWN_ELEMENT).also {
+            it.setPrimaryButton(
+                getString(R.string.import_other_error_banner_button),
+                ErrorPageElement.UNKNOWN_ELEMENT,
+            )
+            it.title = getString(R.string.import_error_banner_title)
+            it.key = IMPORT_ERROR_BANNER_KEY
+            it.summary = getString(R.string.import_other_error_banner_summary)
+            it.icon = AttributeResolver.getNullableDrawable(requireContext(), R.attr.warningIcon)
+            it.setPrimaryButtonOnClickListener {
+                findNavController()
+                    .navigate(R.id.action_backupAndRestoreSettingsFragment_to_importFlowActivity)
+            }
+            it.order = IMPORT_ERROR_BANNER_ORDER
         }
     }
 }
