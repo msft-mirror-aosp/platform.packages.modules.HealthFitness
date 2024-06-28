@@ -962,6 +962,63 @@ class AppPermissionViewModelTest {
         verify(healthPermissionReader).isRationaleIntentDeclared(TEST_APP_PACKAGE_NAME)
     }
 
+
+    @Test
+    fun grantAllFitnessPermissions_isAllFitnessPermissionsGranted_returnTrue() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allFitnessPermissionsGranted.observeForever{
+            assertThat(it).isTrue()
+        }
+    }
+
+    @Test
+    fun grantAllFitnessPermissions_isAllMedicalPermissionsGranted_returnFalse() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllFitnessPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allMedicalPermissionsGranted.observeForever{
+            assertThat(it).isFalse()
+        }
+    }
+
+    @Test
+    fun grantAllMedicalPermissions_isAllFitnessPermissionsGranted_returnFalse() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allFitnessPermissionsGranted.observeForever{
+            assertThat(it).isFalse()
+        }
+    }
+
+    @Test
+    fun grantAllMedicalPermissions_isAllMedicalPermissionsGranted_returnTrue() = runTest {
+        setupDeclaredAndGrantedFitnessAndMedicalPermissions()
+        appPermissionViewModel.loadPermissionsForPackage(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.grantAllMedicalPermissions(TEST_APP_PACKAGE_NAME)
+        advanceUntilIdle()
+
+        appPermissionViewModel.allMedicalPermissionsGranted.observeForever{
+            assertThat(it).isTrue()
+        }
+    }
+
     private fun setupDeclaredAndGrantedFitnessPermissions() {
         whenever(healthPermissionReader.isRationaleIntentDeclared(any())).thenReturn(true)
         whenever(healthPermissionReader.getValidHealthPermissions(any()))
